@@ -9,7 +9,6 @@
 #import "QredoClientMarshallers.h"
 
 NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
-NSString *const QredoErrorDomain = @"com.qredo.error";
 
 // Private stuff
 @interface QredoClient ()

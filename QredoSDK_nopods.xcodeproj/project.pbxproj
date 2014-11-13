@@ -11,7 +11,6 @@
 		0A16F8D819C358F300639779 /* QredoWireFormatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F8D619C358F300639779 /* QredoWireFormatTests.m */; };
 		0A16F8DA19C3590700639779 /* QredoVaultSequenceCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F89319C3567E00639779 /* QredoVaultSequenceCache.m */; };
 		0A16F8DE19C3591700639779 /* QredoVaultCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F89919C3567E00639779 /* QredoVaultCrypto.m */; };
-		0A16F8E919C3592F00639779 /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F8B319C3567E00639779 /* NSData+QredoRandomData.m */; };
 		0A16F91D19C35AE600639779 /* CryptoImplV1.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F91219C35AE600639779 /* CryptoImplV1.m */; };
 		0A16F91E19C35AE600639779 /* QredoEllipticCurvePoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F91419C35AE600639779 /* QredoEllipticCurvePoint.m */; };
 		0A16F91F19C35AE600639779 /* QredoKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F91619C35AE600639779 /* QredoKey.m */; };
@@ -23,48 +22,49 @@
 		0A16F92A19C35AF200639779 /* QredoEllipticCurvePointTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F92519C35AF200639779 /* QredoEllipticCurvePointTests.m */; };
 		0A16F92B19C35AF200639779 /* QredoKeyPairTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F92619C35AF200639779 /* QredoKeyPairTests.m */; };
 		0A16F92C19C35AF200639779 /* QredoKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F92719C35AF200639779 /* QredoKeyTests.m */; };
-		0A16F92D19C35B1800639779 /* libQredoCrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8FC19C35ABA00639779 /* libQredoCrypto.a */; };
-		0A16F92E19C35B2300639779 /* libQredoCrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8FC19C35ABA00639779 /* libQredoCrypto.a */; };
 		0A16F96919C35BA100639779 /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F96819C35BA100639779 /* libsodium.a */; };
-		0A16F96A19C35BA100639779 /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F96819C35BA100639779 /* libsodium.a */; };
 		0A16F96E19C35D9700639779 /* QredoCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F96D19C35D9700639779 /* QredoCrypto.m */; };
-		0A16F96F19C35D9700639779 /* QredoCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F96D19C35D9700639779 /* QredoCrypto.m */; };
 		0A16F97019C3605B00639779 /* libQredoCrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8FC19C35ABA00639779 /* libQredoCrypto.a */; };
-		0A16F97119C361F300639779 /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F8B319C3567E00639779 /* NSData+QredoRandomData.m */; };
-		0A16F97719C3673E00639779 /* QredoVaultSequenceCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F89319C3567E00639779 /* QredoVaultSequenceCache.m */; };
-		0A16F97919C3673E00639779 /* QredoVaultCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F89919C3567E00639779 /* QredoVaultCrypto.m */; };
-		0A16F98519C3673E00639779 /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F8B319C3567E00639779 /* NSData+QredoRandomData.m */; };
 		0A16F99019C6F62200639779 /* QredoRendezvousCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F98B19C6F62200639779 /* QredoRendezvousCrypto.m */; };
-		0A16F99119C6F62200639779 /* QredoRendezvousCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F98B19C6F62200639779 /* QredoRendezvousCrypto.m */; };
-		0A16F9ED19C9CC9500639779 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F9EC19C9CC9500639779 /* NSData+Conversion.m */; };
-		0A16F9EE19C9CC9500639779 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F9EC19C9CC9500639779 /* NSData+Conversion.m */; };
 		0A314D8A19D2DD560064387E /* rsapss.c in Sources */ = {isa = PBXBuildFile; fileRef = 0A314D8919D2DD560064387E /* rsapss.c */; };
-		0A314D8B19D2DD560064387E /* rsapss.c in Sources */ = {isa = PBXBuildFile; fileRef = 0A314D8919D2DD560064387E /* rsapss.c */; };
 		0A40636D1A0D3A7B00A9CD91 /* HighwatermarksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A40636C1A0D3A7B00A9CD91 /* HighwatermarksTests.m */; };
 		0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A85E6E619FAA95200775115 /* QredoRendezvous.m */; };
-		0A85E6E819FAA95200775115 /* QredoRendezvous.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A85E6E619FAA95200775115 /* QredoRendezvous.m */; };
 		0A8F5C5319FE90E60068C8D8 /* QredoConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */; };
 		0A8F5C5719FFEB450068C8D8 /* QredoRendezvousTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F5C5619FFEB450068C8D8 /* QredoRendezvousTests.m */; };
-		0A8F5C5819FFEC870068C8D8 /* QredoConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */; };
 		0A8F5C5A1A0029BD0068C8D8 /* RendezvousListenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F5C591A0029BD0068C8D8 /* RendezvousListenerTests.m */; };
 		0A8F5C5C1A002F0A0068C8D8 /* ConversationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F5C5B1A002F0A0068C8D8 /* ConversationTests.m */; };
 		0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9DDDFD19ED3A1500B4248C /* QredoVault.m */; };
 		0A9DDE0619ED799600B4248C /* QredoVaultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9DDE0519ED799600B4248C /* QredoVaultTests.m */; };
-		0A9DDE0719ED7B2200B4248C /* Qredo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA03C8819E2E6CF00F2CF43 /* Qredo.m */; };
-		0A9DDE0819ED7B2200B4248C /* QredoVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9DDDFD19ED3A1500B4248C /* QredoVault.m */; };
 		0AA03C8919E2E6CF00F2CF43 /* Qredo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA03C8819E2E6CF00F2CF43 /* Qredo.m */; };
 		0AA03D4719E451D500F2CF43 /* QredoPSSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA03D4619E451D500F2CF43 /* QredoPSSTests.m */; };
-		0AA03D4819E4536C00F2CF43 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F9EC19C9CC9500639779 /* NSData+Conversion.m */; };
-		0AA0CAD619D9B5850025DD4D /* NSDictionary+IndexableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0CAD519D9B5850025DD4D /* NSDictionary+IndexableSet.m */; };
 		0AA0CAD919D9B92B0025DD4D /* QredoConversationCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */; };
-		0AA0CADA19D9B92B0025DD4D /* QredoConversationCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */; };
-		0AA0CADB19DB01120025DD4D /* NSDictionary+IndexableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0CAD519D9B5850025DD4D /* NSDictionary+IndexableSet.m */; };
+		0AADB0191A1575CA00CFD014 /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0021A1575CA00CFD014 /* NSArray+QredoArrayEquality.m */; };
+		0AADB01A1A1575CA00CFD014 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0041A1575CA00CFD014 /* NSData+Conversion.m */; };
+		0AADB01B1A1575CA00CFD014 /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0061A1575CA00CFD014 /* NSData+QredoDataEquality.m */; };
+		0AADB01C1A1575CA00CFD014 /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0081A1575CA00CFD014 /* NSData+QredoRandomData.m */; };
+		0AADB01D1A1575CA00CFD014 /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB00A1A1575CA00CFD014 /* NSSet+QredoSetEquality.m */; };
+		0AADB0231A1575CA00CFD014 /* QredoErrorCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0161A1575CA00CFD014 /* QredoErrorCodes.m */; };
+		0AADB0241A1575CA00CFD014 /* QredoLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0181A1575CA00CFD014 /* QredoLogging.m */; };
+		0AADB0601A15763600CFD014 /* QredoClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0431A15763600CFD014 /* QredoClient.m */; };
+		0AADB0611A15763600CFD014 /* QredoClientMarshallers.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0451A15763600CFD014 /* QredoClientMarshallers.m */; };
+		0AADB0621A15763600CFD014 /* NSDictionary+IndexableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0481A15763600CFD014 /* NSDictionary+IndexableSet.m */; };
+		0AADB0631A15763600CFD014 /* QredoClientId.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB04A1A15763600CFD014 /* QredoClientId.m */; };
+		0AADB0641A15763600CFD014 /* QredoDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB04C1A15763600CFD014 /* QredoDateTime.m */; };
+		0AADB0651A15763600CFD014 /* QredoHttpTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB04F1A15763600CFD014 /* QredoHttpTransport.m */; };
+		0AADB0661A15763600CFD014 /* QredoMqttTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0511A15763600CFD014 /* QredoMqttTransport.m */; };
+		0AADB0671A15763600CFD014 /* QredoPrimitiveMarshallers.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0531A15763600CFD014 /* QredoPrimitiveMarshallers.m */; };
+		0AADB0681A15763600CFD014 /* QredoQUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0551A15763600CFD014 /* QredoQUID.m */; };
+		0AADB0691A15763600CFD014 /* QredoServiceInvoker.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0571A15763600CFD014 /* QredoServiceInvoker.m */; };
+		0AADB06A1A15763600CFD014 /* QredoSExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB0591A15763600CFD014 /* QredoSExpression.m */; };
+		0AADB06B1A15763600CFD014 /* QredoStreamExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB05B1A15763600CFD014 /* QredoStreamExtensions.m */; };
+		0AADB06C1A15763600CFD014 /* QredoTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB05D1A15763600CFD014 /* QredoTransport.m */; };
+		0AADB06D1A15763600CFD014 /* QredoWireFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AADB05F1A15763600CFD014 /* QredoWireFormat.m */; };
+		0AADB06F1A15764B00CFD014 /* libQredoCommon.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AADAFE91A15759300CFD014 /* libQredoCommon.a */; };
+		0AADB0701A15765500CFD014 /* libLinguaFranca.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AADB02A1A15760700CFD014 /* libLinguaFranca.a */; };
+		0AADB07A1A1576A600CFD014 /* libPahoMqtt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AADB0791A1576A600CFD014 /* libPahoMqtt.a */; };
+		0AADB07C1A157BB200CFD014 /* libQredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libQredoSDK.a */; };
+		0AADB07D1A157BE100CFD014 /* libQredoCrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8FC19C35ABA00639779 /* libQredoCrypto.a */; };
 		0AD6BBF419DD898E000C12A7 /* QredoRendezvousCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6BBF319DD898E000C12A7 /* QredoRendezvousCryptoTest.m */; };
-		DC0784B119C82B940067A51A /* QredoLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0784B019C82B940067A51A /* QredoLogging.m */; };
-		DC72BEEE19EBC9AB00AAF9F0 /* QredoTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = DC72BEED19EBC9AB00AAF9F0 /* QredoTransport.m */; };
-		DC72BEF119EBCAE800AAF9F0 /* QredoHttpTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = DC72BEF019EBCAE800AAF9F0 /* QredoHttpTransport.m */; };
-		DC72BEF619EBDB8100AAF9F0 /* QredoTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = DC72BEED19EBC9AB00AAF9F0 /* QredoTransport.m */; };
-		DC72BEF719EBDB8500AAF9F0 /* QredoHttpTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = DC72BEF019EBCAE800AAF9F0 /* QredoHttpTransport.m */; };
 		DC72BEF919EBDC7000AAF9F0 /* QredoTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC72BEF819EBDC7000AAF9F0 /* QredoTransportTests.m */; };
 		DC72BEFB19EBDC7C00AAF9F0 /* QredoHttpTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC72BEFA19EBDC7C00AAF9F0 /* QredoHttpTransportTests.m */; };
 		DCC14D8019CAD185002A220C /* QredoDerUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC14D7F19CAD185002A220C /* QredoDerUtils.m */; };
@@ -80,8 +80,6 @@
 		DCFFD6BC19DC57960000AB2B /* libtommath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCFFD6BA19DC57960000AB2B /* libtommath.a */; };
 		DCFFD6BF19DD45C80000AB2B /* QredoRsaBlindSignature.c in Sources */ = {isa = PBXBuildFile; fileRef = DCFFD6BD19DD45C80000AB2B /* QredoRsaBlindSignature.c */; };
 		DCFFD6C119DD8B0D0000AB2B /* QredoRsaBlindSignatureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCFFD6C019DD8B0D0000AB2B /* QredoRsaBlindSignatureTests.m */; };
-		DCFFD6C219DD8D060000AB2B /* libtomcrypt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCFFD6B919DC57960000AB2B /* libtomcrypt.a */; };
-		DCFFD6C319DD8D060000AB2B /* libtommath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCFFD6BA19DC57960000AB2B /* libtommath.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -103,6 +101,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0AADAFE71A15759300CFD014 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AADB0281A15760700CFD014 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -110,14 +126,6 @@
 		0A16F89319C3567E00639779 /* QredoVaultSequenceCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultSequenceCache.m; sourceTree = "<group>"; };
 		0A16F89819C3567E00639779 /* QredoVaultCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoVaultCrypto.h; sourceTree = "<group>"; };
 		0A16F89919C3567E00639779 /* QredoVaultCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultCrypto.m; sourceTree = "<group>"; };
-		0A16F8AE19C3567E00639779 /* NSArray+QredoArrayEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+QredoArrayEquality.h"; sourceTree = "<group>"; };
-		0A16F8AF19C3567E00639779 /* NSArray+QredoArrayEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+QredoArrayEquality.m"; sourceTree = "<group>"; };
-		0A16F8B019C3567E00639779 /* NSData+QredoDataEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+QredoDataEquality.h"; sourceTree = "<group>"; };
-		0A16F8B119C3567E00639779 /* NSData+QredoDataEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+QredoDataEquality.m"; sourceTree = "<group>"; };
-		0A16F8B219C3567E00639779 /* NSData+QredoRandomData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+QredoRandomData.h"; sourceTree = "<group>"; };
-		0A16F8B319C3567E00639779 /* NSData+QredoRandomData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+QredoRandomData.m"; sourceTree = "<group>"; };
-		0A16F8B419C3567E00639779 /* NSSet+QredoSetEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+QredoSetEquality.h"; sourceTree = "<group>"; };
-		0A16F8B519C3567E00639779 /* NSSet+QredoSetEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+QredoSetEquality.m"; sourceTree = "<group>"; };
 		0A16F8C019C358B400639779 /* libQredoSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libQredoSDK.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A16F8CB19C358B400639779 /* QredoSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QredoSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A16F8CE19C358B400639779 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -200,13 +208,8 @@
 		0A16F96819C35BA100639779 /* libsodium.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libsodium.a; sourceTree = "<group>"; };
 		0A16F96C19C35D9700639779 /* QredoCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoCrypto.h; sourceTree = "<group>"; };
 		0A16F96D19C35D9700639779 /* QredoCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoCrypto.m; sourceTree = "<group>"; };
-		0A16F97319C3669500639779 /* QredoQUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoQUID.h; sourceTree = "<group>"; };
 		0A16F98A19C6F62200639779 /* QredoRendezvousCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousCrypto.h; sourceTree = "<group>"; };
 		0A16F98B19C6F62200639779 /* QredoRendezvousCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousCrypto.m; sourceTree = "<group>"; };
-		0A16F98C19C6F62200639779 /* QredoRendezvousStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousStorage.h; sourceTree = "<group>"; };
-		0A16F98D19C6F62200639779 /* QredoRendezvousStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousStorage.m; sourceTree = "<group>"; };
-		0A16F9EA19C9CC6A00639779 /* NSData+Conversion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Conversion.h"; sourceTree = "<group>"; };
-		0A16F9EC19C9CC9500639779 /* NSData+Conversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Conversion.m"; sourceTree = "<group>"; };
 		0A314D8819D2DB0C0064387E /* rsapss.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rsapss.h; sourceTree = "<group>"; };
 		0A314D8919D2DD560064387E /* rsapss.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsapss.c; sourceTree = "<group>"; };
 		0A40636C1A0D3A7B00A9CD91 /* HighwatermarksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighwatermarksTests.m; sourceTree = "<group>"; };
@@ -216,7 +219,6 @@
 		0A85E6E919FAB2EE00775115 /* QredoPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoPrivate.h; sourceTree = "<group>"; };
 		0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversation.m; sourceTree = "<group>"; };
 		0A8F5C5419FE911B0068C8D8 /* QredoConversationPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoConversationPrivate.h; sourceTree = "<group>"; };
-		0A8F5C5519FE91DB0068C8D8 /* QredoRendezvousPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousPrivate.h; sourceTree = "<group>"; };
 		0A8F5C5619FFEB450068C8D8 /* QredoRendezvousTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousTests.m; sourceTree = "<group>"; };
 		0A8F5C591A0029BD0068C8D8 /* RendezvousListenerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RendezvousListenerTests.m; sourceTree = "<group>"; };
 		0A8F5C5B1A002F0A0068C8D8 /* ConversationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationTests.m; sourceTree = "<group>"; };
@@ -229,18 +231,61 @@
 		0AA03C8719E2B1FD00F2CF43 /* Qredo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Qredo.h; sourceTree = "<group>"; };
 		0AA03C8819E2E6CF00F2CF43 /* Qredo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Qredo.m; sourceTree = "<group>"; };
 		0AA03D4619E451D500F2CF43 /* QredoPSSTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoPSSTests.m; sourceTree = "<group>"; };
-		0AA0CAD419D9B5850025DD4D /* NSDictionary+IndexableSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+IndexableSet.h"; sourceTree = "<group>"; };
-		0AA0CAD519D9B5850025DD4D /* NSDictionary+IndexableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+IndexableSet.m"; sourceTree = "<group>"; };
 		0AA0CAD719D9B92B0025DD4D /* QredoConversationCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoConversationCrypto.h; sourceTree = "<group>"; };
 		0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversationCrypto.m; sourceTree = "<group>"; };
+		0AADAFE91A15759300CFD014 /* libQredoCommon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libQredoCommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AADB0011A1575CA00CFD014 /* NSArray+QredoArrayEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+QredoArrayEquality.h"; sourceTree = "<group>"; };
+		0AADB0021A1575CA00CFD014 /* NSArray+QredoArrayEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+QredoArrayEquality.m"; sourceTree = "<group>"; };
+		0AADB0031A1575CA00CFD014 /* NSData+Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Conversion.h"; sourceTree = "<group>"; };
+		0AADB0041A1575CA00CFD014 /* NSData+Conversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Conversion.m"; sourceTree = "<group>"; };
+		0AADB0051A1575CA00CFD014 /* NSData+QredoDataEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+QredoDataEquality.h"; sourceTree = "<group>"; };
+		0AADB0061A1575CA00CFD014 /* NSData+QredoDataEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+QredoDataEquality.m"; sourceTree = "<group>"; };
+		0AADB0071A1575CA00CFD014 /* NSData+QredoRandomData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+QredoRandomData.h"; sourceTree = "<group>"; };
+		0AADB0081A1575CA00CFD014 /* NSData+QredoRandomData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+QredoRandomData.m"; sourceTree = "<group>"; };
+		0AADB0091A1575CA00CFD014 /* NSSet+QredoSetEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+QredoSetEquality.h"; sourceTree = "<group>"; };
+		0AADB00A1A1575CA00CFD014 /* NSSet+QredoSetEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+QredoSetEquality.m"; sourceTree = "<group>"; };
+		0AADB0151A1575CA00CFD014 /* QredoErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoErrorCodes.h; sourceTree = "<group>"; };
+		0AADB0161A1575CA00CFD014 /* QredoErrorCodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoErrorCodes.m; sourceTree = "<group>"; };
+		0AADB0171A1575CA00CFD014 /* QredoLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoLogging.h; sourceTree = "<group>"; };
+		0AADB0181A1575CA00CFD014 /* QredoLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoLogging.m; sourceTree = "<group>"; };
+		0AADB02A1A15760700CFD014 /* libLinguaFranca.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLinguaFranca.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AADB0421A15763600CFD014 /* QredoClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoClient.h; sourceTree = "<group>"; };
+		0AADB0431A15763600CFD014 /* QredoClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClient.m; sourceTree = "<group>"; };
+		0AADB0441A15763600CFD014 /* QredoClientMarshallers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoClientMarshallers.h; sourceTree = "<group>"; };
+		0AADB0451A15763600CFD014 /* QredoClientMarshallers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClientMarshallers.m; sourceTree = "<group>"; };
+		0AADB0471A15763600CFD014 /* NSDictionary+IndexableSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+IndexableSet.h"; sourceTree = "<group>"; };
+		0AADB0481A15763600CFD014 /* NSDictionary+IndexableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+IndexableSet.m"; sourceTree = "<group>"; };
+		0AADB0491A15763600CFD014 /* QredoClientId.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoClientId.h; sourceTree = "<group>"; };
+		0AADB04A1A15763600CFD014 /* QredoClientId.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClientId.m; sourceTree = "<group>"; };
+		0AADB04B1A15763600CFD014 /* QredoDateTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoDateTime.h; sourceTree = "<group>"; };
+		0AADB04C1A15763600CFD014 /* QredoDateTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoDateTime.m; sourceTree = "<group>"; };
+		0AADB04D1A15763600CFD014 /* QredoHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoHelpers.h; sourceTree = "<group>"; };
+		0AADB04E1A15763600CFD014 /* QredoHttpTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoHttpTransport.h; sourceTree = "<group>"; };
+		0AADB04F1A15763600CFD014 /* QredoHttpTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoHttpTransport.m; sourceTree = "<group>"; };
+		0AADB0501A15763600CFD014 /* QredoMqttTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoMqttTransport.h; sourceTree = "<group>"; };
+		0AADB0511A15763600CFD014 /* QredoMqttTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoMqttTransport.m; sourceTree = "<group>"; };
+		0AADB0521A15763600CFD014 /* QredoPrimitiveMarshallers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoPrimitiveMarshallers.h; sourceTree = "<group>"; };
+		0AADB0531A15763600CFD014 /* QredoPrimitiveMarshallers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoPrimitiveMarshallers.m; sourceTree = "<group>"; };
+		0AADB0541A15763600CFD014 /* QredoQUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoQUID.h; sourceTree = "<group>"; };
+		0AADB0551A15763600CFD014 /* QredoQUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoQUID.m; sourceTree = "<group>"; };
+		0AADB0561A15763600CFD014 /* QredoServiceInvoker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoServiceInvoker.h; sourceTree = "<group>"; };
+		0AADB0571A15763600CFD014 /* QredoServiceInvoker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoServiceInvoker.m; sourceTree = "<group>"; };
+		0AADB0581A15763600CFD014 /* QredoSExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoSExpression.h; sourceTree = "<group>"; };
+		0AADB0591A15763600CFD014 /* QredoSExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoSExpression.m; sourceTree = "<group>"; };
+		0AADB05A1A15763600CFD014 /* QredoStreamExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoStreamExtensions.h; sourceTree = "<group>"; };
+		0AADB05B1A15763600CFD014 /* QredoStreamExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoStreamExtensions.m; sourceTree = "<group>"; };
+		0AADB05C1A15763600CFD014 /* QredoTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoTransport.h; sourceTree = "<group>"; };
+		0AADB05D1A15763600CFD014 /* QredoTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoTransport.m; sourceTree = "<group>"; };
+		0AADB05E1A15763600CFD014 /* QredoWireFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoWireFormat.h; sourceTree = "<group>"; };
+		0AADB05F1A15763600CFD014 /* QredoWireFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoWireFormat.m; sourceTree = "<group>"; };
+		0AADB0741A1576A600CFD014 /* MQTTDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTDecoder.h; sourceTree = "<group>"; };
+		0AADB0751A1576A600CFD014 /* MQTTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTEncoder.h; sourceTree = "<group>"; };
+		0AADB0761A1576A600CFD014 /* MQTTMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTMessage.h; sourceTree = "<group>"; };
+		0AADB0771A1576A600CFD014 /* MQTTSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTSession.h; sourceTree = "<group>"; };
+		0AADB0781A1576A600CFD014 /* MQttTxFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQttTxFlow.h; sourceTree = "<group>"; };
+		0AADB0791A1576A600CFD014 /* libPahoMqtt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPahoMqtt.a; sourceTree = "<group>"; };
 		0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRendezvous.h; sourceTree = "<group>"; };
 		0AD6BBF319DD898E000C12A7 /* QredoRendezvousCryptoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousCryptoTest.m; sourceTree = "<group>"; };
-		DC0784AF19C82B940067A51A /* QredoLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoLogging.h; sourceTree = "<group>"; };
-		DC0784B019C82B940067A51A /* QredoLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoLogging.m; sourceTree = "<group>"; };
-		DC72BEEC19EBC9AB00AAF9F0 /* QredoTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoTransport.h; sourceTree = "<group>"; };
-		DC72BEED19EBC9AB00AAF9F0 /* QredoTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoTransport.m; sourceTree = "<group>"; };
-		DC72BEEF19EBCAE800AAF9F0 /* QredoHttpTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoHttpTransport.h; sourceTree = "<group>"; };
-		DC72BEF019EBCAE800AAF9F0 /* QredoHttpTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoHttpTransport.m; sourceTree = "<group>"; };
 		DC72BEF819EBDC7000AAF9F0 /* QredoTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoTransportTests.m; sourceTree = "<group>"; };
 		DC72BEFA19EBDC7C00AAF9F0 /* QredoHttpTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoHttpTransportTests.m; sourceTree = "<group>"; };
 		DCC14D7F19CAD185002A220C /* QredoDerUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoDerUtils.m; sourceTree = "<group>"; };
@@ -286,7 +331,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A16F92D19C35B1800639779 /* libQredoCrypto.a in Frameworks */,
+				0AADB0701A15765500CFD014 /* libLinguaFranca.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,7 +339,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A16F92E19C35B2300639779 /* libQredoCrypto.a in Frameworks */,
+				0AADB07C1A157BB200CFD014 /* libQredoSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +347,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0AADB06F1A15764B00CFD014 /* libQredoCommon.a in Frameworks */,
 				DCFFD6BC19DC57960000AB2B /* libtommath.a in Frameworks */,
 				0A16F96919C35BA100639779 /* libsodium.a in Frameworks */,
 				DCFFD6BB19DC57960000AB2B /* libtomcrypt.a in Frameworks */,
@@ -312,10 +358,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCFFD6C219DD8D060000AB2B /* libtomcrypt.a in Frameworks */,
-				DCFFD6C319DD8D060000AB2B /* libtommath.a in Frameworks */,
 				0A16F97019C3605B00639779 /* libQredoCrypto.a in Frameworks */,
-				0A16F96A19C35BA100639779 /* libsodium.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AADAFE61A15759300CFD014 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AADB0271A15760700CFD014 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0AADB07D1A157BE100CFD014 /* libQredoCrypto.a in Frameworks */,
+				0AADB07A1A1576A600CFD014 /* libPahoMqtt.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,8 +384,7 @@
 		0A16F88619C3566B00639779 = {
 			isa = PBXGroup;
 			children = (
-				0A16F8F619C35A7000639779 /* QredoCrypto */,
-				0A16F8F519C35A4000639779 /* QredoCryptoTests */,
+				0AADB0251A1575E000CFD014 /* LinguaFranca */,
 				0A16F8BB19C3567E00639779 /* QredoSDK */,
 				0A16F8CC19C358B400639779 /* QredoSDKTests */,
 				0A16F8C119C358B400639779 /* Products */,
@@ -344,40 +402,15 @@
 			path = Vault;
 			sourceTree = "<group>";
 		};
-		0A16F8BA19C3567E00639779 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				0A16F8AE19C3567E00639779 /* NSArray+QredoArrayEquality.h */,
-				0A16F8AF19C3567E00639779 /* NSArray+QredoArrayEquality.m */,
-				0A16F8B019C3567E00639779 /* NSData+QredoDataEquality.h */,
-				0A16F8B119C3567E00639779 /* NSData+QredoDataEquality.m */,
-				0A16F8B219C3567E00639779 /* NSData+QredoRandomData.h */,
-				0A16F8B319C3567E00639779 /* NSData+QredoRandomData.m */,
-				0A16F8B419C3567E00639779 /* NSSet+QredoSetEquality.h */,
-				0A16F8B519C3567E00639779 /* NSSet+QredoSetEquality.m */,
-				0A16F9EA19C9CC6A00639779 /* NSData+Conversion.h */,
-				0A16F9EC19C9CC9500639779 /* NSData+Conversion.m */,
-				0AA0CAD419D9B5850025DD4D /* NSDictionary+IndexableSet.h */,
-				0AA0CAD519D9B5850025DD4D /* NSDictionary+IndexableSet.m */,
-			);
-			path = Categories;
-			sourceTree = "<group>";
-		};
 		0A16F8BB19C3567E00639779 /* QredoSDK */ = {
 			isa = PBXGroup;
 			children = (
 				0A9DDE0419ED588C00B4248C /* include */,
 				0A9DDE0319ED57FE00B4248C /* Internal */,
-				0A16F8BA19C3567E00639779 /* Categories */,
 				0A85E6E919FAB2EE00775115 /* QredoPrivate.h */,
 				0AA03C8819E2E6CF00F2CF43 /* Qredo.m */,
 				0A9DDDFC19ED374500B4248C /* QredoVaultPrivate.h */,
 				0A9DDDFD19ED3A1500B4248C /* QredoVault.m */,
-				DC72BEEC19EBC9AB00AAF9F0 /* QredoTransport.h */,
-				DC72BEED19EBC9AB00AAF9F0 /* QredoTransport.m */,
-				DC72BEEF19EBCAE800AAF9F0 /* QredoHttpTransport.h */,
-				DC72BEF019EBCAE800AAF9F0 /* QredoHttpTransport.m */,
-				0A8F5C5519FE91DB0068C8D8 /* QredoRendezvousPrivate.h */,
 				0A85E6E619FAA95200775115 /* QredoRendezvous.m */,
 				0A8F5C5419FE911B0068C8D8 /* QredoConversationPrivate.h */,
 				0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */,
@@ -392,6 +425,8 @@
 				0A16F8CB19C358B400639779 /* QredoSDKTests.xctest */,
 				0A16F8FC19C35ABA00639779 /* libQredoCrypto.a */,
 				0A16F90619C35ABA00639779 /* QredoCryptoTests.xctest */,
+				0AADAFE91A15759300CFD014 /* libQredoCommon.a */,
+				0AADB02A1A15760700CFD014 /* libLinguaFranca.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -434,7 +469,8 @@
 				DCFFD6C019DD8B0D0000AB2B /* QredoRsaBlindSignatureTests.m */,
 				0AA03D4619E451D500F2CF43 /* QredoPSSTests.m */,
 			);
-			path = QredoCryptoTests;
+			name = QredoCryptoTests;
+			path = "../LinguaFranca/objc-wire-format/CryptoTests";
 			sourceTree = "<group>";
 		};
 		0A16F8F619C35A7000639779 /* QredoCrypto */ = {
@@ -443,8 +479,6 @@
 				DCFFD6A619DC57960000AB2B /* libtomcrypt */,
 				0A16F93019C35BA100639779 /* libsodium-ios */,
 				DCC14D9219CAEA98002A220C /* Keys */,
-				DC0784AF19C82B940067A51A /* QredoLogging.h */,
-				DC0784B019C82B940067A51A /* QredoLogging.m */,
 				0A16F96C19C35D9700639779 /* QredoCrypto.h */,
 				0A16F96D19C35D9700639779 /* QredoCrypto.m */,
 				0A16F91019C35AE600639779 /* CryptoImpl.h */,
@@ -459,7 +493,8 @@
 				DCFFD6BE19DD45C80000AB2B /* QredoRsaBlindSignature.h */,
 				DCFFD6BD19DD45C80000AB2B /* QredoRsaBlindSignature.c */,
 			);
-			path = QredoCrypto;
+			name = QredoCrypto;
+			path = "../LinguaFranca/objc-wire-format/Crypto";
 			sourceTree = "<group>";
 		};
 		0A16F90819C35ABA00639779 /* Supporting Files */ = {
@@ -477,7 +512,7 @@
 				0A16F96819C35BA100639779 /* libsodium.a */,
 			);
 			name = "libsodium-ios";
-			path = "../../external/libsodium-ios";
+			path = "../external/libsodium-ios";
 			sourceTree = "<group>";
 		};
 		0A16F93119C35BA100639779 /* include */ = {
@@ -553,8 +588,6 @@
 			children = (
 				0A16F98A19C6F62200639779 /* QredoRendezvousCrypto.h */,
 				0A16F98B19C6F62200639779 /* QredoRendezvousCrypto.m */,
-				0A16F98C19C6F62200639779 /* QredoRendezvousStorage.h */,
-				0A16F98D19C6F62200639779 /* QredoRendezvousStorage.m */,
 				0AA0CAD719D9B92B0025DD4D /* QredoConversationCrypto.h */,
 				0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */,
 			);
@@ -573,7 +606,6 @@
 		0A9DDE0419ED588C00B4248C /* include */ = {
 			isa = PBXGroup;
 			children = (
-				0A16F97319C3669500639779 /* QredoQUID.h */,
 				0AA03C8719E2B1FD00F2CF43 /* Qredo.h */,
 				0A9DDDFB19EC2F8F00B4248C /* QredoTypes.h */,
 				0A9DDDF919EC2ED800B4248C /* QredoVault.h */,
@@ -582,6 +614,131 @@
 				0A7F350C1A07CFC700B9BF3C /* QredoErrorCodes.h */,
 			);
 			path = include;
+			sourceTree = "<group>";
+		};
+		0AADAFEA1A15759300CFD014 /* QredoCommon */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB0001A1575CA00CFD014 /* Categories */,
+				0AADB0151A1575CA00CFD014 /* QredoErrorCodes.h */,
+				0AADB0161A1575CA00CFD014 /* QredoErrorCodes.m */,
+				0AADB0171A1575CA00CFD014 /* QredoLogging.h */,
+				0AADB0181A1575CA00CFD014 /* QredoLogging.m */,
+			);
+			name = QredoCommon;
+			path = "../LinguaFranca/objc-wire-format/Common";
+			sourceTree = "<group>";
+		};
+		0AADB0001A1575CA00CFD014 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB0011A1575CA00CFD014 /* NSArray+QredoArrayEquality.h */,
+				0AADB0021A1575CA00CFD014 /* NSArray+QredoArrayEquality.m */,
+				0AADB0031A1575CA00CFD014 /* NSData+Conversion.h */,
+				0AADB0041A1575CA00CFD014 /* NSData+Conversion.m */,
+				0AADB0051A1575CA00CFD014 /* NSData+QredoDataEquality.h */,
+				0AADB0061A1575CA00CFD014 /* NSData+QredoDataEquality.m */,
+				0AADB0071A1575CA00CFD014 /* NSData+QredoRandomData.h */,
+				0AADB0081A1575CA00CFD014 /* NSData+QredoRandomData.m */,
+				0AADB0091A1575CA00CFD014 /* NSSet+QredoSetEquality.h */,
+				0AADB00A1A1575CA00CFD014 /* NSSet+QredoSetEquality.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		0AADB0251A1575E000CFD014 /* LinguaFranca */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB02B1A15760800CFD014 /* LinguaFranca */,
+				0AADAFEA1A15759300CFD014 /* QredoCommon */,
+				0A16F8F619C35A7000639779 /* QredoCrypto */,
+				0A16F8F519C35A4000639779 /* QredoCryptoTests */,
+			);
+			name = LinguaFranca;
+			sourceTree = "<group>";
+		};
+		0AADB02B1A15760800CFD014 /* LinguaFranca */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB0711A1576A600CFD014 /* libPahoMqtt */,
+				0AADB0411A15763600CFD014 /* Autogenerated */,
+				0AADB0461A15763600CFD014 /* Categories */,
+				0AADB0491A15763600CFD014 /* QredoClientId.h */,
+				0AADB04A1A15763600CFD014 /* QredoClientId.m */,
+				0AADB04B1A15763600CFD014 /* QredoDateTime.h */,
+				0AADB04C1A15763600CFD014 /* QredoDateTime.m */,
+				0AADB04D1A15763600CFD014 /* QredoHelpers.h */,
+				0AADB04E1A15763600CFD014 /* QredoHttpTransport.h */,
+				0AADB04F1A15763600CFD014 /* QredoHttpTransport.m */,
+				0AADB0501A15763600CFD014 /* QredoMqttTransport.h */,
+				0AADB0511A15763600CFD014 /* QredoMqttTransport.m */,
+				0AADB0521A15763600CFD014 /* QredoPrimitiveMarshallers.h */,
+				0AADB0531A15763600CFD014 /* QredoPrimitiveMarshallers.m */,
+				0AADB0541A15763600CFD014 /* QredoQUID.h */,
+				0AADB0551A15763600CFD014 /* QredoQUID.m */,
+				0AADB0561A15763600CFD014 /* QredoServiceInvoker.h */,
+				0AADB0571A15763600CFD014 /* QredoServiceInvoker.m */,
+				0AADB0581A15763600CFD014 /* QredoSExpression.h */,
+				0AADB0591A15763600CFD014 /* QredoSExpression.m */,
+				0AADB05A1A15763600CFD014 /* QredoStreamExtensions.h */,
+				0AADB05B1A15763600CFD014 /* QredoStreamExtensions.m */,
+				0AADB05C1A15763600CFD014 /* QredoTransport.h */,
+				0AADB05D1A15763600CFD014 /* QredoTransport.m */,
+				0AADB05E1A15763600CFD014 /* QredoWireFormat.h */,
+				0AADB05F1A15763600CFD014 /* QredoWireFormat.m */,
+			);
+			name = LinguaFranca;
+			path = "../LinguaFranca/objc-wire-format/LinguaFranca";
+			sourceTree = "<group>";
+		};
+		0AADB0411A15763600CFD014 /* Autogenerated */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB0421A15763600CFD014 /* QredoClient.h */,
+				0AADB0431A15763600CFD014 /* QredoClient.m */,
+				0AADB0441A15763600CFD014 /* QredoClientMarshallers.h */,
+				0AADB0451A15763600CFD014 /* QredoClientMarshallers.m */,
+			);
+			path = Autogenerated;
+			sourceTree = "<group>";
+		};
+		0AADB0461A15763600CFD014 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB0471A15763600CFD014 /* NSDictionary+IndexableSet.h */,
+				0AADB0481A15763600CFD014 /* NSDictionary+IndexableSet.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		0AADB0711A1576A600CFD014 /* libPahoMqtt */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB0721A1576A600CFD014 /* include */,
+				0AADB0791A1576A600CFD014 /* libPahoMqtt.a */,
+			);
+			name = libPahoMqtt;
+			path = ../external/libPahoMqtt;
+			sourceTree = "<group>";
+		};
+		0AADB0721A1576A600CFD014 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB0731A1576A600CFD014 /* PahoMqtt */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		0AADB0731A1576A600CFD014 /* PahoMqtt */ = {
+			isa = PBXGroup;
+			children = (
+				0AADB0741A1576A600CFD014 /* MQTTDecoder.h */,
+				0AADB0751A1576A600CFD014 /* MQTTEncoder.h */,
+				0AADB0761A1576A600CFD014 /* MQTTMessage.h */,
+				0AADB0771A1576A600CFD014 /* MQTTSession.h */,
+				0AADB0781A1576A600CFD014 /* MQttTxFlow.h */,
+			);
+			path = PahoMqtt;
 			sourceTree = "<group>";
 		};
 		DCC14D9219CAEA98002A220C /* Keys */ = {
@@ -644,7 +801,7 @@
 				DCFFD6BA19DC57960000AB2B /* libtommath.a */,
 			);
 			name = libtomcrypt;
-			path = ../../external/libtomcrypt;
+			path = ../external/libtomcrypt;
 			sourceTree = "<group>";
 		};
 		DCFFD6A719DC57960000AB2B /* include */ = {
@@ -743,6 +900,40 @@
 			productReference = 0A16F90619C35ABA00639779 /* QredoCryptoTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		0AADAFE81A15759300CFD014 /* QredoCommon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0AADAFFA1A15759300CFD014 /* Build configuration list for PBXNativeTarget "QredoCommon" */;
+			buildPhases = (
+				0AADAFE51A15759300CFD014 /* Sources */,
+				0AADAFE61A15759300CFD014 /* Frameworks */,
+				0AADAFE71A15759300CFD014 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QredoCommon;
+			productName = QredoCommon;
+			productReference = 0AADAFE91A15759300CFD014 /* libQredoCommon.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		0AADB0291A15760700CFD014 /* LinguaFranca */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0AADB03B1A15760800CFD014 /* Build configuration list for PBXNativeTarget "LinguaFranca" */;
+			buildPhases = (
+				0AADB0261A15760700CFD014 /* Sources */,
+				0AADB0271A15760700CFD014 /* Frameworks */,
+				0AADB0281A15760700CFD014 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LinguaFranca;
+			productName = LinguaFranca;
+			productReference = 0AADB02A1A15760700CFD014 /* libLinguaFranca.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -763,9 +954,15 @@
 					0A16F90519C35ABA00639779 = {
 						CreatedOnToolsVersion = 6.0;
 					};
+					0AADAFE81A15759300CFD014 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+					0AADB0291A15760700CFD014 = {
+						CreatedOnToolsVersion = 6.1;
+					};
 				};
 			};
-			buildConfigurationList = 0A16F88A19C3566B00639779 /* Build configuration list for PBXProject "QredoSDK" */;
+			buildConfigurationList = 0A16F88A19C3566B00639779 /* Build configuration list for PBXProject "QredoSDK_nopods" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -781,6 +978,8 @@
 				0A16F8CA19C358B400639779 /* QredoSDKTests */,
 				0A16F8FB19C35ABA00639779 /* QredoCrypto */,
 				0A16F90519C35ABA00639779 /* QredoCryptoTests */,
+				0AADAFE81A15759300CFD014 /* QredoCommon */,
+				0AADB0291A15760700CFD014 /* LinguaFranca */,
 			);
 		};
 /* End PBXProject section */
@@ -827,14 +1026,9 @@
 				0A8F5C5319FE90E60068C8D8 /* QredoConversation.m in Sources */,
 				0A16F8DE19C3591700639779 /* QredoVaultCrypto.m in Sources */,
 				0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */,
-				0AA0CAD619D9B5850025DD4D /* NSDictionary+IndexableSet.m in Sources */,
 				0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */,
-				0A16F8E919C3592F00639779 /* NSData+QredoRandomData.m in Sources */,
-				0A16F9ED19C9CC9500639779 /* NSData+Conversion.m in Sources */,
 				0A16F8DA19C3590700639779 /* QredoVaultSequenceCache.m in Sources */,
-				DC72BEEE19EBC9AB00AAF9F0 /* QredoTransport.m in Sources */,
 				0AA03C8919E2E6CF00F2CF43 /* Qredo.m in Sources */,
-				DC72BEF119EBCAE800AAF9F0 /* QredoHttpTransport.m in Sources */,
 				0A16F99019C6F62200639779 /* QredoRendezvousCrypto.m in Sources */,
 				0AA0CAD919D9B92B0025DD4D /* QredoConversationCrypto.m in Sources */,
 			);
@@ -844,28 +1038,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A16F97719C3673E00639779 /* QredoVaultSequenceCache.m in Sources */,
-				0A8F5C5819FFEC870068C8D8 /* QredoConversation.m in Sources */,
 				0A40636D1A0D3A7B00A9CD91 /* HighwatermarksTests.m in Sources */,
-				DC72BEF719EBDB8500AAF9F0 /* QredoHttpTransport.m in Sources */,
 				0A9DDE0619ED799600B4248C /* QredoVaultTests.m in Sources */,
-				0A16F98519C3673E00639779 /* NSData+QredoRandomData.m in Sources */,
 				DC72BEF919EBDC7000AAF9F0 /* QredoTransportTests.m in Sources */,
-				0A16F9EE19C9CC9500639779 /* NSData+Conversion.m in Sources */,
-				0A16F97919C3673E00639779 /* QredoVaultCrypto.m in Sources */,
-				0A85E6E819FAA95200775115 /* QredoRendezvous.m in Sources */,
 				0A8F5C5A1A0029BD0068C8D8 /* RendezvousListenerTests.m in Sources */,
-				0A16F99119C6F62200639779 /* QredoRendezvousCrypto.m in Sources */,
-				0AA0CADA19D9B92B0025DD4D /* QredoConversationCrypto.m in Sources */,
 				0AD6BBF419DD898E000C12A7 /* QredoRendezvousCryptoTest.m in Sources */,
 				DC72BEFB19EBDC7C00AAF9F0 /* QredoHttpTransportTests.m in Sources */,
-				0AA0CADB19DB01120025DD4D /* NSDictionary+IndexableSet.m in Sources */,
 				0A16F8D719C358F300639779 /* QredoSExpressionTests.m in Sources */,
 				0A8F5C5C1A002F0A0068C8D8 /* ConversationTests.m in Sources */,
-				0A9DDE0819ED7B2200B4248C /* QredoVault.m in Sources */,
-				DC72BEF619EBDB8100AAF9F0 /* QredoTransport.m in Sources */,
 				0A16F8D819C358F300639779 /* QredoWireFormatTests.m in Sources */,
-				0A9DDE0719ED7B2200B4248C /* Qredo.m in Sources */,
 				0A8F5C5719FFEB450068C8D8 /* QredoRendezvousTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -880,7 +1061,6 @@
 				0A16F91E19C35AE600639779 /* QredoEllipticCurvePoint.m in Sources */,
 				DCC14D8719CADA71002A220C /* QredoDhPublicKey.m in Sources */,
 				0A16F92019C35AE600639779 /* QredoKeyPair.m in Sources */,
-				DC0784B119C82B940067A51A /* QredoLogging.m in Sources */,
 				DCC14D9119CADAE0002A220C /* QredoRsaPublicKey.m in Sources */,
 				DCC14D8019CAD185002A220C /* QredoDerUtils.m in Sources */,
 				0A16F91D19C35AE600639779 /* CryptoImplV1.m in Sources */,
@@ -898,19 +1078,50 @@
 			files = (
 				0A16F92C19C35AF200639779 /* QredoKeyTests.m in Sources */,
 				0A16F92A19C35AF200639779 /* QredoEllipticCurvePointTests.m in Sources */,
-				0A16F96F19C35D9700639779 /* QredoCrypto.m in Sources */,
 				0A16F92B19C35AF200639779 /* QredoKeyPairTests.m in Sources */,
 				DCC14D9919CC3AAB002A220C /* QredoRsaPrivateKeyTests.m in Sources */,
-				0A314D8B19D2DD560064387E /* rsapss.c in Sources */,
-				0A16F97119C361F300639779 /* NSData+QredoRandomData.m in Sources */,
 				0A16F92919C35AF200639779 /* QredoCryptoTests.m in Sources */,
 				DCFFD6C119DD8B0D0000AB2B /* QredoRsaBlindSignatureTests.m in Sources */,
 				0AA03D4719E451D500F2CF43 /* QredoPSSTests.m in Sources */,
 				DCC14D8219CAD7B8002A220C /* QredoDhPublicKeyTests.m in Sources */,
-				0AA03D4819E4536C00F2CF43 /* NSData+Conversion.m in Sources */,
 				DCC14D9719CB2D93002A220C /* QredoRsaPublicKeyTests.m in Sources */,
 				DCC14D8419CAD83A002A220C /* QredoDhPrivateKeyTests.m in Sources */,
 				0A16F92819C35AF200639779 /* CryptoImplV1Tests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AADAFE51A15759300CFD014 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0AADB01A1A1575CA00CFD014 /* NSData+Conversion.m in Sources */,
+				0AADB0191A1575CA00CFD014 /* NSArray+QredoArrayEquality.m in Sources */,
+				0AADB0241A1575CA00CFD014 /* QredoLogging.m in Sources */,
+				0AADB0231A1575CA00CFD014 /* QredoErrorCodes.m in Sources */,
+				0AADB01B1A1575CA00CFD014 /* NSData+QredoDataEquality.m in Sources */,
+				0AADB01C1A1575CA00CFD014 /* NSData+QredoRandomData.m in Sources */,
+				0AADB01D1A1575CA00CFD014 /* NSSet+QredoSetEquality.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AADB0261A15760700CFD014 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0AADB0691A15763600CFD014 /* QredoServiceInvoker.m in Sources */,
+				0AADB0671A15763600CFD014 /* QredoPrimitiveMarshallers.m in Sources */,
+				0AADB0681A15763600CFD014 /* QredoQUID.m in Sources */,
+				0AADB0601A15763600CFD014 /* QredoClient.m in Sources */,
+				0AADB0641A15763600CFD014 /* QredoDateTime.m in Sources */,
+				0AADB0631A15763600CFD014 /* QredoClientId.m in Sources */,
+				0AADB0611A15763600CFD014 /* QredoClientMarshallers.m in Sources */,
+				0AADB06A1A15763600CFD014 /* QredoSExpression.m in Sources */,
+				0AADB0621A15763600CFD014 /* NSDictionary+IndexableSet.m in Sources */,
+				0AADB06C1A15763600CFD014 /* QredoTransport.m in Sources */,
+				0AADB06B1A15763600CFD014 /* QredoStreamExtensions.m in Sources */,
+				0AADB0651A15763600CFD014 /* QredoHttpTransport.m in Sources */,
+				0AADB0661A15763600CFD014 /* QredoMqttTransport.m in Sources */,
+				0AADB06D1A15763600CFD014 /* QredoWireFormat.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1062,6 +1273,12 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 			};
@@ -1102,6 +1319,12 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -1145,13 +1368,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(PROJECT_DIR)/../external/libtomcrypt/include",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libtomcrypt/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../external/libtomcrypt",
-					"$(PROJECT_DIR)/../external/libsodium-ios",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libtomcrypt",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libsodium-ios",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1162,7 +1385,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../external/libsodium-ios/include";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libsodium-ios/include";
 			};
 			name = Debug;
 		};
@@ -1197,13 +1420,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(PROJECT_DIR)/../external/libtomcrypt/include",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libtomcrypt/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../external/libtomcrypt",
-					"$(PROJECT_DIR)/../external/libsodium-ios",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libtomcrypt",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libsodium-ios",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = (
@@ -1213,7 +1436,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../external/libsodium-ios/include";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libsodium-ios/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1221,7 +1444,7 @@
 		0A16F90E19C35ABA00639779 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1258,27 +1481,33 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(PROJECT_DIR)/../external/libtomcrypt/include",
 				);
-				INFOPLIST_FILE = QredoCryptoTests/Info.plist;
+				INFOPLIST_FILE = "../LinguaFranca/objc-wire-format/CryptoTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../external/libtomcrypt",
-					"$(PROJECT_DIR)/../external/libsodium-ios",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libtomcrypt",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libsodium-ios",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libtomcrypt/include";
 			};
 			name = Debug;
 		};
 		0A16F90F19C35ABA00639779 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -1309,19 +1538,201 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(PROJECT_DIR)/../external/libtomcrypt/include",
 				);
-				INFOPLIST_FILE = QredoCryptoTests/Info.plist;
+				INFOPLIST_FILE = "../LinguaFranca/objc-wire-format/CryptoTests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/../external/libtomcrypt",
-					"$(PROJECT_DIR)/../external/libsodium-ios",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libtomcrypt",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libsodium-ios",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-all_load",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libtomcrypt/include";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		0AADAFFB1A15759300CFD014 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		0AADAFFC1A15759300CFD014 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		0AADB03C1A15760800CFD014 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libPahoMqtt",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libPahoMqtt/include";
+			};
+			name = Debug;
+		};
+		0AADB03D1A15760800CFD014 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libPahoMqtt",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../LinguaFranca/objc-wire-format/external/libPahoMqtt/include";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1329,7 +1740,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0A16F88A19C3566B00639779 /* Build configuration list for PBXProject "QredoSDK" */ = {
+		0A16F88A19C3566B00639779 /* Build configuration list for PBXProject "QredoSDK_nopods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0A16F88B19C3566B00639779 /* Debug */,
@@ -1373,6 +1784,22 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		0AADAFFA1A15759300CFD014 /* Build configuration list for PBXNativeTarget "QredoCommon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0AADAFFB1A15759300CFD014 /* Debug */,
+				0AADAFFC1A15759300CFD014 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		0AADB03B1A15760800CFD014 /* Build configuration list for PBXNativeTarget "LinguaFranca" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0AADB03C1A15760800CFD014 /* Debug */,
+				0AADB03D1A15760800CFD014 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B1FDCE96-52EF-46A8-B524-4184D6132714</string>
+	<key>IDESourceControlProjectName</key>
+	<string>QredoSDK_nopods</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C2F7474132072213D362DB5165B29B6BCEF95490</key>
+		<string>ssh://Dmitrys-MacBook-Pro.local/git/LingaFranca.git</string>
+		<key>CC0F03DF443E1DA241D00129999DA9AF19714E81</key>
+		<string>ssh://Dmitrys-MacBook-Pro.local/git/qredo_ios_sdk.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>QredoSDK_nopods.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C2F7474132072213D362DB5165B29B6BCEF95490</key>
+		<string>../../../LinguaFranca</string>
+		<key>CC0F03DF443E1DA241D00129999DA9AF19714E81</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://Dmitrys-MacBook-Pro.local/git/qredo_ios_sdk.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>CC0F03DF443E1DA241D00129999DA9AF19714E81</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C2F7474132072213D362DB5165B29B6BCEF95490</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LinguaFranca</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CC0F03DF443E1DA241D00129999DA9AF19714E81</string>
+			<key>IDESourceControlWCCName</key>
+			<string>qredo_ios_sdk</string>
+		</dict>
+	</array>
+</dict>
+</plist>
