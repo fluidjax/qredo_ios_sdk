@@ -4,7 +4,6 @@
 
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "NSData+QredoRandomData.h"
 #import "QredoTestConfiguration.h"
 
 NSString *serviceURL = QREDO_SERVICE_URL;
@@ -82,13 +81,22 @@ NSString *serviceURL = QREDO_SERVICE_URL;
     XCTAssertEqualObjects([[qredo defaultVault] vaultId], firstQUID);
 }
 
+
+- (NSData*)randomDataWithLength:(int)length {
+    NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
+    for (unsigned int i = 0; i < length; i++) {
+        NSInteger randomBits = arc4random();
+        [mutableData appendBytes: (void *) &randomBits length: 1];
+    } return mutableData;
+}
+
 - (void)testGettingItems
 {
     QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL]];
     QredoVault *vault = [qredo defaultVault];
 
 
-    NSData *item1Data = [NSData dataWithRandomBytesOfLength:1024];
+    NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"

@@ -1,6 +1,5 @@
 #import "Qredo.h"
 #import "QredoVault.h"
-#import "QredoQUID.h"
 #import "QredoVaultPrivate.h"
 #import "QredoRendezvousPrivate.h"
 #import "QredoConversationPrivate.h"
