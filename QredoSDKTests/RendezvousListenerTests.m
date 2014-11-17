@@ -42,6 +42,7 @@
 }
 
 
+// TODO: DH - As of, and prior to 17 Nov 2014, this test is known to fail with timeout on unfulfilled expectation
 - (void)testRendezvousResponder {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
