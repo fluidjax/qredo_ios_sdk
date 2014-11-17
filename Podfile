@@ -11,7 +11,7 @@ target 'QredoSDK' do
 #	pod "LinguaFranca", "~> 0.3"
 #	pod "LinguaFranca", :git => "git@github.com:Qredo/LinguaFranca.git", :tag => "ios-0.3"
 #	pod "LinguaFranca", :git => "git@github.com:Qredo/LinguaFranca.git", :branch => "feature/pods"
-	pod "LinguaFranca", :path => "~/dev/LinguaFranca/LinguaFranca.podspec"
+	pod "LinguaFranca", :path => "../LinguaFranca/LinguaFranca.podspec"
 end
 
 target 'QredoSDKTests' do
