@@ -66,7 +66,11 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     client = [[QredoClient alloc] initWithServiceURL:serviceURL];
 }
 
-
+    /* 
+     TODO: DH - As of 17 Nov 2014, this test often throws an XCTest exception, e.g. :
+            2014-11-17 14:49:46.834 xctest[8989:351333] *** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'API violation - called -[XCTestExpectation fulfill] after the wait context has ended.'
+     Doesn't always do it, if it does, then it will fail with timeout on unfulfilled expectation (and has failed this way for some time).
+     */
 - (void)testRendezvousResponder {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 

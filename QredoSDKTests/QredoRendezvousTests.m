@@ -132,6 +132,7 @@ static long long kRendezvousTestDurationSeconds = 600;
 
     [self waitForExpectationsWithTimeout:200.0 handler:nil];
 
+    XCTAssertNotNil(rendezvousMetadataFromEnumeration);
     XCTAssertNotNil(didFindStoredRendezvousMetadata);
 
 
@@ -148,6 +149,7 @@ static long long kRendezvousTestDurationSeconds = 600;
 
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 
+    XCTAssertNotNil(rendezvousFromEnumeration);
 
     [self verifyRendezvous:rendezvousFromEnumeration randomTag:randomTag];
 
@@ -164,6 +166,8 @@ static long long kRendezvousTestDurationSeconds = 600;
 
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 
+    XCTAssertNotNil(rendezvousFromFetch);
+    
     [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
 }
 

@@ -65,6 +65,14 @@
 		0AADB07C1A157BB200CFD014 /* libQredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libQredoSDK.a */; };
 		0AADB07D1A157BE100CFD014 /* libQredoCrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8FC19C35ABA00639779 /* libQredoCrypto.a */; };
 		0AD6BBF419DD898E000C12A7 /* QredoRendezvousCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD6BBF319DD898E000C12A7 /* QredoRendezvousCryptoTest.m */; };
+		DC34F6EC1A1B524200BC1E1C /* libLinguaFranca.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AADB02A1A15760700CFD014 /* libLinguaFranca.a */; };
+		DC34F6FF1A1B7F8D00BC1E1C /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC34F6F61A1B7F8D00BC1E1C /* Info.plist */; };
+		DC34F7001A1B7F8D00BC1E1C /* QredoClientIdTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC34F6F71A1B7F8D00BC1E1C /* QredoClientIdTests.m */; };
+		DC34F7011A1B7F8D00BC1E1C /* QredoHttpTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC34F6F81A1B7F8D00BC1E1C /* QredoHttpTransportTests.m */; };
+		DC34F7021A1B7F8D00BC1E1C /* QredoMqttTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC34F6F91A1B7F8D00BC1E1C /* QredoMqttTransportTests.m */; };
+		DC34F7031A1B7F8D00BC1E1C /* QredoSExpressionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC34F6FA1A1B7F8D00BC1E1C /* QredoSExpressionTests.m */; };
+		DC34F7041A1B7F8D00BC1E1C /* QredoTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC34F6FC1A1B7F8D00BC1E1C /* QredoTransportTests.m */; };
+		DC34F7051A1B7F8D00BC1E1C /* QredoWireFormatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC34F6FD1A1B7F8D00BC1E1C /* QredoWireFormatTests.m */; };
 		DC72BEF919EBDC7000AAF9F0 /* QredoTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC72BEF819EBDC7000AAF9F0 /* QredoTransportTests.m */; };
 		DC72BEFB19EBDC7C00AAF9F0 /* QredoHttpTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC72BEFA19EBDC7C00AAF9F0 /* QredoHttpTransportTests.m */; };
 		DCC14D8019CAD185002A220C /* QredoDerUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC14D7F19CAD185002A220C /* QredoDerUtils.m */; };
@@ -81,6 +89,51 @@
 		DCFFD6BF19DD45C80000AB2B /* QredoRsaBlindSignature.c in Sources */ = {isa = PBXBuildFile; fileRef = DCFFD6BD19DD45C80000AB2B /* QredoRsaBlindSignature.c */; };
 		DCFFD6C119DD8B0D0000AB2B /* QredoRsaBlindSignatureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCFFD6C019DD8B0D0000AB2B /* QredoRsaBlindSignatureTests.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DC34F6ED1A1B524200BC1E1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0AADB0291A15760700CFD014;
+			remoteInfo = LinguaFranca;
+		};
+		DC34F7061A1B8A4100BC1E1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A16F8FB19C35ABA00639779;
+			remoteInfo = QredoCrypto;
+		};
+		DC34F7081A1B8A4600BC1E1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A16F8BF19C358B400639779;
+			remoteInfo = QredoSDK;
+		};
+		DC34F70A1A1B8A9400BC1E1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A16F8FB19C35ABA00639779;
+			remoteInfo = QredoCrypto;
+		};
+		DC34F70C1A1B8A9800BC1E1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0AADAFE81A15759300CFD014;
+			remoteInfo = QredoCommon;
+		};
+		DC34F70E1A1B8A9A00BC1E1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0AADB0291A15760700CFD014;
+			remoteInfo = LinguaFranca;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		0A16F8BE19C358B400639779 /* CopyFiles */ = {
@@ -286,6 +339,16 @@
 		0AADB0791A1576A600CFD014 /* libPahoMqtt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPahoMqtt.a; sourceTree = "<group>"; };
 		0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRendezvous.h; sourceTree = "<group>"; };
 		0AD6BBF319DD898E000C12A7 /* QredoRendezvousCryptoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousCryptoTest.m; sourceTree = "<group>"; };
+		DC34F6E61A1B524200BC1E1C /* LinguaFrancaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LinguaFrancaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC34F6E91A1B524200BC1E1C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DC34F6F61A1B7F8D00BC1E1C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DC34F6F71A1B7F8D00BC1E1C /* QredoClientIdTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClientIdTests.m; sourceTree = "<group>"; };
+		DC34F6F81A1B7F8D00BC1E1C /* QredoHttpTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoHttpTransportTests.m; sourceTree = "<group>"; };
+		DC34F6F91A1B7F8D00BC1E1C /* QredoMqttTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoMqttTransportTests.m; sourceTree = "<group>"; };
+		DC34F6FA1A1B7F8D00BC1E1C /* QredoSExpressionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoSExpressionTests.m; sourceTree = "<group>"; };
+		DC34F6FB1A1B7F8D00BC1E1C /* QredoTestConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoTestConfiguration.h; sourceTree = "<group>"; };
+		DC34F6FC1A1B7F8D00BC1E1C /* QredoTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoTransportTests.m; sourceTree = "<group>"; };
+		DC34F6FD1A1B7F8D00BC1E1C /* QredoWireFormatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoWireFormatTests.m; sourceTree = "<group>"; };
 		DC72BEF819EBDC7000AAF9F0 /* QredoTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoTransportTests.m; sourceTree = "<group>"; };
 		DC72BEFA19EBDC7C00AAF9F0 /* QredoHttpTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoHttpTransportTests.m; sourceTree = "<group>"; };
 		DCC14D7F19CAD185002A220C /* QredoDerUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoDerUtils.m; sourceTree = "<group>"; };
@@ -378,6 +441,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DC34F6E31A1B524200BC1E1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC34F6EC1A1B524200BC1E1C /* libLinguaFranca.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -387,6 +458,7 @@
 				0AADB0251A1575E000CFD014 /* LinguaFranca */,
 				0A16F8BB19C3567E00639779 /* QredoSDK */,
 				0A16F8CC19C358B400639779 /* QredoSDKTests */,
+				DC34F6E71A1B524200BC1E1C /* LinguaFrancaTests */,
 				0A16F8C119C358B400639779 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -427,6 +499,7 @@
 				0A16F90619C35ABA00639779 /* QredoCryptoTests.xctest */,
 				0AADAFE91A15759300CFD014 /* libQredoCommon.a */,
 				0AADB02A1A15760700CFD014 /* libLinguaFranca.a */,
+				DC34F6E61A1B524200BC1E1C /* LinguaFrancaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -741,6 +814,39 @@
 			path = PahoMqtt;
 			sourceTree = "<group>";
 		};
+		DC34F6E71A1B524200BC1E1C /* LinguaFrancaTests */ = {
+			isa = PBXGroup;
+			children = (
+				DC34F6F41A1B7F8D00BC1E1C /* LinguaFrancaTests */,
+				DC34F6E81A1B524200BC1E1C /* Supporting Files */,
+			);
+			path = LinguaFrancaTests;
+			sourceTree = "<group>";
+		};
+		DC34F6E81A1B524200BC1E1C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DC34F6E91A1B524200BC1E1C /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DC34F6F41A1B7F8D00BC1E1C /* LinguaFrancaTests */ = {
+			isa = PBXGroup;
+			children = (
+				DC34F6F61A1B7F8D00BC1E1C /* Info.plist */,
+				DC34F6F71A1B7F8D00BC1E1C /* QredoClientIdTests.m */,
+				DC34F6F81A1B7F8D00BC1E1C /* QredoHttpTransportTests.m */,
+				DC34F6F91A1B7F8D00BC1E1C /* QredoMqttTransportTests.m */,
+				DC34F6FA1A1B7F8D00BC1E1C /* QredoSExpressionTests.m */,
+				DC34F6FB1A1B7F8D00BC1E1C /* QredoTestConfiguration.h */,
+				DC34F6FC1A1B7F8D00BC1E1C /* QredoTransportTests.m */,
+				DC34F6FD1A1B7F8D00BC1E1C /* QredoWireFormatTests.m */,
+			);
+			name = LinguaFrancaTests;
+			path = "../../LinguaFranca/objc-wire-format/LinguaFrancaTests";
+			sourceTree = "<group>";
+		};
 		DCC14D9219CAEA98002A220C /* Keys */ = {
 			isa = PBXGroup;
 			children = (
@@ -843,6 +949,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				DC34F70F1A1B8A9A00BC1E1C /* PBXTargetDependency */,
+				DC34F70D1A1B8A9800BC1E1C /* PBXTargetDependency */,
+				DC34F70B1A1B8A9400BC1E1C /* PBXTargetDependency */,
 			);
 			name = QredoSDK;
 			productName = QredoSDK;
@@ -860,6 +969,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				DC34F7091A1B8A4600BC1E1C /* PBXTargetDependency */,
 			);
 			name = QredoSDKTests;
 			productName = QredoSDKTests;
@@ -894,6 +1004,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				DC34F7071A1B8A4100BC1E1C /* PBXTargetDependency */,
 			);
 			name = QredoCryptoTests;
 			productName = QredoCryptoTests;
@@ -934,6 +1045,24 @@
 			productReference = 0AADB02A1A15760700CFD014 /* libLinguaFranca.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		DC34F6E51A1B524200BC1E1C /* LinguaFrancaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DC34F6F11A1B524200BC1E1C /* Build configuration list for PBXNativeTarget "LinguaFrancaTests" */;
+			buildPhases = (
+				DC34F6E21A1B524200BC1E1C /* Sources */,
+				DC34F6E31A1B524200BC1E1C /* Frameworks */,
+				DC34F6E41A1B524200BC1E1C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DC34F6EE1A1B524200BC1E1C /* PBXTargetDependency */,
+			);
+			name = LinguaFrancaTests;
+			productName = LinguaFrancaTests;
+			productReference = DC34F6E61A1B524200BC1E1C /* LinguaFrancaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -960,6 +1089,9 @@
 					0AADB0291A15760700CFD014 = {
 						CreatedOnToolsVersion = 6.1;
 					};
+					DC34F6E51A1B524200BC1E1C = {
+						CreatedOnToolsVersion = 6.1;
+					};
 				};
 			};
 			buildConfigurationList = 0A16F88A19C3566B00639779 /* Build configuration list for PBXProject "QredoSDK_nopods" */;
@@ -980,6 +1112,7 @@
 				0A16F90519C35ABA00639779 /* QredoCryptoTests */,
 				0AADAFE81A15759300CFD014 /* QredoCommon */,
 				0AADB0291A15760700CFD014 /* LinguaFranca */,
+				DC34F6E51A1B524200BC1E1C /* LinguaFrancaTests */,
 			);
 		};
 /* End PBXProject section */
@@ -996,6 +1129,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DC34F6E41A1B524200BC1E1C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC34F6FF1A1B7F8D00BC1E1C /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1125,7 +1266,53 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DC34F6E21A1B524200BC1E1C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC34F7041A1B7F8D00BC1E1C /* QredoTransportTests.m in Sources */,
+				DC34F7021A1B7F8D00BC1E1C /* QredoMqttTransportTests.m in Sources */,
+				DC34F7051A1B7F8D00BC1E1C /* QredoWireFormatTests.m in Sources */,
+				DC34F7001A1B7F8D00BC1E1C /* QredoClientIdTests.m in Sources */,
+				DC34F7031A1B7F8D00BC1E1C /* QredoSExpressionTests.m in Sources */,
+				DC34F7011A1B7F8D00BC1E1C /* QredoHttpTransportTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DC34F6EE1A1B524200BC1E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0AADB0291A15760700CFD014 /* LinguaFranca */;
+			targetProxy = DC34F6ED1A1B524200BC1E1C /* PBXContainerItemProxy */;
+		};
+		DC34F7071A1B8A4100BC1E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0A16F8FB19C35ABA00639779 /* QredoCrypto */;
+			targetProxy = DC34F7061A1B8A4100BC1E1C /* PBXContainerItemProxy */;
+		};
+		DC34F7091A1B8A4600BC1E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0A16F8BF19C358B400639779 /* QredoSDK */;
+			targetProxy = DC34F7081A1B8A4600BC1E1C /* PBXContainerItemProxy */;
+		};
+		DC34F70B1A1B8A9400BC1E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0A16F8FB19C35ABA00639779 /* QredoCrypto */;
+			targetProxy = DC34F70A1A1B8A9400BC1E1C /* PBXContainerItemProxy */;
+		};
+		DC34F70D1A1B8A9800BC1E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0AADAFE81A15759300CFD014 /* QredoCommon */;
+			targetProxy = DC34F70C1A1B8A9800BC1E1C /* PBXContainerItemProxy */;
+		};
+		DC34F70F1A1B8A9A00BC1E1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0AADB0291A15760700CFD014 /* LinguaFranca */;
+			targetProxy = DC34F70E1A1B8A9A00BC1E1C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0A16F88B19C3566B00639779 /* Debug */ = {
@@ -1737,6 +1924,105 @@
 			};
 			name = Release;
 		};
+		DC34F6EF1A1B524200BC1E1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = LinguaFrancaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-all_load",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		DC34F6F01A1B524200BC1E1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = LinguaFrancaTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-all_load",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1792,12 +2078,22 @@
 				0AADAFFC1A15759300CFD014 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0AADB03B1A15760800CFD014 /* Build configuration list for PBXNativeTarget "LinguaFranca" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0AADB03C1A15760800CFD014 /* Debug */,
 				0AADB03D1A15760800CFD014 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DC34F6F11A1B524200BC1E1C /* Build configuration list for PBXNativeTarget "LinguaFrancaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DC34F6EF1A1B524200BC1E1C /* Debug */,
+				DC34F6F01A1B524200BC1E1C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
