@@ -7,6 +7,7 @@
 + (QredoRendezvousCrypto *)instance;
 
 - (QredoAuthenticationCode *)authenticationCodeWithHashedTag:(QredoRendezvousHashedTag *)hashedTag
+                                          authenticationType:(QredoRendezvousAuthType *)authType
                                             conversationType:(NSString *)conversationType
                                              durationSeconds:(NSSet *)durationSeconds
                                             maxResponseCount:(NSSet *)maxResponseCount

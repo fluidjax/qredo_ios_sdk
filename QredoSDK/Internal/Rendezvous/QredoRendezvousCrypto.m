@@ -38,6 +38,7 @@
 }
 
 - (QredoAuthenticationCode *)authenticationCodeWithHashedTag:(QredoRendezvousHashedTag *)hashedTag
+                                          authenticationType:(QredoRendezvousAuthType *)authType
                                             conversationType:(NSString *)conversationType
                                              durationSeconds:(NSSet *)durationSeconds
                                             maxResponseCount:(NSSet *)maxResponseCount
@@ -48,6 +49,7 @@
 {
     QredoRendezvousCreationInfo *creationInfo =
             [QredoRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:hashedTag
+                                                          authenticationType:authType
                                                             conversationType:conversationType
                                                              durationSeconds:durationSeconds
                                                             maxResponseCount:maxResponseCount
