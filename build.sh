@@ -3,7 +3,7 @@
 set -e
 
 # Need to pull the latest change for Lingua Franca
-#pod update
+pod update
 
 if ! which xctool >/dev/null; then
 	echo xctool is NOT installed
