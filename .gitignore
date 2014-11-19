@@ -1,3 +1,7 @@
+build
+temp
+package
+
 # Cocoapods
 #
 Pods
@@ -30,4 +34,3 @@ DerivedData
 # http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
 #
 # Pods/
->>>>>>> 801ed79b53c30468710a319f8a06f5b33da41438

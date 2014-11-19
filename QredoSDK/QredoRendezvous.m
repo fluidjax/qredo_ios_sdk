@@ -159,6 +159,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // Generate the authentication code.
     QredoAuthenticationCode *authenticationCode =
     [_crypto authenticationCodeWithHashedTag:_hashedTag
+                          authenticationType:[QredoRendezvousAuthType rendezvousAnonymous] // TODO:
                             conversationType:configuration.conversationType
                              durationSeconds:maybeDurationSeconds
                             maxResponseCount:maybeMaxResponseCount
@@ -170,6 +171,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // Create the Rendezvous.
     QredoRendezvousCreationInfo *_creationInfo =
     [QredoRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:_hashedTag
+     authenticationType:[QredoRendezvousAuthType rendezvousAnonymous] // TODO:
                                                     conversationType:configuration.conversationType
                                                      durationSeconds:maybeDurationSeconds
                                                     maxResponseCount:maybeMaxResponseCount

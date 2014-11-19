@@ -80,9 +80,6 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  */
 - (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
 
-- (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
-
-
 @end
 
 #endif
