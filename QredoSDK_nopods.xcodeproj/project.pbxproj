@@ -266,7 +266,7 @@
 		0A314D8819D2DB0C0064387E /* rsapss.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rsapss.h; sourceTree = "<group>"; };
 		0A314D8919D2DD560064387E /* rsapss.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsapss.c; sourceTree = "<group>"; };
 		0A40636C1A0D3A7B00A9CD91 /* HighwatermarksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighwatermarksTests.m; sourceTree = "<group>"; };
-		0A7F350C1A07CFC700B9BF3C /* QredoErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoErrorCodes.h; sourceTree = "<group>"; };
+		0A7F350C1A07CFC700B9BF3C /* QredoErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoErrorCodes.h; path = "../../../LinguaFranca/objc-wire-format/Common/QredoErrorCodes.h"; sourceTree = "<group>"; };
 		0A7F350D1A07E8A900B9BF3C /* QredoTestConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoTestConfiguration.h; sourceTree = "<group>"; };
 		0A85E6E619FAA95200775115 /* QredoRendezvous.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvous.m; sourceTree = "<group>"; };
 		0A85E6E919FAB2EE00775115 /* QredoPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoPrivate.h; sourceTree = "<group>"; };
