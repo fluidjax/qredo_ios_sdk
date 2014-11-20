@@ -162,6 +162,104 @@ NSString *serviceURL = QREDO_SERVICE_URL;
 
 }
 
+- (void)testPutItems
+{
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
+    QredoVault *vault = [qredo defaultVault];
+    
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2"};
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    
+    NSDate *beforeFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:-1];
+    
+    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         item1Descriptor = newItemDescriptor;
+         dispatch_semaphore_signal(semaphore);
+     }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    
+    NSDate *afterFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
+    
+    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItem);
+         
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
+         XCTAssert([beforeFirstPutDate compare:vaultItem.metadata.summaryValues[@"_created"]] != NSOrderedDescending);
+         XCTAssert([afterFirstPutDate compare:vaultItem.metadata.summaryValues[@"_created"]] != NSOrderedAscending);
+         XCTAssertNil(vaultItem.metadata.summaryValues[@"_modified"]);
+         XCTAssertNil(vaultItem.metadata.summaryValues[@"_v"]);
+         XCTAssert([vaultItem.value isEqualToData:item1Data]);
+         
+         dispatch_semaphore_signal(semaphore);
+     }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    
+    __block QredoVaultItemMetadata *fetchedMetadata = nil;
+    __block NSUInteger numberOfFetchedMetadata = 0;
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        fetchedMetadata = vaultItemMetadata;
+        numberOfFetchedMetadata++;
+    } completionHandler:^(NSError *error) {
+        dispatch_semaphore_signal(semaphore);
+    }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    
+    XCTAssertEqual(numberOfFetchedMetadata, 1);
+    XCTAssertNotNil(fetchedMetadata);
+    XCTAssertEqualObjects(fetchedMetadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+    XCTAssertEqualObjects(fetchedMetadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
+    XCTAssert([beforeFirstPutDate compare:fetchedMetadata.summaryValues[@"_created"]] != NSOrderedDescending);
+    XCTAssert([afterFirstPutDate compare:fetchedMetadata.summaryValues[@"_created"]] != NSOrderedAscending);
+    XCTAssertNil(fetchedMetadata.summaryValues[@"_modified"]);
+    XCTAssertNil(fetchedMetadata.summaryValues[@"_v"]);
+
+    
+    
+    NSDate *beforeSecondPutDate = [NSDate dateWithTimeIntervalSinceNow:-1];
+    
+    NSData *item2Data = [self randomDataWithLength:1024];
+    QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:fetchedMetadata value:item2Data];
+    [vault putItem:item2 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         item1Descriptor = newItemDescriptor;
+         dispatch_semaphore_signal(semaphore);
+     }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    
+    NSDate *afterSecondPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
+    
+    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItem);
+         
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
+         XCTAssert([fetchedMetadata.summaryValues[@"_created"] compare:vaultItem.metadata.summaryValues[@"_created"]] == NSOrderedSame);
+         XCTAssert([beforeSecondPutDate compare:vaultItem.metadata.summaryValues[@"_modified"]] == NSOrderedAscending);
+         XCTAssert([afterSecondPutDate compare:vaultItem.metadata.summaryValues[@"_modified"]] == NSOrderedDescending);
+
+         XCTAssertEqualObjects([fetchedMetadata.descriptor valueForKey:@"sequenceValue"], vaultItem.metadata.summaryValues[@"_v"]);
+         XCTAssert([vaultItem.value isEqualToData:item2Data]);
+         
+         dispatch_semaphore_signal(semaphore);
+     }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+}
+
 - (void)testEnumeration
 {
     QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL]];
