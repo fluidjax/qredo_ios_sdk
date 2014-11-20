@@ -12,7 +12,7 @@
     int scheduled, timedout;
     dispatch_queue_t queue;
 }
-@property dispatch_semaphore_t semaphore;
+@property XCTestExpectation *expectation;
 @property NSMutableArray *receivedItems;
 @property NSError *error;
 @property double signalTimeout;
@@ -31,7 +31,7 @@
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error
 {
     _error = error;
-    dispatch_semaphore_signal(_semaphore);
+    [self.expectation fulfill];
 }
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata
@@ -47,7 +47,7 @@
         if (scheduled == timedout) {
 //            [client resetWatermark];
 
-            dispatch_semaphore_signal(_semaphore);
+            [self.expectation fulfill];
         }
     });
 }
@@ -188,21 +188,22 @@
 
 - (void)testListener
 {
+    XCTestExpectation *testExpectation = nil;
     QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL]];
     QredoVault *vault = [qredo defaultVault];
 
     __block NSError *error = nil;
 
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    testExpectation = [self expectationWithDescription:@"listener"];
 
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
-    listener.semaphore = semaphore;
+    listener.expectation = testExpectation;
     listener.signalTimeout = 2; //seconds
 
     vault.delegate = listener;
 
     [vault startListening];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     [vault stopListening];
 
     XCTAssertNil(error);
