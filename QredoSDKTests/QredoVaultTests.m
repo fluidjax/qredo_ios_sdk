@@ -5,8 +5,7 @@
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 #import "QredoTestConfiguration.h"
-
-NSString *serviceURL = QREDO_SERVICE_URL;
+#import "QredoTestUtils.h"
 
 @interface QredoVaultListener : NSObject<QredoVaultDelegate>
 {
@@ -65,7 +64,7 @@ NSString *serviceURL = QREDO_SERVICE_URL;
 - (void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
 
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL]];
     XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
     XCTAssertNotNil(vault);
@@ -76,111 +75,32 @@ NSString *serviceURL = QREDO_SERVICE_URL;
     vault = nil;
     qredo = nil;
 
-    qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL]];
+    qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL]];
 
     XCTAssertEqualObjects([[qredo defaultVault] vaultId], firstQUID);
 }
 
-
-- (NSData*)randomDataWithLength:(int)length {
-    NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
-    for (unsigned int i = 0; i < length; i++) {
-        NSInteger randomBits = arc4random();
-        [mutableData appendBytes: (void *) &randomBits length: 1];
-    } return mutableData;
-}
-
-- (void)testGettingItems
-{
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL]];
-    QredoVault *vault = [qredo defaultVault];
-
-
-    NSData *item1Data = [self randomDataWithLength:1024];
-    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
-                                         @"key2": @"value2"};
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
-                                                            value:item1Data];
-
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    __block QredoVaultItemDescriptor *item1Descriptor = nil;
-    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
-    {
-        item1Descriptor = newItemDescriptor;
-        dispatch_semaphore_signal(semaphore);
-    }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
-    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
-    {
-        XCTAssertNil(error);
-        XCTAssertNotNil(vaultItem);
-
-        XCTAssertEqualObjects(vaultItem.metadata.summaryValues, item1SummaryValues);
-        XCTAssert([vaultItem.value isEqualToData:item1Data]);
-
-        dispatch_semaphore_signal(semaphore);
-    }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
-    [vault getItemMetadataWithDescriptor:item1Descriptor
-                       completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
-                       {
-                           XCTAssertNil(error);
-                           XCTAssertNotNil(vaultItemMetadata);
-
-                           XCTAssertEqualObjects(vaultItemMetadata.summaryValues, item1SummaryValues);
-
-                           dispatch_semaphore_signal(semaphore);
-                       }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
-
-    // Testing errors
-    QredoVaultItemDescriptor *randomDescriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[QredoQUID QUID] itemId:[QredoQUID QUID]];
-
-    [vault getItemWithDescriptor:randomDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
-    {
-        XCTAssertNotNil(error);
-        XCTAssertNil(vaultItem);
-
-        dispatch_semaphore_signal(semaphore);
-    }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
-    [vault getItemMetadataWithDescriptor:randomDescriptor
-                       completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
-     {
-         XCTAssertNotNil(error);
-         XCTAssertNil(vaultItemMetadata);
-
-         dispatch_semaphore_signal(semaphore);
-     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
-}
-
 - (void)testEnumeration
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL]];
+    XCTestExpectation *testExpectation = nil;
+    
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL]];
     QredoVault *vault = [qredo defaultVault];
 
     __block NSError *error = nil;
     __block int count = 0;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    testExpectation = [self expectationWithDescription:@"Enumerate"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
 
         if (*stop) {
-            dispatch_semaphore_signal(semaphore);
+            [testExpectation fulfill];
         }
     } completionHandler:^(NSError *errorBlock) {
         error = errorBlock;
-        dispatch_semaphore_signal(semaphore);
+        [testExpectation fulfill];
     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     XCTAssertNil(error);
 
     NSLog(@"count: %d", count);
@@ -188,14 +108,16 @@ NSString *serviceURL = QREDO_SERVICE_URL;
 
 - (void)testEnumerationReturnsCreatedItem
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL]];
+    XCTestExpectation *testExpectation = nil;
+
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL]];
     QredoVault *vault = [qredo defaultVault];
     
     // Create an item and store in vault
-    NSData *item1Data = [self randomDataWithLength:1024];
+    NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2",
-                                         @"key3": [[self randomDataWithLength:16] description]};
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
     NSLog(@"Item summary values for new item: %@", item1SummaryValues);
     
@@ -204,35 +126,39 @@ NSString *serviceURL = QREDO_SERVICE_URL;
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    testExpectation = [self expectationWithDescription:@"Put item1"];
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
          item1Descriptor = newItemDescriptor;
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     // Confirm the item is found in the vault
+    testExpectation = [self expectationWithDescription:@"Get item"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNil(error);
          XCTAssertNotNil(vaultItem);
          
-         XCTAssertEqualObjects(vaultItem.metadata.summaryValues, item1SummaryValues);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key3"], item1SummaryValues[@"key3"]);
          XCTAssert([vaultItem.value isEqualToData:item1Data]);
          
          NSLog(@"Got item with summary values: %@", vaultItem.metadata.summaryValues);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     
     // Confirm enumerate finds item we added
     __block NSError *error = nil;
     __block int count = 0;
     __block BOOL itemFound = NO;
+    testExpectation = [self expectationWithDescription:@"Enumerate"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
@@ -241,7 +167,9 @@ NSString *serviceURL = QREDO_SERVICE_URL;
         
         NSLog(@"Enumerated item %d summary values: %@", count, vaultItemMetadata.summaryValues);
         
-        if ([vaultItemMetadata.summaryValues isEqualToDictionary:item1SummaryValues])
+        if ([vaultItemMetadata.summaryValues[@"key1"] isEqual:item1SummaryValues[@"key1"]] &&
+            [vaultItemMetadata.summaryValues[@"key2"] isEqual:item1SummaryValues[@"key2"]] &&
+            [vaultItemMetadata.summaryValues[@"key3"] isEqual:item1SummaryValues[@"key3"]])
         {
             itemFound = YES;
             NSLog(@"Item created earlier has been found (count = %d).", count);
@@ -249,13 +177,13 @@ NSString *serviceURL = QREDO_SERVICE_URL;
         
         if (*stop) {
             NSLog(@"Enumeration stopped.");
-            dispatch_semaphore_signal(semaphore);
+            [testExpectation fulfill];
         }
     } completionHandler:^(NSError *errorBlock) {
         error = errorBlock;
-        dispatch_semaphore_signal(semaphore);
+        [testExpectation fulfill];
     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
 
     XCTAssertNil(error);
 
@@ -267,7 +195,7 @@ NSString *serviceURL = QREDO_SERVICE_URL;
 
 - (void)testListener
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL]];
     QredoVault *vault = [qredo defaultVault];
 
     __block NSError *error = nil;

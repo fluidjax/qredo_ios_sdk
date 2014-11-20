@@ -16,6 +16,12 @@
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
 
+static NSString *const QredoVaultItemMetadataItemDateCreated = @"_created";
+static NSString *const QredoVaultItemMetadataItemDateModified = @"_modified";
+static NSString *const QredoVaultItemMetadataItemVersion = @"_v";
+
+
+
 static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 @interface NSDictionary (QUIDSerialization)
@@ -92,6 +98,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 @end
 
+
+@interface QredoVaultItemDescriptor()
+@property (readonly) QredoVaultSequenceValue *sequenceValue;
+@end
+
 @implementation QredoVaultItemDescriptor
 
 + (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId
@@ -118,9 +129,25 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         return [self.sequenceId isEqual:other.sequenceId] && [self.itemId isEqual:other.itemId]; // TODO: add sequnce value after merge with Gabriel's changes
     } else return [super isEqual:object];
 }
+
+// For private use only.
++ (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QredoVaultSequenceValue *)sequenceValue itemId:(QredoQUID *)itemId
+{
+    return [[self alloc] initWithSequenceId:sequenceId sequenceValue:sequenceValue itemId:itemId];
+}
+
+// For private use only.
+- (instancetype)initWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QredoVaultSequenceValue *)sequenceValue itemId:(QredoQUID *)itemId
+{
+    self = [self initWithSequenceId:sequenceId itemId:itemId];
+    if (!self) return nil;
+    
+    _sequenceValue = sequenceValue;
+    
+    return self;
+}
+
 @end
-
-
 
 QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
@@ -201,7 +228,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 }
 
 
-- (void)putItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID*)itemId completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+- (void)putOrUpdateItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID*)itemId summaryValues:(NSDictionary *)summaryValues completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
 {
 
     QredoVaultSequenceValue *newSequenceValue = [_vaultSequenceCache nextSequenceValue];
@@ -217,7 +244,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QredoVaultItemMetaDataLF *vaultItemMetaDataLF =
     [QredoVaultItemMetaDataLF vaultItemMetaDataLFWithDataType:metadata.dataType
                                                   accessLevel:@(metadata.accessLevel)
-                                                summaryValues:[metadata.summaryValues indexableSet]];
+                                                summaryValues:[summaryValues indexableSet]];
 
     QredoVaultItemLF *vaultItemLF = [QredoVaultItemLF vaultItemLFWithMetadata:vaultItemMetaDataLF
                                                                         value:vaultItem.value];
@@ -231,12 +258,37 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                   [_vaultSequenceCache setItemSequence:itemId
                                             sequenceId:_sequenceId
                                          sequenceValue:newSequenceValue];
-                  completionHandler([QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId itemId:itemId], nil);
+                  completionHandler([QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId sequenceValue:newSequenceValue itemId:itemId], nil);
               } else {
                   completionHandler(nil, error);
               }
           }];
 }
+
+- (void)strictlyPutItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+{
+    QredoQUID *itemId = [QredoQUID QUID];
+    [self strictlyPutItem:vaultItem itemId:itemId completionHandler:completionHandler];
+}
+
+- (void)strictlyPutItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID *)itemId completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+{
+    QredoVaultItemMetadata *metadata = vaultItem.metadata;
+    NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
+    newSummaryValues[QredoVaultItemMetadataItemDateCreated] = [NSDate date];
+    [self putOrUpdateItem:vaultItem itemId:itemId summaryValues:newSummaryValues completionHandler:completionHandler];
+}
+
+- (void)strictlyUpdateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+{
+    QredoVaultItemMetadata *metadata = vaultItem.metadata;
+    QredoQUID *itemId = metadata.descriptor.itemId;
+    NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
+    newSummaryValues[QredoVaultItemMetadataItemDateModified] = [NSDate date];
+    newSummaryValues[QredoVaultItemMetadataItemVersion] = metadata.descriptor.sequenceValue;
+    [self putOrUpdateItem:vaultItem itemId:itemId summaryValues:newSummaryValues completionHandler:completionHandler];
+}
+
 
 @end
 
@@ -430,8 +482,17 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
 {
-    QredoQUID *itemId = [QredoQUID QUID];
-    [self putItem:vaultItem itemId:itemId completionHandler:completionHandler];
+    BOOL isNewItemFromDateCreated = vaultItem.metadata.summaryValues[QredoVaultItemMetadataItemDateCreated] == nil;
+    BOOL isNewItemFromDescriptor = vaultItem.metadata.descriptor == nil;
+    
+    NSAssert(isNewItemFromDateCreated == isNewItemFromDescriptor, @"Can not determine whether the item is newely created or not.");
+    
+    if (isNewItemFromDateCreated) {
+        [self strictlyPutItem:vaultItem completionHandler:completionHandler];
+    }
+    else {
+        [self strictlyUpdateItem:vaultItem completionHandler:completionHandler];
+    }
 }
 
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
@@ -483,7 +544,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
                 QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
 
-                QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId itemId:result.itemId];
+                QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId sequenceValue:result.sequenceValue itemId:result.itemId];
 
                 QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                                                       dataType:decryptedItem.dataType

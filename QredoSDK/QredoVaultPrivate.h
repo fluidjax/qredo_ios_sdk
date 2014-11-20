@@ -24,7 +24,7 @@
 
 
 // public method doesn't allow to specify itemId
-- (void)putItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID*)itemId completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
+- (void)strictlyPutItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID *)itemId completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
 
 @end
 
