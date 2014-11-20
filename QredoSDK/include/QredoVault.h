@@ -31,6 +31,8 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 // sequenceValue is not used, because in rev.1 there is no version control, then itemId should be enough for pointing to the correct vault item
 + (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId;
+
+- (BOOL)isEqual:(id)object;
 @end
 
 /** Immutable metadata. If we need mutable object later, then we can define QredoVaultItemMetaDataMutable */
