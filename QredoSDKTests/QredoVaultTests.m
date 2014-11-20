@@ -7,10 +7,7 @@
 #import "QredoTestConfiguration.h"
 
 @interface QredoVaultListener : NSObject<QredoVaultDelegate>
-{
-    int scheduled, timedout;
-//    dispatch_queue_t queue;
-}
+
 @property XCTestExpectation *didReceiveVaultItemMetadataExpectation;
 @property XCTestExpectation *didFailWithErrorExpectation;
 @property NSMutableArray *receivedItems;
@@ -226,16 +223,22 @@
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    
+    XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
+         XCTAssertNil(error, @"Error occurred during PutItem");
          item1Descriptor = newItemDescriptor;
-         dispatch_semaphore_signal(semaphore);
+         
+         [putItemCompletedExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
     
     // Confirm the item is found in the vault
+    XCTestExpectation *getItemCompletedExpectation = [self expectationWithDescription:@"GetItem completion handler called"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNil(error);
@@ -246,15 +249,16 @@
          
          NSLog(@"Got item with summary values: %@", vaultItem.metadata.summaryValues);
          
-         dispatch_semaphore_signal(semaphore);
+         [getItemCompletedExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
     
     // Confirm enumerate finds item we added
     __block NSError *error = nil;
     __block int count = 0;
     __block BOOL itemFound = NO;
+    XCTestExpectation *enumerationCompleted = [self expectationWithDescription:@"EnumerateVaultItems enumerated last item"];
+    XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
@@ -271,19 +275,19 @@
         
         if (*stop) {
             NSLog(@"Enumeration stopped.");
-            dispatch_semaphore_signal(semaphore);
+            [enumerationCompleted fulfill];
         }
     } completionHandler:^(NSError *errorBlock) {
         error = errorBlock;
-        dispatch_semaphore_signal(semaphore);
+        [completionHandlerCalled fulfill];
     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
 
     XCTAssertNil(error);
 
-    // TODO: DH - Apparently server returns 50 items, so once 50 items created this test will fail.  Looks like must return first 50 items, rather than latest 50 items.
     XCTAssertTrue(itemFound, "Item just created was not found during enumeration.");
     
+    // Note: DH - Apparently server returns 50 items, so once 50 items created this test will fail.  Looks like it returns first 50 items, rather than latest 50 items.
     if (!itemFound && count == 50)
     {
         XCTFail(@"Created item was not found and 50 items were enumerated. Likely failure was due to server only returning oldest 50 items.");

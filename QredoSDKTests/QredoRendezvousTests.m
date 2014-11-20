@@ -118,7 +118,7 @@ static long long kRendezvousTestDurationSeconds = 600;
     XCTestExpectation *didFindStoredRendezvousMetadata = [self expectationWithDescription:@"find stored rendezvous metadata"];
     __block QredoRendezvousMetadata *rendezvousMetadataFromEnumeration = nil;
 
-    __block count = 0;
+    __block int count = 0;
     [client enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
         if ([rendezvousMetadata.tag isEqualToString:randomTag]) {
             rendezvousMetadataFromEnumeration = rendezvousMetadata;
