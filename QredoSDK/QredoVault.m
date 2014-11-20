@@ -126,7 +126,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     if ([object isKindOfClass:[QredoVaultItemDescriptor class]]) {
         QredoVaultItemDescriptor *other = (QredoVaultItemDescriptor*)object;
-        return [self.sequenceId isEqual:other.sequenceId] && [self.itemId isEqual:other.itemId] && [self.sequenceValue isEqualToNumber:other.sequenceValue];
+        return ([self.sequenceId isEqual:other.sequenceId] || self.sequenceId == other.sequenceId) &&
+            ([self.itemId isEqual:other.itemId] || self.itemId == other.itemId) &&
+            ([self.sequenceValue isEqualToNumber:other.sequenceValue] || self.sequenceValue == other.sequenceValue);
     } else return [super isEqual:object];
 }
 
