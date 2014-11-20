@@ -109,6 +109,15 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     return self;
 }
+
+- (BOOL)isEqual:(id)object {
+    if (object == self) return YES;
+
+    if ([object isKindOfClass:[QredoVaultItemDescriptor class]]) {
+        QredoVaultItemDescriptor *other = (QredoVaultItemDescriptor*)object;
+        return [self.sequenceId isEqual:other.sequenceId] && [self.itemId isEqual:other.itemId]; // TODO: add sequnce value after merge with Gabriel's changes
+    } else return [super isEqual:object];
+}
 @end
 
 
