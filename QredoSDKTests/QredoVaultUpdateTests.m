@@ -46,7 +46,8 @@
          XCTAssertNil(error);
          XCTAssertNotNil(vaultItem);
          
-         XCTAssertEqualObjects(vaultItem.metadata.summaryValues, item1SummaryValues);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
          XCTAssert([vaultItem.value isEqualToData:item1Data]);
          
          dispatch_semaphore_signal(semaphore);
@@ -59,7 +60,8 @@
          XCTAssertNil(error);
          XCTAssertNotNil(vaultItemMetadata);
          
-         XCTAssertEqualObjects(vaultItemMetadata.summaryValues, item1SummaryValues);
+         XCTAssertEqualObjects(vaultItemMetadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+         XCTAssertEqualObjects(vaultItemMetadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
          
          dispatch_semaphore_signal(semaphore);
      }];
