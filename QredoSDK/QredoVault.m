@@ -126,7 +126,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     if ([object isKindOfClass:[QredoVaultItemDescriptor class]]) {
         QredoVaultItemDescriptor *other = (QredoVaultItemDescriptor*)object;
-        return [self.sequenceId isEqual:other.sequenceId] && [self.itemId isEqual:other.itemId]; // TODO: add sequnce value after merge with Gabriel's changes
+        return [self.sequenceId isEqual:other.sequenceId] && [self.itemId isEqual:other.itemId] && [self.sequenceValue isEqualToNumber:other.sequenceValue];
     } else return [super isEqual:object];
 }
 
@@ -363,9 +363,15 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
              NSDictionary *summaryValues = [vaultItemLF.metadata.summaryValues dictionaryFromIndexableSet];
 
-             QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:vaultItemLF.metadata.dataType
-                                                                                          accessLevel:[vaultItemLF.metadata.accessLevel integerValue]
-                                                                                        summaryValues:summaryValues];
+             QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItem.meta.sequenceId
+                                                                                                  sequenceValue:encryptedVaultItem.meta.sequenceValue
+                                                                                                         itemId:encryptedVaultItem.meta.itemId];
+
+             QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                               dataType:vaultItemLF.metadata.dataType
+                                                                                            accessLevel:[vaultItemLF.metadata.accessLevel integerValue]
+                                                                                          summaryValues:summaryValues];
+
              QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.value];
 
              completionHandler(vaultItem, nil);
@@ -398,7 +404,8 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                              NSDictionary *summaryValues = [vaultItemMetadataLF.summaryValues dictionaryFromIndexableSet];
 
                              QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItemMetaData.sequenceId
-                                                                                                                         itemId:encryptedVaultItemMetaData.itemId]; // TODO: add sequence value
+                                                                                                                  sequenceValue:encryptedVaultItemMetaData.sequenceValue
+                                                                                                                         itemId:encryptedVaultItemMetaData.itemId];
 
                              QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                                                                dataType:vaultItemMetadataLF.dataType
