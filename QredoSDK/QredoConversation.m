@@ -415,7 +415,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
         completionHandler(error);
     }];
 

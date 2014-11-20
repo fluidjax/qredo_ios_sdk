@@ -258,13 +258,13 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
           }];
 }
 
-- (void)strictlyPutItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+- (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
 {
     QredoQUID *itemId = [QredoQUID QUID];
-    [self strictlyPutItem:vaultItem itemId:itemId completionHandler:completionHandler];
+    [self strictlyPutNewItem:vaultItem itemId:itemId completionHandler:completionHandler];
 }
 
-- (void)strictlyPutItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID *)itemId completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+- (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID *)itemId completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
 {
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
@@ -477,7 +477,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSAssert(isNewItemFromDateCreated == isNewItemFromDescriptor, @"Can not determine whether the item is newely created or not.");
     
     if (isNewItemFromDateCreated) {
-        [self strictlyPutItem:vaultItem completionHandler:completionHandler];
+        [self strictlyPutNewItem:vaultItem completionHandler:completionHandler];
     }
     else {
         [self strictlyUpdateItem:vaultItem completionHandler:completionHandler];
