@@ -164,6 +164,8 @@ NSString *serviceURL = QREDO_SERVICE_URL;
 
 - (void)testPutItems
 {
+    XCTestExpectation *testExpectation = nil;
+    
     QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
@@ -176,20 +178,22 @@ NSString *serviceURL = QREDO_SERVICE_URL;
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    //dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     
     NSDate *beforeFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:-1];
     
+    testExpectation = [self expectationWithDescription:@"First put"];
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
          item1Descriptor = newItemDescriptor;
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:10 handler:nil];
     
     NSDate *afterFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
     
+    testExpectation = [self expectationWithDescription:@"Get"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNil(error);
@@ -203,19 +207,21 @@ NSString *serviceURL = QREDO_SERVICE_URL;
          XCTAssertNil(vaultItem.metadata.summaryValues[@"_v"]);
          XCTAssert([vaultItem.value isEqualToData:item1Data]);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:10 handler:nil];
     
     __block QredoVaultItemMetadata *fetchedMetadata = nil;
     __block NSUInteger numberOfFetchedMetadata = 0;
+    testExpectation = [self expectationWithDescription:@"Enumerate"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         fetchedMetadata = vaultItemMetadata;
         numberOfFetchedMetadata++;
     } completionHandler:^(NSError *error) {
-        dispatch_semaphore_signal(semaphore);
+        [testExpectation fulfill];
     }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+    
     
     XCTAssertEqual(numberOfFetchedMetadata, 1);
     XCTAssertNotNil(fetchedMetadata);
@@ -232,15 +238,17 @@ NSString *serviceURL = QREDO_SERVICE_URL;
     
     NSData *item2Data = [self randomDataWithLength:1024];
     QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:fetchedMetadata value:item2Data];
+    testExpectation = [self expectationWithDescription:@"Second put"];
     [vault putItem:item2 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
          item1Descriptor = newItemDescriptor;
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:10 handler:nil];
     
     NSDate *afterSecondPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
     
+    testExpectation = [self expectationWithDescription:@"Second get"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNil(error);
@@ -255,9 +263,9 @@ NSString *serviceURL = QREDO_SERVICE_URL;
          XCTAssertEqualObjects([fetchedMetadata.descriptor valueForKey:@"sequenceValue"], vaultItem.metadata.summaryValues[@"_v"]);
          XCTAssert([vaultItem.value isEqualToData:item2Data]);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:10 handler:nil];
 }
 
 - (void)testEnumeration
