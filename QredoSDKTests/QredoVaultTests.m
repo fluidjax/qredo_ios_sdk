@@ -9,46 +9,41 @@
 @interface QredoVaultListener : NSObject<QredoVaultDelegate>
 {
     int scheduled, timedout;
-    dispatch_queue_t queue;
+//    dispatch_queue_t queue;
 }
-@property dispatch_semaphore_t semaphore;
+@property XCTestExpectation *didReceiveVaultItemMetadataExpectation;
+@property XCTestExpectation *didFailWithErrorExpectation;
 @property NSMutableArray *receivedItems;
 @property NSError *error;
-@property double signalTimeout;
 
 @end
 
 @implementation QredoVaultListener
-- (instancetype)init {
-    self = [super init];
-
-    queue = dispatch_queue_create("test.qredo.queue", nil);
-
-    return self;
-}
 
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error
 {
-    _error = error;
-    dispatch_semaphore_signal(_semaphore);
+    NSLog(@"Vault operation failed with error: %@", error);
+
+    self.error = error;
+    
+    if (self.didFailWithErrorExpectation) {
+        [self.didFailWithErrorExpectation fulfill];
+    }
 }
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata
 {
-    if (!_receivedItems) _receivedItems = [NSMutableArray array];
+    NSLog(@"Received VaultItemMetadata");
+    
+    if (!self.receivedItems) {
+        self.receivedItems = [NSMutableArray array];
+    }
 
-    [_receivedItems addObject:itemMetadata];
+    [self.receivedItems addObject:itemMetadata];
 
-    ++scheduled;
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_signalTimeout * NSEC_PER_SEC)), queue, ^{
-        ++timedout;
-        if (scheduled == timedout) {
-//            [client resetWatermark];
-
-            dispatch_semaphore_signal(_semaphore);
-        }
-    });
+    if (self.didReceiveVaultItemMetadataExpectation) {
+        [self.didReceiveVaultItemMetadataExpectation fulfill];
+    }
 }
 
 @end
@@ -307,13 +302,8 @@
     QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURLString]];
     QredoVault *vault = [qredo defaultVault];
 
-    __block NSError *error = nil;
-
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
-    listener.semaphore = semaphore;
-    listener.signalTimeout = 2; //seconds
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
 
     vault.delegate = listener;
 
@@ -332,13 +322,14 @@
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
          item1Descriptor = newItemDescriptor;
-         dispatch_semaphore_signal(semaphore);
      }];
 
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    [vault stopListening];
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    XCTAssertNil(listener.error);
+    XCTAssertNotNil(listener.receivedItems);
+    XCTAssertTrue(listener.receivedItems.count > 0);
 
-    XCTAssertNil(error);
+    [vault stopListening];
 }
 
 - (void)testListener_HTTP
