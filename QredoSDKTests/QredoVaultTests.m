@@ -93,9 +93,6 @@
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
 
-        if (*stop) {
-            [testExpectation fulfill];
-        }
     } completionHandler:^(NSError *errorBlock) {
         error = errorBlock;
         [testExpectation fulfill];
@@ -175,10 +172,6 @@
             NSLog(@"Item created earlier has been found (count = %d).", count);
         }
         
-        if (*stop) {
-            NSLog(@"Enumeration stopped.");
-            [testExpectation fulfill];
-        }
     } completionHandler:^(NSError *errorBlock) {
         error = errorBlock;
         [testExpectation fulfill];
