@@ -137,7 +137,9 @@
          XCTAssertNil(error);
          XCTAssertNotNil(vaultItem);
          
-         XCTAssertEqualObjects(vaultItem.metadata.summaryValues, item1SummaryValues);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key3"], item1SummaryValues[@"key3"]);
          XCTAssert([vaultItem.value isEqualToData:item1Data]);
          
          NSLog(@"Got item with summary values: %@", vaultItem.metadata.summaryValues);
@@ -159,7 +161,9 @@
         
         NSLog(@"Enumerated item %d summary values: %@", count, vaultItemMetadata.summaryValues);
         
-        if ([vaultItemMetadata.summaryValues isEqualToDictionary:item1SummaryValues])
+        if ([vaultItemMetadata.summaryValues[@"key1"] isEqual:item1SummaryValues[@"key1"]] &&
+            [vaultItemMetadata.summaryValues[@"key2"] isEqual:item1SummaryValues[@"key2"]] &&
+            [vaultItemMetadata.summaryValues[@"key3"] isEqual:item1SummaryValues[@"key3"]])
         {
             itemFound = YES;
             NSLog(@"Item created earlier has been found (count = %d).", count);
