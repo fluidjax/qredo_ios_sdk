@@ -48,6 +48,8 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
 
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
 
+    [self loadState];
+    
     id vaultId = [options objectForKey:QredoClientOptionVaultID];
 
     if (vaultId) {
@@ -61,8 +63,6 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
              QredoClientOptionVaultID, [[vaultId class] description]];
         }
     }
-
-    [self loadState];
 
     if (!_vaultId) {
         _vaultId = [QredoQUID QUID];
