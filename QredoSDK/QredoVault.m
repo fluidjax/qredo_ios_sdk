@@ -11,6 +11,7 @@
 #import "QredoVaultCrypto.h"
 #import "QredoVaultSequenceCache.h"
 #import "QredoCrypto.h"
+#import "QredoLogging.h"
 
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
@@ -445,8 +446,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSAssert(block, @"block should not be nil");
     __block NSMutableSet *sequenceStates = [[sinceWatermark vaultSequenceState] mutableCopy];
 
-    if (!sequenceStates) sequenceStates = [NSMutableSet set];
-    NSLog(@"Watermark: %@", sinceWatermark.sequenceState);
+    if (!sequenceStates) {
+        sequenceStates = [NSMutableSet set];
+    }
+    LogDebug(@"Watermark: %@", sinceWatermark.sequenceState);
 
     @try {
         // Sync sequence IDs...
@@ -454,16 +457,20 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                               sequenceStates:sequenceStates
                            completionHandler:^void(QredoVaultItemMetaDataResults *vaultItemMetaDataResults, NSError *error)
         {
-           if (error) {
-               if (completionHandler) completionHandler(error);
-               return;
-           }
+            if (error) {
+                if (completionHandler) {
+                    completionHandler(error);
+                }
+                return;
+            }
 
-           NSSet *sequenceIds = [vaultItemMetaDataResults sequenceIds];
+            NSSet *sequenceIds = [vaultItemMetaDataResults sequenceIds];
 
             NSMutableDictionary *newWatermarkDictionary = [sinceWatermark.sequenceState mutableCopy];
-            if (!newWatermarkDictionary) newWatermarkDictionary = [NSMutableDictionary dictionary];
-
+            if (!newWatermarkDictionary) {
+                newWatermarkDictionary = [NSMutableDictionary dictionary];
+            }
+            
             // Get the unique item IDs, update our mappings.
             NSArray *results = [vaultItemMetaDataResults results];
             for (QredoEncryptedVaultItemMetaData *result in results) {
@@ -481,21 +488,25 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
                 __block BOOL stop = [results lastObject] == result;
                 block(externalItem, &stop);
-                if (stop) break;
+                if (stop) {
+                    break;
+                }
             }
 
             BOOL discoveredNewSequence = NO;
             // We want items for all sequences...
             for (QredoVaultSequenceId *sequenceId in sequenceIds) {
-               if ([newWatermarkDictionary objectForKey:sequenceId] != nil) continue;
+                if ([newWatermarkDictionary objectForKey:sequenceId] != nil) {
+                    continue;
+                }
+                
+                QredoVaultSequenceState *sequenceState =
+                [QredoVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId
+                                                            sequenceValue:@0];
+                [sequenceStates addObject:sequenceState];
 
-               QredoVaultSequenceState *sequenceState =
-               [QredoVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId
-                                                           sequenceValue:@0];
-               [sequenceStates addObject:sequenceState];
-
-               [newWatermarkDictionary setObject:@0 forKey:sequenceId];
-               discoveredNewSequence = YES;
+                [newWatermarkDictionary setObject:@0 forKey:sequenceId];
+                discoveredNewSequence = YES;
             }
 
             QredoVaultHighWatermark *newWatermark = [QredoVaultHighWatermark watermarkWithSequenceState:newWatermarkDictionary];
