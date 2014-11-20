@@ -11,6 +11,7 @@
 
 
 NSString *qtu_serviceURL = QREDO_SERVICE_URL;
+NSTimeInterval qtu_defaultTimeout = 10.0;
 
 @implementation NSData (QredoTestUtils)
 

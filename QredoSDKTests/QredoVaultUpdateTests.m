@@ -20,6 +20,8 @@
 
 - (void)testGettingItems
 {
+    XCTestExpectation *testExpectation = nil;
+
     QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL]];
     QredoVault *vault = [qredo defaultVault];
     
@@ -32,15 +34,16 @@
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    testExpectation = [self expectationWithDescription:@"Put"];
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
          item1Descriptor = newItemDescriptor;
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
+    testExpectation = [self expectationWithDescription:@"Get item"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNil(error);
@@ -50,10 +53,11 @@
          XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
          XCTAssert([vaultItem.value isEqualToData:item1Data]);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
+    testExpectation = [self expectationWithDescription:@"Get metadata"];
     [vault getItemMetadataWithDescriptor:item1Descriptor
                        completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
      {
@@ -63,32 +67,34 @@
          XCTAssertEqualObjects(vaultItemMetadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
          XCTAssertEqualObjects(vaultItemMetadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     
     // Testing errors
     QredoVaultItemDescriptor *randomDescriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[QredoQUID QUID] itemId:[QredoQUID QUID]];
     
+    testExpectation = [self expectationWithDescription:@"Get nonexistent item"];
     [vault getItemWithDescriptor:randomDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNotNil(error);
          XCTAssertNil(vaultItem);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
+    testExpectation = [self expectationWithDescription:@"Get nonexistent metadata"];
     [vault getItemMetadataWithDescriptor:randomDescriptor
                        completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
      {
          XCTAssertNotNil(error);
          XCTAssertNil(vaultItemMetadata);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
 }
 
@@ -118,7 +124,7 @@
          item1Descriptor = newItemDescriptor;
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:10 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     NSDate *afterFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
     
@@ -138,7 +144,7 @@
          
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:10 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     __block QredoVaultItemMetadata *fetchedMetadata = nil;
     __block NSUInteger numberOfFetchedMetadata = 0;
@@ -149,7 +155,7 @@
     } completionHandler:^(NSError *error) {
         [testExpectation fulfill];
     }];
-    [self waitForExpectationsWithTimeout:10 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     
     XCTAssertEqual(numberOfFetchedMetadata, 1);
@@ -173,7 +179,7 @@
          item1Descriptor = newItemDescriptor;
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:10 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     NSDate *afterSecondPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
     
@@ -194,7 +200,7 @@
          
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:10 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
 }
 
 

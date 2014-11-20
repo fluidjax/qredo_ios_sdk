@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSString *qtu_serviceURL;
+extern NSTimeInterval qtu_defaultTimeout;
 
 @interface NSData (QredoTestUtils)
 
