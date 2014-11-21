@@ -278,7 +278,9 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSData *vaultIdData = [defaults objectForKey:QredoClientOptionVaultID];
 
-    if (vaultIdData) _vaultId = [[QredoQUID alloc] initWithQUIDData:vaultIdData];
+    if (vaultIdData) {
+        _vaultId = [[QredoQUID alloc] initWithQUIDData:vaultIdData];
+    }
 }
 
 
