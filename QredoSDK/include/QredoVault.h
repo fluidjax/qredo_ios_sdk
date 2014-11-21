@@ -91,6 +91,9 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 /** Returns meta data of items starting from the specific high watermark. See `enumerateVaultItemsUsingBlock:failureHandler:` for more details. */
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block since:(QredoVaultHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
 
+/** Deletes a vault item and returns it's metadata */
+- (void)deleteItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
+
 /** High watermark of the Vault from which the updates will be arriving, when `startListening` is called. The watermark is persisted in `NSUserDefaults`. */
 - (QredoVaultHighWatermark *)highWatermark;
 

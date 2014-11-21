@@ -203,5 +203,94 @@
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
 }
 
+- (void)testDeleteItems
+{
+    XCTestExpectation *testExpectation = nil;
+    
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
+    QredoVault *vault = [qredo defaultVault];
+    
+    
+    NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2"};
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    
+    testExpectation = [self expectationWithDescription:@"put"];
+    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         item1Descriptor = newItemDescriptor;
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    
+    __block QredoVaultItemMetadata *fetchedMetadata = nil;
+    __block NSUInteger numberOfFetchedMetadata = 0;
+    testExpectation = [self expectationWithDescription:@"enumerate before delete"];
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        fetchedMetadata = vaultItemMetadata;
+        numberOfFetchedMetadata++;
+    } completionHandler:^(NSError *error) {
+        [testExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    
+    
+    XCTAssertEqual(numberOfFetchedMetadata, 1);
+    XCTAssertNotNil(fetchedMetadata);
+    XCTAssertEqualObjects(fetchedMetadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+    XCTAssertEqualObjects(fetchedMetadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
+    XCTAssertNil(fetchedMetadata.summaryValues[@"_modified"]);
+    XCTAssertNil(fetchedMetadata.summaryValues[@"_v"]);
+    
+    
+    __block QredoVaultItem *gotVaultItem = nil;
+    testExpectation = [self expectationWithDescription:@"Get"];
+    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItem);
+         
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
+         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
+         XCTAssertNil(vaultItem.metadata.summaryValues[@"_modified"]);
+         XCTAssertNil(vaultItem.metadata.summaryValues[@"_v"]);
+         XCTAssert([vaultItem.value isEqualToData:item1Data]);
+         
+         gotVaultItem = vaultItem;
+         
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    
+    testExpectation = [self expectationWithDescription:@"delete"];
+    [vault deleteItem:gotVaultItem completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(newItemDescriptor);
+        [testExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+
+    
+    fetchedMetadata = nil;
+    numberOfFetchedMetadata = 0;
+    testExpectation = [self expectationWithDescription:@"enumerate after delete"];
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        fetchedMetadata = vaultItemMetadata;
+        numberOfFetchedMetadata++;
+    } completionHandler:^(NSError *error) {
+        [testExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    
+    XCTAssertEqual(numberOfFetchedMetadata, 0);
+    XCTAssertNil(fetchedMetadata);
+
+}
 
 @end
