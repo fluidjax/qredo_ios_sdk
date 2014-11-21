@@ -27,6 +27,8 @@
 		0A16F99019C6F62200639779 /* QredoRendezvousCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F98B19C6F62200639779 /* QredoRendezvousCrypto.m */; };
 		0A27BE251A1F92CB00926EA5 /* Dictionary+Contains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BE221A1F92CB00926EA5 /* Dictionary+Contains.swift */; };
 		0A27BE261A1F92CB00926EA5 /* NSDictionary+Contains.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BE241A1F92CB00926EA5 /* NSDictionary+Contains.m */; };
+		0A27BEA61A1FA5B300926EA5 /* QredoVaultMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEA51A1FA5B300926EA5 /* QredoVaultMQTTTests.m */; };
+		0A27BEA91A1FA68B00926EA5 /* QredoVaultUpdateMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEA81A1FA68B00926EA5 /* QredoVaultUpdateMQTTTests.m */; };
 		0A314D8A19D2DD560064387E /* rsapss.c in Sources */ = {isa = PBXBuildFile; fileRef = 0A314D8919D2DD560064387E /* rsapss.c */; };
 		0A40636D1A0D3A7B00A9CD91 /* HighwatermarksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A40636C1A0D3A7B00A9CD91 /* HighwatermarksTests.m */; };
 		0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A85E6E619FAA95200775115 /* QredoRendezvous.m */; };
@@ -267,6 +269,10 @@
 		0A27BE221A1F92CB00926EA5 /* Dictionary+Contains.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Contains.swift"; sourceTree = "<group>"; };
 		0A27BE231A1F92CB00926EA5 /* NSDictionary+Contains.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Contains.h"; sourceTree = "<group>"; };
 		0A27BE241A1F92CB00926EA5 /* NSDictionary+Contains.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Contains.m"; sourceTree = "<group>"; };
+		0A27BEA41A1FA4B200926EA5 /* QredoVaultTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoVaultTests.h; sourceTree = "<group>"; };
+		0A27BEA51A1FA5B300926EA5 /* QredoVaultMQTTTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultMQTTTests.m; sourceTree = "<group>"; };
+		0A27BEA71A1FA61000926EA5 /* QredoVaultUpdateTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoVaultUpdateTests.h; sourceTree = "<group>"; };
+		0A27BEA81A1FA68B00926EA5 /* QredoVaultUpdateMQTTTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultUpdateMQTTTests.m; sourceTree = "<group>"; };
 		0A314D8819D2DB0C0064387E /* rsapss.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rsapss.h; sourceTree = "<group>"; };
 		0A314D8919D2DD560064387E /* rsapss.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsapss.c; sourceTree = "<group>"; };
 		0A40636C1A0D3A7B00A9CD91 /* HighwatermarksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighwatermarksTests.m; sourceTree = "<group>"; };
@@ -518,8 +524,12 @@
 				0A7F350D1A07E8A900B9BF3C /* QredoTestConfiguration.h */,
 				0A16F8D519C358F300639779 /* QredoSExpressionTests.m */,
 				0AD6BBF319DD898E000C12A7 /* QredoRendezvousCryptoTest.m */,
+				0A27BEA41A1FA4B200926EA5 /* QredoVaultTests.h */,
 				0A9DDE0519ED799600B4248C /* QredoVaultTests.m */,
+				0A27BEA51A1FA5B300926EA5 /* QredoVaultMQTTTests.m */,
+				0A27BEA71A1FA61000926EA5 /* QredoVaultUpdateTests.h */,
 				78F5E8351A1E416F00871A81 /* QredoVaultUpdateTests.m */,
+				0A27BEA81A1FA68B00926EA5 /* QredoVaultUpdateMQTTTests.m */,
 				0A8F5C5619FFEB450068C8D8 /* QredoRendezvousTests.m */,
 				0A8F5C591A0029BD0068C8D8 /* RendezvousListenerTests.m */,
 				0A8F5C5B1A002F0A0068C8D8 /* ConversationTests.m */,
@@ -1182,6 +1192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A40636D1A0D3A7B00A9CD91 /* HighwatermarksTests.m in Sources */,
+				0A27BEA61A1FA5B300926EA5 /* QredoVaultMQTTTests.m in Sources */,
 				0A27BE261A1F92CB00926EA5 /* NSDictionary+Contains.m in Sources */,
 				0A8C2E941A1E1B88008880E4 /* QredoVaultDescriptorTests.swift in Sources */,
 				0A9DDE0619ED799600B4248C /* QredoVaultTests.m in Sources */,
@@ -1191,6 +1202,7 @@
 				78F5E8361A1E416F00871A81 /* QredoVaultUpdateTests.m in Sources */,
 				0A8F5C5C1A002F0A0068C8D8 /* ConversationTests.m in Sources */,
 				0A8F5C5719FFEB450068C8D8 /* QredoRendezvousTests.m in Sources */,
+				0A27BEA91A1FA68B00926EA5 /* QredoVaultUpdateMQTTTests.m in Sources */,
 				78F5E8391A1E439100871A81 /* QredoTestUtils.m in Sources */,
 				0A27BE251A1F92CB00926EA5 /* Dictionary+Contains.swift in Sources */,
 			);
