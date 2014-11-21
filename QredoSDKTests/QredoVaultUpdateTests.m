@@ -10,19 +10,21 @@
 #import "Qredo.h"
 #import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
-
-
-@interface QredoVaultUpdateTests : XCTestCase
-
-@end
+#import "QredoVaultUpdateTests.h"
 
 @implementation QredoVaultUpdateTests
+
+- (void)setUp
+{
+    [super setUp];
+    self.serviceURL = QREDO_HTTP_SERVICE_URL;
+}
 
 - (void)testGettingItems
 {
     XCTestExpectation *testExpectation = nil;
 
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
     
     
@@ -102,7 +104,7 @@
 {
     XCTestExpectation *testExpectation = nil;
     
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
     

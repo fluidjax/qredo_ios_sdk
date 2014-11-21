@@ -9,6 +9,7 @@
 
 #import "QredoPrivate.h"
 #import "QredoVaultPrivate.h"
+#import "ConversationTests.h"
 
 
 // This test should has some commonalities with RendezvousListenerTests, however,
@@ -46,9 +47,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
 @end
 
-@interface ConversationTests : XCTestCase <QredoRendezvousDelegate>
+@interface ConversationTests() <QredoRendezvousDelegate>
 {
-    NSURL *serviceURL;
     QredoClient *client;
     XCTestExpectation *didReceiveResponseExpectation;
 
@@ -61,9 +61,9 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
 - (void)setUp {
     [super setUp];
-    serviceURL = [NSURL URLWithString:QREDO_SERVICE_URL];
+    self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
 
-    client = [[QredoClient alloc] initWithServiceURL:serviceURL];
+    client = [[QredoClient alloc] initWithServiceURL:self.serviceURL];
 }
 
     /* 
@@ -101,7 +101,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [rendezvous startListening];
 
     // another client with a new vault
-    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
+    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
     XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
 
     __block QredoConversation *responderConversation = nil;

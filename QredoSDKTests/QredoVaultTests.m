@@ -3,6 +3,7 @@
  */
 
 #import <XCTest/XCTest.h>
+#import "QredoVaultTests.h"
 #import "Qredo.h"
 #import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
@@ -48,11 +49,13 @@
 @end
 
 
-@interface QredoVaultTests : XCTestCase
-
-@end
-
 @implementation QredoVaultTests
+
+- (void)setUp {
+    [super setUp];
+
+    self.serviceURL = QREDO_HTTP_SERVICE_URL;
+}
 
 - (NSData*)randomDataWithLength:(int)length {
     NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
@@ -62,10 +65,10 @@
     } return mutableData;
 }
 
-- (void)commonTestPersistanceVaultIdWithServiceURLString:(NSString *)serviceURLString {
+- (void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
 
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURLString]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
     XCTAssertNotNil(vault);
@@ -76,24 +79,14 @@
     vault = nil;
     qredo = nil;
 
-    qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURLString]];
+    qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
 
     XCTAssertEqualObjects([[qredo defaultVault] vaultId], firstQUID);
 }
 
-- (void)testPersistanceVaultId_HTTP {
-    
-    [self commonTestPersistanceVaultIdWithServiceURLString:QREDO_HTTP_SERVICE_URL];
-}
-
-- (void)testPersistanceVaultId_MQTT {
-    
-    [self commonTestPersistanceVaultIdWithServiceURLString:QREDO_MQTT_SERVICE_URL];
-}
-
-- (void)commonTestGettingItemsWithServiceURLString:(NSString *)serviceURLString
+- (void)testGettingItems
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURLString]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
     
     
@@ -168,19 +161,9 @@
     
 }
 
-- (void)testGettingItems_HTTP
+- (void)testEnumeration
 {
-    [self commonTestGettingItemsWithServiceURLString:QREDO_HTTP_SERVICE_URL];
-}
-
-- (void)testGettingItems_MQTT
-{
-    [self commonTestGettingItemsWithServiceURLString:QREDO_MQTT_SERVICE_URL];
-}
-
-- (void)commonTestEnumerationWithServiceURLString:(NSString *)serviceURLString
-{
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURLString]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
 
     __block NSError *error = nil;
@@ -199,19 +182,9 @@
     NSLog(@"count: %d", count);
 }
 
-- (void)testEnumeration_HTTP
+- (void)testEnumerationReturnsCreatedItem
 {
-    [self commonTestEnumerationWithServiceURLString:QREDO_HTTP_SERVICE_URL];
-}
-
-- (void)testEnumeration_MQTT
-{
-    [self commonTestEnumerationWithServiceURLString:QREDO_MQTT_SERVICE_URL];
-}
-
-- (void)commonTestEnumerationReturnsCreatedItemWithServiceURLString:(NSString *)serviceURLString
-{
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURLString]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
     
     // Create an item and store in vault
@@ -303,19 +276,9 @@
     NSLog(@"count: %d", count);
 }
 
-- (void)testEnumerationReturnsCreatedItem_HTTP
+- (void)testListener
 {
-    [self commonTestEnumerationReturnsCreatedItemWithServiceURLString:QREDO_HTTP_SERVICE_URL];
-}
-
-- (void)testEnumerationReturnsCreatedItem_MQTT
-{
-    [self commonTestEnumerationReturnsCreatedItemWithServiceURLString:QREDO_MQTT_SERVICE_URL];
-}
-
-- (void)commonTestListenerWithServiceURLString:(NSString *)serviceURLString
-{
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:serviceURLString]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
 
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
@@ -347,16 +310,6 @@
 
 
     [vault stopListening];
-}
-
-- (void)testListener_HTTP
-{
-    [self commonTestListenerWithServiceURLString:QREDO_HTTP_SERVICE_URL];
-}
-
-- (void)testListener_MQTT
-{
-    [self commonTestListenerWithServiceURLString:QREDO_MQTT_SERVICE_URL];
 }
 
 @end
