@@ -31,6 +31,7 @@
 		0A27BEA91A1FA68B00926EA5 /* QredoVaultUpdateMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEA81A1FA68B00926EA5 /* QredoVaultUpdateMQTTTests.m */; };
 		0A27BEAC1A1FA95400926EA5 /* QredoRendezvousMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEAB1A1FA95400926EA5 /* QredoRendezvousMQTTTests.m */; };
 		0A27BEAF1A1FAA4900926EA5 /* ConversationMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEAE1A1FAA4900926EA5 /* ConversationMQTTTests.m */; };
+		0A27BEB31A1FAFC300926EA5 /* NSDictionary+QUIDSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEB21A1FAFC300926EA5 /* NSDictionary+QUIDSerialization.m */; };
 		0A314D8A19D2DD560064387E /* rsapss.c in Sources */ = {isa = PBXBuildFile; fileRef = 0A314D8919D2DD560064387E /* rsapss.c */; };
 		0A40636D1A0D3A7B00A9CD91 /* HighwatermarksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A40636C1A0D3A7B00A9CD91 /* HighwatermarksTests.m */; };
 		0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A85E6E619FAA95200775115 /* QredoRendezvous.m */; };
@@ -279,6 +280,8 @@
 		0A27BEAB1A1FA95400926EA5 /* QredoRendezvousMQTTTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousMQTTTests.m; sourceTree = "<group>"; };
 		0A27BEAD1A1FA9AA00926EA5 /* ConversationTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConversationTests.h; sourceTree = "<group>"; };
 		0A27BEAE1A1FAA4900926EA5 /* ConversationMQTTTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationMQTTTests.m; sourceTree = "<group>"; };
+		0A27BEB11A1FAFC300926EA5 /* NSDictionary+QUIDSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+QUIDSerialization.h"; sourceTree = "<group>"; };
+		0A27BEB21A1FAFC300926EA5 /* NSDictionary+QUIDSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+QUIDSerialization.m"; sourceTree = "<group>"; };
 		0A314D8819D2DB0C0064387E /* rsapss.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rsapss.h; sourceTree = "<group>"; };
 		0A314D8919D2DD560064387E /* rsapss.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rsapss.c; sourceTree = "<group>"; };
 		0A40636C1A0D3A7B00A9CD91 /* HighwatermarksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighwatermarksTests.m; sourceTree = "<group>"; };
@@ -706,9 +709,19 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		0A27BEB01A1FAFA200926EA5 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				0A27BEB11A1FAFC300926EA5 /* NSDictionary+QUIDSerialization.h */,
+				0A27BEB21A1FAFC300926EA5 /* NSDictionary+QUIDSerialization.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		0A9DDE0319ED57FE00B4248C /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				0A27BEB01A1FAFA200926EA5 /* Categories */,
 				0A16F98919C6F62200639779 /* Rendezvous */,
 				0A16F89A19C3567E00639779 /* Vault */,
 			);
@@ -1188,6 +1201,7 @@
 			files = (
 				0A8F5C5319FE90E60068C8D8 /* QredoConversation.m in Sources */,
 				0A16F8DE19C3591700639779 /* QredoVaultCrypto.m in Sources */,
+				0A27BEB31A1FAFC300926EA5 /* NSDictionary+QUIDSerialization.m in Sources */,
 				0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */,
 				0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */,
 				0A16F8DA19C3590700639779 /* QredoVaultSequenceCache.m in Sources */,
