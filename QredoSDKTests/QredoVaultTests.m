@@ -98,15 +98,16 @@
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
          item1Descriptor = newItemDescriptor;
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+
+    testExpectation = [self expectationWithDescription:@"get item 1 with descriptor"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNil(error);
@@ -118,10 +119,11 @@
 
          XCTAssert([vaultItem.value isEqualToData:item1Data]);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+
+    testExpectation = [self expectationWithDescription:@"get item 1 metadata"];
     [vault getItemMetadataWithDescriptor:item1Descriptor
                        completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
      {
@@ -132,33 +134,34 @@
              return [a isEqual:b];
          }]);
 
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     
     // Testing errors
     QredoVaultItemDescriptor *randomDescriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[QredoQUID QUID] itemId:[QredoQUID QUID]];
-    
+
+    testExpectation = [self expectationWithDescription:@"get item with random descriptor"];
     [vault getItemWithDescriptor:randomDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNotNil(error);
          XCTAssertNil(vaultItem);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+
+    testExpectation = [self expectationWithDescription:@"get item metadata with random descriptor"];
     [vault getItemMetadataWithDescriptor:randomDescriptor
                        completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
      {
          XCTAssertNotNil(error);
          XCTAssertNil(vaultItemMetadata);
          
-         dispatch_semaphore_signal(semaphore);
+         [testExpectation fulfill];
      }];
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
 }
 
 - (void)testEnumeration
