@@ -16,7 +16,7 @@ if ! which xctool >/dev/null; then
 	brew install xctool
 fi
 
-DIR=`pwd`i
+DIR=`pwd`
 PACKAGE_NAME=`date +"%Y%m%d_%H%M"`
 PACKAGE_DIR=package/$PACKAGE_NAME
 
@@ -38,7 +38,7 @@ function build {
 	xctool $BUILD_PARAMS -scheme Pods-QredoSDK-LinguaFranca -sdk $SDK -arch $ARCH CONFIGURATION_BUILD_DIR=$BUILD_DIR CONFIGURATION_TEMP_DIR=$TEMP_DIR  
 	xctool $BUILD_PARAMS -scheme Pods-QredoSDK -sdk $SDK -arch $ARCH CONFIGURATION_BUILD_DIR=$BUILD_DIR CONFIGURATION_TEMP_DIR=$TEMP_DIR  
 	xctool $BUILD_PARAMS -scheme QredoSDK -sdk $SDK -arch $ARCH CONFIGURATION_BUILD_DIR=$BUILD_DIR CONFIGURATION_TEMP_DIR=$TEMP_DIR  
-	LIBS="$LIBS $BUILD_DIR/libQredoSDK.a"
+	LIBS="$LIBS $BUILD_DIR/libqredosdk.a"
 }
 
 rm -Rf build test
@@ -51,7 +51,7 @@ build "iphoneos" "armv7s"
 
 echo Making the fat library
 mkdir -p $PACKAGE_DIR
-lipo -create $LIBS -output $PACKAGE_DIR/libQredoSDK.a
+lipo -create $LIBS -output $PACKAGE_DIR/libqredosdk.a
 
 echo Copying public header files
 rsync -r --exclude=.DS_Store QredoSDK/include $PACKAGE_DIR
