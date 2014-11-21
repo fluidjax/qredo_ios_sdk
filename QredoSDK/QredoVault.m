@@ -548,6 +548,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
             if (!newWatermarkDictionary) newWatermarkDictionary = [NSMutableDictionary dictionary];
 
             // Get the unique item IDs, update our mappings.
+            NSMutableDictionary *latestMetadata = [NSMutableDictionary dictionary];
             NSArray *results = [vaultItemMetaDataResults results];
             for (QredoEncryptedVaultItemMetaData *result in results) {
 
@@ -560,10 +561,19 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                                                                                                    accessLevel:[decryptedItem.accessLevel integerValue]
                                                                                                  summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
 
+                QredoVaultItemMetadata* existingMetadata = latestMetadata[externalItem.descriptor.sequenceId];
+                if (!existingMetadata ||
+                    [existingMetadata.descriptor.sequenceValue compare:externalItem.descriptor.sequenceValue] == NSOrderedAscending) {
+                    latestMetadata[externalItem.descriptor.sequenceId] = externalItem;
+                }
+                
                 [newWatermarkDictionary setObject:result.sequenceValue forKey:result.sequenceId];
 
-                __block BOOL stop = [results lastObject] == result;
-                block(externalItem, &stop);
+            }
+            
+            for (QredoVaultItemMetadata* metadata in [latestMetadata allValues]) {
+                BOOL stop = NO;
+                block(metadata, &stop);
                 if (stop) break;
             }
 
