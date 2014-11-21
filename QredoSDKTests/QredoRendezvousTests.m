@@ -6,6 +6,7 @@
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 #import "QredoTestConfiguration.h"
+#import "QredoRendezvousTests.h"
 
 static NSString *const kRendezvousTestConversationType = @"test.chat";
 static long long kRendezvousTestMaxResponseCount = 3;
@@ -26,9 +27,8 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 @end
 
-@interface QredoRendezvousTests : XCTestCase
+@interface QredoRendezvousTests ()
 {
-    NSURL *serviceURL;
     QredoClient *client;
 }
 
@@ -38,9 +38,9 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 - (void)setUp {
     [super setUp];
-    serviceURL = [NSURL URLWithString:QREDO_SERVICE_URL];
+    self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
 
-    client = [[QredoClient alloc] initWithServiceURL:serviceURL];
+    client = [[QredoClient alloc] initWithServiceURL:self.serviceURL];
 }
 
 - (void)tearDown {
@@ -60,7 +60,7 @@ static long long kRendezvousTestDurationSeconds = 600;
     rendezvous.delegate = listener;
     [rendezvous startListening];
     
-    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:serviceURL];
+    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL];
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
     }];

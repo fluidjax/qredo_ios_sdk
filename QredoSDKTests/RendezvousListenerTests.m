@@ -36,7 +36,7 @@
 
 - (void)setUp {
     [super setUp];
-    serviceURL = [NSURL URLWithString:QREDO_SERVICE_URL];
+    serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
 
     client = [[QredoClient alloc] initWithServiceURL:serviceURL];
 }
