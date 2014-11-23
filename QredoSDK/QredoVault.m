@@ -100,7 +100,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 @end
 
 
-@interface QredoVaultItemDescriptor()
+@interface QredoVaultItemDescriptor()<NSCopying>
 @property (readonly) QredoVaultSequenceValue *sequenceValue;
 @end
 
@@ -133,6 +133,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     } else return [super isEqual:object];
 }
 
+- (NSUInteger)hash
+{
+    return [_itemId hash] ^ [_sequenceId hash] ^ [_sequenceValue hash];
+}
+
 // For private use only.
 + (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QredoVaultSequenceValue *)sequenceValue itemId:(QredoQUID *)itemId
 {
@@ -147,6 +152,12 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
     _sequenceValue = sequenceValue;
     
+    return self;
+}
+
+
+- (id)copyWithZone:(NSZone *)zone
+{
     return self;
 }
 
