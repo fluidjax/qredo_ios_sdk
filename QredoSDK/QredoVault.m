@@ -579,10 +579,11 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                                                                                                    accessLevel:[decryptedItem.accessLevel integerValue]
                                                                                                  summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
 
-                QredoVaultItemMetadata* existingMetadata = latestMetadata[externalItem.descriptor.sequenceId];
+                QredoVaultItemDescriptor *key = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId itemId:result.itemId];
+                QredoVaultItemMetadata* existingMetadata = latestMetadata[key];
                 if (!existingMetadata ||
                     [existingMetadata.descriptor.sequenceValue compare:externalItem.descriptor.sequenceValue] == NSOrderedAscending) {
-                    latestMetadata[externalItem.descriptor.sequenceId] = externalItem;
+                    latestMetadata[key] = externalItem;
                 }
                 
                 [newWatermarkDictionary setObject:result.sequenceValue forKey:result.sequenceId];
