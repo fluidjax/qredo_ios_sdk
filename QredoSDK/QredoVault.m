@@ -7,12 +7,12 @@
 #import "QredoVaultPrivate.h"
 #import "Qredo.h"
 
+#import "NSDictionary+QUIDSerialization.h"
 #import "NSDictionary+IndexableSet.h"
 #import "QredoVaultCrypto.h"
 #import "QredoVaultSequenceCache.h"
 #import "QredoCrypto.h"
 #import "QredoLogging.h"
-
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
@@ -25,51 +25,8 @@ static NSString *const QredoVaultItemMetadataItemTypeTombstone = @"\u220E"; // U
 static NSString *const QredoVaultItemMetadataItemTypeRendezvous = @"com.qredo.rendezvous";
 static NSString *const QredoVaultItemMetadataItemTypeConversation = @"com.qredo.conversation";
 
-
-
 static const double kQredoVaultUpdateInterval = 1.0; // seconds
-
-@interface NSDictionary (QUIDSerialization)
-- (NSDictionary*)quidToStringDictionary;
-- (NSDictionary*)stringToQuidDictionary;
-@end
-
-
-
-@implementation NSDictionary (QUIDSerialization)
-
-- (NSDictionary* )quidToStringDictionary {
-    NSMutableDictionary *result = [NSMutableDictionary dictionary];
-
-    NSArray *keys = [self allKeys];
-
-    for (id key in keys) {
-        id newKey = key;
-        if ([key isKindOfClass:[QredoQUID class]]) {
-            newKey = [key QUIDString];
-        }
-
-        [result setObject:[self objectForKey:key] forKey:newKey];
-    }
-    return [result copy];
-}
-
-- (NSDictionary *)stringToQuidDictionary
-{
-    NSMutableDictionary *result = [NSMutableDictionary dictionary];
-    NSArray *keys = [self allKeys];
-
-    for (id key in keys) {
-        QredoQUID *newKey = [[QredoQUID alloc] initWithQUIDString:key];
-
-        [result setObject:[self objectForKey:key] forKey:newKey];
-    }
-
-    return [result copy];
-}
-
-@end
-
+QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 // Opaque Class. Keeping interface only here
 @interface QredoVaultHighWatermark()
@@ -166,8 +123,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 @end
-
-QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 @interface QredoVault ()
 {
@@ -622,9 +577,9 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                 for (QredoVaultItemMetadata* metadata in [latestMetadata allValues]) {
                     BOOL stop = NO;
                     if (![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
-                        block(metadata, &stop);
-                        if (stop) break;
-                    }
+                    block(metadata, &stop);
+                    if (stop) break;
+                }
                 }
                 
             }
