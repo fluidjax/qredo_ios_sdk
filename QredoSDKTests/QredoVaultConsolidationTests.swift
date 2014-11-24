@@ -9,6 +9,47 @@
 import Foundation
 import XCTest
 
+
+class VaultListener : NSObject, QredoVaultDelegate {
+    
+    var expecation: XCTestExpectation?
+    var fulfillTimer: NSTimer?
+    
+    var receivedItemMetadata = Array<QredoVaultItemMetadata>()
+    var receivedError: NSError?
+    
+    func qredoVault(client: QredoVault!, didReceiveVaultItemMetadata itemMetadata: QredoVaultItemMetadata!) {
+        
+        receivedItemMetadata.append(itemMetadata)
+        
+        if let timer = fulfillTimer? {
+            timer.invalidate()
+        }
+        if let theExpectation = expecation? {
+            let timer = NSTimer(timeInterval: 1,
+                target: theExpectation,
+                selector: Selector("fulfill"),
+                userInfo: nil, repeats: false)
+            fulfillTimer = timer
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSDefaultRunLoopMode)
+            })
+        }
+        
+    }
+    
+    func qredoVault(client: QredoVault!, didFailWithError error: NSError!) {
+        receivedError = error
+        expecation?.fulfill()
+    }
+    
+    func reset() {
+        receivedItemMetadata.removeAll()
+        receivedError = nil;
+    }
+    
+}
+
 class QredoVaultConsolidationTests: XCTestCase {
     
     var serviceURL: NSString!
@@ -40,7 +81,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         var firstPutItemDescriptor: QredoVaultItemDescriptor?
         expectation = expectationWithDescription("first put")
         vault.putItem(item1, completionHandler: { (itemDescriptor, error) -> Void in
-            XCTAssertNil(error, "we must not get an error from first put")
+            XCTAssertNil(error, "must not get an error from first put")
             XCTAssertNotNil(itemDescriptor, "we must get a descriptor from first put")
             firstPutItemDescriptor = itemDescriptor
             expectation.fulfill()
@@ -58,7 +99,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        XCTAssertEqual(firstEnumerateResults.count, 1, "after first put we must only have on item in the vault")
+        XCTAssertEqual(firstEnumerateResults.count, 1, "after first put, the vault must only have one item")
         
         
         let item1Updated = QredoVaultItem(
@@ -67,8 +108,8 @@ class QredoVaultConsolidationTests: XCTestCase {
         
         expectation = expectationWithDescription("second put, update first item")
         vault.putItem(item1Updated, completionHandler: { (itemDescriptor, error) -> Void in
-            XCTAssertNil(error, "we must not get an error from first put")
-            XCTAssertNotNil(itemDescriptor, "we must get a descriptor from first put")
+            XCTAssertNil(error, "must not get an error from first put")
+            XCTAssertNotNil(itemDescriptor, "must get a descriptor from first put")
             expectation.fulfill()
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
@@ -83,7 +124,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        XCTAssertEqual(afterUpdateEnumerateResults.count, 1, "after update put we must only have on item in the vault")
+        XCTAssertEqual(afterUpdateEnumerateResults.count, 1, "after update put, the vault must only have one item")
         
         
         let item2 = QredoVaultItem(
@@ -96,8 +137,8 @@ class QredoVaultConsolidationTests: XCTestCase {
         var thirdPutItemDescriptor: QredoVaultItemDescriptor?
         expectation = expectationWithDescription("third put, puting a new item")
         vault.putItem(item2, completionHandler: { (itemDescriptor, error) -> Void in
-            XCTAssertNil(error, "we must not get an error from first put")
-            XCTAssertNotNil(itemDescriptor, "we must get a descriptor from first put")
+            XCTAssertNil(error, "must not get an error from first put")
+            XCTAssertNotNil(itemDescriptor, "must get a descriptor from first put")
             thirdPutItemDescriptor = itemDescriptor
             expectation.fulfill()
         })
@@ -113,7 +154,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        XCTAssertEqual(afterSecondPutEnumerateResults.count, 2, "after update put we must only have two items in the vault")
+        XCTAssertEqual(afterSecondPutEnumerateResults.count, 2, "after update put, the vault must only have two items")
         
     }
     
@@ -127,6 +168,11 @@ class QredoVaultConsolidationTests: XCTestCase {
             options: [QredoClientOptionVaultID: QredoQUID()])
         let vault = qredo.defaultVault()
         
+        let listener = VaultListener()
+        vault.delegate = listener
+        
+        vault.startListening()
+        
         
         let item1 = QredoVaultItem(
             metadata: QredoVaultItemMetadata(
@@ -135,59 +181,31 @@ class QredoVaultConsolidationTests: XCTestCase {
                 summaryValues: [:]),
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         
-        var firstPutItemDescriptor: QredoVaultItemDescriptor?
-        expectation = expectationWithDescription("first put")
+        expectation = expectationWithDescription("a new put")
+        listener.expecation = expectation
         vault.putItem(item1, completionHandler: { (itemDescriptor, error) -> Void in
-            XCTAssertNil(error, "we must not get an error from first put")
-            XCTAssertNotNil(itemDescriptor, "we must get a descriptor from first put")
-            firstPutItemDescriptor = itemDescriptor
-            expectation.fulfill()
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
+        XCTAssertEqual(listener.receivedItemMetadata.count, 1, "after one put the listner must only be notified of one item")
         
-        var firstEnumerateResults = Array<QredoVaultItemMetadata>()
-        expectation = expectationWithDescription("first enumerate")
-        vault.enumerateVaultItemsUsingBlock({ (metadata, stop) -> Void in
-            firstEnumerateResults.append(metadata)
-            },
-            since: QredoVaultHighWatermarkOrigin,
-            consolidatingResults: false,
-            completionHandler: { (error) -> Void in
-                expectation.fulfill()
-        })
-        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
-        
-        XCTAssertEqual(firstEnumerateResults.count, 1, "after first put we must only have on item in the vault")
+        listener.reset()
         
         
         let item1Updated = QredoVaultItem(
-            metadata: firstEnumerateResults.first,
+            metadata: listener.receivedItemMetadata.first,
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         
-        expectation = expectationWithDescription("second put, update first item")
+        expectation = expectationWithDescription("an update put, update first item")
+        listener.expecation = expectation
         vault.putItem(item1Updated, completionHandler: { (itemDescriptor, error) -> Void in
-            XCTAssertNil(error, "we must not get an error from first put")
-            XCTAssertNotNil(itemDescriptor, "we must get a descriptor from first put")
-            expectation.fulfill()
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
+        XCTAssertEqual(listener.receivedItemMetadata.count, 1, "after one update put the listner must only be notified of one item")
         
-        var afterUpdateEnumerateResults = Array<QredoVaultItemMetadata>()
-        expectation = expectationWithDescription("first enumerate")
-        vault.enumerateVaultItemsUsingBlock({ (metadata, stop) -> Void in
-            afterUpdateEnumerateResults.append(metadata)
-            },
-            since: QredoVaultHighWatermarkOrigin,
-            consolidatingResults: false,
-            completionHandler: { (error) -> Void in
-                expectation.fulfill()
-        })
-        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
-        
-        XCTAssertEqual(afterUpdateEnumerateResults.count, 2, "after update put we must only have on item in the vault")
-        
+        listener.reset()
+
         
         let item2 = QredoVaultItem(
             metadata: QredoVaultItemMetadata(
@@ -196,31 +214,37 @@ class QredoVaultConsolidationTests: XCTestCase {
                 summaryValues: [:]),
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         
-        var thirdPutItemDescriptor: QredoVaultItemDescriptor?
-        expectation = expectationWithDescription("third put, puting a new item")
+        expectation = expectationWithDescription("a new put, puting a new item; (second time)")
+        listener.expecation = expectation
         vault.putItem(item2, completionHandler: { (itemDescriptor, error) -> Void in
-            XCTAssertNil(error, "we must not get an error from first put")
-            XCTAssertNotNil(itemDescriptor, "we must get a descriptor from first put")
-            thirdPutItemDescriptor = itemDescriptor
-            expectation.fulfill()
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
+        XCTAssertEqual(listener.receivedItemMetadata.count, 1, "after one new put the listner must only be notified of one item")
         
-        var afterSecondPutEnumerateResults = Array<QredoVaultItemMetadata>()
-        expectation = expectationWithDescription("first enumerate")
-        vault.enumerateVaultItemsUsingBlock({ (metadata, stop) -> Void in
-            afterSecondPutEnumerateResults.append(metadata)
-            },
-            since: QredoVaultHighWatermarkOrigin,
-            consolidatingResults: false,
-            completionHandler: { (error) -> Void in
-                expectation.fulfill()
+        listener.reset()
+
+        
+        expectation = expectationWithDescription("an update put, update the second item twice")
+        listener.expecation = expectation
+        let item2Updated = QredoVaultItem(
+            metadata: listener.receivedItemMetadata.first,
+            value: NSData.qtu_dataWithRandomBytesOfLength(1024))
+        
+        vault.putItem(item1Updated, completionHandler: { (itemDescriptor, error) -> Void in
+        })
+        let item2UpdatedAgain = QredoVaultItem(
+            metadata: listener.receivedItemMetadata.first,
+            value: NSData.qtu_dataWithRandomBytesOfLength(1024))
+        
+        vault.putItem(item2UpdatedAgain, completionHandler: { (itemDescriptor, error) -> Void in
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        XCTAssertEqual(afterSecondPutEnumerateResults.count, 3, "after update put we must only have two items in the vault")
-        
+        XCTAssertEqual(listener.receivedItemMetadata.count, 2, "after two update puts the listner must only be notified of two items")
+
+        listener.reset()
+
     }
 
 }

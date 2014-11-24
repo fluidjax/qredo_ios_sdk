@@ -523,16 +523,15 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                        completionHandler:(void(^)(NSError *error))completionHandler
 {
-    [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin consolidatingResults:YES completionHandler:completionHandler];
+    [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
 }
 
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                                 since:(QredoVaultHighWatermark*)sinceWatermark
-                       consolidatingResults:(BOOL)shouldConsolidateResults
                     completionHandler:(void(^)(NSError *error))completionHandler
 {
     dispatch_async(_queue, ^{
-        [self enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:shouldConsolidateResults];
+        [self enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
     });
 }
 
