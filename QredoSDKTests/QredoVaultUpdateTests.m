@@ -274,7 +274,30 @@
     
     XCTAssertEqual(numberOfFetchedMetadata, 0);
     XCTAssertNil(fetchedMetadata);
-
+    
+    
+    testExpectation = [self expectationWithDescription:@"get metadata of a deleted item"];
+    [vault getItemMetadataWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        XCTAssertNil(vaultItemMetadata);
+        XCTAssertNotNil(error);
+        XCTAssertEqualObjects(error.domain, QredoErrorDomain);
+        XCTAssertEqual(error.code, QredoErrorCodeVaultItemHasBeenDeleted);
+        [testExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    
+    
+    testExpectation = [self expectationWithDescription:@"get a deleted item"];
+    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        XCTAssertNil(vaultItem);
+        XCTAssertNotNil(error);
+        XCTAssertEqualObjects(error.domain, QredoErrorDomain);
+        XCTAssertEqual(error.code, QredoErrorCodeVaultItemHasBeenDeleted);
+        [testExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    
+    
 }
 
 @end

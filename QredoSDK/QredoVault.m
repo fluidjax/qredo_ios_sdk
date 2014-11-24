@@ -344,10 +344,16 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                                                                                                dataType:vaultItemLF.metadata.dataType
                                                                                             accessLevel:[vaultItemLF.metadata.accessLevel integerValue]
                                                                                           summaryValues:summaryValues];
+             
+             if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+                 error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
+                 completionHandler(nil, error);
+             }
+             else {
+                 QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.value];
+                 completionHandler(vaultItem, nil);
+             }
 
-             QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.value];
-
-             completionHandler(vaultItem, nil);
          } else {
              if (!error) {
                  error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemNotFound userInfo:nil];
@@ -384,8 +390,14 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                                                                                                                dataType:vaultItemMetadataLF.dataType
                                                                                                             accessLevel:[vaultItemMetadataLF.accessLevel integerValue]
                                                                                                           summaryValues:summaryValues];
+                             if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+                                 error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
+                                 completionHandler(nil, error);
+                             }
+                             else {
+                                 completionHandler(metadata, nil);
+                             }
 
-                             completionHandler(metadata, nil);
                          } else {
                              if (!error) {
                                  error = [NSError errorWithDomain:QredoErrorDomain
