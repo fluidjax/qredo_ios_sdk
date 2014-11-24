@@ -209,7 +209,7 @@
 {
     XCTestExpectation *testExpectation = nil;
     
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:qtu_serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
     
