@@ -251,27 +251,9 @@
     XCTAssertNil(fetchedMetadata.summaryValues[@"_v"]);
     
     
-    __block QredoVaultItem *gotVaultItem = nil;
-    testExpectation = [self expectationWithDescription:@"Get"];
-    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
-     {
-         XCTAssertNil(error);
-         XCTAssertNotNil(vaultItem);
-         
-         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
-         XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
-         XCTAssertNil(vaultItem.metadata.summaryValues[@"_modified"]);
-         XCTAssertNil(vaultItem.metadata.summaryValues[@"_v"]);
-         XCTAssert([vaultItem.value isEqualToData:item1Data]);
-         
-         gotVaultItem = vaultItem;
-         
-         [testExpectation fulfill];
-     }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
     
     testExpectation = [self expectationWithDescription:@"delete"];
-    [vault deleteItem:gotVaultItem completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+    [vault deleteItem:fetchedMetadata completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(newItemDescriptor);
         [testExpectation fulfill];
