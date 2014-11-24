@@ -477,7 +477,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                 } watermarkHandler:^(QredoVaultHighWatermark *watermark) {
                     self->_highwatermark = watermark;
                     [self saveState];
-                } since:self.highWatermark];
+                } since:self.highWatermark consolidatingResults:NO];
 
             });
             dispatch_resume(_timer);
@@ -519,15 +519,16 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                        completionHandler:(void(^)(NSError *error))completionHandler
 {
-    [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
+    [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin consolidatingResults:YES completionHandler:completionHandler];
 }
 
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                                 since:(QredoVaultHighWatermark*)sinceWatermark
+                       consolidatingResults:(BOOL)shouldConsolidateResults
                     completionHandler:(void(^)(NSError *error))completionHandler
 {
     dispatch_async(_queue, ^{
-        [self enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark];
+        [self enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:shouldConsolidateResults];
     });
 }
 
@@ -536,6 +537,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                     completionHandler:(void(^)(NSError *error))completionHandler
                      watermarkHandler:(void(^)(QredoVaultHighWatermark*))watermarkHandler
                                 since:(QredoVaultHighWatermark*)sinceWatermark
+                  consolidatingResults:(BOOL)shouldConsolidateResults
 {
     NSAssert(block, @"block should not be nil");
     __block NSMutableSet *sequenceStates = [[sinceWatermark vaultSequenceState] mutableCopy];
@@ -565,36 +567,70 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                 newWatermarkDictionary = [NSMutableDictionary dictionary];
             }
             
-            // Get the unique item IDs, update our mappings.
-            NSMutableDictionary *latestMetadata = [NSMutableDictionary dictionary];
+            
+            typedef void(^EnumerateResultsWithHandler)(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop);
             NSArray *results = [vaultItemMetaDataResults results];
-            for (QredoEncryptedVaultItemMetaData *result in results) {
+            void(^enumerateResultsWithHandler)(EnumerateResultsWithHandler)
+            = ^(EnumerateResultsWithHandler handler) {
+                
+                BOOL stop = FALSE;
+                for (QredoEncryptedVaultItemMetaData *result in results) {
+                    
+                    QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
+                    
+                    QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId sequenceValue:result.sequenceValue itemId:result.itemId];
+                    
+                    QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                                          dataType:decryptedItem.dataType
+                                                                                                       accessLevel:[decryptedItem.accessLevel integerValue]
+                                                                                                     summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
+                    
+                    if (handler) {
+                        handler(externalItem, &stop);
+                    }
+                    
+                    [newWatermarkDictionary setObject:externalItem.descriptor.sequenceValue forKey:externalItem.descriptor.sequenceId];
+                    
+                    if (stop) {
+                        break;
+                    }
+                    
+                }
 
-                QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
+            };
+            
+            
+            // Get the unique item IDs, update our mappings.
+            if (shouldConsolidateResults) {
+                
+                NSMutableDictionary *latestMetadata = [NSMutableDictionary dictionary];
+                enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
+                    
+                    QredoVaultItemDescriptor *key = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vaultItemMetadata.descriptor.sequenceId itemId:vaultItemMetadata.descriptor.itemId];
+                    QredoVaultItemMetadata* existingMetadata = latestMetadata[key];
+                    if (!existingMetadata ||
+                        [existingMetadata.descriptor.sequenceValue compare:vaultItemMetadata.descriptor.sequenceValue] == NSOrderedAscending) {
+                        latestMetadata[key] = vaultItemMetadata;
+                    }
+                    
 
-                QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId sequenceValue:result.sequenceValue itemId:result.itemId];
-
-                QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                                                      dataType:decryptedItem.dataType
-                                                                                                   accessLevel:[decryptedItem.accessLevel integerValue]
-                                                                                                 summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
-
-                QredoVaultItemDescriptor *key = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId itemId:result.itemId];
-                QredoVaultItemMetadata* existingMetadata = latestMetadata[key];
-                if (!existingMetadata ||
-                    [existingMetadata.descriptor.sequenceValue compare:externalItem.descriptor.sequenceValue] == NSOrderedAscending) {
-                    latestMetadata[key] = externalItem;
+                });
+                
+                for (QredoVaultItemMetadata* metadata in [latestMetadata allValues]) {
+                    BOOL stop = NO;
+                    block(metadata, &stop);
+                    if (stop) break;
                 }
                 
-                [newWatermarkDictionary setObject:result.sequenceValue forKey:result.sequenceId];
-
+            }
+            else {
+                
+                enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
+                    block(vaultItemMetadata, stop);
+                });
+                
             }
             
-            for (QredoVaultItemMetadata* metadata in [latestMetadata allValues]) {
-                BOOL stop = NO;
-                block(metadata, &stop);
-                if (stop) break;
-            }
 
             BOOL discoveredNewSequence = NO;
             // We want items for all sequences...
@@ -620,7 +656,11 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
             if (discoveredNewSequence) {
                 dispatch_async(_queue, ^{
-                    [self enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:watermarkHandler since:newWatermark];
+                    [self enumerateVaultItemsUsingBlock:block
+                                      completionHandler:completionHandler
+                                       watermarkHandler:watermarkHandler
+                                                  since:newWatermark
+                                   consolidatingResults:shouldConsolidateResults];
                 });
             } else {
                 completionHandler(nil);
