@@ -622,8 +622,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                 
                 for (QredoVaultItemMetadata* metadata in [latestMetadata allValues]) {
                     BOOL stop = NO;
-                    block(metadata, &stop);
-                    if (stop) break;
+                    if (![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+                        block(metadata, &stop);
+                        if (stop) break;
+                    }
                 }
                 
             }
