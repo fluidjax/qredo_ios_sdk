@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 
 class QredoVaultDescriptorTests: XCTestCase {
-    let client = QredoClient(serviceURL: NSURL(string: QREDO_SERVICE_URL), options:["QredoClientOptionVaultID" : QredoQUID()])
+    let client = QredoClient(serviceURL: NSURL(string: QREDO_HTTP_SERVICE_URL), options:["QredoClientOptionVaultID" : QredoQUID()])
     var itemDescriptor : QredoVaultItemDescriptor? = nil
 
     let initialSummaryValues = ["key 1" : "value 1"]
