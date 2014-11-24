@@ -637,7 +637,8 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 {
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     QredoQUID *itemId = metadata.descriptor.itemId;
-    NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
+    NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionary];
+    newSummaryValues[QredoVaultItemMetadataItemDateCreated] = metadata.summaryValues[QredoVaultItemMetadataItemDateCreated];
     newSummaryValues[QredoVaultItemMetadataItemDateModified] = [NSDate date];
     newSummaryValues[QredoVaultItemMetadataItemVersion] = metadata.descriptor.sequenceValue;
     [self putUpdateOrDeleteItem:[QredoVaultItem vaultItemWithMetadata:metadata value:[NSData data]]
