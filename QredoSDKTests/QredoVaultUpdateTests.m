@@ -11,6 +11,8 @@
 #import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultUpdateTests.h"
+#import "NSDictionary+Contains.h"
+
 
 @implementation QredoVaultUpdateTests
 
@@ -238,6 +240,7 @@
         fetchedMetadata = vaultItemMetadata;
         numberOfFetchedMetadata++;
     } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
         [testExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
@@ -245,8 +248,9 @@
     
     XCTAssertEqual(numberOfFetchedMetadata, 1);
     XCTAssertNotNil(fetchedMetadata);
-    XCTAssertEqualObjects(fetchedMetadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
-    XCTAssertEqualObjects(fetchedMetadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
+    XCTAssert([fetchedMetadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
+        return [a isEqual:b];
+    }]);
     XCTAssertNil(fetchedMetadata.summaryValues[@"_modified"]);
     XCTAssertNil(fetchedMetadata.summaryValues[@"_v"]);
     
@@ -268,6 +272,7 @@
         fetchedMetadata = vaultItemMetadata;
         numberOfFetchedMetadata++;
     } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
         [testExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
