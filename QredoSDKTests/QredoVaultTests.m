@@ -187,7 +187,7 @@
 
 - (void)testEnumerationReturnsCreatedItem
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
     // Create an item and store in vault

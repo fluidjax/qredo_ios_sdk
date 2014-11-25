@@ -6,6 +6,7 @@
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 #import "QredoTestConfiguration.h"
+#import "QredoTestUtils.h"
 
 #import "QredoPrivate.h"
 #import "QredoVaultPrivate.h"
@@ -63,22 +64,17 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [super setUp];
     self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
 
-    client = [[QredoClient alloc] initWithServiceURL:self.serviceURL];
+    client = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
 }
 
-    /* 
-     TODO: DH - As of 17 Nov 2014, this test often throws an XCTest exception, e.g. :
-            2014-11-17 14:49:46.834 xctest[8989:351333] *** Terminating app due to uncaught exception 'NSInternalInconsistencyException', reason: 'API violation - called -[XCTestExpectation fulfill] after the wait context has ended.'
-     Doesn't always do it, if it does, then it will fail with timeout on unfulfilled expectation (and has failed this way for some time).
-     */
-- (void)testRendezvousResponder {
+- (void)testConversation {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
 
     __block QredoRendezvous *rendezvous = nil;
 
-    XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
 
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
@@ -90,10 +86,13 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
                       [createExpectation fulfill];
                   }];
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        createExpectation = nil;
+    }];
 
     // Responding to the rendezvous
-    XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
+    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
 
     rendezvous.delegate = self;
@@ -115,17 +114,18 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
         [didRespondExpectation fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        didRespondExpectation = nil;
+    }];
 
     [rendezvous stopListening];
 
     // Sending message
     XCTAssertNotNil(responderConversation);
-    XCTAssertNotNil(createExpectation);
 
     NSLog(@"Creator conversation ID: %@", creatorConversation.metadata.conversationId);
 
-    XCTestExpectation *didPublishMessageExpectation = [self expectationWithDescription:@"published a message"];
+    __block XCTestExpectation *didPublishMessageExpectation = [self expectationWithDescription:@"published a message"];
 
     QredoConversationMessage *newMessage = [[QredoConversationMessage alloc] initWithValue:[kMessageTestValue dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
 
@@ -137,7 +137,9 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
                             [didPublishMessageExpectation fulfill];
                         }];
 
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        didPublishMessageExpectation = nil;
+    }];
 
 
     ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
@@ -146,7 +148,9 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     creatorConversation.delegate = listener;
     [creatorConversation startListening];
 
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        listener.didReceiveMessageExpectation = nil;
+    }];
     XCTAssertFalse(listener.failed);
 
     [creatorConversation stopListening];
@@ -155,7 +159,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
               @"Conversation ID from responder and creator should be the same");
 
     // Enumerating conversations
-    XCTestExpectation *didFindConversation = [self expectationWithDescription:@"find conversation in system vault"];
+    __block XCTestExpectation *didFindConversation = [self expectationWithDescription:@"find conversation in system vault"];
     __block QredoConversationMetadata *metadataFromEnumeration = nil;
     [client enumerateConversationsWithBlock:^(QredoConversationMetadata *metadata, BOOL *stop) {
         NSLog(@"Enumerating conversations: conversation ID = %@", metadata.conversationId);
@@ -169,13 +173,15 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
         [didFindConversation fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        didFindConversation = nil;
+    }];
 
     XCTAssertNotNil(metadataFromEnumeration);
     XCTAssert([metadataFromEnumeration.rendezvousTag isEqual:randomTag]);
 
     // Fetching conversation
-    XCTestExpectation *didFetchConversation = [self expectationWithDescription:@"fetch conversation from system vault"];
+    __block XCTestExpectation *didFetchConversation = [self expectationWithDescription:@"fetch conversation from system vault"];
 
     __block QredoConversation *conversatoinFromVault = nil;
     [client fetchConversationWithId:metadataFromEnumeration.conversationId completionHandler:^(QredoConversation *conversation, NSError *error) {
@@ -186,12 +192,14 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
         [didFetchConversation fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        didFetchConversation = nil;
+    }];
 
     XCTAssertNotNil(conversatoinFromVault);
 
     // Making sure that we can use the fetched conversation
-    XCTestExpectation *didPublishAnotherMessage = [self expectationWithDescription:@"did publish another message"];
+    __block XCTestExpectation *didPublishAnotherMessage = [self expectationWithDescription:@"did publish another message"];
 
     ConversationMessageListener *anotherListener = [[ConversationMessageListener alloc] init];
     anotherListener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message"];
@@ -208,7 +216,9 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
         [didPublishAnotherMessage fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        didPublishAnotherMessage = nil;
+    }];
     XCTAssertFalse(listener.failed);
 
     [responderConversation stopListening];

@@ -112,7 +112,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     if (!self) return nil;
 
     _client = client;
-    _rendezvous = [QredoInternalRendezvous rendezvousWithServiceURL:client.serviceURL];
+    _rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
     _vault = [_client systemVault];
 
     _queue = dispatch_queue_create("com.qredo.rendezvous.updates", nil);
