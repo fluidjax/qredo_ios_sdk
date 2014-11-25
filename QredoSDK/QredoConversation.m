@@ -188,7 +188,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     _crypto = [CryptoImplV1 new];
     _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
     _queue = dispatch_queue_create("com.qredo.conversation.updates", nil);
-    _conversationService = [QredoConversations conversationsWithServiceURL:_client.serviceURL];
+    _conversationService = [QredoConversations conversationsWithServiceInvoker:_client.serviceInvoker];
 
 
     _metadata = [[QredoConversationMetadata alloc] init];
@@ -321,7 +321,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void(^)(NSError *error))completionHandler
 {
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
-    QredoInternalRendezvous *_rendezvous = [QredoInternalRendezvous rendezvousWithServiceURL:_client.serviceURL];
+    QredoInternalRendezvous *_rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
 
     QredoAuthenticationCode *authKey = [_rendezvousCrypto authKey:rendezvousTag];
     QredoRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithAuthKey:authKey];

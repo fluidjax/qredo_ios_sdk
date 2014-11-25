@@ -6,6 +6,7 @@
 
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
+#import "QredoServiceInvoker.h"
 
 NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
 
@@ -15,6 +16,7 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
     QredoQUID *_vaultId;
 
     QredoVault *_defaultVault;
+    QredoServiceInvoker *_serviceInvoker;
 
     dispatch_queue_t _rendezvousQueue;
 }
@@ -28,6 +30,10 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
     // For rev1 we have only one vault
     // Keeping this method as a placeholder and it is used in Rendezvous and Conversations
     return _defaultVault;
+}
+
+- (QredoServiceInvoker*)serviceInvoker {
+    return _serviceInvoker;
 }
 
 @end
@@ -45,6 +51,7 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
     if (!self) return nil;
 
     _serviceURL = serviceURL;
+    _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL];
 
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
 

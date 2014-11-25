@@ -40,7 +40,7 @@ static long long kRendezvousTestDurationSeconds = 600;
     [super setUp];
     self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
 
-    client = [[QredoClient alloc] initWithServiceURL:self.serviceURL];
+    client = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
 }
 
 - (void)tearDown {

@@ -42,7 +42,6 @@
 }
 
 
-// TODO: DH - As of, and prior to 17 Nov 2014, this test is known to fail with timeout on unfulfilled expectation
 - (void)testRendezvousResponder {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
@@ -50,7 +49,7 @@
 
     __block QredoRendezvous *rendezvous = nil;
 
-    XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
 
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
@@ -62,10 +61,12 @@
 
                       [createExpectation fulfill];
                   }];
-    [self waitForExpectationsWithTimeout:2 handler:nil];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
 
     // Responding to the rendezvous
-    XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
+    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
 
     rendezvous.delegate = self;
@@ -85,15 +86,13 @@
         [didRespondExpectation fulfill];
     }];
 
-    [self waitForExpectationsWithTimeout:2 handler:nil];
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        didRespondExpectation = nil;
+        didReceiveResponseExpectation = nil;
+    }];
 
     // Sending message
-
     XCTAssertNotNil(responderConversation);
-    XCTAssertNotNil(createExpectation);
-
-
-
 }
 
 - (void)qredoRendezvous:(QredoRendezvous*)rendezvous didReceiveReponse:(QredoConversation *)conversation

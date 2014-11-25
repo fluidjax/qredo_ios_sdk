@@ -6,9 +6,11 @@
 #define QredoSDK_QredoPrivate_h
 
 #import "Qredo.h"
+#import "QredoServiceInvoker.h"
 
 @interface QredoClient (Private)
 
+- (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
 
 @end

@@ -6,6 +6,7 @@
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
 #import "Qredo.h"
+#import "QredoPrivate.h"
 
 #import "NSDictionary+QUIDSerialization.h"
 #import "NSDictionary+IndexableSet.h"
@@ -156,7 +157,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
         [self saveState];
     }
 
-    _vault              = [QredoInternalVault vaultWithServiceURL:client.serviceURL];
+    _vault              = [QredoInternalVault vaultWithServiceInvoker:_client.serviceInvoker];
     _vaultSequenceCache = [QredoVaultSequenceCache instance];
 
     const uint8_t bulkKeyBytes[] = {'b','u','l','k','d','e','m','o','k','e','y'};

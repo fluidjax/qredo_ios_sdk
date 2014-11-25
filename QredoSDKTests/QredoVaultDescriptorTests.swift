@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 
 class QredoVaultDescriptorTests: XCTestCase {
-    let client = QredoClient(serviceURL: NSURL(string: QREDO_HTTP_SERVICE_URL), options:["QredoClientOptionVaultID" : QredoQUID()])
+    let client = QredoClient(serviceURL: NSURL(string: QREDO_HTTP_SERVICE_URL), options:[QredoClientOptionVaultID : QredoQUID()])
     var itemDescriptor : QredoVaultItemDescriptor? = nil
 
     let initialSummaryValues = ["key 1" : "value 1"]
@@ -31,12 +31,14 @@ class QredoVaultDescriptorTests: XCTestCase {
     func verifyMetadata(itemMetadata : QredoVaultItemMetadata!) {
         XCTAssertNotNil(itemMetadata, "metadata should not be nil")
 
-        XCTAssertTrue(itemMetadata.summaryValues.contains(self.initialSummaryValues), "lost summaryValues")
+        if let actualMetadata = itemMetadata {
+            XCTAssertTrue(actualMetadata.summaryValues.contains(self.initialSummaryValues), "lost summaryValues")
 
-        XCTAssertNotNil(itemMetadata.descriptor, "Descriptor should not be nil")
+            XCTAssertNotNil(actualMetadata.descriptor, "Descriptor should not be nil")
 
-        if let actualDescriptor = itemMetadata.descriptor {
-            XCTAssertTrue(itemMetadata.descriptor.isEqual(self.itemDescriptor!), "Desriptor should be the same")
+            if let actualDescriptor = actualMetadata.descriptor {
+                XCTAssertTrue(itemMetadata.descriptor.isEqual(self.itemDescriptor!), "Desriptor should be the same")
+            }
         }
     }
 
@@ -67,8 +69,10 @@ class QredoVaultDescriptorTests: XCTestCase {
             XCTAssertNil(error, "failed to get item metadata")
             XCTAssertNotNil(item, "metadata should not be nil")
 
-            let itemMetadata = item.metadata
-            self.verifyMetadata(itemMetadata)
+            if let actualItem = item {
+                let itemMetadata = actualItem.metadata
+                self.verifyMetadata(itemMetadata)
+            }
 
             getItemMetadataExpectation.fulfill()
         })
@@ -81,12 +85,13 @@ class QredoVaultDescriptorTests: XCTestCase {
         let vault = client.defaultVault()
 
         var found = false
-        let finishEnumerationExpectation = self.expectationWithDescription("finished enumeration")
+        var finishEnumerationExpectation = self.expectationWithDescription("finished enumeration")
 
         vault.enumerateVaultItemsUsingBlock({ (itemMetadata : QredoVaultItemMetadata!, stop : UnsafeMutablePointer<ObjCBool>) -> Void in
 
             if let actualDescriptor = itemMetadata.descriptor {
                 if actualDescriptor == self.itemDescriptor {
+                    println("found")
                     found = true
                 }
             }
@@ -94,10 +99,12 @@ class QredoVaultDescriptorTests: XCTestCase {
         }, completionHandler: { error in
             XCTAssertNil(error, "failed")
 
-            finishEnumerationExpectation.fulfill()
+            finishEnumerationExpectation?.fulfill()
         })
 
-        waitForExpectationsWithTimeout(5.0, handler: nil)
+        waitForExpectationsWithTimeout(5.0) { error in
+            finishEnumerationExpectation = nil
+        }
 
         XCTAssertTrue(found, "didn't find item through enumeration")
     }
