@@ -38,7 +38,18 @@
     [super setUp];
     serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
 
-    client = [[QredoClient alloc] initWithServiceURL:serviceURL];
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:@{QredoClientOptionServiceURL: serviceURL,
+                                                  QredoClientOptionVaultID: [QredoQUID QUID]}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  client = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
 }
 
 
@@ -65,7 +76,26 @@
         createExpectation = nil;
     }];
 
+
+
     // Responding to the rendezvous
+
+
+    __block QredoClient *anotherClient = nil;
+
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:@{QredoClientOptionServiceURL: serviceURL}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  anotherClient = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+
+
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
 
@@ -73,7 +103,6 @@
 
     [rendezvous startListening];
 
-    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:serviceURL];
     NSLog(@"Responding from another client");
     __block QredoConversation *responderConversation = nil;
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {

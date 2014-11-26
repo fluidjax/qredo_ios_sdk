@@ -5,7 +5,7 @@
 #import "QredoTestUtils.h"
 #import "QredoTestConfiguration.h"
 
-NSTimeInterval qtu_defaultTimeout = 3.0;
+NSTimeInterval qtu_defaultTimeout = 10.0;
 
 @implementation NSData (QredoTestUtils)
 

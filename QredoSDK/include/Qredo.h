@@ -21,47 +21,22 @@ typedef uint64_t QredoVaultSequenceValue;
 
 /** Options for [QredoClient initWithServiceURL:options:] */
 extern NSString *const QredoClientOptionVaultID;
+extern NSString *const QredoClientOptionServiceURL;
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
 
-/** Delegate for Qredo client. Mainly notifies about notification status, as authentication might be done in background */
-@protocol QredoClientDelegate <NSObject>
-@optional
-/** Called before attempting to authenticate and showing any authentication UI */
-- (void)qredoClientWillAuthenticate:(QredoClient*)client;
-
-/** Called when authentication has beed done in background */
-- (void)qredoClientDidAuthenticate:(QredoClient *)client;
-/** Called when authentication failed*/
-- (void)qredoClient:(QredoClient *)client didFailAuthenticationWithError:(NSError *)error;
-- (void)qredoClient:(QredoClient *)client didCloseSessionWithError:(NSError *)error;
-
-/** for any generic errors, such as connection problem, out of disk space, failed signature verification or anything else */
-- (void)qredoClient:(QredoClient *)client didFailWithError:(NSError *)error;
-
-@end
-
 /** Qredo Client */
 @interface QredoClient : NSObject
-@property (weak) id<QredoClientDelegate>delegate;
-@property (readonly) NSURL *serviceURL;
-
-/** Creates instance of qredo client
- @param serviceURL Root URL for Qredo services
+/** Before using the SDK, the application should call this function with the required conversation types and vault data types.
+ During the authorization the SDK may ask user to allow access to their Qredo account.
+ 
+ If the app calls any Vault, Rendezvous or Conversation API without an authorization, then those methods will return `QredoErrorCodeAppNotAuthorized` error immediately.
  */
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL;
-/** 
- @param serviceURL serviceURL Root URL for Qredo services
- @param options qredo options. At the moment there is only `QredoClientOptionVaultID`
- */
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL options:(NSDictionary*)options;
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
-// Authentication. Can be skipped for now
-// These calls might not be necessary, as authentication does happen implicitly on other calls (may show UI)
-- (BOOL)isAuthenticated;
-- (void)authenticateWithCompletionHandler:(void(^)(NSError *error))completionHandler; // show UI
-- (void)closeSession;
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(NSDictionary*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
+
 
 - (QredoVault*) defaultVault;
 

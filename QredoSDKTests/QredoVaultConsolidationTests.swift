@@ -49,21 +49,26 @@ class VaultListener : NSObject, QredoVaultDelegate {
 class QredoVaultConsolidationTests: XCTestCase {
     
     var serviceURL: NSString!
+    var qredo: QredoClient!
 
     override func setUp() {
         super.setUp()
         serviceURL = QREDO_HTTP_SERVICE_URL;
 
+
+        let createExpectation = self.expectationWithDescription("create client")
+        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: ["com.qredo.test"],
+            options: [QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: QredoQUID()],
+            completionHandler: {client, error in
+                self.qredo = client
+                createExpectation.fulfill()
+        })
+        waitForExpectationsWithTimeout(1.0, handler: nil)
     }
     
     func testConsolidation() {
-        
         var expectation: XCTestExpectation!
-        
-        
-        let qredo = QredoClient(
-            serviceURL: NSURL(string: serviceURL),
-            options: [QredoClientOptionVaultID: QredoQUID()])
+
         let vault = qredo.defaultVault()
         
         
@@ -155,13 +160,8 @@ class QredoVaultConsolidationTests: XCTestCase {
     }
     
     func testNotConsolidatedEnumeration() {
-        
         var expectation: XCTestExpectation!
-        
-        
-        let qredo = QredoClient(
-            serviceURL: NSURL(string: serviceURL),
-            options: [QredoClientOptionVaultID: QredoQUID()])
+
         let vault = qredo.defaultVault()
         
         let listener = VaultListener()
