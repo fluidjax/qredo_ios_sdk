@@ -1,10 +1,6 @@
-//
-//  QredoTestUtils.h
-//  QredoSDK_nopods
-//
-//  Created by Gabriel Radu on 20/11/2014.
-//
-//
+/*
+ *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
 
 #import <Foundation/Foundation.h>
 
