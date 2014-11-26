@@ -35,18 +35,32 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 - (BOOL)isEqual:(id)object;
 @end
 
-/** Immutable metadata. If we need mutable object later, then we can define QredoVaultItemMetaDataMutable */
-@interface QredoVaultItemMetadata : NSObject
+
+/** Immutable metadata. */
+@interface QredoVaultItemMetadata : NSObject<NSCopying, NSMutableCopying>
 
 @property (readonly) QredoVaultItemDescriptor *descriptor;
-@property (readonly) NSString *dataType;
+@property (readonly, copy) NSString *dataType;
 @property (readonly) QredoAccessLevel accessLevel;
-@property (readonly) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
+@property (readonly, copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
 
 // this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
 + (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor dataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues;
 /** this constructor to be used externally when creating a new vault item to be stored in Vault */
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues;
+
+@end
+
+/** Mutable metadata. */
+@interface QredoMutableVaultItemMetadata : QredoVaultItemMetadata
+
+@property QredoVaultItemDescriptor *descriptor;
+@property (copy) NSString *dataType;
+@property QredoAccessLevel accessLevel;
+@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
+
+- (void)setSummaryValue:(id)value forKey:(NSString *)key;
+
 @end
 
 @interface QredoVaultItem : NSObject

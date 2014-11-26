@@ -315,4 +315,53 @@
     [vault stopListening];
 }
 
+- (void)testVaultItemMetadataAndMutableMetadata
+{
+    QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[QredoQUID QUID] itemId:[QredoQUID QUID]];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2"};
+    
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                      dataType:@"blob"
+                                                                                   accessLevel:0
+                                                                                 summaryValues:item1SummaryValues];
+    
+    QredoVaultItemMetadata *aCopy = [metadata copy];
+    
+    XCTAssertEqualObjects(aCopy.descriptor, metadata.descriptor);
+    XCTAssertEqualObjects(aCopy.dataType, metadata.dataType);
+    XCTAssertEqual(aCopy.accessLevel, metadata.accessLevel);
+    XCTAssertEqualObjects(aCopy.summaryValues, metadata.summaryValues);
+    
+    QredoMutableVaultItemMetadata *aMutableCopy = [metadata mutableCopy];
+    
+    XCTAssertEqualObjects(aMutableCopy.descriptor, metadata.descriptor);
+    XCTAssertEqualObjects(aMutableCopy.dataType, metadata.dataType);
+    XCTAssertEqual(aMutableCopy.accessLevel, metadata.accessLevel);
+    XCTAssertEqualObjects(aMutableCopy.summaryValues, metadata.summaryValues);
+    
+    
+    
+    NSDictionary *aMutableCopySummaryValues = @{@"key1": @"value1",
+                                                @"key2": @"value2",
+                                                @"key3": @"value3"};
+    
+    [aMutableCopy setSummaryValue:@"value3" forKey:@"key3"];
+    
+    XCTAssertEqualObjects(aMutableCopy.descriptor, metadata.descriptor);
+    XCTAssertEqualObjects(aMutableCopy.dataType, metadata.dataType);
+    XCTAssertEqual(aMutableCopy.accessLevel, metadata.accessLevel);
+    XCTAssertEqualObjects(aMutableCopy.summaryValues, aMutableCopySummaryValues);
+    
+    QredoMutableVaultItemMetadata *mutableMetadata = [QredoMutableVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                      accessLevel:0
+                                                                                                    summaryValues:nil];
+    
+    NSDictionary *mutableMetadataSummaryValues = @{@"key3": @"value3"};
+    
+    [mutableMetadata setSummaryValue:@"value3" forKey:@"key3"];
+    
+    XCTAssertEqualObjects(mutableMetadata.summaryValues, mutableMetadataSummaryValues);
+}
+
 @end
