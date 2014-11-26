@@ -48,6 +48,15 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 @end
 
 @implementation QredoConversationMetadata
+
+- (BOOL)isEphemeral {
+    return [self.type characterAtIndex:[self.type length]-1] == '~';
+}
+
+- (BOOL)isPersistent {
+    return ![self isEphemeral];
+}
+
 @end
 
 @interface QredoConversationHighWatermark()
