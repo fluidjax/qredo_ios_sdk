@@ -8,7 +8,10 @@
 #import "QredoClientMarshallers.h"
 #import "QredoServiceInvoker.h"
 
-NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
+NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
+NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
+
+static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
 
 // Private stuff
 @interface QredoClient ()
@@ -20,6 +23,8 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
 
     dispatch_queue_t _rendezvousQueue;
 }
+
+@property NSURL *serviceURL;
 
 @end
 
@@ -40,9 +45,32 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
 
 @implementation QredoClient
 
-- (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(BOOL isAuthorized, NSError *error))completionHandler
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
 {
-    completionHandler(YES, nil);
+    [self authorizeWithConversationTypes:conversationTypes vaultDataTypes:vaultDataTypes options:nil completionHandler:completionHandler];
+}
+
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(NSDictionary*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
+{
+    NSURL *serviceURL = nil;
+
+    id serviceURLObject = (NSString *)[options objectForKey:QredoClientOptionServiceURL];
+
+    if (!serviceURLObject) {
+        serviceURLObject = QredoClientDefaultServiceURL;
+    }
+
+    if ([serviceURLObject isKindOfClass:[NSString class]]) {
+        serviceURL = [NSURL URLWithString: serviceURLObject];
+    } else if ([serviceURLObject isKindOfClass:[NSURL class]]) {
+        serviceURL = serviceURLObject;
+    } else {
+        [NSException raise:NSInvalidArgumentException format:@"Service URL should be either NSString or NSURL"];
+    }
+
+    QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL options:options];
+
+    completionHandler(client, nil);
 }
 
 - (instancetype)initWithServiceURL:(NSURL *)serviceURL
@@ -61,7 +89,8 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
 
     [self loadState];
-    
+
+    BOOL changedVaultId = NO;
     id vaultId = [options objectForKey:QredoClientOptionVaultID];
 
     if (vaultId) {
@@ -74,10 +103,16 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
                         format:@"%@ should be of type NSString or QredoQUID. It is %@",
              QredoClientOptionVaultID, [[vaultId class] description]];
         }
+
+        changedVaultId = YES;
     }
 
     if (!_vaultId) {
         _vaultId = [QredoQUID QUID];
+        changedVaultId = YES;
+    }
+
+    if (changedVaultId) {
         [self saveState];
     }
 

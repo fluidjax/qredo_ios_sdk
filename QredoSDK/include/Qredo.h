@@ -21,31 +21,22 @@ typedef uint64_t QredoVaultSequenceValue;
 
 /** Options for [QredoClient initWithServiceURL:options:] */
 extern NSString *const QredoClientOptionVaultID;
+extern NSString *const QredoClientOptionServiceURL;
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
 
 /** Qredo Client */
 @interface QredoClient : NSObject
-@property (readonly) NSURL *serviceURL;
-
-/** Creates instance of qredo client
- @param serviceURL Root URL for Qredo services
- */
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL;
-
-/** 
- @param serviceURL serviceURL Root URL for Qredo services
- @param options qredo options. At the moment there is only `QredoClientOptionVaultID`
- */
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL options:(NSDictionary*)options;
-
 /** Before using the SDK, the application should call this function with the required conversation types and vault data types.
  During the authorization the SDK may ask user to allow access to their Qredo account.
  
  If the app calls any Vault, Rendezvous or Conversation API without an authorization, then those methods will return `QredoErrorCodeAppNotAuthorized` error immediately.
  */
-- (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(BOOL isAuthorized, NSError *error))completionHandler;
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
+
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(NSDictionary*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
+
 
 - (QredoVault*) defaultVault;
 
