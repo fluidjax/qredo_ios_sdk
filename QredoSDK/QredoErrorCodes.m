@@ -1,10 +1,6 @@
-//
-//  QredoErrorCodes.m
-//  QredoSDK
-//
-//  Created by David Hearn on 04/11/2014.
-//
-//
+/*
+ *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
 
 #import "QredoErrorCodes.h"
 
