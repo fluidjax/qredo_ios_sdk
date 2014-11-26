@@ -44,7 +44,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 @property (readonly) QredoQUID *conversationId;
 @property (readonly) BOOL amRendezvousOwner;
 @property (readonly) NSString *rendezvousTag;
-@property (readonly) QredoVault* valut;
+@property (readonly) QredoVault* store;
 @property (readonly, getter=isEphemeral) BOOL ephemeral;
 @property (readonly, getter=isPersistent) BOOL persistent;
 @end
