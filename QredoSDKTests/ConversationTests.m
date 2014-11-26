@@ -231,120 +231,117 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [didReceiveResponseExpectation fulfill];
 }
 
-- (void)testMetadata {
+- (void)testMetadataOfEphemeralConversation {
     
-    {
-        NSString *randomTag = [[QredoQUID QUID] QUIDString];
-        
-        QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
-        
-        __block QredoRendezvous *rendezvous = nil;
-        
-        __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-        
-        [client createRendezvousWithTag:randomTag
-                          configuration:configuration
-                      completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                          XCTAssertNil(error);
-                          XCTAssertNotNil(_rendezvous);
-                          
-                          rendezvous = _rendezvous;
-                          
-                          [createExpectation fulfill];
-                      }];
-        [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-            createExpectation = nil;
-        }];
-        
-        // Responding to the rendezvous
-        __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
-        didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
-        
-        rendezvous.delegate = self;
-        
-        [rendezvous startListening];
-        
-        // another client with a new vault
-        QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
-        XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
-        
-        __block QredoConversation *responderConversation = nil;
-        [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
-            XCTAssertNil(error);
-            XCTAssertNotNil(conversation);
-            XCTAssertFalse(conversation.metadata.isEphemeral);
-            XCTAssert(conversation.metadata.isPersistent);
-
-            responderConversation = conversation;
-            NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
-            
-            [didRespondExpectation fulfill];
-        }];
-        
-        [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-            didRespondExpectation = nil;
-        }];
-        
-        [rendezvous stopListening];
-
-    }
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 maxResponseCount:@1];
     
-    {
-        NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    __block QredoRendezvous *rendezvous = nil;
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    [client createRendezvousWithTag:randomTag
+                      configuration:configuration
+                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                      XCTAssertNil(error);
+                      XCTAssertNotNil(_rendezvous);
+                      
+                      rendezvous = _rendezvous;
+                      
+                      [createExpectation fulfill];
+                  }];
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    // Responding to the rendezvous
+    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
+    didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
+    
+    rendezvous.delegate = self;
+    
+    [rendezvous startListening];
+    
+    // another client with a new vault
+    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
+    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
+    
+    __block QredoConversation *responderConversation = nil;
+    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(conversation);
+        XCTAssert(conversation.metadata.isEphemeral);
+        XCTAssertFalse(conversation.metadata.isPersistent);
         
-        QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 maxResponseCount:@1];
+        responderConversation = conversation;
+        NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
         
-        __block QredoRendezvous *rendezvous = nil;
-        
-        __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-        
-        [client createRendezvousWithTag:randomTag
-                          configuration:configuration
-                      completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                          XCTAssertNil(error);
-                          XCTAssertNotNil(_rendezvous);
-                          
-                          rendezvous = _rendezvous;
-                          
-                          [createExpectation fulfill];
-                      }];
-        [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-            createExpectation = nil;
-        }];
-        
-        // Responding to the rendezvous
-        __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
-        didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
-        
-        rendezvous.delegate = self;
-        
-        [rendezvous startListening];
-        
-        // another client with a new vault
-        QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
-        XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
-        
-        __block QredoConversation *responderConversation = nil;
-        [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
-            XCTAssertNil(error);
-            XCTAssertNotNil(conversation);
-            XCTAssert(conversation.metadata.isEphemeral);
-            XCTAssertFalse(conversation.metadata.isPersistent);
-            
-            responderConversation = conversation;
-            NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
-            
-            [didRespondExpectation fulfill];
-        }];
-        
-        [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-            didRespondExpectation = nil;
-        }];
-        
-        [rendezvous stopListening];
+        [didRespondExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        didRespondExpectation = nil;
+    }];
+    
+    [rendezvous stopListening];
+    
+}
 
-    }
+- (void)testMetadataOfPersistentConversation {
+    
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    
+    __block QredoRendezvous *rendezvous = nil;
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    [client createRendezvousWithTag:randomTag
+                      configuration:configuration
+                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                      XCTAssertNil(error);
+                      XCTAssertNotNil(_rendezvous);
+                      
+                      rendezvous = _rendezvous;
+                      
+                      [createExpectation fulfill];
+                  }];
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    // Responding to the rendezvous
+    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
+    didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
+    
+    rendezvous.delegate = self;
+    
+    [rendezvous startListening];
+    
+    // another client with a new vault
+    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
+    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
+    
+    __block QredoConversation *responderConversation = nil;
+    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(conversation);
+        XCTAssertFalse(conversation.metadata.isEphemeral);
+        XCTAssert(conversation.metadata.isPersistent);
+        
+        responderConversation = conversation;
+        NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
+        
+        [didRespondExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        didRespondExpectation = nil;
+    }];
+    
+    [rendezvous stopListening];
     
 }
 
