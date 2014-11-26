@@ -48,6 +48,13 @@
 
 @end
 
+@interface QredoVaultTests ()
+{
+    QredoClient *qredo;
+}
+
+@end
+
 
 @implementation QredoVaultTests
 
@@ -55,6 +62,20 @@
     [super setUp];
 
     self.serviceURL = QREDO_HTTP_SERVICE_URL;
+
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:@{QredoClientOptionServiceURL: self.serviceURL,
+                                                  QredoClientOptionVaultID: [QredoQUID QUID]}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  qredo = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+
 }
 
 - (NSData*)randomDataWithLength:(int)length {
@@ -68,7 +89,6 @@
 - (void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
 
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
     XCTAssertNotNil(vault);
@@ -79,20 +99,28 @@
     vault = nil;
     qredo = nil;
 
-    qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:@{QredoClientOptionServiceURL: self.serviceURL}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  qredo = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
 
     XCTAssertEqualObjects([[qredo defaultVault] vaultId], firstQUID);
 }
 
 - (void)testGettingItems
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
     
     
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
+
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
@@ -166,7 +194,6 @@
 
 - (void)testEnumeration
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
 
     __block NSError *error = nil;
@@ -187,7 +214,6 @@
 
 - (void)testEnumerationReturnsCreatedItem
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
     // Create an item and store in vault
@@ -238,7 +264,6 @@
     __block NSError *error = nil;
     __block int count = 0;
     __block BOOL itemFound = NO;
-    XCTestExpectation *enumerationCompleted = [self expectationWithDescription:@"EnumerateVaultItems enumerated last item"];
     XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
@@ -256,10 +281,6 @@
             NSLog(@"Item created earlier has been found (count = %d).", count);
         }
         
-        if (*stop) {
-            NSLog(@"Enumeration stopped.");
-            [enumerationCompleted fulfill];
-        }
     } completionHandler:^(NSError *errorBlock) {
         error = errorBlock;
         [completionHandlerCalled fulfill];
@@ -281,7 +302,6 @@
 
 - (void)testListener
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
 
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];

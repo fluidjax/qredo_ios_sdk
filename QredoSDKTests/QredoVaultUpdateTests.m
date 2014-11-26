@@ -14,19 +14,39 @@
 #import "NSDictionary+Contains.h"
 
 
+@interface QredoVaultUpdateTests ()
+{
+    QredoClient *qredo;
+}
+
+@end
+
 @implementation QredoVaultUpdateTests
 
 - (void)setUp
 {
     [super setUp];
     self.serviceURL = QREDO_HTTP_SERVICE_URL;
+
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:@{QredoClientOptionServiceURL: self.serviceURL,
+                                                  QredoClientOptionVaultID: [QredoQUID QUID]}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  qredo = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+
 }
 
 - (void)testGettingItems
 {
     XCTestExpectation *testExpectation = nil;
 
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
     
     
@@ -106,7 +126,6 @@
 {
     XCTestExpectation *testExpectation = nil;
     
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
     
@@ -211,7 +230,6 @@
 {
     XCTestExpectation *testExpectation = nil;
     
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
     
