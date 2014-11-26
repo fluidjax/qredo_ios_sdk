@@ -40,6 +40,11 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.vault.id";
 
 @implementation QredoClient
 
+- (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(BOOL isAuthorized, NSError *error))completionHandler
+{
+    completionHandler(YES, nil);
+}
+
 - (instancetype)initWithServiceURL:(NSURL *)serviceURL
 {
     return [self initWithServiceURL:serviceURL options:nil];
