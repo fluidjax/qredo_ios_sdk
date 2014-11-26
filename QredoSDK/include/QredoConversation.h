@@ -7,6 +7,9 @@
 
 #import "QredoQUID.h"
 
+@class QredoVault;
+
+
 extern NSString *const kQredoConversationVaultItemType;
 
 @interface QredoConversationHighWatermark : NSObject
@@ -41,6 +44,9 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 @property (readonly) QredoQUID *conversationId;
 @property (readonly) BOOL amRendezvousOwner;
 @property (readonly) NSString *rendezvousTag;
+@property (readonly) QredoVault* store;
+@property (readonly, getter=isEphemeral) BOOL ephemeral;
+@property (readonly, getter=isPersistent) BOOL persistent;
 @end
 
 @protocol QredoConversationDelegate <NSObject>
