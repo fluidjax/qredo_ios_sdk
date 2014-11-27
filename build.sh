@@ -3,7 +3,7 @@
 set -e
 
 # Need to pull the latest change for Lingua Franca
-pod update
+# pod update
 
 if ! which xctool >/dev/null; then
 	echo xctool is NOT installed
@@ -56,7 +56,6 @@ lipo -create $LIBS -output $PACKAGE_DIR/libqredosdk.a
 echo Copying public header files
 rsync -r --exclude=.DS_Store QredoSDK/include $PACKAGE_DIR
 cp Pods/Headers/Public/LinguaFranca/QredoQUID.h $PACKAGE_DIR/include
-cp Pods/Headers/Public/LinguaFranca/QredoErrorCodes.h $PACKAGE_DIR/include
 
 cd $PACKAGE_DIR && zip -9 -r ../qredo_ios_sdk_$PACKAGE_NAME.zip *
 
