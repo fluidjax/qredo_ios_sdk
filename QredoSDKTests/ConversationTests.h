@@ -4,4 +4,8 @@
 
 @property NSURL *serviceURL;
 
+- (void)testConversation;
+- (void)testMetadataOfEphemeralConversation;
+- (void)testMetadataOfPersistentConversation;
+
 @end

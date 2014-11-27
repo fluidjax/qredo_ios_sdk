@@ -4,4 +4,8 @@
 
 @property NSString *serviceURL;
 
+- (void)testGettingItems;
+- (void)testPutItems;
+- (void)testDeleteItems;
+
 @end

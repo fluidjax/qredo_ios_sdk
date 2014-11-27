@@ -13,4 +13,17 @@
     self.serviceURL = QREDO_MQTT_SERVICE_URL;
 }
 
+- (void)testGettingItems {
+    [super testGettingItems];
+}
+
+- (void)testPutItems {
+    [super testPutItems];
+}
+
+- (void)testDeleteItems {
+    [super testDeleteItems];
+}
+
+
 @end
