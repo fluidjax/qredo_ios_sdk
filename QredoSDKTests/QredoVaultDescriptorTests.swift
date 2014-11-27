@@ -2,13 +2,23 @@ import Foundation
 import XCTest
 
 class QredoVaultDescriptorTests: XCTestCase {
-    let client = QredoClient(serviceURL: NSURL(string: QREDO_HTTP_SERVICE_URL), options:[QredoClientOptionVaultID : QredoQUID()])
+    var client : QredoClient! = nil
+    let serviceURL = QREDO_HTTP_SERVICE_URL
     var itemDescriptor : QredoVaultItemDescriptor? = nil
 
     let initialSummaryValues = ["key 1" : "value 1"]
 
     override func setUp() {
         super.setUp()
+
+        let createExpectation = self.expectationWithDescription("create client")
+        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: ["com.qredo.test"],
+            options: [QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: QredoQUID()],
+            completionHandler: {client, error in
+                self.client = client
+                createExpectation.fulfill()
+        })
+        waitForExpectationsWithTimeout(1.0, handler: nil)
 
         let vault = client.defaultVault()
 

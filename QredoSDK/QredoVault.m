@@ -283,17 +283,24 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 }
 @end
 
+@interface QredoVaultItemMetadata ()
+@property QredoVaultItemDescriptor *descriptor;
+@property (copy) NSString *dataType;
+@property QredoAccessLevel accessLevel;
+@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
+@end
+
 @implementation QredoVaultItemMetadata
 
 + (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor dataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues
 {
-    return [[QredoVaultItemMetadata alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
+    return [[self alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
 }
 
 
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues
 {
-    return [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:nil dataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
+    return [self vaultItemMetadataWithDescriptor:nil dataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
 }
 
 - (instancetype)initWithDescriptor:(QredoVaultItemDescriptor *)descriptor dataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues
@@ -308,6 +315,42 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     return self;
 }
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[QredoVaultItemMetadata allocWithZone:zone] initWithDescriptor:self.descriptor
+                                                                  dataType:self.dataType
+                                                               accessLevel:self.accessLevel
+                                                             summaryValues:self.summaryValues];
+}
+
+- (id)mutableCopyWithZone:(NSZone *)zone
+{
+    return [[QredoMutableVaultItemMetadata allocWithZone:zone] initWithDescriptor:self.descriptor
+                                                                         dataType:self.dataType
+                                                                      accessLevel:self.accessLevel
+                                                                    summaryValues:self.summaryValues];
+}
+
+@end
+
+
+@implementation QredoMutableVaultItemMetadata
+
+- (void)setSummaryValue:(id)value forKey:(NSString *)key
+{
+    NSMutableDictionary *mutableSummaryValues = [self.summaryValues mutableCopy];
+    if (!mutableSummaryValues) {
+        if (value) {
+            self.summaryValues = [NSDictionary dictionaryWithObject:value forKey:key];
+        }
+    }
+    else {
+        [mutableSummaryValues setObject:value forKey:key];
+        self.summaryValues = mutableSummaryValues;
+    }
+}
+
 @end
 
 @implementation QredoVault

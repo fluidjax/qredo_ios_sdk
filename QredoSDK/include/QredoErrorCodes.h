@@ -4,24 +4,20 @@
 
 #import <Foundation/Foundation.h>
 
-#ifndef QredoSDK_QredoErrorCodes_h
-#define QredoSDK_QredoErrorCodes_h
-
-
 // Domain used in NSError
 extern NSString *const QredoErrorDomain;
 
 
 typedef NS_ENUM(NSInteger, QredoErrorCode) {
-    
     QredoErrorCodeUnknown = 1000,
     QredoErrorCodeRemoteOperationFailure,
+    QredoErrorCodeAppNotAuthorized,
 
     // Vault errors
     QredoErrorCodeVaultUnknown = 2000,
     QredoErrorCodeVaultItemNotFound,
     QredoErrorCodeVaultItemHasBeenDeleted,
-    
+
     // Rendezvous errors
     QredoErrorCodeRendezvousNotFound = 3001,
     QredoErrorCodeRendezvousInvalidData,
@@ -36,4 +32,5 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     QredoErrorCodeConversationWrongAuthenticationCode,
 };
 
-#endif
+
+

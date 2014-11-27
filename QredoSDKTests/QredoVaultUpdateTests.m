@@ -1,10 +1,6 @@
-//
-//  QredoVaultUpdateTests.m
-//  QredoSDK_nopods
-//
-//  Created by Gabriel Radu on 20/11/2014.
-//
-//
+/*
+ *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
 
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
@@ -14,19 +10,39 @@
 #import "NSDictionary+Contains.h"
 
 
+@interface QredoVaultUpdateTests ()
+{
+    QredoClient *qredo;
+}
+
+@end
+
 @implementation QredoVaultUpdateTests
 
 - (void)setUp
 {
     [super setUp];
     self.serviceURL = QREDO_HTTP_SERVICE_URL;
+
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:@{QredoClientOptionServiceURL: self.serviceURL,
+                                                  QredoClientOptionVaultID: [QredoQUID QUID]}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  qredo = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+
 }
 
 - (void)testGettingItems
 {
     XCTestExpectation *testExpectation = nil;
 
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     QredoVault *vault = [qredo defaultVault];
     
     
@@ -106,7 +122,6 @@
 {
     XCTestExpectation *testExpectation = nil;
     
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
     
@@ -211,7 +226,6 @@
 {
     XCTestExpectation *testExpectation = nil;
     
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
     QredoVault *vault = [qredo defaultVault];
     
     

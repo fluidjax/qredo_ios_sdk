@@ -4,4 +4,14 @@
 
 @property NSString *serviceURL;
 
+- (void)testPersistanceVaultId;
+- (void)testPutItem;
+- (void)testPutItemMultiple;
+- (void)testGettingItems;
+- (void)testEnumeration;
+- (void)testEnumerationReturnsCreatedItem;
+- (void)testEnumerationAbortsOnStop;
+- (void)testListener;
+- (void)testVaultItemMetadataAndMutableMetadata;
+
 @end

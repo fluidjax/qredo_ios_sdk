@@ -64,7 +64,17 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [super setUp];
     self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
 
-    client = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+
+    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+                                 vaultDataTypes:nil
+                                        options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  client = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
 }
 
 - (void)testConversation {

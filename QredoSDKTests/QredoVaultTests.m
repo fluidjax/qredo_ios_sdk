@@ -48,6 +48,13 @@
 
 @end
 
+@interface QredoVaultTests ()
+{
+    QredoClient *qredo;
+}
+
+@end
+
 
 @implementation QredoVaultTests
 
@@ -55,6 +62,20 @@
     [super setUp];
 
     self.serviceURL = QREDO_HTTP_SERVICE_URL;
+
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:@{QredoClientOptionServiceURL: self.serviceURL,
+                                                  QredoClientOptionVaultID: [QredoQUID QUID]}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  qredo = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+
 }
 
 - (NSData*)randomDataWithLength:(int)length {
@@ -68,7 +89,6 @@
 - (void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
 
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
     XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
     XCTAssertNotNil(vault);
@@ -79,15 +99,24 @@
     vault = nil;
     qredo = nil;
 
-    qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:@{QredoClientOptionServiceURL: self.serviceURL}
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  qredo = clientArg;
+                                  [clientExpectation fulfill];
+                              }];
+    [self waitForExpectationsWithTimeout:1.0 handler:nil];
 
     XCTAssertEqualObjects([[qredo defaultVault] vaultId], firstQUID);
 }
 
 - (void)testPutItem
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+    XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(vault);
     
     
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -111,11 +140,12 @@
 
 - (void)testPutItemMultiple
 {
+    XCTAssertNotNil(qredo);
+    QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(vault);
+
     for (int i = 0; i < 3; i++)
     {
-        QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
-        QredoVault *vault = [qredo defaultVault];
-        
         NSData *item1Data = [self randomDataWithLength:1024];
         NSString *description = [NSString stringWithFormat:@"put item %d", i];
         NSDictionary *item1SummaryValues = @{@"key1": description,
@@ -139,14 +169,15 @@
 
 - (void)testGettingItems
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+    XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
-    
+    XCTAssertNotNil(vault);
     
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
@@ -220,8 +251,9 @@
 
 - (void)testEnumeration
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+    XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(vault);
 
     __block NSError *error = nil;
     __block int count = 0;
@@ -241,8 +273,9 @@
 
 - (void)testEnumerationReturnsCreatedItem
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
+    XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(vault);
     
     // Create an item and store in vault
     NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
@@ -328,8 +361,9 @@
 
 - (void)testEnumerationAbortsOnStop
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
+    XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(vault);
     
     // Create 2 items and store in vault (ensures there's more than 1 item in vault when enumerating
     NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
@@ -412,8 +446,9 @@
 
 - (void)testListener
 {
-    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+    XCTAssertNotNil(qredo);
     QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(vault);
 
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
     listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
@@ -444,6 +479,55 @@
 
 
     [vault stopListening];
+}
+
+- (void)testVaultItemMetadataAndMutableMetadata
+{
+    QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[QredoQUID QUID] itemId:[QredoQUID QUID]];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2"};
+    
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                      dataType:@"blob"
+                                                                                   accessLevel:0
+                                                                                 summaryValues:item1SummaryValues];
+    
+    QredoVaultItemMetadata *aCopy = [metadata copy];
+    
+    XCTAssertEqualObjects(aCopy.descriptor, metadata.descriptor);
+    XCTAssertEqualObjects(aCopy.dataType, metadata.dataType);
+    XCTAssertEqual(aCopy.accessLevel, metadata.accessLevel);
+    XCTAssertEqualObjects(aCopy.summaryValues, metadata.summaryValues);
+    
+    QredoMutableVaultItemMetadata *aMutableCopy = [metadata mutableCopy];
+    
+    XCTAssertEqualObjects(aMutableCopy.descriptor, metadata.descriptor);
+    XCTAssertEqualObjects(aMutableCopy.dataType, metadata.dataType);
+    XCTAssertEqual(aMutableCopy.accessLevel, metadata.accessLevel);
+    XCTAssertEqualObjects(aMutableCopy.summaryValues, metadata.summaryValues);
+    
+    
+    
+    NSDictionary *aMutableCopySummaryValues = @{@"key1": @"value1",
+                                                @"key2": @"value2",
+                                                @"key3": @"value3"};
+    
+    [aMutableCopy setSummaryValue:@"value3" forKey:@"key3"];
+    
+    XCTAssertEqualObjects(aMutableCopy.descriptor, metadata.descriptor);
+    XCTAssertEqualObjects(aMutableCopy.dataType, metadata.dataType);
+    XCTAssertEqual(aMutableCopy.accessLevel, metadata.accessLevel);
+    XCTAssertEqualObjects(aMutableCopy.summaryValues, aMutableCopySummaryValues);
+    
+    QredoMutableVaultItemMetadata *mutableMetadata = [QredoMutableVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                      accessLevel:0
+                                                                                                    summaryValues:nil];
+    
+    NSDictionary *mutableMetadataSummaryValues = @{@"key3": @"value3"};
+    
+    [mutableMetadata setSummaryValue:@"value3" forKey:@"key3"];
+    
+    XCTAssertEqualObjects(mutableMetadata.summaryValues, mutableMetadataSummaryValues);
 }
 
 @end
