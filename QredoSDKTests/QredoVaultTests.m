@@ -84,6 +84,59 @@
     XCTAssertEqualObjects([[qredo defaultVault] vaultId], firstQUID);
 }
 
+- (void)testPutItem
+{
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+    QredoVault *vault = [qredo defaultVault];
+    
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(newItemDescriptor);
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+}
+
+- (void)testPutItemMultiple
+{
+    for (int i = 0; i < 3; i++)
+    {
+        QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
+        QredoVault *vault = [qredo defaultVault];
+        
+        NSData *item1Data = [self randomDataWithLength:1024];
+        NSString *description = [NSString stringWithFormat:@"put item %d", i];
+        NSDictionary *item1SummaryValues = @{@"key1": description,
+                                             @"key2": @"value2",
+                                             @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+        QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                                accessLevel:0
+                                                                                                              summaryValues:item1SummaryValues]
+                                                                value:item1Data];
+        
+        XCTestExpectation *testExpectation = [self expectationWithDescription:description];
+        [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+         {
+             XCTAssertNil(error);
+             XCTAssertNotNil(newItemDescriptor);
+             [testExpectation fulfill];
+         }];
+        [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    }
+}
+
 - (void)testGettingItems
 {
     QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL]];
@@ -92,7 +145,8 @@
     
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
-                                         @"key2": @"value2"};
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
@@ -235,15 +289,12 @@
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
 
     // Confirm enumerate finds item we added
-    __block NSError *error = nil;
     __block int count = 0;
     __block BOOL itemFound = NO;
-    XCTestExpectation *enumerationCompleted = [self expectationWithDescription:@"EnumerateVaultItems enumerated last item"];
     XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
-        XCTAssertNil(error);
         XCTAssertNotNil(vaultItemMetadata);
         
         NSLog(@"Enumerated item %d summary values: %@", count, vaultItemMetadata.summaryValues);
@@ -255,18 +306,14 @@
             itemFound = YES;
             NSLog(@"Item created earlier has been found (count = %d).", count);
         }
-        
-        if (*stop) {
-            NSLog(@"Enumeration stopped.");
-            [enumerationCompleted fulfill];
-        }
-    } completionHandler:^(NSError *errorBlock) {
-        error = errorBlock;
+    } completionHandler:^(NSError *error) {
+        NSLog(@"Completion handler entered.");
+        XCTAssertNil(error);
         [completionHandlerCalled fulfill];
     }];
+    
+    // Note: May need a longer timeout if there's lots of items to enumerate. May depend on how many items added since test last run.
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
-
-    XCTAssertNil(error);
 
     XCTAssertTrue(itemFound, "Item just created was not found during enumeration.");
     
@@ -275,6 +322,90 @@
     {
         XCTFail(@"Created item was not found and 50 items were enumerated. Likely failure was due to server only returning oldest 50 items.");
     }
+    
+    NSLog(@"count: %d", count);
+}
+
+- (void)testEnumerationAbortsOnStop
+{
+    QredoClient *qredo = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:self.serviceURL] options:@{QredoClientOptionVaultID: [QredoQUID QUID]}];
+    QredoVault *vault = [qredo defaultVault];
+    
+    // Create 2 items and store in vault (ensures there's more than 1 item in vault when enumerating
+    NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    
+    NSLog(@"Item summary values for new item 1: %@", item1SummaryValues);
+    
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    NSData *item2Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item2SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    
+    NSLog(@"Item summary values for new item 2: %@", item2SummaryValues);
+    
+    QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item2SummaryValues]
+                                                            value:item2Data];
+
+    XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem 1 completion handler called"];
+    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         XCTAssertNotNil(newItemDescriptor, @"New item descriptor for item 1 was nil");
+         
+         [putItem1CompletedExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    
+    XCTestExpectation *putItem2CompletedExpectation = [self expectationWithDescription:@"PutItem 2 completion handler called"];
+    [vault putItem:item2 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         XCTAssertNotNil(newItemDescriptor, @"New item descriptor for item 2 was nil");
+         
+         [putItem2CompletedExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+
+    // Confirm enumerate 'stop' aborts enumeration
+    __block int count = 0;
+    __block BOOL stopWasSet = NO;
+    XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        count++;
+        
+        XCTAssertNotNil(vaultItemMetadata);
+        
+        NSLog(@"Enumerated item %d summary values: %@", count, vaultItemMetadata.summaryValues);
+        
+        // If 1st item, then we set stop
+        if (count == 1) {
+            *stop = YES;
+            stopWasSet = YES;
+        }
+        else {
+            // Should not get here if 'stop' worked
+            XCTFail(@"Enumerated more than 1 item, but stop had been set after 1st item");
+        }
+    } completionHandler:^(NSError *error) {
+        NSLog(@"Completion handler entered.");
+        XCTAssertNil(error);
+        [completionHandlerCalled fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    
+    XCTAssertTrue(stopWasSet, "Never set the 'stop' flag.");
+    XCTAssertTrue(count == 1, "Enumerated more than 1 item, despite setting 'stop' after first item.");
     
     NSLog(@"count: %d", count);
 }
