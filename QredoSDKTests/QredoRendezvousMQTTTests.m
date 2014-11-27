@@ -13,4 +13,8 @@
     self.serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
 }
 
+- (void)testCreateRendezvous {
+    [super testCreateRendezvous];
+}
+
 @end
