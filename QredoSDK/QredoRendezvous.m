@@ -19,6 +19,7 @@
 #import "QredoVaultCrypto.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
+#import "QredoLogging.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
@@ -246,6 +247,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // TODO implement later
 }
 
+// This method polls for (new) responses to rendezvous, and creates new conversations from them.
 - (void)startListening
 {
     NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
@@ -326,15 +328,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             return ;
         }
 
-
-        QredoRendezvousCrypto *_crypto = [QredoRendezvousCrypto instance];
         NSData *nonce = result;
-        SecKeyRef key = [_crypto accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
-
-        NSMutableData *dataToSign = [NSMutableData dataWithData:[_hashedTag data]];
-        [dataToSign appendData:nonce];
-
-        NSData *signature = [QredoCrypto rsaPssSignMessage:dataToSign saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:key];
+        NSData *signature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:nonce];
 
         [_rendezvous getResponsesWithHashedTag:_hashedTag
                                      challenge:nonce
@@ -388,6 +383,18 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     }];
 }
 
++ (NSData *)signatureForHashedTag:(QredoRendezvousHashedTag *)hashedTag nonce:(NSData *)nonce
+{
+    QredoRendezvousCrypto *crypto = [QredoRendezvousCrypto instance];
+    SecKeyRef key = [crypto accessControlPrivateKeyWithTag:[hashedTag QUIDString]];
+    
+    NSMutableData *dataToSign = [NSMutableData dataWithData:[hashedTag data]];
+    [dataToSign appendData:nonce];
+    
+    NSData *signature = [QredoCrypto rsaPssSignMessage:dataToSign saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:key];
+    
+    return signature;
+}
 
 - (QredoRendezvousMetadata*)metadata {
     QredoVault *vault = _client.systemVault;
