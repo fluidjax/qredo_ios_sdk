@@ -344,26 +344,11 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                  for (QredoRendezvousResponse *response in result.responses) {
                                      BOOL stop = result.responses.lastObject == response;
 
-                                     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
-                                                                                                   rendezvousTag:_tag
-                                                                                                 converationType:_configuration.conversationType
-                                                                                                        transCap:_configuration.transCap];
-                                     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
+                                     NSError *localError = nil;
+                                     QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:localError];
 
-
-                                     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-                                     __block NSError *savingError = nil;
-
-                                     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey publicKey:responderPublicKey rendezvousOwner:YES completionHandler:^(NSError *error) {
-                                         savingError = error;
-
-                                         dispatch_semaphore_signal(semaphore);
-                                     }];
-
-                                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
-                                     if (savingError) {
-                                         completionHandler(savingError);
+                                     if (localError) {
+                                         completionHandler(localError);
                                          return;
                                      }
 
@@ -394,6 +379,35 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSData *signature = [QredoCrypto rsaPssSignMessage:dataToSign saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:key];
     
     return signature;
+}
+
+- (QredoConversation *)createConversationAndStoreKeysForResponse:(QredoRendezvousResponse *)response error:(NSError *)error
+{
+    QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
+                                                                  rendezvousTag:_tag
+                                                                converationType:_configuration.conversationType
+                                                                       transCap:_configuration.transCap];
+    QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
+    
+    
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block NSError *savingError = nil;
+    
+    [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey publicKey:responderPublicKey rendezvousOwner:YES completionHandler:^(NSError *blockError) {
+        savingError = blockError;
+        
+        dispatch_semaphore_signal(semaphore);
+    }];
+    
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    
+    if (savingError) {
+        // Do not return a valid object if we could not save the keys
+        error = savingError;
+        conversation = nil;
+    }
+    
+    return conversation;
 }
 
 - (QredoRendezvousMetadata*)metadata {
