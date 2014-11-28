@@ -12,6 +12,16 @@
     self.serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
 }
 
+- (void)testConversationCreation
+{
+    [super testConversationCreation];
+}
+
+- (void)testRespondingToConversation
+{
+    [super testRespondingToConversation];
+}
+
 - (void)testConversation
 {
     [super testConversation];

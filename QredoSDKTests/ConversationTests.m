@@ -77,6 +77,85 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [self waitForExpectationsWithTimeout:1.0 handler:nil];
 }
 
+- (void)testConversationCreation {
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    
+    __block QredoRendezvous *rendezvous = nil;
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    [client createRendezvousWithTag:randomTag
+                      configuration:configuration
+                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                      XCTAssertNil(error);
+                      XCTAssertNotNil(_rendezvous);
+                      
+                      rendezvous = _rendezvous;
+                      
+                      [createExpectation fulfill];
+                  }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        createExpectation = nil;
+    }];
+}
+
+- (void)testRespondingToConversation {
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    
+    __block QredoRendezvous *rendezvous = nil;
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    [client createRendezvousWithTag:randomTag
+                      configuration:configuration
+                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                      XCTAssertNil(error);
+                      XCTAssertNotNil(_rendezvous);
+                      
+                      rendezvous = _rendezvous;
+                      
+                      [createExpectation fulfill];
+                  }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        createExpectation = nil;
+    }];
+
+    // Responding to the rendezvous
+    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
+    didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
+    
+    rendezvous.delegate = self;
+    
+    [rendezvous startListening];
+    
+    // another client with a new vault
+    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
+    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
+    
+    __block QredoConversation *responderConversation = nil;
+    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(conversation);
+        
+        responderConversation = conversation;
+        NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
+        
+        [didRespondExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        didRespondExpectation = nil;
+    }];
+    
+    [rendezvous stopListening];
+}
+
 - (void)testConversation {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
