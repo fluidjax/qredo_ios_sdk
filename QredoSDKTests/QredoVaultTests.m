@@ -60,11 +60,14 @@
 
 - (void)setUp {
     [super setUp];
+    self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    [self authoriseClient];
+}
 
-    self.serviceURL = QREDO_HTTP_SERVICE_URL;
-
+- (void)authoriseClient
+{
     XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-
+    
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:@{QredoClientOptionServiceURL: self.serviceURL,
@@ -73,9 +76,8 @@
                                   qredo = clientArg;
                                   [clientExpectation fulfill];
                               }];
-
+    
     [self waitForExpectationsWithTimeout:1.0 handler:nil];
-
 }
 
 - (NSData*)randomDataWithLength:(int)length {

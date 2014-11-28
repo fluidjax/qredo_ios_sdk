@@ -39,9 +39,13 @@ static long long kRendezvousTestDurationSeconds = 600;
 - (void)setUp {
     [super setUp];
     self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    [self authoriseClient];
+}
 
+- (void)authoriseClient
+{
     XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-
+    
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
@@ -49,7 +53,7 @@ static long long kRendezvousTestDurationSeconds = 600;
                                   client = clientArg;
                                   [clientExpectation fulfill];
                               }];
-
+    
     [self waitForExpectationsWithTimeout:1.0 handler:nil];
 }
 

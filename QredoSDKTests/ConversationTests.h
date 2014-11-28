@@ -4,6 +4,7 @@
 
 @property NSURL *serviceURL;
 
+- (void)authoriseClient;
 - (void)testConversationCreation;
 - (void)testRespondingToConversation;
 - (void)testConversation;

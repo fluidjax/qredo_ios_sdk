@@ -9,8 +9,8 @@
 
 - (void)setUp {
     [super setUp];
-
-    self.serviceURL = QREDO_MQTT_SERVICE_URL;
+    self.serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
+    [self authoriseClient];
 }
 
 - (void)testPersistanceVaultId {

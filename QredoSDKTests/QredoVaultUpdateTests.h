@@ -2,8 +2,9 @@
 
 @interface QredoVaultUpdateTests : XCTestCase
 
-@property NSString *serviceURL;
+@property NSURL *serviceURL;
 
+- (void)authoriseClient;
 - (void)testGettingItems;
 - (void)testPutItems;
 - (void)testDeleteItems;

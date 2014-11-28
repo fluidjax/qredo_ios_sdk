@@ -4,6 +4,7 @@
 
 @property NSURL *serviceURL;
 
+- (void)authoriseClient;
 - (void)testCreateRendezvous;
 
 @end
