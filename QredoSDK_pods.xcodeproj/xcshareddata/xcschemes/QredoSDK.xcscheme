@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "800791F303026629BDBC41EA"
+               BlueprintIdentifier = "11C68A394E6AC0901FF4030E"
                BuildableName = "libPods-QredoSDK-LinguaFranca.a"
                BlueprintName = "Pods-QredoSDK-LinguaFranca"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D69089FE1785E14C8C56A0D4"
+               BlueprintIdentifier = "130AD5441C3A1606AEE2254E"
                BuildableName = "libPods-QredoSDK.a"
                BlueprintName = "Pods-QredoSDK"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -43,7 +43,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "0A16F8BF19C358B400639779"
-               BuildableName = "libQredoSDK.a"
+               BuildableName = "libqredosdk.a"
                BlueprintName = "QredoSDK"
                ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
             </BuildableReference>
@@ -61,7 +61,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0A16F8BF19C358B400639779"
-            BuildableName = "libQredoSDK.a"
+            BuildableName = "libqredosdk.a"
             BlueprintName = "QredoSDK"
             ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
          </BuildableReference>
@@ -80,7 +80,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0A16F8BF19C358B400639779"
-            BuildableName = "libQredoSDK.a"
+            BuildableName = "libqredosdk.a"
             BlueprintName = "QredoSDK"
             ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
          </BuildableReference>
@@ -98,7 +98,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0A16F8BF19C358B400639779"
-            BuildableName = "libQredoSDK.a"
+            BuildableName = "libqredosdk.a"
             BlueprintName = "QredoSDK"
             ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
          </BuildableReference>
