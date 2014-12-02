@@ -102,6 +102,6 @@ else
 fi
 
 echo Archiving the package $PACKAGE_NAME.zip
-cd $PACKAGE_DIR && zip -9 -r $PACKAGE_DIR/$PACKAGE_NAME.zip * -x "*.DS_Store"
+cd $PACKAGE_DIR && zip -9 -r $PACKAGE_DIR/../$PACKAGE_NAME.zip * -x "*.DS_Store"
 
 cd $PWD
