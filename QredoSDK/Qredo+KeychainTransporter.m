@@ -19,7 +19,10 @@
 
 - (void)receiveKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
+    NSLog(@"receive");
 
+    QredoKeychainReceiverQR *qrDelegate = [[QredoKeychainReceiverQR alloc] init];
+    [qrDelegate qredoKeychainReceiverWillCreateRendezvous:nil];
 }
 
 

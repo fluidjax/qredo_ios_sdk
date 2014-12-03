@@ -7,6 +7,8 @@
 #import "QredoDeviceInfo.h"
 
 @class QredoKeychainReceiver;
+@class QredoClient;
+
 // see https://github.com/Qredo/qredo_ios_sdk/wiki/Keychain-Transporter
 @protocol QredoKeychainReceiverDelegate <NSObject>
 
@@ -28,7 +30,7 @@
 
 @interface QredoKeychainReceiver : NSObject
 
-- (instancetype)initWithDelegate:(id<QredoKeychainReceiverDelegate>)delegate;
+- (instancetype)initWithClient:(QredoClient*)client delegate:(id<QredoKeychainReceiverDelegate>)delegate;
 
 - (void)start;
 
