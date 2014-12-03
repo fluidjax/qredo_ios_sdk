@@ -6,4 +6,24 @@
 
 @implementation QredoKeychainSenderQR
 
+- (void)qredoKeychainSenderDiscoveringRendezvous:(QredoKeychainSender *)sender completionHander:(BOOL(^)(NSString *rendezvousTag))completionHandler cancelHandler:(void(^)())cancelHandler
+{
+
+}
+
+- (void)qredoKeychainSender:(QredoKeychainSender *)sender didFailWithError:(NSError *)error
+{
+
+}
+
+- (void)qredoKeychainSender:(QredoKeychainSender *)sender didEstablishConnectionWithDevice:(QredoDeviceInfo *)deviceInfo fingerprint:(NSString *)fingerprint confirmationHandler:(void(^)(BOOL confirmed))confirmationHandler
+{
+
+}
+
+- (void)qredoKeychainSenderDidFinishSending:(QredoKeychainSender *)sender
+{
+
+}
+
 @end

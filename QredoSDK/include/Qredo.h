@@ -39,8 +39,10 @@ extern NSString *const QredoClientOptionServiceURL;
 
 - (QredoVault*) defaultVault;
 
+@end
 
-// Keychain Transporter
+@interface QredoClient (KeychainTransporter)
+
 - (void)sendKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 - (void)receiveKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 

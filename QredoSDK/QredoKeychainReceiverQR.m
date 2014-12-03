@@ -6,4 +6,29 @@
 
 @implementation QredoKeychainReceiverQR
 
+- (void)qredoKeychainReceiverWillCreateRendezvous:(QredoKeychainReceiver *)receiver
+{
+
+}
+
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didCreateRendezvousWithTag:(NSString*)tag cancelHandler:(void(^)())cancelHandler
+{
+
+}
+
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didEstablishConnectionWithFingerprint:(NSString*)fingerPrint
+{
+
+}
+
+- (void)qredoKeychainReceiverDidReceiveKeychain:(QredoKeychainReceiver *)receiver
+{
+
+}
+
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didFailWithError:(NSError *)error
+{
+
+}
+
 @end

@@ -2,8 +2,8 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#import "QredoKeychainTransporter.h"
+#import "QredoDeviceInfo.h"
 
-@implementation QredoKeychainTransporter
+@implementation QredoDeviceInfo
 
 @end

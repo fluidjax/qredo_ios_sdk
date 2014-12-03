@@ -3,8 +3,8 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "QredoKeychainTransporter.h"
+#import "QredoKeychainReceiver.h"
 
-@interface QredoKeychainReceiverQR : QredoKeychainReceiver
+@interface QredoKeychainReceiverQR : NSObject <QredoKeychainReceiverDelegate>
 
 @end

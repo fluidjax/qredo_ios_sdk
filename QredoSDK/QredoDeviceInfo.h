@@ -3,8 +3,9 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "QredoKeychainSender.h"
 
-@interface QredoKeychainSenderQR : NSObject <QredoKeychainSenderDelegate>
+@interface QredoDeviceInfo : NSObject
+
+@property NSString *name;
 
 @end

@@ -142,17 +142,6 @@ static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080
     return _defaultVault;
 }
 
-#pragma mark Keychain Transporter
-- (void)sendKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
-
-}
-
-- (void)receiveKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
-
-}
-
 #pragma mark -
 #pragma mark Rendezvous
 
