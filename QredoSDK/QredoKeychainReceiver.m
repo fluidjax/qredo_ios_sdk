@@ -4,18 +4,13 @@
 
 #import "QredoKeychainReceiver.h"
 #import "Qredo.h"
-
-
-static NSString *const QredoKeychainTransporterConversationType = @"com.qredo.keychain";
-static NSUInteger QredoKeychainTransporterRendezvousDuration = 600;
-
-// TODO put the values from the design diagram
-static NSString *const QredoKeychainTransporterMessageTypeDeviceInfo = @"com.qredo.keychain.device-info";
-static NSString *const QredoKeychainTransporterMessageTypeKeychain = @"com.qredo.keychain.keychain";
-static NSString *const QredoKeychainTransporterMessageTypeConfirmReceiving = @"com.qredo.keychain.confirm";
-static NSString *const QredoKeychainTransporterMessageKeyDeviceName = @"deviceName";
+#import "QredoKeychainTransporterConsts.h"
 
 @interface QredoKeychainReceiver () <QredoRendezvousDelegate, QredoConversationDelegate>
+{
+    // completion handler that is passed to startWithCompletionHandler:
+    void(^clientCompletionHandler)(NSError *error);
+}
 
 @property id<QredoKeychainReceiverDelegate> delegate;
 @property QredoClient *client;
@@ -36,8 +31,9 @@ static NSString *const QredoKeychainTransporterMessageKeyDeviceName = @"deviceNa
     return self;
 }
 
-- (void)start
+- (void)startWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
+    clientCompletionHandler = completionHandler;
     [self.delegate qredoKeychainReceiverWillCreateRendezvous:self];
 
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
@@ -103,6 +99,8 @@ static NSString *const QredoKeychainTransporterMessageKeyDeviceName = @"deviceNa
 {
     [self cancel];
     [self.delegate qredoKeychainReceiver:self didFailWithError:error];
+    clientCompletionHandler(error);
+    // now this object can die
 }
 
 - (void)didParseKeychainSuccessfuly
@@ -124,6 +122,7 @@ static NSString *const QredoKeychainTransporterMessageKeyDeviceName = @"deviceNa
 - (void)didConfirmParsingKeychain
 {
     // TODO install keychain
+    clientCompletionHandler(nil);
 }
 
 #pragma mark QredoRendezvousDelegate

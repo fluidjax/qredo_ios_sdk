@@ -32,6 +32,6 @@
 
 - (instancetype)initWithClient:(QredoClient*)client delegate:(id<QredoKeychainReceiverDelegate>)delegate;
 
-- (void)start;
+- (void)startWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
