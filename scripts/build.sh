@@ -81,7 +81,7 @@ function cpex {
 cpex ../qredo_ios_examples/SDKExamples $SAMPLES_DIR 
 cpex ../qredo_ios_examples/QatChat $SAMPLES_DIR
 cpex ../qredo_ios_examples/QRCodeRendezvous $SAMPLES_DIR 
-cpex ../qredo_ios_examples/BLERandevous $SAMPLES_DIR 
+cpex ../qredo_ios_examples/BLERendezvous $SAMPLES_DIR 
 
 # Modify podspec in each sample to include the relative link to the Qredo SDK
 for i in $(find $SAMPLES_DIR -name "Podfile"); do
