@@ -13,7 +13,7 @@
 @required
 
 // `cancelHandler` should be used in the same way as in `QredoKeychainReceiverDelegate`
-- (void)qredoKeychainSenderDiscoveringRendezvous:(QredoKeychainSender *)sender completionHander:(BOOL(^)(NSString *rendezvousTag))completionHandler cancelHandler:(void(^)())cancelHandler;
+- (void)qredoKeychainSenderDiscoverRendezvous:(QredoKeychainSender *)sender completionHander:(BOOL(^)(NSString *rendezvousTag))completionHandler cancelHandler:(void(^)())cancelHandler;
 
 - (void)qredoKeychainSender:(QredoKeychainSender *)sender didFailWithError:(NSError *)error;
 
