@@ -113,7 +113,7 @@ else
 	exit 1
 fi
 
-echo Archiving the package $PACKAGE_NAME.zip
-cd $PACKAGE_DIR && zip -9 -r $PACKAGE_DIR/../$PACKAGE_NAME.zip * -x "*.DS_Store"
+echo Archiving the package qredo_ios_sdk_$PACKAGE_NAME.zip
+cd $PACKAGE_DIR && zip -9 -r $PACKAGE_DIR/../qredo_ios_sdk_$PACKAGE_NAME.zip * -x "*.DS_Store"
 
 cd $PWD
