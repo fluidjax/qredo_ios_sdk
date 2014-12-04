@@ -5,3 +5,4 @@ Changes
 * Fixed interoperability between iOS and Android datatime summary values (used QatChat)
 * Added samples for creating and responding to rendezvous with QR code and BLE
 * Added error handling for SDKExamples sample code
+* Fixed samples to be compatible with Xcode 6.1.1
