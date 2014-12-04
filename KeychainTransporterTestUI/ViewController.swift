@@ -12,11 +12,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func receiveKeychain(sender: AnyObject) {
-        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: []) { client, error in
-            client.receiveKeychainWithCompletionHandler({ error in
-                
-            })
-        }
+        let receiver = QredoKeychainReceiverQR()
+
+        receiver.qredoKeychainReceiverWillCreateRendezvous(nil)
     }
 }
 

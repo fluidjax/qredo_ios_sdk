@@ -3,3 +3,4 @@
  */
 
 #import "Qredo.h"
+#import "QredoKeychainReceiverQR.h"
