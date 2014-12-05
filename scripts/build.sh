@@ -3,7 +3,7 @@
 set -e
 
 # Need to pull the latest change for Lingua Franca
-# pod update
+pod update
 
 if ! which xctool >/dev/null; then
 	echo xctool is NOT installed
@@ -13,7 +13,7 @@ if ! which xctool >/dev/null; then
 		exit 1
 	fi
 
-	brew install xctool
+	echo Please install xctool by running 'brew install xctool'
 fi
 
 PWD=`pwd`
@@ -26,6 +26,8 @@ PACKAGE_NAME=`date +"%Y%m%d_%H%M"`
 PACKAGE_DIR=$ROOT_DIR/package/$PACKAGE_NAME
 LIBRARY_DIR=$PACKAGE_DIR/lib
 SAMPLES_DIR=$PACKAGE_DIR/samples
+TEMP_DIR=$ROOT_DIR/temp
+BUILD_DIR=$ROOT_DIR/build
 
 echo Package directory: $LIBRARY_DIR
 
@@ -50,7 +52,7 @@ function build {
 	LIBS="$LIBS $BUILD_DIR/libqredosdk.a"
 }
 
-rm -Rf $ROOT_DIR/build $ROOT_DIR/temp
+rm -Rf $BUILD_DIR $TEMP_DIR
 
 build "iphonesimulator" "i386"
 build "iphonesimulator" "x86_64"
@@ -67,19 +69,28 @@ echo Copying public header files
 rsync -r --exclude=.DS_Store QredoSDK/include $LIBRARY_DIR
 cp Pods/Headers/Public/LinguaFranca/QredoQUID.h $LIBRARY_DIR/include
 
+echo Cloning examples from git
+EXAMPLES_DIR=$TEMP_DIR/examples
+rm -Rf $EXAMPLES_DIR
+mkdir -p $EXAMPLES_DIR
+git clone --depth 1 git@github.com:Qredo/qredo_ios_examples.git $EXAMPLES_DIR
+
 echo Preparing samples content
 mkdir -p $SAMPLES_DIR
 
 # Prepare samples
 function cpex {
+	echo Copying from $1
 	rsync -r --exclude=.DS_Store --exclude='.git' --exclude Podfile.lock --exclude Pods --exclude='*.xcworkspace' \
 		--exclude='*.xcuserdatad' \
 		$1 $2
 }
 
 # Copy sample projects
-cpex ../qredo_ios_examples/SDKExamples $SAMPLES_DIR 
-cpex ../qredo_ios_examples/QatChat $SAMPLES_DIR
+cpex $EXAMPLES_DIR/SDKExamples $SAMPLES_DIR 
+cpex $EXAMPLES_DIR/QatChat $SAMPLES_DIR
+cpex $EXAMPLES_DIR/QRCodeRendezvous $SAMPLES_DIR 
+cpex $EXAMPLES_DIR/BLERendezvous $SAMPLES_DIR 
 
 # Modify podspec in each sample to include the relative link to the Qredo SDK
 for i in $(find $SAMPLES_DIR -name "Podfile"); do
@@ -88,7 +99,8 @@ for i in $(find $SAMPLES_DIR -name "Podfile"); do
 	mv $i.new $i
 done
 
-cp $DIR/QredoSDK.podspec $LIBRARY_DIR 
+mkdir -p $LIBRARY_DIR
+cp $DIR/QredoSDK.podspec $LIBRARY_DIR/QredoSDK.podspec 
 
 # Test if the source files contain the developers names
 teststr=`(find $PACKAGE_DIR -name '*.h' -o -name '*.swift' -o -name '*.m' | xargs \
@@ -101,7 +113,7 @@ else
 	exit 1
 fi
 
-echo Archiving the package $PACKAGE_NAME.zip
-cd $PACKAGE_DIR && zip -9 -r $PACKAGE_DIR/../$PACKAGE_NAME.zip * -x "*.DS_Store"
+echo Archiving the package qredo_ios_sdk_$PACKAGE_NAME.zip
+cd $PACKAGE_DIR && zip -9 -r $PACKAGE_DIR/../qredo_ios_sdk_$PACKAGE_NAME.zip * -x "*.DS_Store"
 
 cd $PWD

@@ -3,7 +3,7 @@ import XCTest
 
 class QredoVaultDescriptorTests: XCTestCase {
     var client : QredoClient! = nil
-    let serviceURL = QREDO_HTTP_SERVICE_URL
+    var useMQTT = false
     var itemDescriptor : QredoVaultItemDescriptor? = nil
 
     let initialSummaryValues = ["key 1" : "value 1"]
@@ -13,7 +13,7 @@ class QredoVaultDescriptorTests: XCTestCase {
 
         let createExpectation = self.expectationWithDescription("create client")
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: ["com.qredo.test"],
-            options: [QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: QredoQUID()],
+            options: QredoClientOptions(MQTT: useMQTT, resetData: true),
             completionHandler: {client, error in
                 self.client = client
                 createExpectation.fulfill()

@@ -2,7 +2,7 @@
 
 @interface QredoRendezvousTests : XCTestCase
 
-@property NSURL *serviceURL;
+@property BOOL useMQTT;
 
 - (void)testCreateRendezvous;
 

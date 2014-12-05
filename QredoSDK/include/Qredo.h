@@ -26,6 +26,17 @@ extern NSString *const QredoClientOptionServiceURL;
 @class QredoClient;
 @class QredoRendezvousMetadata;
 
+@interface QredoClientOptions : NSObject
+
+@property BOOL useMQTT;
+@property BOOL resetData;
+
+
+- (instancetype)initWithMQTT:(BOOL)useMQTT;
+- (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData;
+
+@end
+
 /** Qredo Client */
 @interface QredoClient : NSObject
 /** Before using the SDK, the application should call this function with the required conversation types and vault data types.
@@ -35,7 +46,7 @@ extern NSString *const QredoClientOptionServiceURL;
  */
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(NSDictionary*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(QredoClientOptions*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
 - (QredoVault*) defaultVault;
 

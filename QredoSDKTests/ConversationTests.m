@@ -5,7 +5,6 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
 
 #import "QredoPrivate.h"
@@ -62,13 +61,11 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
 - (void)setUp {
     [super setUp];
-    self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
-
     XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
     [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
                                  vaultDataTypes:nil
-                                        options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   client = clientArg;
                                   [clientExpectation fulfill];
@@ -101,6 +98,27 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
         createExpectation = nil;
     }];
 
+    // Creating a new client with a new vault
+    __block QredoClient *anotherClient = nil;
+    __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
+
+    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+                                 vaultDataTypes:nil
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                              completionHandler:^(QredoClient *newClient, NSError *error) {
+                                  XCTAssertNotNil(newClient);
+                                  XCTAssertNil(error);
+                                  anotherClient = newClient;
+                                  [anotherClientExpectation fulfill];
+                              }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        anotherClientExpectation = nil;
+    }];
+
+
+    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
+
+
     // Responding to the rendezvous
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
@@ -108,10 +126,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     rendezvous.delegate = self;
 
     [rendezvous startListening];
-
-    // another client with a new vault
-    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
-    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
 
     __block QredoConversation *responderConversation = nil;
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
@@ -264,6 +278,26 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
         createExpectation = nil;
     }];
+
+
+    // Creating a new client with a new vault
+    __block QredoClient *anotherClient = nil;
+    __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
+
+    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+                                 vaultDataTypes:nil
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                              completionHandler:^(QredoClient *newClient, NSError *error) {
+                                  XCTAssertNotNil(newClient);
+                                  XCTAssertNil(error);
+                                  anotherClient = newClient;
+                                  [anotherClientExpectation fulfill];
+                              }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        anotherClientExpectation = nil;
+    }];
+    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
+
     
     // Responding to the rendezvous
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
@@ -273,10 +307,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     
     [rendezvous startListening];
     
-    // another client with a new vault
-    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
-    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
-    
+
     __block QredoConversation *responderConversation = nil;
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
@@ -321,7 +352,26 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
         createExpectation = nil;
     }];
-    
+
+
+    // Creating a new client with a new vault
+    __block QredoClient *anotherClient = nil;
+    __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
+
+    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+                                 vaultDataTypes:nil
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                              completionHandler:^(QredoClient *newClient, NSError *error) {
+                                  XCTAssertNotNil(newClient);
+                                  XCTAssertNil(error);
+                                  anotherClient = newClient;
+                                  [anotherClientExpectation fulfill];
+                              }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        anotherClientExpectation = nil;
+    }];
+    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
+
     // Responding to the rendezvous
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
@@ -329,10 +379,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     rendezvous.delegate = self;
     
     [rendezvous startListening];
-    
-    // another client with a new vault
-    QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
-    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
     
     __block QredoConversation *responderConversation = nil;
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
