@@ -3,6 +3,5 @@
 //
 
 #import "Qredo.h"
-#import "QredoTestConfiguration.h"
 #import "NSDictionary+Contains.h"
 #import "QredoTestUtils.h"

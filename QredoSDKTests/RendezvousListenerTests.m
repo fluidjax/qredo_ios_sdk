@@ -5,8 +5,6 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoTestConfiguration.h"
-
 
 // The purpose of this test is to cover all edge cases in the rendezvous listener:
 // - receiving response
@@ -22,13 +20,13 @@
 
 @interface RendezvousListenerTests : XCTestCase <QredoRendezvousDelegate>
 {
-    NSURL *serviceURL;
     QredoClient *client;
     XCTestExpectation *didReceiveResponseExpectation;
 
     QredoConversation *creatorConversation;
 }
 
+@property BOOL useMQTT;
 
 @end
 
@@ -36,14 +34,12 @@
 
 - (void)setUp {
     [super setUp];
-    serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
 
     XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: serviceURL,
-                                                  QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   client = clientArg;
                                   [clientExpectation fulfill];
@@ -87,7 +83,7 @@
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: serviceURL}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   anotherClient = clientArg;
                                   [clientExpectation fulfill];

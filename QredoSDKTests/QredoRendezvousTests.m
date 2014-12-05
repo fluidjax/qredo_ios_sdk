@@ -5,7 +5,6 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoTestConfiguration.h"
 #import "QredoRendezvousTests.h"
 
 static NSString *const kRendezvousTestConversationType = @"test.chat";
@@ -38,13 +37,13 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 - (void)setUp {
     [super setUp];
-    self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    self.useMQTT = NO;
 
     XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   client = clientArg;
                                   [clientExpectation fulfill];
@@ -69,7 +68,7 @@ static long long kRendezvousTestDurationSeconds = 600;
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   anotherClient = clientArg;
                                   [clientExpectation fulfill];
