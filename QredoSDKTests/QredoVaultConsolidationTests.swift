@@ -48,17 +48,15 @@ class VaultListener : NSObject, QredoVaultDelegate {
 
 class QredoVaultConsolidationTests: XCTestCase {
     
-    var serviceURL: NSString!
+    var useMQTT = false
     var qredo: QredoClient!
 
     override func setUp() {
         super.setUp()
-        serviceURL = QREDO_HTTP_SERVICE_URL;
-
 
         let createExpectation = self.expectationWithDescription("create client")
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: ["com.qredo.test"],
-            options: [QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: QredoQUID()],
+            options: QredoClientOptions(MQTT: useMQTT, resetData: true),
             completionHandler: {client, error in
                 self.qredo = client
                 createExpectation.fulfill()

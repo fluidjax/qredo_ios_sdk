@@ -2,7 +2,7 @@
 
 @interface QredoVaultUpdateTests : XCTestCase
 
-@property NSString *serviceURL;
+@property BOOL useMQTT;
 
 - (void)testGettingItems;
 - (void)testPutItems;

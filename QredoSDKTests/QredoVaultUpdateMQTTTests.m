@@ -1,5 +1,4 @@
 #import "QredoVaultUpdateTests.h"
-#import "QredoTestConfiguration.h"
 
 @interface QredoVaultUpdateMQTTTests : QredoVaultUpdateTests
 
@@ -10,7 +9,7 @@
 - (void)setUp {
     [super setUp];
 
-    self.serviceURL = QREDO_MQTT_SERVICE_URL;
+    self.useMQTT = YES;
 }
 
 - (void)testGettingItems {

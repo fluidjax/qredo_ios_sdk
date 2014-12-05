@@ -4,7 +4,6 @@
 
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultUpdateTests.h"
 #import "NSDictionary+Contains.h"
@@ -22,14 +21,13 @@
 - (void)setUp
 {
     [super setUp];
-    self.serviceURL = QREDO_HTTP_SERVICE_URL;
+    self.useMQTT = NO;
 
     XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: self.serviceURL,
-                                                  QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   qredo = clientArg;
                                   [clientExpectation fulfill];
