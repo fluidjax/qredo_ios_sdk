@@ -8,6 +8,7 @@
 
 NSString *const QredoKeychainTransporterConversationType = @"com.qredo.keychain";
 NSUInteger QredoKeychainTransporterRendezvousDuration = 600;
+NSInteger QredoKeychainTransporterFingerprintLength = 5;
 
 NSString *const QredoKeychainTransporterMessageTypeDeviceInfo = @"com.qredo.keychain.device-info";
 NSString *const QredoKeychainTransporterMessageTypeKeychain = @"com.qredo.keychain.keychain";

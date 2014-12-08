@@ -353,6 +353,7 @@
 			children = (
 				0A65741E1A2F3C8800D5502E /* Categories */,
 				0A16F8CD19C358B400639779 /* Supporting Files */,
+				0AE3E5C91A361D2900EF192A /* KeychainTransporter */,
 				0A6573F41A2F3B7200D5502E /* ConversationMQTTTests.m */,
 				0A6573F51A2F3B7200D5502E /* ConversationTests.h */,
 				0A6573F61A2F3B7200D5502E /* ConversationTests.m */,
@@ -374,8 +375,6 @@
 				0A65740A1A2F3B7200D5502E /* QredoVaultUpdateTests.h */,
 				0A65740B1A2F3B7200D5502E /* QredoVaultUpdateTests.m */,
 				0A65740C1A2F3B7200D5502E /* RendezvousListenerTests.m */,
-				0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */,
-				0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */,
 			);
 			path = QredoSDKTests;
 			sourceTree = "<group>";
@@ -539,6 +538,15 @@
 				0AD99E821A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m */,
 			);
 			name = "Keychain Transporter";
+			sourceTree = "<group>";
+		};
+		0AE3E5C91A361D2900EF192A /* KeychainTransporter */ = {
+			isa = PBXGroup;
+			children = (
+				0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */,
+				0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */,
+			);
+			name = KeychainTransporter;
 			sourceTree = "<group>";
 		};
 		175760C0586442332A2DE17D /* Frameworks */ = {

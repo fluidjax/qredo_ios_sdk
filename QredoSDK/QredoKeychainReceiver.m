@@ -54,8 +54,28 @@
                        }];
 }
 
-- (void)cancel {
+- (void)sendCancellationMessage {
+    QredoConversationMessage *confirmMessage = [[QredoConversationMessage alloc] initWithValue:nil
+                                                                                      dataType:QredoKeychainTransporterMessageTypeCancelReceiving
+                                                                                 summaryValues:nil];
 
+    [self.conversation publishMessage:confirmMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+        if (error) {
+            [self handleError:error];
+            return ;
+        }
+        [self didConfirmParsingKeychain];
+    }];
+}
+
+- (void)cancel {
+    if (self.conversation) {
+        [self sendCancellationMessage];
+    }
+
+    [self handleError:[NSError errorWithDomain:QredoErrorDomain
+                                          code:QredoErrorCodeUnknown // TODO
+                                      userInfo:@{NSLocalizedDescriptionKey: @"User cancelled the transport"}]];
 }
 
 - (void)didCreateRendezvous:(QredoRendezvous *)rendezvous
@@ -79,6 +99,7 @@
 - (void)didPublishDeviceInfo
 {
     [self.conversation startListening];
+    [self.delegate qredoKeychainReceiver:self didEstablishConnectionWithFingerprint:[[self.conversation.metadata.conversationId QUIDString] substringToIndex:QredoKeychainTransporterFingerprintLength]];
 }
 
 - (void)parseKeychainFromData:(NSData*)data
@@ -95,15 +116,33 @@
     }
 }
 
+- (void)stopCommunication {
+
+}
+
 - (void)handleError:(NSError *)error
 {
-    [self cancel];
+    [self stopCommunication];
     [self.delegate qredoKeychainReceiver:self didFailWithError:error];
     clientCompletionHandler(error);
     // now this object can die
 }
 
 - (void)didParseKeychainSuccessfuly
+{
+    [self.delegate qredoKeychainReceiverDidReceiveKeychain:self confirmationHandler:^(BOOL confirmed) {
+        if (confirmed) {
+            // TODO install keychain here
+            clientCompletionHandler(nil);
+            [self didConfirmInstallingKeychain];
+        } else {
+            [self cancel];
+        }
+    }];
+}
+
+
+- (void)didConfirmInstallingKeychain
 {
     QredoConversationMessage *confirmMessage = [[QredoConversationMessage alloc] initWithValue:nil
                                                                                       dataType:QredoKeychainTransporterMessageTypeConfirmReceiving
@@ -118,17 +157,12 @@
     }];
 }
 
+- (void)didConfirmParsingKeychain {
+    [self stopCommunication];
+}
 
-- (void)didConfirmParsingKeychain
-{
-    [self.delegate qredoKeychainReceiverDidReceiveKeychain:self confirmationHandler:^(BOOL confirmed) {
-        if (confirmed) {
-            // TODO install keychain here
-            clientCompletionHandler(nil);
-        } else {
-            [self cancel];
-        }
-    }];
+- (void)didFailToParseKeychain {
+    [self cancel];
 }
 
 #pragma mark QredoRendezvousDelegate
@@ -169,8 +203,7 @@
     if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeKeychain]) {
         [self parseKeychainFromData:message.value];
     } else {
-        NSLog(@"Unknown message type");
-        // Probably even [self.delegate qredoKeychainReceiver:self didFailWithError:]
+        [self cancel];
     }
 }
 

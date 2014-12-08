@@ -77,7 +77,9 @@ class KeychainSenderMock : NSObject, QredoKeychainSenderDelegate {
 
         if switchState(.EstablishedConnection) { return }
         confirmationHandler(shouldPassConfirmation);
-        if switchState(.ConfirmedConnection) { return }
+        if shouldPassConfirmation {
+            if switchState(.ConfirmedConnection) { return }
+        }
     }
 
     func qredoKeychainSender(sender: QredoKeychainSender!, didFailWithError error: NSError!) {
