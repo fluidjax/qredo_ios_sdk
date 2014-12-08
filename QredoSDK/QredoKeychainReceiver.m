@@ -34,7 +34,9 @@
 - (void)startWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
     clientCompletionHandler = completionHandler;
-    [self.delegate qredoKeychainReceiverWillCreateRendezvous:self];
+    [self.delegate qredoKeychainReceiverWillCreateRendezvous:self cancelHandler:^{
+        [self cancel];
+    }];
 
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
@@ -58,9 +60,7 @@
 
 - (void)didCreateRendezvous:(QredoRendezvous *)rendezvous
 {
-    [self.delegate qredoKeychainReceiver:self didCreateRendezvousWithTag:rendezvous.tag cancelHandler:^{
-        [self cancel];
-    }];
+    [self.delegate qredoKeychainReceiver:self didCreateRendezvousWithTag:rendezvous.tag];
 
     rendezvous.delegate = self;
 
@@ -121,8 +121,14 @@
 
 - (void)didConfirmParsingKeychain
 {
-    // TODO install keychain
-    clientCompletionHandler(nil);
+    [self.delegate qredoKeychainReceiverDidReceiveKeychain:self confirmationHandler:^(BOOL confirmed) {
+        if (confirmed) {
+            // TODO install keychain here
+            clientCompletionHandler(nil);
+        } else {
+            [self cancel];
+        }
+    }];
 }
 
 #pragma mark QredoRendezvousDelegate
