@@ -12,17 +12,20 @@
 
 - (void)sendKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
+    QredoKeychainSenderQR *qrSender = [[QredoKeychainSenderQR alloc] init];
 
-    completionHandler([NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeUnknown userInfo:@{NSLocalizedDescriptionKey: @"Not implemented"}]);
+    QredoKeychainSender *keychainSender = [[QredoKeychainSender alloc] initWithClient:self delegate:qrSender];
 
+    [keychainSender startWithCompletionHandler:completionHandler];
 }
 
 - (void)receiveKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    NSLog(@"receive");
-
     QredoKeychainReceiverQR *qrDelegate = [[QredoKeychainReceiverQR alloc] init];
-    [qrDelegate qredoKeychainReceiverWillCreateRendezvous:nil];
+
+    QredoKeychainReceiver *keychainReceiver = [[QredoKeychainReceiver alloc] initWithClient:self delegate:qrDelegate];
+
+    [keychainReceiver startWithCompletionHandler:completionHandler];
 }
 
 
