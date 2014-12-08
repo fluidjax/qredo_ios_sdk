@@ -28,6 +28,13 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
     self.resetData = resetData;
     return self;
 }
+
+- (instancetype)initWithResetData:(BOOL)resetData
+{
+    self = [super init];
+    self.resetData = resetData;
+    return self;
+}
 @end
 
 // Private stuff

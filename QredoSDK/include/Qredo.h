@@ -34,6 +34,7 @@ extern NSString *const QredoClientOptionServiceURL;
 
 - (instancetype)initWithMQTT:(BOOL)useMQTT;
 - (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData;
+- (instancetype)initWithResetData:(BOOL)resetData;
 
 @end
 
