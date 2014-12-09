@@ -302,6 +302,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
     } since:self.highWatermark highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark) {
 
+        LogDebug(@"Subscription returned new HighWatermark: %llu", newWatermark);
+        
         self->_highWatermark = newWatermark;
 
     }];
@@ -383,12 +385,12 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             return ;
         }
 
-        NSData *nonce = result;
-        NSData *signature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:nonce];
+        NSData *subscriptionNonce = result;
+        NSData *subscriptionSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:subscriptionNonce];
 
         [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
-                                             challenge:nonce
-                                             signature:signature
+                                             challenge:subscriptionNonce
+                                             signature:subscriptionSignature
                                      completionHandler:^(QredoRendezvousResponseWithSequenceValue *result, NSError *error) {
                                          if (error) {
                                              subscriptionTerminatedHandler(error);
@@ -409,6 +411,59 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                              highWatermarkHandler(result.sequenceValue.longLongValue);
                                          }
                                      }];
+        
+        // Must have actually sent the subscription request before getting responses, otherwise chance of invalidating challenege/signatures - only 1 challenge per hashedTag at a time
+        LogDebug(@"Getting other responses to ensure none missed during subscription setup.");
+        [_rendezvous getChallengeWithHashedTag:_hashedTag completionHandler:^(NSData *result, NSError *error) {
+            if (error) {
+                subscriptionTerminatedHandler(error);
+                return ;
+            }
+            
+            NSData *getResponsesNonce = result;
+            NSData *getResponsesSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:getResponsesNonce];
+            
+            // TODO: DH - later check if can use any existing methods or refactor into a commmon function
+            
+            // Now have to query to get responses for any which may have been responded to whilst subscription being set up
+            // However, will need to dedupe as want to avoid multiple notifications for same response
+
+            // TODO: DH - dedupe responses
+            [_rendezvous getResponsesWithHashedTag:_hashedTag
+                                         challenge:getResponsesNonce
+                                         signature:getResponsesSignature
+                                             after:[NSNumber numberWithLongLong:sinceWatermark]
+                                 completionHandler:^(QredoRendezvousResponsesResult *result, NSError *error) {
+                                     if (error) {
+                                         subscriptionTerminatedHandler(error);
+                                         return ;
+                                     }
+                                     
+                                     for (QredoRendezvousResponse *response in result.responses) {
+                                         BOOL stop = result.responses.lastObject == response;
+                                         
+
+                                         NSError *localError = nil;
+                                         QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:localError];
+                                         
+                                         if (localError) {
+                                             subscriptionTerminatedHandler(localError);
+                                             return;
+                                         }
+                                         
+                                         block(conversation);
+                                         
+                                         if (stop) {
+                                             break;
+                                         }
+                                     }
+                                     
+                                     if (result.sequenceValue && highWatermarkHandler) {
+                                         highWatermarkHandler(result.sequenceValue.longLongValue);
+                                     }
+                                 }];
+            
+        }];
     }];
 }
 

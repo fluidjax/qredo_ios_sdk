@@ -23,7 +23,7 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
-    NSLog(@"Rendezvous listener notified via qredoRendezvous:didReceiveReponse:  Rendezvous: %@. Conversation HWM: %@", rendezvous.tag, conversation.highWatermark);
+    NSLog(@"Rendezvous listener notified via qredoRendezvous:didReceiveReponse:  Rendezvous Tag: %@. Conversation details: Type:%@, ID:%@, HWM:%@", rendezvous.tag, conversation.metadata.type, conversation.metadata.conversationId, conversation.highWatermark);
     if (!self.expectation) {
         NSLog(@"No expectation configured.");
     }
