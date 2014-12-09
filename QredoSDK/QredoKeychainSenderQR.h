@@ -4,7 +4,8 @@
 
 #import <Foundation/Foundation.h>
 #import "QredoKeychainSender.h"
+#import "QredoKeychainSendReceiveViewController.h"
 
-@interface QredoKeychainSenderQR : NSObject <QredoKeychainSenderDelegate>
+@interface QredoKeychainSenderQR : QredoKeychainSendReceiveViewController <QredoKeychainSenderDelegate>
 
 @end

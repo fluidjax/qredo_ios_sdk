@@ -4,74 +4,151 @@
 
 #import <UIKit/UIKit.h>
 #import "QredoKeychainReceiverQR.h"
+#import "QredoKeychainActivityViewController.h"
+#import "QredoKeychainQRCodeDisplayViewController.h"
+#import "QredoKeychainFingerprintConfirmationViewController.h"
+#import "QredoKeychainConfirmationViewController.h"
+
+
 
 @interface QredoKeychainReceiverQR ()
-{
-    UINavigationController *navigationViewController;
-    UIViewController *rootViewController;
-}
+
+@property (nonatomic, copy) void(^willCreateRendezvousCancelHandler)();
+@property (nonatomic, copy) void(^didReceiveKeychainConfirmationHandler)(BOOL confirmed);
 
 @end
 
 @implementation QredoKeychainReceiverQR
 
-- (void)qredoKeychainReceiverWillCreateRendezvous:(QredoKeychainReceiver *)receiver
-{
-    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-
-    CGRect applicationFrame = [[UIScreen mainScreen] applicationFrame];
-
-    rootViewController = [[UIViewController alloc] init];
-    navigationViewController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
-
-    rootViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel)];
-
-    UIView *rootView = [[UIView alloc] initWithFrame:applicationFrame];
-    rootView.backgroundColor = [UIColor whiteColor];
-
-    rootViewController.view = rootView;
-
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    label.text = @"Receiving KeyChain";
-    [rootView addSubview:label];
-
-    label.translatesAutoresizingMaskIntoConstraints = NO;
-
-    id<UILayoutSupport> topLayoutGuide = rootViewController.topLayoutGuide;
-    id<UILayoutSupport> bottomLayoutGuide = rootViewController.bottomLayoutGuide;
-
-    NSDictionary *views = NSDictionaryOfVariableBindings(rootView, label, topLayoutGuide, bottomLayoutGuide);
-
-    [rootView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[label(>=100)]-|" options:0 metrics:nil views:views]];
-    [rootView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topLayoutGuide]-[label(>=40)]" options:0 metrics:nil views:views]];
-
-    [label layoutIfNeeded];
-
-    [keyWindow.rootViewController presentViewController:navigationViewController animated:YES completion:nil];
+- (void)showCreatingRendezvousActivity {
+    QredoKeychainActivityViewController *createRenezvousActivityController = [[QredoKeychainActivityViewController alloc] init];
+    createRenezvousActivityController.activityName = NSLocalizedString(@"Creating rendezvous.", @"");
+    createRenezvousActivityController.spinning = YES;
+    [self displayChildViewController:createRenezvousActivityController];
 }
 
-- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didCreateRendezvousWithTag:(NSString*)tag cancelHandler:(void(^)())cancelHandler
-{
-
+- (void)showQRCodeForString:(NSString *)qrCodeString {
+    QredoKeychainQRCodeDisplayViewController *qrCodeDisplayController = [[QredoKeychainQRCodeDisplayViewController alloc] init];
+    qrCodeDisplayController.qrCodeValue = qrCodeString;
+    [self displayChildViewController:qrCodeDisplayController];
 }
 
-- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didEstablishConnectionWithFingerprint:(NSString*)fingerPrint
-{
-
+- (void)showTransferingKeyChainActivity {
+    QredoKeychainActivityViewController *transferingKeychainActivityController = [[QredoKeychainActivityViewController alloc] init];
+    transferingKeychainActivityController.activityName = NSLocalizedString(@"Transfering keychain.", @"");
+    transferingKeychainActivityController.spinning = YES;
+    [self displayChildViewController:transferingKeychainActivityController];
 }
 
-- (void)qredoKeychainReceiverDidReceiveKeychain:(QredoKeychainReceiver *)receiver
-{
-
+- (void)showFingerprintViewControllerWithFingerprint:(NSString *)aFingerprint
+                                confirmButtonHandler:(void(^)())aConfirmButtonHandler {
+    
+    QredoKeychainFingerprintConfirmationViewController *fingerprintViewController
+    = [[QredoKeychainFingerprintConfirmationViewController alloc]
+       initWithFingerprint:aFingerprint
+       deviceName:nil
+       confirmButtonTitle:NSLocalizedString(@"Install keychain", @"")
+       confirmButtonHandler:aConfirmButtonHandler];
+    
+    [self displayChildViewController:fingerprintViewController];
+    
 }
 
-- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didFailWithError:(NSError *)error
-{
-
+- (void)showInstallingKeyChainActivity {
+    QredoKeychainActivityViewController *transferingKeychainActivityController = [[QredoKeychainActivityViewController alloc] init];
+    transferingKeychainActivityController.activityName = NSLocalizedString(@"Installing keychain.", @"");
+    transferingKeychainActivityController.spinning = YES;
+    [self displayChildViewController:transferingKeychainActivityController];
 }
 
-- (void)cancel {
-    NSLog(@"cancel receiving");
+- (void)showReceivingKeychainActivityViewControllerWithFingerpring:(NSString *)aFingerprint {
+    NSString *activityNameFormattingString = NSLocalizedString(@"Sending keychain with fingerprint: %@", @"");
+    NSString *activityName = [NSString stringWithFormat:activityNameFormattingString, aFingerprint];
+    QredoKeychainActivityViewController *activityViewController = [[QredoKeychainActivityViewController alloc] init];
+    activityViewController.activityName = activityName;
+    activityViewController.spinning = YES;
+    [self displayChildViewController:activityViewController];
+}
+
+- (void)showSuccessConfirmationController {
+    [self showDoneButton];
+    NSString *activityName = NSLocalizedString(@"The keychain has been received.", @"");
+    QredoKeychainConfirmationViewController *confirmationViewController
+    = [[QredoKeychainConfirmationViewController alloc] initWithActivityName:activityName];
+    [self displayChildViewController:confirmationViewController];
+}
+
+- (void)showFailureConfirmationController {
+    [self showDoneButton];
+    NSString *activityName = NSLocalizedString(@"The keychain transfer has failed. Please try again later.", @"");
+    QredoKeychainConfirmationViewController *confirmationViewController
+    = [[QredoKeychainConfirmationViewController alloc] initWithActivityName:activityName];
+    [self displayChildViewController:confirmationViewController];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (self.willCreateRendezvousCancelHandler) {
+        self.willCreateRendezvousCancelHandler();
+    }
+    self.willCreateRendezvousCancelHandler = nil;
+    if (self.didReceiveKeychainConfirmationHandler) {
+        self.didReceiveKeychainConfirmationHandler(NO);
+    }
+    self.didReceiveKeychainConfirmationHandler = nil;
+}
+
+
+#pragma mark QredoKeychainReceiverDelegate
+
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver willCreateRendezvousWithCancelHandler:(void(^)())cancelHandler {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.willCreateRendezvousCancelHandler = cancelHandler;
+        [self presentInRootViewControllerAnimated:YES completion:nil];
+        [self showCreatingRendezvousActivity];
+    });
+}
+
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didCreateRendezvousWithTag:(NSString*)tag {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.willCreateRendezvousCancelHandler = nil;
+        [self showQRCodeForString:tag];
+    });
+}
+
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didEstablishConnectionWithFingerprint:(NSString*)fingerPrint {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showReceivingKeychainActivityViewControllerWithFingerpring:fingerPrint];
+    });
+}
+
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didReceiveKeychainWithConfirmationHandler:(void(^)(BOOL confirmed))confirmationHandler {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.didReceiveKeychainConfirmationHandler = confirmationHandler;
+        
+        __weak QredoKeychainReceiverQR *weakSelf = self;
+        [self showFingerprintViewControllerWithFingerprint:@"" confirmButtonHandler:^{
+            QredoKeychainReceiverQR *localSelf = weakSelf;
+            if (localSelf.didReceiveKeychainConfirmationHandler) {
+                [self showInstallingKeyChainActivity];
+                localSelf.didReceiveKeychainConfirmationHandler(YES);
+            }
+            localSelf.didReceiveKeychainConfirmationHandler = nil;
+        }];
+    });
+}
+
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didFailWithError:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showFailureConfirmationController];
+    });
+}
+
+- (void)qredoKeychainReceiverDidInstallKeychain:(QredoKeychainReceiver *)receiver {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showSuccessConfirmationController];
+    });
 }
 
 @end
