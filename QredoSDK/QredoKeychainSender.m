@@ -159,7 +159,7 @@
 
 - (void)sendKeychain
 {
-    NSData *keychainData = [@"Hello" dataUsingEncoding:NSUTF8StringEncoding]; // TODO
+    NSData *keychainData = [@"Hello, db21fec4f6d64288889337aee23bc9c86acc76bc715a48fab82d96d8bba38142" dataUsingEncoding:NSUTF8StringEncoding]; // TODO
 
     QredoConversationMessage *keychainMessage = [[QredoConversationMessage alloc] initWithValue:keychainData
                                                                                        dataType:QredoKeychainTransporterMessageTypeKeychain
@@ -232,7 +232,7 @@
 
 - (void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message
 {
-    if ([message.dataType isEqualToString:QredoKeychainTransporterMessageKeyDeviceName]) {
+    if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeDeviceInfo]) {
         [self didReceiveDeviceInfoMessage:message];
     } else if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeConfirmReceiving]) {
         [self didReceiveParsedConfirmationMessage:message];
@@ -240,7 +240,7 @@
         [self didReceiveCancelMessage:message];
     } else {
         NSLog(@"Unsupported message type: %@", message.dataType);
-        // can generate call handleError: too
+        [self handleError:[NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeUnknown userInfo:@{NSLocalizedDescriptionKey : @"Received unknown message"}]];
     }
 }
 
