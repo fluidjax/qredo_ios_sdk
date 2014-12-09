@@ -16,15 +16,17 @@
 
 // `cancelHandler` should be kept by the receiver delegate and called if user presses "Cancel" button.
 // However, after getting calls `qredoKeychainReceiverDidReceiveKeychain:` or `qredoKeychainReceiver:didFailWithError:`, `cancelHandler` shall not be called
-- (void)qredoKeychainReceiverWillCreateRendezvous:(QredoKeychainReceiver *)receiver cancelHandler:(void(^)())cancelHandler;
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver willCreateRendezvousWithCancelHandler:(void(^)())cancelHandler;
 
 - (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didCreateRendezvousWithTag:(NSString*)tag;
 
 - (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didEstablishConnectionWithFingerprint:(NSString*)fingerPrint;
 
-- (void)qredoKeychainReceiverDidReceiveKeychain:(QredoKeychainReceiver *)receiver confirmationHandler:(void(^)(BOOL confirmed))confirmationHandler;
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didReceiveKeychainConfirmationHandler:(void(^)(BOOL confirmed))confirmationHandler;
 
 - (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didFailWithError:(NSError *)error;
+
+- (void)qredoKeychainReceiverDidInstallKeychain:(QredoKeychainReceiver *)receiver;
 
 @end
 
