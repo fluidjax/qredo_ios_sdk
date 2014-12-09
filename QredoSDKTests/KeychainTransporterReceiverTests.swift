@@ -12,94 +12,6 @@ class ConversationBlockDelegate : NSObject, QredoConversationDelegate {
     }
 }
 
-class KeychainReceiverMock : NSObject, QredoKeychainReceiverDelegate {
-    enum State {
-        case Idle
-        case Prepared
-        case CreatedRendezvous
-        case EstablishedConnection
-        case ReceivedKeychain
-        case InstalledKeychain
-        case Failed
-    }
-
-    var state : State = .Idle
-    var shouldCancelAt : State? = nil
-    var cancelHandler : (() -> Void)! = nil
-    var stateHandler : ((State) -> Void)! = nil
-
-    var shouldPassConfirmation = false
-
-    var didCallWillCreateRendezvous = false
-    var didCallDidCreateRendezvous = false
-    var didCallDidEstablishConnection = false
-    var didCallDidFail = false
-    var didCallDidReceiveKeychain = false
-
-    var rendezvousTag : String? = nil
-    var connectionFingerprint : String? = nil
-
-
-    func switchState(state: State) -> Bool {
-        self.state = state
-
-        if let actualStateHandler = stateHandler {
-            stateHandler(state)
-        }
-
-        if shouldCancelAt == state {
-            cancelHandler()
-            return true
-        }
-        return false
-    }
-
-    // Delegate methods
-
-    func qredoKeychainReceiverWillCreateRendezvous(receiver: QredoKeychainReceiver!, cancelHandler: (() -> Void)!) {
-        didCallWillCreateRendezvous = true
-
-        self.cancelHandler = cancelHandler
-
-        if switchState(.Idle) { return }
-        if switchState(.Prepared) { return }
-    }
-
-    func qredoKeychainReceiver(receiver: QredoKeychainReceiver!, didCreateRendezvousWithTag tag: String!) {
-        didCallDidCreateRendezvous = true
-
-        rendezvousTag = tag
-        if switchState(.CreatedRendezvous) { return }
-    }
-
-    func qredoKeychainReceiver(receiver: QredoKeychainReceiver!, didEstablishConnectionWithFingerprint fingerPrint: String!) {
-        didCallDidEstablishConnection = true
-
-        connectionFingerprint = fingerPrint
-
-        if switchState(.EstablishedConnection) { return }
-    }
-
-    func qredoKeychainReceiver(receiver: QredoKeychainReceiver!, didFailWithError error: NSError!) {
-        didCallDidFail = true
-
-        if switchState(.Failed) { return }
-    }
-
-    func qredoKeychainReceiverDidReceiveKeychain(receiver: QredoKeychainReceiver!, confirmationHandler: ((Bool) -> Void)!) {
-        didCallDidReceiveKeychain = true
-
-        if switchState(.ReceivedKeychain) { return }
-
-        confirmationHandler(shouldPassConfirmation)
-
-        if shouldPassConfirmation {
-            if switchState(.InstalledKeychain) { return }
-        }
-    }
-}
-
-
 class KeychainTransporterReceiverTests: XCTestCase {
     var senderClient : QredoClient!
     var receiverClient : QredoClient!
@@ -168,7 +80,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
     }
 
 
-    func testEstablishingConnection() {
+    func testEstablishConnection() {
         let receiverMock = KeychainReceiverMock()
         let receiver = QredoKeychainReceiver(client: receiverClient, delegate: receiverMock)
 

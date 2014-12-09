@@ -12,6 +12,9 @@
 		0A16F99019C6F62200639779 /* QredoRendezvousCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F98B19C6F62200639779 /* QredoRendezvousCrypto.m */; };
 		0A27BEB61A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A27BEB41A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h */; };
 		0A27BEB71A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEB51A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m */; };
+		0A5D371C1A371BF900A9D1A2 /* KeychainTransporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371B1A371BF900A9D1A2 /* KeychainTransporterTests.swift */; };
+		0A5D371E1A371C2600A9D1A2 /* KeychainSenderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371D1A371C2600A9D1A2 /* KeychainSenderMock.swift */; };
+		0A5D37201A371C5300A9D1A2 /* KeychainReceiverMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371F1A371C5300A9D1A2 /* KeychainReceiverMock.swift */; };
 		0A6573CE1A2DEA1100D5502E /* CryptoImplV1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573C21A2DEA1100D5502E /* CryptoImplV1Tests.m */; };
 		0A6573CF1A2DEA1100D5502E /* QredoCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573C31A2DEA1100D5502E /* QredoCryptoTests.m */; };
 		0A6573D01A2DEA1100D5502E /* QredoDhPrivateKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573C41A2DEA1100D5502E /* QredoDhPrivateKeyTests.m */; };
@@ -135,6 +138,9 @@
 		0A16F98B19C6F62200639779 /* QredoRendezvousCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousCrypto.m; sourceTree = "<group>"; };
 		0A27BEB41A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+QUIDSerialization.h"; path = "Internal/NSDictionary+QUIDSerialization.h"; sourceTree = "<group>"; };
 		0A27BEB51A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+QUIDSerialization.m"; path = "Internal/NSDictionary+QUIDSerialization.m"; sourceTree = "<group>"; };
+		0A5D371B1A371BF900A9D1A2 /* KeychainTransporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTransporterTests.swift; sourceTree = "<group>"; };
+		0A5D371D1A371C2600A9D1A2 /* KeychainSenderMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainSenderMock.swift; sourceTree = "<group>"; };
+		0A5D371F1A371C5300A9D1A2 /* KeychainReceiverMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainReceiverMock.swift; sourceTree = "<group>"; };
 		0A6573B61A2DE88100D5502E /* CryptoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CryptoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A6573B91A2DE88100D5502E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A6573C21A2DEA1100D5502E /* CryptoImplV1Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CryptoImplV1Tests.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/CryptoImplV1Tests.m"; sourceTree = "<group>"; };
@@ -545,6 +551,9 @@
 			children = (
 				0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */,
 				0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */,
+				0A5D371B1A371BF900A9D1A2 /* KeychainTransporterTests.swift */,
+				0A5D371D1A371C2600A9D1A2 /* KeychainSenderMock.swift */,
+				0A5D371F1A371C5300A9D1A2 /* KeychainReceiverMock.swift */,
 			);
 			name = KeychainTransporter;
 			sourceTree = "<group>";
@@ -939,9 +948,12 @@
 				0A65740E1A2F3B7200D5502E /* ConversationTests.m in Sources */,
 				0A65741A1A2F3B7200D5502E /* QredoVaultTests.m in Sources */,
 				0AD99E8A1A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift in Sources */,
+				0A5D371C1A371BF900A9D1A2 /* KeychainTransporterTests.swift in Sources */,
 				0A6574141A2F3B7200D5502E /* QredoRendezvousTests.m in Sources */,
 				0A65740F1A2F3B7200D5502E /* Dictionary+Contains.swift in Sources */,
 				0A65741D1A2F3B7200D5502E /* RendezvousListenerTests.m in Sources */,
+				0A5D37201A371C5300A9D1A2 /* KeychainReceiverMock.swift in Sources */,
+				0A5D371E1A371C2600A9D1A2 /* KeychainSenderMock.swift in Sources */,
 				0A65740D1A2F3B7200D5502E /* ConversationMQTTTests.m in Sources */,
 				0A6574121A2F3B7200D5502E /* QredoRendezvousCryptoTest.m in Sources */,
 				0A6574161A2F3B7200D5502E /* QredoTestUtils.m in Sources */,
