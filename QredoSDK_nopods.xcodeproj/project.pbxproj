@@ -1370,7 +1370,6 @@
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					QREDO_LOG_ERROR,
-					QREDO_LOG_INFO,
 					QREDO_LOG_DEBUG,
 					QREDO_LOG_TRACE,
 				);

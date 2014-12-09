@@ -6,7 +6,7 @@
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 #import "QredoTestConfiguration.h"
-
+#import "QredoTestUtils.h"
 
 // The purpose of this test is to cover all edge cases in the rendezvous listener:
 // - receiving response
@@ -102,6 +102,9 @@
     rendezvous.delegate = self;
 
     [rendezvous startListening];
+    
+    // Sleep for brief time to allow server to set up subscription
+    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
 
     NSLog(@"Responding from another client");
     __block QredoConversation *responderConversation = nil;

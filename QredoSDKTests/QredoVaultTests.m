@@ -458,6 +458,9 @@
     vault.delegate = listener;
 
     [vault startListening];
+    
+    // Sleep for brief time to allow server to set up subscription
+    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
 
     // Create an item to ensure that there's data later than any current HWM
     NSData *item1Data = [self randomDataWithLength:1024];

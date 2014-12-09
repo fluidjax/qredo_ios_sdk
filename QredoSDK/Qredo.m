@@ -7,6 +7,7 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
 #import "QredoServiceInvoker.h"
+#import "QredoLogging.h"
 
 NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
@@ -52,6 +53,8 @@ static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080
 
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(NSDictionary*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
 {
+    LogDebug(@"Authorising client for conversation types: %@. VaultDataTypes: %@. Options: %@.", conversationTypes, vaultDataTypes, options);
+
     NSURL *serviceURL = nil;
 
     id serviceURLObject = (NSString *)[options objectForKey:QredoClientOptionServiceURL];

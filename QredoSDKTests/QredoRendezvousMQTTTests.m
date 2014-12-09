@@ -17,4 +17,8 @@
     [super testCreateRendezvous];
 }
 
+- (void)testCreateAndRespondRendezvous {
+    [super testCreateAndRespondRendezvous];
+}
+
 @end

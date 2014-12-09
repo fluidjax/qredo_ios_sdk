@@ -87,6 +87,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     QredoDhPrivateKey *_requesterPrivateKey;
     QredoRendezvousHashedTag *_hashedTag;
     QredoRendezvousDescriptor *_descriptor;
+    BOOL _subscribedToResponses;
 
     NSString *_tag;
 
@@ -247,8 +248,74 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // TODO implement later
 }
 
-// This method polls for (new) responses to rendezvous, and creates new conversations from them.
 - (void)startListening
+{
+    // If we support multi-response, then use it, otherwise poll
+    if (_client.serviceInvoker.supportsMultiResponse)
+    {
+        LogDebug(@"Starting subscription to conversations");
+        [self startSubscribing];
+    }
+    else
+    {
+        LogDebug(@"Starting polling for conversations");
+        [self startPolling];
+    }
+}
+
+- (void)stopListening
+{
+    // If we support multi-response, then use it, otherwise poll
+    if (_client.serviceInvoker.supportsMultiResponse)
+    {
+        [self stopSubscribing];
+    }
+    else
+    {
+        [self stopPolling];
+    }
+}
+
+// This method enables subscription (push) for responses to rendezvous, and creates new conversations form them
+- (void)startSubscribing
+{
+    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
+
+    if (_subscribedToResponses) {
+        LogDebug(@"Already subscribed to responses, and cannot currently unsubscribe, so ignoring request.");
+        return;
+    }
+    
+    // Subscribe to conversations newer than our highwatermark
+    [self subscribeToConversationsWithBlock:^(QredoConversation *conversation) {
+
+        LogDebug(@"Subscription returned conversation: %@", conversation);
+        
+        if ([_delegate respondsToSelector:@selector(qredoRendezvous:didReceiveReponse:)]) {
+            [_delegate qredoRendezvous:self didReceiveReponse:conversation];
+        }
+        
+    } subscriptionTerminatedHandler:^(NSError *error) {
+
+        LogError("Subscription terminated with error: %@", error);
+        _subscribedToResponses = NO;
+
+    } since:self.highWatermark highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark) {
+
+        self->_highWatermark = newWatermark;
+
+    }];
+}
+
+// This method disables subscription (push) for responses to rendezvous
+- (void)stopSubscribing
+{
+    // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
+    LogDebug(@"NOTE: Cannot currently unsubscribe.  This request is ignored.");
+}
+
+// This method polls for (new) responses to rendezvous, and creates new conversations from them.
+- (void)startPolling
 {
     NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
 
@@ -293,7 +360,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     }
 }
 
-- (void)stopListening
+- (void)stopPolling
 {
     @synchronized (self) {
         if (_timer) {
@@ -301,6 +368,48 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             _timer = nil;
         }
     }
+}
+
+- (void)subscribeToConversationsWithBlock:(void(^)(QredoConversation *conversation))block
+            subscriptionTerminatedHandler:(void (^)(NSError *))subscriptionTerminatedHandler
+                                    since:(QredoRendezvousHighWatermark)sinceWatermark
+                     highWatermarkHandler:(void(^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler
+{
+    _subscribedToResponses = YES;
+
+    [_rendezvous getChallengeWithHashedTag:_hashedTag completionHandler:^(NSData *result, NSError *error) {
+        if (error) {
+            subscriptionTerminatedHandler(error);
+            return ;
+        }
+
+        NSData *nonce = result;
+        NSData *signature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:nonce];
+
+        [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
+                                             challenge:nonce
+                                             signature:signature
+                                     completionHandler:^(QredoRendezvousResponseWithSequenceValue *result, NSError *error) {
+                                         if (error) {
+                                             subscriptionTerminatedHandler(error);
+                                             return ;
+                                         }
+
+                                         NSError *creationError = nil;
+                                         QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:result.response error:creationError];
+                                         
+                                         if (creationError) {
+                                             subscriptionTerminatedHandler(creationError);
+                                             return;
+                                         }
+                                         
+                                         block(conversation);
+
+                                         if (result.sequenceValue && highWatermarkHandler) {
+                                             highWatermarkHandler(result.sequenceValue.longLongValue);
+                                         }
+                                     }];
+    }];
 }
 
 - (void)enumerateConversationsWithBlock:(void(^)(QredoConversation *conversation, BOOL *stop))block

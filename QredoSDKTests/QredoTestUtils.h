@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSTimeInterval qtu_defaultTimeout;
+extern NSTimeInterval qtu_serverSubscriptionDelay;
 
 @interface NSData (QredoTestUtils)
 
