@@ -27,6 +27,7 @@ class KeychainReceiverMock : NSObject, QredoKeychainReceiverDelegate {
     var didCallDidEstablishConnection = false
     var didCallDidFail = false
     var didCallDidReceiveKeychain = false
+    var didCallDidInstallKeychain = false
 
     var rendezvousTag : String? = nil
     var connectionFingerprint : String? = nil
@@ -48,7 +49,7 @@ class KeychainReceiverMock : NSObject, QredoKeychainReceiverDelegate {
 
     // Delegate methods
 
-    func qredoKeychainReceiverWillCreateRendezvous(receiver: QredoKeychainReceiver!, cancelHandler: (() -> Void)!) {
+    func qredoKeychainReceiver(receiver: QredoKeychainReceiver!, willCreateRendezvousWithCancelHandler cancelHandler: (() -> Void)!) {
         didCallWillCreateRendezvous = true
 
         self.cancelHandler = cancelHandler
@@ -78,12 +79,16 @@ class KeychainReceiverMock : NSObject, QredoKeychainReceiverDelegate {
         if switchState(.Failed) { return }
     }
 
-    func qredoKeychainReceiverDidReceiveKeychain(receiver: QredoKeychainReceiver!, confirmationHandler: ((Bool) -> Void)!) {
+    func qredoKeychainReceiver(receiver: QredoKeychainReceiver!, didReceiveKeychainWithConfirmationHandler confirmationHandler: ((Bool) -> Void)!) {
         didCallDidReceiveKeychain = true
 
         if switchState(.ReceivedKeychain) { return }
 
         confirmationHandler(shouldPassConfirmation)
+    }
+
+    func qredoKeychainReceiverDidInstallKeychain(receiver: QredoKeychainReceiver!) {
+        didCallDidInstallKeychain = true
         
         if shouldPassConfirmation {
             if switchState(.InstalledKeychain) { return }

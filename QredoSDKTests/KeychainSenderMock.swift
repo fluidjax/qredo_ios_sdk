@@ -31,6 +31,10 @@ class KeychainSenderMock : NSObject, QredoKeychainSenderDelegate {
     var cancelHandler : (() -> Void)! = nil
     var stateHandler : ((State) -> Void)! = nil
 
+    var shouldWaitForRendezvousTag = false
+
+    var discoverSemaphore = dispatch_semaphore_create(0)
+
     func switchState(state: State) -> Bool {
         self.state = state
 
@@ -45,6 +49,11 @@ class KeychainSenderMock : NSObject, QredoKeychainSenderDelegate {
         return false
     }
 
+    func discoverTag(tag: String) {
+        shouldDiscoverTag = tag
+        dispatch_semaphore_signal(discoverSemaphore)
+    }
+
     // Delegate methods
 
     func qredoKeychainSenderDiscoverRendezvous(sender: QredoKeychainSender!, completionHander completionHandler: ((/*rendezvousTag:*/ String!) -> Bool)!, cancelHandler: (() -> Void)!) {
@@ -55,6 +64,10 @@ class KeychainSenderMock : NSObject, QredoKeychainSenderDelegate {
         // If we want to cancel scanning
         if switchState(.Idle) { return }
         if switchState(.DiscoveredRendezvous) { return }
+
+        if self.shouldWaitForRendezvousTag {
+            dispatch_semaphore_wait(discoverSemaphore, DISPATCH_TIME_FOREVER);
+        }
 
         didVerifyTag = completionHandler(shouldDiscoverTag)
 

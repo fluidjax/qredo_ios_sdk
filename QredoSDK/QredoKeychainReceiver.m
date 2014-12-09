@@ -10,6 +10,7 @@
 {
     // completion handler that is passed to startWithCompletionHandler:
     void(^clientCompletionHandler)(NSError *error);
+    BOOL cancelled;
 }
 
 @property id<QredoKeychainReceiverDelegate> delegate;
@@ -34,7 +35,7 @@
 - (void)startWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
     clientCompletionHandler = completionHandler;
-    [self.delegate qredoKeychainReceiverWillCreateRendezvous:self cancelHandler:^{
+    [self.delegate qredoKeychainReceiver:self willCreateRendezvousWithCancelHandler:^{
         [self cancel];
     }];
 
@@ -45,12 +46,16 @@
                                                                                                 maxResponseCount:@1];
     [self.client createRendezvousWithTag:randomTag configuration:configuration
                        completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-                           if (error) {
-                               [self handleError:error];
-                               return;
-                           }
+                           @synchronized (self) {
+                               if (cancelled) return ;
 
-                           [self didCreateRendezvous:rendezvous];
+                               if (error) {
+                                   [self handleError:error];
+                                   return;
+                               }
+                           }
+                               [self didCreateRendezvous:rendezvous];
+
                        }];
 }
 
@@ -69,13 +74,17 @@
 }
 
 - (void)cancel {
-    if (self.conversation) {
-        [self sendCancellationMessage];
-    }
+    @synchronized(self) {
+        cancelled = true;
 
-    [self handleError:[NSError errorWithDomain:QredoErrorDomain
-                                          code:QredoErrorCodeUnknown // TODO
-                                      userInfo:@{NSLocalizedDescriptionKey: @"User cancelled the transport"}]];
+        if (self.conversation) {
+            [self sendCancellationMessage];
+        }
+
+        [self handleError:[NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeUnknown // TODO
+                                          userInfo:@{NSLocalizedDescriptionKey: @"User cancelled the transport"}]];
+    }
 }
 
 - (void)didCreateRendezvous:(QredoRendezvous *)rendezvous
@@ -104,7 +113,7 @@
 
 - (void)parseKeychainFromData:(NSData*)data
 {
-    BOOL success = YES;
+    BOOL success = data.length > 20; // just for testing
     NSError *parseError = nil;
 
     // TODO parse
@@ -112,6 +121,8 @@
     if (success) {
         [self didParseKeychainSuccessfuly];
     } else {
+        parseError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeUnknown userInfo:@{NSLocalizedDescriptionKey: @"Invalid keychain data"}];
+        [self sendCancellationMessage];
         [self handleError:parseError];
     }
 }
@@ -130,7 +141,7 @@
 
 - (void)didParseKeychainSuccessfuly
 {
-    [self.delegate qredoKeychainReceiverDidReceiveKeychain:self confirmationHandler:^(BOOL confirmed) {
+    [self.delegate qredoKeychainReceiver:self didReceiveKeychainWithConfirmationHandler:^(BOOL confirmed) {
         if (confirmed) {
             // TODO install keychain here
             clientCompletionHandler(nil);

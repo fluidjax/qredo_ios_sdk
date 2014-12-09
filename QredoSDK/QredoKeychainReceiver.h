@@ -22,7 +22,7 @@
 
 - (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didEstablishConnectionWithFingerprint:(NSString*)fingerPrint;
 
-- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didReceiveKeychainConfirmationHandler:(void(^)(BOOL confirmed))confirmationHandler;
+- (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didReceiveKeychainWithConfirmationHandler:(void(^)(BOOL confirmed))confirmationHandler;
 
 - (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver didFailWithError:(NSError *)error;
 

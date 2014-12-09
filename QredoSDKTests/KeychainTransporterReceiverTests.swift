@@ -38,17 +38,22 @@ class KeychainTransporterReceiverTests: XCTestCase {
         let receiverMock = KeychainReceiverMock()
         let receiver = QredoKeychainReceiver(client: receiverClient, delegate: receiverMock)
 
-        let receiverCompletionExpectation = self.expectationWithDescription("receiver completion")
+        var receiverCompletionExpectation : XCTestExpectation? = self.expectationWithDescription("receiver completion")
 
         receiverMock.shouldCancelAt = .Prepared
 
+        var completionHandlerCalls = 0
+
         receiver.startWithCompletionHandler { error in
+            completionHandlerCalls++
             XCTAssertNotNil(error, "Should be the cancellation error")
-            receiverCompletionExpectation.fulfill()
+            receiverCompletionExpectation?.fulfill()
+            receiverCompletionExpectation = nil
         }
 
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 
+        XCTAssertEqual(completionHandlerCalls, 1, "should call the completion handler only once")
         XCTAssertTrue(receiverMock.didCallWillCreateRendezvous, "should prepare the receiver delegate")
         XCTAssertFalse(receiverMock.didCallDidCreateRendezvous, "should cancel before the rendezvous is created")
     }
@@ -89,8 +94,9 @@ class KeychainTransporterReceiverTests: XCTestCase {
 
         var conversationDelegate = ConversationBlockDelegate()
         conversationDelegate.messageHandler = { message in
-            println(message.summaryValues)
-            deviceInfoExpectation.fulfill()
+            if message.dataType == QredoKeychainTransporterMessageTypeDeviceInfo {
+                deviceInfoExpectation.fulfill()
+            }
         }
 
         receiverMock.stateHandler = { state in
