@@ -144,6 +144,8 @@
     [self.delegate qredoKeychainReceiver:self didReceiveKeychainWithConfirmationHandler:^(BOOL confirmed) {
         if (confirmed) {
             // TODO install keychain here
+            
+            [self.delegate qredoKeychainReceiverDidInstallKeychain:self];
             clientCompletionHandler(nil);
             [self didConfirmInstallingKeychain];
         } else {
@@ -165,6 +167,7 @@
             return ;
         }
         [self didConfirmParsingKeychain];
+        
     }];
 }
 
