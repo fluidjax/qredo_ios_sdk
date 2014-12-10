@@ -96,9 +96,6 @@ static long long kRendezvousTestDurationSeconds = 600;
     rendezvous.delegate = listener;
     [rendezvous startListening];
 
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
-
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
@@ -285,9 +282,6 @@ static long long kRendezvousTestDurationSeconds = 600;
     NSLog(@"Listener expectation created: %@", listener.expectation);
     createdRendezvous.delegate = listener;
     [createdRendezvous startListening];
-    
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
     
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];

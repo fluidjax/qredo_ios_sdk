@@ -145,9 +145,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     NSLog(@"\nStarting listening");
     [rendezvous startListening];
     
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
-
     // another client with a new vault
     NSLog(@"\nCreating 2nd client");
     QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
@@ -207,9 +204,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     [rendezvous startListening];
 
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
-
     // another client with a new vault
     QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
     XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
@@ -259,9 +253,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     creatorConversation.delegate = listener;
     [creatorConversation startListening];
     
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
-
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         listener.didReceiveMessageExpectation = nil;
     }];
@@ -321,9 +312,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     responderConversation.delegate = anotherListener;
     [responderConversation startListening];
     
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
-
     QredoConversationMessage *anotherMessage = [[QredoConversationMessage alloc] initWithValue:[kMessageTestValue2 dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
     [conversatoinFromVault publishMessage:anotherMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
         XCTAssertNotNil(messageHighWatermark);
@@ -381,9 +369,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     
     [rendezvous startListening];
     
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
-    
     // another client with a new vault
     QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];
     XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
@@ -440,9 +425,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     rendezvous.delegate = self;
     
     [rendezvous startListening];
-    
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
     
     // another client with a new vault
     QredoClient *anotherClient = [[QredoClient alloc] initWithServiceURL:self.serviceURL options:@{QredoClientOptionVaultID : [QredoQUID QUID]}];

@@ -103,9 +103,6 @@
 
     [rendezvous startListening];
     
-    // Sleep for brief time to allow server to set up subscription
-    [NSThread sleepForTimeInterval:qtu_serverSubscriptionDelay];
-
     NSLog(@"Responding from another client");
     __block QredoConversation *responderConversation = nil;
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {

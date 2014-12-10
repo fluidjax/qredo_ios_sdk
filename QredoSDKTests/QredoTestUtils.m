@@ -6,7 +6,6 @@
 #import "QredoTestConfiguration.h"
 
 NSTimeInterval qtu_defaultTimeout = 10.0;
-NSTimeInterval qtu_serverSubscriptionDelay = 0.1; // Time to allow server to process subscription request before trying trigger the push notification
 
 @implementation NSData (QredoTestUtils)
 

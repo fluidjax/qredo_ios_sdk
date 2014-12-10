@@ -443,11 +443,11 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          BOOL stop = result.responses.lastObject == response;
                                          
 
-                                         NSError *localError = nil;
-                                         QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:localError];
+                                         NSError *creationError = nil;
+                                         QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:creationError];
                                          
-                                         if (localError) {
-                                             subscriptionTerminatedHandler(localError);
+                                         if (creationError) {
+                                             subscriptionTerminatedHandler(creationError);
                                              return;
                                          }
                                          
