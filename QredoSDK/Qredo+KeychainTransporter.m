@@ -7,6 +7,9 @@
 #import "QredoKeychainSenderQR.h"
 #import "QredoKeychainReceiver.h"
 #import "QredoKeychainReceiverQR.h"
+#import "QredoPrivate.h"
+
+
 
 @implementation QredoClient (KeychainTransporter)
 
@@ -15,6 +18,7 @@
     QredoKeychainSenderQR *qrSender = [[QredoKeychainSenderQR alloc] init];
 
     QredoKeychainSender *keychainSender = [[QredoKeychainSender alloc] initWithClient:self delegate:qrSender];
+    self.keychainSender = keychainSender;
 
     [keychainSender startWithCompletionHandler:completionHandler];
 }
@@ -24,7 +28,7 @@
     QredoKeychainReceiverQR *qrDelegate = [[QredoKeychainReceiverQR alloc] init];
 
     QredoKeychainReceiver *keychainReceiver = [[QredoKeychainReceiver alloc] initWithClient:self delegate:qrDelegate];
-
+    self.keychainReceiver = keychainReceiver;
     [keychainReceiver startWithCompletionHandler:completionHandler];
 }
 
