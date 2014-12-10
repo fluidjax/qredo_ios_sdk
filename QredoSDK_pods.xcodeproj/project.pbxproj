@@ -12,9 +12,6 @@
 		0A16F99019C6F62200639779 /* QredoRendezvousCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F98B19C6F62200639779 /* QredoRendezvousCrypto.m */; };
 		0A27BEB61A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A27BEB41A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h */; };
 		0A27BEB71A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEB51A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m */; };
-		0A5D371C1A371BF900A9D1A2 /* KeychainTransporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371B1A371BF900A9D1A2 /* KeychainTransporterTests.swift */; };
-		0A5D371E1A371C2600A9D1A2 /* KeychainSenderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371D1A371C2600A9D1A2 /* KeychainSenderMock.swift */; };
-		0A5D37201A371C5300A9D1A2 /* KeychainReceiverMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371F1A371C5300A9D1A2 /* KeychainReceiverMock.swift */; };
 		0A6573CE1A2DEA1100D5502E /* CryptoImplV1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573C21A2DEA1100D5502E /* CryptoImplV1Tests.m */; };
 		0A6573CF1A2DEA1100D5502E /* QredoCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573C31A2DEA1100D5502E /* QredoCryptoTests.m */; };
 		0A6573D01A2DEA1100D5502E /* QredoDhPrivateKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573C41A2DEA1100D5502E /* QredoDhPrivateKeyTests.m */; };
@@ -79,12 +76,15 @@
 		0AD259981A2F997600FC8942 /* libqredosdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libqredosdk.a */; };
 		0AD99E831A30D8B8004F25E1 /* QredoKeychainTransporterConsts.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD99E811A30D8B8004F25E1 /* QredoKeychainTransporterConsts.h */; };
 		0AD99E841A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E821A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m */; };
-		0AD99E8A1A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */; };
 		0AD9A1991A2773C800E300BC /* QredoErrorCodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD9A1981A2773C800E300BC /* QredoErrorCodes.h */; };
 		0AD9A19B1A2773CE00E300BC /* QredoErrorCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9A19A1A2773CE00E300BC /* QredoErrorCodes.m */; };
 		0AE3E5C61A35FE7D00EF192A /* Qredo+KeychainTransporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3E5C51A35FE7D00EF192A /* Qredo+KeychainTransporter.m */; };
-		0AE3E5C81A3616AB00EF192A /* KeychainTransporterReceiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */; };
 		22683D78E7D4E008255CBD4B /* libPods-CryptoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7422C5016D6775275AF5625F /* libPods-CryptoTests.a */; };
+		7810CC5A1A388BCE00421892 /* KeychainTransporterSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */; };
+		7810CC5B1A388BCE00421892 /* KeychainTransporterReceiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */; };
+		7810CC5C1A388BCE00421892 /* KeychainTransporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371B1A371BF900A9D1A2 /* KeychainTransporterTests.swift */; };
+		7810CC5D1A388BCE00421892 /* KeychainSenderMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371D1A371C2600A9D1A2 /* KeychainSenderMock.swift */; };
+		7810CC5E1A388BCE00421892 /* KeychainReceiverMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371F1A371C5300A9D1A2 /* KeychainReceiverMock.swift */; };
 		781D137E1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 781D137C1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h */; };
 		781D137F1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 781D137D1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m */; };
 		787282091A362C8800164BEB /* QredoKeychainConfirmationViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 787282071A362C8800164BEB /* QredoKeychainConfirmationViewController.h */; };
@@ -918,23 +918,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A6574171A2F3B7200D5502E /* QredoVaultConsolidationTests.swift in Sources */,
+				7810CC5A1A388BCE00421892 /* KeychainTransporterSenderTests.swift in Sources */,
 				0A65741B1A2F3B7200D5502E /* QredoVaultUpdateMQTTTests.m in Sources */,
 				0A6574191A2F3B7200D5502E /* QredoVaultMQTTTests.m in Sources */,
 				0A6574131A2F3B7200D5502E /* QredoRendezvousMQTTTests.m in Sources */,
 				0A6574111A2F3B7200D5502E /* NSDictionary+Contains.m in Sources */,
+				7810CC5B1A388BCE00421892 /* KeychainTransporterReceiverTests.swift in Sources */,
 				0A6574181A2F3B7200D5502E /* QredoVaultDescriptorTests.swift in Sources */,
-				0AE3E5C81A3616AB00EF192A /* KeychainTransporterReceiverTests.swift in Sources */,
 				0A6574151A2F3B7200D5502E /* QredoSExpressionTests.m in Sources */,
 				0A6574101A2F3B7200D5502E /* HighwatermarksTests.m in Sources */,
 				0A65740E1A2F3B7200D5502E /* ConversationTests.m in Sources */,
 				0A65741A1A2F3B7200D5502E /* QredoVaultTests.m in Sources */,
-				0AD99E8A1A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift in Sources */,
-				0A5D371C1A371BF900A9D1A2 /* KeychainTransporterTests.swift in Sources */,
+				7810CC5C1A388BCE00421892 /* KeychainTransporterTests.swift in Sources */,
 				0A6574141A2F3B7200D5502E /* QredoRendezvousTests.m in Sources */,
 				0A65740F1A2F3B7200D5502E /* Dictionary+Contains.swift in Sources */,
 				0A65741D1A2F3B7200D5502E /* RendezvousListenerTests.m in Sources */,
-				0A5D37201A371C5300A9D1A2 /* KeychainReceiverMock.swift in Sources */,
-				0A5D371E1A371C2600A9D1A2 /* KeychainSenderMock.swift in Sources */,
+				7810CC5E1A388BCE00421892 /* KeychainReceiverMock.swift in Sources */,
+				7810CC5D1A388BCE00421892 /* KeychainSenderMock.swift in Sources */,
 				0A65740D1A2F3B7200D5502E /* ConversationMQTTTests.m in Sources */,
 				0A6574121A2F3B7200D5502E /* QredoRendezvousCryptoTest.m in Sources */,
 				0A6574161A2F3B7200D5502E /* QredoTestUtils.m in Sources */,
