@@ -135,6 +135,8 @@ AVCaptureVideoOrientation videoOrientationWithInterfaceOrientation(UIInterfaceOr
         if ([current isKindOfClass:[AVMetadataMachineReadableCodeObject class]]
             && [current.type isEqualToString:AVMetadataObjectTypeQRCode]) {
             
+            [self.session stopRunning];
+            
             NSString *scannedResult = [(AVMetadataMachineReadableCodeObject *) current stringValue];
             if (self.scanningHandler) {
                 self.scanningHandler(scannedResult, nil);
