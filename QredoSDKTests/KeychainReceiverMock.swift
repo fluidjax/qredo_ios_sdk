@@ -37,7 +37,7 @@ class KeychainReceiverMock : NSObject, QredoKeychainReceiverDelegate {
         self.state = state
 
         if let actualStateHandler = stateHandler {
-            stateHandler(state)
+            actualStateHandler(state)
         }
 
         if shouldCancelAt == state {
