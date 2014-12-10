@@ -88,6 +88,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     QredoRendezvousHashedTag *_hashedTag;
     QredoRendezvousDescriptor *_descriptor;
     BOOL _subscribedToResponses;
+    NSMutableDictionary *_dedupeStore; // Key is response, value is sequence number (as getResponses can return multiple responses for a sinlge sequence number)
 
     NSString *_tag;
 
@@ -116,6 +117,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     _client = client;
     _rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
     _vault = [_client systemVault];
+    _dedupeStore = [[NSMutableDictionary alloc] init];
 
     _queue = dispatch_queue_create("com.qredo.rendezvous.updates", nil);
 
@@ -314,6 +316,11 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
     LogDebug(@"NOTE: Cannot currently unsubscribe.  This request is ignored.");
+    
+    // Can clear out the dedupe store though
+    @synchronized(_dedupeStore) {
+        _dedupeStore = [[NSMutableDictionary alloc] init];
+    }
 }
 
 // This method polls for (new) responses to rendezvous, and creates new conversations from them.
@@ -372,6 +379,58 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     }
 }
 
+- (BOOL)isDuplicateOrOldResponse:(QredoRendezvousResponse *)response sequenceValue:(QredoRendezvousSequenceValue *)sequenceValue
+{
+    LogDebug(@"Checking for old/duplicate. Response: %@. SequenceValue: %@.", response, sequenceValue);
+
+    BOOL responseIsDuplicate = NO;
+    
+    // A duplicate response is being taken to be a specific response which has the same sequence value
+    @synchronized(_dedupeStore) {
+        QredoRendezvousSequenceValue *fetchedSequenceValue = [_dedupeStore objectForKey:response];
+
+        // If we already seen that response, check the sequence value. We only care about newer sequence values
+        if (fetchedSequenceValue && fetchedSequenceValue <= sequenceValue) {
+            // Found a duplicate/old response
+            responseIsDuplicate = YES;
+        }
+    }
+    
+    // TODO: DH - deal with size of dictionary - should not just keep growing
+    
+    LogDebug(@"Response is duplicate: %@", responseIsDuplicate ? @"YES" : @"NO");
+    return responseIsDuplicate;
+}
+
+- (BOOL)processResponse:(QredoRendezvousResponse *)response sequenceValue:(QredoRendezvousSequenceValue *)sequenceValue withBlock:(void(^)(QredoConversation *conversation))block errorHandler:(void (^)(NSError *))errorHandler
+{
+    BOOL didProcessResponse = NO;
+    
+    if ([self isDuplicateOrOldResponse:response sequenceValue:sequenceValue]) {
+        LogDebug(@"Ignoring duplicate/old rendezvous response. Response: %@. Sequence Value: %@", response, sequenceValue);
+    }
+    else {
+        NSError *creationError = nil;
+        QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:creationError];
+        
+        if (creationError) {
+            errorHandler(creationError);
+            return didProcessResponse;
+        }
+
+        @synchronized(_dedupeStore) {
+            // Success, so store this response/sequenceValue pair for later to prevent duplication
+            [_dedupeStore setObject:sequenceValue forKey:response];
+        }
+
+        block(conversation);
+        
+        didProcessResponse = YES;
+    }
+    
+    return didProcessResponse;
+}
+
 - (void)subscribeToConversationsWithBlock:(void(^)(QredoConversation *conversation))block
             subscriptionTerminatedHandler:(void (^)(NSError *))subscriptionTerminatedHandler
                                     since:(QredoRendezvousHighWatermark)sinceWatermark
@@ -392,22 +451,19 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                              challenge:subscriptionNonce
                                              signature:subscriptionSignature
                                      completionHandler:^(QredoRendezvousResponseWithSequenceValue *result, NSError *error) {
+                                         
+                                         LogDebug(@"Rendezvous subscription completion handler called");
+
                                          if (error) {
                                              subscriptionTerminatedHandler(error);
                                              return ;
                                          }
-
-                                         NSError *creationError = nil;
-                                         QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:result.response error:creationError];
                                          
-                                         if (creationError) {
-                                             subscriptionTerminatedHandler(creationError);
-                                             return;
-                                         }
-                                         
-                                         block(conversation);
+                                         BOOL didProcessResponse = [self processResponse:result.response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
 
-                                         if (result.sequenceValue && highWatermarkHandler) {
+                                         if (didProcessResponse &&
+                                             result.sequenceValue &&
+                                             highWatermarkHandler) {
                                              highWatermarkHandler(result.sequenceValue.longLongValue);
                                          }
                                      }];
@@ -423,46 +479,42 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             NSData *getResponsesNonce = result;
             NSData *getResponsesSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:getResponsesNonce];
             
-            // TODO: DH - later check if can use any existing methods or refactor into a commmon function
-            
-            // Now have to query to get responses for any which may have been responded to whilst subscription being set up
-            // However, will need to dedupe as want to avoid multiple notifications for same response
+            // Now query to get responses made whilst subscription being set up. Will need to dedupe as want to avoid multiple notifications for same response (done in processResponse)
 
-            // TODO: DH - dedupe responses
             [_rendezvous getResponsesWithHashedTag:_hashedTag
                                          challenge:getResponsesNonce
                                          signature:getResponsesSignature
                                              after:[NSNumber numberWithLongLong:sinceWatermark]
                                  completionHandler:^(QredoRendezvousResponsesResult *result, NSError *error) {
+                                     
+                                     LogDebug(@"Get rendezvous responses completion handler called");
+
                                      if (error) {
                                          subscriptionTerminatedHandler(error);
                                          return ;
                                      }
                                      
+                                     BOOL didProcessResponse = NO;
+                                     
                                      for (QredoRendezvousResponse *response in result.responses) {
                                          BOOL stop = result.responses.lastObject == response;
-                                         
 
-                                         NSError *creationError = nil;
-                                         QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:creationError];
-                                         
-                                         if (creationError) {
-                                             subscriptionTerminatedHandler(creationError);
-                                             return;
-                                         }
-                                         
-                                         block(conversation);
+                                         // OR the flag each time so it's set if at least one response was processed
+                                         didProcessResponse |= [self processResponse:response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
                                          
                                          if (stop) {
                                              break;
                                          }
                                      }
                                      
-                                     if (result.sequenceValue && highWatermarkHandler) {
+                                     if (didProcessResponse &&
+                                         result.sequenceValue &&
+                                         highWatermarkHandler) {
                                          highWatermarkHandler(result.sequenceValue.longLongValue);
                                      }
+                                     
+                                     // TODO: DH - clear out dedupe store?
                                  }];
-            
         }];
     }];
 }

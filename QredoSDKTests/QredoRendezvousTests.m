@@ -290,6 +290,9 @@ static long long kRendezvousTestDurationSeconds = 600;
         [respondExpectation fulfill];
     }];
     
+    // Give time for the subscribe/getResponses process to process - they could internally produce duplicates which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
+    [NSThread sleepForTimeInterval:5];
+    
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
         respondExpectation = nil;
         listener.expectation = nil;
