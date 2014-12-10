@@ -5,6 +5,7 @@
 #import "QredoKeychainReceiver.h"
 #import "Qredo.h"
 #import "QredoKeychainTransporterConsts.h"
+#import "QredoPrivate.h"
 
 @interface QredoKeychainReceiver () <QredoRendezvousDelegate, QredoConversationDelegate>
 {
@@ -16,6 +17,7 @@
 @property id<QredoKeychainReceiverDelegate> delegate;
 @property QredoClient *client;
 @property QredoConversation *conversation;
+@property QredoQUID *keychain;
 
 @end
 
@@ -113,12 +115,16 @@
 
 - (void)parseKeychainFromData:(NSData*)data
 {
-    BOOL success = data.length > 20; // just for testing
+    
+    QredoQUID *vaultId = [[QredoQUID alloc] initWithQUIDData:data];
+    
+    BOOL success = vaultId != nil; // just for testing
     NSError *parseError = nil;
 
     // TODO parse
 
     if (success) {
+        self.keychain = vaultId;
         [self didParseKeychainSuccessfuly];
     } else {
         parseError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeUnknown userInfo:@{NSLocalizedDescriptionKey: @"Invalid keychain data"}];
@@ -143,8 +149,7 @@
 {
     [self.delegate qredoKeychainReceiver:self didReceiveKeychainWithConfirmationHandler:^(BOOL confirmed) {
         if (confirmed) {
-            // TODO install keychain here
-            
+            [self installkeychain];
             [self.delegate qredoKeychainReceiverDidInstallKeychain:self];
             clientCompletionHandler(nil);
             [self didConfirmInstallingKeychain];
@@ -154,6 +159,11 @@
     }];
 }
 
+- (void)installkeychain
+{
+    QredoQUID *defaultVaultId = self.keychain;
+    [self.client setDefaultVaultId:defaultVaultId];
+}
 
 - (void)didConfirmInstallingKeychain
 {

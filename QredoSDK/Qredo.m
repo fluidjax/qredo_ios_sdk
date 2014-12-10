@@ -349,8 +349,7 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 
 - (void)saveState
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[_vaultId data] forKey:QredoClientOptionVaultID];
+    [self setDefaultVaultId:_vaultId];
 }
 
 - (void)loadState
@@ -361,6 +360,13 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
     if (vaultIdData) {
         _vaultId = [[QredoQUID alloc] initWithQUIDData:vaultIdData];
     }
+}
+
+
+- (void)setDefaultVaultId:(QredoQUID *)quid
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[quid data] forKey:QredoClientOptionVaultID];
 }
 
 

@@ -21,6 +21,8 @@
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
 
+- (void)setDefaultVaultId:(QredoQUID *)quid;
+
 @end
 
 #endif

@@ -159,7 +159,10 @@
 
 - (void)sendKeychain
 {
-    NSData *keychainData = [@"Hello, db21fec4f6d64288889337aee23bc9c86acc76bc715a48fab82d96d8bba38142" dataUsingEncoding:NSUTF8StringEncoding]; // TODO
+    //NSData *keychainData = [@"Hello, db21fec4f6d64288889337aee23bc9c86acc76bc715a48fab82d96d8bba38142" dataUsingEncoding:NSUTF8StringEncoding]; // TODO
+    
+    QredoQUID *vaultId = self.client.defaultVault.vaultId;
+    NSData *keychainData = vaultId.data; // TODO
 
     QredoConversationMessage *keychainMessage = [[QredoConversationMessage alloc] initWithValue:keychainData
                                                                                        dataType:QredoKeychainTransporterMessageTypeKeychain
