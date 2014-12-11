@@ -354,8 +354,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 - (void)saveState
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[_vaultId data] forKey:QredoClientOptionVaultID];
+    [self setDefaultVaultId:_vaultId];
 }
 
 - (void)loadState
@@ -377,8 +376,30 @@ static NSString *const QredoKeychainPassword = @"Password123";
                                                             nextServiceAccess:[NSSet set]];
 
     QredoKeychain *keychain = [[QredoKeychain alloc] initWithOperatorInfo:operatorInfo];
+    [keychain setVaultId:self.systemVault.vaultId];
+
+    const uint8_t bulkKeyBytes[] = {'b','u','l','k','d','e','m','o','k','e','y'};
+    const uint8_t authenticationKeyBytes[] = {'a','u','t','h','d','e','m','o','k','e','y'};
+
+    NSData *bulkKey = [NSData dataWithBytes:bulkKeyBytes
+                                     length:sizeof(bulkKeyBytes)];
+    NSData *authenticationKey = [NSData dataWithBytes:authenticationKeyBytes
+                                               length:sizeof(authenticationKeyBytes)];
+
+    [keychain setVaultAuthKey:authenticationKey bulkKey:bulkKey];
 
     return [keychain data];
+}
+
+- (void)setKeychain:(QredoKeychain *)keychain
+{
+    [self setDefaultVaultId:keychain.vaultId];
+}
+
+- (void)setDefaultVaultId:(QredoQUID *)vaultId
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:vaultId.data forKey:QredoClientOptionVaultID];
 }
 
 @end
