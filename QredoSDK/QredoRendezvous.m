@@ -496,11 +496,17 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                      
                                      BOOL didProcessResponse = NO;
                                      
+                                     LogDebug(@"Have %lu response(s) to process", (unsigned long)result.responses.count);
+                                     
                                      for (QredoRendezvousResponse *response in result.responses) {
                                          BOOL stop = result.responses.lastObject == response;
 
                                          // OR the flag each time so it's set if at least one response was processed
                                          didProcessResponse |= [self processResponse:response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
+                                         
+                                         // TODO: DH - remove deliberate duplication
+//                                         [self processResponse:response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
+                                         // TODO: DH - end deliberate duplication
                                          
                                          if (stop) {
                                              break;
@@ -557,6 +563,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                      return ;
                                  }
 
+                                 LogDebug(@"Enumerating %lu response(s)", (unsigned long)result.responses.count);
+                                 
                                  for (QredoRendezvousResponse *response in result.responses) {
                                      BOOL stop = result.responses.lastObject == response;
 

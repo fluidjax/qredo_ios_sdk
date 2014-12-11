@@ -75,6 +75,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
                                         options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   client = clientArg;
+                                  NSLog(@"Authorize completion handler called.");
                                   [clientExpectation fulfill];
                               }];
     
@@ -96,6 +97,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                      NSLog(@"Create rendezvous completion handler called.");
                       XCTAssertNil(error);
                       XCTAssertNotNil(_rendezvous);
                       
@@ -184,6 +186,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                      NSLog(@"Create rendezvous completion handler called.");
                       XCTAssertNil(error);
                       XCTAssertNotNil(_rendezvous);
 
@@ -236,6 +239,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     [responderConversation publishMessage:newMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+                            NSLog(@"Publish message completion handler called.");
                             XCTAssertNil(error);
                             XCTAssertNotNil(messageHighWatermark);
 
@@ -274,6 +278,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
         }
     } completionHandler:^(NSError *error) {
+        NSLog(@"Enumerate conversations completion handler called.");
         XCTAssertNil(error);
         [didFindConversation fulfill];
     }];
@@ -290,6 +295,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     __block QredoConversation *conversatoinFromVault = nil;
     [client fetchConversationWithId:metadataFromEnumeration.conversationId completionHandler:^(QredoConversation *conversation, NSError *error) {
+        NSLog(@"Fetch convesation completion handler called.");
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);
         conversatoinFromVault = conversation;
@@ -350,6 +356,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                      NSLog(@"Create rendezvous completion handler called.");
                       XCTAssertNil(error);
                       XCTAssertNotNil(_rendezvous);
                       
@@ -407,6 +414,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                      NSLog(@"Create rendezvous completion handler called.");
                       XCTAssertNil(error);
                       XCTAssertNotNil(_rendezvous);
                       
