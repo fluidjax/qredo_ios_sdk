@@ -9,5 +9,6 @@
 - (void)testEnumeration;
 - (void)testEnumerationReturnsCreatedItem;
 - (void)testListener;
+- (void)testVaultItemMetadataAndMutableMetadata;
 
 @end
