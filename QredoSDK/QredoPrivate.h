@@ -13,6 +13,8 @@
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
 
+- (NSData *)keychainData;
+
 @end
 
 #endif

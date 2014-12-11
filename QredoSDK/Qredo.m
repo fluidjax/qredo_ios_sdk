@@ -8,11 +8,18 @@
 #import "QredoClientMarshallers.h"
 #import "QredoServiceInvoker.h"
 
+#import "QredoKeychain.h"
+
 NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
 static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
 static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
+
+
+static NSString *const QredoKeychainOperatorName = @"Qredo Mock Operator";
+static NSString *const QredoKeychainOperatorAccountId = @"1234567890";
+static NSString *const QredoKeychainPassword = @"Password123";
 
 @implementation QredoClientOptions
 
@@ -362,5 +369,17 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
     }
 }
 
+- (NSData *)keychainData {
+
+    QredoOperatorInfo *operatorInfo = [QredoOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
+                                                                   serviceUri:self.serviceURL.absoluteString
+                                                                    accountID:QredoKeychainOperatorAccountId
+                                                         currentServiceAccess:[NSSet set]
+                                                            nextServiceAccess:[NSSet set]];
+
+    QredoKeychain *keychain = [[QredoKeychain alloc] initWithOperatorInfo:operatorInfo];
+
+    return [keychain data];
+}
 
 @end

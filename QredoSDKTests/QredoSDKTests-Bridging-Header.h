@@ -9,3 +9,5 @@
 #import "QredoKeychainSender.h"
 #import "QredoKeychainReceiver.h"
 #import "QredoKeychainTransporterConsts.h"
+
+#import "QredoKeychain.h"
