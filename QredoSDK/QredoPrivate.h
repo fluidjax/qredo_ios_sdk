@@ -8,7 +8,15 @@
 #import "Qredo.h"
 #import "QredoServiceInvoker.h"
 
+@class QredoKeychainReceiver, QredoKeychainSender;
+
 @interface QredoClient ()
+
+
+// TODO: Find a better way of keaping in memory the keychainReceiver and keychainSender,
+// while sending and receiving the keychain.
+@property (nonatomic) QredoKeychainReceiver *keychainReceiver;
+@property (nonatomic) QredoKeychainSender *keychainSender;
 
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;

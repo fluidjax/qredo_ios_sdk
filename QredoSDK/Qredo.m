@@ -1,4 +1,5 @@
 #import "Qredo.h"
+#import "QredoPrivate.h"
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
 #import "QredoRendezvousPrivate.h"
@@ -9,6 +10,8 @@
 #import "QredoServiceInvoker.h"
 
 #import "QredoKeychain.h"
+#import "QredoKeychainSender.h"
+#import "QredoKeychainReceiver.h"
 
 NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
@@ -70,7 +73,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 @end
 
-@implementation QredoClient (Private)
+@implementation QredoClient
 
 - (QredoVault*)systemVault
 {
@@ -82,10 +85,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
 - (QredoServiceInvoker*)serviceInvoker {
     return _serviceInvoker;
 }
-
-@end
-
-@implementation QredoClient
 
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
 {
