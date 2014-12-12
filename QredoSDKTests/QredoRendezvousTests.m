@@ -49,6 +49,9 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 -(void)tearDown {
     [super tearDown];
+    if (client) {
+        [client closeSession];
+    }
 }
 
 - (void)authoriseClient
@@ -136,6 +139,8 @@ static long long kRendezvousTestDurationSeconds = 600;
         didEnumerateExpectation = nil;
     }];
     XCTAssertTrue(found);
+    
+    [anotherClient closeSession];
 }
 
 - (void)testCreateRendezvous {
@@ -313,5 +318,8 @@ static long long kRendezvousTestDurationSeconds = 600;
     }];
     
     [createdRendezvous stopListening];
+    
+    [anotherClient closeSession];
+
 }
 @end

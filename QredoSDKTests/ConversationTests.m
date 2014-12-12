@@ -68,6 +68,9 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
 -(void)tearDown {
     [super tearDown];
+    if (client) {
+        [client closeSession];
+    }
 }
 
 - (void)authoriseClient
@@ -181,6 +184,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     NSLog(@"\nStopping listening");
     [rendezvous stopListening];
+
+    [anotherClient closeSession];
 }
 
 - (void)testConversation {
@@ -236,6 +241,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     }];
 
     [rendezvous stopListening];
+    
+    [anotherClient closeSession];
 
     // Sending message
     XCTAssertNotNil(responderConversation);
@@ -407,6 +414,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     }];
     
     [rendezvous stopListening];
+    
+    [anotherClient closeSession];
 }
 
 - (void)testMetadataOfPersistentConversation {
@@ -464,6 +473,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     }];
     
     [rendezvous stopListening];
+    
+    [anotherClient closeSession];
 }
 
 @end

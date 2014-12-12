@@ -28,6 +28,9 @@
 
 -(void)tearDown {
     [super tearDown];
+    if (client) {
+        [client closeSession];
+    }
 }
 
 - (void)authoriseClient

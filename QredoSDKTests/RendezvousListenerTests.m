@@ -59,6 +59,9 @@
 
 -(void)tearDown {
     [super tearDown];
+    if (client) {
+        [client closeSession];
+    }
 }
 
 - (void)testRendezvousResponder {
@@ -137,6 +140,8 @@
     XCTAssertNotNil(responderConversation);
     
     [rendezvous stopListening];
+    
+    [anotherClient closeSession];
 }
 
 - (void)qredoRendezvous:(QredoRendezvous*)rendezvous didReceiveReponse:(QredoConversation *)conversation
