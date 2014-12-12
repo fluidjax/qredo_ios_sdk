@@ -21,6 +21,7 @@ typedef NS_ENUM(NSUInteger, QredoKeychainSendReceiveViewControllerAnimationType)
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor whiteColor];
     [self showCancelButton];
 }
 
