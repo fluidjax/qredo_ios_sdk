@@ -242,8 +242,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     [rendezvous stopListening];
     
-    [anotherClient closeSession];
-
     // Sending message
     XCTAssertNotNil(responderConversation);
 
@@ -265,7 +263,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         didPublishMessageExpectation = nil;
     }];
-
 
     ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
     listener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message"];
@@ -349,6 +346,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     XCTAssertFalse(listener.failed);
 
     [responderConversation stopListening];
+
+    [anotherClient closeSession];
 }
 
 // Rendezvous Delegate
