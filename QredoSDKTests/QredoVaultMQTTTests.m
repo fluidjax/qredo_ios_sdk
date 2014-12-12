@@ -32,4 +32,8 @@
     [super testListener];
 }
 
+- (void)testVaultItemMetadataAndMutableMetadata {
+    [super testVaultItemMetadataAndMutableMetadata];
+}
+
 @end

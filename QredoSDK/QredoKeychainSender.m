@@ -5,6 +5,7 @@
 #import "QredoKeychainSender.h"
 #import "Qredo.h"
 #import "QredoKeychainTransporterConsts.h"
+#import "QredoPrivate.h"
 
 @interface QredoKeychainSender () <QredoConversationDelegate>
 {
@@ -159,7 +160,7 @@
 
 - (void)sendKeychain
 {
-    NSData *keychainData = [@"Hello, db21fec4f6d64288889337aee23bc9c86acc76bc715a48fab82d96d8bba38142" dataUsingEncoding:NSUTF8StringEncoding]; // TODO
+    NSData *keychainData = [self.client keychainData];
 
     QredoConversationMessage *keychainMessage = [[QredoConversationMessage alloc] initWithValue:keychainData
                                                                                        dataType:QredoKeychainTransporterMessageTypeKeychain

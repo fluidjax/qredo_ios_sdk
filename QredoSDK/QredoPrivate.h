@@ -8,7 +8,7 @@
 #import "Qredo.h"
 #import "QredoServiceInvoker.h"
 
-@class QredoKeychainReceiver, QredoKeychainSender;
+@class QredoKeychainReceiver, QredoKeychainSender, QredoKeychain;
 
 @interface QredoClient ()
 
@@ -20,6 +20,9 @@
 
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
+
+- (NSData *)keychainData;
+- (void)setKeychain:(QredoKeychain *)keychain;
 
 @end
 

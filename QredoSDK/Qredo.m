@@ -9,15 +9,20 @@
 #import "QredoClientMarshallers.h"
 #import "QredoServiceInvoker.h"
 
+#import "QredoKeychain.h"
 #import "QredoKeychainSender.h"
 #import "QredoKeychainReceiver.h"
-
 
 NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
 static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
 static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
+
+
+static NSString *const QredoKeychainOperatorName = @"Qredo Mock Operator";
+static NSString *const QredoKeychainOperatorAccountId = @"1234567890";
+static NSString *const QredoKeychainPassword = @"Password123";
 
 @implementation QredoClientOptions
 
@@ -349,8 +354,7 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 
 - (void)saveState
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[_vaultId data] forKey:QredoClientOptionVaultID];
+    [self setDefaultVaultId:_vaultId];
 }
 
 - (void)loadState
@@ -363,5 +367,39 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
     }
 }
 
+- (NSData *)keychainData {
+
+    QredoOperatorInfo *operatorInfo = [QredoOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
+                                                                   serviceUri:self.serviceURL.absoluteString
+                                                                    accountID:QredoKeychainOperatorAccountId
+                                                         currentServiceAccess:[NSSet set]
+                                                            nextServiceAccess:[NSSet set]];
+
+    QredoKeychain *keychain = [[QredoKeychain alloc] initWithOperatorInfo:operatorInfo];
+    [keychain setVaultId:self.systemVault.vaultId];
+
+    const uint8_t bulkKeyBytes[] = {'b','u','l','k','d','e','m','o','k','e','y'};
+    const uint8_t authenticationKeyBytes[] = {'a','u','t','h','d','e','m','o','k','e','y'};
+
+    NSData *bulkKey = [NSData dataWithBytes:bulkKeyBytes
+                                     length:sizeof(bulkKeyBytes)];
+    NSData *authenticationKey = [NSData dataWithBytes:authenticationKeyBytes
+                                               length:sizeof(authenticationKeyBytes)];
+
+    [keychain setVaultAuthKey:authenticationKey bulkKey:bulkKey];
+
+    return [keychain data];
+}
+
+- (void)setKeychain:(QredoKeychain *)keychain
+{
+    [self setDefaultVaultId:keychain.vaultId];
+}
+
+- (void)setDefaultVaultId:(QredoQUID *)vaultId
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:vaultId.data forKey:QredoClientOptionVaultID];
+}
 
 @end
