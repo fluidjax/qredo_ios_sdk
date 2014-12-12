@@ -138,6 +138,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void(^)(NSError *error))completionHandler
 {
+    LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
+    
     self.configuration = configuration;
     QredoRendezvousCrypto *_crypto = [QredoRendezvousCrypto instance];
     // Box up optional values.
@@ -150,6 +152,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // Hash the tag.
     QredoAuthenticationCode *authKey = [_crypto authKey:tag];
     _hashedTag  = [_crypto hashedTagWithAuthKey:authKey];
+
+    LogDebug(@"Hashed tag: %@", _hashedTag);
 
     // Generate the rendezvous key pairs.
     QredoKeyPairLF *accessControlKeyPair = [_crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];
@@ -358,6 +362,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                             }
                         }
                     } completionHandler:^(NSError *error) {
+                        // TODO: DH - need to deal with any error returned - e.g. may indicate transport has been terminated
                         responded++;
                     } since:self.highWatermark highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark) {
                         self->_highWatermark = newWatermark;
@@ -626,7 +631,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     
     if (savingError) {
-        // Do not return a valid object if we could not save the keys
+        // Do not return a valid object if we could not save the keys, but return the error
         error = savingError;
         conversation = nil;
     }

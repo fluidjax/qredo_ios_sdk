@@ -18,6 +18,7 @@
 #import "QredoVaultPrivate.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
+#import "QredoLogging.h"
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
 NSString *const kQredoConversationVaultItemType = @"com.qredo.conversation";
@@ -329,6 +330,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void(^)(NSError *error))completionHandler
 {
+    LogDebug(@"Responding to (hashed) tag: %@", rendezvousTag);
+    
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
     QredoInternalRendezvous *_rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
 
@@ -346,6 +349,9 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 
     [_rendezvous respondWithResponse:response completionHandler:^(QredoRendezvousRespondResult *result, NSError *error) {
+
+        // TODO: DH - this handler does not appear to deal with the NSError returned, only creating a new error (hiding returned error) if result is not of correct object type.
+        
         if ([result isKindOfClass:[QredoRendezvousResponseRegistered class]])
         {
             QredoRendezvousResponseRegistered* responseRegistered = (QredoRendezvousResponseRegistered*) result;
@@ -511,6 +517,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                         [_delegate qredoConversation:self didReceiveNewMessage:message];
                     }
                 } completionHandler:^(NSError *error) {
+                    // TODO: DH - need to deal with any error returned - e.g. may indicate transport has been terminated
                     responded++;
                 } since:self.highWatermark
                              highWatermarkHandler:^(QredoConversationHighWatermark *highWatermark) {

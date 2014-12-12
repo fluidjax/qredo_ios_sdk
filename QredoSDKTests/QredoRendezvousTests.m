@@ -23,7 +23,7 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
-    NSLog(@"Rendezvous listener notified via qredoRendezvous:didReceiveReponse:  Rendezvous Tag: %@. Conversation details: Type:%@, ID:%@, HWM:%@", rendezvous.tag, conversation.metadata.type, conversation.metadata.conversationId, conversation.highWatermark);
+    NSLog(@"Rendezvous listener notified via qredoRendezvous:didReceiveReponse:  Rendezvous (hashed) Tag: %@. Conversation details: Type:%@, ID:%@, HWM:%@", rendezvous.tag, conversation.metadata.type, conversation.metadata.conversationId, conversation.highWatermark);
     if (!self.expectation) {
         NSLog(@"No expectation configured.");
     }
@@ -47,24 +47,28 @@ static long long kRendezvousTestDurationSeconds = 600;
     [self authoriseClient];
 }
 
+-(void)tearDown {
+    [super tearDown];
+}
+
 - (void)authoriseClient
 {
-    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
                                   client = clientArg;
                                   [clientExpectation fulfill];
                               }];
     
-    [self waitForExpectationsWithTimeout:1.0 handler:nil];
-}
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
 }
 
 - (void)verifyRendezvous:(QredoRendezvous *)rendezvous randomTag:(NSString *)randomTag {
@@ -78,16 +82,21 @@ static long long kRendezvousTestDurationSeconds = 600;
     __block QredoClient *anotherClient = nil;
 
     NSLog(@"Creating 2nd client");
-    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
                                   anotherClient = clientArg;
                                   [clientExpectation fulfill];
                               }];
 
-    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
 
     // Listening for responses and respond from another client
     RendezvousListener *listener = [[RendezvousListener alloc] init];
@@ -265,16 +274,21 @@ static long long kRendezvousTestDurationSeconds = 600;
     __block QredoClient *anotherClient = nil;
     
     NSLog(@"Creating 2nd client");
-    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
                                   anotherClient = clientArg;
                                   [clientExpectation fulfill];
                               }];
     
-    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
     
     // Listening for responses and respond from another client
     RendezvousListener *listener = [[RendezvousListener alloc] init];
@@ -299,6 +313,5 @@ static long long kRendezvousTestDurationSeconds = 600;
     }];
     
     [createdRendezvous stopListening];
-
 }
 @end

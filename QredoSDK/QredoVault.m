@@ -482,7 +482,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                         [_delegate qredoVault:self didReceiveVaultItemMetadata:vaultItemMetadata];
                     }
                 } completionHandler:^(NSError *error) {
-                    // we might stop the timer based on certain errors, but if it is a temporary connection error, then we just skip it
+                    // TODO: we might stop the timer based on certain errors, but if it is a temporary connection error, then we just skip it
 
                     responded++;
                     if (error && [_delegate respondsToSelector:@selector(qredoVault:didFailWithError:)]) {

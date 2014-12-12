@@ -66,20 +66,29 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [self authoriseClient];
 }
 
+-(void)tearDown {
+    [super tearDown];
+}
+
 - (void)authoriseClient
 {
-    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
     [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
                                  vaultDataTypes:nil
                                         options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
                                   client = clientArg;
                                   NSLog(@"Authorize completion handler called.");
                                   [clientExpectation fulfill];
                               }];
     
-    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
     XCTAssertNotNil(client);
     XCTAssertNotNil(client.systemVault);
     XCTAssertNotNil(client.systemVault.vaultId);
@@ -398,7 +407,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     }];
     
     [rendezvous stopListening];
-    
 }
 
 - (void)testMetadataOfPersistentConversation {
@@ -456,7 +464,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     }];
     
     [rendezvous stopListening];
-    
 }
 
 @end
