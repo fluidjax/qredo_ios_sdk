@@ -320,11 +320,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
     LogDebug(@"NOTE: Cannot currently unsubscribe.  This request is ignored.");
-    
-    // Can clear out the dedupe store though
-    @synchronized(_dedupeStore) {
-        _dedupeStore = [[NSMutableDictionary alloc] init];
-    }
 }
 
 // This method polls for (new) responses to rendezvous, and creates new conversations from them.
@@ -386,13 +381,19 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (BOOL)isDuplicateOrOldResponse:(QredoRendezvousResponse *)response sequenceValue:(QredoRendezvousSequenceValue *)sequenceValue
 {
-    LogDebug(@"Checking for old/duplicate. Response: %@. SequenceValue: %@.", response, sequenceValue);
+    LogDebug(@"Checking for old/duplicate. Response Hashed Tag: %@. Responder Public Key: %@. Responder Auth Code: %@. SequenceValue: %@.", response.hashedTag, response.responderPublicKey, response.responderAuthenticationCode, sequenceValue);
+    
+    LogDebug(@"Dictionary contains %lu items.", _dedupeStore.count);
 
     BOOL responseIsDuplicate = NO;
     
     // A duplicate response is being taken to be a specific response which has the same sequence value
     @synchronized(_dedupeStore) {
         QredoRendezvousSequenceValue *fetchedSequenceValue = [_dedupeStore objectForKey:response];
+        
+        if (!fetchedSequenceValue) {
+            LogDebug(@"Response was not found in dictionary.");
+        }
 
         // If we already seen that response, check the sequence value. We only care about newer sequence values
         if (fetchedSequenceValue && fetchedSequenceValue <= sequenceValue) {
@@ -466,6 +467,11 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          
                                          BOOL didProcessResponse = [self processResponse:result.response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
 
+                                         // TODO: DH - remove deliberate duplication
+//                                         QredoRendezvousResponse *duplicateResponse = [QredoRendezvousResponse rendezvousResponseWithHashedTag:result.response.hashedTag responderPublicKey:result.response.responderPublicKey responderAuthenticationCode:result.response.responderAuthenticationCode];
+//                                         [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
+                                         // TODO: DH - end deliberate duplication
+
                                          if (didProcessResponse &&
                                              result.sequenceValue &&
                                              highWatermarkHandler) {
@@ -510,7 +516,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          didProcessResponse |= [self processResponse:response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
                                          
                                          // TODO: DH - remove deliberate duplication
-//                                         [self processResponse:response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
+//                                         QredoRendezvousResponse *duplicateResponse = [QredoRendezvousResponse rendezvousResponseWithHashedTag:response.hashedTag responderPublicKey:response.responderPublicKey responderAuthenticationCode:response.responderAuthenticationCode];
+//                                         [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
                                          // TODO: DH - end deliberate duplication
                                          
                                          if (stop) {
