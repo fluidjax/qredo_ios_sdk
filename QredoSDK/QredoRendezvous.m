@@ -24,6 +24,7 @@
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
 static const double kQredoRendezvousUpdateInterval = 1.0; // seconds
+static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds
 NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
 
@@ -95,6 +96,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // Listener
     dispatch_queue_t _queue;
     dispatch_source_t _timer;
+    dispatch_queue_t _subscriptionRenewalQueue;
+    dispatch_source_t _subscriptionRenewalTimer;
 
     int scheduled, responded; // TODO use locks for queues
 }
@@ -120,6 +123,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     _dedupeStore = [[NSMutableDictionary alloc] init];
 
     _queue = dispatch_queue_create("com.qredo.rendezvous.updates", nil);
+    _subscriptionRenewalQueue = dispatch_queue_create("com.qredo.rendezvous.subscriptionRenewal", nil);
 
     return self;
 }
@@ -282,7 +286,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     }
 }
 
-// This method enables subscription (push) for responses to rendezvous, and creates new conversations form them
+// This method enables subscription (push) for responses to rendezvous, and creates new conversations from them. Will regularly re-send subsription request as subscriptions can fail silently
 - (void)startSubscribing
 {
     NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
@@ -291,10 +295,49 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         LogDebug(@"Already subscribed to responses, and cannot currently unsubscribe, so ignoring request.");
         return;
     }
+
+    // Setup re-subscribe timer first
+    @synchronized (self) {
+        if (_subscriptionRenewalTimer) return;
+        
+        _subscriptionRenewalTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _subscriptionRenewalQueue);
+        if (_subscriptionRenewalTimer)
+        {
+            dispatch_source_set_timer(_subscriptionRenewalTimer,
+                                      dispatch_time(DISPATCH_TIME_NOW,
+                                                    kQredoRendezvousRenewSubscriptionInterval * NSEC_PER_SEC), // start
+                                      kQredoRendezvousRenewSubscriptionInterval * NSEC_PER_SEC, // interval
+                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
+            dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
+                @synchronized (self) {
+                    LogDebug(@"Subscription renewal timer fired");
+
+                    if (!_subscriptionRenewalTimer) {
+                        return;
+                    }
+                    
+                    // Should be able to keep subscribing without any side effects, but try to unsubscribing first
+                    [self unsubscribe];
+                    [self subscribe];
+                }
+            });
+            dispatch_resume(_subscriptionRenewalTimer);
+        }
+    }
+    
+    // Start first subscription
+    [self subscribe];
+}
+
+- (void)subscribe
+{
+    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
+    
+    LogDebug(@"Subscribing to new responses/conversations.");
     
     // Subscribe to conversations newer than our highwatermark
     [self subscribeToConversationsWithBlock:^(QredoConversation *conversation) {
-
+        
         LogDebug(@"Subscription returned conversation: %@", conversation);
         
         if ([_delegate respondsToSelector:@selector(qredoRendezvous:didReceiveReponse:)]) {
@@ -302,24 +345,37 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         }
         
     } subscriptionTerminatedHandler:^(NSError *error) {
-
+        
         LogError("Subscription terminated with error: %@", error);
         _subscribedToResponses = NO;
-
+        
     } since:self.highWatermark highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark) {
-
+        
         LogDebug(@"Subscription returned new HighWatermark: %llu", newWatermark);
         
         self->_highWatermark = newWatermark;
-
     }];
+}
+
+- (void)unsubscribe
+{
+    // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
+    LogDebug(@"NOTE: Cannot currently unsubscribe.  This request is ignored.");
 }
 
 // This method disables subscription (push) for responses to rendezvous
 - (void)stopSubscribing
 {
-    // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
-    LogDebug(@"NOTE: Cannot currently unsubscribe.  This request is ignored.");
+    // Need to stop the subsription renewal timer as well
+    @synchronized (self) {
+        if (_subscriptionRenewalTimer) {
+            LogDebug(@"Stoping subscription renewal timer");
+            dispatch_source_cancel(_subscriptionRenewalTimer);
+            _subscriptionRenewalTimer = nil;
+        }
+    }
+    
+    [self unsubscribe];
 }
 
 // This method polls for (new) responses to rendezvous, and creates new conversations from them.
