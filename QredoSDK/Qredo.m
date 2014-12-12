@@ -124,9 +124,14 @@ static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080
     return self;
 }
 
+- (BOOL)isClosed
+{
+    return _serviceInvoker.isTerminated;
+}
+
 - (BOOL)isAuthenticated
 {
-    // rev 1 doens't have authentication
+    // rev 1 doesn't have authentication
     return YES;
 }
 
@@ -137,7 +142,12 @@ static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080
 
 - (void)closeSession
 {
-    // Do nothing in rev 1
+    LogDebug(@"Closing client session.  Will need to re-initialise/authorise client before further use.");
+
+    // Need to terminate transport, which ends associated threads and subsriptions etc.
+    [_serviceInvoker terminate];
+
+    // TODO: DH - somehow indicate that the client has been closed and therefore cannot be used again.
 }
 
 - (QredoVault*) defaultVault

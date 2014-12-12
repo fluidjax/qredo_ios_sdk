@@ -38,6 +38,7 @@ extern NSString *const QredoClientOptionServiceURL;
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(NSDictionary*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
 - (void)closeSession;
+- (BOOL)isClosed;
 - (QredoVault*) defaultVault;
 
 @end
