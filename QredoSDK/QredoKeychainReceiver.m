@@ -92,7 +92,7 @@
 
 - (void)didCreateRendezvous:(QredoRendezvous *)rendezvous
 {
-    [self.delegate qredoKeychainReceiver:self didCreateRendezvousWithTag:rendezvous.tag];
+    [self.delegate qredoKeychainReceiver:self didCreateRendezvousWithTag:[QredoRendezvousURIProtocol stringByAppendingString:rendezvous.tag]];
 
     rendezvous.delegate = self;
 
