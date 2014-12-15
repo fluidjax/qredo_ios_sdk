@@ -89,6 +89,8 @@
 		7810CC5E1A388BCE00421892 /* KeychainReceiverMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371F1A371C5300A9D1A2 /* KeychainReceiverMock.swift */; };
 		781D137E1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 781D137C1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h */; };
 		781D137F1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 781D137D1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m */; };
+		78771B951A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 78771B931A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.h */; };
+		78771B961A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 78771B941A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.m */; };
 		78E5E1AA1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78E5E1A81A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h */; };
 		78E5E1AB1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E5E1A91A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m */; };
 		78E5E1AE1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78E5E1AC1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h */; };
@@ -241,6 +243,9 @@
 		7422C5016D6775275AF5625F /* libPods-CryptoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CryptoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		781D137C1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainQRCodeScannerViewController.h; sourceTree = "<group>"; };
 		781D137D1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainQRCodeScannerViewController.m; sourceTree = "<group>"; };
+		78771B921A3B487B007B864D /* QredoKeychainArchiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoKeychainArchiver.h; sourceTree = "<group>"; };
+		78771B931A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainArchiverForIOSKeychain.h; sourceTree = "<group>"; };
+		78771B941A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainArchiverForIOSKeychain.m; sourceTree = "<group>"; };
 		78E5E1A81A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainSendReceiveViewController.h; sourceTree = "<group>"; };
 		78E5E1A91A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainSendReceiveViewController.m; sourceTree = "<group>"; };
 		78E5E1AC1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainActivityViewController.h; sourceTree = "<group>"; };
@@ -306,6 +311,9 @@
 			children = (
 				0A1035291A389DFD002479D9 /* QredoKeychain.h */,
 				0A10352A1A389DFD002479D9 /* QredoKeychain.m */,
+				78771B921A3B487B007B864D /* QredoKeychainArchiver.h */,
+				78771B931A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.h */,
+				78771B941A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.m */,
 			);
 			path = Keychain;
 			sourceTree = "<group>";
@@ -598,6 +606,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78771B951A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.h in Headers */,
 				0AD2595B1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h in Headers */,
 				0AADB0811A15848C00CFD014 /* Qredo.h in Headers */,
 				78E5E1B21A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.h in Headers */,
@@ -905,6 +914,7 @@
 				0A27BEB71A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m in Sources */,
 				0AE3E5C61A35FE7D00EF192A /* Qredo+KeychainTransporter.m in Sources */,
 				0AD2595C1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m in Sources */,
+				78771B961A3B4995007B864D /* QredoKeychainArchiverForIOSKeychain.m in Sources */,
 				0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */,
 				0AD259601A2F7CD800FC8942 /* QredoKeychainSenderQR.m in Sources */,
 				78E5E1B31A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.m in Sources */,

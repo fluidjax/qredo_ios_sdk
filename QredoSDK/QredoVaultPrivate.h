@@ -11,13 +11,14 @@
 // This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
 // It shall be included only in the implementation files
 
-@class QredoClient;
+@class QredoClient, QredoKeychain;
 
 @interface QredoVault (Private)
 
 - (QredoQUID *)sequenceId;
+- (QredoKeychain *)qredoKeychain;
 
-- (instancetype)initWithClient:(QredoClient *)client vaultId:(QredoQUID *)vaultId;
+- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan;
 
 - (QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
 - (QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;
