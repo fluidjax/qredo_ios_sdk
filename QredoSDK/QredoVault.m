@@ -160,15 +160,15 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     return _qredoKeychan;
 }
 
-- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)aQredoKeychan
+- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan
 {
     self = [super init];
     if (!self) return nil;
-    if (!client || !aQredoKeychan) return nil;
+    if (!client || !qredoKeychan) return nil;
 
     _client = client;
-    _qredoKeychan = aQredoKeychan;
-    _vaultId = [aQredoKeychan vaultId];
+    _qredoKeychan = qredoKeychan;
+    _vaultId = [qredoKeychan vaultId];
     _highwatermark = QredoVaultHighWatermarkOrigin;
 
     _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
@@ -183,7 +183,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     _vault              = [QredoInternalVault vaultWithServiceInvoker:_client.serviceInvoker];
     _vaultSequenceCache = [QredoVaultSequenceCache instance];
     
-    QredoVaultKeyPair *keyPair = [aQredoKeychan vaultKeys];
+    QredoVaultKeyPair *keyPair = [qredoKeychan vaultKeys];
 
     _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:keyPair.encryptionKey
                                           authenticationKey:keyPair.authenticationKey];

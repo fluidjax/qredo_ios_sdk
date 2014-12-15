@@ -18,7 +18,7 @@
 - (QredoQUID *)sequenceId;
 - (QredoKeychain *)qredoKeychain;
 
-- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)aQredoKeychan;
+- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan;
 
 - (QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
 - (QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;
