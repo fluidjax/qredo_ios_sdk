@@ -23,10 +23,11 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
-    NSLog(@"Rendezvous listener notified via qredoRendezvous:didReceiveReponse:  Rendezvous (hashed) Tag: %@. Conversation details: Type:%@, ID:%@, HWM:%@", rendezvous.tag, conversation.metadata.type, conversation.metadata.conversationId, conversation.highWatermark);
+    NSLog(@"Rendezvous listener (%p) notified via qredoRendezvous:didReceiveReponse:  Rendezvous (hashed) Tag: %@. Conversation details: Type:%@, ID:%@, HWM:%@", self, rendezvous.tag, conversation.metadata.type, conversation.metadata.conversationId, conversation.highWatermark);
     if (!self.expectation) {
         NSLog(@"No expectation configured.");
     }
+    NSLog(@"Rendezvous listener (%p) fulfilling expectation (%p)", self, self.expectation);
     [self.expectation fulfill];
 }
 
@@ -100,9 +101,11 @@ static long long kRendezvousTestDurationSeconds = 600;
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];
-
+    
     // Listening for responses and respond from another client
     RendezvousListener *listener = [[RendezvousListener alloc] init];
+    NSLog(@"Created rendezvous listener (%p)", self);
+    
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     NSLog(@"Listener expectation created: %@", listener.expectation);
     rendezvous.delegate = listener;
@@ -121,6 +124,9 @@ static long long kRendezvousTestDurationSeconds = 600;
     }];
     
     [rendezvous stopListening];
+    
+    // Nil the listener expectation afterwards because have seen times when a different call to this method for the same Rendezvous has triggered fulfill twice, which throws an exception.  Wasn't a duplicate response, as it had a different ResponderPublicKey.
+    listener.expectation = nil;
     
     // Making sure that we can enumerate responses
     NSLog(@"Enumerating conversations");
@@ -141,6 +147,9 @@ static long long kRendezvousTestDurationSeconds = 600;
     XCTAssertTrue(found);
     
     [anotherClient closeSession];
+    
+    // Remove the listener, to avoid any possibilty of the listener being held/called after exiting
+    rendezvous.delegate = nil;
 }
 
 - (void)testCreateRendezvous {
@@ -297,6 +306,8 @@ static long long kRendezvousTestDurationSeconds = 600;
     
     // Listening for responses and respond from another client
     RendezvousListener *listener = [[RendezvousListener alloc] init];
+    NSLog(@"Created rendezvous listener (%p)", self);
+
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     NSLog(@"Listener expectation created: %@", listener.expectation);
     createdRendezvous.delegate = listener;
