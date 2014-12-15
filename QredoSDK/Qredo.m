@@ -11,7 +11,7 @@
 
 #import "QredoKeychain.h"
 #import "QredoKeychainArchiver.h"
-#import "QredoKeychainArchiverForIOSKeychain.h"
+#import "QredoKeychainArchiverForAppleKeychain.h"
 #import "QredoKeychainSender.h"
 #import "QredoKeychainReceiver.h"
 
@@ -356,7 +356,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 - (id<QredoKeychainArchiver>)qredoKeychainArchiver
 {
-    return [[QredoKeychainArchiverForIOSKeychain alloc] init];
+    return [[QredoKeychainArchiverForAppleKeychain alloc] init];
 }
 
 - (QredoKeychain *)createDefaultKeychain {

@@ -2,13 +2,13 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#import "QredoKeychainArchiverForIOSKeychain.h"
+#import "QredoKeychainArchiverForAppleKeychain.h"
 #import "QredoKeychain.h"
 
 
 static NSString *kCurrentService = @"CurrentService";
 
-@implementation QredoKeychainArchiverForIOSKeychain
+@implementation QredoKeychainArchiverForAppleKeychain
 
 - (BOOL)saveQredoKeychain:(QredoKeychain *)qredoKeychain forKey:(NSString *)key error:(NSError **)error {
     

@@ -5,7 +5,7 @@
 #import "QredoKeychainArchiver.h"
 
 
-@interface QredoKeychainArchiverForIOSKeychain : NSObject<QredoKeychainArchiver>
+@interface QredoKeychainArchiverForAppleKeychain : NSObject<QredoKeychainArchiver>
 
 @end
 
