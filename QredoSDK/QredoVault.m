@@ -713,27 +713,40 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (void)saveState
 {
+    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
+    LogDebug(@"%s: Setting QredoVaultOptionSequenceId in NSUserDefaults", __PRETTY_FUNCTION__);
     [defaults setObject:[_sequenceId data] forKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultId QUIDString]]];
     if (_highwatermark) {
+        LogDebug(@"%s: Setting QredoVaultOptionHighWatermark in NSUserDefaults", __PRETTY_FUNCTION__);
         [defaults setObject:[_highwatermark.sequenceState quidToStringDictionary] forKey:QredoVaultOptionHighWatermark];
     } else {
+        LogDebug(@"%s: Removing QredoVaultOptionHighWatermark in NSUserDefaults", __PRETTY_FUNCTION__);
         [defaults removeObjectForKey:QredoVaultOptionHighWatermark];
     }
 }
 
 - (void)loadState
 {
+    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    LogDebug(@"%s: Getting QredoVaultOptionSequenceId in NSUserDefaults", __PRETTY_FUNCTION__);
     NSData *sequenceIdData = [defaults objectForKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultId QUIDString]]];
 
-    if (sequenceIdData) _sequenceId = [[QredoQUID alloc] initWithQUIDData:sequenceIdData];
-
+    if (sequenceIdData) {
+        LogDebug(@"%s: No object returned for QredoVaultOptionSequenceId.", __PRETTY_FUNCTION__);
+        _sequenceId = [[QredoQUID alloc] initWithQUIDData:sequenceIdData];
+    }
+    
+    LogDebug(@"%s: Getting QredoVaultOptionHighWatermark in NSUserDefaults", __PRETTY_FUNCTION__);
     NSDictionary* sequenceState = [defaults objectForKey:QredoVaultOptionHighWatermark];
     if (sequenceState) {
+        LogDebug(@"%s: Object found for QredoVaultOptionHighWatermark.", __PRETTY_FUNCTION__);
         _highwatermark = [QredoVaultHighWatermark watermarkWithSequenceState:[sequenceState stringToQuidDictionary]];
     } else {
+        LogDebug(@"%s: No object returned for QredoVaultOptionHighWatermark.", __PRETTY_FUNCTION__);
         _highwatermark = nil;
     }
 }

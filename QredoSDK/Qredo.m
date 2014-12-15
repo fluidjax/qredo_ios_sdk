@@ -329,16 +329,23 @@ static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080
 
 - (void)saveState
 {
+    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    LogDebug(@"%s: Setting object for QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
     [defaults setObject:[_vaultId data] forKey:QredoClientOptionVaultID];
 }
 
 - (void)loadState
 {
+    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    LogDebug(@"%s: Getting object for QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
     NSData *vaultIdData = [defaults objectForKey:QredoClientOptionVaultID];
 
     if (vaultIdData) {
+        LogDebug(@"%s: No object found QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
         _vaultId = [[QredoQUID alloc] initWithQUIDData:vaultIdData];
     }
 }
