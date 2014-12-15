@@ -456,6 +456,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             // Found a duplicate/old response
             responseIsDuplicate = YES;
         }
+        else {
+            // Not a duplicate, so store this response/sequenceValue pair for later to prevent duplication
+            [_dedupeStore setObject:sequenceValue forKey:response];
+        }
     }
     
     // TODO: DH - deal with size of dictionary - should not just keep growing
@@ -478,11 +482,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         if (creationError) {
             errorHandler(creationError);
             return didProcessResponse;
-        }
-
-        @synchronized(_dedupeStore) {
-            // Success, so store this response/sequenceValue pair for later to prevent duplication
-            [_dedupeStore setObject:sequenceValue forKey:response];
         }
 
         block(conversation);
