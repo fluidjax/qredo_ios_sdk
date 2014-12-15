@@ -6,7 +6,6 @@
 #import "QredoKeychainQRCodeScannerViewController.h"
 #import "QredoKeychainFingerprintConfirmationViewController.h"
 #import "QredoKeychainActivityViewController.h"
-#import "QredoKeychainConfirmationViewController.h"
 
 @interface QredoKeychainSenderQR ()
 @property (nonatomic, copy) BOOL(^discoverRendezvousCompletionHandler)(NSString *rendezvousTag);
@@ -27,40 +26,52 @@
                                          deviceName:(NSString *)aDeviceName
                                confirmButtonHandler:(void(^)())aConfirmButtonHandler {
     
+
+    NSString *title = NSLocalizedString(@"Send keychain", @"");
+    NSString *instructions = NSLocalizedString(@"make sure that the receiving device displays", @"");
+    NSString *fingerprintFormat = NSLocalizedString(@"fingerprint: %@", @"");
+    NSString *fingerprint = [NSString stringWithFormat:fingerprintFormat, aFingerprint];
+
     QredoKeychainFingerprintConfirmationViewController *fingerprintViewController
     = [[QredoKeychainFingerprintConfirmationViewController alloc]
-       initWithFingerprint:aFingerprint
-       deviceName:aDeviceName
-       confirmButtonTitle:NSLocalizedString(@"Send keychain", @"")
+       initWithConfirmButtonTitle:NSLocalizedString(@"Send", @"")
        confirmButtonHandler:aConfirmButtonHandler];
+    
+    fingerprintViewController.activityTitle = title;
+    fingerprintViewController.line1 = instructions;
+    fingerprintViewController.line2 = fingerprint;
     
     [self displayChildViewController:fingerprintViewController];
     
 }
 
 - (void)showSendingKeychainActivityViewControllerWithFingerpring:(NSString *)aFingerprint {
-    NSString *activityNameFormattingString = NSLocalizedString(@"Sending keychain with fingerprint: %@", @"");
-    NSString *activityName = [NSString stringWithFormat:activityNameFormattingString, aFingerprint];
+    NSString *title = NSLocalizedString(@"Sending keychain", @"");
+    NSString *fingerprintLineFormattingString = NSLocalizedString(@"fingerprint: %@", @"");
+    NSString *fingerprintLine = [NSString stringWithFormat:fingerprintLineFormattingString, aFingerprint];
     QredoKeychainActivityViewController *activityViewController = [[QredoKeychainActivityViewController alloc] init];
-    activityViewController.activityName = activityName;
+    activityViewController.activityTitle = title;
+    activityViewController.line1 = fingerprintLine;
     activityViewController.spinning = YES;
     [self displayChildViewController:activityViewController];
 }
 
 - (void)showSuccessConfirmationController {
     [self showDoneButton];
-    NSString *activityName = NSLocalizedString(@"The keychain has been sent.", @"");
-    QredoKeychainConfirmationViewController *confirmationViewController
-    = [[QredoKeychainConfirmationViewController alloc] initWithActivityName:activityName];
-    [self displayChildViewController:confirmationViewController];
+    NSString *title = NSLocalizedString(@"Done", @"");
+    NSString *activityName = NSLocalizedString(@"The keychain has been sent!", @"");
+    QredoKeychainActivityViewController *activityViewController = [[QredoKeychainActivityViewController alloc] init];
+    activityViewController.activityTitle = title;
+    activityViewController.line1 = activityName;
+    [self displayChildViewController:activityViewController];
 }
 
 - (void)showFailureConfirmationController {
     [self showDoneButton];
     NSString *activityName = NSLocalizedString(@"The keychain transfer has failed. Please try again later.", @"");
-    QredoKeychainConfirmationViewController *confirmationViewController
-    = [[QredoKeychainConfirmationViewController alloc] initWithActivityName:activityName];
-    [self displayChildViewController:confirmationViewController];
+    QredoKeychainActivityViewController *activityViewController = [[QredoKeychainActivityViewController alloc] init];
+    activityViewController.activityTitle = activityName;
+    [self displayChildViewController:activityViewController];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

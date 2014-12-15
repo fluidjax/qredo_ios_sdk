@@ -5,6 +5,7 @@
 #import "QredoKeychainQRCodeDisplayViewController.h"
 
 @interface QredoKeychainQRCodeDisplayViewController ()
+@property (nonatomic) UILabel *instructionsLabel;
 @property (nonatomic) UIImageView *qrCodeImageView;
 @end
 
@@ -22,6 +23,7 @@
     label.translatesAutoresizingMaskIntoConstraints = NO;
     label.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:label];
+    self.instructionsLabel = label;
     
     UIImageView *qrCodeImageView = [[UIImageView alloc] init];
     qrCodeImageView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -29,30 +31,34 @@
     [self.view addSubview:qrCodeImageView];
     self.qrCodeImageView = qrCodeImageView;
     
+    UIView *bottomSpacer = [[UIView alloc] init];
+    bottomSpacer.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:bottomSpacer];
+    
     id<UILayoutSupport> topLayoutGuide = self.topLayoutGuide;
     id<UILayoutSupport> bottomLayoutGuide = self.bottomLayoutGuide;
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(label, qrCodeImageView, topLayoutGuide, bottomLayoutGuide);
+    NSDictionary *views = NSDictionaryOfVariableBindings(label, qrCodeImageView, bottomSpacer, topLayoutGuide, bottomLayoutGuide);
     
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"H:|-[label(>=100)]-|"
+                               constraintsWithVisualFormat:@"H:|-[label]-|"
                                options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"H:|-[qrCodeImageView]-|"
+                               constraintsWithVisualFormat:@"H:|-(20)-[qrCodeImageView]-(20)-|"
                                options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"V:[topLayoutGuide]-[label(>=40)]-[qrCodeImageView]-[bottomLayoutGuide]"
+                               constraintsWithVisualFormat:@"H:|-[bottomSpacer]-|"
+                               options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:@"V:[topLayoutGuide]-[label(>=40)]-[qrCodeImageView]-[bottomSpacer(==label@700)]-[bottomLayoutGuide]"
                                options:0 metrics:nil views:views]];
 
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [self updateQRCodeImageViewWithQRCodeString:self.qrCodeValue];
+    self.instructionsLabel.preferredMaxLayoutWidth = self.view.bounds.size.width-20;
 }
 
 

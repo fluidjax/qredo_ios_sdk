@@ -5,7 +5,9 @@
 #import "QredoKeychainActivityViewController.h"
 
 @interface QredoKeychainActivityViewController ()
-@property (weak, nonatomic) UILabel *activityNameLabel;
+@property (weak, nonatomic) UILabel *activityTitleLabel;
+@property (weak, nonatomic) UILabel *line1Label;
+@property (weak, nonatomic) UILabel *line2Label;
 @property (weak, nonatomic) UIActivityIndicatorView *activityIndicatorView;
 @end
 
@@ -17,15 +19,88 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UIView *containtsView = [[UIView alloc] init];
+    id<UILayoutSupport> topLayoutGuide = self.topLayoutGuide;
+    id<UILayoutSupport> bottomLayoutGuide = self.bottomLayoutGuide;
+
+    UIView *labelContainerView = [[UIView alloc] init];
+    labelContainerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:labelContainerView];
+
+    UIView *activityIndicatorContainerView = [[UIView alloc] init];
+    activityIndicatorContainerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:activityIndicatorContainerView];
+
+    NSDictionary *conatainerViews = NSDictionaryOfVariableBindings(topLayoutGuide, labelContainerView, activityIndicatorContainerView, bottomLayoutGuide);
     
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-    label.numberOfLines = 0;
-    label.textAlignment = NSTextAlignmentCenter;
-    label.text = self.activityName;
-    label.translatesAutoresizingMaskIntoConstraints = NO;
-    [containtsView addSubview:label];
-    self.activityNameLabel = label;
+    [self.view addConstraints:[NSLayoutConstraint
+                                   constraintsWithVisualFormat:@"H:|-[labelContainerView]-|"
+                                   options:0 metrics:nil views:conatainerViews]];
+    
+    [self.view addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:@"H:|-[activityIndicatorContainerView]-|"
+                               options:0 metrics:nil views:conatainerViews]];
+
+    [self.view addConstraints:[NSLayoutConstraint
+                               constraintsWithVisualFormat:@"V:[topLayoutGuide]-[labelContainerView]-[activityIndicatorContainerView(==labelContainerView)]-[bottomLayoutGuide]|"
+                               options:0 metrics:nil views:conatainerViews]];
+    
+    
+    
+    UIView *labelsTopSpacer = [[UIView alloc] init];
+    labelsTopSpacer.translatesAutoresizingMaskIntoConstraints = NO;
+    [labelContainerView addSubview:labelsTopSpacer];
+    
+    UILabel *activityTitleLabel = [[UILabel alloc] init];
+    activityTitleLabel.font = [UIFont systemFontOfSize:25];
+    activityTitleLabel.numberOfLines = 0;
+    activityTitleLabel.textAlignment = NSTextAlignmentCenter;
+    activityTitleLabel.text = self.activityTitle;
+    activityTitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [labelContainerView addSubview:activityTitleLabel];
+    self.activityTitleLabel = activityTitleLabel;
+    
+    UILabel *line1Label = [[UILabel alloc] init];
+    line1Label.numberOfLines = 0;
+    line1Label.textAlignment = NSTextAlignmentCenter;
+    line1Label.text = self.line1;
+    line1Label.translatesAutoresizingMaskIntoConstraints = NO;
+    [labelContainerView addSubview:line1Label];
+    self.line1Label = line1Label;
+    
+    UILabel *line2Label = [[UILabel alloc] init];
+    line2Label.numberOfLines = 0;
+    line2Label.textAlignment = NSTextAlignmentCenter;
+    line2Label.text = self.line2;
+    line2Label.translatesAutoresizingMaskIntoConstraints = NO;
+    [labelContainerView addSubview:line2Label];
+    self.line2Label = line2Label;
+    
+    UIView *labelsBottomSpacer = [[UIView alloc] init];
+    labelsBottomSpacer.translatesAutoresizingMaskIntoConstraints = NO;
+    [labelContainerView addSubview:labelsBottomSpacer];
+    
+    NSDictionary *labels = NSDictionaryOfVariableBindings(labelsTopSpacer, activityTitleLabel, line1Label, line2Label, labelsBottomSpacer);
+    
+    [labelContainerView addConstraints:[NSLayoutConstraint
+                                        constraintsWithVisualFormat:@"H:|-[labelsTopSpacer]-|"
+                                        options:0 metrics:nil views:labels]];
+    [labelContainerView addConstraints:[NSLayoutConstraint
+                                        constraintsWithVisualFormat:@"H:|-[activityTitleLabel]-|"
+                                        options:0 metrics:nil views:labels]];
+    [labelContainerView addConstraints:[NSLayoutConstraint
+                                        constraintsWithVisualFormat:@"H:|-[line1Label]-|"
+                                        options:0 metrics:nil views:labels]];
+    [labelContainerView addConstraints:[NSLayoutConstraint
+                                        constraintsWithVisualFormat:@"H:|-[line2Label]-|"
+                                        options:0 metrics:nil views:labels]];
+    [labelContainerView addConstraints:[NSLayoutConstraint
+                                        constraintsWithVisualFormat:@"H:|-[labelsBottomSpacer]-|"
+                                        options:0 metrics:nil views:labels]];
+    [labelContainerView addConstraints:[NSLayoutConstraint
+                                        constraintsWithVisualFormat:@"V:|[labelsTopSpacer][activityTitleLabel]-[line1Label][line2Label][labelsBottomSpacer(==labelsTopSpacer)]|"
+                                        options:0 metrics:nil views:labels]];
+
+    
     
     UIActivityIndicatorView *activityIndicatorView
     = [[UIActivityIndicatorView alloc]
@@ -38,45 +113,53 @@
         activityIndicatorView.hidden = YES;
     }
     activityIndicatorView.translatesAutoresizingMaskIntoConstraints = NO;
-    [containtsView addSubview:activityIndicatorView];
+    [activityIndicatorContainerView addSubview:activityIndicatorView];
     self.activityIndicatorView = activityIndicatorView;
+
     
-    containtsView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:containtsView];
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(label, activityIndicatorView);
-    
-    [containtsView addConstraints:[NSLayoutConstraint
-                              constraintsWithVisualFormat:@"H:|-(10)-[label]-(10)-|"
-                              options:0 metrics:nil views:views]];
-    [containtsView addConstraints:[NSLayoutConstraint
-                              constraintsWithVisualFormat:@"V:|[label]-[activityIndicatorView]|"
-                              options:NSLayoutFormatAlignAllCenterX metrics:nil views:views]];
-    
-    [self.view addConstraint:[NSLayoutConstraint
-                              constraintWithItem:containtsView attribute:NSLayoutAttributeCenterX
+    [activityIndicatorContainerView addConstraint:[NSLayoutConstraint
+                              constraintWithItem:activityIndicatorContainerView attribute:NSLayoutAttributeCenterX
                               relatedBy:NSLayoutRelationEqual
-                              toItem:self.view attribute:NSLayoutAttributeCenterX
+                              toItem:activityIndicatorView attribute:NSLayoutAttributeCenterX
                               multiplier:1 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint
-                              constraintWithItem:containtsView attribute:NSLayoutAttributeCenterY
+    [activityIndicatorContainerView addConstraint:[NSLayoutConstraint
+                              constraintWithItem:activityIndicatorContainerView attribute:NSLayoutAttributeCenterY
                               relatedBy:NSLayoutRelationEqual
-                              toItem:self.view attribute:NSLayoutAttributeCenterY
+                              toItem:activityIndicatorView attribute:NSLayoutAttributeCenterY
                               multiplier:1 constant:0]];
 
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    self.activityNameLabel.preferredMaxLayoutWidth = self.view.bounds.size.width-20;
+    CGFloat preferedWidth = self.view.bounds.size.width-20;
+    self.activityTitleLabel.preferredMaxLayoutWidth = preferedWidth;
+    self.line1Label.preferredMaxLayoutWidth = preferedWidth;
+    self.line2Label.preferredMaxLayoutWidth = preferedWidth;
 }
 
-- (void)setActivityName:(NSString *)activityName {
-    if (_activityName == activityName) return;
-    _activityName = [activityName copy];
+- (void)setActivityTitle:(NSString *)activityName1 {
+    if (_activityTitle == activityName1) return;
+    _activityTitle = [activityName1 copy];
     if ([self isViewLoaded]) {
-        self.activityNameLabel.text = _activityName;
+        self.activityTitleLabel.text = _activityTitle;
+    }
+}
+
+- (void)setLine1:(NSString *)line1 {
+    if (_line1 == line1) return;
+    _line1 = [line1 copy];
+    if ([self isViewLoaded]) {
+        self.line1Label.text = _line1;
+    }
+}
+
+- (void)setLine2:(NSString *)line2 {
+    if (_line2 == line2) return;
+    _line2 = [line2 copy];
+    if ([self isViewLoaded]) {
+        self.line2Label.text = _line2;
     }
 }
 

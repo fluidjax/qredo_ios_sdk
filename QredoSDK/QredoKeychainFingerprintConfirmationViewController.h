@@ -3,10 +3,11 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "QredoKeychainActivityViewController.h"
 
-@interface QredoKeychainFingerprintConfirmationViewController : UIViewController
-- (instancetype)initWithFingerprint:(NSString *)aFingerprint
-                         deviceName:(NSString *)aDeviceName
-                 confirmButtonTitle:(NSString *)aConfirmButtonTitle
-               confirmButtonHandler:(void(^)())aConfirmButtonHandler;
+@interface QredoKeychainFingerprintConfirmationViewController : QredoKeychainActivityViewController
+
+- (instancetype)initWithConfirmButtonTitle:(NSString *)aConfirmButtonTitle
+                      confirmButtonHandler:(void(^)())aConfirmButtonHandler;
+
 @end
