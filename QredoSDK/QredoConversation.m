@@ -592,6 +592,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
                                    NSError *returnError = nil;
 
+                                   LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
+
                                    // Decrypting messages
                                    for (QredoConversationItemWithSequenceValue *conversationItem in result.items) {
                                        NSError *decryptionError = nil;
