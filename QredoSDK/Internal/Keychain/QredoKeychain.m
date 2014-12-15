@@ -53,15 +53,18 @@ static int QredoKeychainNoCredentialType = 0;
     crypto = [CryptoImplV1 new];
 }
 
-- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)_operatorInfo
-{
+- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)anOperatorInfo
+                             vaultId:(QredoQUID *)aVaultId
+                             authenticationKey:(NSData *)anAuthenticationKey
+                             bulkKey:(NSData *)aBulkKey {
     self = [super init];
-
-    [self initialize];
-
-    isInitialized = NO;
-    operatorInfo = _operatorInfo;
-
+    if (self) {
+        [self initialize];
+        isInitialized = YES;
+        operatorInfo = anOperatorInfo;
+        vaultId = aVaultId;
+        [self setVaultAuthKey:anAuthenticationKey bulkKey:aBulkKey];
+    }
     return self;
 }
 
