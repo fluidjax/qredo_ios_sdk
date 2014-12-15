@@ -89,7 +89,9 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     QredoRendezvousHashedTag *_hashedTag;
     QredoRendezvousDescriptor *_descriptor;
     BOOL _subscribedToResponses;
-    NSMutableDictionary *_dedupeStore; // Key is response, value is sequence number (as getResponses can return multiple responses for a sinlge sequence number)
+    NSMutableDictionary *_dedupeStore; // Key is response, value is sequence number (as getResponses can return multiple responses for a single sequence number)
+    BOOL _dedupeNecessary; // Dedupe only necessary during subscription setup - once subsequent query has completed, dedupe no longer required
+    BOOL _queryAfterSubscribeComplete; // Indicates that the Query after Subscribe has completed, and no more entries to process
 
     NSString *_tag;
 
@@ -439,7 +441,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     LogDebug(@"Checking for old/duplicate. Response Hashed Tag: %@. Responder Public Key: %@. Responder Auth Code: %@. SequenceValue: %@.", response.hashedTag, response.responderPublicKey, response.responderAuthenticationCode, sequenceValue);
     
-    LogDebug(@"Dictionary contains %lu items.", _dedupeStore.count);
+    LogDebug(@"Dedupe dictionary contains %lu items.", _dedupeStore.count);
+    LogDebug(@"Dedupe dictionary: %@", _dedupeStore);
 
     BOOL responseIsDuplicate = NO;
     
@@ -456,13 +459,17 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             // Found a duplicate/old response
             responseIsDuplicate = YES;
         }
+        else if (_queryAfterSubscribeComplete) {
+            // We have completed processing the Query after Subscribe, and we have a non-duplicate Response - therefore we have passed the point where dedupe is required, so can empty the dedupe store
+            LogDebug(@"Query completed and have received a non-duplicate response. Passed point where dedupe required - emptying dedupe store and preventing further dedupe.");
+            _dedupeNecessary = NO;
+            _dedupeStore = [[NSMutableDictionary alloc] init];
+        }
         else {
-            // Not a duplicate, so store this response/sequenceValue pair for later to prevent duplication
+            // Not a duplicate, and Query has not completed, so store this response/sequenceValue pair for later to prevent duplication
             [_dedupeStore setObject:sequenceValue forKey:response];
         }
     }
-    
-    // TODO: DH - deal with size of dictionary - should not just keep growing
     
     LogDebug(@"Response is duplicate: %@", responseIsDuplicate ? @"YES" : @"NO");
     return responseIsDuplicate;
@@ -472,22 +479,29 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     BOOL didProcessResponse = NO;
     
-    if ([self isDuplicateOrOldResponse:response sequenceValue:sequenceValue]) {
-        LogDebug(@"Ignoring duplicate/old rendezvous response. Response: %@. Sequence Value: %@", response, sequenceValue);
-    }
-    else {
-        NSError *creationError = nil;
-        QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:creationError];
-        
-        if (creationError) {
-            errorHandler(creationError);
+    if (_dedupeNecessary) {
+        if ([self isDuplicateOrOldResponse:response sequenceValue:sequenceValue]) {
+            LogDebug(@"Ignoring duplicate/old rendezvous response. Response: %@. Sequence Value: %@", response, sequenceValue);
+
             return didProcessResponse;
         }
-
-        block(conversation);
-        
+    }
+    else {
+        LogDebug(@"No dedupe necessary, subscription setup completed.");
+    }
+    
+    NSError *creationError = nil;
+    QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:creationError];
+    
+    if (creationError) {
+        errorHandler(creationError);
+        return didProcessResponse;
+    }
+    else {
         didProcessResponse = YES;
     }
+
+    block(conversation);
     
     return didProcessResponse;
 }
@@ -499,6 +513,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     _subscribedToResponses = YES;
 
+    // Dedupe is necessary when setting up, as will do Subscribe and Query. Both could return the same Response, so need dedupe. Once Query has completed, Subscribe takes over and dedupe no longer required.
+    _dedupeNecessary = YES;
+    _queryAfterSubscribeComplete = NO;
+    
     [_rendezvous getChallengeWithHashedTag:_hashedTag completionHandler:^(NSData *result, NSError *error) {
         if (error) {
             subscriptionTerminatedHandler(error);
@@ -523,8 +541,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          BOOL didProcessResponse = [self processResponse:result.response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
 
                                          // TODO: DH - remove deliberate duplication
+//                                         LogDebug(@"Deliberately duplicating subscription response");
 //                                         QredoRendezvousResponse *duplicateResponse = [QredoRendezvousResponse rendezvousResponseWithHashedTag:result.response.hashedTag responderPublicKey:result.response.responderPublicKey responderAuthenticationCode:result.response.responderAuthenticationCode];
 //                                         [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
+//                                         didProcessResponse = [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
                                          // TODO: DH - end deliberate duplication
 
                                          if (didProcessResponse &&
@@ -533,6 +553,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                              highWatermarkHandler(result.sequenceValue.longLongValue);
                                          }
                                      }];
+        
+        // TODO: DH - Ideally we need way of limiting/avoiding a Query to avoid receiving large numbers of entries twice (subscription and query). Not too much problem for Rendezvous, but bigger problem for Conversation/Vault
         
         // Must have actually sent the subscription request before getting responses, otherwise chance of invalidating challenege/signatures - only 1 challenge per hashedTag at a time
         LogDebug(@"Getting other responses to ensure none missed during subscription setup.");
@@ -571,8 +593,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          didProcessResponse |= [self processResponse:response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
                                          
                                          // TODO: DH - remove deliberate duplication
+//                                         LogDebug(@"Deliberately duplicating query response");
 //                                         QredoRendezvousResponse *duplicateResponse = [QredoRendezvousResponse rendezvousResponseWithHashedTag:response.hashedTag responderPublicKey:response.responderPublicKey responderAuthenticationCode:response.responderAuthenticationCode];
 //                                         [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
+//                                         didProcessResponse |= [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
                                          // TODO: DH - end deliberate duplication
                                          
                                          if (stop) {
@@ -586,7 +610,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          highWatermarkHandler(result.sequenceValue.longLongValue);
                                      }
                                      
-                                     // TODO: DH - clear out dedupe store?
+                                     _queryAfterSubscribeComplete = YES;
                                  }];
         }];
     }];
