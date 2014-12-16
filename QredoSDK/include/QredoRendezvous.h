@@ -80,14 +80,14 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 /** Not implemented yet. */
 - (void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
-/** Start listening for responds to the rendezvous. `delegate` should be set before calling this method. */
+/** Start listening for responses to the rendezvous. `delegate` should be set before calling this method. */
 - (void)startListening;
-/** Stops listening for responds to the rendezvous. */
+/** Stops listening for responses to the rendezvous. */
 - (void)stopListening;
 
-/** Enumerates all the conversations (responds) that were created for this rendezvous */
+/** Enumerates all the conversations (responses) that were created for this rendezvous */
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
-/** Enumerates the conversations (responds) that were created for this rendezvous since the specified high watermark */
+/** Enumerates the conversations (responses) that were created for this rendezvous since the specified high watermark */
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block since:(QredoRendezvousHighWatermark)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end

@@ -93,10 +93,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 - (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
 
-/** Requests meta data of all items from the server and calls `block` for each item. If an error occurs during the request, then `failureHandler` is called. Enumeration starts from `QredoVaultHighWatermarkOrigin`, i.e. returning all items from the vault. If it is necessary to return items from certain point, use `enumerateVaultItemsUsingBlock:failureHandler:since:`
+/** Requests meta data of all items from the server and calls `block` for each item. If an error occurs during the request, then `completionHandler` is called with NSError set, otherwise it gets called once enumeration complete. Enumeration starts from `QredoVaultHighWatermarkOrigin`, i.e. returning all items from the vault. If it is necessary to return items from certain point, use `enumerateVaultItemsUsingBlock:failureHandler:since:`
 
- @param block called for every item in the vault. If the block sets `YES` to `stop` then the enumeration will terminate. Value of `*stop` can be used to check if the current item is the last in the enumeration
- @param failureHandler is called if an error has occured during the communication to the server
+ @param block called for every item in the vault. If the block sets `YES` to `stop` then the enumeration will terminate.
+ @param completionHandler is called when enumeration completed or if an error has occured during the communication to the server
 
  @discussion The method name is aligned with `[NSArray enumerateObjectsUsingBlock:]`, however, in our case this method may go to server to request the items
  */

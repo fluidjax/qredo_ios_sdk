@@ -49,7 +49,7 @@
 
 @interface QredoVaultTests ()
 {
-    QredoClient *qredo;
+    QredoClient *client;
 }
 
 @end
@@ -59,21 +59,34 @@
 
 - (void)setUp {
     [super setUp];
+    [self authoriseClient];
+}
 
-    self.useMQTT = NO;
+-(void)tearDown {
+    [super tearDown];
+    if (client) {
+        [client closeSession];
+    }
+}
 
-    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-
+- (void)authoriseClient
+{
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
-                                  qredo = clientArg;
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
+                                  client = clientArg;
                                   [clientExpectation fulfill];
                               }];
-
-    [self waitForExpectationsWithTimeout:1.0 handler:nil];
-
+    
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
 }
 
 - (NSData*)randomDataWithLength:(int)length {
@@ -87,51 +100,123 @@
 - (void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
 
-    XCTAssertNotNil(qredo);
-    QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
     XCTAssertNotNil(vault);
 
     firstQUID = vault.vaultId;
     XCTAssertNotNil(firstQUID);
 
     vault = nil;
-    qredo = nil;
+    client = nil;
 
-    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
-                                  qredo = clientArg;
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
+                                  client = clientArg;
                                   [clientExpectation fulfill];
                               }];
-    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
 
-    XCTAssertEqualObjects([[qredo defaultVault] vaultId], firstQUID);
+    XCTAssertEqualObjects([[client defaultVault] vaultId], firstQUID);
 }
 
-- (void)testGettingItems
+- (void)testPutItem
 {
-    QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
     
     
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
-                                         @"key2": @"value2"};
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(newItemDescriptor);
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+}
+
+- (void)testPutItemMultiple
+{
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+
+    for (int i = 0; i < 3; i++)
+    {
+        NSData *item1Data = [self randomDataWithLength:1024];
+        NSString *description = [NSString stringWithFormat:@"put item %d", i];
+        NSDictionary *item1SummaryValues = @{@"key1": description,
+                                             @"key2": @"value2",
+                                             @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+        QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                                accessLevel:0
+                                                                                                              summaryValues:item1SummaryValues]
+                                                                value:item1Data];
+        
+        __block XCTestExpectation *testExpectation = [self expectationWithDescription:description];
+        [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+         {
+             XCTAssertNil(error);
+             XCTAssertNotNil(newItemDescriptor);
+             [testExpectation fulfill];
+         }];
+        [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+            // avoiding exception when 'fulfill' is called after timeout
+            testExpectation = nil;
+        }];
+    }
+}
+
+- (void)testGettingItems
+{
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
 
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
-    XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
+         XCTAssertNil(error);
          item1Descriptor = newItemDescriptor;
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
 
     testExpectation = [self expectationWithDescription:@"get item 1 with descriptor"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
@@ -147,7 +232,10 @@
          
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
 
     testExpectation = [self expectationWithDescription:@"get item 1 metadata"];
     [vault getItemMetadataWithDescriptor:item1Descriptor
@@ -162,7 +250,10 @@
 
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
     
     
     // Testing errors
@@ -176,7 +267,10 @@
          
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
 
     testExpectation = [self expectationWithDescription:@"get item metadata with random descriptor"];
     [vault getItemMetadataWithDescriptor:randomDescriptor
@@ -187,24 +281,33 @@
          
          [testExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
 }
 
 - (void)testEnumeration
 {
-    QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
 
     __block NSError *error = nil;
     __block int count = 0;
-    XCTestExpectation *testExpectation = [self expectationWithDescription:@"Enumerate"];
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"Enumerate"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
 
     } completionHandler:^(NSError *errorBlock) {
+        XCTAssertNil(errorBlock);
         error = errorBlock;
         [testExpectation fulfill];
     }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
     XCTAssertNil(error);
 
     NSLog(@"count: %d", count);
@@ -212,7 +315,9 @@
 
 - (void)testEnumerationReturnsCreatedItem
 {
-    QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
     
     // Create an item and store in vault
     NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
@@ -229,7 +334,7 @@
 
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     
-    XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    __block XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
          XCTAssertNil(error, @"Error occurred during PutItem");
@@ -237,11 +342,14 @@
 
          [putItemCompletedExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItemCompletedExpectation = nil;
+    }];
     XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
     
     // Confirm the item is found in the vault
-    XCTestExpectation *getItemCompletedExpectation = [self expectationWithDescription:@"GetItem completion handler called"];
+    __block XCTestExpectation *getItemCompletedExpectation = [self expectationWithDescription:@"GetItem completion handler called"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNil(error);
@@ -256,17 +364,18 @@
 
          [getItemCompletedExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        getItemCompletedExpectation = nil;
+    }];
 
     // Confirm enumerate finds item we added
-    __block NSError *error = nil;
     __block int count = 0;
     __block BOOL itemFound = NO;
-    XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
+    __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
-        XCTAssertNil(error);
         XCTAssertNotNil(vaultItemMetadata);
         
         NSLog(@"Enumerated item %d summary values: %@", count, vaultItemMetadata.summaryValues);
@@ -278,14 +387,17 @@
             itemFound = YES;
             NSLog(@"Item created earlier has been found (count = %d).", count);
         }
-        
-    } completionHandler:^(NSError *errorBlock) {
-        error = errorBlock;
+    } completionHandler:^(NSError *error) {
+        NSLog(@"Completion handler entered.");
+        XCTAssertNil(error);
         [completionHandlerCalled fulfill];
     }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
-
-    XCTAssertNil(error);
+    
+    // Note: May need a longer timeout if there's lots of items to enumerate. May depend on how many items added since test last run.
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        completionHandlerCalled = nil;
+    }];
 
     XCTAssertTrue(itemFound, "Item just created was not found during enumeration.");
     
@@ -298,9 +410,105 @@
     NSLog(@"count: %d", count);
 }
 
+- (void)testEnumerationAbortsOnStop
+{
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    // Create 2 items and store in vault (ensures there's more than 1 item in vault when enumerating
+    NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    
+    NSLog(@"Item summary values for new item 1: %@", item1SummaryValues);
+    
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    NSData *item2Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item2SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    
+    NSLog(@"Item summary values for new item 2: %@", item2SummaryValues);
+    
+    QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item2SummaryValues]
+                                                            value:item2Data];
+
+    __block XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem 1 completion handler called"];
+    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         XCTAssertNotNil(newItemDescriptor, @"New item descriptor for item 1 was nil");
+         
+         [putItem1CompletedExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItem1CompletedExpectation = nil;
+    }];
+    
+    __block XCTestExpectation *putItem2CompletedExpectation = [self expectationWithDescription:@"PutItem 2 completion handler called"];
+    [vault putItem:item2 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         XCTAssertNotNil(newItemDescriptor, @"New item descriptor for item 2 was nil");
+         
+         [putItem2CompletedExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItem2CompletedExpectation = nil;
+    }];
+
+    // Confirm enumerate 'stop' aborts enumeration
+    __block int count = 0;
+    __block BOOL stopWasSet = NO;
+    __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        count++;
+        
+        XCTAssertNotNil(vaultItemMetadata);
+        
+        NSLog(@"Enumerated item %d summary values: %@", count, vaultItemMetadata.summaryValues);
+        
+        // If 1st item, then we set stop
+        if (count == 1) {
+            *stop = YES;
+            stopWasSet = YES;
+        }
+        else {
+            // Should not get here if 'stop' worked
+            XCTFail(@"Enumerated more than 1 item, but stop had been set after 1st item");
+        }
+    } completionHandler:^(NSError *error) {
+        NSLog(@"Completion handler entered.");
+        XCTAssertNil(error);
+        [completionHandlerCalled fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        completionHandlerCalled = nil;
+    }];
+    
+    XCTAssertTrue(stopWasSet, "Never set the 'stop' flag.");
+    XCTAssertTrue(count == 1, "Enumerated more than 1 item, despite setting 'stop' after first item.");
+    
+    NSLog(@"count: %d", count);
+}
+
 - (void)testListener
 {
-    QredoVault *vault = [qredo defaultVault];
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
 
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
     listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
@@ -308,7 +516,7 @@
     vault.delegate = listener;
 
     [vault startListening];
-
+    
     // Create an item to ensure that there's data later than any current HWM
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
@@ -321,10 +529,14 @@
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
      {
+         XCTAssertNil(error);
          item1Descriptor = newItemDescriptor;
      }];
 
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:nil];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener.didReceiveVaultItemMetadataExpectation = nil;
+    }];
     XCTAssertNil(listener.error);
     XCTAssertNotNil(listener.receivedItems);
     XCTAssertTrue(listener.receivedItems.count > 0);

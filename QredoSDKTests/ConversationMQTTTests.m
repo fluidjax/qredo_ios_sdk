@@ -10,6 +10,17 @@
 - (void)setUp {
     [super setUp];
     self.useMQTT = YES;
+    [self authoriseClient];
+}
+
+- (void)testConversationCreation
+{
+    [super testConversationCreation];
+}
+
+- (void)testRespondingToConversation
+{
+    [super testRespondingToConversation];
 }
 
 - (void)testConversation

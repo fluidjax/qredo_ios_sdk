@@ -5,6 +5,8 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
+#import "QredoTestConfiguration.h"
+#import "QredoTestUtils.h"
 
 // The purpose of this test is to cover all edge cases in the rendezvous listener:
 // - receiving response
@@ -35,19 +37,30 @@
 - (void)setUp {
     [super setUp];
 
-    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
                                   client = clientArg;
                                   [clientExpectation fulfill];
                               }];
 
-    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
 }
 
+-(void)tearDown {
+    [super tearDown];
+    if (client) {
+        [client closeSession];
+    }
+}
 
 - (void)testRendezvousResponder {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
@@ -79,17 +92,22 @@
 
     __block QredoClient *anotherClient = nil;
 
-    XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
                                   anotherClient = clientArg;
                                   [clientExpectation fulfill];
                               }];
 
-    [self waitForExpectationsWithTimeout:1.0 handler:nil];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
 
 
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
@@ -98,7 +116,7 @@
     rendezvous.delegate = self;
 
     [rendezvous startListening];
-
+    
     NSLog(@"Responding from another client");
     __block QredoConversation *responderConversation = nil;
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
@@ -118,6 +136,10 @@
 
     // Sending message
     XCTAssertNotNil(responderConversation);
+    
+    [rendezvous stopListening];
+    
+    [anotherClient closeSession];
 }
 
 - (void)qredoRendezvous:(QredoRendezvous*)rendezvous didReceiveReponse:(QredoConversation *)conversation

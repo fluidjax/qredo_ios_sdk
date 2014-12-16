@@ -7,6 +7,7 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
 #import "QredoServiceInvoker.h"
+#import "QredoLogging.h"
 
 NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
@@ -80,6 +81,9 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(QredoClientOptions*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
 {
+    // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
+    LogDebug(@"Authorising client for conversation types: %@. VaultDataTypes: %@. Options: %@.", conversationTypes, vaultDataTypes, options);
+
     NSURL *serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
     NSDictionary *vaultOptions = nil;
 
@@ -146,9 +150,14 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
     return self;
 }
 
+- (BOOL)isClosed
+{
+    return _serviceInvoker.isTerminated;
+}
+
 - (BOOL)isAuthenticated
 {
-    // rev 1 doens't have authentication
+    // rev 1 doesn't have authentication
     return YES;
 }
 
@@ -159,7 +168,12 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 
 - (void)closeSession
 {
-    // Do nothing in rev 1
+    LogDebug(@"Closing client session.  Will need to re-initialise/authorise client before further use.");
+
+    // Need to terminate transport, which ends associated threads and subsriptions etc.
+    [_serviceInvoker terminate];
+
+    // TODO: DH - somehow indicate that the client has been closed and therefore cannot be used again.
 }
 
 - (QredoVault*) defaultVault
@@ -341,16 +355,23 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 
 - (void)saveState
 {
+    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    LogDebug(@"%s: Setting object for QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
     [defaults setObject:[_vaultId data] forKey:QredoClientOptionVaultID];
 }
 
 - (void)loadState
 {
+    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    LogDebug(@"%s: Getting object for QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
     NSData *vaultIdData = [defaults objectForKey:QredoClientOptionVaultID];
 
     if (vaultIdData) {
+        LogDebug(@"%s: No object found QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
         _vaultId = [[QredoQUID alloc] initWithQUIDData:vaultIdData];
     }
 }

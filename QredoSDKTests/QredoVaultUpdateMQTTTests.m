@@ -8,8 +8,8 @@
 
 - (void)setUp {
     [super setUp];
-
     self.useMQTT = YES;
+    [self authoriseClient];
 }
 
 - (void)testGettingItems {

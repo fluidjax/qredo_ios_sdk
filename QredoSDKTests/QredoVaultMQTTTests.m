@@ -8,12 +8,20 @@
 
 - (void)setUp {
     [super setUp];
-
     self.useMQTT = YES;
+    [self authoriseClient];
 }
 
 - (void)testPersistanceVaultId {
     [super testPersistanceVaultId];
+}
+
+- (void)testPutItem {
+    [super testPutItem];
+}
+
+- (void)testPutItemMultiple {
+    [super testPutItemMultiple];
 }
 
 - (void)testGettingItems {
@@ -28,8 +36,15 @@
     [super testEnumerationReturnsCreatedItem];
 }
 
+- (void)testEnumerationAbortsOnStop {
+    [super testEnumerationAbortsOnStop];
+}
+
 - (void)testListener {
     [super testListener];
 }
 
+- (void)testVaultItemMetadataAndMutableMetadata {
+    [super testVaultItemMetadataAndMutableMetadata];
+}
 @end
