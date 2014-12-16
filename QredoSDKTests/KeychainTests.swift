@@ -15,7 +15,7 @@ class KeychainTests: XCTestCase {
             currentServiceAccess: NSSet(),
             nextServiceAccess: NSSet())
 
-        let keychain = QredoKeychain(operatorInfo: operatorInfo)
+        let keychain = QredoKeychain(operatorInfo: operatorInfo, vaultId: nil, authenticationKey: nil, bulkKey: nil)
         let vaultIdBytes : [Byte] = [
             0x74, 0x65, 0x73, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
