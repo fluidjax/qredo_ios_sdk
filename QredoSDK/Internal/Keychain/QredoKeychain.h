@@ -7,7 +7,10 @@
 
 @interface QredoKeychain : NSObject
 
-- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo;
+- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo
+                             vaultId:(QredoQUID *)vaultId
+                   authenticationKey:(NSData *)authenticationKey
+                             bulkKey:(NSData *)bulkKey;
 - (instancetype)initWithData:(NSData *)serializedData;
 
 - (NSData *)data;

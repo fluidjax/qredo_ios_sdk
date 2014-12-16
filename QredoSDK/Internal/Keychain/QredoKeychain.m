@@ -35,14 +35,14 @@ static int QredoKeychainNoCredentialType = 0;
 
 @interface QredoKeychain ()
 {
-    BOOL isInitialized;
-    QredoQUID *vaultId;
-    QredoOperatorInfo *operatorInfo;
+    BOOL _isInitialized;
+    QredoQUID *_vaultId;
+    QredoOperatorInfo *_operatorInfo;
 
-    NSData *authKey;
-    NSData *bulkKey;
+    NSData *_authKey;
+    NSData *_bulkKey;
 
-    CryptoImplV1 *crypto;
+    CryptoImplV1 *_crypto;
 }
 
 @end
@@ -50,18 +50,21 @@ static int QredoKeychainNoCredentialType = 0;
 @implementation QredoKeychain
 
 - (void)initialize {
-    crypto = [CryptoImplV1 new];
+    _crypto = [CryptoImplV1 new];
 }
 
-- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)_operatorInfo
-{
+- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo
+                             vaultId:(QredoQUID *)vaultId
+                             authenticationKey:(NSData *)__authenticationKey
+                             bulkKey:(NSData *)__bulkKey {
     self = [super init];
-
-    [self initialize];
-
-    isInitialized = NO;
-    operatorInfo = _operatorInfo;
-
+    if (self) {
+        [self initialize];
+        _isInitialized = YES;
+        _operatorInfo = operatorInfo;
+        _vaultId = vaultId;
+        [self setVaultAuthKey:__authenticationKey bulkKey:__bulkKey];
+    }
     return self;
 }
 
@@ -71,13 +74,13 @@ static int QredoKeychainNoCredentialType = 0;
 
     [self initialize];
 
-    isInitialized = YES;
+    _isInitialized = YES;
 
     QredoLFKeychain *keychain = [QredoPrimitiveMarshallers unmarshalObject:serializedData unmarshaller:[QredoClientMarshallers keychainUnmarshaller]];
 
-    operatorInfo = keychain.operatorInfo;
+    _operatorInfo = keychain.operatorInfo;
 
-    vaultId = keychain.vaultInfo.vaultID;
+    _vaultId = keychain.vaultInfo.vaultID;
 
     QredoVaultKeyStore *keystore = (QredoVaultKeyStore*)[keychain.vaultInfo.keyStore anyObject];
     NSData *encryptedVaultKeys = keystore.encryptedVaultKeys;
@@ -95,8 +98,8 @@ static int QredoKeychainNoCredentialType = 0;
 
 
     QredoVaultKeyPair *defaultKeys = [vaultKeys.vaultKeys objectAtIndex:0];
-    bulkKey = defaultKeys.encryptionKey;
-    authKey = defaultKeys.authenticationKey;
+    _bulkKey = defaultKeys.encryptionKey;
+    _authKey = defaultKeys.authenticationKey;
     return self;
 }
 
@@ -104,7 +107,7 @@ static int QredoKeychainNoCredentialType = 0;
     NSData *serializedData = [QredoPrimitiveMarshallers marshalObject:[NSData dataWithBytes:bytes length:length]
                                                            marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
 
-    NSData *auth = [crypto getAuthCodeWithKey:authKey data:serializedData];
+    NSData *auth = [_crypto getAuthCodeWithKey:_authKey data:serializedData];
 
     NSMutableData *resultData = [NSMutableData dataWithData:serializedData];
     [resultData appendData:auth];
@@ -138,13 +141,13 @@ static int QredoKeychainNoCredentialType = 0;
     NSData *clearData = [QredoPrimitiveMarshallers marshalObject:object marshaller:marshaller];
 
 
-    NSData *encryptedMessage = [crypto encryptWithKey:keys.encryptionKey data:clearData];
+    NSData *encryptedMessage = [_crypto encryptWithKey:keys.encryptionKey data:clearData];
 
     NSData *serialiedEncryptedMessage =
     [QredoPrimitiveMarshallers marshalObject:encryptedMessage
                                   marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
 
-    NSData * auth = [crypto getAuthCodeWithKey:keys.authenticationKey data:serialiedEncryptedMessage];
+    NSData * auth = [_crypto getAuthCodeWithKey:keys.authenticationKey data:serialiedEncryptedMessage];
 
     NSMutableData *result = [NSMutableData data];
     [result appendData:serialiedEncryptedMessage];
@@ -155,7 +158,7 @@ static int QredoKeychainNoCredentialType = 0;
 
 - (id)unmarshalData:(NSData *)encryptedDataWithAuthCode unmarshaller:(QredoUnmarshaller)unmarshaller keys:(QredoVaultKeyPair *)keys error:(NSError **)error
 {
-    BOOL verified = [crypto verifyAuthCodeWithKey:keys.authenticationKey data:encryptedDataWithAuthCode];
+    BOOL verified = [_crypto verifyAuthCodeWithKey:keys.authenticationKey data:encryptedDataWithAuthCode];
 
     if (!verified) {
         if (error) {
@@ -173,7 +176,7 @@ static int QredoKeychainNoCredentialType = 0;
                                                                       unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]];
 
 
-    NSData *decryptedMessageData = [crypto decryptWithKey:keys.encryptionKey data:deserializedEncryptedData];
+    NSData *decryptedMessageData = [_crypto decryptWithKey:keys.encryptionKey data:deserializedEncryptedData];
 
 
     return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData unmarshaller:unmarshaller];
@@ -181,19 +184,19 @@ static int QredoKeychainNoCredentialType = 0;
 
 - (QredoVaultKeyPair *)vaultKeys
 {
-    return [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:bulkKey authenticationKey:authKey];
+    return [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:_bulkKey authenticationKey:_authKey];
 }
 
 - (NSData *)data
 {
-    if (!isInitialized) return nil;
+    if (!_isInitialized) return nil;
 
     uint8_t zeroBytes32[32] = {0};
     NSData *zeroData32 = [NSData dataWithBytes:zeroBytes32 length:32];
 
     NSData *noCredential = [NSData dataWithBytes:zeroBytes32 length:32];
 
-    QredoVaultKeyPair *vaultKeyPair = [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:bulkKey authenticationKey:authKey];
+    QredoVaultKeyPair *vaultKeyPair = [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:_bulkKey authenticationKey:_authKey];
 
     QredoVaultKeyPair *zeroKeyPair = [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:zeroData32 authenticationKey:zeroData32];
 
@@ -219,7 +222,7 @@ static int QredoKeychainNoCredentialType = 0;
                                                                       encryptedVaultKeys:encryptedVaultKeys];
 
 
-    QredoVaultInfoType *vaultInfoType = [QredoVaultInfoType vaultInfoTypeWithVaultID:vaultId
+    QredoVaultInfoType *vaultInfoType = [QredoVaultInfoType vaultInfoTypeWithVaultID:_vaultId
                                                                             keyStore:[NSSet setWithObject:vaultKeyStore]];
 
 
@@ -243,7 +246,7 @@ static int QredoKeychainNoCredentialType = 0;
                                                                  encryptedMasterKey:[self serializeBytes:encryptedMasterKeyBytes length:sizeof(encryptedMasterKeyBytes)]];
 
     QredoLFKeychain *keychain = [QredoLFKeychain keychainWithCredentialType:[NSNumber numberWithInt:QredoKeychainNoCredentialType]
-                                                               operatorInfo:operatorInfo
+                                                               operatorInfo:_operatorInfo
                                                                   vaultInfo:vaultInfoType
                                                       encryptedRecoveryInfo:encryptedRecoveryInfo];
 
@@ -253,24 +256,24 @@ static int QredoKeychainNoCredentialType = 0;
 }
 
 - (void)setVaultId:(QredoQUID*)newVaultId {
-    vaultId = newVaultId;
+    _vaultId = newVaultId;
 }
 
 - (void)generateNewKeys
 {
-    isInitialized = YES;
+    _isInitialized = YES;
 }
 
-- (void)setVaultAuthKey:(NSData *)_authKey bulkKey:(NSData *)_bulkKey
+- (void)setVaultAuthKey:(NSData *)authKey bulkKey:(NSData *)bulkKey
 {
-    isInitialized = YES;
-    authKey = [_authKey copy];
-    bulkKey = [_bulkKey copy];
+    _isInitialized = YES;
+    _authKey = [authKey copy];
+    _bulkKey = [bulkKey copy];
 }
 
 - (QredoQUID *)vaultId
 {
-    return vaultId;
+    return _vaultId;
 }
 
 - (NSData *)vaultBulkKeyForAccessLevel:(int)accessLevel credential:(NSData *)credential

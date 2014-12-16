@@ -21,8 +21,7 @@
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
 
-- (NSData *)keychainData;
-- (void)setKeychain:(QredoKeychain *)keychain;
+- (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error;
 
 @end
 

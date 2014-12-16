@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     QredoErrorCodeVaultUnknown = 2000,
     QredoErrorCodeVaultItemNotFound,
     QredoErrorCodeVaultItemHasBeenDeleted,
-
+    
     // Rendezvous errors
     QredoErrorCodeRendezvousNotFound = 3001,
     QredoErrorCodeRendezvousInvalidData,
@@ -30,6 +30,13 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     QredoErrorCodeConversationNotFound,
     QredoErrorCodeConversatioinInvalidData,
     QredoErrorCodeConversationWrongAuthenticationCode,
+    
+    // Keychain errors
+    QredoErrorCodeKeychainCouldNotBeFound = 5000,
+    QredoErrorCodeKeychainCouldNotBeRetrieved,
+    QredoErrorCodeKeychainCouldNotBeSaved,
+    QredoErrorCodeKeychainCouldNotBeDelete,
+    
 };
 
 

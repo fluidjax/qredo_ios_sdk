@@ -10,10 +10,12 @@
 #import "QredoServiceInvoker.h"
 
 #import "QredoKeychain.h"
+#import "QredoKeychainArchiver.h"
+#import "QredoKeychainArchiverForAppleKeychain.h"
 #import "QredoKeychainSender.h"
 #import "QredoKeychainReceiver.h"
 
-NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
+NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
 static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
@@ -65,11 +67,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
  */
 - (instancetype)initWithServiceURL:(NSURL *)serviceURL;
 
-/**
- @param serviceURL serviceURL Root URL for Qredo services
- @param options qredo options. At the moment there is only `QredoClientOptionVaultID`
- */
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL options:(NSDictionary*)options;
 
 @end
 
@@ -94,29 +91,104 @@ static NSString *const QredoKeychainPassword = @"Password123";
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(QredoClientOptions*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
 {
     NSURL *serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
-    NSDictionary *vaultOptions = nil;
 
-    if (options) {
-        if (options.useMQTT) {
-            serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
-        }
-
-        if (options.resetData) {
-            vaultOptions = [NSDictionary dictionaryWithObject:[QredoQUID QUID] forKey:QredoClientOptionVaultID];
-        }
+    if (options.useMQTT) {
+        serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
     }
 
-    QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL options:vaultOptions];
 
-    completionHandler(client, nil);
+    __block NSError *error = nil;
+    
+    __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL];
+    
+    void(^completeAuthorization)() = ^() {
+        
+        if (error) {
+            if (completionHandler) completionHandler(nil, error);
+        } else {
+            // This assert is very important!!!
+            NSAssert(client.defaultVault, @"No QredoClient without a system vault must be passed to the client code.");
+            if (completionHandler) completionHandler(client, error);
+        }
+        
+    };
+    
+    
+    if (options.resetData) {
+        
+        [client createSystemVault];
+        [client saveStateWithError:&error];
+        
+        completeAuthorization();
+        return;
+        
+    }
+    
+    
+    if (![client loadStateWithError:&error]) {
+        
+        if ([error.domain isEqualToString:QredoErrorDomain] && error.code == QredoErrorCodeKeychainCouldNotBeFound) {
+            
+            // TODO [GR]: Show new device screen insted of creating the vault starit away.
+            error = nil;
+            [client createSystemVault];
+            [client saveStateWithError:&error];
+            
+            completeAuthorization();
+            
+        } else {
+            
+            // TODO [GR]: Show alert for corrupted keychain instead of the placeholder below.
+            // Also implement a way of recovering a keychian here.
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                UIAlertController *alertController
+                = [UIAlertController
+                   alertControllerWithTitle:@"Keychain is corrupted"
+                   message:@"The system vault keychain seems to be corrupted."
+                   preferredStyle:UIAlertControllerStyleAlert];
+                
+                [alertController addAction:[UIAlertAction
+                                            actionWithTitle:@"Try later"
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction *action) {
+                                                
+                                                completeAuthorization();
+                                                
+                                            }]];
+                
+                [alertController addAction:[UIAlertAction
+                                            actionWithTitle:@"Remove keychain"
+                                            style:UIAlertActionStyleDestructive
+                                            handler:^(UIAlertAction *action) {
+                                                
+                                                [client createSystemVault];
+                                                [client saveStateWithError:&error];
+
+                                                completeAuthorization();
+                                                
+                                            }]];
+                
+                [[UIApplication sharedApplication].keyWindow.rootViewController
+                 presentViewController:alertController animated:YES completion:nil];
+            });
+            
+        }
+        
+        return;
+        
+    }
+    
+    completeAuthorization();
+    
+}
+
++ (void)completeAuthorizationWithClient:(QredoClient *)client error:(NSError *)error completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler {
+    
 }
 
 - (instancetype)initWithServiceURL:(NSURL *)serviceURL
-{
-    return [self initWithServiceURL:serviceURL options:nil];
-}
-
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL options:(NSDictionary*)options
 {
     self = [self init];
     if (!self) return nil;
@@ -125,36 +197,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
     _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL];
 
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
-
-    [self loadState];
-
-    BOOL changedVaultId = NO;
-    id vaultId = [options objectForKey:QredoClientOptionVaultID];
-
-    if (vaultId) {
-        if ([vaultId isKindOfClass:[NSString class]]) {
-            _vaultId = [[QredoQUID alloc] initWithQUIDString:vaultId];
-        } else if ([vaultId isKindOfClass:[QredoQUID class]]) {
-            _vaultId = vaultId;
-        } else {
-            [NSException raise:NSInvalidArgumentException
-                        format:@"%@ should be of type NSString or QredoQUID. It is %@",
-             QredoClientOptionVaultID, [[vaultId class] description]];
-        }
-
-        changedVaultId = YES;
-    }
-
-    if (!_vaultId) {
-        _vaultId = [QredoQUID QUID];
-        changedVaultId = YES;
-    }
-
-    if (changedVaultId) {
-        [self saveState];
-    }
-
-    _defaultVault = [[QredoVault alloc] initWithClient:self vaultId:_vaultId];
 
     return self;
 }
@@ -352,54 +394,74 @@ static NSString *const QredoKeychainPassword = @"Password123";
 #pragma mark -
 #pragma mark Private Methods
 
-- (void)saveState
+- (BOOL)saveStateWithError:(NSError **)error
 {
-    [self setDefaultVaultId:_vaultId];
+    id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
+    return [self saveSystemVaultKeychain:_defaultVault.qredoKeychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
 }
 
-- (void)loadState
+- (BOOL)loadStateWithError:(NSError **)error
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSData *vaultIdData = [defaults objectForKey:QredoClientOptionVaultID];
-
-    if (vaultIdData) {
-        _vaultId = [[QredoQUID alloc] initWithQUIDData:vaultIdData];
+    id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
+    QredoKeychain *systemVaultKeychain = [self loadSystemVaultKeychainWithKeychainArchiver:keychainArchiver error:error];
+    if (systemVaultKeychain) {
+        _defaultVault = [[QredoVault alloc] initWithClient:self qredoKeychain:systemVaultKeychain];
+        return YES;
     }
+    
+    return NO;
 }
 
-- (NSData *)keychainData {
+- (void)createSystemVault {
+    QredoKeychain *systemVaultKeychain = [self createDefaultKeychain];
+    _defaultVault = [[QredoVault alloc] initWithClient:self qredoKeychain:systemVaultKeychain];
+}
 
+- (id<QredoKeychainArchiver>)qredoKeychainArchiver
+{
+    return [[QredoKeychainArchiverForAppleKeychain alloc] init];
+}
+
+- (QredoKeychain *)createDefaultKeychain {
+    
     QredoOperatorInfo *operatorInfo = [QredoOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
                                                                    serviceUri:self.serviceURL.absoluteString
                                                                     accountID:QredoKeychainOperatorAccountId
                                                          currentServiceAccess:[NSSet set]
                                                             nextServiceAccess:[NSSet set]];
-
-    QredoKeychain *keychain = [[QredoKeychain alloc] initWithOperatorInfo:operatorInfo];
-    [keychain setVaultId:self.systemVault.vaultId];
-
+    
+    QredoQUID *vaultId = [QredoQUID QUID];
+    
     const uint8_t bulkKeyBytes[] = {'b','u','l','k','d','e','m','o','k','e','y'};
     const uint8_t authenticationKeyBytes[] = {'a','u','t','h','d','e','m','o','k','e','y'};
-
+    
     NSData *bulkKey = [NSData dataWithBytes:bulkKeyBytes
                                      length:sizeof(bulkKeyBytes)];
     NSData *authenticationKey = [NSData dataWithBytes:authenticationKeyBytes
                                                length:sizeof(authenticationKeyBytes)];
-
-    [keychain setVaultAuthKey:authenticationKey bulkKey:bulkKey];
-
-    return [keychain data];
+    
+    return [[QredoKeychain alloc]
+            initWithOperatorInfo:operatorInfo
+            vaultId:vaultId
+            authenticationKey:authenticationKey
+            bulkKey:bulkKey];
+    
 }
 
-- (void)setKeychain:(QredoKeychain *)keychain
-{
-    [self setDefaultVaultId:keychain.vaultId];
+NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
+
+- (QredoKeychain *)loadSystemVaultKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver error:(NSError **)error {
+    return [keychainArchiver loadQredoKeychainWithIdentifier:systemVaultKeychainArchiveIdentifier error:error];
 }
 
-- (void)setDefaultVaultId:(QredoQUID *)vaultId
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:vaultId.data forKey:QredoClientOptionVaultID];
+- (BOOL)saveSystemVaultKeychain:(QredoKeychain *)keychain withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver error:(NSError **)error {
+    return [keychainArchiver saveQredoKeychain:keychain withIdentifier:systemVaultKeychainArchiveIdentifier error:error];
 }
+
+- (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error {
+    id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
+    return [self saveSystemVaultKeychain:keychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
+}
+
 
 @end
