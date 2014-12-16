@@ -2,7 +2,7 @@
 
 @interface ConversationTests : XCTestCase
 
-@property NSURL *serviceURL;
+@property BOOL useMQTT;
 
 - (void)authoriseClient;
 - (void)testConversationCreation;

@@ -4,7 +4,6 @@
 
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultUpdateTests.h"
 #import "NSDictionary+Contains.h"
@@ -22,7 +21,6 @@
 - (void)setUp
 {
     [super setUp];
-    self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     [self authoriseClient];
 }
 
@@ -39,8 +37,7 @@
     
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: self.serviceURL,
-                                                  QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);

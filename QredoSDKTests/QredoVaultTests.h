@@ -2,7 +2,7 @@
 
 @interface QredoVaultTests : XCTestCase
 
-@property NSURL *serviceURL;
+@property BOOL useMQTT;
 
 - (void)authoriseClient;
 - (void)testPersistanceVaultId;

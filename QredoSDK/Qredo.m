@@ -13,6 +13,23 @@ NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
 static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
+static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
+
+@implementation QredoClientOptions
+
+- (instancetype)initWithMQTT:(BOOL)useMQTT
+{
+    return [self initWithMQTT:useMQTT resetData:NO];
+}
+
+- (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData
+{
+    self = [super init];
+    self.useMQTT = useMQTT;
+    self.resetData = resetData;
+    return self;
+}
+@end
 
 // Private stuff
 @interface QredoClient ()
@@ -26,6 +43,17 @@ static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080
 }
 
 @property NSURL *serviceURL;
+
+/** Creates instance of qredo client
+ @param serviceURL Root URL for Qredo services
+ */
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL;
+
+/**
+ @param serviceURL serviceURL Root URL for Qredo services
+ @param options qredo options. At the moment there is only `QredoClientOptionVaultID`
+ */
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL options:(NSDictionary*)options;
 
 @end
 
@@ -51,27 +79,25 @@ static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080
     [self authorizeWithConversationTypes:conversationTypes vaultDataTypes:vaultDataTypes options:nil completionHandler:completionHandler];
 }
 
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(NSDictionary*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(QredoClientOptions*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
 {
+    // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
     LogDebug(@"Authorising client for conversation types: %@. VaultDataTypes: %@. Options: %@.", conversationTypes, vaultDataTypes, options);
 
-    NSURL *serviceURL = nil;
+    NSURL *serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
+    NSDictionary *vaultOptions = nil;
 
-    id serviceURLObject = (NSString *)[options objectForKey:QredoClientOptionServiceURL];
+    if (options) {
+        if (options.useMQTT) {
+            serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
+        }
 
-    if (!serviceURLObject) {
-        serviceURLObject = QredoClientDefaultServiceURL;
+        if (options.resetData) {
+            vaultOptions = [NSDictionary dictionaryWithObject:[QredoQUID QUID] forKey:QredoClientOptionVaultID];
+        }
     }
 
-    if ([serviceURLObject isKindOfClass:[NSString class]]) {
-        serviceURL = [NSURL URLWithString: serviceURLObject];
-    } else if ([serviceURLObject isKindOfClass:[NSURL class]]) {
-        serviceURL = serviceURLObject;
-    } else {
-        [NSException raise:NSInvalidArgumentException format:@"Service URL should be either NSString or NSURL"];
-    }
-
-    QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL options:options];
+    QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL options:vaultOptions];
 
     completionHandler(client, nil);
 }

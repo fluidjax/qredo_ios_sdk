@@ -5,7 +5,6 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoTestConfiguration.h"
 #import "QredoRendezvousTests.h"
 #import "QredoTestUtils.h"
 
@@ -44,7 +43,6 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 - (void)setUp {
     [super setUp];
-    self.serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     [self authoriseClient];
 }
 
@@ -61,7 +59,7 @@ static long long kRendezvousTestDurationSeconds = 600;
     
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -89,7 +87,7 @@ static long long kRendezvousTestDurationSeconds = 600;
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -291,7 +289,7 @@ static long long kRendezvousTestDurationSeconds = 600;
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:@{QredoClientOptionServiceURL: self.serviceURL, QredoClientOptionVaultID: [QredoQUID QUID]}
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:NO]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
