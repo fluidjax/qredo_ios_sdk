@@ -15,6 +15,8 @@
 #import "QredoKeychainSender.h"
 #import "QredoKeychainReceiver.h"
 
+#import <UIKit/UIKit.h>
+
 NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
