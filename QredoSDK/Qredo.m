@@ -23,6 +23,8 @@ NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
 static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 
+NSString *const QredoRendezvousURIProtocol = @"qrp:";
+
 
 static NSString *const QredoKeychainOperatorName = @"Qredo Mock Operator";
 static NSString *const QredoKeychainOperatorAccountId = @"1234567890";
