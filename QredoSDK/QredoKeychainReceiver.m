@@ -147,19 +147,23 @@
 {
     [self.delegate qredoKeychainReceiver:self didReceiveKeychainWithConfirmationHandler:^(BOOL confirmed) {
         if (confirmed) {
-            [self installkeychain];
-            [self.delegate qredoKeychainReceiverDidInstallKeychain:self];
-            clientCompletionHandler(nil);
-            [self didConfirmInstallingKeychain];
+            NSError *error = nil;
+            if ([self installkeychainWithError:&error]) {
+                [self.delegate qredoKeychainReceiverDidInstallKeychain:self];
+                clientCompletionHandler(nil);
+                [self didConfirmInstallingKeychain];
+            } else {
+                [self handleError:error];
+            }
         } else {
             [self cancel];
         }
     }];
 }
 
-- (void)installkeychain
+- (BOOL)installkeychainWithError:(NSError **)error
 {
-    [self.client setKeychain:self.keychain];
+    return [self.client setKeychain:self.keychain error:error];
 }
 
 - (void)didConfirmInstallingKeychain
