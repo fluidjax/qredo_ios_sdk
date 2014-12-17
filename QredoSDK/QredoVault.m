@@ -591,26 +591,29 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                 
                 BOOL stop = FALSE;
                 for (QredoEncryptedVaultItemMetaData *result in results) {
-                    
-                    QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
-                    
-                    QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId sequenceValue:result.sequenceValue itemId:result.itemId];
-                    
-                    QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                                                          dataType:decryptedItem.dataType
-                                                                                                       accessLevel:[decryptedItem.accessLevel integerValue]
-                                                                                                     summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
-                    
-                    if (handler) {
-                        handler(externalItem, &stop);
+
+                    @try {
+                        QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
+                        
+                        QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId sequenceValue:result.sequenceValue itemId:result.itemId];
+                        
+                        QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                                              dataType:decryptedItem.dataType
+                                                                                                           accessLevel:[decryptedItem.accessLevel integerValue]
+                                                                                                         summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
+                        
+                        if (handler) {
+                            handler(externalItem, &stop);
+                        }
+                        
+                        [newWatermarkDictionary setObject:externalItem.descriptor.sequenceValue forKey:externalItem.descriptor.sequenceId];
+                        
+                        if (stop) {
+                            break;
+                        }
+                    } @catch (NSException *exception) {
+                        NSLog(@"Failed to decrypt a vault item: %@", exception);
                     }
-                    
-                    [newWatermarkDictionary setObject:externalItem.descriptor.sequenceValue forKey:externalItem.descriptor.sequenceId];
-                    
-                    if (stop) {
-                        break;
-                    }
-                    
                 }
 
             };

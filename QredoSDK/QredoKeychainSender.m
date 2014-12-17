@@ -40,8 +40,18 @@
 {
     clientCompletionHandler = completionHandler;
 
-    [self.delegate qredoKeychainSenderDiscoverRendezvous:self completionHander:^BOOL(NSString *rendezvousTag) {
-        BOOL validTag = [self verifyRendezvousTag:rendezvousTag];
+    [self.delegate qredoKeychainSenderDiscoverRendezvous:self completionHander:^BOOL(NSString *rendezvousTagWithProtocol) {
+
+        BOOL validTag = YES;
+
+        NSString *rendezvousTag = [self stringProtocolFromTag:rendezvousTagWithProtocol];
+
+
+        if (!rendezvousTag) {
+            validTag = NO;
+        } else {
+            validTag = [self verifyRendezvousTag:rendezvousTag];
+        }
 
         if (!validTag) {
             completionHandler([NSError errorWithDomain:QredoErrorDomain
@@ -58,15 +68,22 @@
     }];
 }
 
+- (NSString*)stringProtocolFromTag:(NSString*)rendezvousTagWithProtocol {
+    if (![rendezvousTagWithProtocol hasPrefix:QredoRendezvousURIProtocol]) return nil;
+
+    return [rendezvousTagWithProtocol substringFromIndex:QredoRendezvousURIProtocol.length];;
+}
+
 - (BOOL)verifyRendezvousTag:(NSString *)rendezvousTag
 {
-    @try {
-        QredoQUID *quid = [[QredoQUID alloc] initWithQUIDString:rendezvousTag];
-        return quid != nil;
-    }
-    @catch (NSException *exception) {
-        return NO;
-    }
+    return YES;
+//    @try {
+//        QredoQUID *quid = [[QredoQUID alloc] initWithQUIDString:rendezvousTag];
+//        return quid != nil;
+//    }
+//    @catch (NSException *exception) {
+//        return NO;
+//    }
 
 }
 
@@ -89,9 +106,21 @@
                 return ;
             }
 
+            QredoConversationMessage *deviceInfoMessage = [[QredoConversationMessage alloc] initWithValue:nil dataType:QredoKeychainTransporterMessageTypeDeviceInfo
+                                                                                            summaryValues:@{QredoKeychainTransporterMessageKeyDeviceName: @"iPhone"}];
+
             self.conversation = conversation;
             self.conversation.delegate = self;
-            [self.conversation startListening];
+
+            [conversation publishMessage:deviceInfoMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+                if (error) {
+                    [self handleError:error];
+                    return;
+                }
+                
+                [self.conversation startListening];
+            }];
+
         }
     }];
 }

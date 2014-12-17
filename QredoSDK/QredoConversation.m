@@ -352,10 +352,11 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
             QredoRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
 
+
             // Generate the authentication code.
             QredoAuthenticationCode *authenticationCode =
             [_rendezvousCrypto authenticationCodeWithHashedTag:creationInfo.hashedTag
-                                            authenticationType:[QredoRendezvousAuthType rendezvousAnonymous]
+                                            authenticationType:creationInfo.authenticationType
                                     conversationType:creationInfo.conversationType
                                      durationSeconds:creationInfo.durationSeconds
                                     maxResponseCount:creationInfo.maxResponseCount
