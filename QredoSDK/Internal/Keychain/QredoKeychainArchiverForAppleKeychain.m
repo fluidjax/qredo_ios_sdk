@@ -131,7 +131,7 @@ static NSString *kCurrentService = @"CurrentService";
     NSDictionary * resultDict = (__bridge NSDictionary *)result;
     NSData *keychainData = [resultDict objectForKey:(__bridge id)(kSecValueData)];
     if (!keychainData) {
-        *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeFound userInfo:
+        *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:
                   @{
                     kUnderlyingErrorSource : @"SecItemCopyMatching",
                     kUnderlyingErrorCode : @(sanityCheck),
@@ -140,7 +140,27 @@ static NSString *kCurrentService = @"CurrentService";
         return nil;
     }
     
-    QredoKeychain *qredoKeychain = [[QredoKeychain alloc] initWithData:keychainData];
+    QredoKeychain *qredoKeychain = nil;
+    
+    @try {
+        qredoKeychain = [[QredoKeychain alloc] initWithData:keychainData];
+    }
+    @catch (NSException *exception) {
+        *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:
+                  @{
+                    kUnderlyingErrorSource : @"ParsingError",
+                    }];
+        qredoKeychain = nil;
+    }
+    @finally {
+        if (!qredoKeychain) {
+            *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:
+                      @{
+                        kUnderlyingErrorSource : @"ParsingError",
+                        }];
+        }
+    }
+    
     return qredoKeychain;
     
 }
