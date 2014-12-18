@@ -1,6 +1,12 @@
 Changes
 =============
 
+## alpha-05
+* Add MQTT support. To enable it, set `useMQTT` flag in QredoClientOptions when `[QredoClient authorizeWithConversationTypes: vaultDataTypes: options: completionHandler:]` is called
+* Implement Qredo Keychain with random keys
+* Store device info when the new keychain is created
+* Change service URL to `alpha01.qredo.me`
+
 ## alpha-04
 * Use QredoClientOptions with more explicit options instead of NSDictionary for authorising QredoClient.
 * In BLERendezvous, rendezvous tags advertised as URI. (This ensures compatibility with the Android implementation.)
