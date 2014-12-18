@@ -383,6 +383,11 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
                 [self generateAndStoreKeysWithPrivateKey:responderPrivateKey publicKey:requesterPublicKey rendezvousOwner:NO completionHandler:completionHandler];
             }
+        } else if ([result isKindOfClass:[QredoRendezvousResponseUnknownTag class]]) {
+            completionHandler([NSError errorWithDomain:QredoErrorDomain
+                                                  code:QredoErrorCodeRendezvousUnknownResponse
+                                              userInfo:@{NSLocalizedDescriptionKey: @"Unknown rendezvous tag"}]);
+
         } else {
             completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                   code:QredoErrorCodeRendezvousUnknownResponse
