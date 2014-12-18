@@ -53,13 +53,6 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 @end
 
-@interface QredoClient (KeychainTransporter)
-
-- (void)sendKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
-- (void)receiveKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
-
-@end
-
 @interface QredoClient (Rendezvous)
 
 /** Creates a rendezvous and automatically stores it in the vault */

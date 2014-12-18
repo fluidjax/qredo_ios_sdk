@@ -404,6 +404,15 @@ static NSString *const QredoKeychainPassword = @"Password123";
     return (!name) ? @"iOS device" : name;
 }
 
+- (void)deleteKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+    NSError *error = nil;
+
+    [self createSystemVault];
+    [self saveStateWithError:&error];
+    completionHandler(error);
+}
+
 - (void)addDeviceToVaultWithCompletionHandler:(void(^)(NSError *error))completionHandler {
     QredoVault *systemVault = [self systemVault];
 
