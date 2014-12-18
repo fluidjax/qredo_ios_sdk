@@ -441,7 +441,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     LogDebug(@"Checking for old/duplicate. Response Hashed Tag: %@. Responder Public Key: %@. Responder Auth Code: %@. SequenceValue: %@.", response.hashedTag, response.responderPublicKey, response.responderAuthenticationCode, sequenceValue);
     
-    LogDebug(@"Dedupe dictionary contains %lu items.", _dedupeStore.count);
+    LogDebug(@"Dedupe dictionary contains %lu items.", (unsigned long)_dedupeStore.count);
     LogDebug(@"Dedupe dictionary: %@", _dedupeStore);
 
     BOOL responseIsDuplicate = NO;
