@@ -8,6 +8,10 @@
 #import "Qredo.h"
 #import "QredoServiceInvoker.h"
 
+static NSString *const QredoVaultItemTypeKeychain = @"com.qredo.keychain.device-name";
+static NSString *const QredoVaultItemTypeKeychainAttempt = @"com.qredo.keychain.transfer-attempt";
+static NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
+
 @class QredoKeychainReceiver, QredoKeychainSender, QredoKeychain;
 
 @interface QredoClient ()
