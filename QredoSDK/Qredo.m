@@ -20,8 +20,8 @@
 NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
-static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
-static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
+static NSString *const QredoClientDefaultServiceURL = @"http://alpha01.qredo.me:8080/services";
+static NSString *const QredoClientMQTTServiceURL = @"tcp://alpha01.qredo.me:1883";
 
 NSString *const QredoRendezvousURIProtocol = @"qrp:";
 
