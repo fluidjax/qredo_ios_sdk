@@ -32,5 +32,13 @@
     [keychainReceiver startWithCompletionHandler:completionHandler];
 }
 
+- (void)deleteKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+    NSError *error = nil;
+
+    [self createSystemVault];
+    [self saveStateWithError:&error];
+    completionHandler(error);
+}
 
 @end

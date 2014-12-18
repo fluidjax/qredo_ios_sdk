@@ -20,6 +20,9 @@ NS_ENUM(NSInteger, QredoCredentialType) {
 @property QredoOperatorInfo *operatorInfo;
 
 - (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo;
+
+// used in tests only
+- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo vaultId:(QredoQUID*)vaultId authenticationKey:(NSData*)authenticationKey bulkKey:(NSData*)bulkKey;
 - (instancetype)initWithData:(NSData *)serializedData;
 
 - (NSData *)data;

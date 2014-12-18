@@ -104,8 +104,10 @@ class KeychainTransporterReceiverTests: XCTestCase {
                 XCTAssertNotNil(receiverMock.rendezvousTag, "rendezvous tag should not be nil")
                 self.senderClient.respondWithTag(receiverMock.rendezvousTag, completionHandler: { (conversation, error) -> Void in
                     XCTAssertNotNil(conversation, "failed to respond to the rendezvous")
-                    conversation.delegate = conversationDelegate
-                    conversation.startListening()
+                    if let actualConversation = conversation {
+                        actualConversation.delegate = conversationDelegate
+                        actualConversation.startListening()
+                    }
                 })
             }
         }
@@ -177,8 +179,10 @@ class KeychainTransporterReceiverTests: XCTestCase {
                 self.senderClient.respondWithTag(receiverMock.rendezvousTag, completionHandler: { (conversation, error) -> Void in
                     XCTAssertNotNil(conversation, "failed to respond to the rendezvous")
                     transporterConversation = conversation
-                    conversation.delegate = conversationDelegate
-                    conversation.startListening()
+                    if let actualConversation = conversation {
+                        actualConversation.delegate = conversationDelegate
+                        actualConversation.startListening()
+                    }
                 })
             }
         }

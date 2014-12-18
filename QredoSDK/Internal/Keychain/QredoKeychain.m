@@ -66,6 +66,20 @@ static uint8_t zeroBytes32[32] = {0};
     return self;
 }
 
+- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo vaultId:(QredoQUID*)vaultId authenticationKey:(NSData*)authenticationKey bulkKey:(NSData*)bulkKey
+{
+    self = [super init];
+    if (self) {
+        [self initialize];
+        _isInitialized = YES;
+        _operatorInfo = operatorInfo;
+        _vaultId = vaultId;
+        _bulkKey = bulkKey;
+        _authKey = authenticationKey;
+    }
+    return self;
+}
+
 - (instancetype)initWithData:(NSData *)serializedData
 {
     self = [super init];
