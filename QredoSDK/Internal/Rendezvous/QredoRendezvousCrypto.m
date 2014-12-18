@@ -110,9 +110,6 @@
     
     QredoRsaPublicKey *rsaPublicKey = [[QredoRsaPublicKey alloc] initWithPkcs1KeyData:[QredoCrypto getKeyDataForIdentifier:publicKeyId]];
     
-    NSLog(@"Access control key pair:");
-    
-    
     uint8_t *pubKeyBytes = (uint8_t*)(rsaPublicKey.modulus.bytes);
     // stripping the leading zero
     ++pubKeyBytes;
@@ -120,27 +117,8 @@
     
     NSData *publicKeyBytes  = [NSData dataWithBytes:pubKeyBytes length:256];
     
-    NSLog(@"Public key:");
-    NSLog(@"- modulus: %@", [publicKeyBytes description]);
-    NSLog(@"- publicExponent: %@", rsaPublicKey.publicExponent);
-    
     NSData *privateKeyBytes = [QredoCrypto getKeyDataForIdentifier:privateKeyId];
     
-//    QredoRsaPrivateKey *rsaPrivateKey = [[QredoRsaPrivateKey alloc] initWithPkcs1KeyData:[QredoCrypto getKeyDataForIdentifier:privateKeyId]];
-    
-//    NSLog(@"Private key: %@", [QredoCrypto getKeyDataForIdentifier:privateKeyId]);
-    
-//    NSLog(@"- version: %@", [rsaPrivateKey.version description]);
-//    NSLog(@"- modulus: %@", [rsaPrivateKey.modulus description]);
-//    NSLog(@"- publicExponent: %@", [rsaPrivateKey.publicExponent description]);
-//    NSLog(@"- privateExponent: %@", [rsaPrivateKey.privateExponent description]);
-//    NSLog(@"- crtPrime1: %@", [rsaPrivateKey.crtPrime1 description]);
-//    NSLog(@"- crtPrime2: %@", [rsaPrivateKey.crtPrime2 description]);
-//    NSLog(@"- crtExponent1: %@", [rsaPrivateKey.crtExponent1 description]);
-//    NSLog(@"- crtExponent2: %@", [rsaPrivateKey.crtExponent2 description]);
-//    NSLog(@"- crtCoefficient: %@", [rsaPrivateKey.crtCoefficient description]);
-    
-
     QredoKeyLF *publicKeyLF  = [QredoKeyLF keyLFWithBytes:publicKeyBytes];
     QredoKeyLF *privateKeyLF = [QredoKeyLF keyLFWithBytes:privateKeyBytes];
 

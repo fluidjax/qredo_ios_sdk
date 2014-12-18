@@ -14,6 +14,7 @@
 #import "QredoVaultSequenceCache.h"
 #import "QredoCrypto.h"
 #import "QredoLogging.h"
+#import "QredoKeychain.h"
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
@@ -128,6 +129,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 @interface QredoVault ()
 {
     QredoClient *_client;
+    QredoKeychain *_qredoKeychan;
     QredoQUID *_vaultId;
     QredoQUID *_sequenceId;
 
@@ -154,13 +156,19 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     return _sequenceId;
 }
 
-- (instancetype)initWithClient:(QredoClient *)client vaultId:(QredoQUID *)vaultId
+- (QredoKeychain *)qredoKeychain {
+    return _qredoKeychan;
+}
+
+- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan
 {
     self = [super init];
     if (!self) return nil;
+    if (!client || !qredoKeychan) return nil;
 
     _client = client;
-    _vaultId = vaultId;
+    _qredoKeychan = qredoKeychan;
+    _vaultId = [qredoKeychan vaultId];
     _highwatermark = QredoVaultHighWatermarkOrigin;
 
     _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
@@ -174,18 +182,12 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     _vault              = [QredoInternalVault vaultWithServiceInvoker:_client.serviceInvoker];
     _vaultSequenceCache = [QredoVaultSequenceCache instance];
+    
+    QredoVaultKeyPair *keyPair = [qredoKeychan vaultKeys];
 
-    const uint8_t bulkKeyBytes[] = {'b','u','l','k','d','e','m','o','k','e','y'};
-    const uint8_t authenticationKeyBytes[] = {'a','u','t','h','d','e','m','o','k','e','y'};
-
-    NSData *bulkKey = [NSData dataWithBytes:bulkKeyBytes
-                                     length:sizeof(bulkKeyBytes)];
-    NSData *authenticationKey = [NSData dataWithBytes:authenticationKeyBytes
-                                               length:sizeof(authenticationKeyBytes)];
-
-    _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:bulkKey
-                                          authenticationKey:authenticationKey];
-
+    _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:keyPair.encryptionKey
+                                          authenticationKey:keyPair.authenticationKey];
+    
     return self;
 }
 
@@ -589,26 +591,29 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                 
                 BOOL stop = FALSE;
                 for (QredoEncryptedVaultItemMetaData *result in results) {
-                    
-                    QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
-                    
-                    QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId sequenceValue:result.sequenceValue itemId:result.itemId];
-                    
-                    QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                                                          dataType:decryptedItem.dataType
-                                                                                                       accessLevel:[decryptedItem.accessLevel integerValue]
-                                                                                                     summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
-                    
-                    if (handler) {
-                        handler(externalItem, &stop);
+
+                    @try {
+                        QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
+                        
+                        QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId sequenceValue:result.sequenceValue itemId:result.itemId];
+                        
+                        QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                                              dataType:decryptedItem.dataType
+                                                                                                           accessLevel:[decryptedItem.accessLevel integerValue]
+                                                                                                         summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
+                        
+                        if (handler) {
+                            handler(externalItem, &stop);
+                        }
+                        
+                        [newWatermarkDictionary setObject:externalItem.descriptor.sequenceValue forKey:externalItem.descriptor.sequenceId];
+                        
+                        if (stop) {
+                            break;
+                        }
+                    } @catch (NSException *exception) {
+                        NSLog(@"Failed to decrypt a vault item: %@", exception);
                     }
-                    
-                    [newWatermarkDictionary setObject:externalItem.descriptor.sequenceValue forKey:externalItem.descriptor.sequenceId];
-                    
-                    if (stop) {
-                        break;
-                    }
-                    
                 }
 
             };

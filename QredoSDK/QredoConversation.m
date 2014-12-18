@@ -358,10 +358,11 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
             QredoRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
 
+
             // Generate the authentication code.
             QredoAuthenticationCode *authenticationCode =
             [_rendezvousCrypto authenticationCodeWithHashedTag:creationInfo.hashedTag
-                                            authenticationType:[QredoRendezvousAuthType rendezvousAnonymous]
+                                            authenticationType:creationInfo.authenticationType
                                     conversationType:creationInfo.conversationType
                                      durationSeconds:creationInfo.durationSeconds
                                     maxResponseCount:creationInfo.maxResponseCount
@@ -388,6 +389,11 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
                 [self generateAndStoreKeysWithPrivateKey:responderPrivateKey publicKey:requesterPublicKey rendezvousOwner:NO completionHandler:completionHandler];
             }
+        } else if ([result isKindOfClass:[QredoRendezvousResponseUnknownTag class]]) {
+            completionHandler([NSError errorWithDomain:QredoErrorDomain
+                                                  code:QredoErrorCodeRendezvousUnknownResponse
+                                              userInfo:@{NSLocalizedDescriptionKey: @"Unknown rendezvous tag"}]);
+
         } else {
             completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                   code:QredoErrorCodeRendezvousUnknownResponse

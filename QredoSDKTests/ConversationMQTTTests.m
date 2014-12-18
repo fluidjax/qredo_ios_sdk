@@ -1,4 +1,3 @@
-#import "QredoTestConfiguration.h"
 #import "ConversationTests.h"
 
 @interface ConversationMQTTTests : ConversationTests

@@ -20,8 +20,8 @@
 typedef uint64_t QredoVaultSequenceValue;
 
 /** Options for [QredoClient initWithServiceURL:options:] */
-extern NSString *const QredoClientOptionVaultID;
 extern NSString *const QredoClientOptionServiceURL;
+extern NSString *const QredoRendezvousURIProtocol;
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
@@ -34,6 +34,7 @@ extern NSString *const QredoClientOptionServiceURL;
 
 - (instancetype)initWithMQTT:(BOOL)useMQTT;
 - (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData;
+- (instancetype)initWithResetData:(BOOL)resetData;
 
 @end
 

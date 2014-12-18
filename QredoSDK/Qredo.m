@@ -1,4 +1,5 @@
 #import "Qredo.h"
+#import "QredoPrivate.h"
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
 #import "QredoRendezvousPrivate.h"
@@ -9,11 +10,27 @@
 #import "QredoServiceInvoker.h"
 #import "QredoLogging.h"
 
-NSString *const QredoClientOptionVaultID = @"com.qredo.option.vault.id";
+#import "QredoKeychain.h"
+#import "QredoKeychainArchiver.h"
+#import "QredoKeychainArchiverForAppleKeychain.h"
+#import "QredoKeychainSender.h"
+#import "QredoKeychainReceiver.h"
+#import "NSData+QredoRandomData.h"
+
+#import <UIKit/UIKit.h>
+
+NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
-static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
-static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
+static NSString *const QredoClientDefaultServiceURL = @"http://alpha01.qredo.me:8080/services";
+static NSString *const QredoClientMQTTServiceURL = @"tcp://alpha01.qredo.me:1883";
+
+NSString *const QredoRendezvousURIProtocol = @"qrp:";
+
+
+static NSString *const QredoKeychainOperatorName = @"Qredo Mock Operator";
+static NSString *const QredoKeychainOperatorAccountId = @"1234567890";
+static NSString *const QredoKeychainPassword = @"Password123";
 
 @implementation QredoClientOptions
 
@@ -26,6 +43,13 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 {
     self = [super init];
     self.useMQTT = useMQTT;
+    self.resetData = resetData;
+    return self;
+}
+
+- (instancetype)initWithResetData:(BOOL)resetData
+{
+    self = [super init];
     self.resetData = resetData;
     return self;
 }
@@ -49,15 +73,10 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
  */
 - (instancetype)initWithServiceURL:(NSURL *)serviceURL;
 
-/**
- @param serviceURL serviceURL Root URL for Qredo services
- @param options qredo options. At the moment there is only `QredoClientOptionVaultID`
- */
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL options:(NSDictionary*)options;
 
 @end
 
-@implementation QredoClient (Private)
+@implementation QredoClient
 
 - (QredoVault*)systemVault
 {
@@ -70,10 +89,6 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
     return _serviceInvoker;
 }
 
-@end
-
-@implementation QredoClient
-
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
 {
     [self authorizeWithConversationTypes:conversationTypes vaultDataTypes:vaultDataTypes options:nil completionHandler:completionHandler];
@@ -85,29 +100,104 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
     LogDebug(@"Authorising client for conversation types: %@. VaultDataTypes: %@. Options: %@.", conversationTypes, vaultDataTypes, options);
 
     NSURL *serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
-    NSDictionary *vaultOptions = nil;
 
-    if (options) {
-        if (options.useMQTT) {
-            serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
-        }
-
-        if (options.resetData) {
-            vaultOptions = [NSDictionary dictionaryWithObject:[QredoQUID QUID] forKey:QredoClientOptionVaultID];
-        }
+    if (options.useMQTT) {
+        serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
     }
 
-    QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL options:vaultOptions];
 
-    completionHandler(client, nil);
+    __block NSError *error = nil;
+    
+    __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL];
+    
+    void(^completeAuthorization)() = ^() {
+        
+        if (error) {
+            if (completionHandler) completionHandler(nil, error);
+        } else {
+            // This assert is very important!!!
+            NSAssert(client.defaultVault, @"No QredoClient without a system vault must be passed to the client code.");
+            if (completionHandler) completionHandler(client, error);
+        }
+        
+    };
+    
+    
+    if (options.resetData) {
+        
+        [client createSystemVault];
+        [client saveStateWithError:&error];
+        
+        completeAuthorization();
+        return;
+        
+    }
+    
+    
+    if (![client loadStateWithError:&error]) {
+        
+        if ([error.domain isEqualToString:QredoErrorDomain] && error.code == QredoErrorCodeKeychainCouldNotBeFound) {
+            
+            // TODO [GR]: Show new device screen insted of creating the vault starit away.
+            error = nil;
+            [client createSystemVault];
+            [client saveStateWithError:&error];
+            
+            completeAuthorization();
+            
+        } else {
+            
+            // TODO [GR]: Show alert for corrupted keychain instead of the placeholder below.
+            // Also implement a way of recovering a keychian here.
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                UIAlertController *alertController
+                = [UIAlertController
+                   alertControllerWithTitle:@"Keychain is corrupted"
+                   message:@"The system vault keychain seems to be corrupted."
+                   preferredStyle:UIAlertControllerStyleAlert];
+                
+                [alertController addAction:[UIAlertAction
+                                            actionWithTitle:@"Try later"
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction *action) {
+                                                
+                                                completeAuthorization();
+                                                
+                                            }]];
+                
+                [alertController addAction:[UIAlertAction
+                                            actionWithTitle:@"Remove keychain"
+                                            style:UIAlertActionStyleDestructive
+                                            handler:^(UIAlertAction *action) {
+                                                
+                                                [client createSystemVault];
+                                                [client saveStateWithError:&error];
+
+                                                completeAuthorization();
+                                                
+                                            }]];
+                
+                [[UIApplication sharedApplication].keyWindow.rootViewController
+                 presentViewController:alertController animated:YES completion:nil];
+            });
+            
+        }
+        
+        return;
+        
+    }
+    
+    completeAuthorization();
+    
+}
+
++ (void)completeAuthorizationWithClient:(QredoClient *)client error:(NSError *)error completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler {
+    
 }
 
 - (instancetype)initWithServiceURL:(NSURL *)serviceURL
-{
-    return [self initWithServiceURL:serviceURL options:nil];
-}
-
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL options:(NSDictionary*)options
 {
     self = [self init];
     if (!self) return nil;
@@ -116,36 +206,6 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
     _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL];
 
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
-
-    [self loadState];
-
-    BOOL changedVaultId = NO;
-    id vaultId = [options objectForKey:QredoClientOptionVaultID];
-
-    if (vaultId) {
-        if ([vaultId isKindOfClass:[NSString class]]) {
-            _vaultId = [[QredoQUID alloc] initWithQUIDString:vaultId];
-        } else if ([vaultId isKindOfClass:[QredoQUID class]]) {
-            _vaultId = vaultId;
-        } else {
-            [NSException raise:NSInvalidArgumentException
-                        format:@"%@ should be of type NSString or QredoQUID. It is %@",
-             QredoClientOptionVaultID, [[vaultId class] description]];
-        }
-
-        changedVaultId = YES;
-    }
-
-    if (!_vaultId) {
-        _vaultId = [QredoQUID QUID];
-        changedVaultId = YES;
-    }
-
-    if (changedVaultId) {
-        [self saveState];
-    }
-
-    _defaultVault = [[QredoVault alloc] initWithClient:self vaultId:_vaultId];
 
     return self;
 }
@@ -353,27 +413,95 @@ static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 #pragma mark -
 #pragma mark Private Methods
 
-- (void)saveState
-{
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    LogDebug(@"%s: Setting object for QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
-    [defaults setObject:[_vaultId data] forKey:QredoClientOptionVaultID];
+- (NSString *)deviceName {
+    NSString *name = [[UIDevice currentDevice] name];
+    return (!name) ? @"iOS device" : name;
 }
 
-- (void)loadState
+- (void)deleteKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    LogDebug(@"%s: Getting object for QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
-    NSData *vaultIdData = [defaults objectForKey:QredoClientOptionVaultID];
+    NSError *error = nil;
 
-    if (vaultIdData) {
-        LogDebug(@"%s: No object found QredoClientOptionVaultID in NSUserDefaults", __PRETTY_FUNCTION__);
-        _vaultId = [[QredoQUID alloc] initWithQUIDData:vaultIdData];
+    [self createSystemVault];
+    [self saveStateWithError:&error];
+    completionHandler(error);
+}
+
+- (void)addDeviceToVaultWithCompletionHandler:(void(^)(NSError *error))completionHandler {
+    QredoVault *systemVault = [self systemVault];
+
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:QredoVaultItemTypeKeychain
+                                                                                 accessLevel:0
+                                                                               summaryValues:@{QredoVaultItemSummaryKeyDeviceName : [self deviceName]}];
+    QredoVaultItem *deviceInfoItem = [QredoVaultItem vaultItemWithMetadata:metadata value:nil];
+
+
+    [systemVault putItem:deviceInfoItem completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+        if (completionHandler) completionHandler(error);
+    }];
+}
+
+- (BOOL)saveStateWithError:(NSError **)error
+{
+    id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
+    return [self saveSystemVaultKeychain:_defaultVault.qredoKeychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
+}
+
+- (BOOL)loadStateWithError:(NSError **)error
+{
+    id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
+    QredoKeychain *systemVaultKeychain = [self loadSystemVaultKeychainWithKeychainArchiver:keychainArchiver error:error];
+    if (systemVaultKeychain) {
+        _defaultVault = [[QredoVault alloc] initWithClient:self qredoKeychain:systemVaultKeychain];
+        return YES;
     }
+    
+    return NO;
+}
+
+- (void)createSystemVault {
+    QredoKeychain *systemVaultKeychain = [self createDefaultKeychain];
+    _defaultVault = [[QredoVault alloc] initWithClient:self qredoKeychain:systemVaultKeychain];
+
+    [self addDeviceToVaultWithCompletionHandler:nil]; // TODO createSystemVault should be async operation with a completion handler
+}
+
+- (id<QredoKeychainArchiver>)qredoKeychainArchiver
+{
+    return [[QredoKeychainArchiverForAppleKeychain alloc] init];
+}
+
+- (QredoKeychain *)createDefaultKeychain {
+    QredoOperatorInfo *operatorInfo = [QredoOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
+                                                                   serviceUri:self.serviceURL.absoluteString
+                                                                    accountID:QredoKeychainOperatorAccountId
+                                                         currentServiceAccess:[NSSet set]
+                                                            nextServiceAccess:[NSSet set]];
+    
+    QredoKeychain *keychain = [[QredoKeychain alloc] initWithOperatorInfo:operatorInfo];
+    [keychain generateNewKeys];
+    return keychain;
+}
+
+NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
+
+- (QredoKeychain *)loadSystemVaultKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver error:(NSError **)error {
+    return [keychainArchiver loadQredoKeychainWithIdentifier:systemVaultKeychainArchiveIdentifier error:error];
+}
+
+- (BOOL)saveSystemVaultKeychain:(QredoKeychain *)keychain withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver error:(NSError **)error {
+    return [keychainArchiver saveQredoKeychain:keychain withIdentifier:systemVaultKeychainArchiveIdentifier error:error];
+}
+
+- (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error {
+    id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
+    BOOL result = [self saveSystemVaultKeychain:keychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
+
+    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:keychain.operatorInfo.serviceUri]];
+    [newClient loadStateWithError:error];
+    [newClient addDeviceToVaultWithCompletionHandler:nil];
+
+    return result;
 }
 
 

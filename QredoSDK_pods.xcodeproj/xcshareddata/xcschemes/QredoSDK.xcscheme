@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "71CA3F10D92A1F761B472448"
+               BlueprintIdentifier = "186E8FFF66DD9DA40013BEB4"
                BuildableName = "libPods-QredoSDK-LinguaFranca.a"
                BlueprintName = "Pods-QredoSDK-LinguaFranca"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CBCA640078F419A43A5F22FB"
+               BlueprintIdentifier = "3B53329D9FBAAAFD541712F2"
                BuildableName = "libPods-QredoSDK.a"
                BlueprintName = "Pods-QredoSDK"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
