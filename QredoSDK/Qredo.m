@@ -14,6 +14,7 @@
 #import "QredoKeychainArchiverForAppleKeychain.h"
 #import "QredoKeychainSender.h"
 #import "QredoKeychainReceiver.h"
+#import "NSData+QredoRandomData.h"
 
 #import <UIKit/UIKit.h>
 
@@ -427,29 +428,15 @@ static NSString *const QredoKeychainPassword = @"Password123";
 }
 
 - (QredoKeychain *)createDefaultKeychain {
-    
     QredoOperatorInfo *operatorInfo = [QredoOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
                                                                    serviceUri:self.serviceURL.absoluteString
                                                                     accountID:QredoKeychainOperatorAccountId
                                                          currentServiceAccess:[NSSet set]
                                                             nextServiceAccess:[NSSet set]];
     
-    QredoQUID *vaultId = [QredoQUID QUID];
-    
-    const uint8_t bulkKeyBytes[] = {'b','u','l','k','d','e','m','o','k','e','y'};
-    const uint8_t authenticationKeyBytes[] = {'a','u','t','h','d','e','m','o','k','e','y'};
-    
-    NSData *bulkKey = [NSData dataWithBytes:bulkKeyBytes
-                                     length:sizeof(bulkKeyBytes)];
-    NSData *authenticationKey = [NSData dataWithBytes:authenticationKeyBytes
-                                               length:sizeof(authenticationKeyBytes)];
-    
-    return [[QredoKeychain alloc]
-            initWithOperatorInfo:operatorInfo
-            vaultId:vaultId
-            authenticationKey:authenticationKey
-            bulkKey:bulkKey];
-    
+    QredoKeychain *keychain = [[QredoKeychain alloc] initWithOperatorInfo:operatorInfo];
+    [keychain generateNewKeys];
+    return keychain;
 }
 
 NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
@@ -464,7 +451,9 @@ NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
 
 - (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
-    return [self saveSystemVaultKeychain:keychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
+    BOOL result = [self saveSystemVaultKeychain:keychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
+
+    return result;
 }
 
 
