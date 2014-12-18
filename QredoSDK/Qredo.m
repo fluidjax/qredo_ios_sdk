@@ -475,6 +475,7 @@ NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
     BOOL result = [self saveSystemVaultKeychain:keychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
 
     QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:keychain.operatorInfo.serviceUri]];
+    [newClient loadStateWithError:error];
     [newClient addDeviceToVaultWithCompletionHandler:nil];
 
     return result;
