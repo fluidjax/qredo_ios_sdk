@@ -102,6 +102,20 @@ done
 mkdir -p $LIBRARY_DIR
 cp $DIR/QredoSDK.podspec $LIBRARY_DIR/QredoSDK.podspec 
 
+# Add git fingerprints
+cd $ROOT_DIR
+IOS_SDK=`git rev-parse HEAD`
+
+cd $ROOT_DIR/../LinguaFranca 
+LF=`git rev-parse HEAD`
+
+cd $ROOT_DIR/../qredo_ios_examples
+EXAMPLES=`git rev-parse HEAD`
+
+echo "SDK    : $IOS_SDK" > $PACKAGE_DIR/fingerprint
+echo "LF     : $LF" >> $PACKAGE_DIR/fingerprint
+echo "Samples: $EXAMPLES" >> $PACKAGE_DIR/fingerprint
+
 # Test if the source files contain the developers names
 teststr=`(find $PACKAGE_DIR -name '*.h' -o -name '*.swift' -o -name '*.m' | xargs \
 	egrep --color=always 'Dmitry|David|Gabriel|Justin|jmegawarne|Hugh') \
