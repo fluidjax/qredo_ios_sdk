@@ -14,6 +14,8 @@
 #import "QredoKeychainArchiverForAppleKeychain.h"
 #import "QredoKeychainSender.h"
 #import "QredoKeychainReceiver.h"
+#import "QredoManagerAppRootViewController.h"
+
 
 #import <UIKit/UIKit.h>
 
@@ -190,6 +192,11 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 + (void)completeAuthorizationWithClient:(QredoClient *)client error:(NSError *)error completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler {
     
+}
+
++ (void)openSettings {
+    QredoManagerAppRootViewController *managerAppRootViewController = [[QredoManagerAppRootViewController alloc] init];
+    [managerAppRootViewController show];
 }
 
 - (instancetype)initWithServiceURL:(NSURL *)serviceURL
