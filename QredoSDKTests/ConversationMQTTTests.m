@@ -1,4 +1,3 @@
-#import "QredoTestConfiguration.h"
 #import "ConversationTests.h"
 
 @interface ConversationMQTTTests : ConversationTests
@@ -10,6 +9,17 @@
 - (void)setUp {
     [super setUp];
     self.useMQTT = YES;
+    [self authoriseClient];
+}
+
+- (void)testConversationCreation
+{
+    [super testConversationCreation];
+}
+
+- (void)testRespondingToConversation
+{
+    [super testRespondingToConversation];
 }
 
 - (void)testConversation

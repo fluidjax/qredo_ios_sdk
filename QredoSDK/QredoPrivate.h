@@ -8,6 +8,10 @@
 #import "Qredo.h"
 #import "QredoServiceInvoker.h"
 
+static NSString *const QredoVaultItemTypeKeychain = @"com.qredo.keychain.device-name";
+static NSString *const QredoVaultItemTypeKeychainAttempt = @"com.qredo.keychain.transfer-attempt";
+static NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
+
 @class QredoKeychainReceiver, QredoKeychainSender, QredoKeychain;
 
 @interface QredoClient ()
@@ -21,7 +25,18 @@
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
 
+- (void)createSystemVault;
+- (BOOL)saveStateWithError:(NSError **)error;
+
 - (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error;
+
+@end
+
+@interface QredoClient (KeychainTransporter)
+
+- (void)sendKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+- (void)receiveKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+- (void)deleteKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
 

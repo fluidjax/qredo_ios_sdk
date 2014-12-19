@@ -4,8 +4,6 @@
 
 #import "QredoKeychainTransporterConsts.h"
 
-// TODO put the values from the design diagram
-
 NSString *const QredoKeychainTransporterConversationType = @"com.qredo.keychainrequest~";
 NSUInteger QredoKeychainTransporterRendezvousDuration = 600;
 NSInteger QredoKeychainTransporterFingerprintLength = 5;

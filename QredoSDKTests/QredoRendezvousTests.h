@@ -4,6 +4,8 @@
 
 @property BOOL useMQTT;
 
+- (void)authoriseClient;
 - (void)testCreateRendezvous;
+- (void)testCreateAndRespondRendezvous;
 
 @end

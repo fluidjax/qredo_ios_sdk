@@ -51,14 +51,10 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 + (void)openSettings;
 
+- (void)closeSession;
+- (BOOL)isClosed;
+
 - (QredoVault*) defaultVault;
-
-@end
-
-@interface QredoClient (KeychainTransporter)
-
-- (void)sendKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
-- (void)receiveKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
 

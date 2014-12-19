@@ -38,7 +38,7 @@
     QredoEncryptedVaultItemMetaData *encryptedVaultItemMetaData =
             [self encryptVaultItemMetaData:vaultItemMetaDataLF
                        vaultItemDescriptor:vaultItemDescriptor];
-    NSData *encryptedVaultItemValue = [self encryptVaultItemValue:vaultItemValue];
+    NSData *encryptedVaultItemValue = vaultItemValue ? [self encryptVaultItemValue:vaultItemValue] : [NSData data];
 
     // Package...
     return [QredoEncryptedVaultItem encryptedVaultItemWithMeta:encryptedVaultItemMetaData
