@@ -6,6 +6,7 @@
 #import "QredoKeychainQRCodeScannerViewController.h"
 #import "QredoKeychainFingerprintConfirmationViewController.h"
 #import "QredoKeychainActivityViewController.h"
+#import "QredoManagerAppRootViewController.h"
 #import "Qredo.h"
 
 @interface QredoKeychainSenderQR ()
@@ -81,10 +82,32 @@
     [QredoClient authorizeWithConversationTypes:@[] vaultDataTypes:@[] completionHandler:^(QredoClient *client, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!error) {
+                
                 self.keychainSender = [[QredoKeychainSender alloc] initWithClient:client delegate:self];
                 [self.keychainSender startWithCompletionHandler:self.completionHandler];
+                
             } else {
-                // TODO [GR]: Implement error handling
+                
+                if (self.completionHandler) self.completionHandler(error);
+                
+                UIViewController *presentingViewController = self.presentingViewController;
+            
+                UIAlertController *alertController
+                = [UIAlertController
+                   alertControllerWithTitle:NSLocalizedString(@"Could not add device", @"")
+                   message:[error localizedDescription]
+                   preferredStyle:UIAlertControllerStyleAlert];
+                [alertController
+                 addAction:[UIAlertAction
+                            actionWithTitle:NSLocalizedString(@"OK", @"")
+                            style:UIAlertActionStyleDefault
+                            handler:^(UIAlertAction *action) {
+                                if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
+                                    [presentingViewController performSelector:@selector(presentDefaultViewController)];
+                                }
+                            }]];
+                 [self presentViewController:alertController animated:YES completion:nil];
+
             }
         });
     }];
