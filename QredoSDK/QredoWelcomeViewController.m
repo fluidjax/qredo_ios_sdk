@@ -5,6 +5,7 @@
 #import "QredoWelcomeViewController.h"
 #import "QredoMainViewController.h"
 #import "QredoManagerAppRootViewController.h"
+#import "QredoKeychainReceiverQR.h"
 #import "UIColor+Qredo.h"
 #import "UIButton+Qredo.h"
 
@@ -87,9 +88,17 @@
 }
 
 - (void)importKeychainButtonPressed {
-    //UIViewController *presentingViewController = self.presentedViewController;
+    UIViewController *presentingViewController = self.presentingViewController;
     [self dismissViewControllerAnimated:YES completion:^{
         
+        QredoKeychainReceiverQR *keychainReceiver = [[QredoKeychainReceiverQR alloc] initWithDismissHandler:^{
+            if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
+                [presentingViewController performSelector:@selector(presentDefaultViewController)];
+            }
+        }];
+        
+        [presentingViewController qredo_presentNavigationViewControllerWithViewController:keychainReceiver animated:YES completion:nil];
+
     }];
 }
 
