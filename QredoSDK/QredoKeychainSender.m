@@ -148,9 +148,11 @@
             [self stopCommunication];
         }
 
-        clientCompletionHandler([NSError errorWithDomain:QredoErrorDomain
-                                                    code:QredoErrorCodeUnknown
-                                                userInfo:@{NSLocalizedDescriptionKey: @"Transmission has been cancelled"}]);
+        if (clientCompletionHandler) {
+            clientCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                                        code:QredoErrorCodeUnknown
+                                                    userInfo:@{NSLocalizedDescriptionKey: @"Transmission has been cancelled"}]);
+        }
     }
 }
 
@@ -158,7 +160,7 @@
 {
     [self stopCommunication];
     [self.delegate qredoKeychainSender:self didFailWithError:error];
-    clientCompletionHandler(error);
+    if (clientCompletionHandler) clientCompletionHandler(error);
 }
 
 - (NSString *)fingerprint
@@ -239,7 +241,7 @@
     if (success) {
         [self.delegate qredoKeychainSenderDidFinishSending:self];
 
-        clientCompletionHandler(nil);
+        if (clientCompletionHandler) clientCompletionHandler(nil);
     } else {
         [self handleError:[NSError errorWithDomain:QredoErrorDomain
                                               code:QredoErrorCodeUnknown
