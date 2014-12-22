@@ -39,7 +39,7 @@ static NSString *const kDestructiveActionCellIdentifier = @"kDestructiveActionCe
     return [self itemWithName:name value:nil cellIdentifier:kDestructiveActionCellIdentifier selectionHandler:selectionHandler];
 }
 + (instancetype)infoItemWithName:(NSString *)name value:(NSString *)value {
-    return [self itemWithName:name value:value cellIdentifier:kDestructiveActionCellIdentifier selectionHandler:nil];
+    return [self itemWithName:name value:value cellIdentifier:kInfoCellIdentifier selectionHandler:nil];
 }
 + (instancetype)itemWithName:(NSString *)name value:(NSString *)value cellIdentifier:(NSString *)cellIdentifier selectionHandler:(void(^)())selectionHandler {
     QredoSettingsItem *item = [[QredoSettingsItem alloc] init];
@@ -91,8 +91,8 @@ static NSString *const kDestructiveActionCellIdentifier = @"kDestructiveActionCe
        target:self action:@selector(doneButtonPressed)];
     self.navigationItem.rightBarButtonItem = doneButton;
     
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kInfoCellIdentifier];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kDestructiveActionCellIdentifier];
+    [self.tableView registerClass:[QredoSettingsInfoTableViewCell class] forCellReuseIdentifier:kInfoCellIdentifier];
+    [self.tableView registerClass:[QredoSettingsActionTableViewCell class] forCellReuseIdentifier:kDestructiveActionCellIdentifier];
 
     __weak QredoSettingsViewController *weakSelf = self;
     
