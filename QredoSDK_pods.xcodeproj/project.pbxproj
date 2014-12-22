@@ -104,6 +104,7 @@
 		78A2F2031A444A8E00974EFB /* UIColor+Qredo.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F2011A444A8E00974EFB /* UIColor+Qredo.m */; };
 		78A2F2061A4455DA00974EFB /* UIButton+Qredo.h in Headers */ = {isa = PBXBuildFile; fileRef = 78A2F2041A4455DA00974EFB /* UIButton+Qredo.h */; };
 		78A2F2071A4455DA00974EFB /* UIButton+Qredo.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F2051A4455DA00974EFB /* UIButton+Qredo.m */; };
+		78A2F20A1A448D1600974EFB /* QredoKeychainArchiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F2081A447D6D00974EFB /* QredoKeychainArchiver.m */; };
 		78E5E1AA1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78E5E1A81A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h */; };
 		78E5E1AB1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E5E1A91A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m */; };
 		78E5E1AE1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78E5E1AC1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h */; };
@@ -271,6 +272,7 @@
 		78A2F2011A444A8E00974EFB /* UIColor+Qredo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Qredo.m"; sourceTree = "<group>"; };
 		78A2F2041A4455DA00974EFB /* UIButton+Qredo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+Qredo.h"; sourceTree = "<group>"; };
 		78A2F2051A4455DA00974EFB /* UIButton+Qredo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Qredo.m"; sourceTree = "<group>"; };
+		78A2F2081A447D6D00974EFB /* QredoKeychainArchiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainArchiver.m; sourceTree = "<group>"; };
 		78E5E1A81A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainSendReceiveViewController.h; sourceTree = "<group>"; };
 		78E5E1A91A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainSendReceiveViewController.m; sourceTree = "<group>"; };
 		78E5E1AC1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainActivityViewController.h; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 				0A1035291A389DFD002479D9 /* QredoKeychain.h */,
 				0A10352A1A389DFD002479D9 /* QredoKeychain.m */,
 				78771B921A3B487B007B864D /* QredoKeychainArchiver.h */,
+				78A2F2081A447D6D00974EFB /* QredoKeychainArchiver.m */,
 				7816B8EA1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.h */,
 				7816B8EB1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.m */,
 			);
@@ -967,6 +970,7 @@
 				0AD259701A2F947700FC8942 /* QredoDeviceInfo.m in Sources */,
 				0AD99E841A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m in Sources */,
 				0A27BEB71A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m in Sources */,
+				78A2F20A1A448D1600974EFB /* QredoKeychainArchiver.m in Sources */,
 				78A2F2031A444A8E00974EFB /* UIColor+Qredo.m in Sources */,
 				0AE3E5C61A35FE7D00EF192A /* Qredo+KeychainTransporter.m in Sources */,
 				0AD2595C1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m in Sources */,

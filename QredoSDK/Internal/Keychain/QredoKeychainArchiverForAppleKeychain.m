@@ -23,7 +23,7 @@ static NSString *kCurrentService = @"CurrentService";
         // Delete keychain
         
         OSStatus deleteSanityCheck = [self deleteQredoKeychainWithIdentifier:identifier error:error];
-        if (deleteSanityCheck == noErr) {
+        if (deleteSanityCheck != noErr) {
             *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
                       @{
                         kUnderlyingErrorSource : @"SecItemDelete",

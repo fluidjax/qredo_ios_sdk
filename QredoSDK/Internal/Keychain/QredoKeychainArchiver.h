@@ -14,3 +14,6 @@
 @end
 
 
+@interface QredoKeychainArchivers : NSObject
++ (id<QredoKeychainArchiver>)defaultQredoKeychainArchiver;
+@end
