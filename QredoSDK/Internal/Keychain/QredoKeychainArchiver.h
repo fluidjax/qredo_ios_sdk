@@ -10,6 +10,7 @@
 
 - (BOOL)saveQredoKeychain:(QredoKeychain *)qredoKeychain withIdentifier:(NSString *)identifier error:(NSError **)error;
 - (QredoKeychain *)loadQredoKeychainWithIdentifier:(NSString *)identifier error:(NSError **)error;
+- (BOOL)hasQredoKeychaiWithIdentifier:(NSString *)identifier error:(NSError **)error;
 
 @end
 
@@ -17,3 +18,4 @@
 @interface QredoKeychainArchivers : NSObject
 + (id<QredoKeychainArchiver>)defaultQredoKeychainArchiver;
 @end
+
