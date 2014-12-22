@@ -29,6 +29,11 @@ static NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
 - (BOOL)saveStateWithError:(NSError **)error;
 
 - (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error;
+- (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error;
+- (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error;
+
++ (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error;
++ (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error;
 
 @end
 

@@ -492,6 +492,10 @@ NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
     return [keychainArchiver saveQredoKeychain:keychain withIdentifier:systemVaultKeychainArchiveIdentifier error:error];
 }
 
+- (BOOL)hasSystemVaultKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver error:(NSError **)error {
+    return [keychainArchiver hasQredoKeychaiWithIdentifier:systemVaultKeychainArchiveIdentifier error:error];
+}
+
 - (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
     BOOL result = [self saveSystemVaultKeychain:keychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
@@ -501,6 +505,27 @@ NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
     [newClient addDeviceToVaultWithCompletionHandler:nil];
 
     return result;
+}
+
+- (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error {
+    id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
+    return [self saveSystemVaultKeychain:nil withKeychainWithKeychainArchiver:keychainArchiver error:error];
+}
+
+- (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error {
+    id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
+    return [self hasSystemVaultKeychainWithKeychainArchiver:keychainArchiver error:error];
+}
+
+
++ (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error {
+    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:nil]];
+    return [newClient deleteDefaultVaultKeychainWithError:error];
+}
+
++ (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error {
+    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:nil]];
+    return [newClient hasDefaultVaultKeychainWithError:error];
 }
 
 
