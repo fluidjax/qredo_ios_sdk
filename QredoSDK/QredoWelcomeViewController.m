@@ -18,6 +18,8 @@
     
     [super viewDidLoad];
     
+    self.title = NSLocalizedString(@"Welcome", @"");
+    
     self.view.backgroundColor = [UIColor qredoPrimaryBackgroundColor];
     self.view.tintColor = [UIColor qredoPrimaryTintColor];
 
