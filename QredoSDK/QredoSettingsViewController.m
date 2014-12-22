@@ -6,6 +6,8 @@
 #import "QredoMainViewController.h"
 #import "QredoWelcomeViewController.h"
 #import "QredoManagerAppRootViewController.h"
+#import "Qredo.h"
+#import "QredoPrivate.h"
 
 
 static NSString *const kInfoCellIdentifier = @"kInfoCellIdentifier";
@@ -199,12 +201,39 @@ static NSString *const kDestructiveActionCellIdentifier = @"kDestructiveActionCe
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-- (void)deleteQredoButtonPressed {
+- (void)deleteQredo {
     UIViewController *presentingViewController = self.presentingViewController;
     [self dismissViewControllerAnimated:YES completion:^{
-        QredoWelcomeViewController *welcomeViewController = [[QredoWelcomeViewController alloc] init];
-        [presentingViewController qredo_presentNavigationViewControllerWithViewController:welcomeViewController animated:YES completion:nil];
+        NSError *error = nil;
+        [QredoClient deleteDefaultVaultKeychainWithError:&error];
+        if (!error) {
+            if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
+                [presentingViewController performSelector:@selector(presentDefaultViewController)];
+            }
+        } else {
+            // TODO [GR]: Implement error handling
+        }
     }];
+}
+
+- (void)deleteQredoButtonPressed {
+    UIAlertController *alertController
+    = [UIAlertController
+       alertControllerWithTitle:NSLocalizedString(@"Delete Qredo?", @"")
+       message:nil
+       preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertController addAction:[UIAlertAction
+                                actionWithTitle:NSLocalizedString(@"Delete Qredo", @"")
+                                style:UIAlertActionStyleDestructive
+                                handler:^(UIAlertAction *action) {
+                                    [self deleteQredo];
+                                }]];
+    [alertController addAction:[UIAlertAction
+                                actionWithTitle:NSLocalizedString(@"Cancel", @"")
+                                style:UIAlertActionStyleCancel
+                                handler:^(UIAlertAction *action) {
+                                }]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)doneButtonPressed {
