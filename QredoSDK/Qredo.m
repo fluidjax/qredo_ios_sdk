@@ -209,7 +209,9 @@ static NSString *const QredoKeychainPassword = @"Password123";
     if (!self) return nil;
 
     _serviceURL = serviceURL;
-    _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL];
+    if (_serviceURL) {
+        _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL];
+    }
 
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
 
