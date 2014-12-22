@@ -9,6 +9,10 @@
 @end
 
 @interface QredoManagerAppRootViewController : UIViewController
+
 - (void)show;
 - (void)close;
+
+- (void)presentDefaultViewController;
+
 @end

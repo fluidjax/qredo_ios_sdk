@@ -3,8 +3,13 @@
  */
 
 #import "QredoManagerAppRootViewController.h"
+#import "QredoMainViewController.h"
 #import "QredoWelcomeViewController.h"
 #import "UIColor+Qredo.h"
+#import "Qredo.h"
+#import "QredoPrivate.h"
+
+
 
 @implementation UIViewController(Qredo)
 - (void)qredo_presentNavigationViewControllerWithViewController:(UIViewController *)viewControllerToPresent animated:(BOOL)flag completion:(void (^)(void))completion {
@@ -53,12 +58,50 @@
 }
 
 - (void)show {
+    
     [[UIApplication sharedApplication].keyWindow.rootViewController
      presentViewController:self animated:YES completion:^{
-         QredoWelcomeViewController *welcomeViewController = [[QredoWelcomeViewController alloc] init];
-         [self qredo_presentNavigationViewControllerWithViewController:welcomeViewController animated:YES completion:nil];
+         
+         [self presentDefaultViewController];
+         
      }];
 
+}
+
+- (void)presentDefaultViewController {
+    
+    NSError *error = nil;
+    
+    if ([QredoClient hasDefaultVaultKeychainWithError:&error]) {
+        
+        QredoMainViewController *mainViewController = [[QredoMainViewController alloc] init];
+        [self qredo_presentNavigationViewControllerWithViewController:mainViewController animated:YES completion:nil];
+        
+    } else if (!error) {
+        
+        QredoWelcomeViewController *welcomeViewController = [[QredoWelcomeViewController alloc] init];
+        [self qredo_presentNavigationViewControllerWithViewController:welcomeViewController animated:YES completion:nil];
+        
+    } else {
+        
+        UIAlertController *alertController
+        = [UIAlertController
+           alertControllerWithTitle:NSLocalizedString(@"An error has occured", @"")
+           message:[error localizedDescription]
+           preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alertController
+         addAction:[UIAlertAction
+                    actionWithTitle:NSLocalizedString(@"OK", @"")
+                    style:UIAlertActionStyleDefault
+                    handler:^(UIAlertAction *action) {
+                        [self close];
+                    }]];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+        
+    }
+    
 }
 
 - (void)close {
