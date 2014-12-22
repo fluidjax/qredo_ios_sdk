@@ -207,11 +207,29 @@ static NSString *const kDestructiveActionCellIdentifier = @"kDestructiveActionCe
         NSError *error = nil;
         [QredoClient deleteDefaultVaultKeychainWithError:&error];
         if (!error) {
+            
             if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
                 [presentingViewController performSelector:@selector(presentDefaultViewController)];
             }
+            
         } else {
-            // TODO [GR]: Implement error handling
+            
+            UIAlertController *alertController
+            = [UIAlertController
+               alertControllerWithTitle:NSLocalizedString(@"Could not delete Qredo", @"")
+               message:[error localizedDescription]
+               preferredStyle:UIAlertControllerStyleAlert];
+            [alertController
+             addAction:[UIAlertAction
+                        actionWithTitle:NSLocalizedString(@"OK", @"")
+                        style:UIAlertActionStyleDefault
+                        handler:^(UIAlertAction *action) {
+                            if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
+                                [presentingViewController performSelector:@selector(presentDefaultViewController)];
+                            }
+                        }]];
+            [self presentViewController:alertController animated:YES completion:nil];
+            
         }
     }];
 }
