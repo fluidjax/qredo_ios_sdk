@@ -83,6 +83,8 @@ static NSString *const kDestructiveActionCellIdentifier = @"kDestructiveActionCe
     
     [super viewDidLoad];
     
+    self.title = NSLocalizedString(@"Settings", @"");
+    
     UIBarButtonItem *doneButton
     = [[UIBarButtonItem alloc]
        initWithTitle:NSLocalizedString(@"Done", @"") style:UIBarButtonItemStyleDone

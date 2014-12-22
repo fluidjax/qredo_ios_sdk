@@ -21,6 +21,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.title = NSLocalizedString(@"Qredo", @"");
+    
     self.view.backgroundColor = [UIColor qredoPrimaryBackgroundColor];
     self.view.tintColor = [UIColor qredoPrimaryTintColor];
     
