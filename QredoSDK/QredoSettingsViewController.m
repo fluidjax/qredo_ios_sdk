@@ -169,6 +169,16 @@ static NSString *const kDestructiveActionCellIdentifier = @"kDestructiveActionCe
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([cell.reuseIdentifier isEqualToString:kInfoCellIdentifier]) {
+        cell.textLabel.textColor = [UIColor blackColor];
+    } else if ([cell.reuseIdentifier isEqualToString:kDestructiveActionCellIdentifier]) {
+        cell.textLabel.textColor = [UIColor redColor];
+    }
+    
+}
+
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
     QredoSettingsSection *sect = self.sections[indexPath.section];
     QredoSettingsItem *item = sect.items[indexPath.row];
