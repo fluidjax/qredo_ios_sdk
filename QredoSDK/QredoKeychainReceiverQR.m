@@ -25,7 +25,7 @@
 
 - (void)showCreatingRendezvousActivity {
     QredoKeychainActivityViewController *createRenezvousActivityController = [[QredoKeychainActivityViewController alloc] init];
-    createRenezvousActivityController.activityTitle = NSLocalizedString(@"Creating rendezvous.", @"");
+    createRenezvousActivityController.activityTitle = NSLocalizedString(@"Preparing to receive keychain.", @"");
     createRenezvousActivityController.spinning = YES;
     [self displayChildViewController:createRenezvousActivityController];
 }
