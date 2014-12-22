@@ -7,5 +7,6 @@
 #import "QredoKeychainSendReceiveViewController.h"
 
 @interface QredoKeychainSenderQR : QredoKeychainSendReceiveViewController <QredoKeychainSenderDelegate>
-
+@property (nonatomic, copy) void(^completionHandler)(NSError *error);
+@property (nonatomic) QredoKeychainSender *keychainSender;
 @end

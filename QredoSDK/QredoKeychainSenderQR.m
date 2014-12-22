@@ -6,6 +6,7 @@
 #import "QredoKeychainQRCodeScannerViewController.h"
 #import "QredoKeychainFingerprintConfirmationViewController.h"
 #import "QredoKeychainActivityViewController.h"
+#import "Qredo.h"
 
 @interface QredoKeychainSenderQR ()
 @property (nonatomic, copy) BOOL(^discoverRendezvousCompletionHandler)(NSString *rendezvousTag);
@@ -74,6 +75,22 @@
     [self displayChildViewController:activityViewController];
 }
 
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [QredoClient authorizeWithConversationTypes:@[] vaultDataTypes:@[] completionHandler:^(QredoClient *client, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                self.keychainSender = [[QredoKeychainSender alloc] initWithClient:client delegate:self];
+                [self.keychainSender startWithCompletionHandler:self.completionHandler];
+            } else {
+                // TODO [GR]: Implement error handling
+            }
+        });
+    }];
+    
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
@@ -99,7 +116,6 @@
     self.discoverRendezvousCancelHandler = cancelHandler;
     self.discoverRendezvousCompletionHandler = completionHandler;
     
-    [self presentInRootViewControllerAnimated:YES completion:nil];
     __weak QredoKeychainSenderQR *weakSelf = self;
     
     dispatch_async(dispatch_get_main_queue(), ^{

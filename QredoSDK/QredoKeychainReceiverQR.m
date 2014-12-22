@@ -7,6 +7,7 @@
 #import "QredoKeychainActivityViewController.h"
 #import "QredoKeychainQRCodeDisplayViewController.h"
 #import "QredoKeychainFingerprintConfirmationViewController.h"
+#import "Qredo.h"
 
 
 
@@ -94,6 +95,20 @@
     [self displayChildViewController:activityViewController];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [QredoClient authorizeWithConversationTypes:@[] vaultDataTypes:@[] completionHandler:^(QredoClient *client, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                self.keychianReceiver = [[QredoKeychainReceiver alloc] initWithClient:client delegate:self];
+                [self.keychianReceiver startWithCompletionHandler:self.completionHandler];
+            } else {
+                // TODO [GR]: Implement error handling
+            }
+        });
+    }];
+    
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -113,7 +128,6 @@
 - (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver willCreateRendezvousWithCancelHandler:(void(^)())cancelHandler {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.willCreateRendezvousCancelHandler = cancelHandler;
-        [self presentInRootViewControllerAnimated:YES completion:nil];
         [self showCreatingRendezvousActivity];
     });
 }
