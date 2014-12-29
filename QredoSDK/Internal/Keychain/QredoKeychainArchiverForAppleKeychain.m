@@ -38,8 +38,8 @@ static NSString *kCurrentService = @"CurrentService";
     
     // Check if a keychin with the provided id exists and delete it if necessary
     
-    OSStatus qureySanityCheck = [self hasQredoKeychaiWithIdentifier:identifier];
-    if (qureySanityCheck == noErr) {
+    OSStatus querySanityCheck = [self hasQredoKeychainWithIdentifier:identifier];
+    if (querySanityCheck == noErr) {
         
         OSStatus deleteSanityCheck = [self deleteQredoKeychainWithIdentifier:identifier error:error];
         if (deleteSanityCheck != noErr) {
@@ -52,12 +52,12 @@ static NSString *kCurrentService = @"CurrentService";
             return NO;
         }
         
-    } else if (qureySanityCheck != errSecItemNotFound) {
+    } else if (querySanityCheck != errSecItemNotFound) {
         if (error) {
             *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
                       @{
                         kUnderlyingErrorSource : @"SecItemCopyMatching",
-                        kUnderlyingErrorCode : @(qureySanityCheck),
+                        kUnderlyingErrorCode : @(querySanityCheck),
                         }
                       ];
         }
@@ -158,23 +158,23 @@ static NSString *kCurrentService = @"CurrentService";
     
 }
 
-- (BOOL)hasQredoKeychaiWithIdentifier:(NSString *)identifier error:(NSError **)error {
+- (BOOL)hasQredoKeychainWithIdentifier:(NSString *)identifier error:(NSError **)error {
     
-    OSStatus qureySanityCheck = [self hasQredoKeychaiWithIdentifier:identifier];
-    if (qureySanityCheck == noErr) {
+    OSStatus querySanityCheck = [self hasQredoKeychainWithIdentifier:identifier];
+    if (querySanityCheck == noErr) {
         
         return YES;
     }
     
-    if (qureySanityCheck == errSecItemNotFound) {
+    if (querySanityCheck == errSecItemNotFound) {
         return NO;
     }
     
     if (error) {
         *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:
                   @{
-                    kUnderlyingErrorSource : @"hasQredoKeychaiWithIdentifier:",
-                    kUnderlyingErrorCode : @(qureySanityCheck),
+                    kUnderlyingErrorSource : @"hasQredoKeychainWithIdentifier:",
+                    kUnderlyingErrorCode : @(querySanityCheck),
                     }
                   ];
     }
@@ -183,7 +183,7 @@ static NSString *kCurrentService = @"CurrentService";
     
 }
 
-- (OSStatus)hasQredoKeychaiWithIdentifier:(NSString *)identifier {
+- (OSStatus)hasQredoKeychainWithIdentifier:(NSString *)identifier {
     
     NSMutableDictionary *queryDictionary = [[NSMutableDictionary alloc] init];
     [queryDictionary setObject: (__bridge id)kSecClassGenericPassword forKey: (__bridge id<NSCopying>)kSecClass];

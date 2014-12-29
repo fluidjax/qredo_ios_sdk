@@ -163,7 +163,7 @@ class KeychainArchiverTests: XCTestCase {
         XCTAssertNil(error, "")
         
         error = nil;
-        let resultKeychain = self.keychainArchiver.hasQredoKeychaiWithIdentifier(keychainId, error: &error)
+        let resultKeychain = self.keychainArchiver.hasQredoKeychainWithIdentifier(keychainId, error: &error)
         XCTAssertTrue(resultKeychain, "")
         XCTAssertNil(error, "")
         
@@ -171,7 +171,7 @@ class KeychainArchiverTests: XCTestCase {
         self.keychainArchiver.saveQredoKeychain(nil, withIdentifier: keychainId, error: &error)
         
         error = nil;
-        let resultKeychain2 = self.keychainArchiver.hasQredoKeychaiWithIdentifier(keychainId, error: &error)
+        let resultKeychain2 = self.keychainArchiver.hasQredoKeychainWithIdentifier(keychainId, error: &error)
         XCTAssertFalse(resultKeychain2, "")
         XCTAssertNil(error, "")
         

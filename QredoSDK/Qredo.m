@@ -493,7 +493,7 @@ NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
 }
 
 - (BOOL)hasSystemVaultKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver error:(NSError **)error {
-    return [keychainArchiver hasQredoKeychaiWithIdentifier:systemVaultKeychainArchiveIdentifier error:error];
+    return [keychainArchiver hasQredoKeychainWithIdentifier:systemVaultKeychainArchiveIdentifier error:error];
 }
 
 - (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error {
