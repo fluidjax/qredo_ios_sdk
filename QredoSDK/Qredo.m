@@ -519,12 +519,12 @@ NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
 
 
 + (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error {
-    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:nil]];
+    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:nil];
     return [newClient deleteDefaultVaultKeychainWithError:error];
 }
 
 + (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error {
-    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:[NSURL URLWithString:nil]];
+    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:nil];
     return [newClient hasDefaultVaultKeychainWithError:error];
 }
 
