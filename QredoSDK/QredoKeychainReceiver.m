@@ -139,7 +139,7 @@
 {
     [self stopCommunication];
     [self.delegate qredoKeychainReceiver:self didFailWithError:error];
-    clientCompletionHandler(error);
+    if (clientCompletionHandler) clientCompletionHandler(error);
     // now this object can die
 }
 
@@ -150,7 +150,7 @@
             NSError *error = nil;
             if ([self installkeychainWithError:&error]) {
                 [self.delegate qredoKeychainReceiverDidInstallKeychain:self];
-                clientCompletionHandler(nil);
+                if (clientCompletionHandler) clientCompletionHandler(nil);
                 [self didConfirmInstallingKeychain];
             } else {
                 [self handleError:error];

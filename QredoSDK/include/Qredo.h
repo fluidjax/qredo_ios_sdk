@@ -49,6 +49,8 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(QredoClientOptions*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
++ (void)openSettings;
+
 - (void)closeSession;
 - (BOOL)isClosed;
 

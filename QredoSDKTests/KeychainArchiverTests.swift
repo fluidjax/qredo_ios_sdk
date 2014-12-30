@@ -149,6 +149,34 @@ class KeychainArchiverTests: XCTestCase {
         
     }
     
+    func commonHasKeychain() {
+        
+        let keychainData = KeychainData()
+        let keychainId = "myKeychain5"
+        
+        var error: NSError?
+        let keychain = self.createkeyChainWithKeychainData(keychainData)
+        
+        error = nil;
+        let saveRes = self.keychainArchiver.saveQredoKeychain(keychain, withIdentifier: keychainId, error: &error)
+        XCTAssert(saveRes, "")
+        XCTAssertNil(error, "")
+        
+        error = nil;
+        let resultKeychain = self.keychainArchiver.hasQredoKeychainWithIdentifier(keychainId, error: &error)
+        XCTAssertTrue(resultKeychain, "")
+        XCTAssertNil(error, "")
+        
+        error = nil;
+        self.keychainArchiver.saveQredoKeychain(nil, withIdentifier: keychainId, error: &error)
+        
+        error = nil;
+        let resultKeychain2 = self.keychainArchiver.hasQredoKeychainWithIdentifier(keychainId, error: &error)
+        XCTAssertFalse(resultKeychain2, "")
+        XCTAssertNil(error, "")
+        
+    }
+    
     func commonLoadError() {
         
         let keychainData = KeychainData()
@@ -244,6 +272,10 @@ class KeychainArchiverForApplekeychainTests: KeychainArchiverTests {
     
     func testDelete() {
         self.commonDelete()
+    }
+    
+    func testHasKeychain() {
+        self.commonHasKeychain()
     }
     
     func testLooadError() {

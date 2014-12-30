@@ -3,6 +3,7 @@
  */
 
 #import "QredoKeychainFingerprintConfirmationViewController.h"
+#import "UIButton+Qredo.h"
 
 @interface QredoKeychainFingerprintConfirmationViewController ()
 
@@ -38,10 +39,9 @@
 
     self.view.backgroundColor = [UIColor whiteColor];
     
-    UIButton *confirmationButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *confirmationButton = [UIButton qredoButton];
     [confirmationButton addTarget:self action:@selector(confirmationButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [confirmationButton setTitle:self.confirmButtonTitle forState:UIControlStateNormal];
-    confirmationButton.backgroundColor = [UIColor blueColor];
     confirmationButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:confirmationButton];
 
@@ -50,11 +50,11 @@
     NSDictionary *views = NSDictionaryOfVariableBindings(confirmationButton, bottomLayoutGuide);
 
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"H:|[confirmationButton]|"
+                               constraintsWithVisualFormat:@"H:|-[confirmationButton]-|"
                                options:0 metrics:nil views:views]];
     
     [self.view addConstraints:[NSLayoutConstraint
-                               constraintsWithVisualFormat:@"V:[confirmationButton(==40)][bottomLayoutGuide]"
+                               constraintsWithVisualFormat:@"V:[confirmationButton(==44)]-[bottomLayoutGuide]"
                                options:0 metrics:nil views:views]];
     
 }
