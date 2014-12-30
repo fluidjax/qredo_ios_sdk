@@ -18,6 +18,14 @@ typedef NS_ENUM(NSUInteger, QredoKeychainSendReceiveViewControllerAnimationType)
 
 @implementation QredoKeychainSendReceiveViewController
 
+- (instancetype)initWithDismissHandler:(void(^)(void))dismissHandler
+{
+    self = [self init];
+    if (self) {
+        self.dismissHandler = dismissHandler;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -162,7 +170,9 @@ typedef NS_ENUM(NSUInteger, QredoKeychainSendReceiveViewControllerAnimationType)
 }
 
 - (void)cancelOrDoneButtonPressed:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (self.dismissHandler) self.dismissHandler();
+    }];
 }
 
 @end

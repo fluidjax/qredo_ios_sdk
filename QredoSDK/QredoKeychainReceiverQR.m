@@ -7,6 +7,8 @@
 #import "QredoKeychainActivityViewController.h"
 #import "QredoKeychainQRCodeDisplayViewController.h"
 #import "QredoKeychainFingerprintConfirmationViewController.h"
+#import "QredoManagerAppRootViewController.h"
+#import "Qredo.h"
 
 
 
@@ -23,7 +25,7 @@
 
 - (void)showCreatingRendezvousActivity {
     QredoKeychainActivityViewController *createRenezvousActivityController = [[QredoKeychainActivityViewController alloc] init];
-    createRenezvousActivityController.activityTitle = NSLocalizedString(@"Creating rendezvous.", @"");
+    createRenezvousActivityController.activityTitle = NSLocalizedString(@"Preparing to receive keychain.", @"");
     createRenezvousActivityController.spinning = YES;
     [self displayChildViewController:createRenezvousActivityController];
 }
@@ -94,6 +96,42 @@
     [self displayChildViewController:activityViewController];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [QredoClient authorizeWithConversationTypes:@[] vaultDataTypes:@[] completionHandler:^(QredoClient *client, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                
+                self.keychianReceiver = [[QredoKeychainReceiver alloc] initWithClient:client delegate:self];
+                [self.keychianReceiver startWithCompletionHandler:self.completionHandler];
+                
+            } else {
+                
+                if (self.completionHandler) self.completionHandler(error);
+                
+                UIViewController *presentingViewController = self.presentingViewController;
+                
+                UIAlertController *alertController
+                = [UIAlertController
+                   alertControllerWithTitle:NSLocalizedString(@"Could not transfer keychain", @"")
+                   message:[error localizedDescription]
+                   preferredStyle:UIAlertControllerStyleAlert];
+                [alertController
+                 addAction:[UIAlertAction
+                            actionWithTitle:NSLocalizedString(@"OK", @"")
+                            style:UIAlertActionStyleDefault
+                            handler:^(UIAlertAction *action) {
+                                if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
+                                    [presentingViewController performSelector:@selector(presentDefaultViewController)];
+                                }
+                            }]];
+                [self presentViewController:alertController animated:YES completion:nil];
+                
+            }
+        });
+    }];
+    
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -113,7 +151,6 @@
 - (void)qredoKeychainReceiver:(QredoKeychainReceiver *)receiver willCreateRendezvousWithCancelHandler:(void(^)())cancelHandler {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.willCreateRendezvousCancelHandler = cancelHandler;
-        [self presentInRootViewControllerAnimated:YES completion:nil];
         [self showCreatingRendezvousActivity];
     });
 }

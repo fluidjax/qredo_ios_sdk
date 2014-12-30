@@ -6,6 +6,8 @@
 #import "QredoKeychainQRCodeScannerViewController.h"
 #import "QredoKeychainFingerprintConfirmationViewController.h"
 #import "QredoKeychainActivityViewController.h"
+#import "QredoManagerAppRootViewController.h"
+#import "Qredo.h"
 
 @interface QredoKeychainSenderQR ()
 @property (nonatomic, copy) BOOL(^discoverRendezvousCompletionHandler)(NSString *rendezvousTag);
@@ -74,6 +76,44 @@
     [self displayChildViewController:activityViewController];
 }
 
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [QredoClient authorizeWithConversationTypes:@[] vaultDataTypes:@[] completionHandler:^(QredoClient *client, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!error) {
+                
+                self.keychainSender = [[QredoKeychainSender alloc] initWithClient:client delegate:self];
+                [self.keychainSender startWithCompletionHandler:self.completionHandler];
+                
+            } else {
+                
+                if (self.completionHandler) self.completionHandler(error);
+                
+                UIViewController *presentingViewController = self.presentingViewController;
+            
+                UIAlertController *alertController
+                = [UIAlertController
+                   alertControllerWithTitle:NSLocalizedString(@"Could not add device", @"")
+                   message:[error localizedDescription]
+                   preferredStyle:UIAlertControllerStyleAlert];
+                [alertController
+                 addAction:[UIAlertAction
+                            actionWithTitle:NSLocalizedString(@"OK", @"")
+                            style:UIAlertActionStyleDefault
+                            handler:^(UIAlertAction *action) {
+                                if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
+                                    [presentingViewController performSelector:@selector(presentDefaultViewController)];
+                                }
+                            }]];
+                 [self presentViewController:alertController animated:YES completion:nil];
+
+            }
+        });
+    }];
+    
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
@@ -99,7 +139,6 @@
     self.discoverRendezvousCancelHandler = cancelHandler;
     self.discoverRendezvousCompletionHandler = completionHandler;
     
-    [self presentInRootViewControllerAnimated:YES completion:nil];
     __weak QredoKeychainSenderQR *weakSelf = self;
     
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -16,12 +16,6 @@ static NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
 
 @interface QredoClient ()
 
-
-// TODO: Find a better way of keaping in memory the keychainReceiver and keychainSender,
-// while sending and receiving the keychain.
-@property (nonatomic) QredoKeychainReceiver *keychainReceiver;
-@property (nonatomic) QredoKeychainSender *keychainSender;
-
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
 
@@ -29,15 +23,13 @@ static NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
 - (BOOL)saveStateWithError:(NSError **)error;
 
 - (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error;
+- (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error;
+- (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error;
+
++ (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error;
++ (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error;
 
 @end
 
-@interface QredoClient (KeychainTransporter)
-
-- (void)sendKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
-- (void)receiveKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
-- (void)deleteKeychainWithCompletionHandler:(void(^)(NSError *error))completionHandler;
-
-@end
 
 #endif
