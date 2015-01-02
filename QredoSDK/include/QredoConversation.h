@@ -75,10 +75,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 - (void)startListening;
 - (void)stopListening;
 
-/**
- Not implemented at the moment
- */
-- (void)deleteConversation;
+- (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 
 /**
  @param block is called for every received message. If the block sets `stop` to `NO`, then it terminates the enumeration
