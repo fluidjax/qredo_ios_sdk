@@ -133,7 +133,7 @@ class KeychainTransporterSenderTests: XCTestCase {
         var transporterConversation : QredoConversation? = nil
 
         let rendezvousDelegate = RendezvousBlockDelegate()
-        rendezvousDelegate.responseBlock = { conversation in
+        rendezvousDelegate.responseHandler = { conversation in
             transporterConversation = conversation
 
             transporterConversation?.publishMessage(QredoConversationMessage(value: nil, dataType: QredoKeychainTransporterMessageKeyDeviceName, summaryValues: [:]), completionHandler: { watermark, error in
