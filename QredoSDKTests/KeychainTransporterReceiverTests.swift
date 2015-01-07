@@ -5,13 +5,6 @@
 import UIKit
 import XCTest
 
-class ConversationBlockDelegate : NSObject, QredoConversationDelegate {
-    var messageHandler: ((QredoConversationMessage) -> Void)? = nil
-    func qredoConversation(conversation: QredoConversation!, didReceiveNewMessage message: QredoConversationMessage!) {
-        messageHandler?(message)
-    }
-}
-
 class KeychainTransporterReceiverTests: XCTestCase {
     var senderClient : QredoClient!
     var receiverClient : QredoClient!

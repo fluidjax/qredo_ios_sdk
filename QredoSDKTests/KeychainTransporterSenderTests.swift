@@ -5,15 +5,6 @@
 import UIKit
 import XCTest
 
-class RendezvousBlockDelegate : NSObject, QredoRendezvousDelegate {
-    var responseHandler : ((QredoConversation) -> Void)? = nil
-
-    func qredoRendezvous(rendezvous: QredoRendezvous!, didReceiveReponse conversation: QredoConversation!) {
-        responseHandler?(conversation)
-    }
-}
-
-
 class KeychainTransporterSenderTests: XCTestCase {
     var senderClient : QredoClient!
     var receiverClient : QredoClient!
@@ -116,7 +107,6 @@ class KeychainTransporterSenderTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 
-
         let senderMock = KeychainSenderMock()
         let sender = QredoKeychainSender(client: senderClient, delegate: senderMock)
 
@@ -143,7 +133,7 @@ class KeychainTransporterSenderTests: XCTestCase {
         var transporterConversation : QredoConversation? = nil
 
         let rendezvousDelegate = RendezvousBlockDelegate()
-        rendezvousDelegate.responseHandler = { conversation in
+        rendezvousDelegate.responseBlock = { conversation in
             transporterConversation = conversation
 
             transporterConversation?.publishMessage(QredoConversationMessage(value: nil, dataType: QredoKeychainTransporterMessageKeyDeviceName, summaryValues: [:]), completionHandler: { watermark, error in
