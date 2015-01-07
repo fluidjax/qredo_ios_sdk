@@ -358,37 +358,28 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
             QredoRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
 
-
-            // Generate the authentication code.
-            QredoAuthenticationCode *authenticationCode =
-            [_rendezvousCrypto authenticationCodeWithHashedTag:creationInfo.hashedTag
-                                            authenticationType:creationInfo.authenticationType
-                                    conversationType:creationInfo.conversationType
-                                     durationSeconds:creationInfo.durationSeconds
-                                    maxResponseCount:creationInfo.maxResponseCount
-                                            transCap:creationInfo.transCap
-                                  requesterPublicKey:creationInfo.requesterPublicKey
-                              accessControlPublicKey:creationInfo.accessControlPublicKey
-                                   authenticationKey:authKey];
-
-            if (![authenticationCode isEqualToData:creationInfo.authenticationCode])
-            {
+            
+            if ([_rendezvousCrypto validateCreationInfo:creationInfo tag:rendezvousTag]) {
+                
+                QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:creationInfo.requesterPublicKey];
+                
+                QredoDhPrivateKey *responderPrivateKey = [[QredoDhPrivateKey alloc] initWithData:responderKeyPair.privKey.bytes];
+                
+                _metadata.rendezvousTag = rendezvousTag;
+                _transCap = responseRegistered.creationInfo.transCap;
+                _metadata.type = responseRegistered.creationInfo.conversationType;
+                
+                [self generateAndStoreKeysWithPrivateKey:responderPrivateKey publicKey:requesterPublicKey rendezvousOwner:NO completionHandler:completionHandler];
+                
+            } else {
+                
                 completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                       code:QredoErrorCodeRendezvousWrongAuthenticationCode
                                                   userInfo:@{NSLocalizedDescriptionKey: @"Authentication codes don't match"}]);
                 return ;
-            } else
-            {
-                QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:creationInfo.requesterPublicKey];
-
-                QredoDhPrivateKey *responderPrivateKey = [[QredoDhPrivateKey alloc] initWithData:responderKeyPair.privKey.bytes];
-
-                _metadata.rendezvousTag = rendezvousTag;
-                _transCap = responseRegistered.creationInfo.transCap;
-                _metadata.type = responseRegistered.creationInfo.conversationType;
-
-                [self generateAndStoreKeysWithPrivateKey:responderPrivateKey publicKey:requesterPublicKey rendezvousOwner:NO completionHandler:completionHandler];
+                
             }
+
         } else if ([result isKindOfClass:[QredoRendezvousResponseUnknownTag class]]) {
             completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                   code:QredoErrorCodeRendezvousUnknownResponse

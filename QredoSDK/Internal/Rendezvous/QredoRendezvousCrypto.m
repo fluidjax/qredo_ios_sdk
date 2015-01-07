@@ -8,6 +8,8 @@
 #import "QredoCrypto.h"
 #import "QredoRsaPublicKey.h"
 #import "QredoRsaPrivateKey.h"
+#import "QredoRendezvousHelpers.h"
+
 
 #define QREDO_RENDEZVOUS_AUTH_KEY [@"Authenticate" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_RENDEZVOUS_SALT [@"Rendezvous" dataUsingEncoding:NSUTF8StringEncoding]
@@ -37,16 +39,25 @@
     return self;
 }
 
-- (QredoAuthenticationCode *)authenticationCodeWithHashedTag:(QredoRendezvousHashedTag *)hashedTag
-                                          authenticationType:(QredoRendezvousAuthType *)authType
-                                            conversationType:(NSString *)conversationType
-                                             durationSeconds:(NSSet *)durationSeconds
-                                            maxResponseCount:(NSSet *)maxResponseCount
-                                                    transCap:(NSSet *)transCap
-                                          requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
-                                      accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
-                                           authenticationKey:(QredoAuthenticationCode *)authenticationKey
+- (QredoAuthenticationCode *)authenticationCodeWithRendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper
+                                                          hashedTag:(QredoRendezvousHashedTag *)hashedTag
+                                                   conversationType:(NSString *)conversationType
+                                                    durationSeconds:(NSSet *)durationSeconds
+                                                   maxResponseCount:(NSSet *)maxResponseCount
+                                                           transCap:(NSSet *)transCap
+                                                 requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
+                                             accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
+                                                  authenticationKey:(QredoAuthenticationCode *)authenticationKey
 {
+    
+    QredoRendezvousAuthType *authType = nil;
+    if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
+        authType = [QredoRendezvousAuthType rendezvousAnonymous];
+    } else {
+        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper emptySignature];
+        authType = [QredoRendezvousAuthType rendezvousTrustedWithSignature:authSignature];
+    }
+    
     QredoRendezvousCreationInfo *creationInfo =
             [QredoRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:hashedTag
                                                           authenticationType:authType
@@ -56,7 +67,7 @@
                                                                     transCap:transCap
                                                           requesterPublicKey:requesterPublicKey
                                                       accessControlPublicKey:accessControlPublicKey
-                                                          authenticationCode:[NSMutableData dataWithLength:(256 / 8)]];
+                                                          authenticationCode:[NSMutableData dataWithLength:32]];
 
     NSData *serializedCreationInfo =
             [QredoPrimitiveMarshallers marshalObject:creationInfo
@@ -152,5 +163,74 @@
 {
     return nil;
 }
+
+
+- (BOOL)validateCreationInfo:(QredoRendezvousCreationInfo *)creationInfo tag:(NSString *)tag
+{
+    QredoRendezvousAuthType *authType = creationInfo.authenticationType;
+    id<QredoRendezvousHelper> rendezvousHelper = [self rendezvousHelperForAuthType:authType tag:tag];
+    
+    NSData *authKey = [self authKey:tag];
+    
+    NSData *authCode
+    = [self
+       authenticationCodeWithRendezvousHelper:rendezvousHelper
+       hashedTag:creationInfo.hashedTag
+       conversationType:creationInfo.conversationType
+       durationSeconds:creationInfo.durationSeconds
+       maxResponseCount:creationInfo.maxResponseCount
+       transCap:creationInfo.transCap
+       requesterPublicKey:creationInfo.requesterPublicKey
+       accessControlPublicKey:creationInfo.accessControlPublicKey
+       authenticationKey:authKey];
+    
+    BOOL ok1 = [QredoCrypto equalsConstantTime:authCode right:creationInfo.authenticationCode];
+    
+    __block BOOL ok2 = NO;
+    [authType ifAnonymous:^{
+        ok2 = YES;
+    } ifTrustedWithSignature:^(QredoRendezvousAuthSignature *signature) {
+        if (rendezvousHelper == nil) {
+            ok2 = NO;
+        } else {
+            NSData *rendezvousData = creationInfo.authenticationCode;
+            ok2 = [rendezvousHelper isValidSignature:signature rendezvousData:rendezvousData];
+        }
+    }];
+    
+    return ok1 && ok2;
+}
+
+- (id<QredoRendezvousHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType tag:(NSString *)tag
+{
+    return [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:authenticationType tag:tag];
+}
+
+- (id<QredoRendezvousHelper>)rendezvousHelperForAuthType:(QredoRendezvousAuthType *)authType tag:(NSString *)tag
+{
+    __block id<QredoRendezvousHelper> rendezvousHelper = nil;
+    
+    [authType ifAnonymous:^{
+        rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous tag:tag];
+    } ifTrustedWithSignature:^(QredoRendezvousAuthSignature *signature) {
+        [signature ifX509_PEM:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem tag:tag];
+        } X509_PEM_SELFISGNED:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509PemSelfsigned tag:tag];
+        } ED25519:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519 tag:tag];
+        } RSA2048_PEM:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem tag:tag];
+        } RSA4096_PEM:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem tag:tag];
+        } other:^{
+            rendezvousHelper = nil;
+        }];
+    }];
+    
+    return rendezvousHelper;
+}
+
+
 
 @end

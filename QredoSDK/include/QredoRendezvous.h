@@ -5,11 +5,14 @@
 #ifndef QredoSDK_QredoRendezvous_h
 #define QredoSDK_QredoRendezvous_h
 
+#import "QredoTypes.h"
+
 typedef uint64_t QredoRendezvousHighWatermark;
 extern const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin;
 extern NSString *const kQredoRendezvousVaultItemType;
 
 extern NSString *const kQredoRendezvousVaultItemLabelTag;
+
 
 @class QredoRendezvous;
 
@@ -27,6 +30,8 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 @interface QredoRendezvousConfiguration : NSObject
 /** Reverse domain name service notation. For example, `com.qredo.qatchat` */
 @property NSString *conversationType;
+
+@property (readonly) QredoRendezvousAuthenticationType authenticationType;
 
 /** if `nil`, then conversation doesn't have a time limit */
 @property (readonly) NSNumber *durationSeconds;

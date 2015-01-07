@@ -20,6 +20,7 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
 #import "QredoLogging.h"
+#import "QredoRendezvousHelpers.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
@@ -153,10 +154,12 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO review when TransCap is defined
 
-    _tag = tag;
+    
+    id<QredoRendezvousHelper> rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:self.configuration.authenticationType tag:tag];
+    _tag = [rendezvousHelper tag];
 
     // Hash the tag.
-    QredoAuthenticationCode *authKey = [_crypto authKey:tag];
+    QredoAuthenticationCode *authKey = [_crypto authKey:_tag];
     _hashedTag  = [_crypto hashedTagWithAuthKey:authKey];
 
     LogDebug(@"Hashed tag: %@", _hashedTag);
@@ -169,23 +172,32 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
     NSData *accessControlPublicKeyBytes  = [[accessControlKeyPair pubKey] bytes];
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];
-
+    
+    
     // Generate the authentication code.
-    QredoAuthenticationCode *authenticationCode =
-    [_crypto authenticationCodeWithHashedTag:_hashedTag
-                          authenticationType:[QredoRendezvousAuthType rendezvousAnonymous] // TODO:
-                            conversationType:configuration.conversationType
-                             durationSeconds:maybeDurationSeconds
-                            maxResponseCount:maybeMaxResponseCount
-                                    transCap:maybeTransCap
-                          requesterPublicKey:requesterPublicKeyBytes
-                      accessControlPublicKey:accessControlPublicKeyBytes
-                           authenticationKey:authKey];
+    QredoAuthenticationCode *authenticationCode
+    = [_crypto authenticationCodeWithRendezvousHelper:rendezvousHelper
+                                            hashedTag:_hashedTag
+                                     conversationType:configuration.conversationType
+                                      durationSeconds:maybeDurationSeconds
+                                     maxResponseCount:maybeMaxResponseCount
+                                             transCap:maybeTransCap
+                                   requesterPublicKey:requesterPublicKeyBytes
+                               accessControlPublicKey:accessControlPublicKeyBytes
+                                    authenticationKey:authKey];
 
+    QredoRendezvousAuthType *authType = nil;
+    if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
+        authType= [QredoRendezvousAuthType rendezvousAnonymous];
+    } else {
+        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode];
+        authType = [QredoRendezvousAuthType rendezvousTrustedWithSignature:authSignature];
+    }
+    
     // Create the Rendezvous.
     QredoRendezvousCreationInfo *_creationInfo =
     [QredoRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:_hashedTag
-     authenticationType:[QredoRendezvousAuthType rendezvousAnonymous] // TODO:
+                                                  authenticationType:authType
                                                     conversationType:configuration.conversationType
                                                      durationSeconds:maybeDurationSeconds
                                                     maxResponseCount:maybeMaxResponseCount
@@ -194,7 +206,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                               accessControlPublicKey:accessControlPublicKeyBytes
                                                   authenticationCode:authenticationCode];
     _descriptor =
-    [QredoRendezvousDescriptor rendezvousDescriptorWithTag:tag
+    [QredoRendezvousDescriptor rendezvousDescriptorWithTag:_tag
                                                  hashedTag:_hashedTag
                                           conversationType:configuration.conversationType
                                            durationSeconds:maybeDurationSeconds
