@@ -712,14 +712,13 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                        BOOL stop = conversationItem == result.items.lastObject;
                                        QredoConversationMessage *message = [[QredoConversationMessage alloc] initWithMessageLF:decryptedMessage incoming:incoming];
 
-                                       if ([message isControlMessage]) {
-                                           if ([message controlMessageType] == QredoConversationControlMessageTypeLeft) break;
-
-                                           continue;
-                                       }
 
                                        message.highWatermark = [[QredoConversationHighWatermark alloc] initWithSequenceValue:conversationItem.sequenceValue];
                                        block(message, &stop);
+
+                                       if ([message isControlMessage]) {
+                                           if ([message controlMessageType] == QredoConversationControlMessageTypeLeft) break;
+                                       }
 
                                        if (stop) {
                                            break;
