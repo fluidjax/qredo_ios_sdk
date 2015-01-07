@@ -30,14 +30,7 @@ NSString *const kQredoConversationVaultItemLabelHwm = @"hwm";
 NSString *const kQredoConversationVaultItemLabelType = @"type";
 
 
-static NSString *const kQredoConversationControlMessageType = @"Ctrl";
-
-typedef enum {
-    QredoConversationControlMessageTypeUnknown = -1,
-    QredoConversationControlMessageTypeJoined  = 0,
-    QredoConversationControlMessageTypeLeft
-} QredoConversationControlMessageType;
-
+static NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
 
 static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
@@ -117,9 +110,6 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 - (instancetype)initWithMessageLF:(QredoConversationMessageLF*)messageLF incoming:(BOOL)incoming;
 - (QredoConversationMessageLF*)messageLF;
 
-- (BOOL)isControlMessage;
-- (QredoConversationControlMessageType)controlMessageType;
-
 @end
 
 @implementation QredoConversationMessage
@@ -162,7 +152,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 - (BOOL)isControlMessage
 {
-    return [self.dataType isEqualToString:kQredoConversationControlMessageType];
+    return [self.dataType isEqualToString:kQredoConversationMessageTypeControl];
 }
 
 - (QredoConversationControlMessageType)controlMessageType
@@ -299,7 +289,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                                       includeHeader:NO];
 
         QredoConversationMessage *joinedControlMessage = [[QredoConversationMessage alloc] initWithValue:qrvValue
-                                                                                                dataType:kQredoConversationControlMessageType
+                                                                                                dataType:kQredoConversationMessageTypeControl
                                                                                            summaryValues:nil];
 
         [self publishMessage:joinedControlMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
@@ -624,7 +614,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                                   includeHeader:NO];
 
     QredoConversationMessage *leftControlMessage = [[QredoConversationMessage alloc] initWithValue:qrtValue
-                                                                                            dataType:kQredoConversationControlMessageType
+                                                                                            dataType:kQredoConversationMessageTypeControl
                                                                                        summaryValues:nil];
 
     [self publishMessage:leftControlMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {

@@ -9,6 +9,12 @@
 
 @class QredoVault;
 
+typedef NS_ENUM(NSInteger, QredoConversationControlMessageType) {
+    QredoConversationControlMessageTypeUnknown = -1,
+    QredoConversationControlMessageTypeJoined  = 0,
+    QredoConversationControlMessageTypeLeft
+} ;
+
 
 extern NSString *const kQredoConversationVaultItemType;
 
@@ -35,6 +41,9 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 @property (readonly) NSData *value;
 
 - (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues;
+
+- (BOOL)isControlMessage;
+- (QredoConversationControlMessageType)controlMessageType;
 
 @end
 
