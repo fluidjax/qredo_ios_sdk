@@ -81,6 +81,7 @@
 		0AD99E841A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E821A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m */; };
 		0AD9A1991A2773C800E300BC /* QredoErrorCodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD9A1981A2773C800E300BC /* QredoErrorCodes.h */; };
 		0AD9A19B1A2773CE00E300BC /* QredoErrorCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9A19A1A2773CE00E300BC /* QredoErrorCodes.m */; };
+		0AEE5C5E1A5C13B10018BE19 /* ControlMessagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */; };
 		0AEE5C601A5C3B110018BE19 /* RendezvousBlockDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */; };
 		22683D78E7D4E008255CBD4B /* libPods-CryptoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7422C5016D6775275AF5625F /* libPods-CryptoTests.a */; };
 		7810CC5A1A388BCE00421892 /* KeychainTransporterSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */; };
@@ -250,6 +251,7 @@
 		0AD9A1981A2773C800E300BC /* QredoErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoErrorCodes.h; sourceTree = "<group>"; };
 		0AD9A19A1A2773CE00E300BC /* QredoErrorCodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoErrorCodes.m; sourceTree = "<group>"; };
 		0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTransporterReceiverTests.swift; sourceTree = "<group>"; };
+		0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlMessagesTests.swift; sourceTree = "<group>"; };
 		0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendezvousBlockDelegate.swift; sourceTree = "<group>"; };
 		0E66DFDF10CC2ADED009F760 /* Pods-QredoSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.release.xcconfig"; sourceTree = "<group>"; };
 		3B7AE6692B1DA0D298F3A8A2 /* libPods-QredoSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -433,6 +435,7 @@
 				0A65740C1A2F3B7200D5502E /* RendezvousListenerTests.m */,
 				0A10352D1A38AEF7002479D9 /* KeychainTests.swift */,
 				786A473C1A40D9E60086A69B /* KeychainArchiverTests.swift */,
+				0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */,
 				0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */,
 				0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */,
 			);
@@ -1011,6 +1014,7 @@
 				0AEE5C601A5C3B110018BE19 /* RendezvousBlockDelegate.swift in Sources */,
 				0A6574101A2F3B7200D5502E /* HighwatermarksTests.m in Sources */,
 				0A65740E1A2F3B7200D5502E /* ConversationTests.m in Sources */,
+				0AEE5C5E1A5C13B10018BE19 /* ControlMessagesTests.swift in Sources */,
 				0A65741A1A2F3B7200D5502E /* QredoVaultTests.m in Sources */,
 				0ABF4D971A5D84F20096BF19 /* ConversationBlockDelegate.swift in Sources */,
 				7810CC5C1A388BCE00421892 /* KeychainTransporterTests.swift in Sources */,
