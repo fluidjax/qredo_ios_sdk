@@ -155,7 +155,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO review when TransCap is defined
 
     
-    id<QredoRendezvousHelper> rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:self.configuration.authenticationType tag:tag];
+    id<QredoRendezvousHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType tag:tag];
     _tag = [rendezvousHelper tag];
 
     // Hash the tag.
