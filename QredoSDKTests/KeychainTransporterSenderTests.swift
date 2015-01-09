@@ -12,11 +12,14 @@ class KeychainTransporterSenderTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        let senderClientExpectation = expectationWithDescription("sender client")
+        let receiverClientExpectation = expectationWithDescription("receiver client")
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions(resetData: true)) { client, error in
             XCTAssertNil(error, "Failed to authenticate the test")
             XCTAssertNotNil(client, "Client should not be nil")
 
             self.senderClient = client
+            senderClientExpectation.fulfill()
         }
 
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions(resetData: true)) { client, error in
@@ -24,7 +27,11 @@ class KeychainTransporterSenderTests: XCTestCase {
             XCTAssertNotNil(client, "Client should not be nil")
 
             self.receiverClient = client
+            receiverClientExpectation.fulfill()
         }
+
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+
     }
     
 
@@ -55,7 +62,7 @@ class KeychainTransporterSenderTests: XCTestCase {
         var senderCompletionExpectation : XCTestExpectation? = self.expectationWithDescription("sender completion")
 
         senderMock.shouldPassConfirmation = false
-        senderMock.shouldDiscoverTag = QredoQUID().QUIDString()
+        senderMock.shouldDiscoverTag = QredoRendezvousURIProtocol.stringByAppendingString(QredoQUID().QUIDString())
         senderMock.shouldCancelAt = .VerifiedRendezvous
 
         var completionHandlerCalls = 0
@@ -82,7 +89,7 @@ class KeychainTransporterSenderTests: XCTestCase {
         let senderCompletionExpectation = self.expectationWithDescription("sender completion")
 
         senderMock.shouldPassConfirmation = false
-        senderMock.shouldDiscoverTag = QredoQUID().QUIDString()
+        senderMock.shouldDiscoverTag = QredoRendezvousURIProtocol.stringByAppendingString(QredoQUID().QUIDString())
 
         sender.startWithCompletionHandler { error in
             XCTAssertNotNil(error, "Should not find rendezvous with the tag")
@@ -96,7 +103,7 @@ class KeychainTransporterSenderTests: XCTestCase {
     }
 
     func testKeychainSenderWrongConversationType() {
-        let rendezvousTag = QredoQUID().QUIDString()
+        let rendezvousTag = QredoRendezvousURIProtocol.stringByAppendingString(QredoQUID().QUIDString())
 
         let rendezvousExpectation = self.expectationWithDescription("new rendezvous")
         receiverClient.createRendezvousWithTag(rendezvousTag, configuration: QredoRendezvousConfiguration(conversationType: "invalid type", durationSeconds: 60, maxResponseCount: 1)) { rendezvous, error in
@@ -130,6 +137,7 @@ class KeychainTransporterSenderTests: XCTestCase {
 
     func testKeychainSenderWrongDeviceInfo() {
         let rendezvousTag = QredoQUID().QUIDString()
+        let rendezvousTagWithURI = QredoRendezvousURIProtocol.stringByAppendingString(rendezvousTag)
         var transporterConversation : QredoConversation? = nil
 
         let rendezvousDelegate = RendezvousBlockDelegate()
@@ -159,7 +167,7 @@ class KeychainTransporterSenderTests: XCTestCase {
         let senderCompletionExpectation = self.expectationWithDescription("sender completion")
 
         senderMock.shouldPassConfirmation = false
-        senderMock.shouldDiscoverTag = rendezvousTag
+        senderMock.shouldDiscoverTag = rendezvousTagWithURI
         senderMock.shouldCancelAt = .EstablishedConnection // Should not get there
 
         sender.startWithCompletionHandler { error in

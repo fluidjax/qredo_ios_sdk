@@ -13,11 +13,14 @@ class KeychainTransporterTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        let senderClientExpectation = expectationWithDescription("sender client")
+        let receiverClientExpectation = expectationWithDescription("receiver client")
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions(resetData: true)) { client, error in
             XCTAssertNil(error, "Failed to authenticate the test")
             XCTAssertNotNil(client, "Client should not be nil")
 
             self.senderClient = client
+            senderClientExpectation.fulfill()
         }
 
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions(resetData: true)) { client, error in
@@ -25,7 +28,10 @@ class KeychainTransporterTests: XCTestCase {
             XCTAssertNotNil(client, "Client should not be nil")
 
             self.receiverClient = client
+            receiverClientExpectation.fulfill()
         }
+
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
     }
 
     func testFullCycle() {

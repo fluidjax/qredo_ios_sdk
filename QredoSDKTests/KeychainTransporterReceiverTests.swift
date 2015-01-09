@@ -12,11 +12,14 @@ class KeychainTransporterReceiverTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
+        let senderClientExpectation = expectationWithDescription("sender client")
+        let receiverClientExpectation = expectationWithDescription("receiver client")
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions(resetData: true)) { client, error in
             XCTAssertNil(error, "Failed to authenticate the test")
             XCTAssertNotNil(client, "Client should not be nil")
 
             self.senderClient = client
+            senderClientExpectation.fulfill()
         }
 
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions(resetData: true)) { client, error in
@@ -24,7 +27,15 @@ class KeychainTransporterReceiverTests: XCTestCase {
             XCTAssertNotNil(client, "Client should not be nil")
 
             self.receiverClient = client
+            receiverClientExpectation.fulfill()
         }
+
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+    }
+
+    func stripURIPrefix(tag: String) -> String {
+        let tagIndex = advance(tag.startIndex, QredoRendezvousURIProtocol.length)
+        return tag.substringFromIndex(tagIndex)
     }
 
     func testCancelBeforeCreatingRendezvous() {
@@ -77,7 +88,6 @@ class KeychainTransporterReceiverTests: XCTestCase {
         XCTAssertNotNil(receiverMock.rendezvousTag, "rendezvous tag should not be nil")
     }
 
-
     func testEstablishConnection() {
         let receiverMock = KeychainReceiverMock()
         let receiver = QredoKeychainReceiver(client: receiverClient, delegate: receiverMock)
@@ -95,7 +105,9 @@ class KeychainTransporterReceiverTests: XCTestCase {
         receiverMock.stateHandler = { state in
             if state == .CreatedRendezvous {
                 XCTAssertNotNil(receiverMock.rendezvousTag, "rendezvous tag should not be nil")
-                self.senderClient.respondWithTag(receiverMock.rendezvousTag, completionHandler: { (conversation, error) -> Void in
+
+                self.senderClient.respondWithTag(self.stripURIPrefix(receiverMock.rendezvousTag!), completionHandler: { (conversation, error) -> Void in
+                    XCTAssertNil(error, "unexpected error")
                     XCTAssertNotNil(conversation, "failed to respond to the rendezvous")
                     if let actualConversation = conversation {
                         actualConversation.delegate = conversationDelegate
@@ -161,7 +173,9 @@ class KeychainTransporterReceiverTests: XCTestCase {
                 acknowledgeExpectation.fulfill()
 
             default:
-                XCTFail("Unknown message type: \(message.dataType)")
+                if !message.isControlMessage() {
+                    XCTFail("Unknown message type: \(message.dataType)")
+                }
             }
 
         }
@@ -169,7 +183,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
         receiverMock.stateHandler = { state in
             if state == .CreatedRendezvous {
                 XCTAssertNotNil(receiverMock.rendezvousTag, "rendezvous tag should not be nil")
-                self.senderClient.respondWithTag(receiverMock.rendezvousTag, completionHandler: { (conversation, error) -> Void in
+                self.senderClient.respondWithTag(self.stripURIPrefix(receiverMock.rendezvousTag!), completionHandler: { (conversation, error) -> Void in
                     XCTAssertNotNil(conversation, "failed to respond to the rendezvous")
                     transporterConversation = conversation
                     if let actualConversation = conversation {

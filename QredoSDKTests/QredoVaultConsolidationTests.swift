@@ -50,6 +50,9 @@ class QredoVaultConsolidationTests: XCTestCase {
     
     var useMQTT = false
     var qredo: QredoClient!
+    var systemItemsCount = 0
+    var systemItemDescriptors : [QredoVaultItemDescriptor] = []
+
 
     override func setUp() {
         super.setUp()
@@ -62,6 +65,19 @@ class QredoVaultConsolidationTests: XCTestCase {
                 createExpectation.fulfill()
         })
         waitForExpectationsWithTimeout(1.0, handler: nil)
+
+        let systemItemsExpectation = expectationWithDescription("system vault items")
+        let vault = qredo.defaultVault()
+        systemItemsCount = 0
+        systemItemDescriptors = []
+        vault.enumerateVaultItemsUsingBlock({ (metadata, stop) -> Void in
+            self.systemItemsCount++
+            self.systemItemDescriptors.append(metadata.descriptor)
+        }, completionHandler: { (error) -> Void in
+            systemItemsExpectation.fulfill()
+        })
+
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
     }
     
     func testConsolidation() {
@@ -98,7 +114,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        XCTAssertEqual(firstEnumerateResults.count, 1, "after first put, the vault must only have one item")
+        XCTAssertEqual(firstEnumerateResults.count, systemItemsCount + 1, "after first put, the vault must only have one item")
         
         
         let item1Updated = QredoVaultItem(
@@ -123,7 +139,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        XCTAssertEqual(afterUpdateEnumerateResults.count, 1, "after update put, the vault must only have one item")
+        XCTAssertEqual(afterUpdateEnumerateResults.count, systemItemsCount + 1, "after update put, the vault must only have one item")
         
         
         let item2 = QredoVaultItem(
@@ -153,7 +169,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        XCTAssertEqual(afterSecondPutEnumerateResults.count, 2, "after update put, the vault must only have two items")
+        XCTAssertEqual(afterSecondPutEnumerateResults.count, systemItemsCount + 2, "after update put, the vault must only have two items")
         
     }
     
@@ -181,7 +197,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        XCTAssertEqual(listener.receivedItemMetadata.count, 1, "after one put the listner must only be notified of one item")
+        XCTAssertEqual(listener.receivedItemMetadata.count, systemItemsCount + 1, "after one put the listner must only be notified of one item")
         
         listener.reset()
         

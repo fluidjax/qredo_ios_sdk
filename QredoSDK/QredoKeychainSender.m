@@ -272,7 +272,7 @@
         [self didReceiveParsedConfirmationMessage:message];
     } else if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeCancelReceiving]) {
         [self didReceiveCancelMessage:message];
-    } else {
+    } else if (![message isControlMessage]) {
         NSLog(@"Unsupported message type: %@", message.dataType);
         [self handleError:[NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeUnknown userInfo:@{NSLocalizedDescriptionKey : @"Received unknown message"}]];
     }
