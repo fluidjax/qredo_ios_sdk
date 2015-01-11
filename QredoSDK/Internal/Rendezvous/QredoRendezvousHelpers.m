@@ -8,15 +8,15 @@
 
 @implementation QredoRendezvousHelpers
 
-+ (id<QredoRendezvousHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType tag:(NSString *)tag
++ (id<QredoRendezvousHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType tag:(NSString *)tag crypto:(id<CryptoImpl>)crypto
 {
     switch (authenticationType) {
             
         case QredoRendezvousAuthenticationTypeAnonymous:
-            return [[QredoRendezvousAnonymousHelper alloc] initWithTag:tag];
+            return [[QredoRendezvousAnonymousHelper alloc] initWithTag:tag crypto:crypto];
             
         case QredoRendezvousAuthenticationTypeX509Pem:
-            return [[QredoRendezvousEd25519Helper alloc] initWithTag:tag];
+            return [[QredoRendezvousEd25519Helper alloc] initWithTag:tag crypto:crypto];
             
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
         case QredoRendezvousAuthenticationTypeEd25519:

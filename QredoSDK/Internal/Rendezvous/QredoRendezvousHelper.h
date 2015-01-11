@@ -6,6 +6,7 @@
 #import "QredoTypes.h"
 
 
+@protocol CryptoImpl;
 @class QredoRendezvousAuthSignature;
 
 /**
@@ -64,7 +65,7 @@
 
 
 @interface QredoAbstractRendezvousHelper : NSObject
-- (instancetype)initWithTag:(NSString *)tag;
+- (instancetype)initWithTag:(NSString *)tag crypto:(id<CryptoImpl>)crypto;
 @end
 
 

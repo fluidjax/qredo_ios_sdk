@@ -5,6 +5,9 @@
 #import "QredoRendezvousHelper.h"
 
 
+@protocol CryptoImpl;
+
 @interface QredoAbstractRendezvousHelper ()
-@property (nonatomic, copy) NSString *originalTag;
+@property (nonatomic, copy, readonly) NSString *originalTag;
+@property (nonatomic, readonly) id<CryptoImpl> cryptoImpl;
 @end

@@ -5,6 +5,8 @@
 #import <Foundation/Foundation.h>
 #import "QredoRendezvousHelper.h"
 
+@protocol CryptoImpl;
+
 @interface QredoRendezvousHelpers : NSObject
-+ (id<QredoRendezvousHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType tag:(NSString *)tag;
++ (id<QredoRendezvousHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType tag:(NSString *)tag crypto:(id<CryptoImpl>)crypto;
 @end
