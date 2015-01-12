@@ -300,7 +300,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     [vault getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
         if (vaultItemMetadata) {
             // Already stored
-            storeCompletionHandler(nil);
+            completionHandler(nil);
         } else {
             if (error.code == QredoErrorCodeVaultItemNotFound) {
                 [self storeWithCompletionHandler:storeCompletionHandler];
