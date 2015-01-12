@@ -426,6 +426,17 @@ static NSString *const QredoKeychainPassword = @"Password123";
     }];
 }
 
+- (void)deleteConversationWithId:(QredoQUID*)conversationId completionHandler:(void(^)(NSError *error))completionHandler
+{
+    [self fetchConversationWithId:conversationId completionHandler:^(QredoConversation *conversation, NSError *error) {
+        if (error) {
+            completionHandler(error);
+            return ;
+        }
+
+        [conversation deleteConversationWithCompletionHandler:completionHandler];
+    }];
+}
 
 #pragma mark -
 #pragma mark Private Methods
