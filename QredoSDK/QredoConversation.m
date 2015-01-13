@@ -160,15 +160,13 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     if (![self isControlMessage]) return QredoConversationControlMessageTypeUnknown;
 
     NSData *qrvValue = [QredoPrimitiveMarshallers marshalObject:[QredoCtrl QRV]
-                                                     marshaller:[QredoClientMarshallers ctrlMarshaller]
-                                                  includeHeader:NO];
+                                                     marshaller:[QredoClientMarshallers ctrlMarshaller]];
 
 
     if ([self.value isEqualToData:qrvValue]) return QredoConversationControlMessageTypeJoined;
 
     NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QredoCtrl QRT]
-                                                     marshaller:[QredoClientMarshallers ctrlMarshaller]
-                                                  includeHeader:NO];
+                                                     marshaller:[QredoClientMarshallers ctrlMarshaller]];
 
 
     if ([self.value isEqualToData:qrtValue]) return QredoConversationControlMessageTypeLeft;
