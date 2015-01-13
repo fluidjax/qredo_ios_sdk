@@ -103,6 +103,7 @@
 		840D86AE4E7AF880C6473A37 /* libPods-QredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7AE6692B1DA0D298F3A8A2 /* libPods-QredoSDK.a */; };
 		BAF7995EAF867BF94BC03324 /* libPods-LinguaFrancaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */; };
 		DCEB505C1A601DE700EE22FB /* QredoCertificateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB505B1A601DE700EE22FB /* QredoCertificateUtilsTests.m */; };
+		DCEB505F1A65488500EE22FB /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB505E1A65488500EE22FB /* TestCertificates.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +263,8 @@
 		C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LinguaFrancaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C87E16460AC916F97E987172 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCEB505B1A601DE700EE22FB /* QredoCertificateUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoCertificateUtilsTests.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/QredoCertificateUtilsTests.m"; sourceTree = "<group>"; };
+		DCEB505D1A65488500EE22FB /* TestCertificates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestCertificates.h; path = "../../LinguaFranca/objc-wire-format/CryptoTests/TestCertificates.h"; sourceTree = "<group>"; };
+		DCEB505E1A65488500EE22FB /* TestCertificates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestCertificates.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/TestCertificates.m"; sourceTree = "<group>"; };
 		FEDCDD7CF0D6354FC4675585 /* Pods-CryptoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CryptoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CryptoTests/Pods-CryptoTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -446,6 +449,8 @@
 				0A6573CA1A2DEA1100D5502E /* QredoRsaBlindSignatureTests.m */,
 				0A6573CB1A2DEA1100D5502E /* QredoRsaPrivateKeyTests.m */,
 				0A6573CC1A2DEA1100D5502E /* QredoRsaPublicKeyTests.m */,
+				DCEB505D1A65488500EE22FB /* TestCertificates.h */,
+				DCEB505E1A65488500EE22FB /* TestCertificates.m */,
 				0A6573B81A2DE88100D5502E /* Supporting Files */,
 			);
 			path = CryptoTests;
@@ -982,6 +987,7 @@
 				0A6573D51A2DEA1100D5502E /* QredoPSSTests.m in Sources */,
 				DCEB505C1A601DE700EE22FB /* QredoCertificateUtilsTests.m in Sources */,
 				0A6573D61A2DEA1100D5502E /* QredoRsaBlindSignatureTests.m in Sources */,
+				DCEB505F1A65488500EE22FB /* TestCertificates.m in Sources */,
 				0A6573D41A2DEA1100D5502E /* QredoKeyTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
