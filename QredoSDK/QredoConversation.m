@@ -283,8 +283,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
         }
 
         NSData *qrvValue = [QredoPrimitiveMarshallers marshalObject:[QredoCtrl QRV]
-                                                         marshaller:[QredoClientMarshallers ctrlMarshaller]
-                                                      includeHeader:NO];
+                                                         marshaller:[QredoClientMarshallers ctrlMarshaller]];
 
         QredoConversationMessage *joinedControlMessage = [[QredoConversationMessage alloc] initWithValue:qrvValue
                                                                                                 dataType:kQredoConversationMessageTypeControl
@@ -608,8 +607,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 - (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
     NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QredoCtrl QRT]
-                                                     marshaller:[QredoClientMarshallers ctrlMarshaller]
-                                                  includeHeader:NO];
+                                                     marshaller:[QredoClientMarshallers ctrlMarshaller]];
 
     QredoConversationMessage *leftControlMessage = [[QredoConversationMessage alloc] initWithValue:qrtValue
                                                                                             dataType:kQredoConversationMessageTypeControl
