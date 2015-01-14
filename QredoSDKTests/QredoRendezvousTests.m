@@ -7,6 +7,10 @@
 #import "Qredo.h"
 #import "QredoRendezvousTests.h"
 #import "QredoTestUtils.h"
+#import "QredoRendezvousEd25519Helper.h"
+#import "QredoClient.h"
+
+#import <objc/runtime.h>
 
 static NSString *const kRendezvousTestConversationType = @"test.chat";
 static long long kRendezvousTestMaxResponseCount = 3;
@@ -32,12 +36,95 @@ static long long kRendezvousTestDurationSeconds = 600;
 
 @end
 
+
+void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector, Class class) {
+    
+    // When swizzling an instance method, use the following:
+    //Class class = [self class];
+    
+    // When swizzling a class method, use the following:
+    // Class class = object_getClass((id)self);
+    
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+    
+    BOOL didAddMethod =
+    class_addMethod(class,
+                    originalSelector,
+                    method_getImplementation(swizzledMethod),
+                    method_getTypeEncoding(swizzledMethod));
+    
+    if (didAddMethod) {
+        class_replaceMethod(class,
+                            swizzledSelector,
+                            method_getImplementation(originalMethod),
+                            method_getTypeEncoding(originalMethod));
+    } else {
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
+    
+}
+
+
+@interface QredoRendezvousEd25519Helper (QredoRendezvousTests)
++ (void)swizleSigningMethod;
+@end
+
+@implementation QredoRendezvousEd25519Helper (QredoRendezvousTests)
+
+- (QredoRendezvousAuthSignature *)QredoRendezvousTests_signatureWithData:(NSData *)data {
+    
+    QredoRendezvousAuthSignature *signature = [self QredoRendezvousTests_signatureWithData:data];
+    
+    __block NSData *signatureData = nil;
+    [signature
+     ifX509_PEM:^(NSData *signature) {
+         NSAssert(FALSE, @"Wrong signature type");
+     } X509_PEM_SELFISGNED:^(NSData *signature) {
+         NSAssert(FALSE, @"Wrong signature type");
+     } ED25519:^(NSData *signature) {
+         signatureData = signature;
+     } RSA2048_PEM:^(NSData *signature) {
+         NSAssert(FALSE, @"Wrong signature type");
+     } RSA4096_PEM:^(NSData *signature) {
+         NSAssert(FALSE, @"Wrong signature type");
+     } other:^{
+         NSAssert(FALSE, @"Wrong signature type");
+     }];
+    
+    NSMutableData *forgedSignatureData = [signatureData mutableCopy];
+    unsigned char *forgedSignatureDataBytes = [forgedSignatureData mutableBytes];
+    forgedSignatureDataBytes[0] = ~forgedSignatureDataBytes[0];
+    
+    QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
+
+    return forgedSignature;
+    
+}
+
++ (void)swizleSigningMethod {
+    Class class = self;
+    SEL origSEL = @selector(signatureWithData:);
+    SEL newSEL = @selector(QredoRendezvousTests_signatureWithData:);
+    swizleMethodsForSelectorsInClass(origSEL, newSEL, class);
+}
+
+@end
+
+
+
+
+
 @interface QredoRendezvousTests ()
 {
     QredoClient *client;
 }
 
 @end
+
+
+
+
 
 @implementation QredoRendezvousTests
 
@@ -331,4 +418,188 @@ static long long kRendezvousTestDurationSeconds = 600;
     [anotherClient closeSession];
 
 }
+
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519 {
+    
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc]
+       initWithConversationType:kRendezvousTestConversationType
+       authenticationType:QredoRendezvousAuthenticationTypeEd25519
+       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
+       transCap:nil];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    
+    NSLog(@"Creating rendezvous");
+    [client
+     createRendezvousWithTag:randomTag
+     configuration:configuration
+     completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+         
+         XCTAssertNil(error);
+         XCTAssertNotNil(rendezvous);
+         createdRendezvous = rendezvous;
+         [createExpectation fulfill];
+         
+     }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    XCTAssertNotNil(createdRendezvous);
+    
+    NSString *fullTag = createdRendezvous.tag;
+    
+    NSLog(@"Verifying rendezvous");
+    
+    __block QredoClient *anotherClient = nil;
+    
+    NSLog(@"Creating 2nd client");
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
+    [QredoClient
+     authorizeWithConversationTypes:nil
+     vaultDataTypes:@[@"blob"]
+     options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:NO]
+     completionHandler:^(QredoClient *clientArg, NSError *error) {
+         
+         XCTAssertNil(error);
+         XCTAssertNotNil(clientArg);
+         anotherClient = clientArg;
+         [clientExpectation fulfill];
+         
+     }];
+    
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
+    
+    // Listening for responses and respond from another client
+    RendezvousListener *listener = [[RendezvousListener alloc] init];
+    NSLog(@"Created rendezvous listener (%p)", self);
+    
+    listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
+    NSLog(@"Listener expectation created: %@", listener.expectation);
+    createdRendezvous.delegate = listener;
+    [createdRendezvous startListening];
+    
+    NSLog(@"Responding to Rendezvous");
+    __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
+    [anotherClient respondWithTag:fullTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        XCTAssertNil(error);
+        [respondExpectation fulfill];
+    }];
+    
+    // Give time for the subscribe/getResponses process to process - they could internally produce duplicates
+    // which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
+    [NSThread sleepForTimeInterval:5];
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        respondExpectation = nil;
+        listener.expectation = nil;
+    }];
+    
+    [createdRendezvous stopListening];
+    
+    [anotherClient closeSession];
+    
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519ForgedSignature {
+    
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc]
+       initWithConversationType:kRendezvousTestConversationType
+       authenticationType:QredoRendezvousAuthenticationTypeEd25519
+       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
+       transCap:nil];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    
+    [QredoRendezvousEd25519Helper swizleSigningMethod];
+    
+    NSLog(@"Creating rendezvous");
+    [client
+     createRendezvousWithTag:randomTag
+     configuration:configuration
+     completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+         
+         XCTAssertNil(error);
+         XCTAssertNotNil(rendezvous);
+         createdRendezvous = rendezvous;
+         [createExpectation fulfill];
+         
+     }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    [QredoRendezvousEd25519Helper swizleSigningMethod];
+    
+    XCTAssertNotNil(createdRendezvous);
+    
+    NSString *fullTag = createdRendezvous.tag;
+    
+    NSLog(@"Verifying rendezvous");
+    
+    __block QredoClient *anotherClient = nil;
+    
+    NSLog(@"Creating 2nd client");
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
+    [QredoClient
+     authorizeWithConversationTypes:nil
+     vaultDataTypes:@[@"blob"]
+     options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:NO]
+     completionHandler:^(QredoClient *clientArg, NSError *error) {
+         
+         XCTAssertNil(error);
+         XCTAssertNotNil(clientArg);
+         anotherClient = clientArg;
+         [clientExpectation fulfill];
+         
+     }];
+    
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
+    
+    // Listening for responses and respond from another client
+    RendezvousListener *listener = [[RendezvousListener alloc] init];
+    NSLog(@"Created rendezvous listener (%p)", self);
+    
+    listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
+    NSLog(@"Listener expectation created: %@", listener.expectation);
+    createdRendezvous.delegate = listener;
+    [createdRendezvous startListening];
+    
+    NSLog(@"Responding to Rendezvous");
+    __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
+    [anotherClient respondWithTag:fullTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        XCTAssert(error);
+        [respondExpectation fulfill];
+    }];
+    
+    // Give time for the subscribe/getResponses process to process - they could internally produce duplicates
+    // which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
+    [NSThread sleepForTimeInterval:5];
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        respondExpectation = nil;
+        listener.expectation = nil;
+    }];
+    
+    [createdRendezvous stopListening];
+    
+    [anotherClient closeSession];
+    
+}
+
 @end
