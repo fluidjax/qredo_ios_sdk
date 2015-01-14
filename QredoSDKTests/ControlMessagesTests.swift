@@ -87,24 +87,21 @@ class ControlMessagesTests: XCTestCase {
 
         let enumerationExpectation = expectationWithDescription("enumerate messages on responder")
 
-        responderConversation.enumerateMessagesUsingBlock({ (message : QredoConversationMessage!, stop) -> Void in
-
+        responderConversation.enumerateMessagesUsingBlock({ (message, stop) -> Void in
             if message.isControlMessage() && message.controlMessageType() == .Joined {
                 joinedMessageCounter++
             }
-
-        }, since: QredoConversationHighWatermarkOrigin) { (error) -> Void in
+        }, incoming: true, completionHandler: { (error) -> Void in
             enumerationExpectation.fulfill()
-        }
+        }, since: QredoConversationHighWatermarkOrigin, highWatermarkHandler: nil, excludeControlMessages: false)
 
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 
         XCTAssertEqual(joinedMessageCounter, 1, "Should be one 'joined' control message")
     }
 
-
     func commonDeleteControlMessage(conversationToBeDeleted : QredoConversation, listeningConversation : QredoConversation) {
-        var enumerationExpectation : XCTestExpectation? = expectationWithDescription("receive delete message responder")
+        var listenerExpectation : XCTestExpectation? = expectationWithDescription("receive delete message responder")
         var deleteCompletionExpectation = expectationWithDescription("delete completion")
 
         conversationToBeDeleted.deleteConversationWithCompletionHandler { error -> Void in
@@ -114,25 +111,24 @@ class ControlMessagesTests: XCTestCase {
 
         var leftMessageCounter = 0
 
-        let creatorDelegate = ConversationBlockDelegate()
+        let listeningDelegate = ConversationBlockDelegate()
 
-        creatorDelegate.messageHandler = { message in
-            if message.isControlMessage() && message.controlMessageType() == .Left {
-                leftMessageCounter++
+        listeningDelegate.otherPartyLeftHandler = {
 
-                if leftMessageCounter == 1 {
-                    enumerationExpectation?.fulfill()
-                    enumerationExpectation = nil
-                }
+            leftMessageCounter++
+
+            if leftMessageCounter == 1 {
+
+                listenerExpectation?.fulfill()
+                listenerExpectation = nil
             }
         }
 
-        listeningConversation.delegate = creatorDelegate
+        listeningConversation.delegate = listeningDelegate
         listeningConversation.startListening()
 
-
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { error in
-            enumerationExpectation = nil
+            listenerExpectation = nil
         })
         
         XCTAssertEqual(leftMessageCounter, 1, "Should be one 'joined' control message")

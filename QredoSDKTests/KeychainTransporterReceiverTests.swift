@@ -173,9 +173,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
                 acknowledgeExpectation.fulfill()
 
             default:
-                if !message.isControlMessage() {
-                    XCTFail("Unknown message type: \(message.dataType)")
-                }
+                XCTFail("Unknown message type: \(message.dataType)")
             }
 
         }

@@ -29,6 +29,21 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 - (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey publicKey:(QredoDhPublicKey*)publicKey rendezvousOwner:(BOOL)rendezvousOwner completionHandler:(void(^)(NSError *error))completionHandler;
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void(^)(NSError *error))completionHandler;
 
+- (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                           incoming:(BOOL)incoming
+                  completionHandler:(void(^)(NSError *error))completionHandler
+                              since:(QredoConversationHighWatermark*)sinceWatermark
+               highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler
+             excludeControlMessages:(BOOL)excludeControlMessages;
+
+
+@end
+
+@interface QredoConversationMessage (Private)
+
+- (BOOL)isControlMessage;
+- (QredoConversationControlMessageType)controlMessageType;
+
 @end
 
 @interface QredoConversationHighWatermark (Private)
