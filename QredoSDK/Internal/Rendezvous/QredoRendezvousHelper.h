@@ -66,6 +66,7 @@
 
 @interface QredoAbstractRendezvousHelper : NSObject
 - (instancetype)initWithTag:(NSString *)tag crypto:(id<CryptoImpl>)crypto;
+- (void)commonInit;
 @end
 
 

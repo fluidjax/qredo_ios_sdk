@@ -9,12 +9,17 @@
 
 - (instancetype)initWithTag:(NSString *)tag crypto:(id<CryptoImpl>)crypto
 {
-    self = [self init];
+    self = [super init];
     if (self) {
         _originalTag = tag;
         _cryptoImpl = crypto;
+        [self commonInit];
     }
     return self;
+}
+
+- (void)commonInit
+{
 }
 
 @end

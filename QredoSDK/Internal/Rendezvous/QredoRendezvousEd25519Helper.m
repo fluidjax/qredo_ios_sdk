@@ -29,25 +29,19 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
     });
 }
 
-- (instancetype)init
+- (void)commonInit
 {
-    self = [super init];
-    if (self) {
+    if ([self noTagProvided]) {
         
-        if ([self noTagProvided]) {
-            
-            _sk = [self.cryptoImpl qredoED25519SigningKey];
-            _vk = _sk.verifyKey;
-            
-        } else {
+        _sk = [self.cryptoImpl qredoED25519SigningKey];
+        _vk = _sk.verifyKey;
         
-            _sk = nil;
-            _vk = [self verifyKeyFromTag:self.tag];
-            
-        }
+    } else {
+        
+        _sk = nil;
+        _vk = [self verifyKeyFromTag:self.originalTag];
         
     }
-    return self;
 }
 
 - (QredoRendezvousAuthenticationType)type
@@ -57,7 +51,7 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 
 - (NSString *)tag
 {
-    NSString *trimedString = [self.tag stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *trimedString = [self.originalTag stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
     if ([trimedString length] == 0) {
         return [QredoBase58 encodeData:_vk.data];
@@ -68,7 +62,7 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
         return [trimedString stringByAppendingString:encodedVK];
     }
     
-    return self.tag;
+    return self.originalTag;
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature
@@ -127,7 +121,7 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
         vkString = [tag substringFromIndex:prefixPos+1];
     }
     
-    NSData *vkData = [QredoBase58 decodeData:tag];
+    NSData *vkData = [QredoBase58 decodeData:vkString];
     NSAssert([tag length], @"Malformed tag (on decoding");
     vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData];
     
