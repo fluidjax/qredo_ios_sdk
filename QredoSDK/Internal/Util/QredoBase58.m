@@ -13,12 +13,12 @@ static NSUInteger kIndexes[kIndexesLength];
 //
 // number -> number / 58, returns number % 58
 //
-unsigned char qredoBase58Divmod58(NSMutableData *number, NSUInteger startAt);
+unsigned char qredoBase58Divmod58(unsigned char *numberBytes, NSUInteger numberLength, NSUInteger startAt);
 
 //
 // number -> number / 256, returns number % 256
 //
-unsigned char qredoBase58Divmod256(NSMutableData *number58, NSUInteger startAt);
+unsigned char qredoBase58Divmod256(unsigned char *number58Bytes, NSUInteger number58Length, NSUInteger startAt);
 
 
 
@@ -63,7 +63,7 @@ unsigned char qredoBase58Divmod256(NSMutableData *number58, NSUInteger startAt);
 
     NSUInteger startAt = zeroCount;
     while (startAt < inputLength) {
-        unsigned char mod = qredoBase58Divmod58(input, startAt);
+        unsigned char mod = qredoBase58Divmod58(inputBytes, inputLength, startAt);
         if (inputBytes[startAt] == 0) {
             ++startAt;
         }
@@ -79,7 +79,8 @@ unsigned char qredoBase58Divmod256(NSMutableData *number58, NSUInteger startAt);
         tempBytes[--j] = (unsigned char)kAlphabet[0];
     }
     
-    return [[NSString alloc] initWithData:temp encoding:NSASCIIStringEncoding];
+    NSData *resultData = [temp subdataWithRange:NSMakeRange(j, tempLength-j)];
+    return [[NSString alloc] initWithData:resultData encoding:NSASCIIStringEncoding];
 }
 
 + (NSData *)decodeData:(NSString *)string
@@ -135,7 +136,7 @@ unsigned char qredoBase58Divmod256(NSMutableData *number58, NSUInteger startAt);
     NSUInteger startAt = zeroCount;
     while (startAt < input58Length) {
         
-        unsigned char mod = qredoBase58Divmod256(input58, startAt);
+        unsigned char mod = qredoBase58Divmod256(input58Bytes, input58Length, startAt);
         if (input58Bytes[startAt] == 0) {
             ++startAt;
         }
@@ -156,25 +157,23 @@ unsigned char qredoBase58Divmod256(NSMutableData *number58, NSUInteger startAt);
 
 
 
-unsigned char qredoBase58Divmod58(NSMutableData *number, NSUInteger startAt)
+unsigned char qredoBase58Divmod58(unsigned char *numberBytes, NSUInteger numberLength, NSUInteger startAt)
 {
     NSUInteger remainder = 0;
-    unsigned char *numberBytes = [number mutableBytes];
-    for (NSUInteger i = startAt; i < [number length]; i++) {
-        NSUInteger digit256 = (NSUInteger)numberBytes[i] & 0xff;
+    for (NSUInteger i = startAt; i < numberLength; i++) {
+        NSUInteger digit256 = (NSUInteger)(numberBytes[i] & 0xff);
         NSUInteger temp = remainder * 256 + digit256;
-        numberBytes[i] = (unsigned char)(temp % 58);
+        numberBytes[i] = (unsigned char)(temp / 58);
         remainder = temp % 58;
     }
     return (unsigned char)remainder;
 }
 
 
-unsigned char qredoBase58Divmod256(NSMutableData *number58, NSUInteger startAt)
+unsigned char qredoBase58Divmod256(unsigned char *number58Bytes, NSUInteger number58Length, NSUInteger startAt)
 {
     NSUInteger remainder = 0;
-    unsigned char *number58Bytes = [number58 mutableBytes];
-    for (NSUInteger i = startAt; i < [number58 length]; i++) {
+    for (NSUInteger i = startAt; i < number58Length; i++) {
         NSUInteger digit58 = (NSUInteger)(number58Bytes[i] & 0xff);
         NSUInteger temp = remainder * 58 + digit58;
         number58Bytes[i] = (unsigned char)(temp / 256);
