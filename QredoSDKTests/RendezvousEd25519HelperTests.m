@@ -146,6 +146,62 @@
     
 }
 
+- (void)testSignatureAndVerificationNoPrefixInvalidSignature {
+    
+    NSString *prefix = nil;
+    
+    id<QredoRendezvousHelper> signingHelper
+    = [QredoRendezvousHelpers
+       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+       tag:prefix
+       crypto:self.cryptoImpl
+       ];
+    XCTAssertNotNil(signingHelper);
+    
+    NSString *fullTag = [signingHelper tag];
+    XCTAssertNotNil(fullTag);
+    
+    id<QredoRendezvousHelper> verificationHelper
+    = [QredoRendezvousHelpers
+       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+       tag:fullTag
+       crypto:self.cryptoImpl];
+    XCTAssertNotNil(verificationHelper);
+    
+    NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data];
+    XCTAssertNotNil(signature);
+    
+    
+    __block NSData *signatureData = nil;
+    [signature
+     ifX509_PEM:^(NSData *signature) {
+         XCTFail();
+     } X509_PEM_SELFISGNED:^(NSData *signature) {
+         XCTFail();
+     } ED25519:^(NSData *signature) {
+         signatureData = signature;
+     } RSA2048_PEM:^(NSData *signature) {
+         XCTFail();
+     } RSA4096_PEM:^(NSData *signature) {
+         XCTFail();
+     } other:^{
+         XCTFail();
+     }];
+    XCTAssertGreaterThan([signatureData length], 0);
+    
+    NSMutableData *forgedSignatureData = [signatureData mutableCopy];
+    unsigned char *forgedSignatureDataBytes = [forgedSignatureData mutableBytes];
+    forgedSignatureDataBytes[0] = ~forgedSignatureDataBytes[0];
+    
+    QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
+    
+    
+    BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data];
+    XCTAssertFalse(result);
+    
+}
 
 @end
 
