@@ -65,10 +65,16 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
 {
+    return [self initWithConversationType:conversationType authenticationType:QredoRendezvousAuthenticationTypeAnonymous durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:transCap];
+}
+
+- (instancetype)initWithConversationType:(NSString*)conversationType authenticationType:(QredoRendezvousAuthenticationType)authenticationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
+{
     self = [super init];
     if (!self) return nil;
-
+    
     _conversationType = conversationType;
+    _authenticationType = authenticationType;
     _durationSeconds = durationSeconds;
     _maxResponseCount = maxResponseCount;
     _transCap = transCap;
@@ -145,6 +151,13 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void(^)(NSError *error))completionHandler
 {
+    if (configuration.authenticationType != QredoRendezvousAuthenticationTypeAnonymous) {
+        NSString *trimmedTag = [tag stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (tag && ![trimmedTag hasSuffix:@"@"]) {
+            tag = [tag stringByAppendingString:@"@"];
+        }
+    }
+    
     LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
     
     self.configuration = configuration;
