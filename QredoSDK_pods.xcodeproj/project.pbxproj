@@ -59,6 +59,7 @@
 		0AADB0831A15848C00CFD014 /* QredoVault.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A9DDDF919EC2ED800B4248C /* QredoVault.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0AADB0841A15848C00CFD014 /* QredoRendezvous.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0AADB0851A15848C00CFD014 /* QredoConversation.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A9DDDFA19EC2F2700B4248C /* QredoConversation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0ABF4D971A5D84F20096BF19 /* ConversationBlockDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */; };
 		0AD259171A2F410500FC8942 /* libqredosdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libqredosdk.a */; };
 		0AD2595B1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD259591A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h */; };
 		0AD2595C1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD2595A1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m */; };
@@ -80,7 +81,8 @@
 		0AD99E841A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E821A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m */; };
 		0AD9A1991A2773C800E300BC /* QredoErrorCodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD9A1981A2773C800E300BC /* QredoErrorCodes.h */; };
 		0AD9A19B1A2773CE00E300BC /* QredoErrorCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD9A19A1A2773CE00E300BC /* QredoErrorCodes.m */; };
-		0AE3E5C61A35FE7D00EF192A /* Qredo+KeychainTransporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3E5C51A35FE7D00EF192A /* Qredo+KeychainTransporter.m */; };
+		0AEE5C5E1A5C13B10018BE19 /* ControlMessagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */; };
+		0AEE5C601A5C3B110018BE19 /* RendezvousBlockDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */; };
 		22683D78E7D4E008255CBD4B /* libPods-CryptoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7422C5016D6775275AF5625F /* libPods-CryptoTests.a */; };
 		7810CC5A1A388BCE00421892 /* KeychainTransporterSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */; };
 		7810CC5B1A388BCE00421892 /* KeychainTransporterReceiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */; };
@@ -92,6 +94,19 @@
 		781D137E1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 781D137C1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h */; };
 		781D137F1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 781D137D1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m */; };
 		786A473D1A40D9E60086A69B /* KeychainArchiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 786A473C1A40D9E60086A69B /* KeychainArchiverTests.swift */; };
+		78A2F1ED1A431F6C00974EFB /* QredoManagerAppRootViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78A2F1EB1A431F6C00974EFB /* QredoManagerAppRootViewController.h */; };
+		78A2F1EE1A431F6C00974EFB /* QredoManagerAppRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F1EC1A431F6C00974EFB /* QredoManagerAppRootViewController.m */; };
+		78A2F1F11A431F8900974EFB /* QredoWelcomeViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78A2F1EF1A431F8900974EFB /* QredoWelcomeViewController.h */; };
+		78A2F1F21A431F8900974EFB /* QredoWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F1F01A431F8900974EFB /* QredoWelcomeViewController.m */; };
+		78A2F1F51A4320AF00974EFB /* QredoMainViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78A2F1F31A4320AF00974EFB /* QredoMainViewController.h */; };
+		78A2F1F61A4320AF00974EFB /* QredoMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F1F41A4320AF00974EFB /* QredoMainViewController.m */; };
+		78A2F1F91A43220F00974EFB /* QredoSettingsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78A2F1F71A43220F00974EFB /* QredoSettingsViewController.h */; };
+		78A2F1FA1A43220F00974EFB /* QredoSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F1F81A43220F00974EFB /* QredoSettingsViewController.m */; };
+		78A2F2021A444A8E00974EFB /* UIColor+Qredo.h in Headers */ = {isa = PBXBuildFile; fileRef = 78A2F2001A444A8E00974EFB /* UIColor+Qredo.h */; };
+		78A2F2031A444A8E00974EFB /* UIColor+Qredo.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F2011A444A8E00974EFB /* UIColor+Qredo.m */; };
+		78A2F2061A4455DA00974EFB /* UIButton+Qredo.h in Headers */ = {isa = PBXBuildFile; fileRef = 78A2F2041A4455DA00974EFB /* UIButton+Qredo.h */; };
+		78A2F2071A4455DA00974EFB /* UIButton+Qredo.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F2051A4455DA00974EFB /* UIButton+Qredo.m */; };
+		78A2F20A1A448D1600974EFB /* QredoKeychainArchiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 78A2F2081A447D6D00974EFB /* QredoKeychainArchiver.m */; };
 		78E5E1AA1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78E5E1A81A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h */; };
 		78E5E1AB1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E5E1A91A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m */; };
 		78E5E1AE1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78E5E1AC1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h */; };
@@ -213,11 +228,11 @@
 		0AA0CAD719D9B92B0025DD4D /* QredoConversationCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoConversationCrypto.h; sourceTree = "<group>"; };
 		0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversationCrypto.m; sourceTree = "<group>"; };
 		0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRendezvous.h; sourceTree = "<group>"; };
+		0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationBlockDelegate.swift; sourceTree = "<group>"; };
 		0AD259591A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainReceiverQR.h; sourceTree = "<group>"; };
 		0AD2595A1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainReceiverQR.m; sourceTree = "<group>"; };
 		0AD2595D1A2F7CD800FC8942 /* QredoKeychainSenderQR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainSenderQR.h; sourceTree = "<group>"; };
 		0AD2595E1A2F7CD800FC8942 /* QredoKeychainSenderQR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainSenderQR.m; sourceTree = "<group>"; };
-		0AD259621A2F936C00FC8942 /* Qredo+KeychainTransporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Qredo+KeychainTransporter.m"; sourceTree = "<group>"; };
 		0AD259651A2F93F800FC8942 /* QredoKeychainReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainReceiver.h; sourceTree = "<group>"; };
 		0AD259661A2F93F800FC8942 /* QredoKeychainReceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainReceiver.m; sourceTree = "<group>"; };
 		0AD259691A2F943800FC8942 /* QredoKeychainSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainSender.h; sourceTree = "<group>"; };
@@ -237,8 +252,9 @@
 		0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTransporterSenderTests.swift; sourceTree = "<group>"; };
 		0AD9A1981A2773C800E300BC /* QredoErrorCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoErrorCodes.h; sourceTree = "<group>"; };
 		0AD9A19A1A2773CE00E300BC /* QredoErrorCodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoErrorCodes.m; sourceTree = "<group>"; };
-		0AE3E5C51A35FE7D00EF192A /* Qredo+KeychainTransporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Qredo+KeychainTransporter.m"; sourceTree = "<group>"; };
 		0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTransporterReceiverTests.swift; sourceTree = "<group>"; };
+		0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlMessagesTests.swift; sourceTree = "<group>"; };
+		0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendezvousBlockDelegate.swift; sourceTree = "<group>"; };
 		0E66DFDF10CC2ADED009F760 /* Pods-QredoSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.release.xcconfig"; sourceTree = "<group>"; };
 		3B7AE6692B1DA0D298F3A8A2 /* libPods-QredoSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		49021A5FAE7B97C8DE2BC427 /* Pods-LinguaFrancaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LinguaFrancaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -249,6 +265,19 @@
 		781D137D1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainQRCodeScannerViewController.m; sourceTree = "<group>"; };
 		786A473C1A40D9E60086A69B /* KeychainArchiverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainArchiverTests.swift; sourceTree = "<group>"; };
 		78771B921A3B487B007B864D /* QredoKeychainArchiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoKeychainArchiver.h; sourceTree = "<group>"; };
+		78A2F1EB1A431F6C00974EFB /* QredoManagerAppRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoManagerAppRootViewController.h; sourceTree = "<group>"; };
+		78A2F1EC1A431F6C00974EFB /* QredoManagerAppRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoManagerAppRootViewController.m; sourceTree = "<group>"; };
+		78A2F1EF1A431F8900974EFB /* QredoWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoWelcomeViewController.h; sourceTree = "<group>"; };
+		78A2F1F01A431F8900974EFB /* QredoWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoWelcomeViewController.m; sourceTree = "<group>"; };
+		78A2F1F31A4320AF00974EFB /* QredoMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoMainViewController.h; sourceTree = "<group>"; };
+		78A2F1F41A4320AF00974EFB /* QredoMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoMainViewController.m; sourceTree = "<group>"; };
+		78A2F1F71A43220F00974EFB /* QredoSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoSettingsViewController.h; sourceTree = "<group>"; };
+		78A2F1F81A43220F00974EFB /* QredoSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoSettingsViewController.m; sourceTree = "<group>"; };
+		78A2F2001A444A8E00974EFB /* UIColor+Qredo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Qredo.h"; sourceTree = "<group>"; };
+		78A2F2011A444A8E00974EFB /* UIColor+Qredo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Qredo.m"; sourceTree = "<group>"; };
+		78A2F2041A4455DA00974EFB /* UIButton+Qredo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+Qredo.h"; sourceTree = "<group>"; };
+		78A2F2051A4455DA00974EFB /* UIButton+Qredo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Qredo.m"; sourceTree = "<group>"; };
+		78A2F2081A447D6D00974EFB /* QredoKeychainArchiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainArchiver.m; sourceTree = "<group>"; };
 		78E5E1A81A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainSendReceiveViewController.h; sourceTree = "<group>"; };
 		78E5E1A91A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainSendReceiveViewController.m; sourceTree = "<group>"; };
 		78E5E1AC1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainActivityViewController.h; sourceTree = "<group>"; };
@@ -318,6 +347,7 @@
 				0A1035291A389DFD002479D9 /* QredoKeychain.h */,
 				0A10352A1A389DFD002479D9 /* QredoKeychain.m */,
 				78771B921A3B487B007B864D /* QredoKeychainArchiver.h */,
+				78A2F2081A447D6D00974EFB /* QredoKeychainArchiver.m */,
 				7816B8EA1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.h */,
 				7816B8EB1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.m */,
 			);
@@ -352,12 +382,12 @@
 		0A16F8BB19C3567E00639779 /* QredoSDK */ = {
 			isa = PBXGroup;
 			children = (
+				78A2F1EA1A431A8500974EFB /* Manage App UI */,
 				0AD2599B1A2F9B4400FC8942 /* Keychain Transporter */,
 				0A9DDE0419ED588C00B4248C /* include */,
 				0A9DDE0319ED57FE00B4248C /* Internal */,
 				0A85E6E919FAB2EE00775115 /* QredoPrivate.h */,
 				0AA03C8819E2E6CF00F2CF43 /* Qredo.m */,
-				0AE3E5C51A35FE7D00EF192A /* Qredo+KeychainTransporter.m */,
 				0AD9A19A1A2773CE00E300BC /* QredoErrorCodes.m */,
 				0A9DDDFC19ED374500B4248C /* QredoVaultPrivate.h */,
 				0A9DDDFD19ED3A1500B4248C /* QredoVault.m */,
@@ -410,6 +440,9 @@
 				0A65740C1A2F3B7200D5502E /* RendezvousListenerTests.m */,
 				0A10352D1A38AEF7002479D9 /* KeychainTests.swift */,
 				786A473C1A40D9E60086A69B /* KeychainArchiverTests.swift */,
+				0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */,
+				0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */,
+				0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */,
 			);
 			path = QredoSDKTests;
 			sourceTree = "<group>";
@@ -547,7 +580,6 @@
 			children = (
 				0AD2596D1A2F947700FC8942 /* QredoDeviceInfo.h */,
 				0AD2596E1A2F947700FC8942 /* QredoDeviceInfo.m */,
-				0AD259621A2F936C00FC8942 /* Qredo+KeychainTransporter.m */,
 				0AD259691A2F943800FC8942 /* QredoKeychainSender.h */,
 				0AD2596A1A2F943800FC8942 /* QredoKeychainSender.m */,
 				0AD2595D1A2F7CD800FC8942 /* QredoKeychainSenderQR.h */,
@@ -595,6 +627,25 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		78A2F1EA1A431A8500974EFB /* Manage App UI */ = {
+			isa = PBXGroup;
+			children = (
+				78A2F1EB1A431F6C00974EFB /* QredoManagerAppRootViewController.h */,
+				78A2F1EC1A431F6C00974EFB /* QredoManagerAppRootViewController.m */,
+				78A2F1EF1A431F8900974EFB /* QredoWelcomeViewController.h */,
+				78A2F1F01A431F8900974EFB /* QredoWelcomeViewController.m */,
+				78A2F1F31A4320AF00974EFB /* QredoMainViewController.h */,
+				78A2F1F41A4320AF00974EFB /* QredoMainViewController.m */,
+				78A2F1F71A43220F00974EFB /* QredoSettingsViewController.h */,
+				78A2F1F81A43220F00974EFB /* QredoSettingsViewController.m */,
+				78A2F2001A444A8E00974EFB /* UIColor+Qredo.h */,
+				78A2F2011A444A8E00974EFB /* UIColor+Qredo.m */,
+				78A2F2041A4455DA00974EFB /* UIButton+Qredo.h */,
+				78A2F2051A4455DA00974EFB /* UIButton+Qredo.m */,
+			);
+			name = "Manage App UI";
+			sourceTree = "<group>";
+		};
 		8DD46FDC257F432865B3F135 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -621,17 +672,23 @@
 				78E5E1AE1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h in Headers */,
 				0AD2596F1A2F947700FC8942 /* QredoDeviceInfo.h in Headers */,
 				0AADB0821A15848C00CFD014 /* QredoTypes.h in Headers */,
+				78A2F1F91A43220F00974EFB /* QredoSettingsViewController.h in Headers */,
 				0AADB0831A15848C00CFD014 /* QredoVault.h in Headers */,
 				78E5E1AA1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h in Headers */,
+				78A2F1ED1A431F6C00974EFB /* QredoManagerAppRootViewController.h in Headers */,
 				0AADB0841A15848C00CFD014 /* QredoRendezvous.h in Headers */,
 				0AD2595F1A2F7CD800FC8942 /* QredoKeychainSenderQR.h in Headers */,
+				78A2F2061A4455DA00974EFB /* UIButton+Qredo.h in Headers */,
 				0A27BEB61A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h in Headers */,
+				78A2F1F51A4320AF00974EFB /* QredoMainViewController.h in Headers */,
 				0A10352B1A389DFD002479D9 /* QredoKeychain.h in Headers */,
 				0AD99E831A30D8B8004F25E1 /* QredoKeychainTransporterConsts.h in Headers */,
+				78A2F1F11A431F8900974EFB /* QredoWelcomeViewController.h in Headers */,
 				7816B8EC1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.h in Headers */,
 				0AD259671A2F93F800FC8942 /* QredoKeychainReceiver.h in Headers */,
 				78E5E1B61A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.h in Headers */,
 				0AADB0851A15848C00CFD014 /* QredoConversation.h in Headers */,
+				78A2F2021A444A8E00974EFB /* UIColor+Qredo.h in Headers */,
 				0AD9A1991A2773C800E300BC /* QredoErrorCodes.h in Headers */,
 				0AD2596B1A2F943800FC8942 /* QredoKeychainSender.h in Headers */,
 				781D137E1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h in Headers */,
@@ -914,15 +971,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A2F1EE1A431F6C00974EFB /* QredoManagerAppRootViewController.m in Sources */,
 				0A8F5C5319FE90E60068C8D8 /* QredoConversation.m in Sources */,
 				78E5E1B71A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.m in Sources */,
+				78A2F1FA1A43220F00974EFB /* QredoSettingsViewController.m in Sources */,
 				7816B8ED1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.m in Sources */,
 				0A16F8DE19C3591700639779 /* QredoVaultCrypto.m in Sources */,
+				78A2F1F21A431F8900974EFB /* QredoWelcomeViewController.m in Sources */,
 				0AD259681A2F93F800FC8942 /* QredoKeychainReceiver.m in Sources */,
 				0AD259701A2F947700FC8942 /* QredoDeviceInfo.m in Sources */,
 				0AD99E841A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m in Sources */,
 				0A27BEB71A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m in Sources */,
-				0AE3E5C61A35FE7D00EF192A /* Qredo+KeychainTransporter.m in Sources */,
+				78A2F20A1A448D1600974EFB /* QredoKeychainArchiver.m in Sources */,
+				78A2F2031A444A8E00974EFB /* UIColor+Qredo.m in Sources */,
 				0AD2595C1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m in Sources */,
 				0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */,
 				0AD259601A2F7CD800FC8942 /* QredoKeychainSenderQR.m in Sources */,
@@ -933,10 +994,12 @@
 				781D137F1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m in Sources */,
 				0A10352C1A389DFD002479D9 /* QredoKeychain.m in Sources */,
 				0A16F8DA19C3590700639779 /* QredoVaultSequenceCache.m in Sources */,
+				78A2F2071A4455DA00974EFB /* UIButton+Qredo.m in Sources */,
 				0AA03C8919E2E6CF00F2CF43 /* Qredo.m in Sources */,
 				0A16F99019C6F62200639779 /* QredoRendezvousCrypto.m in Sources */,
 				0AA0CAD919D9B92B0025DD4D /* QredoConversationCrypto.m in Sources */,
 				0AD9A19B1A2773CE00E300BC /* QredoErrorCodes.m in Sources */,
+				78A2F1F61A4320AF00974EFB /* QredoMainViewController.m in Sources */,
 				78E5E1AF1A31B7B2004ADD5C /* QredoKeychainActivityViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -956,9 +1019,12 @@
 				0A6574181A2F3B7200D5502E /* QredoVaultDescriptorTests.swift in Sources */,
 				786A473D1A40D9E60086A69B /* KeychainArchiverTests.swift in Sources */,
 				0A6574151A2F3B7200D5502E /* QredoSExpressionTests.m in Sources */,
+				0AEE5C601A5C3B110018BE19 /* RendezvousBlockDelegate.swift in Sources */,
 				0A6574101A2F3B7200D5502E /* HighwatermarksTests.m in Sources */,
 				0A65740E1A2F3B7200D5502E /* ConversationTests.m in Sources */,
+				0AEE5C5E1A5C13B10018BE19 /* ControlMessagesTests.swift in Sources */,
 				0A65741A1A2F3B7200D5502E /* QredoVaultTests.m in Sources */,
+				0ABF4D971A5D84F20096BF19 /* ConversationBlockDelegate.swift in Sources */,
 				7810CC5C1A388BCE00421892 /* KeychainTransporterTests.swift in Sources */,
 				0A6574141A2F3B7200D5502E /* QredoRendezvousTests.m in Sources */,
 				0A65740F1A2F3B7200D5502E /* Dictionary+Contains.swift in Sources */,

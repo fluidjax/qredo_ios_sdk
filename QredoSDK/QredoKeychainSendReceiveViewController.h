@@ -7,6 +7,8 @@
 
 
 @interface QredoKeychainSendReceiveViewController : UIViewController
+@property (nonatomic, copy) void(^dismissHandler)(void);
+- (instancetype)initWithDismissHandler:(void(^)(void))dismissHandler;
 - (void)presentInRootViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion;
 - (void)displayChildViewController:(UIViewController *)aChildController;
 - (void)showCancelButton;

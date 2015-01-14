@@ -38,6 +38,9 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 {
     NSLog(@"Received message: %@", [[NSString alloc] initWithData:message.value encoding:NSUTF8StringEncoding]);
     // Can't use XCTAsset, because this class is not XCTestCase
+
+    if (message.isControlMessage) return; // just ignoring
+
     self.failed |= (message == nil);
     self.failed |= !([message.value isEqualToData:[self.expectedMessageValue dataUsingEncoding:NSUTF8StringEncoding]]);
 
@@ -371,6 +374,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         didPublishAnotherMessage = nil;
+        anotherListener.didReceiveMessageExpectation = nil;
     }];
     XCTAssertFalse(listener.failed);
 

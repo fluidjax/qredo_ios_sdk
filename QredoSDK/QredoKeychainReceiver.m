@@ -116,10 +116,18 @@
 
 - (void)parseKeychainFromData:(NSData*)data
 {
-    QredoKeychain *keychain = [[QredoKeychain alloc] initWithData:data];
+    QredoKeychain *keychain = nil;
+    NSError *parseError = nil;
+
+    @try {
+        keychain = [[QredoKeychain alloc] initWithData:data];
+    }
+    @catch (NSException *exception) {
+        parseError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:@{NSLocalizedDescriptionKey: exception.description}];
+    }
+
     
     BOOL success = keychain != nil;
-    NSError *parseError = nil;
 
     if (success) {
         self.keychain = keychain;
@@ -139,7 +147,7 @@
 {
     [self stopCommunication];
     [self.delegate qredoKeychainReceiver:self didFailWithError:error];
-    clientCompletionHandler(error);
+    if (clientCompletionHandler) clientCompletionHandler(error);
     // now this object can die
 }
 
@@ -150,7 +158,7 @@
             NSError *error = nil;
             if ([self installkeychainWithError:&error]) {
                 [self.delegate qredoKeychainReceiverDidInstallKeychain:self];
-                clientCompletionHandler(nil);
+                if (clientCompletionHandler) clientCompletionHandler(nil);
                 [self didConfirmInstallingKeychain];
             } else {
                 [self handleError:error];
@@ -228,7 +236,7 @@
     if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeKeychain]) {
         [self parseKeychainFromData:message.value];
     } else if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeDeviceInfo]) {
-    } else {
+    } else if (![message isControlMessage]) {
         [self cancel];
     }
 }
