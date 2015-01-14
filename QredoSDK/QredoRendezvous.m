@@ -406,11 +406,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _queue);
         if (_timer)
         {
-            dispatch_source_set_timer(_timer,
-                                      dispatch_time(DISPATCH_TIME_NOW, kQredoRendezvousUpdateInterval * NSEC_PER_SEC), // start
-                                      kQredoRendezvousUpdateInterval * NSEC_PER_SEC, // interval
-                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
-            dispatch_source_set_event_handler(_timer, ^{
+            dispatch_block_t pollingBlock = ^{
                 @synchronized (self) {
                     if (!_timer) return;
 
@@ -433,7 +429,15 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                         self->_highWatermark = newWatermark;
                     }];
                 }
-            });
+            };
+
+            dispatch_async(_queue, pollingBlock);
+
+            dispatch_source_set_timer(_timer,
+                                      dispatch_time(DISPATCH_TIME_NOW, kQredoRendezvousUpdateInterval * NSEC_PER_SEC), // start
+                                      kQredoRendezvousUpdateInterval * NSEC_PER_SEC, // interval
+                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
+            dispatch_source_set_event_handler(_timer, pollingBlock);
             dispatch_resume(_timer);
         }
     }
@@ -503,7 +507,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     }
     
     NSError *creationError = nil;
-    QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:creationError];
+    QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:&creationError];
     
     if (creationError) {
         errorHandler(creationError);
@@ -672,7 +676,18 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                      BOOL stop = result.responses.lastObject == response;
 
                                      NSError *localError = nil;
-                                     QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:localError];
+                                     QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:&localError];
+
+                                     if (localError && localError.code == QredoErrorCodeVaultItemNotFound) {
+                                         continue;
+                                     }
+
+                                     if (!conversation && !localError) {
+                                         // Might need to ignore the error, because there is not way for the client application to continue enumeration after this point
+                                         localError = [NSError errorWithDomain:QredoErrorDomain
+                                                                          code:QredoErrorCodeRendezvousUnknownResponse
+                                                                      userInfo:@{NSLocalizedDescriptionKey: @"Could not create conversation from response"}];
+                                     }
 
                                      if (localError) {
                                          completionHandler(localError);
@@ -708,7 +723,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return signature;
 }
 
-- (QredoConversation *)createConversationAndStoreKeysForResponse:(QredoRendezvousResponse *)response error:(NSError *)error
+- (QredoConversation *)createConversationAndStoreKeysForResponse:(QredoRendezvousResponse *)response error:(NSError **)error
 {
     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
                                                                   rendezvousTag:_tag
@@ -730,7 +745,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     
     if (savingError) {
         // Do not return a valid object if we could not save the keys, but return the error
-        error = savingError;
+        if (error) *error = savingError;
         conversation = nil;
     }
     

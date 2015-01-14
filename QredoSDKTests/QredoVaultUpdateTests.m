@@ -12,6 +12,8 @@
 @interface QredoVaultUpdateTests ()
 {
     QredoClient *client;
+    int systemItemsCount;
+    NSMutableArray *systemItemDescriptors;
 }
 
 @end
@@ -48,6 +50,24 @@
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
+    }];
+
+
+    // system items are those that are created when a vault is initialized. It can be, for example, device info.
+    __block XCTestExpectation *systemItemsExpectation = [self expectationWithDescription:@"count system items"];
+    QredoVault *vault = [client defaultVault];
+    systemItemDescriptors = [NSMutableArray array];
+    systemItemsCount = 0;
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        systemItemsCount++;
+        [systemItemDescriptors addObject:vaultItemMetadata.descriptor];
+    } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+        [systemItemsExpectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        systemItemsExpectation = nil;
     }];
 }
 
@@ -204,7 +224,9 @@
     __block NSUInteger numberOfFetchedMetadata = 0;
     testExpectation = [self expectationWithDescription:@"Enumerate"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
-        fetchedMetadata = vaultItemMetadata;
+        if (![systemItemDescriptors containsObject:vaultItemMetadata.descriptor]) {
+            fetchedMetadata = vaultItemMetadata;
+        }
         numberOfFetchedMetadata++;
     } completionHandler:^(NSError *error) {
         XCTAssertNil(error);
@@ -216,7 +238,7 @@
     }];
     
     
-    XCTAssertEqual(numberOfFetchedMetadata, 1);
+    XCTAssertEqual(numberOfFetchedMetadata, 1 + systemItemsCount);
     XCTAssertNotNil(fetchedMetadata);
     XCTAssertEqualObjects(fetchedMetadata.summaryValues[@"key1"], item1SummaryValues[@"key1"]);
     XCTAssertEqualObjects(fetchedMetadata.summaryValues[@"key2"], item1SummaryValues[@"key2"]);
@@ -301,7 +323,9 @@
     __block NSUInteger numberOfFetchedMetadata = 0;
     testExpectation = [self expectationWithDescription:@"enumerate before delete"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
-        fetchedMetadata = vaultItemMetadata;
+        if (![systemItemDescriptors containsObject:vaultItemMetadata.descriptor]) {
+            fetchedMetadata = vaultItemMetadata;
+        }
         numberOfFetchedMetadata++;
     } completionHandler:^(NSError *error) {
         XCTAssertNil(error);
@@ -313,7 +337,7 @@
     }];
     
     
-    XCTAssertEqual(numberOfFetchedMetadata, 1);
+    XCTAssertEqual(numberOfFetchedMetadata, 1 + systemItemsCount);
     XCTAssertNotNil(fetchedMetadata);
     XCTAssert([fetchedMetadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
         return [a isEqual:b];
@@ -339,7 +363,9 @@
     numberOfFetchedMetadata = 0;
     testExpectation = [self expectationWithDescription:@"enumerate after delete"];
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
-        fetchedMetadata = vaultItemMetadata;
+        if (![systemItemDescriptors containsObject:vaultItemMetadata.descriptor]) {
+            fetchedMetadata = vaultItemMetadata;
+        }
         numberOfFetchedMetadata++;
     } completionHandler:^(NSError *error) {
         XCTAssertNil(error);
@@ -350,7 +376,7 @@
         testExpectation = nil;
     }];
     
-    XCTAssertEqual(numberOfFetchedMetadata, 0);
+    XCTAssertEqual(numberOfFetchedMetadata, systemItemsCount);
     XCTAssertNil(fetchedMetadata);
     
     

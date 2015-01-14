@@ -81,6 +81,9 @@ extern NSString *const QredoRendezvousURIProtocol;
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
 
 - (void)fetchConversationWithId:(QredoQUID*)conversationId completionHandler:(void(^)(QredoConversation* conversation, NSError *error))completionHandler;
+
+- (void)deleteConversationWithId:(QredoQUID*)conversationId completionHandler:(void(^)(NSError *error))completionHandler;
+
 @end
 
 #endif

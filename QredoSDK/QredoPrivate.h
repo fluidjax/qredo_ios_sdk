@@ -19,7 +19,7 @@ static NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
 
-- (void)createSystemVault;
+- (void)createSystemVaultWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 - (BOOL)saveStateWithError:(NSError **)error;
 
 - (BOOL)setKeychain:(QredoKeychain *)keychain error:(NSError **)error;
