@@ -6,7 +6,13 @@ import UIKit
 
 class ConversationBlockDelegate : NSObject, QredoConversationDelegate {
     var messageHandler: ((QredoConversationMessage) -> Void)? = nil
+    var otherPartyLeftHandler: (() -> Void)? = nil
+
     func qredoConversation(conversation: QredoConversation!, didReceiveNewMessage message: QredoConversationMessage!) {
         messageHandler?(message)
+    }
+
+    func qredoConversationOtherPartyHasLeft(conversation: QredoConversation!) {
+        otherPartyLeftHandler?()
     }
 }

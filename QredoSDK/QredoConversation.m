@@ -569,16 +569,21 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                 scheduled++;
 
                 [self enumerateMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
-                    if ([_delegate respondsToSelector:@selector(qredoConversation:didReceiveNewMessage:)]) {
+                    if ([message isControlMessage]) {
+                        if ([message controlMessageType] == QredoConversationControlMessageTypeLeft &&
+                            [_delegate respondsToSelector:@selector(qredoConversationOtherPartyHasLeft:)]) {
+                            [_delegate qredoConversationOtherPartyHasLeft:self];
+                        }
+                    } else {
                         [_delegate qredoConversation:self didReceiveNewMessage:message];
                     }
-                } completionHandler:^(NSError *error) {
+                } incoming:YES completionHandler:^(NSError *error) {
                     // TODO: DH - need to deal with any error returned - e.g. may indicate transport has been terminated
                     responded++;
                 } since:self.highWatermark
                              highWatermarkHandler:^(QredoConversationHighWatermark *highWatermark) {
                     _highWatermark = highWatermark;
-                }];
+                } excludeControlMessages:NO];
             });
             dispatch_resume(_timer);
         }
@@ -641,12 +646,12 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                               since:(QredoConversationHighWatermark*)sinceWatermark
                highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler
 {
-    [self enumerateMessagesUsingBlock:block incoming:true completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:highWatermarkHandler];
+    [self enumerateMessagesUsingBlock:block incoming:true completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:highWatermarkHandler excludeControlMessages:YES];
 }
 
 
 - (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler {
-    [self enumerateMessagesUsingBlock:block incoming:false completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:nil];
+    [self enumerateMessagesUsingBlock:block incoming:false completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:nil excludeControlMessages:YES];
 }
 
 
@@ -655,6 +660,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                   completionHandler:(void(^)(NSError *error))completionHandler
                               since:(QredoConversationHighWatermark*)sinceWatermark
                highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler
+             excludeControlMessages:(BOOL)excludeControlMessages
 {
 
     QredoQUID *messageQueue = incoming ? _inboundQueueId : _outboundQueueId;
@@ -699,6 +705,9 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                        BOOL stop = conversationItem == result.items.lastObject;
                                        QredoConversationMessage *message = [[QredoConversationMessage alloc] initWithMessageLF:decryptedMessage incoming:incoming];
 
+                                       if (excludeControlMessages && [message isControlMessage]) {
+                                           if (excludeControlMessages) continue;
+                                       }
 
                                        message.highWatermark = [[QredoConversationHighWatermark alloc] initWithSequenceValue:conversationItem.sequenceValue];
                                        block(message, &stop);
@@ -706,6 +715,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                        if ([message isControlMessage]) {
                                            if ([message controlMessageType] == QredoConversationControlMessageTypeLeft) break;
                                        }
+
 
                                        if (stop) {
                                            break;

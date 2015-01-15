@@ -236,7 +236,7 @@
     if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeKeychain]) {
         [self parseKeychainFromData:message.value];
     } else if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeDeviceInfo]) {
-    } else if (![message isControlMessage]) {
+    } else {
         [self cancel];
     }
 }

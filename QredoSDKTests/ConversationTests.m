@@ -11,7 +11,6 @@
 #import "QredoVaultPrivate.h"
 #import "ConversationTests.h"
 
-
 // This test should has some commonalities with RendezvousListenerTests, however,
 // the purpose of this test is to cover all edge cases in the conversations:
 // - publish message
@@ -38,8 +37,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 {
     NSLog(@"Received message: %@", [[NSString alloc] initWithData:message.value encoding:NSUTF8StringEncoding]);
     // Can't use XCTAsset, because this class is not XCTestCase
-
-    if (message.isControlMessage) return; // just ignoring
 
     self.failed |= (message == nil);
     self.failed |= !([message.value isEqualToData:[self.expectedMessageValue dataUsingEncoding:NSUTF8StringEncoding]]);
