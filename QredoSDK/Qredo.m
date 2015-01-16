@@ -20,6 +20,11 @@
 
 #import <UIKit/UIKit.h>
 
+NSString *const QredoVaultItemTypeKeychain = @"com.qredo.keychain.device-name";
+NSString *const QredoVaultItemTypeKeychainAttempt = @"com.qredo.keychain.transfer-attempt";
+NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
+
+
 NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
