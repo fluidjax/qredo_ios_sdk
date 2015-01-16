@@ -12,25 +12,6 @@
 
 static NSString *QredoMainViewControllerDeviceCellIdentifier = @"QredoMainViewControllerDeviceCell";
 
-@interface QredoMainViewControllerDeviceCell : UITableViewCell
-@end
-@implementation QredoMainViewControllerDeviceCell
-
-- (instancetype)init {
-    
-    self = [super
-            initWithStyle:UITableViewCellStyleDefault
-            reuseIdentifier:QredoMainViewControllerDeviceCellIdentifier];
-    
-    if (self) {
-    }
-    
-    return self;
-    
-}
-
-@end
-
 
 @interface QredoMainViewController ()
 @property (nonatomic, copy) NSArray *deviceList;
@@ -80,7 +61,7 @@ static NSString *QredoMainViewControllerDeviceCellIdentifier = @"QredoMainViewCo
     self.toolbarItems = @[addDeviceButton, flexibleSpace, settingsButton];
     
     [self.tableView
-     registerClass:[QredoMainViewControllerDeviceCell class]
+     registerClass:[UITableViewCell class]
      forCellReuseIdentifier:QredoMainViewControllerDeviceCellIdentifier];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
@@ -118,7 +99,7 @@ static NSString *QredoMainViewControllerDeviceCellIdentifier = @"QredoMainViewCo
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    QredoMainViewControllerDeviceCell *cell
+    UITableViewCell *cell
     = [tableView
        dequeueReusableCellWithIdentifier:QredoMainViewControllerDeviceCellIdentifier
        forIndexPath:indexPath];
