@@ -190,7 +190,8 @@ static NSString *QredoMainViewControllerDeviceCellIdentifier = @"QredoMainViewCo
         
         [presentingViewController
          qredo_presentNavigationViewControllerWithViewController:keychainQRSender
-         animated:YES completion:nil];
+         animated:YES
+         completion:nil];
         
     }];
     
