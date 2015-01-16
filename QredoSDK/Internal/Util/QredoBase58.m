@@ -86,7 +86,7 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes, NSUInteger numb
 + (NSData *)decodeData:(NSString *)string
 {
     if ([string length] < 1) {
-        return [NSMutableData dataWithLength:1];
+        return [NSMutableData dataWithLength:0];
     }
     NSMutableData *input58 = [NSMutableData dataWithLength:[string length]];
     unsigned char *input58Bytes = [input58 mutableBytes];
