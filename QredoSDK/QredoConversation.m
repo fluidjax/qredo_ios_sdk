@@ -214,6 +214,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     QredoDhPrivateKey *_myPrivateKey;
     QredoConversationMetadata *_metadata;
 
+    QredoVault *_store;
+
     int scheduled, responded; // TODO use locks for queues
 }
 
@@ -776,7 +778,6 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                  if ([message controlMessageType] == QredoConversationControlMessageTypeLeft) break;
              }
 
-
              if (stop) {
                  break;
              }
@@ -787,6 +788,23 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
          
          completionHandler(returnError);
      }];
+}
+
+- (QredoVault*)store
+{
+    if (_metadata.isEphemeral) return nil;
+
+    if (_store) return _store;
+
+    NSMutableData *derivedVaultIdData = [[_client.systemVault.vaultId data] mutableCopy];
+    [derivedVaultIdData appendData:_inboundQueueId.data];
+
+    QredoQUID *conversationVaultID = [QredoQUID QUIDByHashingData:derivedVaultIdData];
+
+    _store = [[QredoVault alloc] initWithClient:_client qredoKeychain:_client.systemVault.qredoKeychain
+                                        vaultId:conversationVaultID];
+
+    return _store;
 }
 
 @end

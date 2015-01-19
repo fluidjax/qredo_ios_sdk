@@ -84,6 +84,8 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 - (void)startListening;
 - (void)stopListening;
 
+- (QredoVault*)store;
+
 - (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 
 /**
