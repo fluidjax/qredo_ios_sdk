@@ -153,8 +153,6 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     return self;
 }
 
-
-
 - (QredoConversationMessageLF*)messageLF
 {
     return [self messageLFIncludingCreatedDate:NO];
@@ -162,7 +160,6 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 - (QredoConversationMessageLF*)messageLFIncludingCreatedDate:(BOOL)includeCreatedDate
 {
-
     NSSet* summaryValues = [self.summaryValues indexableSet];
 
     if (includeCreatedDate) {
@@ -235,6 +232,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
     QredoVault *_store;
 
+    QredoConversationHighWatermark *_highestIncomingStoredHWM;
+
     int scheduled, responded; // TODO use locks for queues
 }
 
@@ -294,6 +293,44 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     [self generateKeysWithPrivateKey:_myPrivateKey publicKey:_yourPublicKey rendezvousOwner:_metadata.amRendezvousOwner];
 
     return self;
+}
+
+- (void)loadHighestHWMWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+    if (self.metadata.isPersistent) {
+        [self.store enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+
+            NSDictionary *summaryValues = vaultItemMetadata.summaryValues;
+            id isMineObj = [summaryValues objectForKey:kQredoConversationItemIsMine];
+            if (![isMineObj isKindOfClass:[NSNumber class]]) {
+                return ;
+            }
+
+            NSNumber *isMine = (NSNumber *)isMineObj;
+
+            if ([isMine boolValue]) {
+                return ;
+            }
+
+            id hwmObj = [summaryValues objectForKeyedSubscript:kQredoConversationItemHighWatermark];
+
+            if (![hwmObj isKindOfClass:[NSData class]]) {
+                return ;
+            }
+
+            QredoConversationHighWatermark *hwm = [[QredoConversationHighWatermark alloc] initWithSequenceValue:hwmObj];
+
+            if (!hwm) {
+                return ;
+            }
+
+            if ([hwmObj isLaterThan:_highestIncomingStoredHWM]) {
+                _highestIncomingStoredHWM = hwm;
+            }
+        } since:QredoVaultHighWatermarkOrigin completionHandler:^(NSError *error) {
+            if (completionHandler) completionHandler(error);
+        }];
+    }
 }
 
 - (QredoVaultItemDescriptor*)vaultItemDescriptor {
@@ -800,6 +837,23 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
              }
 
              message.highWatermark = [[QredoConversationHighWatermark alloc] initWithSequenceValue:conversationItem.sequenceValue];
+
+             if (incoming) {
+                 if (self.metadata.isPersistent && [message.highWatermark isLaterThan:_highestIncomingStoredHWM]) {
+
+                     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+                     [self storeMessage:message isMine:NO completionHandler:^(NSError *error) {
+                        dispatch_semaphore_signal(semaphore);
+                     }];
+
+                     // As enumerateMessages is an async operation, we can synchronously wait until the message is stored
+                     // TODO: the error of storing is not handled here. Decide what is expected behaviour
+                     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+
+                     _highestIncomingStoredHWM = message.highWatermark;
+                 }
+             }
+
              block(message, &stop);
 
              if ([message isControlMessage]) {

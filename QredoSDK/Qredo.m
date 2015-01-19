@@ -311,6 +311,9 @@ static NSString *const QredoKeychainPassword = @"Password123";
                                                                               unmarshaller:[QredoClientMarshallers conversationDescriptorUnmarshaller]];
 
         QredoConversation *conversation = [[QredoConversation alloc] initWithClient:self fromLFDescriptor:descriptor];
+
+        [conversation loadHighestHWMWithCompletionHandler:nil];
+
         return conversation;
     }
     @catch (NSException *e) {

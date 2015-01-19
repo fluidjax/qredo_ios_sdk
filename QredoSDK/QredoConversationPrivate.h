@@ -37,6 +37,9 @@ extern NSString *const kQredoConversationVaultItemLabelType;
              excludeControlMessages:(BOOL)excludeControlMessages;
 
 
+- (void)loadHighestHWMWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+
+
 @end
 
 @interface QredoConversationMessage (Private)
