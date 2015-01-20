@@ -62,11 +62,6 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 }
 @end
 
-
-@interface QredoVaultItemDescriptor()<NSCopying>
-@property (readonly) QredoVaultSequenceValue *sequenceValue;
-@end
-
 @implementation QredoVaultItemDescriptor
 
 + (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId
