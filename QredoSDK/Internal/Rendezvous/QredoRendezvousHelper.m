@@ -11,6 +11,7 @@
 {
     self = [super init];
     if (self) {
+        NSAssert(crypto, @"A crypto implementation has not been provided.");
         _cryptoImpl = crypto;
     }
     return self;
@@ -18,4 +19,7 @@
 
 @end
 
-
+NSError *qredoRendezvousHelperError(QredoRendezvousHelperError errorCode, NSDictionary *userInfo)
+{
+    return [NSError errorWithDomain:QredoRendezvousHelperErrorDomain code:errorCode userInfo:userInfo];
+}

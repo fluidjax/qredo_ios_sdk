@@ -9,6 +9,17 @@
 @protocol CryptoImpl;
 @class QredoRendezvousAuthSignature;
 
+
+static NSString *const QredoRendezvousHelperErrorDomain = @"QredoRendezvousHelperErrorDomain";
+
+typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
+    
+    QredoRendezvousHelperErrorUnknown = 0,
+    QredoRendezvousHelperErrorMissingTag,
+    
+};
+
+
 /**
  * A helper for constructing rendezvous and validating authenticated rendezvous.
  *

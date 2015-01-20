@@ -107,6 +107,12 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 {
     self = [super initWithCrypto:crypto];
     if (self) {
+        if ([fullTtag length] < 1) {
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
         self.fullTag = fullTtag;
         _vk = [self verifyKeyFromTag:self.fullTag error:error];
     }
