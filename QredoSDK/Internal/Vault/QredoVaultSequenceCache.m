@@ -47,10 +47,8 @@
 }
 
 - (void)saveSequenceValue:(NSNumber *)sequenceValue {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-    LogDebug(@"%s: Setting QredoVaultSequenceValue in NSUserDefaults", __PRETTY_FUNCTION__);
     [userDefaults setObject:_sequenceValue forKey:@"QredoVaultSequenceValue"];
 }
 
@@ -78,63 +76,47 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 - (NSNumber *)loadSequenceValue {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-    LogDebug(@"%s: Getting QredoVaultSequenceValue in NSUserDefaults", __PRETTY_FUNCTION__);
     NSNumber *maybeSequenceValue = [userDefaults objectForKey:@"QredoVaultSequenceValue"];
     if (maybeSequenceValue == nil) {
-        LogDebug(@"%s: No object found for QredoVaultSequenceValue in NSUserDefaults", __PRETTY_FUNCTION__);
         return @1;
     } else {
-        LogDebug(@"%s: Found object for QredoVaultSequenceValue in NSUserDefaults", __PRETTY_FUNCTION__);
         return maybeSequenceValue;
     }
 }
 
 - (NSMutableDictionary *)loadItemSequenceIds {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-    LogDebug(@"%s: Getting QredoVaultItemSequenceIds in NSUserDefaults", __PRETTY_FUNCTION__);
     NSMutableDictionary *maybeItemSequenceIds = [userDefaults objectForKey:@"QredoVaultItemSequenceIds"];
     if (maybeItemSequenceIds == nil) {
-        LogDebug(@"%s: No object found for QredoVaultItemSequenceIds in NSUserDefaults", __PRETTY_FUNCTION__);
         return [NSMutableDictionary new];
     } else {
-        LogDebug(@"%s: Found object for QredoVaultItemSequenceIds in NSUserDefaults", __PRETTY_FUNCTION__);
         return [maybeItemSequenceIds mutableCopy];
     }
 }
 
 - (NSMutableDictionary *)loadItemSequenceValues {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-    LogDebug(@"%s: Getting QredoVaultItemSequenceValues in NSUserDefaults", __PRETTY_FUNCTION__);
     NSMutableDictionary *maybeItemSequenceValues = [userDefaults objectForKey:@"QredoVaultItemSequenceValues"];
     if (maybeItemSequenceValues == nil) {
-        LogDebug(@"%s: No object found for QredoVaultItemSequenceValues in NSUserDefaults", __PRETTY_FUNCTION__);
         return [NSMutableDictionary new];
     } else {
-        LogDebug(@"%s: Found object for QredoVaultItemSequenceValues in NSUserDefaults", __PRETTY_FUNCTION__);
         return [maybeItemSequenceValues mutableCopy];
     }
 }
 
 - (void)saveItemSequenceIds {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-    LogDebug(@"%s: Setting QredoVaultItemSequenceIds in NSUserDefaults", __PRETTY_FUNCTION__);
     [userDefaults setObject:_itemSequenceIds forKey:@"QredoVaultItemSequenceIds"];
 }
 
 - (void)saveItemSequenceValues {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults in NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-    LogDebug(@"%s: Setting QredoVaultItemSequenceValues in NSUserDefaults in NSUserDefaults", __PRETTY_FUNCTION__);
     [userDefaults setObject:_itemSequenceValues forKey:@"QredoVaultItemSequenceValues"];
 }
 
