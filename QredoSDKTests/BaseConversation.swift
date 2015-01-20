@@ -5,28 +5,81 @@
 import UIKit
 import XCTest
 
+// establishes a conversation via untrusted rendezvous
+// the conversation is persisted
 class BaseConversation: XCTestCase {
+    var creatorClient : QredoClient!
+    var responderClient : QredoClient!
+
+    var creatorConversation : QredoConversation!
+    var responderConversation : QredoConversation!
+    let conversationType = "com.qredo.test"
+    let plainTextMessageType = "com.qredo.plaintext"
+
+    var useMQTT = false
 
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
+        let creatorClientExpectation = expectationWithDescription("authorize client")
+        let options = QredoClientOptions(MQTT: useMQTT, resetData: true)
+        QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], options: options) { authorizedClient, error in
+            XCTAssertNil(error, "failed to authorize client")
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
+            if let actualClient = authorizedClient {
+                self.creatorClient = actualClient
+            }
+
+            creatorClientExpectation.fulfill()
         }
-    }
 
+        let responderClientExpectation = expectationWithDescription("authorize client")
+        QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], options: options) { authorizedClient, error in
+            XCTAssertNil(error, "failed to authorize client")
+
+            if let actualClient = authorizedClient {
+                self.responderClient = actualClient
+            }
+
+            responderClientExpectation.fulfill()
+        }
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+
+
+        let rendezvousExpectation = expectationWithDescription("create rendezvous")
+        let randomTag = QredoQUID().QUIDString()
+        let configuration = QredoRendezvousConfiguration(conversationType: conversationType)
+        var creatorRendezvous : QredoRendezvous? = nil
+        creatorClient.createRendezvousWithTag(randomTag, configuration: configuration) { rendezvous, error in
+            XCTAssertNil(error, "failed to create rendezvos")
+
+            if let actualRendezvous = rendezvous {
+                creatorRendezvous = actualRendezvous
+                rendezvousExpectation.fulfill()
+            }
+        }
+
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+
+        let receiveResponseForRendezvousExpectation = expectationWithDescription("get response for rendezvous")
+        let respondToRendezvousExpectation = expectationWithDescription("respond to rendezvous")
+
+        let rendezvousDelegate = RendezvousBlockDelegate()
+        rendezvousDelegate.responseHandler = { conversation in
+            self.creatorConversation = conversation
+            receiveResponseForRendezvousExpectation.fulfill()
+        }
+
+        creatorRendezvous?.delegate = rendezvousDelegate
+        creatorRendezvous?.startListening()
+
+        responderClient.respondWithTag(randomTag, completionHandler: { conversation, error in
+            XCTAssertNil(error, "failed to respond")
+
+            self.responderConversation = conversation
+            respondToRendezvousExpectation.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+    }
 }

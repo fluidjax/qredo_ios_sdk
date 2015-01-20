@@ -54,7 +54,6 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     QredoConversation *creatorConversation;
 }
-
 @end
 
 @implementation ConversationTests
@@ -121,7 +120,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     }];
 }
 
-- (void)testRespondingToConversation {
+- (void)testRespondingToConversation
+{
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
@@ -200,7 +200,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [anotherClient closeSession];
 }
 
-- (void)testConversation {
+- (void)testConversation
+{
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
@@ -388,7 +389,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [didReceiveResponseExpectation fulfill];
 }
 
-- (void)testMetadataOfEphemeralConversation {
+- (void)testMetadataOfEphemeralConversation
+{
     
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
@@ -464,8 +466,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     [anotherClient closeSession];
 }
 
-- (void)testMetadataOfPersistentConversation {
-    
+- (void)testMetadataOfPersistentConversation
+{    
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
