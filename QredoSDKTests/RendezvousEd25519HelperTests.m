@@ -292,6 +292,48 @@
     
 }
 
+- (void)testCreateHelperMissingCrypto
+{
+    NSError *error = nil;
+    
+    NSString *prefix = @"MyTestRendezVous@";
+    
+    XCTAssertThrows([QredoRendezvousHelpers
+                     rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                     prefix:prefix
+                     crypto:nil
+                     error:&error
+                     ]);
+    
+}
+
+- (void)testRespondHelperMissingCrypto
+{
+    NSError *error = nil;
+    
+    XCTAssertThrows([QredoRendezvousHelpers
+                     rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                     fullTag:@"someTag@244dff345"
+                     crypto:nil
+                     error:&error]);
+}
+
+- (void)testRespondHelperMissingTag
+{
+    NSError *error = nil;
+    
+    id helper = [QredoRendezvousHelpers
+                     rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                     fullTag:nil
+                     crypto:self.cryptoImpl
+                     error:&error];
+    
+    XCTAssertNil(helper);
+    XCTAssert(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
+}
+
 @end
 
 
