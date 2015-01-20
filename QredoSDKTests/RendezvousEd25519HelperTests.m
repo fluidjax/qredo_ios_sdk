@@ -29,62 +29,84 @@
 
 - (void)testSignatureAndVerification {
     
+    NSError *error = nil;
+    
     NSString *prefix = @"MyTestRendezVous@";
     
-    id<QredoRendezvousHelper> signingHelper
+    error = nil;
+    id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       tag:prefix
+       prefix:prefix
        crypto:self.cryptoImpl
+       error:&error
        ];
     XCTAssertNotNil(signingHelper);
+    XCTAssertNil(error);
     
     NSString *fullTag = [signingHelper tag];
     XCTAssertNotNil(fullTag);
     
-    id<QredoRendezvousHelper> verificationHelper
+    error = nil;
+    id<QredoRendezvousRespondHelper> verificationHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       tag:fullTag
-       crypto:self.cryptoImpl];
+       fullTag:fullTag
+       crypto:self.cryptoImpl
+       error:&error];
     XCTAssertNotNil(verificationHelper);
+    XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data];
+    error = nil;
+    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
+    XCTAssertNil(error);
     
-    BOOL result = [verificationHelper isValidSignature:signature rendezvousData:data];
+    error = nil;
+    BOOL result = [verificationHelper isValidSignature:signature rendezvousData:data error:&error];
     XCTAssert(result);
+    XCTAssertNil(error);
     
 }
 
 - (void)testSignatureAndVerificationInvalidSignature {
     
+    NSError *error = nil;
+    
     NSString *prefix = @"MyTestRendezVous@";
     
-    id<QredoRendezvousHelper> signingHelper
+    error = nil;
+    id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       tag:prefix
+       prefix:prefix
        crypto:self.cryptoImpl
+       error:&error
        ];
     XCTAssertNotNil(signingHelper);
+    XCTAssertNil(error);
     
     NSString *fullTag = [signingHelper tag];
     XCTAssertNotNil(fullTag);
     
-    id<QredoRendezvousHelper> verificationHelper
+    error = nil;
+    id<QredoRendezvousRespondHelper> verificationHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       tag:fullTag
-       crypto:self.cryptoImpl];
+       fullTag:fullTag
+       crypto:self.cryptoImpl
+       error:&error];
     XCTAssertNotNil(verificationHelper);
+    XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data];
+    error = nil;
+    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
+    XCTAssertNil(error);
     
     __block NSData *signatureData = nil;
     [signature
@@ -109,69 +131,91 @@
     
     QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
     
-    
-    BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data];
+    error = nil;
+    BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data error:&error];
     XCTAssertFalse(result);
+    XCTAssertNil(error);
 }
 
 - (void)testSignatureAndVerificationNoPrefix {
     
+    NSError *error = nil;
+    
     NSString *prefix = nil;
     
-    id<QredoRendezvousHelper> signingHelper
+    error = nil;
+    id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       tag:prefix
+       prefix:prefix
        crypto:self.cryptoImpl
+       error:&error
        ];
     XCTAssertNotNil(signingHelper);
+    XCTAssertNil(error);
     
     NSString *fullTag = [signingHelper tag];
     XCTAssertNotNil(fullTag);
     
-    id<QredoRendezvousHelper> verificationHelper
+    error = nil;
+    id<QredoRendezvousRespondHelper> verificationHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       tag:fullTag
-       crypto:self.cryptoImpl];
+       fullTag:fullTag
+       crypto:self.cryptoImpl
+       error:&error];
     XCTAssertNotNil(verificationHelper);
+    XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data];
+    error = nil;
+    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
+    XCTAssertNil(error);
     
-    BOOL result = [verificationHelper isValidSignature:signature rendezvousData:data];
+    error = nil;
+    BOOL result = [verificationHelper isValidSignature:signature rendezvousData:data error:&error];
     XCTAssert(result);
+    XCTAssertNil(error);
     
 }
 
 - (void)testSignatureAndVerificationNoPrefixInvalidSignature {
     
+    NSError *error = nil;
+    
     NSString *prefix = nil;
     
-    id<QredoRendezvousHelper> signingHelper
+    error = nil;
+    id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       tag:prefix
+       prefix:prefix
        crypto:self.cryptoImpl
+       error:&error
        ];
     XCTAssertNotNil(signingHelper);
+    XCTAssertNil(error);
     
     NSString *fullTag = [signingHelper tag];
     XCTAssertNotNil(fullTag);
     
-    id<QredoRendezvousHelper> verificationHelper
+    id<QredoRendezvousRespondHelper> verificationHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       tag:fullTag
-       crypto:self.cryptoImpl];
+       fullTag:fullTag
+       crypto:self.cryptoImpl
+       error:&error];
     XCTAssertNotNil(verificationHelper);
+    XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data];
+    error = nil;
+    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
+    XCTAssertNil(error);
     
     
     __block NSData *signatureData = nil;
@@ -197,9 +241,10 @@
     
     QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
     
-    
-    BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data];
+    error = nil;
+    BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data error:&error];
     XCTAssertFalse(result);
+    XCTAssertNil(error);
     
 }
 

@@ -2,6 +2,7 @@
 #import "QredoClient.h"
 #import "QredoKeyPair.h"
 #import "QredoTypes.h"
+#import "QredoRendezvousHelper.h"
 
 @protocol QredoRendezvousHelper;
 
@@ -30,8 +31,14 @@
 - (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag;
 
 - (NSData *)signChallenge:(NSData*)challenge hashtag:(QredoRendezvousHashedTag*)hashtag nonce:(QredoNonce*)nonce privateKey:(QredoPrivateKey*)privateKey;
-- (BOOL)validateCreationInfo:(QredoRendezvousCreationInfo *)creationInfo tag:(NSString *)tag;
 
-- (id<QredoRendezvousHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType tag:(NSString *)tag;
+- (BOOL)validateCreationInfo:(QredoRendezvousCreationInfo *)creationInfo
+                         tag:(NSString *)tag
+                       error:(NSError **)error;
+
+- (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                                                  prefix:(NSString *)tag
+                                                                   error:(NSError **)error;
+
 
 @end

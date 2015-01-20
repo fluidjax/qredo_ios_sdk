@@ -66,15 +66,15 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 
-@interface QredoRendezvousEd25519Helper (QredoRendezvousTests)
+@interface QredoRendezvousEd25519CreateHelper (QredoRendezvousTests)
 + (void)swizleSigningMethod;
 @end
 
-@implementation QredoRendezvousEd25519Helper (QredoRendezvousTests)
+@implementation QredoRendezvousEd25519CreateHelper (QredoRendezvousTests)
 
-- (QredoRendezvousAuthSignature *)QredoRendezvousTests_signatureWithData:(NSData *)data {
+- (QredoRendezvousAuthSignature *)QredoRendezvousTests_signatureWithData:(NSData *)data error:(NSError **)error {
     
-    QredoRendezvousAuthSignature *signature = [self QredoRendezvousTests_signatureWithData:data];
+    QredoRendezvousAuthSignature *signature = [self QredoRendezvousTests_signatureWithData:data error:error];
     
     __block NSData *signatureData = nil;
     [signature
@@ -104,8 +104,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 + (void)swizleSigningMethod {
     Class class = self;
-    SEL origSEL = @selector(signatureWithData:);
-    SEL newSEL = @selector(QredoRendezvousTests_signatureWithData:);
+    SEL origSEL = @selector(signatureWithData:error:);
+    SEL newSEL = @selector(QredoRendezvousTests_signatureWithData:error:);
     swizleMethodsForSelectorsInClass(origSEL, newSEL, class);
 }
 
@@ -524,7 +524,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [QredoRendezvousEd25519Helper swizleSigningMethod];
+    [QredoRendezvousEd25519CreateHelper swizleSigningMethod];
     
     NSLog(@"Creating rendezvous");
     [client
@@ -541,7 +541,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
         createExpectation = nil;
     }];
-    [QredoRendezvousEd25519Helper swizleSigningMethod];
+    [QredoRendezvousEd25519CreateHelper swizleSigningMethod];
     
     XCTAssertNotNil(createdRendezvous);
     

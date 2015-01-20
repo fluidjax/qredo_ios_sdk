@@ -412,7 +412,9 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
             QredoRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
 
             
-            if ([_rendezvousCrypto validateCreationInfo:creationInfo tag:rendezvousTag]) {
+            // TODO [GR]: Take a view whether we need to show this error to the client code.
+            
+            if ([_rendezvousCrypto validateCreationInfo:creationInfo tag:rendezvousTag error:nil]) {
                 
                 QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:creationInfo.requesterPublicKey];
                 

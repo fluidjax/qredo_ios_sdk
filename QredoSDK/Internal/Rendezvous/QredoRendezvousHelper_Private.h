@@ -7,7 +7,18 @@
 
 @protocol CryptoImpl;
 
-@interface QredoAbstractRendezvousHelper ()
-@property (nonatomic, copy, readonly) NSString *originalTag;
-@property (nonatomic, readonly) id<CryptoImpl> cryptoImpl;
+@protocol QredoRendezvousCreatePrivateHelper <QredoRendezvousCreateHelper>
+- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto error:(NSError **)error;
 @end
+
+@protocol QredoRendezvousRespondPrivateHelper <QredoRendezvousRespondHelper>
+- (instancetype)initWithFullTag:(NSString *)fullTtag crypto:(id<CryptoImpl>)crypto error:(NSError **)error;
+@end
+
+
+@interface QredoAbstractRendezvousHelper : NSObject
+@property (nonatomic, readonly) id<CryptoImpl> cryptoImpl;
+- (instancetype)initWithCrypto:(id<CryptoImpl>)crypto;
+@end
+
+

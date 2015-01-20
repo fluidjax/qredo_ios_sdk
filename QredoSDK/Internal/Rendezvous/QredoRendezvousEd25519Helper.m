@@ -3,20 +3,13 @@
  */
 
 #import "QredoRendezvousEd25519Helper.h"
-#import "QredoRendezvousHelper_Private.h"
 #import "QredoClient.h"
 #import "CryptoImpl.h"
 #import "QredoBase58.h"
 
 
-@interface QredoRendezvousEd25519Helper () {
-    QredoED25519SigningKey *_sk;
-    QredoED25519VerifyKey *_vk;
-}
-@end
 
-
-@implementation QredoRendezvousEd25519Helper
+@implementation QredoAbstractRendezvousEd25519Helper
 
 QredoRendezvousAuthSignature *kEmptySignature = nil;
 
@@ -29,40 +22,9 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
     });
 }
 
-- (void)commonInit
-{
-    if ([self noTagProvided]) {
-        
-        _sk = [self.cryptoImpl qredoED25519SigningKey];
-        _vk = _sk.verifyKey;
-        
-    } else {
-        
-        _sk = nil;
-        _vk = [self verifyKeyFromTag:self.originalTag];
-        
-    }
-}
-
 - (QredoRendezvousAuthenticationType)type
 {
     return QredoRendezvousAuthenticationTypeEd25519;
-}
-
-- (NSString *)tag
-{
-    NSString *trimedString = [self.originalTag stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-    if ([trimedString length] == 0) {
-        return [QredoBase58 encodeData:_vk.data];
-    }
-    
-    if ([trimedString hasSuffix:@"@"]) {
-        NSString *encodedVK = [QredoBase58 encodeData:_vk.data];
-        return [trimedString stringByAppendingString:encodedVK];
-    }
-    
-    return self.originalTag;
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature
@@ -70,14 +32,103 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
     return kEmptySignature;
 }
 
-- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data
+@end
+
+
+@interface QredoRendezvousEd25519CreateHelper () {
+    QredoED25519SigningKey *_sk;
+}
+@property (nonatomic, copy) NSString *prefix;
+@end
+
+@implementation QredoRendezvousEd25519CreateHelper
+
+- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+{
+    self = [super initWithCrypto:crypto];
+    if (self) {
+        self.prefix = prefix;
+        _sk = [self.cryptoImpl qredoED25519SigningKey];
+    }
+    return self;
+}
+
+- (QredoRendezvousAuthenticationType)type
+{
+    return [super type];
+}
+
+- (NSString *)tag
+{
+    NSString *trimedString = [self.prefix stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    if ([trimedString length] == 0) {
+        return [QredoBase58 encodeData:_sk.verifyKey.data];
+    }
+    
+    if ([trimedString hasSuffix:@"@"]) {
+        NSString *encodedVK = [QredoBase58 encodeData:_sk.verifyKey.data];
+        return [trimedString stringByAppendingString:encodedVK];
+    }
+    
+    // TODO [GR]: Discuss this appending of '@' with hugh and the rest.
+    
+    NSString *encodedVK = [QredoBase58 encodeData:_sk.verifyKey.data];
+    return [NSString stringWithFormat:@"@%@", encodedVK];
+}
+
+- (QredoRendezvousAuthSignature *)emptySignature
+{
+    return [super emptySignature];
+}
+
+- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
     NSAssert(_sk, @"Signing key is unknown");    
-    NSData *sig = [self.cryptoImpl qredoED25519SignMessage:data withKey:_sk];
+    NSData *sig = [self.cryptoImpl qredoED25519SignMessage:data withKey:_sk error:error];
+    if (!sig) {
+        return nil;
+    }
     return [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:sig];
 }
 
-- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData
+@end
+
+
+@interface QredoRendezvousEd25519RespondHelper () {
+    QredoED25519VerifyKey *_vk;
+}
+@property (nonatomic, copy) NSString *fullTag;
+@end
+
+@implementation QredoRendezvousEd25519RespondHelper
+
+- (instancetype)initWithFullTag:(NSString *)fullTtag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+{
+    self = [super initWithCrypto:crypto];
+    if (self) {
+        self.fullTag = fullTtag;
+        _vk = [self verifyKeyFromTag:self.fullTag error:error];
+    }
+    return self;
+}
+
+- (QredoRendezvousAuthenticationType)type
+{
+    return [super type];
+}
+
+- (NSString *)tag
+{
+    return self.fullTag;
+}
+
+- (QredoRendezvousAuthSignature *)emptySignature
+{
+    return [super emptySignature];
+}
+
+- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
     __block NSData *signatureData = nil;
     [signature ifX509_PEM:^(NSData *signature) {
@@ -94,25 +145,19 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
         signatureData = nil;
     }];
     
-    if (!signatureData) {
+    if ([signatureData length] < 1) {
         return NO;
     }
     
-    return [self.cryptoImpl qredoED25519VerifySignature:signatureData ofMessage:rendezvousData verifyKey:_vk];
+    return [self.cryptoImpl qredoED25519VerifySignature:signatureData ofMessage:rendezvousData verifyKey:_vk error:error];
 }
 
-- (BOOL)noTagProvided
-{
-    NSString *trimedString = [self.tag stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    return [trimedString length] == 0 || [trimedString hasSuffix:@"@"];
-}
-
-- (QredoED25519VerifyKey *)verifyKeyFromTag:(NSString *)tag
+- (QredoED25519VerifyKey *)verifyKeyFromTag:(NSString *)tag error:(NSError **)error
 {
     NSAssert([tag length], @"Malformed tag");
     QredoED25519VerifyKey *vk = nil;
     
-    NSUInteger prefixPos = [tag rangeOfString:@"@"].location;
+    NSUInteger prefixPos = [tag rangeOfString:@"@" options:NSBackwardsSearch].location;
     
     NSString *vkString = nil;
     if (prefixPos == NSNotFound) {
@@ -123,11 +168,12 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
     
     NSData *vkData = [QredoBase58 decodeData:vkString];
     NSAssert([tag length], @"Malformed tag (on decoding");
-    vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData];
+    vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
     
     return vk;
 }
 
 @end
+
 
 

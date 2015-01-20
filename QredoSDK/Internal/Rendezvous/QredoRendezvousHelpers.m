@@ -8,15 +8,42 @@
 
 @implementation QredoRendezvousHelpers
 
-+ (id<QredoRendezvousHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType tag:(NSString *)tag crypto:(id<CryptoImpl>)crypto
++ (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                                                  prefix:(NSString *)prefix
+                                                                  crypto:(id<CryptoImpl>)crypto
+                                                                   error:(NSError **)error
 {
     switch (authenticationType) {
             
         case QredoRendezvousAuthenticationTypeAnonymous:
-            return [[QredoRendezvousAnonymousHelper alloc] initWithTag:tag crypto:crypto];
+            return [[QredoRendezvousAnonymousHelper alloc] initWithPrefix:prefix crypto:crypto error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeEd25519:
-            return [[QredoRendezvousEd25519Helper alloc] initWithTag:tag crypto:crypto];
+            return [[QredoRendezvousEd25519CreateHelper alloc] initWithPrefix:prefix crypto:crypto error:(NSError **)error];
+            
+        case QredoRendezvousAuthenticationTypeX509Pem:
+        case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
+        case QredoRendezvousAuthenticationTypeRsa2048Pem:
+        case QredoRendezvousAuthenticationTypeRsa4096Pem:
+            return nil;
+            
+    }
+    
+    return nil;
+}
+
++ (id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                                                  fullTag:(NSString *)fullTag
+                                                                   crypto:(id<CryptoImpl>)crypto
+                                                                    error:(NSError **)error
+{
+    switch (authenticationType) {
+            
+        case QredoRendezvousAuthenticationTypeAnonymous:
+            return [[QredoRendezvousAnonymousHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            
+        case QredoRendezvousAuthenticationTypeEd25519:
+            return [[QredoRendezvousEd25519RespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
             
         case QredoRendezvousAuthenticationTypeX509Pem:
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:

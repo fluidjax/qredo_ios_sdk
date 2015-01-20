@@ -151,13 +151,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void(^)(NSError *error))completionHandler
 {
-    if (configuration.authenticationType != QredoRendezvousAuthenticationTypeAnonymous) {
-        NSString *trimmedTag = [tag stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if (tag && ![trimmedTag hasSuffix:@"@"]) {
-            tag = [tag stringByAppendingString:@"@"];
-        }
-    }
-    
     LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
     
     self.configuration = configuration;
@@ -167,8 +160,14 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO review when TransCap is defined
 
-    
-    id<QredoRendezvousHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType tag:tag];
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag error:&error];
+    if (!rendezvousHelper) {
+        // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+        // be to much information.
+        completionHandler(error);
+        return;
+    }
     _tag = [rendezvousHelper tag];
 
     // Hash the tag.
@@ -203,7 +202,13 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
         authType= [QredoRendezvousAuthType rendezvousAnonymous];
     } else {
-        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode];
+        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode error:&error];
+        if (!authSignature) {
+            // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+            // be to much information.
+            completionHandler(error);
+            return;
+        }
         authType = [QredoRendezvousAuthType rendezvousTrustedWithSignature:authSignature];
     }
     

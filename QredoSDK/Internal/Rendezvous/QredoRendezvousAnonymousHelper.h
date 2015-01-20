@@ -2,8 +2,9 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#import "QredoRendezvousHelper.h"
+#import "QredoRendezvousHelper_Private.h"
 
-@interface QredoRendezvousAnonymousHelper : QredoAbstractRendezvousHelper<QredoRendezvousHelper>
+@interface QredoRendezvousAnonymousHelper
+: QredoAbstractRendezvousHelper<QredoRendezvousCreatePrivateHelper, QredoRendezvousRespondPrivateHelper>
 
 @end

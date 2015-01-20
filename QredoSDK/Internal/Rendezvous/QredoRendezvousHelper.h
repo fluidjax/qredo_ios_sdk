@@ -42,13 +42,25 @@
  */
 - (QredoRendezvousAuthSignature *)emptySignature;
 
+
+@end
+
+
+@protocol QredoRendezvousCreateHelper <QredoRendezvousHelper>
+
 /**
  * Gets the lingua franca signature type with the signature taken over a byte array.
  *
  * @param rendezvousData Data to be signed
  * @return The signature type for the rendezvous with a signature.
  */
-- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data;
+- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error;
+
+
+@end
+
+
+@protocol QredoRendezvousRespondHelper <QredoRendezvousHelper>
 
 /**
  * Verify the signature
@@ -57,16 +69,11 @@
  * @param signatureData  The signature
  * @return True if the signature is valid, false otherwise
  */
-- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData;
+- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error;
 
 @end
 
 
 
-
-@interface QredoAbstractRendezvousHelper : NSObject
-- (instancetype)initWithTag:(NSString *)tag crypto:(id<CryptoImpl>)crypto;
-- (void)commonInit;
-@end
 
 

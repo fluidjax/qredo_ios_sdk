@@ -7,19 +7,13 @@
 
 @implementation QredoAbstractRendezvousHelper
 
-- (instancetype)initWithTag:(NSString *)tag crypto:(id<CryptoImpl>)crypto
+- (instancetype)initWithCrypto:(id<CryptoImpl>)crypto
 {
     self = [super init];
     if (self) {
-        _originalTag = tag;
         _cryptoImpl = crypto;
-        [self commonInit];
     }
     return self;
-}
-
-- (void)commonInit
-{
 }
 
 @end
