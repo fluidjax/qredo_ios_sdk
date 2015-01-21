@@ -7,5 +7,8 @@
 - (void)authoriseClient;
 - (void)testCreateRendezvous;
 - (void)testCreateAndRespondRendezvous;
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519;
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519NoTag;
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519ForgedSignature;
 
 @end

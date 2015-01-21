@@ -30,4 +30,16 @@
     }
 }
 
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519 {
+    [super testCreateAndRespondAuthenticatedRendezvousED25519];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519NoTag {
+    [super testCreateAndRespondAuthenticatedRendezvousED25519NoTag];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519ForgedSignature {
+    [super testCreateAndRespondAuthenticatedRendezvousED25519ForgedSignature];
+}
+
 @end
