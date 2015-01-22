@@ -155,25 +155,18 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 - (QredoConversationMessageLF*)messageLF
 {
-    return [self messageLFWithSummaryValues:nil];
-}
-
-- (QredoConversationMessageLF*)messageLFWithSummaryValues:(NSDictionary*)summaryValues
-{
     NSSet* summaryValuesSet = [self.summaryValues indexableSet];
 
-    if (summaryValues) {
-        summaryValuesSet = [summaryValuesSet setByAddingObjectsFromSet:[summaryValues indexableSet]];
-    }
     QredoConversationMessageMetaDataLF *messageMetadata =
-        [QredoConversationMessageMetaDataLF conversationMessageMetaDataLFWithID:[QredoQUID QUID]
-                                                                       parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
-                                                                       sequence:nil // TODO
-                                                                       dataType:self.dataType
-                                                                  summaryValues:summaryValuesSet];
+    [QredoConversationMessageMetaDataLF conversationMessageMetaDataLFWithID:[QredoQUID QUID]
+                                                                   parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
+                                                                   sequence:nil // TODO
+                                                                   dataType:self.dataType
+                                                              summaryValues:summaryValuesSet];
 
     QredoConversationMessageLF *message = [[QredoConversationMessageLF alloc] initWithMetadata:messageMetadata value:self.value];
     return message;
+
 }
 
 - (BOOL)isControlMessage
