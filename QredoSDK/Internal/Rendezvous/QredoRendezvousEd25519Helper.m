@@ -74,7 +74,7 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
     // TODO [GR]: Discuss this appending of '@' with hugh and the rest.
     
     NSString *encodedVK = [QredoBase58 encodeData:_sk.verifyKey.data];
-    return [NSString stringWithFormat:@"@%@", encodedVK];
+    return [NSString stringWithFormat:@"%@@%@", trimedString, encodedVK];
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature
