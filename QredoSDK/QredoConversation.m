@@ -63,11 +63,13 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 @implementation QredoConversationMetadata
 
-- (BOOL)isEphemeral {
+- (BOOL)isEphemeral
+{
     return [self.type hasSuffix:@"~"];
 }
 
-- (BOOL)isPersistent {
+- (BOOL)isPersistent
+{
     return ![self isEphemeral];
 }
 
@@ -79,7 +81,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 @implementation QredoConversationHighWatermark
 
-- (instancetype)initWithSequenceValue:(NSData*)sequenceValue {
+- (instancetype)initWithSequenceValue:(NSData*)sequenceValue
+{
     self = [super init];
     self.sequenceValue = sequenceValue;
     return self;
@@ -330,7 +333,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     }
 }
 
-- (QredoVaultItemDescriptor*)vaultItemDescriptor {
+- (QredoVaultItemDescriptor*)vaultItemDescriptor
+{
     QredoVault *vault = [_client systemVault];
 
     QredoVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
@@ -532,7 +536,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     }];
 }
 
-- (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler {
+- (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
     QredoVault *vault = _client.systemVault;
 
     QredoVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
@@ -735,7 +740,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                                                                             dataType:kQredoConversationMessageTypeControl
                                                                                        summaryValues:nil];
 
-    [self publishMessage:leftControlMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
+    [self publishMessage:leftControlMessage
+       completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
     {
         if (error) {
             completionHandler(error);
@@ -793,7 +799,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 - (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
                                   since:(QredoConversationHighWatermark*)sinceWatermark
-                      completionHandler:(void(^)(NSError *error))completionHandler {
+                      completionHandler:(void(^)(NSError *error))completionHandler
+{
     [self enumerateMessagesUsingBlock:block
                              incoming:false
                     completionHandler:completionHandler
@@ -850,7 +857,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
      }];
 }
 
-- (void)enumerateBodyWithResult:(QredoConversationQueryItemsResult *)result conversationItemIndex:(NSUInteger)conversationItemIndex
+- (void)enumerateBodyWithResult:(QredoConversationQueryItemsResult *)result
+          conversationItemIndex:(NSUInteger)conversationItemIndex
                           block:(void(^)(QredoConversationMessage *message, BOOL *stop))block
                            incoming:(BOOL)incoming
               completionHandler:(void(^)(NSError *error))completionHandler
@@ -859,7 +867,6 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 {
     NSData *bulkKey = incoming ? _inboundBulkKey : _outboundBulkKey;
     NSData *authKey = incoming ? _inboundAuthKey : _outboundAuthKey;
-
 
     // The outcome of this function should be either calling `completionHandler` or `continueToNextMessage`
 
