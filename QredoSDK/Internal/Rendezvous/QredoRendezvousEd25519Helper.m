@@ -150,6 +150,8 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 
 - (QredoED25519VerifyKey *)verifyKeyFromTag:(NSString *)tag error:(NSError **)error
 {
+    // TODO [GR]: The code in this method should return errors through the **error rather than assert
+    
     NSAssert([tag length], @"Malformed tag");
     QredoED25519VerifyKey *vk = nil;
     
@@ -163,9 +165,9 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
     }
     
     NSData *vkData = [QredoBase58 decodeData:vkString];
-    NSAssert([tag length], @"Malformed tag (on decoding");
-    vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
+    NSAssert([vkData length], @"Malformed tag (on decoding)");
     
+    vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
     return vk;
 }
 
