@@ -184,21 +184,21 @@
        accessControlPublicKey:creationInfo.accessControlPublicKey
        authenticationKey:authKey];
     
-    BOOL ok1 = [QredoCrypto equalsConstantTime:authCode right:creationInfo.authenticationCode];
+    BOOL isValidAuthCode = [QredoCrypto equalsConstantTime:authCode right:creationInfo.authenticationCode];
     
-    __block BOOL ok2 = NO;
+    __block BOOL isValidSignature = NO;
     [authType ifAnonymous:^{
-        ok2 = YES;
+        isValidSignature = YES;
     } ifTrustedWithSignature:^(QredoRendezvousAuthSignature *signature) {
         if (rendezvousHelper == nil) {
-            ok2 = NO;
+            isValidSignature = NO;
         } else {
             NSData *rendezvousData = creationInfo.authenticationCode;
-            ok2 = [rendezvousHelper isValidSignature:signature rendezvousData:rendezvousData error:error];
+            isValidSignature = [rendezvousHelper isValidSignature:signature rendezvousData:rendezvousData error:error];
         }
     }];
     
-    return ok1 && ok2;
+    return isValidAuthCode && isValidSignature;
 }
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType prefix:(NSString *)tag error:(NSError **)error
