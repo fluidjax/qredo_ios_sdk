@@ -52,21 +52,19 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 
 - (NSString *)tag
 {
-    NSString *trimedString = [self.prefix stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *trimmedPrefix = [self.prefix stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *encodedVK = [QredoBase58 encodeData:_sk.verifyKey.data];
     
-    if ([trimedString length] == 0) {
-        return [QredoBase58 encodeData:_sk.verifyKey.data];
+    if ([trimmedPrefix length] == 0) {
+        return encodedVK;
     }
     
-    if ([trimedString hasSuffix:@"@"]) {
-        NSString *encodedVK = [QredoBase58 encodeData:_sk.verifyKey.data];
-        return [trimedString stringByAppendingString:encodedVK];
+    if ([trimmedPrefix hasSuffix:@"@"]) {
+        return [trimmedPrefix stringByAppendingString:encodedVK];
     }
     
     // TODO [GR]: Discuss this appending of '@' with hugh and the rest.
-    
-    NSString *encodedVK = [QredoBase58 encodeData:_sk.verifyKey.data];
-    return [NSString stringWithFormat:@"%@@%@", trimedString, encodedVK];
+    return [NSString stringWithFormat:@"%@@%@", trimmedPrefix, encodedVK];
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature
