@@ -831,25 +831,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
          LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
 
-
-         // If all operations were synchronous, then the logic would be the following:
-         // for (message in result.items) {
-         //   decrypt(message);
-         //   if not message.isControlMessage {
-         //     store(message)
-         //   } else if excludeControlMessages {
-         //     if message.controlMsgType == Left {
-         //       break
-         //     }
-         //     continue
-         //   }
-         //   block(message, &stop)  // return the message to the enumeration block
-         //   if stop {
-         //     break
-         //   }
-         // }
-
-         // There are a few complications when add asynchronosity
+         // There are a few complications when asynchronosity is added
          // 1. We need to wait until the messages is stored before returning it to the user,
          //    but at the same time the queue/thread should not be blocked
          // 2. The enumeration should proceed after we deliver the message back to the user
