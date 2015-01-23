@@ -13,15 +13,6 @@
 
 QredoRendezvousAuthSignature *kEmptySignature = nil;
 
-+ (void)load
-{
-    [super load];
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        kEmptySignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:[NSMutableData dataWithLength:64]];
-    });
-}
-
 - (QredoRendezvousAuthenticationType)type
 {
     return QredoRendezvousAuthenticationTypeEd25519;
@@ -29,7 +20,8 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 
 - (QredoRendezvousAuthSignature *)emptySignature
 {
-    return kEmptySignature;
+    NSData *emptySignatureData = [self.cryptoImpl qredoED25519EmptySignature];
+    return [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:emptySignatureData];
 }
 
 @end
