@@ -13,7 +13,7 @@
 
 @implementation QredoRendezvousAnonymousHelper
 
-- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto error:(NSError *__autoreleasing *)error
+- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
@@ -22,7 +22,7 @@
     return self;
 }
 
-- (instancetype)initWithFullTag:(NSString *)fullTtag crypto:(id<CryptoImpl>)crypto error:(NSError *__autoreleasing *)error
+- (instancetype)initWithFullTag:(NSString *)fullTtag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
@@ -47,12 +47,12 @@
     return nil;
 }
 
-- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError *__autoreleasing *)error
+- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
     return nil;
 }
 
-- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError *__autoreleasing *)error
+- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
     return YES;
 }
