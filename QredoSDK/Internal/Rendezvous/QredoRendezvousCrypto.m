@@ -67,7 +67,7 @@
                                                                     transCap:transCap
                                                           requesterPublicKey:requesterPublicKey
                                                       accessControlPublicKey:accessControlPublicKey
-                                                          authenticationCode:[NSMutableData dataWithLength:32]];
+                                                          authenticationCode:[_crypto getAuthCodeZero]];
 
     NSData *serializedCreationInfo =
             [QredoPrimitiveMarshallers marshalObject:creationInfo
