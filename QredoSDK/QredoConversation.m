@@ -879,6 +879,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     NSData *authKey = incoming ? _inboundAuthKey : _outboundAuthKey;
 
 
+    // The outcome of this function should be either calling `completionHandler` or `continueToNextMessage`
+
     void (^continueToNextMessage)() = ^{
         dispatch_async(_enumerationQueue, ^{
             [self enumerateBodyWithResult:result
@@ -891,6 +893,13 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
         });
     };
 
+    void (^finishEnumeration)() = ^{
+        if (highWatermarkHandler) {
+            highWatermarkHandler([[QredoConversationHighWatermark alloc] initWithSequenceValue:result.maxSequenceValue]);
+        }
+
+        completionHandler(nil);
+    };
 
     void (^deliverMessage)(QredoConversationMessage *message) = ^(QredoConversationMessage *message)
     {
@@ -900,20 +909,17 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
         if (stop || ([message isControlMessage]
                      && ([message controlMessageType] == QredoConversationControlMessageTypeLeft)))
         {
-            completionHandler(nil);
+            finishEnumeration();
             return;
         }
 
         continueToNextMessage();
     };
 
+
     // When we reach the end of the list of messages
     if (conversationItemIndex >= result.items.count) {
-        if (highWatermarkHandler) {
-            highWatermarkHandler([[QredoConversationHighWatermark alloc] initWithSequenceValue:result.maxSequenceValue]);
-        }
-
-        completionHandler(nil);
+        finishEnumeration();
         return ;
     }
 
@@ -941,6 +947,10 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                                                                    incoming:incoming];
 
     if (excludeControlMessages && [message isControlMessage]) {
+        if ([message controlMessageType] == QredoConversationControlMessageTypeLeft) {
+            finishEnumeration();
+        }
+
         continueToNextMessage();
         return;
     }
