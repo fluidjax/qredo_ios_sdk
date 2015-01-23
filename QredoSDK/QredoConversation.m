@@ -892,9 +892,9 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     };
 
 
-    void (^deliverMessage)(NSUInteger conversationItemIndex, QredoConversationMessage *message, BOOL stop)
-    = ^(NSUInteger conversationItemIndex, QredoConversationMessage *message, BOOL stop)
+    void (^deliverMessage)(QredoConversationMessage *message) = ^(QredoConversationMessage *message)
     {
+        BOOL stop = conversationItemIndex == (result.items.count - 1);
         block(message, &stop);
 
         if (stop || ([message isControlMessage]
@@ -937,7 +937,6 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
         highWatermarkHandler(highWatermark);
     }
 
-    BOOL stop = conversationItemIndex == (result.items.count - 1);
     QredoConversationMessage *message = [[QredoConversationMessage alloc] initWithMessageLF:decryptedMessage
                                                                                    incoming:incoming];
 
@@ -962,10 +961,10 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
              _highestStoredIncomingHWM = message.highWatermark;
 
-             deliverMessage(conversationItemIndex, message, stop);
+             deliverMessage(message);
          }];
     } else {
-        deliverMessage(conversationItemIndex, message, stop);
+        deliverMessage(message);
     }
 }
 
