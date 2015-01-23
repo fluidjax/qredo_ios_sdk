@@ -22,11 +22,11 @@
     return self;
 }
 
-- (instancetype)initWithFullTag:(NSString *)fullTtag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
-        self.originalTag = fullTtag;
+        self.originalTag = fullTag;
     }
     return self;
 }

@@ -93,17 +93,17 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 
 @implementation QredoRendezvousEd25519RespondHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTtag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
-        if ([fullTtag length] < 1) {
+        if ([fullTag length] < 1) {
             if (error) {
                 *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
             }
             return nil;
         }
-        self.fullTag = fullTtag;
+        self.fullTag = fullTag;
         _vk = [self verifyKeyFromTag:self.fullTag error:error];
     }
     return self;

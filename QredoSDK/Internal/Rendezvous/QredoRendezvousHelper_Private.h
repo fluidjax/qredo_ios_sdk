@@ -12,7 +12,7 @@
 @end
 
 @protocol QredoRendezvousRespondPrivateHelper <QredoRendezvousRespondHelper>
-- (instancetype)initWithFullTag:(NSString *)fullTtag crypto:(id<CryptoImpl>)crypto error:(NSError **)error;
+- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error;
 @end
 
 
