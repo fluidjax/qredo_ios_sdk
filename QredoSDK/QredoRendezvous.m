@@ -20,6 +20,7 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
 #import "QredoLogging.h"
+#import "QredoRendezvousHelpers.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
@@ -64,10 +65,16 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
 {
+    return [self initWithConversationType:conversationType authenticationType:QredoRendezvousAuthenticationTypeAnonymous durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:transCap];
+}
+
+- (instancetype)initWithConversationType:(NSString*)conversationType authenticationType:(QredoRendezvousAuthenticationType)authenticationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
+{
     self = [super init];
     if (!self) return nil;
-
+    
     _conversationType = conversationType;
+    _authenticationType = authenticationType;
     _durationSeconds = durationSeconds;
     _maxResponseCount = maxResponseCount;
     _transCap = transCap;
@@ -157,10 +164,18 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO review when TransCap is defined
 
-    _tag = tag;
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag error:&error];
+    if (!rendezvousHelper) {
+        // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+        // be to much information.
+        completionHandler(error);
+        return;
+    }
+    _tag = [rendezvousHelper tag];
 
     // Hash the tag.
-    QredoAuthenticationCode *authKey = [_crypto authKey:tag];
+    QredoAuthenticationCode *authKey = [_crypto authKey:_tag];
     _hashedTag  = [_crypto hashedTagWithAuthKey:authKey];
 
     LogDebug(@"Hashed tag: %@", _hashedTag);
@@ -173,23 +188,38 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
     NSData *accessControlPublicKeyBytes  = [[accessControlKeyPair pubKey] bytes];
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];
-
+    
+    
     // Generate the authentication code.
-    QredoAuthenticationCode *authenticationCode =
-    [_crypto authenticationCodeWithHashedTag:_hashedTag
-                          authenticationType:[QredoRendezvousAuthType rendezvousAnonymous] // TODO:
-                            conversationType:configuration.conversationType
-                             durationSeconds:maybeDurationSeconds
-                            maxResponseCount:maybeMaxResponseCount
-                                    transCap:maybeTransCap
-                          requesterPublicKey:requesterPublicKeyBytes
-                      accessControlPublicKey:accessControlPublicKeyBytes
-                           authenticationKey:authKey];
+    QredoAuthenticationCode *authenticationCode
+    = [_crypto authenticationCodeWithHashedTag:_hashedTag
+                              conversationType:configuration.conversationType
+                               durationSeconds:maybeDurationSeconds
+                              maxResponseCount:maybeMaxResponseCount
+                                      transCap:maybeTransCap
+                            requesterPublicKey:requesterPublicKeyBytes
+                        accessControlPublicKey:accessControlPublicKeyBytes
+                             authenticationKey:authKey
+                              rendezvousHelper:rendezvousHelper];
 
+    QredoRendezvousAuthType *authType = nil;
+    if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
+        authType= [QredoRendezvousAuthType rendezvousAnonymous];
+    } else {
+        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode error:&error];
+        if (!authSignature) {
+            // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+            // be to much information.
+            completionHandler(error);
+            return;
+        }
+        authType = [QredoRendezvousAuthType rendezvousTrustedWithSignature:authSignature];
+    }
+    
     // Create the Rendezvous.
     QredoRendezvousCreationInfo *_creationInfo =
     [QredoRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:_hashedTag
-     authenticationType:[QredoRendezvousAuthType rendezvousAnonymous] // TODO:
+                                                  authenticationType:authType
                                                     conversationType:configuration.conversationType
                                                      durationSeconds:maybeDurationSeconds
                                                     maxResponseCount:maybeMaxResponseCount
@@ -198,7 +228,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                               accessControlPublicKey:accessControlPublicKeyBytes
                                                   authenticationCode:authenticationCode];
     _descriptor =
-    [QredoRendezvousDescriptor rendezvousDescriptorWithTag:tag
+    [QredoRendezvousDescriptor rendezvousDescriptorWithTag:_tag
                                                  hashedTag:_hashedTag
                                           conversationType:configuration.conversationType
                                            durationSeconds:maybeDurationSeconds

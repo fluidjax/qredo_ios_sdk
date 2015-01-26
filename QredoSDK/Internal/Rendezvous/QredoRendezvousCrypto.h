@@ -1,20 +1,25 @@
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "QredoKeyPair.h"
+#import "QredoTypes.h"
+#import "QredoRendezvousHelper.h"
+
+@protocol QredoRendezvousHelper;
 
 @interface QredoRendezvousCrypto : NSObject
 
 + (QredoRendezvousCrypto *)instance;
 
 - (QredoAuthenticationCode *)authenticationCodeWithHashedTag:(QredoRendezvousHashedTag *)hashedTag
-                                          authenticationType:(QredoRendezvousAuthType *)authType
                                             conversationType:(NSString *)conversationType
                                              durationSeconds:(NSSet *)durationSeconds
                                             maxResponseCount:(NSSet *)maxResponseCount
                                                     transCap:(NSSet *)transCap
                                           requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
                                       accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
-                                           authenticationKey:(QredoAuthenticationCode *)authenticationKey;
+                                           authenticationKey:(QredoAuthenticationCode *)authenticationKey
+                                            rendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper;
+
 - (QredoRendezvousHashedTag *)hashedTag:(NSString *)tag;
 - (QredoRendezvousHashedTag *)hashedTagWithAuthKey:(QredoAuthenticationCode *)authKey;
 - (QredoAuthenticationCode *)authKey:(NSString *)tag;
@@ -26,5 +31,14 @@
 - (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag;
 
 - (NSData *)signChallenge:(NSData*)challenge hashtag:(QredoRendezvousHashedTag*)hashtag nonce:(QredoNonce*)nonce privateKey:(QredoPrivateKey*)privateKey;
+
+- (BOOL)validateCreationInfo:(QredoRendezvousCreationInfo *)creationInfo
+                         tag:(NSString *)tag
+                       error:(NSError **)error;
+
+- (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                                                  prefix:(NSString *)tag
+                                                                   error:(NSError **)error;
+
 
 @end
