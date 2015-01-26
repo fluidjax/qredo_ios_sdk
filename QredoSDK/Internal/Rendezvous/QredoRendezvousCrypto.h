@@ -10,15 +10,15 @@
 
 + (QredoRendezvousCrypto *)instance;
 
-- (QredoAuthenticationCode *)authenticationCodeWithRendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper
-                                                          hashedTag:(QredoRendezvousHashedTag *)hashedTag
-                                                   conversationType:(NSString *)conversationType
-                                                    durationSeconds:(NSSet *)durationSeconds
-                                                   maxResponseCount:(NSSet *)maxResponseCount
-                                                           transCap:(NSSet *)transCap
-                                                 requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
-                                             accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
-                                                  authenticationKey:(QredoAuthenticationCode *)authenticationKey;
+- (QredoAuthenticationCode *)authenticationCodeWithHashedTag:(QredoRendezvousHashedTag *)hashedTag
+                                            conversationType:(NSString *)conversationType
+                                             durationSeconds:(NSSet *)durationSeconds
+                                            maxResponseCount:(NSSet *)maxResponseCount
+                                                    transCap:(NSSet *)transCap
+                                          requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
+                                      accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
+                                           authenticationKey:(QredoAuthenticationCode *)authenticationKey
+                                            rendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper;
 
 - (QredoRendezvousHashedTag *)hashedTag:(NSString *)tag;
 - (QredoRendezvousHashedTag *)hashedTagWithAuthKey:(QredoAuthenticationCode *)authKey;

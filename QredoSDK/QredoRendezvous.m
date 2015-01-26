@@ -188,15 +188,15 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     
     // Generate the authentication code.
     QredoAuthenticationCode *authenticationCode
-    = [_crypto authenticationCodeWithRendezvousHelper:rendezvousHelper
-                                            hashedTag:_hashedTag
-                                     conversationType:configuration.conversationType
-                                      durationSeconds:maybeDurationSeconds
-                                     maxResponseCount:maybeMaxResponseCount
-                                             transCap:maybeTransCap
-                                   requesterPublicKey:requesterPublicKeyBytes
-                               accessControlPublicKey:accessControlPublicKeyBytes
-                                    authenticationKey:authKey];
+    = [_crypto authenticationCodeWithHashedTag:_hashedTag
+                              conversationType:configuration.conversationType
+                               durationSeconds:maybeDurationSeconds
+                              maxResponseCount:maybeMaxResponseCount
+                                      transCap:maybeTransCap
+                            requesterPublicKey:requesterPublicKeyBytes
+                        accessControlPublicKey:accessControlPublicKeyBytes
+                             authenticationKey:authKey
+                              rendezvousHelper:rendezvousHelper];
 
     QredoRendezvousAuthType *authType = nil;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {

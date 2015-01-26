@@ -39,15 +39,15 @@
     return self;
 }
 
-- (QredoAuthenticationCode *)authenticationCodeWithRendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper
-                                                          hashedTag:(QredoRendezvousHashedTag *)hashedTag
-                                                   conversationType:(NSString *)conversationType
-                                                    durationSeconds:(NSSet *)durationSeconds
-                                                   maxResponseCount:(NSSet *)maxResponseCount
-                                                           transCap:(NSSet *)transCap
-                                                 requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
-                                             accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
-                                                  authenticationKey:(QredoAuthenticationCode *)authenticationKey
+- (QredoAuthenticationCode *)authenticationCodeWithHashedTag:(QredoRendezvousHashedTag *)hashedTag
+                                            conversationType:(NSString *)conversationType
+                                             durationSeconds:(NSSet *)durationSeconds
+                                            maxResponseCount:(NSSet *)maxResponseCount
+                                                    transCap:(NSSet *)transCap
+                                          requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
+                                      accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
+                                           authenticationKey:(QredoAuthenticationCode *)authenticationKey
+                                            rendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper
 {
     
     QredoRendezvousAuthType *authType = nil;
@@ -173,16 +173,15 @@
     NSData *authKey = [self authKey:tag];
     
     NSData *authCode
-    = [self
-       authenticationCodeWithRendezvousHelper:rendezvousHelper
-       hashedTag:creationInfo.hashedTag
-       conversationType:creationInfo.conversationType
-       durationSeconds:creationInfo.durationSeconds
-       maxResponseCount:creationInfo.maxResponseCount
-       transCap:creationInfo.transCap
-       requesterPublicKey:creationInfo.requesterPublicKey
-       accessControlPublicKey:creationInfo.accessControlPublicKey
-       authenticationKey:authKey];
+    = [self authenticationCodeWithHashedTag:creationInfo.hashedTag
+                           conversationType:creationInfo.conversationType
+                            durationSeconds:creationInfo.durationSeconds
+                           maxResponseCount:creationInfo.maxResponseCount
+                                   transCap:creationInfo.transCap
+                         requesterPublicKey:creationInfo.requesterPublicKey
+                     accessControlPublicKey:creationInfo.accessControlPublicKey
+                          authenticationKey:authKey
+                           rendezvousHelper:rendezvousHelper];
     
     BOOL isValidAuthCode = [QredoCrypto equalsConstantTime:authCode right:creationInfo.authenticationCode];
     
