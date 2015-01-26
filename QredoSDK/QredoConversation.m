@@ -892,7 +892,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
     void (^deliverMessage)(QredoConversationMessage *message) = ^(QredoConversationMessage *message)
     {
-        BOOL stop = conversationItemIndex == (result.items.count - 1);
+        BOOL stop = conversationItemIndex >= (result.items.count - 1);
         block(message, &stop);
 
         if (stop || ([message isControlMessage]
