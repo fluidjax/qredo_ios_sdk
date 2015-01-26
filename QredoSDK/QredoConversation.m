@@ -19,6 +19,7 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
 #import "QredoLogging.h"
+#import "QredoClient.h"
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
 NSString *const kQredoConversationVaultItemType = @"com.qredo.conversation";
@@ -28,6 +29,16 @@ NSString *const kQredoConversationVaultItemLabelId = @"id";
 NSString *const kQredoConversationVaultItemLabelTag = @"tag";
 NSString *const kQredoConversationVaultItemLabelHwm = @"hwm";
 NSString *const kQredoConversationVaultItemLabelType = @"type";
+
+NSString *const kQredoConversationMessageKeyCreated = @"_created";
+
+// Conversation message store
+NSString *const kQredoConversationSequenceId = @"_conv_sequenceid";
+NSString *const kQredoConversationSequenceValue = @"_conv_seq_value";
+
+NSString *const kQredoConversationItemIsMine = @"_mine";
+NSString *const kQredoConversationItemDateSent = @"_sent";
+NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 static NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
@@ -52,11 +63,13 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 @implementation QredoConversationMetadata
 
-- (BOOL)isEphemeral {
+- (BOOL)isEphemeral
+{
     return [self.type hasSuffix:@"~"];
 }
 
-- (BOOL)isPersistent {
+- (BOOL)isPersistent
+{
     return ![self isEphemeral];
 }
 
@@ -68,13 +81,15 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 @implementation QredoConversationHighWatermark
 
-- (instancetype)initWithSequenceValue:(NSData*)sequenceValue {
+- (instancetype)initWithSequenceValue:(NSData*)sequenceValue
+{
     self = [super init];
     self.sequenceValue = sequenceValue;
     return self;
 }
 
-- (BOOL)isLaterThan:(QredoConversationHighWatermark*)other {
+- (BOOL)isLaterThan:(QredoConversationHighWatermark*)other
+{
     if (!other) return YES;
 
     // assuming that watermark is just an integer in the NSData
@@ -97,7 +112,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     return NO;
 }
 
-- (NSString*)description {
+- (NSString*)description
+{
     return [NSString stringWithFormat:@"QredoConversationHighWatermark: sequenceValue=%@", [self.sequenceValue description]];
 }
 @end
@@ -116,7 +132,9 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 - (instancetype)initWithMessageLF:(QredoConversationMessageLF*)messageLF incoming:(BOOL)incoming
 {
-    self = [self initWithValue:messageLF.value dataType:messageLF.metadata.dataType summaryValues:[messageLF.metadata.summaryValues dictionaryFromIndexableSet]];
+    self = [self initWithValue:messageLF.value
+                      dataType:messageLF.metadata.dataType
+                 summaryValues:[messageLF.metadata.summaryValues dictionaryFromIndexableSet]];
     if (!self) return nil;
 
     _messageId = messageLF.metadata.id;
@@ -140,14 +158,18 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 - (QredoConversationMessageLF*)messageLF
 {
-    QredoConversationMessageMetaDataLF *messageMetadata = [QredoConversationMessageMetaDataLF conversationMessageMetaDataLFWithID:[QredoQUID QUID]
-                                                                                                                         parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
-                                                                                                                         sequence:nil // TODO
-                                                                                                                         dataType:self.dataType
-                                                                                                                    summaryValues:[self.summaryValues indexableSet]];
+    NSSet* summaryValuesSet = [self.summaryValues indexableSet];
+
+    QredoConversationMessageMetaDataLF *messageMetadata =
+    [QredoConversationMessageMetaDataLF conversationMessageMetaDataLFWithID:[QredoQUID QUID]
+                                                                   parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
+                                                                   sequence:nil // TODO
+                                                                   dataType:self.dataType
+                                                              summaryValues:summaryValuesSet];
 
     QredoConversationMessageLF *message = [[QredoConversationMessageLF alloc] initWithMetadata:messageMetadata value:self.value];
     return message;
+
 }
 
 - (BOOL)isControlMessage
@@ -193,6 +215,9 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     QredoQUID *_inboundQueueId;
     QredoQUID *_outboundQueueId;
 
+    dispatch_queue_t _conversationQueue;
+    dispatch_queue_t _enumerationQueue;
+
     dispatch_queue_t _queue;
     dispatch_source_t _timer;
 
@@ -202,6 +227,10 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     QredoDhPublicKey *_yourPublicKey;
     QredoDhPrivateKey *_myPrivateKey;
     QredoConversationMetadata *_metadata;
+
+    QredoVault *_store;
+
+    QredoConversationHighWatermark *_highestStoredIncomingHWM;
 
     int scheduled, responded; // TODO use locks for queues
 }
@@ -215,7 +244,10 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     return [self initWithClient:client rendezvousTag:nil converationType:nil transCap:nil];
 }
 
-- (instancetype)initWithClient:(QredoClient *)client rendezvousTag:(NSString *)rendezvousTag converationType:(NSString *)conversationType transCap:(NSSet *)transCap
+- (instancetype)initWithClient:(QredoClient *)client
+                 rendezvousTag:(NSString *)rendezvousTag
+               converationType:(NSString *)conversationType
+                      transCap:(NSSet *)transCap
 {
     self = [super init];
     if (!self) return nil;
@@ -226,7 +258,9 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     // or make all the methods as class methods
     _crypto = [CryptoImplV1 new];
     _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
+    _conversationQueue = dispatch_queue_create("com.qredo.conversation", nil);
     _queue = dispatch_queue_create("com.qredo.conversation.updates", nil);
+    _enumerationQueue = dispatch_queue_create("com.qredo.enumeration", nil);
     _conversationService = [QredoConversations conversationsWithServiceInvoker:_client.serviceInvoker];
 
 
@@ -242,7 +276,10 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
 - (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QredoConversationDescriptor*)descriptor
 {
-    self = [self initWithClient:client rendezvousTag:descriptor.rendezvousTag converationType:descriptor.conversationType transCap:descriptor.initialTransCap];
+    self = [self initWithClient:client
+                  rendezvousTag:descriptor.rendezvousTag
+                converationType:descriptor.conversationType
+                       transCap:descriptor.initialTransCap];
     if (!self) return nil;
 
     _metadata = [[QredoConversationMetadata alloc] init];
@@ -258,17 +295,60 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     return self;
 }
 
-- (QredoVaultItemDescriptor*)vaultItemDescriptor {
+- (void)loadHighestHWMWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+    if (self.metadata.isPersistent) {
+        [self.store enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+
+            NSDictionary *summaryValues = vaultItemMetadata.summaryValues;
+            id isMineObj = [summaryValues objectForKey:kQredoConversationItemIsMine];
+            if (![isMineObj isKindOfClass:[NSNumber class]]) {
+                return ;
+            }
+
+            NSNumber *isMine = (NSNumber *)isMineObj;
+
+            if ([isMine boolValue]) {
+                return ;
+            }
+
+            id hwmObj = [summaryValues objectForKeyedSubscript:kQredoConversationItemHighWatermark];
+
+            if (![hwmObj isKindOfClass:[NSData class]]) {
+                return ;
+            }
+
+            QredoConversationHighWatermark *hwm = [[QredoConversationHighWatermark alloc] initWithSequenceValue:hwmObj];
+
+            if (!hwm) {
+                return ;
+            }
+
+            if ([hwmObj isLaterThan:_highestStoredIncomingHWM]) {
+                _highestStoredIncomingHWM = hwm;
+            }
+        } since:QredoVaultHighWatermarkOrigin completionHandler:^(NSError *error) {
+            if (completionHandler) completionHandler(error);
+        }];
+    }
+}
+
+- (QredoVaultItemDescriptor*)vaultItemDescriptor
+{
     QredoVault *vault = [_client systemVault];
 
     QredoVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
 
-    QredoVaultItemDescriptor *itemDescriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:itemId];
+    QredoVaultItemDescriptor *itemDescriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId
+                                                                                                    itemId:itemId];
 
     return itemDescriptor;
 }
 
-- (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey publicKey:(QredoDhPublicKey*)publicKey rendezvousOwner:(BOOL)rendezvousOwner completionHandler:(void(^)(NSError *error))completionHandler
+- (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
+                                 publicKey:(QredoDhPublicKey*)publicKey
+                           rendezvousOwner:(BOOL)rendezvousOwner
+                         completionHandler:(void(^)(NSError *error))completionHandler
 {
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey rendezvousOwner:rendezvousOwner];
 
@@ -289,26 +369,29 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                                                                                 dataType:kQredoConversationMessageTypeControl
                                                                                            summaryValues:nil];
 
-        [self publishMessage:joinedControlMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-            completionHandler(error);
-        }];
+        [self publishMessage:joinedControlMessage
+           completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+               completionHandler(error);
+           }];
     };
 
-    [vault getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+    [vault getItemMetadataWithDescriptor:itemDescriptor
+                       completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
         if (vaultItemMetadata) {
             // Already stored
             completionHandler(nil);
+        } else if (error.code == QredoErrorCodeVaultItemNotFound) {
+            [self storeWithCompletionHandler:storeCompletionHandler];
         } else {
-            if (error.code == QredoErrorCodeVaultItemNotFound) {
-                [self storeWithCompletionHandler:storeCompletionHandler];
-            } else {
-                storeCompletionHandler(error);
-            }
+            storeCompletionHandler(error);
         }
     }];
 }
 
-- (void)generateKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey publicKey:(QredoDhPublicKey*)publicKey rendezvousOwner:(BOOL)rendezvousOwner {
+- (void)generateKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
+                         publicKey:(QredoDhPublicKey*)publicKey
+                   rendezvousOwner:(BOOL)rendezvousOwner
+{
     if (!_metadata) _metadata = [[QredoConversationMetadata alloc] init];
 
     _metadata.amRendezvousOwner = rendezvousOwner;
@@ -405,8 +488,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
         // TODO: DH - this handler does not appear to deal with the NSError returned, only creating a new error (hiding returned error) if result is not of correct object type.
         
-        if ([result isKindOfClass:[QredoRendezvousResponseRegistered class]])
-        {
+        if ([result isKindOfClass:[QredoRendezvousResponseRegistered class]]) {
             QredoRendezvousResponseRegistered* responseRegistered = (QredoRendezvousResponseRegistered*) result;
 
             QredoRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
@@ -424,14 +506,12 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                               accessControlPublicKey:creationInfo.accessControlPublicKey
                                    authenticationKey:authKey];
 
-            if (![authenticationCode isEqualToData:creationInfo.authenticationCode])
-            {
+            if (![authenticationCode isEqualToData:creationInfo.authenticationCode]) {
                 completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                       code:QredoErrorCodeRendezvousWrongAuthenticationCode
                                                   userInfo:@{NSLocalizedDescriptionKey: @"Authentication codes don't match"}]);
                 return ;
-            } else
-            {
+            } else {
                 QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:creationInfo.requesterPublicKey];
 
                 QredoDhPrivateKey *responderPrivateKey = [[QredoDhPrivateKey alloc] initWithData:responderKeyPair.privKey.bytes];
@@ -440,7 +520,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                 _transCap = responseRegistered.creationInfo.transCap;
                 _metadata.type = responseRegistered.creationInfo.conversationType;
 
-                [self generateAndStoreKeysWithPrivateKey:responderPrivateKey publicKey:requesterPublicKey rendezvousOwner:NO completionHandler:completionHandler];
+                [self generateAndStoreKeysWithPrivateKey:responderPrivateKey publicKey:requesterPublicKey
+                                         rendezvousOwner:NO completionHandler:completionHandler];
             }
         } else if ([result isKindOfClass:[QredoRendezvousResponseUnknownTag class]]) {
             completionHandler([NSError errorWithDomain:QredoErrorDomain
@@ -455,7 +536,8 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     }];
 }
 
-- (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler {
+- (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
     QredoVault *vault = _client.systemVault;
 
     QredoVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
@@ -478,14 +560,15 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QredoClientMarshallers conversationDescriptorMarshaller]];
 
+    NSDictionary *summaryValues = @{
+                                    kQredoConversationVaultItemLabelAmOwner: [NSNumber numberWithBool:_metadata.amRendezvousOwner],
+                                    kQredoConversationVaultItemLabelId: _metadata.conversationId,
+                                    kQredoConversationVaultItemLabelTag: _metadata.rendezvousTag,
+                                    kQredoConversationVaultItemLabelType: _metadata.type
+                                    };
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoConversationVaultItemType
                                                                                  accessLevel:0
-                                                                               summaryValues:@{
-                                                                                               kQredoConversationVaultItemLabelAmOwner: [NSNumber numberWithBool:_metadata.amRendezvousOwner],
-                                                                                               kQredoConversationVaultItemLabelId: _metadata.conversationId,
-                                                                                               kQredoConversationVaultItemLabelTag: _metadata.rendezvousTag,
-                                                                                               kQredoConversationVaultItemLabelType: _metadata.type
-                                                                                               }];
+                                                                               summaryValues:summaryValues];
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
@@ -512,23 +595,19 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     _highWatermark = QredoConversationHighWatermarkOrigin;
 }
 
-- (void)publishMessage:(QredoConversationMessage *)message completionHandler:(void(^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler
+- (void)sendMessageWithoutStoring:(QredoConversationMessage*)message
+                completionHandler:(void(^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler
 {
-    if (_deleted) {
-        completionHandler(nil, [NSError errorWithDomain:QredoErrorDomain
-                                                   code:QredoErrorCodeConversationDeleted
-                                               userInfo:@{NSLocalizedDescriptionKey: @"Conversation has been deleted"}]);
-        return;
-    }
-    NSData *encryptedItem = [_conversationCrypto encryptMessage:[message messageLF]
+    QredoConversationMessageLF *messageLF = [message messageLF];
+
+    NSData *encryptedItem = [_conversationCrypto encryptMessage:messageLF
                                                         bulkKey:_outboundBulkKey
                                                         authKey:_outboundAuthKey];
 
-
-
+    // it may happen that both watermark and error != nil, when the message has been sent but failed to be stored
     [_conversationService publishWithQueueId:_outboundQueueId
-                                         item:encryptedItem
-                            completionHandler:^(QredoConversationPublishResult *result, NSError *error)
+                                        item:encryptedItem
+                           completionHandler:^(QredoConversationPublishResult *result, NSError *error)
      {
          if (error) {
              completionHandler(QredoConversationHighWatermarkOrigin, error);
@@ -544,9 +623,52 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
          }
 
          QredoConversationHighWatermark *watermark = [[QredoConversationHighWatermark alloc] initWithSequenceValue:result.sequenceValue];
-         completionHandler(watermark, nil);
-     }];
 
+         completionHandler(watermark, error);
+     }];
+}
+
+- (void)publishMessage:(QredoConversationMessage *)message
+     completionHandler:(void(^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler
+{
+    if (_deleted) {
+        completionHandler(nil, [NSError errorWithDomain:QredoErrorDomain
+                                                   code:QredoErrorCodeConversationDeleted
+                                               userInfo:@{NSLocalizedDescriptionKey: @"Conversation has been deleted"}]);
+        return;
+    }
+
+    // Adding _created field with current date
+    NSMutableDictionary *summaryValues = [message.summaryValues mutableCopy];
+    if (!summaryValues) summaryValues = [NSMutableDictionary dictionary];
+
+    [summaryValues setObject:[NSDate date] forKey:kQredoConversationMessageKeyCreated];
+
+    QredoConversationMessage *modifiedMessage = [[QredoConversationMessage alloc] initWithValue:message.value
+                                                                                       dataType:message.dataType
+                                                                                  summaryValues:summaryValues];
+
+
+    if (!self.metadata.isPersistent || [message isControlMessage]) {
+        [self sendMessageWithoutStoring:modifiedMessage completionHandler:completionHandler];
+
+        return;
+    }
+
+
+    [self storeMessage:modifiedMessage
+                isMine:YES
+     completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+    {
+        [summaryValues setObject:newItemDescriptor.sequenceId forKey:kQredoConversationSequenceId];
+        [summaryValues setObject:newItemDescriptor.sequenceValue forKey:kQredoConversationSequenceValue];
+
+        QredoConversationMessage *modifiedMessage = [[QredoConversationMessage alloc] initWithValue:message.value
+                                                                                           dataType:message.dataType
+                                                                                      summaryValues:summaryValues];
+
+        [self sendMessageWithoutStoring:modifiedMessage completionHandler:completionHandler];
+    }];
 }
 
 - (void)acknowledgeReceiptUpToHighWatermark:(QredoConversationHighWatermark*)highWatermark
@@ -590,7 +712,7 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                     // TODO: DH - need to deal with any error returned - e.g. may indicate transport has been terminated
                     responded++;
                 } since:self.highWatermark
-                             highWatermarkHandler:^(QredoConversationHighWatermark *highWatermark) {
+                highWatermarkHandler:^(QredoConversationHighWatermark *highWatermark) {
                     _highWatermark = highWatermark;
                 } excludeControlMessages:NO];
             });
@@ -618,7 +740,9 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                                                                                             dataType:kQredoConversationMessageTypeControl
                                                                                        summaryValues:nil];
 
-    [self publishMessage:leftControlMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+    [self publishMessage:leftControlMessage
+       completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
+    {
         if (error) {
             completionHandler(error);
             return ;
@@ -630,13 +754,17 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 
         QredoVaultItemDescriptor *itemDescriptor = [self vaultItemDescriptor];
 
-        [vault getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        [vault getItemMetadataWithDescriptor:itemDescriptor
+                           completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
+        {
             if (error) {
                 completionHandler(error);
                 return ;
             }
 
-            [vault deleteItem:vaultItemMetadata completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+            [vault deleteItem:vaultItemMetadata
+            completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+            {
                 completionHandler(error);
             }];
 
@@ -644,9 +772,14 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
     }];
 }
 
-- (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler
+- (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                              since:(QredoConversationHighWatermark*)sinceWatermark
+                  completionHandler:(void(^)(NSError *error))completionHandler
 {
-    [self enumerateMessagesUsingBlock:block completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:nil];
+    [self enumerateMessagesUsingBlock:block
+                    completionHandler:completionHandler
+                                since:sinceWatermark
+                 highWatermarkHandler:nil];
 }
 
 
@@ -655,12 +788,25 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
                               since:(QredoConversationHighWatermark*)sinceWatermark
                highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler
 {
-    [self enumerateMessagesUsingBlock:block incoming:true completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:highWatermarkHandler excludeControlMessages:YES];
+    [self enumerateMessagesUsingBlock:block
+                             incoming:true
+                    completionHandler:completionHandler
+                                since:sinceWatermark
+                 highWatermarkHandler:highWatermarkHandler
+               excludeControlMessages:YES];
 }
 
 
-- (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler {
-    [self enumerateMessagesUsingBlock:block incoming:false completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:nil excludeControlMessages:YES];
+- (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                                  since:(QredoConversationHighWatermark*)sinceWatermark
+                      completionHandler:(void(^)(NSError *error))completionHandler
+{
+    [self enumerateMessagesUsingBlock:block
+                             incoming:false
+                    completionHandler:completionHandler
+                                since:sinceWatermark
+                 highWatermarkHandler:nil
+               excludeControlMessages:YES];
 }
 
 
@@ -673,68 +819,196 @@ static const double kQredoConversationUpdateInterval = 1.0; // seconds
 {
 
     QredoQUID *messageQueue = incoming ? _inboundQueueId : _outboundQueueId;
-    NSData *bulkKey = incoming ? _inboundBulkKey : _outboundBulkKey;
-    NSData *authKey = incoming ? _inboundAuthKey : _outboundAuthKey;
     [_conversationService queryItemsWithQueueId:messageQueue
                                           after:sinceWatermark?[NSSet setWithObject:sinceWatermark.sequenceValue]:nil
-                                       fetchSize:[NSSet setWithObject:@100000] // TODO check what the logic should be
-                               completionHandler:^(QredoConversationQueryItemsResult *result, NSError *error) {
-                                   if (error) {
-                                       completionHandler(error);
-                                       return;
-                                   }
+                                      fetchSize:[NSSet setWithObject:@100000] // TODO check what the logic should be
+                              completionHandler:^(QredoConversationQueryItemsResult *result, NSError *error)
+     {
+         if (error) {
+             completionHandler(error);
+             return;
+         }
 
-                                   if (!result) {
-                                       completionHandler([NSError errorWithDomain:QredoErrorDomain
-                                                                          code:QredoErrorCodeConversationUnknown
-                                                                      userInfo:@{NSLocalizedDescriptionKey: @"Empty result"}]);
-                                       return;
-                                   }
+         if (!result) {
+             completionHandler([NSError errorWithDomain:QredoErrorDomain
+                                                   code:QredoErrorCodeConversationUnknown
+                                               userInfo:@{NSLocalizedDescriptionKey: @"Empty result"}]);
+             return;
+         }
 
-                                   NSError *returnError = nil;
+         LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
 
-                                   LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
+         // There are a few complications when asynchronosity is added
+         // 1. We need to wait until the messages is stored before returning it to the user,
+         //    but at the same time the queue/thread should not be blocked
+         // 2. The enumeration should proceed after we deliver the message back to the user
 
-                                   // Decrypting messages
-                                   for (QredoConversationItemWithSequenceValue *conversationItem in result.items) {
-                                       NSError *decryptionError = nil;
-                                       QredoConversationMessageLF *decryptedMessage =
-                                           [_conversationCrypto decryptMessage:conversationItem.item
-                                                                       bulkKey:bulkKey
-                                                                       authKey:authKey
-                                                                         error:&decryptionError];
+         // Because of that we can not just run a for-loop, instead enumerateBody will be called to handle each message.
+         // After it finishes processing a message, it will schedule itself for the next message
 
-                                       if (decryptionError) {
-                                           returnError = decryptionError;
-                                           break;
-                                       }
+         [self enumerateBodyWithResult:result
+                 conversationItemIndex:0
+                                 block:block
+                              incoming:incoming
+                     completionHandler:completionHandler
+                  highWatermarkHandler:highWatermarkHandler
+                excludeControlMessages:excludeControlMessages];
 
-                                       if (highWatermarkHandler) highWatermarkHandler([[QredoConversationHighWatermark alloc] initWithSequenceValue:conversationItem.sequenceValue]);
+     }];
+}
 
-                                       BOOL stop = conversationItem == result.items.lastObject;
-                                       QredoConversationMessage *message = [[QredoConversationMessage alloc] initWithMessageLF:decryptedMessage incoming:incoming];
+- (void)enumerateBodyWithResult:(QredoConversationQueryItemsResult *)result
+          conversationItemIndex:(NSUInteger)conversationItemIndex
+                          block:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                           incoming:(BOOL)incoming
+              completionHandler:(void(^)(NSError *error))completionHandler
+           highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler
+         excludeControlMessages:(BOOL)excludeControlMessages
+{
+    NSData *bulkKey = incoming ? _inboundBulkKey : _outboundBulkKey;
+    NSData *authKey = incoming ? _inboundAuthKey : _outboundAuthKey;
 
-                                       if (excludeControlMessages && [message isControlMessage]) {
-                                           if (excludeControlMessages) continue;
-                                       }
+    // The outcome of this function should be either calling `completionHandler` or `continueToNextMessage`
 
-                                       message.highWatermark = [[QredoConversationHighWatermark alloc] initWithSequenceValue:conversationItem.sequenceValue];
-                                       block(message, &stop);
+    void (^continueToNextMessage)() = ^{
+        dispatch_async(_enumerationQueue, ^{
+            [self enumerateBodyWithResult:result
+                    conversationItemIndex:conversationItemIndex + 1
+                                    block:block
+                                 incoming:incoming
+                        completionHandler:completionHandler
+                     highWatermarkHandler:highWatermarkHandler
+                   excludeControlMessages:excludeControlMessages];
+        });
+    };
 
-                                       if ([message isControlMessage]) {
-                                           if ([message controlMessageType] == QredoConversationControlMessageTypeLeft) break;
-                                       }
+    void (^finishEnumeration)() = ^{
+        if (highWatermarkHandler) {
+            highWatermarkHandler([[QredoConversationHighWatermark alloc] initWithSequenceValue:result.maxSequenceValue]);
+        }
+
+        completionHandler(nil);
+    };
+
+    void (^deliverMessage)(QredoConversationMessage *message) = ^(QredoConversationMessage *message)
+    {
+        BOOL stop = conversationItemIndex >= (result.items.count - 1);
+        block(message, &stop);
+
+        if (stop || ([message isControlMessage]
+                     && ([message controlMessageType] == QredoConversationControlMessageTypeLeft)))
+        {
+            finishEnumeration();
+            return;
+        }
+
+        continueToNextMessage();
+    };
 
 
-                                       if (stop) {
-                                           break;
-                                       }
-                                   }
+    // When we reach the end of the list of messages
+    if (conversationItemIndex >= result.items.count) {
+        finishEnumeration();
+        return ;
+    }
 
-                                   if (highWatermarkHandler) highWatermarkHandler([[QredoConversationHighWatermark alloc] initWithSequenceValue:result.maxSequenceValue]);
+    QredoConversationItemWithSequenceValue *conversationItem = [result.items objectAtIndex:conversationItemIndex];
 
-                                   completionHandler(returnError);
-                               }];
+    NSError *decryptionError = nil;
+    QredoConversationMessageLF *decryptedMessage = [_conversationCrypto decryptMessage:conversationItem.item
+                                                                               bulkKey:bulkKey
+                                                                               authKey:authKey
+                                                                                 error:&decryptionError];
+
+    if (decryptionError) {
+        completionHandler(decryptionError);
+        return;
+    }
+
+    QredoConversationHighWatermark *highWatermark
+        = [[QredoConversationHighWatermark alloc] initWithSequenceValue:conversationItem.sequenceValue];
+
+    if (highWatermarkHandler) {
+        highWatermarkHandler(highWatermark);
+    }
+
+    QredoConversationMessage *message = [[QredoConversationMessage alloc] initWithMessageLF:decryptedMessage
+                                                                                   incoming:incoming];
+
+    if (excludeControlMessages && [message isControlMessage]) {
+        if ([message controlMessageType] == QredoConversationControlMessageTypeLeft) {
+            finishEnumeration();
+        }
+
+        continueToNextMessage();
+        return;
+    }
+
+    message.highWatermark = highWatermark;
+
+    if (incoming && ![message isControlMessage]
+        && self.metadata.isPersistent && [message.highWatermark isLaterThan:_highestStoredIncomingHWM])
+    {
+        [self storeMessage:message
+                    isMine:NO
+         completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+         {
+             if (error) {
+                 completionHandler(error);
+                 return ;
+             }
+
+             _highestStoredIncomingHWM = message.highWatermark;
+
+             deliverMessage(message);
+         }];
+    } else {
+        deliverMessage(message);
+    }
+}
+
+- (void)storeMessage:(QredoConversationMessage*)message
+              isMine:(BOOL)mine
+   completionHandler:(void(^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+{
+    NSMutableDictionary *summaryValues = [message.summaryValues mutableCopy];
+
+    [summaryValues setObject:@(mine) forKey:kQredoConversationItemIsMine];
+
+    id sentDate = [summaryValues objectForKey:kQredoConversationMessageKeyCreated];
+    if (sentDate) {
+        [summaryValues setObject:sentDate forKey:kQredoConversationItemDateSent];
+    }
+
+    // if there is '_created' in the vault item, it can be taken as not a new item
+    [summaryValues removeObjectForKey:kQredoConversationMessageKeyCreated];
+
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:message.dataType
+                                                                                 accessLevel:0
+                                                                               summaryValues:summaryValues];
+
+    QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:metadata value:message.value];
+
+    [self.store putItem:item completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+        completionHandler(newItemDescriptor, error);
+    }];
+}
+
+- (QredoVault*)store
+{
+    if (_metadata.isEphemeral) return nil;
+
+    if (_store) return _store;
+
+    NSMutableData *derivedVaultIdData = [[_client.systemVault.vaultId data] mutableCopy];
+    [derivedVaultIdData appendData:_inboundQueueId.data];
+
+    QredoQUID *conversationVaultID = [QredoQUID QUIDByHashingData:derivedVaultIdData];
+
+    _store = [[QredoVault alloc] initWithClient:_client qredoKeychain:_client.systemVault.qredoKeychain
+                                        vaultId:conversationVaultID];
+
+    return _store;
 }
 
 @end

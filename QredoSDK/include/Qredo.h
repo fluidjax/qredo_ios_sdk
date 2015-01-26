@@ -17,8 +17,6 @@
 // Revision 1
 // See https://github.com/Qredo/ios-sdk/wiki/SDK-revisions
 
-typedef uint64_t QredoVaultSequenceValue;
-
 /** Options for [QredoClient initWithServiceURL:options:] */
 extern NSString *const QredoClientOptionServiceURL;
 extern NSString *const QredoRendezvousURIProtocol;

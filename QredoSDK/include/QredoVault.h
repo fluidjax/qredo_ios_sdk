@@ -68,6 +68,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @property (readonly) NSData *value;
 
 + (instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
+- (instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
 @end
 
 
