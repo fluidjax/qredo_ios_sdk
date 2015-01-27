@@ -49,7 +49,7 @@
                                   [clientExpectation fulfill];
                               }];
 
-    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];
@@ -104,7 +104,7 @@
                                   [clientExpectation fulfill];
                               }];
 
-    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];

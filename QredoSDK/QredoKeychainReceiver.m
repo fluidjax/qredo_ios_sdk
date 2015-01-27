@@ -103,7 +103,7 @@
 {
     QredoDeviceInfo *info = [[QredoDeviceInfo alloc] init];
 
-    info.name = @"iPhone"; // TODO put the device name
+    info.name = @"iPhone"; // TODO: put the device name
 
     return info;
 }
@@ -222,7 +222,7 @@
 
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didTimeout:(NSError *)error
 {
-    // TODO timeouts are not implemented right now and, therefore, not tested
+    // TODO: timeouts are not implemented right now and, therefore, not tested
 
     [self handleError:[NSError errorWithDomain:QredoErrorDomain
                                           code:QredoErrorCodeUnknown // TODO: timeout error

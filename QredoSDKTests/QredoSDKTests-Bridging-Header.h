@@ -17,3 +17,4 @@
 #import "QredoErrorCodes.h"
 
 #import "QredoConversationPrivate.h"
+#import "QredoConversationMessagePrivate.h"

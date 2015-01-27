@@ -2,19 +2,11 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_QredoConversation_h
-#define QredoSDK_QredoConversation_h
-
 #import "QredoQUID.h"
+#import "QredoConversationMessage.h"
 
 @class QredoVault;
-
-typedef NS_ENUM(NSInteger, QredoConversationControlMessageType) {
-    QredoConversationControlMessageTypeUnknown = -1,
-    QredoConversationControlMessageTypeJoined  = 0,
-    QredoConversationControlMessageTypeLeft
-} ;
-
+@class QredoConversation;
 
 extern NSString *const kQredoConversationVaultItemType;
 
@@ -26,23 +18,6 @@ extern NSString *const kQredoConversationVaultItemType;
 
 extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin;
 
-@class QredoConversation;
-@interface QredoConversationMessage : NSObject
-// metadata
-
-@property (readonly) QredoQUID *messageId;
-@property (readonly) NSString *dataType;
-@property (readonly) NSDictionary *summaryValues;
-@property (readonly) QredoQUID *parentId;
-@property (readonly) BOOL incoming;
-
-@property (readonly) QredoConversationHighWatermark *highWatermark;
-
-@property (readonly) NSData *value;
-
-- (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues;
-
-@end
 
 @interface QredoConversationMetadata : NSObject
 /** Same as `QredoRendezvousConfiguration.conversationType` */
@@ -88,6 +63,11 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 - (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 
+- (void)subscribeToMessagesWithBlock:(void(^)(QredoConversationMessage *message))block
+       subscriptionTerminatedHandler:(void (^)(NSError *))subscriptionTerminatedHandler
+                               since:(QredoConversationHighWatermark *)sinceWatermark
+                highWatermarkHandler:(void(^)(QredoConversationHighWatermark *newWatermark))highWatermarkHandler;
+
 /**
  @param block is called for every received message. If the block sets `stop` to `NO`, then it terminates the enumeration
  @param completionHandler is called when an error is occured during communication with the server
@@ -97,5 +77,3 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 - (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
-
-#endif

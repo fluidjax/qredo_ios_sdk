@@ -9,6 +9,7 @@
 #import "QredoRsaPublicKey.h"
 #import "QredoRsaPrivateKey.h"
 #import "QredoRendezvousHelpers.h"
+#import "QredoLogging.h"
 
 
 #define QREDO_RENDEZVOUS_AUTH_KEY [@"Authenticate" dataUsingEncoding:NSUTF8StringEncoding]
@@ -100,24 +101,40 @@
 - (SecKeyRef)accessControlPublicKeyWithTag:(NSString*)tag
 {
     NSString *publicKeyId = [tag stringByAppendingString:@".public"];
-    return [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyId];
+
+    SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyId];
+    if (!keyReference) {
+        LogError(@"Nil SecKeyRef returned for public key ID: %@", publicKeyId);
+    }
+    
+    return keyReference;
 }
 
 - (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag
 {
     NSString *privateKeyId = [tag stringByAppendingString:@".private"];
-    return [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];
-}
+    
+    SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];
+    if (!keyReference) {
+        LogError(@"Nil SecKeyRef returned for private key ID: '%@'", privateKeyId);
+    }
 
+    return keyReference;
+}
 
 - (QredoKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId {
     NSString *publicKeyId = [keyId stringByAppendingString:@".public"];
     NSString *privateKeyId = [keyId stringByAppendingString:@".private"];
     
-    /*BOOL success = */[QredoCrypto generateRsaKeyPairOfLength:2048
-                        publicKeyIdentifier:publicKeyId
-                       privateKeyIdentifier:privateKeyId persistInAppleKeychain:YES];
-    // TODO: What should happen if keypair generation failed?
+    LogDebug(@"Attempting to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
+
+    BOOL success = [QredoCrypto generateRsaKeyPairOfLength:2048
+                                       publicKeyIdentifier:publicKeyId
+                                      privateKeyIdentifier:privateKeyId persistInAppleKeychain:YES];
+    if (!success) {
+        // TODO: What should happen if keypair generation failed? More than just log it
+        LogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
+    }
     
     QredoRsaPublicKey *rsaPublicKey = [[QredoRsaPublicKey alloc] initWithPkcs1KeyData:[QredoCrypto getKeyDataForIdentifier:publicKeyId]];
     

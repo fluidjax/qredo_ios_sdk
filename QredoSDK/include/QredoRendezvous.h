@@ -2,9 +2,6 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_QredoRendezvous_h
-#define QredoSDK_QredoRendezvous_h
-
 #import "QredoTypes.h"
 
 typedef uint64_t QredoRendezvousHighWatermark;
@@ -98,5 +95,3 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block since:(QredoRendezvousHighWatermark)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
-
-#endif

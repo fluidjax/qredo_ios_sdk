@@ -24,8 +24,8 @@
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
-static const double kQredoRendezvousUpdateInterval = 1.0; // seconds
-static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds
+static const double kQredoRendezvousUpdateInterval = 1.0; // seconds - polling period for responses (non-multi-response transports)
+static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
 
@@ -48,8 +48,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 }
 
 @end
-
-
 
 @implementation QredoRendezvousConfiguration
 
@@ -110,7 +108,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     dispatch_queue_t _subscriptionRenewalQueue;
     dispatch_source_t _subscriptionRenewalTimer;
 
-    int scheduled, responded; // TODO use locks for queues
+    int scheduled, responded; // TODO: use locks for queues
 }
 
 // making the properties read/write for private use
@@ -132,6 +130,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     _rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
     _vault = [_client systemVault];
     _dedupeStore = [[NSMutableDictionary alloc] init];
+    LogDebug(@"Created Rendezvous dedupe dictionary (%p): %@", _dedupeStore, _dedupeStore);
 
     _enumerationQueue = dispatch_queue_create("com.qredo.rendezvous.enumrate", nil);
 
@@ -162,7 +161,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // Box up optional values.
     NSSet *maybeDurationSeconds  = [self maybe:configuration.durationSeconds];
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
-    NSSet *maybeTransCap         = [self maybe:nil]; // TODO review when TransCap is defined
+    NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
 
     NSError *error = nil;
     id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag error:&error];
@@ -291,7 +290,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler
 {
-    // TODO implement later
+    // TODO: implement later
 }
 
 - (void)startListening
@@ -325,7 +324,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 // This method enables subscription (push) for responses to rendezvous, and creates new conversations from them. Will regularly re-send subsription request as subscriptions can fail silently
 - (void)startSubscribing
 {
-    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
+    NSAssert(_delegate, @"Rendezvous delegate should be set before starting listening for the updates");
 
     if (_subscribedToResponses) {
         LogDebug(@"Already subscribed to responses, and cannot currently unsubscribe, so ignoring request.");
@@ -346,7 +345,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                       (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
             dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
                 @synchronized (self) {
-                    LogDebug(@"Subscription renewal timer fired");
+                    LogDebug(@"Rendezvous subscription renewal timer fired");
 
                     if (!_subscriptionRenewalTimer) {
                         return;
@@ -367,14 +366,15 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (void)subscribe
 {
-    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
+    NSAssert(_delegate, @"Rendezvous delegate should be set before starting listening for the updates");
     
     LogDebug(@"Subscribing to new responses/conversations.");
     
+    // TODO: DH - look at blocks holding strong reference to self, and whether that's causing
     // Subscribe to conversations newer than our highwatermark
     [self subscribeToConversationsWithBlock:^(QredoConversation *conversation) {
         
-        LogDebug(@"Subscription returned conversation: %@", conversation);
+        LogDebug(@"Rendezvous subscription returned conversation: %@", conversation);
         
         if ([_delegate respondsToSelector:@selector(qredoRendezvous:didReceiveReponse:)]) {
             [_delegate qredoRendezvous:self didReceiveReponse:conversation];
@@ -382,12 +382,12 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         
     } subscriptionTerminatedHandler:^(NSError *error) {
         
-        LogError("Subscription terminated with error: %@", error);
+        LogError("Rendezvous subscription terminated with error: %@", error);
         _subscribedToResponses = NO;
         
     } since:self.highWatermark highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark) {
         
-        LogDebug(@"Subscription returned new HighWatermark: %llu", newWatermark);
+        LogDebug(@"Rendezvous subscription returned new HighWatermark: %llu", newWatermark);
         
         self->_highWatermark = newWatermark;
     }];
@@ -396,7 +396,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 - (void)unsubscribe
 {
     // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
-    LogDebug(@"NOTE: Cannot currently unsubscribe.  This request is ignored.");
+    LogDebug(@"NOTE: Cannot currently unsubscribe from Rendezvous responses.  This request is ignored.");
 }
 
 // This method disables subscription (push) for responses to rendezvous
@@ -405,7 +405,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // Need to stop the subsription renewal timer as well
     @synchronized (self) {
         if (_subscriptionRenewalTimer) {
-            LogDebug(@"Stoping subscription renewal timer");
+            LogDebug(@"Stoping rendezvous subscription renewal timer");
             dispatch_source_cancel(_subscriptionRenewalTimer);
             _subscriptionRenewalTimer = nil;
         }
@@ -417,7 +417,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 // This method polls for (new) responses to rendezvous, and creates new conversations from them.
 - (void)startPolling
 {
-    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
+    NSAssert(_delegate, @"Rendezvous delegate should be set before starting listening for the updates");
 
     @synchronized (self) {
         if (_timer) return;
@@ -479,8 +479,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     LogDebug(@"Checking for old/duplicate. Response Hashed Tag: %@. Responder Public Key: %@. Responder Auth Code: %@. SequenceValue: %@.", response.hashedTag, response.responderPublicKey, response.responderAuthenticationCode, sequenceValue);
     
-    LogDebug(@"Dedupe dictionary contains %lu items.", (unsigned long)_dedupeStore.count);
-    LogDebug(@"Dedupe dictionary: %@", _dedupeStore);
+    LogDebug(@"Rendezvous dedupe dictionary contains %lu items.", (unsigned long)_dedupeStore.count);
+    LogDebug(@"Rendezvous dedupe dictionary (%p): %@", _dedupeStore, _dedupeStore);
 
     BOOL responseIsDuplicate = NO;
     
@@ -501,7 +501,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             // We have completed processing the Query after Subscribe, and we have a non-duplicate Response - therefore we have passed the point where dedupe is required, so can empty the dedupe store
             LogDebug(@"Query completed and have received a non-duplicate response. Passed point where dedupe required - emptying dedupe store and preventing further dedupe.");
             _dedupeNecessary = NO;
-            _dedupeStore = [[NSMutableDictionary alloc] init];
+            [_dedupeStore removeAllObjects];
         }
         else {
             // Not a duplicate, and Query has not completed, so store this response/sequenceValue pair for later to prevent duplication
@@ -528,7 +528,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         }
     }
     else {
-        LogDebug(@"No dedupe necessary, subscription setup completed.");
+        LogDebug(@"No dedupe necessary, rendezvous subscription setup completed.");
     }
 
     [self createConversationAndStoreKeysForResponse:response completionHandler:^(QredoConversation *conversation, NSError *creationError) {
@@ -577,13 +577,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          
                                          BOOL didProcessResponse = [self processResponse:result.response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
 
-                                         // TODO: DH - remove deliberate duplication
-//                                         LogDebug(@"Deliberately duplicating subscription response");
-//                                         QredoRendezvousResponse *duplicateResponse = [QredoRendezvousResponse rendezvousResponseWithHashedTag:result.response.hashedTag responderPublicKey:result.response.responderPublicKey responderAuthenticationCode:result.response.responderAuthenticationCode];
-//                                         [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
-//                                         didProcessResponse = [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
-                                         // TODO: DH - end deliberate duplication
-
                                          if (didProcessResponse &&
                                              result.sequenceValue &&
                                              highWatermarkHandler) {
@@ -591,10 +584,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          }
                                      }];
         
-        // TODO: DH - Ideally we need way of limiting/avoiding a Query to avoid receiving large numbers of entries twice (subscription and query). Not too much problem for Rendezvous, but bigger problem for Conversation/Vault
-        
         // Must have actually sent the subscription request before getting responses, otherwise chance of invalidating challenege/signatures - only 1 challenge per hashedTag at a time
-        LogDebug(@"Getting other responses to ensure none missed during subscription setup.");
+        LogDebug(@"Getting other responses since HWM");
         [_rendezvous getChallengeWithHashedTag:_hashedTag completionHandler:^(NSData *result, NSError *error) {
             if (error) {
                 subscriptionTerminatedHandler(error);
@@ -641,6 +632,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          }
                                      }
                                      
+                                     // HWM handler only called at end as we only have 1 sequence value for the entire query response
                                      if (didProcessResponse &&
                                          result.sequenceValue &&
                                          highWatermarkHandler) {

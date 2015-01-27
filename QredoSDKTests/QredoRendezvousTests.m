@@ -154,7 +154,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                   [clientExpectation fulfill];
                               }];
     
-    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];
@@ -182,7 +182,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                   [clientExpectation fulfill];
                               }];
 
-    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];
@@ -196,6 +196,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     rendezvous.delegate = listener;
     [rendezvous startListening];
 
+    // Give time for the subscribe/getResponses process to complete before we respond. Avoid any previous responses being included in the respondExpectation
+    [NSThread sleepForTimeInterval:2];
+    
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
@@ -303,7 +306,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *didFindStoredRendezvous = [self expectationWithDescription:@"find stored rendezvous"];
     __block QredoRendezvous *rendezvousFromEnumeration = nil;
 
-    NSLog(@"Fetching rendezvous");
+    NSLog(@"Fetching rendezvous with metadata from enumeration");
     [client fetchRendezvousWithMetadata:rendezvousMetadataFromEnumeration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(rendezvous);
@@ -321,6 +324,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Verifying rendezvous from enumeration");
     [self verifyRendezvous:rendezvousFromEnumeration randomTag:randomTag];
 
+    
+    NSLog(@"Fetching rendezvous with tag");
     // Trying to load the rendezvous by tag, without enumeration
     __block XCTestExpectation *didFetchExpectation = [self expectationWithDescription:@"fetch rendezvous from vault by tag"];
     __block QredoRendezvous *rendezvousFromFetch = nil;
@@ -384,7 +389,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                   [clientExpectation fulfill];
                               }];
     
-    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];

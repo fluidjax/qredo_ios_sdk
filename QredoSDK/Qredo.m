@@ -1,3 +1,7 @@
+/*
+ *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
 #import "Qredo.h"
 #import "QredoPrivate.h"
 #import "QredoVault.h"
@@ -155,7 +159,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
         
         if ([error.domain isEqualToString:QredoErrorDomain] && error.code == QredoErrorCodeKeychainCouldNotBeFound) {
             
-            // TODO [GR]: Show new device screen insted of creating the vault starit away.
+            // TODO: [GR]: Show new device screen insted of creating the vault starit away.
             error = nil;
             [client createSystemVaultWithCompletionHandler:^(NSError *error) {
                 if (!error) {
@@ -167,7 +171,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
         } else {
             
-            // TODO [GR]: Show alert for corrupted keychain instead of the placeholder below.
+            // TODO: [GR]: Show alert for corrupted keychain instead of the placeholder below.
             // Also implement a way of recovering a keychian here.
             
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -232,6 +236,12 @@ static NSString *const QredoKeychainPassword = @"Password123";
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
 
     return self;
+}
+
+- (void)dealloc
+{
+    // Ensure that we close our session, even if caller forgot
+    [self closeSession];
 }
 
 - (BOOL)isClosed

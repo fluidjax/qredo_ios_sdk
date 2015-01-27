@@ -2,9 +2,6 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_QredoVault_h
-#define QredoSDK_QredoVault_h
-
 #import "QredoTypes.h"
 
 /** Represents state of the vault. An opaque class */
@@ -115,5 +112,3 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 /** If for some reason the client application needs to receive all items in the delegate after calling `startListening`, then this method can be called. */
 - (void)resetWatermark;
 @end
-
-#endif

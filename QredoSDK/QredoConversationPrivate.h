@@ -2,20 +2,17 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_QredoConversationPrivate_h
-#define QredoSDK_QredoConversationPrivate_h
-
 #import "QredoConversation.h"
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
-
+#import "QredoConversationMessage.h"
+#import "QredoClient.h"
 
 extern NSString *const kQredoConversationVaultItemLabelAmOwner;
 extern NSString *const kQredoConversationVaultItemLabelId;
 extern NSString *const kQredoConversationVaultItemLabelTag;
 extern NSString *const kQredoConversationVaultItemLabelHwm;
 extern NSString *const kQredoConversationVaultItemLabelType;
-
 
 @class QredoClient;
 @class QredoConversationDescriptor;
@@ -31,21 +28,12 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 
 - (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
                            incoming:(BOOL)incoming
-                  completionHandler:(void(^)(NSError *error))completionHandler
+             excludeControlMessages:(BOOL)excludeControlMessages
                               since:(QredoConversationHighWatermark*)sinceWatermark
-               highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler
-             excludeControlMessages:(BOOL)excludeControlMessages;
-
+                  completionHandler:(void(^)(NSError *error))completionHandler
+               highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler;
 
 - (void)loadHighestHWMWithCompletionHandler:(void(^)(NSError *error))completionHandler;
-
-
-@end
-
-@interface QredoConversationMessage (Private)
-
-- (BOOL)isControlMessage;
-- (QredoConversationControlMessageType)controlMessageType;
 
 @end
 
@@ -63,6 +51,3 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 @property (readwrite) NSString *rendezvousTag;
 
 @end
-
-
-#endif

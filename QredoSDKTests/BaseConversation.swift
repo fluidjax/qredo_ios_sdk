@@ -21,7 +21,7 @@ class BaseConversation: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        let creatorClientExpectation = expectationWithDescription("authorize client")
+        let creatorClientExpectation = expectationWithDescription("authorize creator client")
         let options = QredoClientOptions(MQTT: useMQTT, resetData: true)
         QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], options: options) { authorizedClient, error in
             XCTAssertNil(error, "failed to authorize client")
@@ -33,7 +33,7 @@ class BaseConversation: XCTestCase {
             creatorClientExpectation.fulfill()
         }
 
-        let responderClientExpectation = expectationWithDescription("authorize client")
+        let responderClientExpectation = expectationWithDescription("authorize responder client")
         QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], options: options) { authorizedClient, error in
             XCTAssertNil(error, "failed to authorize client")
 
