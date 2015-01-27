@@ -42,9 +42,6 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 - (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues;
 
-- (BOOL)isControlMessage;
-- (QredoConversationControlMessageType)controlMessageType;
-
 @end
 
 @interface QredoConversationMetadata : NSObject
@@ -62,6 +59,9 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 @required
 - (void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message;
+
+@optional
+- (void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation;
 
 @end
 
