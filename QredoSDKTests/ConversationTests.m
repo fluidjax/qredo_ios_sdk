@@ -21,8 +21,8 @@
 // - releasing references after stopListening
 
 static NSString *const kMessageType = @"com.qredo.text";
-static NSString *const kMessageTestValue = @"hello, world";
-static NSString *const kMessageTestValue2 = @"another hello, world";
+static NSString *const kMessageTestValue = @"(1)hello, world";
+static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 @interface ConversationMessageListener : NSObject <QredoConversationDelegate>
 @property XCTestExpectation *didReceiveMessageExpectation;
@@ -236,6 +236,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
                                  vaultDataTypes:nil
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
+                                  NSLog(@"Authorize client completion handler called");
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
                                   anotherClient = newClient;
@@ -284,12 +285,14 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     __block XCTestExpectation *didPublishMessageExpectation = [self expectationWithDescription:@"published a message before listener started"];
 
-    QredoConversationMessage *newMessage = [[QredoConversationMessage alloc] initWithValue:[kMessageTestValue dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
+    NSString *firstMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [NSDate date]];
+    
+    QredoConversationMessage *newMessage = [[QredoConversationMessage alloc] initWithValue:[firstMessageText dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
 
-    NSLog(@"Publishing message (before setting up listener)");
+    NSLog(@"Publishing message (before setting up listener). Message: %@", firstMessageText);
     [responderConversation publishMessage:newMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-                            NSLog(@"Publish message completion handler called.");
+                            NSLog(@"Publish message (before setting up listener) completion handler called.");
                             XCTAssertNil(error);
                             XCTAssertNotNil(messageHighWatermark);
 
@@ -303,7 +306,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     NSLog(@"Setting up listener");
     ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
     listener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published before listening"];
-    listener.expectedMessageValue = kMessageTestValue;
+    listener.expectedMessageValue = firstMessageText;
     creatorConversation.delegate = listener;
 
     NSLog(@"Starting listening for conversation items");
@@ -314,18 +317,19 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     }];
     XCTAssertFalse(listener.failed);
 
-    
     NSLog(@"Setting up listener expectations again");
-    listener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published after listening"];
-    listener.expectedMessageValue = kMessageTestValue2;
+    NSString *secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [NSDate date]];
 
-    newMessage = [[QredoConversationMessage alloc] initWithValue:[kMessageTestValue2 dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
+    listener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published after listening"];
+    listener.expectedMessageValue = secondMessageText;
+
+    newMessage = [[QredoConversationMessage alloc] initWithValue:[secondMessageText dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
     didPublishMessageExpectation = [self expectationWithDescription:@"published a message after listener started"];
     
-    NSLog(@"Publishing second message (after listening started)");
+    NSLog(@"Publishing second message (after listening started). Message: %@", secondMessageText);
     [responderConversation publishMessage:newMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-                            NSLog(@"Publish message completion handler called.");
+                            NSLog(@"Publish message (after listening started) completion handler called.");
                             XCTAssertNil(error);
                             XCTAssertNotNil(messageHighWatermark);
                             
