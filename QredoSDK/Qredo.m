@@ -213,7 +213,8 @@ static NSString *const QredoKeychainPassword = @"Password123";
     
 }
 
-+ (void)openSettings {
++ (void)openSettings
+{
     QredoManagerAppRootViewController *managerAppRootViewController = [[QredoManagerAppRootViewController alloc] init];
     [managerAppRootViewController show];
 }
