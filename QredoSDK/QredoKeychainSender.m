@@ -237,7 +237,7 @@
     }
 
     BOOL success = YES;
-    // TODO this message should contain flag if the parsing of the keychai was successful
+    // TODO: this message should contain flag if the parsing of the keychai was successful
     if (success) {
         [self.delegate qredoKeychainSenderDidFinishSending:self];
 

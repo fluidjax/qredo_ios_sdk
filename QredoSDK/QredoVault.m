@@ -33,7 +33,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 // Opaque Class. Keeping interface only here
 @interface QredoVaultHighWatermark()
 // key: SequenceId (QredoQUID*), value: SequenceValue (NSNumber*)
-// TODO WARNING NSNumber on 32-bit systems can keep maximum 32-bit integers, but we need 64. Kept NSNumber because in the LF code we use NSNumber right now
+// TODO: WARNING NSNumber on 32-bit systems can keep maximum 32-bit integers, but we need 64. Kept NSNumber because in the LF code we use NSNumber right now
 @property NSMutableDictionary *sequenceState;
 - (NSSet*)vaultSequenceState;
 + (instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState;
@@ -60,11 +60,6 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     }
     return [sequenceStates copy]; // immutable copy
 }
-@end
-
-
-@interface QredoVaultItemDescriptor()<NSCopying>
-@property (readonly) QredoVaultSequenceValue *sequenceValue;
 @end
 
 @implementation QredoVaultItemDescriptor
@@ -162,13 +157,21 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan
 {
+    if (!qredoKeychan) return nil;
+
+    return [self initWithClient:client qredoKeychain:qredoKeychan vaultId:qredoKeychan.vaultId];
+
+}
+
+- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan vaultId:(QredoQUID*)vaultId
+{
+    if (!client || !vaultId) return nil;
     self = [super init];
     if (!self) return nil;
-    if (!client || !qredoKeychan) return nil;
 
     _client = client;
     _qredoKeychan = qredoKeychan;
-    _vaultId = [qredoKeychan vaultId];
+    _vaultId = vaultId;
     _highwatermark = QredoVaultHighWatermarkOrigin;
 
     _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
@@ -180,7 +183,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
         [self saveState];
     }
 
-    _vault              = [QredoInternalVault vaultWithServiceInvoker:_client.serviceInvoker];
+    _vault = [QredoInternalVault vaultWithServiceInvoker:_client.serviceInvoker];
     _vaultSequenceCache = [QredoVaultSequenceCache instance];
     
     QredoVaultKeyPair *keyPair = [qredoKeychan vaultKeys];
@@ -419,41 +422,42 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                             sequenceId:sequenceId
                          sequenceValue:(sequenceValue ? [NSSet setWithObject:sequenceValue] : nil)
                                 itemId:itemDescriptor.itemId
-                     completionHandler:^(NSSet *result, NSError *error) {
-                         if (!error && result.count) {
+                     completionHandler:^(NSSet *result, NSError *error)
+     {
+         if (!error && result.count) {
 
-                             QredoEncryptedVaultItemMetaData *encryptedVaultItemMetaData = [result allObjects][0];
+             QredoEncryptedVaultItemMetaData *encryptedVaultItemMetaData = [result allObjects][0];
 
-                             QredoVaultItemMetaDataLF *vaultItemMetadataLF = [_vaultCrypto decryptEncryptedVaultItemMetaData:encryptedVaultItemMetaData];
+             QredoVaultItemMetaDataLF *vaultItemMetadataLF = [_vaultCrypto decryptEncryptedVaultItemMetaData:encryptedVaultItemMetaData];
 
-                             NSDictionary *summaryValues = [vaultItemMetadataLF.summaryValues dictionaryFromIndexableSet];
+             NSDictionary *summaryValues = [vaultItemMetadataLF.summaryValues dictionaryFromIndexableSet];
 
-                             QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItemMetaData.sequenceId
-                                                                                                                  sequenceValue:encryptedVaultItemMetaData.sequenceValue
-                                                                                                                         itemId:encryptedVaultItemMetaData.itemId];
+             QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItemMetaData.sequenceId
+                                                                                                  sequenceValue:encryptedVaultItemMetaData.sequenceValue
+                                                                                                         itemId:encryptedVaultItemMetaData.itemId];
 
-                             QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                                                               dataType:vaultItemMetadataLF.dataType
-                                                                                                            accessLevel:[vaultItemMetadataLF.accessLevel integerValue]
-                                                                                                          summaryValues:summaryValues];
-                             if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
-                                 error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
-                                 completionHandler(nil, error);
-                             }
-                             else {
-                                 completionHandler(metadata, nil);
-                             }
+             QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                               dataType:vaultItemMetadataLF.dataType
+                                                                                            accessLevel:[vaultItemMetadataLF.accessLevel integerValue]
+                                                                                          summaryValues:summaryValues];
+             if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+                 error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
+                 completionHandler(nil, error);
+             }
+             else {
+                 completionHandler(metadata, nil);
+             }
 
-                         } else {
-                             if (!error) {
-                                 error = [NSError errorWithDomain:QredoErrorDomain
-                                                             code:QredoErrorCodeVaultItemNotFound
-                                                         userInfo:@{NSLocalizedDescriptionKey: @"Vault item not found"}];
-                             }
-                             completionHandler(nil, error);
-                         }
+         } else {
+             if (!error) {
+                 error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeVaultItemNotFound
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Vault item not found"}];
+             }
+             completionHandler(nil, error);
+         }
 
-                     }];
+     }];
 }
 
 - (void)startListening
@@ -563,137 +567,131 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     }
     LogDebug(@"Watermark: %@", sinceWatermark.sequenceState);
 
-    @try {
-        // Sync sequence IDs...
-        [_vault queryItemMetaDataWithVaultId:_vaultId
-                              sequenceStates:sequenceStates
-                           completionHandler:^void(QredoVaultItemMetaDataResults *vaultItemMetaDataResults, NSError *error)
-        {
-            if (error) {
-                if (completionHandler) {
-                    completionHandler(error);
-                }
-                return;
+    // Sync sequence IDs...
+    [_vault queryItemMetaDataWithVaultId:_vaultId
+                          sequenceStates:sequenceStates
+                       completionHandler:^void(QredoVaultItemMetaDataResults *vaultItemMetaDataResults, NSError *error)
+    {
+        if (error) {
+            if (completionHandler) {
+                completionHandler(error);
             }
+            return;
+        }
 
-            NSSet *sequenceIds = [vaultItemMetaDataResults sequenceIds];
+        NSSet *sequenceIds = [vaultItemMetaDataResults sequenceIds];
 
-            NSMutableDictionary *newWatermarkDictionary = [sinceWatermark.sequenceState mutableCopy];
-            if (!newWatermarkDictionary) {
-                newWatermarkDictionary = [NSMutableDictionary dictionary];
-            }
+        NSMutableDictionary *newWatermarkDictionary = [sinceWatermark.sequenceState mutableCopy];
+        if (!newWatermarkDictionary) {
+            newWatermarkDictionary = [NSMutableDictionary dictionary];
+        }
+        
+        
+        typedef void(^EnumerateResultsWithHandler)(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop);
+        NSArray *results = [vaultItemMetaDataResults results];
+        void(^enumerateResultsWithHandler)(EnumerateResultsWithHandler) = ^(EnumerateResultsWithHandler handler) {
             
-            
-            typedef void(^EnumerateResultsWithHandler)(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop);
-            NSArray *results = [vaultItemMetaDataResults results];
-            void(^enumerateResultsWithHandler)(EnumerateResultsWithHandler)
-            = ^(EnumerateResultsWithHandler handler) {
-                
-                BOOL stop = FALSE;
-                for (QredoEncryptedVaultItemMetaData *result in results) {
-
-                    @try {
-                        QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
-                        
-                        QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId sequenceValue:result.sequenceValue itemId:result.itemId];
-                        
-                        QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                                                              dataType:decryptedItem.dataType
-                                                                                                           accessLevel:[decryptedItem.accessLevel integerValue]
-                                                                                                         summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
-                        
-                        if (handler) {
-                            handler(externalItem, &stop);
-                        }
-                        
-                        [newWatermarkDictionary setObject:externalItem.descriptor.sequenceValue forKey:externalItem.descriptor.sequenceId];
-                        
-                        if (stop) {
-                            break;
-                        }
-                    } @catch (NSException *exception) {
-                        NSLog(@"Failed to decrypt a vault item: %@", exception);
-                    }
-                }
-
-            };
-            
-            
-            // Get the unique item IDs, update our mappings.
-            if (shouldConsolidateResults) {
-                
-                NSMutableDictionary *latestMetadata = [NSMutableDictionary dictionary];
-                enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
+            BOOL stop = FALSE;
+            for (QredoEncryptedVaultItemMetaData *result in results) {
+                @try {
+                    QredoVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
                     
-                    QredoVaultItemDescriptor *key = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vaultItemMetadata.descriptor.sequenceId itemId:vaultItemMetadata.descriptor.itemId];
-                    QredoVaultItemMetadata* existingMetadata = latestMetadata[key];
-                    if (!existingMetadata ||
-                        [existingMetadata.descriptor.sequenceValue compare:vaultItemMetadata.descriptor.sequenceValue] == NSOrderedAscending) {
-                        latestMetadata[key] = vaultItemMetadata;
+                    QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId
+                                                                                                         sequenceValue:result.sequenceValue
+                                                                                                                itemId:result.itemId];
+                    
+                    QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                                          dataType:decryptedItem.dataType
+                                                                                                       accessLevel:[decryptedItem.accessLevel integerValue]
+                                                                                                     summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
+                    
+                    if (handler) {
+                        handler(externalItem, &stop);
                     }
                     
+                    [newWatermarkDictionary setObject:externalItem.descriptor.sequenceValue forKey:externalItem.descriptor.sequenceId];
+                    
+                    if (stop) {
+                        break;
+                    }
+                } @catch (NSException *exception) {
+                    NSLog(@"Failed to decrypt a vault item: %@", exception);
+                }
+            }
 
-                });
+        };
+        
+        
+        // Get the unique item IDs, update our mappings.
+        if (shouldConsolidateResults) {
+            
+            NSMutableDictionary *latestMetadata = [NSMutableDictionary dictionary];
+            enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
                 
-                for (QredoVaultItemMetadata* metadata in [latestMetadata allValues]) {
-                    BOOL stop = NO;
-                    if (![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
-                        block(metadata, &stop);
-                        if (stop) {
-                            break;
-                        }
+                QredoVaultItemDescriptor *key = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vaultItemMetadata.descriptor.sequenceId itemId:vaultItemMetadata.descriptor.itemId];
+                QredoVaultItemMetadata* existingMetadata = latestMetadata[key];
+                if (!existingMetadata ||
+                    [existingMetadata.descriptor.sequenceValue compare:vaultItemMetadata.descriptor.sequenceValue] == NSOrderedAscending) {
+                    latestMetadata[key] = vaultItemMetadata;
+                }
+                
+
+            });
+            
+            for (QredoVaultItemMetadata* metadata in [latestMetadata allValues]) {
+                BOOL stop = NO;
+                if (![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+                    block(metadata, &stop);
+                    if (stop) {
+                        break;
                     }
                 }
-                
-            }
-            else {
-                
-                enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
-                    block(vaultItemMetadata, stop);
-                });
-                
             }
             
+        }
+        else {
+            
+            enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
+                block(vaultItemMetadata, stop);
+            });
+            
+        }
+        
 
-            BOOL discoveredNewSequence = NO;
-            // We want items for all sequences...
-            for (QredoVaultSequenceId *sequenceId in sequenceIds) {
-                if ([newWatermarkDictionary objectForKey:sequenceId] != nil) {
-                    continue;
-                }
-                
-                QredoVaultSequenceState *sequenceState =
-                [QredoVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId
-                                                            sequenceValue:@0];
-                [sequenceStates addObject:sequenceState];
-
-                [newWatermarkDictionary setObject:@0 forKey:sequenceId];
-                discoveredNewSequence = YES;
+        BOOL discoveredNewSequence = NO;
+        // We want items for all sequences...
+        for (QredoVaultSequenceId *sequenceId in sequenceIds) {
+            if ([newWatermarkDictionary objectForKey:sequenceId] != nil) {
+                continue;
             }
+            
+            QredoVaultSequenceState *sequenceState =
+            [QredoVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId
+                                                        sequenceValue:@0];
+            [sequenceStates addObject:sequenceState];
 
-            QredoVaultHighWatermark *newWatermark = [QredoVaultHighWatermark watermarkWithSequenceState:newWatermarkDictionary];
+            [newWatermarkDictionary setObject:@0 forKey:sequenceId];
+            discoveredNewSequence = YES;
+        }
 
-            if (watermarkHandler) {
-                watermarkHandler(newWatermark);
-            }
+        QredoVaultHighWatermark *newWatermark = [QredoVaultHighWatermark watermarkWithSequenceState:newWatermarkDictionary];
 
-            if (discoveredNewSequence) {
-                dispatch_async(_queue, ^{
-                    [self enumerateVaultItemsUsingBlock:block
-                                      completionHandler:completionHandler
-                                       watermarkHandler:watermarkHandler
-                                                  since:newWatermark
-                                   consolidatingResults:shouldConsolidateResults];
-                });
-            } else {
-                completionHandler(nil);
-            }
-       }];
+        if (watermarkHandler) {
+            watermarkHandler(newWatermark);
+        }
 
-    }
-    @catch (NSException *exception) {
-        completionHandler([NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultUnknown userInfo:@{NSLocalizedDescriptionKey: exception.description}]);
-    }
+        if (discoveredNewSequence) {
+            dispatch_async(_queue, ^{
+                [self enumerateVaultItemsUsingBlock:block
+                                  completionHandler:completionHandler
+                                   watermarkHandler:watermarkHandler
+                                              since:newWatermark
+                               consolidatingResults:shouldConsolidateResults];
+            });
+        } else {
+            completionHandler(nil);
+        }
+   }];
 }
 
 - (void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
@@ -718,40 +716,33 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (void)saveState
 {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    LogDebug(@"%s: Setting QredoVaultOptionSequenceId in NSUserDefaults", __PRETTY_FUNCTION__);
     [defaults setObject:[_sequenceId data] forKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultId QUIDString]]];
+
+    NSString *hwmKey = [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultId QUIDString]];
     if (_highwatermark) {
-        LogDebug(@"%s: Setting QredoVaultOptionHighWatermark in NSUserDefaults", __PRETTY_FUNCTION__);
-        [defaults setObject:[_highwatermark.sequenceState quidToStringDictionary] forKey:QredoVaultOptionHighWatermark];
+        [defaults setObject:[_highwatermark.sequenceState quidToStringDictionary] forKey:hwmKey];
     } else {
-        LogDebug(@"%s: Removing QredoVaultOptionHighWatermark in NSUserDefaults", __PRETTY_FUNCTION__);
-        [defaults removeObjectForKey:QredoVaultOptionHighWatermark];
+        [defaults removeObjectForKey:hwmKey];
     }
 }
 
 - (void)loadState
 {
-    LogDebug(@"%s: Getting standardUserDefaults from NSUserDefaults", __PRETTY_FUNCTION__);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    LogDebug(@"%s: Getting QredoVaultOptionSequenceId in NSUserDefaults", __PRETTY_FUNCTION__);
     NSData *sequenceIdData = [defaults objectForKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultId QUIDString]]];
 
     if (sequenceIdData) {
-        LogDebug(@"%s: No object returned for QredoVaultOptionSequenceId.", __PRETTY_FUNCTION__);
         _sequenceId = [[QredoQUID alloc] initWithQUIDData:sequenceIdData];
     }
-    
-    LogDebug(@"%s: Getting QredoVaultOptionHighWatermark in NSUserDefaults", __PRETTY_FUNCTION__);
-    NSDictionary* sequenceState = [defaults objectForKey:QredoVaultOptionHighWatermark];
+
+    NSString *hwmKey = [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultId QUIDString]];
+    NSDictionary* sequenceState = [defaults objectForKey:hwmKey];
     if (sequenceState) {
-        LogDebug(@"%s: Object found for QredoVaultOptionHighWatermark.", __PRETTY_FUNCTION__);
         _highwatermark = [QredoVaultHighWatermark watermarkWithSequenceState:[sequenceState stringToQuidDictionary]];
     } else {
-        LogDebug(@"%s: No object returned for QredoVaultOptionHighWatermark.", __PRETTY_FUNCTION__);
         _highwatermark = nil;
     }
 }

@@ -8,6 +8,9 @@
 #import "QredoCrypto.h"
 #import "QredoRsaPublicKey.h"
 #import "QredoRsaPrivateKey.h"
+#import "QredoRendezvousHelpers.h"
+#import "QredoLogging.h"
+
 
 #define QREDO_RENDEZVOUS_AUTH_KEY [@"Authenticate" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_RENDEZVOUS_SALT [@"Rendezvous" dataUsingEncoding:NSUTF8StringEncoding]
@@ -38,7 +41,6 @@
 }
 
 - (QredoAuthenticationCode *)authenticationCodeWithHashedTag:(QredoRendezvousHashedTag *)hashedTag
-                                          authenticationType:(QredoRendezvousAuthType *)authType
                                             conversationType:(NSString *)conversationType
                                              durationSeconds:(NSSet *)durationSeconds
                                             maxResponseCount:(NSSet *)maxResponseCount
@@ -46,7 +48,17 @@
                                           requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
                                       accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
                                            authenticationKey:(QredoAuthenticationCode *)authenticationKey
+                                            rendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper
 {
+    
+    QredoRendezvousAuthType *authType = nil;
+    if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
+        authType = [QredoRendezvousAuthType rendezvousAnonymous];
+    } else {
+        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper emptySignature];
+        authType = [QredoRendezvousAuthType rendezvousTrustedWithSignature:authSignature];
+    }
+    
     QredoRendezvousCreationInfo *creationInfo =
             [QredoRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:hashedTag
                                                           authenticationType:authType
@@ -56,7 +68,7 @@
                                                                     transCap:transCap
                                                           requesterPublicKey:requesterPublicKey
                                                       accessControlPublicKey:accessControlPublicKey
-                                                          authenticationCode:[NSMutableData dataWithLength:(256 / 8)]];
+                                                          authenticationCode:[_crypto getAuthCodeZero]];
 
     NSData *serializedCreationInfo =
             [QredoPrimitiveMarshallers marshalObject:creationInfo
@@ -89,24 +101,40 @@
 - (SecKeyRef)accessControlPublicKeyWithTag:(NSString*)tag
 {
     NSString *publicKeyId = [tag stringByAppendingString:@".public"];
-    return [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyId];
+
+    SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyId];
+    if (!keyReference) {
+        LogError(@"Nil SecKeyRef returned for public key ID: %@", publicKeyId);
+    }
+    
+    return keyReference;
 }
 
 - (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag
 {
     NSString *privateKeyId = [tag stringByAppendingString:@".private"];
-    return [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];
-}
+    
+    SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];
+    if (!keyReference) {
+        LogError(@"Nil SecKeyRef returned for private key ID: '%@'", privateKeyId);
+    }
 
+    return keyReference;
+}
 
 - (QredoKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId {
     NSString *publicKeyId = [keyId stringByAppendingString:@".public"];
     NSString *privateKeyId = [keyId stringByAppendingString:@".private"];
     
-    /*BOOL success = */[QredoCrypto generateRsaKeyPairOfLength:2048
-                        publicKeyIdentifier:publicKeyId
-                       privateKeyIdentifier:privateKeyId persistInAppleKeychain:YES];
-    // TODO: What should happen if keypair generation failed?
+    LogDebug(@"Attempting to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
+
+    BOOL success = [QredoCrypto generateRsaKeyPairOfLength:2048
+                                       publicKeyIdentifier:publicKeyId
+                                      privateKeyIdentifier:privateKeyId persistInAppleKeychain:YES];
+    if (!success) {
+        // TODO: What should happen if keypair generation failed? More than just log it
+        LogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
+    }
     
     QredoRsaPublicKey *rsaPublicKey = [[QredoRsaPublicKey alloc] initWithPkcs1KeyData:[QredoCrypto getKeyDataForIdentifier:publicKeyId]];
     
@@ -152,5 +180,73 @@
 {
     return nil;
 }
+
+
+- (BOOL)validateCreationInfo:(QredoRendezvousCreationInfo *)creationInfo tag:(NSString *)tag error:(NSError **)error
+{
+    QredoRendezvousAuthType *authType = creationInfo.authenticationType;
+    id<QredoRendezvousRespondHelper> rendezvousHelper = [self rendezvousHelperForAuthType:authType fullTag:tag error:error];
+    
+    NSData *authKey = [self authKey:tag];
+    
+    NSData *authCode
+    = [self authenticationCodeWithHashedTag:creationInfo.hashedTag
+                           conversationType:creationInfo.conversationType
+                            durationSeconds:creationInfo.durationSeconds
+                           maxResponseCount:creationInfo.maxResponseCount
+                                   transCap:creationInfo.transCap
+                         requesterPublicKey:creationInfo.requesterPublicKey
+                     accessControlPublicKey:creationInfo.accessControlPublicKey
+                          authenticationKey:authKey
+                           rendezvousHelper:rendezvousHelper];
+    
+    BOOL isValidAuthCode = [QredoCrypto equalsConstantTime:authCode right:creationInfo.authenticationCode];
+    
+    __block BOOL isValidSignature = NO;
+    [authType ifAnonymous:^{
+        isValidSignature = YES;
+    } ifTrustedWithSignature:^(QredoRendezvousAuthSignature *signature) {
+        if (rendezvousHelper == nil) {
+            isValidSignature = NO;
+        } else {
+            NSData *rendezvousData = creationInfo.authenticationCode;
+            isValidSignature = [rendezvousHelper isValidSignature:signature rendezvousData:rendezvousData error:error];
+        }
+    }];
+    
+    return isValidAuthCode && isValidSignature;
+}
+
+- (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType prefix:(NSString *)tag error:(NSError **)error
+{
+    return [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:authenticationType prefix:tag crypto:_crypto error:error];
+}
+
+- (id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthType:(QredoRendezvousAuthType *)authType fullTag:(NSString *)tag error:(NSError **)error
+{
+    __block id<QredoRendezvousRespondHelper> rendezvousHelper = nil;
+    
+    [authType ifAnonymous:^{
+        rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous fullTag:tag crypto:_crypto error:error];
+    } ifTrustedWithSignature:^(QredoRendezvousAuthSignature *signature) {
+        [signature ifX509_PEM:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem fullTag:tag crypto:_crypto error:error];
+        } X509_PEM_SELFISGNED:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509PemSelfsigned fullTag:tag crypto:_crypto error:error];
+        } ED25519:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519 fullTag:tag crypto:_crypto error:error];
+        } RSA2048_PEM:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem fullTag:tag crypto:_crypto error:error];
+        } RSA4096_PEM:^(NSData *signature) {
+            rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem fullTag:tag crypto:_crypto error:error];
+        } other:^{
+            rendezvousHelper = nil;
+        }];
+    }];
+    
+    return rendezvousHelper;
+}
+
+
 
 @end

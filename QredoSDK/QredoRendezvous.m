@@ -20,11 +20,12 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
 #import "QredoLogging.h"
+#import "QredoRendezvousHelpers.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
-static const double kQredoRendezvousUpdateInterval = 1.0; // seconds
-static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds
+static const double kQredoRendezvousUpdateInterval = 1.0; // seconds - polling period for responses (non-multi-response transports)
+static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
 
@@ -64,10 +65,16 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
 {
+    return [self initWithConversationType:conversationType authenticationType:QredoRendezvousAuthenticationTypeAnonymous durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:transCap];
+}
+
+- (instancetype)initWithConversationType:(NSString*)conversationType authenticationType:(QredoRendezvousAuthenticationType)authenticationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
+{
     self = [super init];
     if (!self) return nil;
-
+    
     _conversationType = conversationType;
+    _authenticationType = authenticationType;
     _durationSeconds = durationSeconds;
     _maxResponseCount = maxResponseCount;
     _transCap = transCap;
@@ -95,13 +102,15 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
     NSString *_tag;
 
+    dispatch_queue_t _enumerationQueue;
+
     // Listener
     dispatch_queue_t _queue;
     dispatch_source_t _timer;
     dispatch_queue_t _subscriptionRenewalQueue;
     dispatch_source_t _subscriptionRenewalTimer;
 
-    int scheduled, responded; // TODO use locks for queues
+    int scheduled, responded; // TODO: use locks for queues
 }
 
 // making the properties read/write for private use
@@ -123,6 +132,9 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     _rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
     _vault = [_client systemVault];
     _dedupeStore = [[NSMutableDictionary alloc] init];
+    LogDebug(@"Created Rendezvous dedupe dictionary (%p): %@", _dedupeStore, _dedupeStore);
+
+    _enumerationQueue = dispatch_queue_create("com.qredo.rendezvous.enumrate", nil);
 
     _queue = dispatch_queue_create("com.qredo.rendezvous.updates", nil);
     _subscriptionRenewalQueue = dispatch_queue_create("com.qredo.rendezvous.subscriptionRenewal", nil);
@@ -151,12 +163,20 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // Box up optional values.
     NSSet *maybeDurationSeconds  = [self maybe:configuration.durationSeconds];
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
-    NSSet *maybeTransCap         = [self maybe:nil]; // TODO review when TransCap is defined
+    NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
 
-    _tag = tag;
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag error:&error];
+    if (!rendezvousHelper) {
+        // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+        // be to much information.
+        completionHandler(error);
+        return;
+    }
+    _tag = [rendezvousHelper tag];
 
     // Hash the tag.
-    QredoAuthenticationCode *authKey = [_crypto authKey:tag];
+    QredoAuthenticationCode *authKey = [_crypto authKey:_tag];
     _hashedTag  = [_crypto hashedTagWithAuthKey:authKey];
 
     LogDebug(@"Hashed tag: %@", _hashedTag);
@@ -169,23 +189,38 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
     NSData *accessControlPublicKeyBytes  = [[accessControlKeyPair pubKey] bytes];
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];
-
+    
+    
     // Generate the authentication code.
-    QredoAuthenticationCode *authenticationCode =
-    [_crypto authenticationCodeWithHashedTag:_hashedTag
-                          authenticationType:[QredoRendezvousAuthType rendezvousAnonymous] // TODO:
-                            conversationType:configuration.conversationType
-                             durationSeconds:maybeDurationSeconds
-                            maxResponseCount:maybeMaxResponseCount
-                                    transCap:maybeTransCap
-                          requesterPublicKey:requesterPublicKeyBytes
-                      accessControlPublicKey:accessControlPublicKeyBytes
-                           authenticationKey:authKey];
+    QredoAuthenticationCode *authenticationCode
+    = [_crypto authenticationCodeWithHashedTag:_hashedTag
+                              conversationType:configuration.conversationType
+                               durationSeconds:maybeDurationSeconds
+                              maxResponseCount:maybeMaxResponseCount
+                                      transCap:maybeTransCap
+                            requesterPublicKey:requesterPublicKeyBytes
+                        accessControlPublicKey:accessControlPublicKeyBytes
+                             authenticationKey:authKey
+                              rendezvousHelper:rendezvousHelper];
 
+    QredoRendezvousAuthType *authType = nil;
+    if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
+        authType= [QredoRendezvousAuthType rendezvousAnonymous];
+    } else {
+        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode error:&error];
+        if (!authSignature) {
+            // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+            // be to much information.
+            completionHandler(error);
+            return;
+        }
+        authType = [QredoRendezvousAuthType rendezvousTrustedWithSignature:authSignature];
+    }
+    
     // Create the Rendezvous.
     QredoRendezvousCreationInfo *_creationInfo =
     [QredoRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:_hashedTag
-     authenticationType:[QredoRendezvousAuthType rendezvousAnonymous] // TODO:
+                                                  authenticationType:authType
                                                     conversationType:configuration.conversationType
                                                      durationSeconds:maybeDurationSeconds
                                                     maxResponseCount:maybeMaxResponseCount
@@ -194,7 +229,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                               accessControlPublicKey:accessControlPublicKeyBytes
                                                   authenticationCode:authenticationCode];
     _descriptor =
-    [QredoRendezvousDescriptor rendezvousDescriptorWithTag:tag
+    [QredoRendezvousDescriptor rendezvousDescriptorWithTag:_tag
                                                  hashedTag:_hashedTag
                                           conversationType:configuration.conversationType
                                            durationSeconds:maybeDurationSeconds
@@ -257,7 +292,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler
 {
-    // TODO implement later
+    // TODO: implement later
 }
 
 - (void)startListening
@@ -291,7 +326,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 // This method enables subscription (push) for responses to rendezvous, and creates new conversations from them. Will regularly re-send subsription request as subscriptions can fail silently
 - (void)startSubscribing
 {
-    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
+    NSAssert(_delegate, @"Rendezvous delegate should be set before starting listening for the updates");
 
     if (_subscribedToResponses) {
         LogDebug(@"Already subscribed to responses, and cannot currently unsubscribe, so ignoring request.");
@@ -312,7 +347,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                       (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
             dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
                 @synchronized (self) {
-                    LogDebug(@"Subscription renewal timer fired");
+                    LogDebug(@"Rendezvous subscription renewal timer fired");
 
                     if (!_subscriptionRenewalTimer) {
                         return;
@@ -333,14 +368,15 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (void)subscribe
 {
-    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
+    NSAssert(_delegate, @"Rendezvous delegate should be set before starting listening for the updates");
     
     LogDebug(@"Subscribing to new responses/conversations.");
     
+    // TODO: DH - look at blocks holding strong reference to self, and whether that's causing
     // Subscribe to conversations newer than our highwatermark
     [self subscribeToConversationsWithBlock:^(QredoConversation *conversation) {
         
-        LogDebug(@"Subscription returned conversation: %@", conversation);
+        LogDebug(@"Rendezvous subscription returned conversation: %@", conversation);
         
         if ([_delegate respondsToSelector:@selector(qredoRendezvous:didReceiveReponse:)]) {
             [_delegate qredoRendezvous:self didReceiveReponse:conversation];
@@ -348,12 +384,12 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         
     } subscriptionTerminatedHandler:^(NSError *error) {
         
-        LogError("Subscription terminated with error: %@", error);
+        LogError("Rendezvous subscription terminated with error: %@", error);
         _subscribedToResponses = NO;
         
     } since:self.highWatermark highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark) {
         
-        LogDebug(@"Subscription returned new HighWatermark: %llu", newWatermark);
+        LogDebug(@"Rendezvous subscription returned new HighWatermark: %llu", newWatermark);
         
         self->_highWatermark = newWatermark;
     }];
@@ -362,7 +398,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 - (void)unsubscribe
 {
     // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
-    LogDebug(@"NOTE: Cannot currently unsubscribe.  This request is ignored.");
+    LogDebug(@"NOTE: Cannot currently unsubscribe from Rendezvous responses.  This request is ignored.");
 }
 
 // This method disables subscription (push) for responses to rendezvous
@@ -371,7 +407,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // Need to stop the subsription renewal timer as well
     @synchronized (self) {
         if (_subscriptionRenewalTimer) {
-            LogDebug(@"Stoping subscription renewal timer");
+            LogDebug(@"Stoping rendezvous subscription renewal timer");
             dispatch_source_cancel(_subscriptionRenewalTimer);
             _subscriptionRenewalTimer = nil;
         }
@@ -383,7 +419,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 // This method polls for (new) responses to rendezvous, and creates new conversations from them.
 - (void)startPolling
 {
-    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
+    NSAssert(_delegate, @"Rendezvous delegate should be set before starting listening for the updates");
 
     @synchronized (self) {
         if (_timer) return;
@@ -445,8 +481,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     LogDebug(@"Checking for old/duplicate. Response Hashed Tag: %@. Responder Public Key: %@. Responder Auth Code: %@. SequenceValue: %@.", response.hashedTag, response.responderPublicKey, response.responderAuthenticationCode, sequenceValue);
     
-    LogDebug(@"Dedupe dictionary contains %lu items.", (unsigned long)_dedupeStore.count);
-    LogDebug(@"Dedupe dictionary: %@", _dedupeStore);
+    LogDebug(@"Rendezvous dedupe dictionary contains %lu items.", (unsigned long)_dedupeStore.count);
+    LogDebug(@"Rendezvous dedupe dictionary (%p): %@", _dedupeStore, _dedupeStore);
 
     BOOL responseIsDuplicate = NO;
     
@@ -467,7 +503,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             // We have completed processing the Query after Subscribe, and we have a non-duplicate Response - therefore we have passed the point where dedupe is required, so can empty the dedupe store
             LogDebug(@"Query completed and have received a non-duplicate response. Passed point where dedupe required - emptying dedupe store and preventing further dedupe.");
             _dedupeNecessary = NO;
-            _dedupeStore = [[NSMutableDictionary alloc] init];
+            [_dedupeStore removeAllObjects];
         }
         else {
             // Not a duplicate, and Query has not completed, so store this response/sequenceValue pair for later to prevent duplication
@@ -479,7 +515,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return responseIsDuplicate;
 }
 
-- (BOOL)processResponse:(QredoRendezvousResponse *)response sequenceValue:(QredoRendezvousSequenceValue *)sequenceValue withBlock:(void(^)(QredoConversation *conversation))block errorHandler:(void (^)(NSError *))errorHandler
+- (BOOL)processResponse:(QredoRendezvousResponse *)response
+          sequenceValue:(QredoRendezvousSequenceValue *)sequenceValue
+              withBlock:(void(^)(QredoConversation *conversation))block
+           errorHandler:(void (^)(NSError *))errorHandler
 {
     BOOL didProcessResponse = NO;
     
@@ -491,23 +530,19 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         }
     }
     else {
-        LogDebug(@"No dedupe necessary, subscription setup completed.");
-    }
-    
-    NSError *creationError = nil;
-    QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:&creationError];
-    
-    if (creationError) {
-        errorHandler(creationError);
-        return didProcessResponse;
-    }
-    else {
-        didProcessResponse = YES;
+        LogDebug(@"No dedupe necessary, rendezvous subscription setup completed.");
     }
 
-    block(conversation);
-    
-    return didProcessResponse;
+    [self createConversationAndStoreKeysForResponse:response completionHandler:^(QredoConversation *conversation, NSError *creationError) {
+        if (creationError) {
+            errorHandler(creationError);
+            return;
+        }
+
+        block(conversation);
+
+    }];
+    return YES;
 }
 
 - (void)subscribeToConversationsWithBlock:(void(^)(QredoConversation *conversation))block
@@ -544,13 +579,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          
                                          BOOL didProcessResponse = [self processResponse:result.response sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
 
-                                         // TODO: DH - remove deliberate duplication
-//                                         LogDebug(@"Deliberately duplicating subscription response");
-//                                         QredoRendezvousResponse *duplicateResponse = [QredoRendezvousResponse rendezvousResponseWithHashedTag:result.response.hashedTag responderPublicKey:result.response.responderPublicKey responderAuthenticationCode:result.response.responderAuthenticationCode];
-//                                         [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
-//                                         didProcessResponse = [self processResponse:duplicateResponse sequenceValue:result.sequenceValue withBlock:block errorHandler:subscriptionTerminatedHandler];
-                                         // TODO: DH - end deliberate duplication
-
                                          if (didProcessResponse &&
                                              result.sequenceValue &&
                                              highWatermarkHandler) {
@@ -558,10 +586,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          }
                                      }];
         
-        // TODO: DH - Ideally we need way of limiting/avoiding a Query to avoid receiving large numbers of entries twice (subscription and query). Not too much problem for Rendezvous, but bigger problem for Conversation/Vault
-        
         // Must have actually sent the subscription request before getting responses, otherwise chance of invalidating challenege/signatures - only 1 challenge per hashedTag at a time
-        LogDebug(@"Getting other responses to ensure none missed during subscription setup.");
+        LogDebug(@"Getting other responses since HWM");
         [_rendezvous getChallengeWithHashedTag:_hashedTag completionHandler:^(NSData *result, NSError *error) {
             if (error) {
                 subscriptionTerminatedHandler(error);
@@ -608,6 +634,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                          }
                                      }
                                      
+                                     // HWM handler only called at end as we only have 1 sequence value for the entire query response
                                      if (didProcessResponse &&
                                          result.sequenceValue &&
                                          highWatermarkHandler) {
@@ -652,66 +679,106 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                      challenge:nonce
                                      signature:signature
                                          after:[NSNumber numberWithLongLong:sinceWatermark]
-                             completionHandler:^(QredoRendezvousResponsesResult *result, NSError *error) {
-                                 if (error) {
-                                     completionHandler(error);
-                                     return ;
-                                 }
+                             completionHandler:^(QredoRendezvousResponsesResult *result, NSError *error)
+         {
+             if (error) {
+                 completionHandler(error);
+                 return ;
+             }
 
-                                 LogDebug(@"Enumerating %lu response(s)", (unsigned long)result.responses.count);
-                                 
-                                 for (QredoRendezvousResponse *response in result.responses) {
-                                     BOOL stop = result.responses.lastObject == response;
+             LogDebug(@"Enumerating %lu response(s)", (unsigned long)result.responses.count);
 
-                                     NSError *localError = nil;
-                                     QredoConversation *conversation = [self createConversationAndStoreKeysForResponse:response error:&localError];
+             [self processRendezvousResponseResult:result
+                                     responseIndex:0
+                                             block:block
+                              highWatermarkHandler:highWatermarkHandler
+                                 completionHandler:completionHandler];
 
-                                     if (localError && localError.code == QredoErrorCodeVaultItemNotFound) {
-                                         continue;
-                                     }
-
-                                     if (!conversation && !localError) {
-                                         // Might need to ignore the error, because there is not way for the client application to continue enumeration after this point
-                                         localError = [NSError errorWithDomain:QredoErrorDomain
-                                                                          code:QredoErrorCodeRendezvousUnknownResponse
-                                                                      userInfo:@{NSLocalizedDescriptionKey: @"Could not create conversation from response"}];
-                                     }
-
-                                     if (localError) {
-                                         completionHandler(localError);
-                                         return;
-                                     }
-
-                                     block(conversation, &stop);
-
-                                     if (stop) {
-                                         break;
-                                     }
-                                 }
-
-                                 if (result.sequenceValue && highWatermarkHandler) {
-                                     highWatermarkHandler(result.sequenceValue.longLongValue);
-                                 }
-
-                                 completionHandler(nil);
-                             }];
+         }];
     }];
+}
+
+- (void)processRendezvousResponseResult:(QredoRendezvousResponsesResult *)result
+                          responseIndex:(NSUInteger)responseIndex
+                                  block:(void(^)(QredoConversation *conversation, BOOL *stop))block
+                   highWatermarkHandler:(void(^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler
+                      completionHandler:(void(^)(NSError *error))completionHandler
+{
+
+    void (^finishEnumeration)() = ^{
+        if (result.sequenceValue && highWatermarkHandler) {
+            highWatermarkHandler(result.sequenceValue.longLongValue);
+        }
+
+        completionHandler(nil);
+    };
+
+    void (^continueToNextItem)() = ^{
+        dispatch_async(_enumerationQueue, ^{
+            [self processRendezvousResponseResult:result
+                                    responseIndex:responseIndex + 1
+                                            block:block
+                             highWatermarkHandler:highWatermarkHandler
+                                completionHandler:completionHandler];
+        });
+
+    };
+
+    if (responseIndex >= result.responses.count) {
+        finishEnumeration();
+        return;
+    }
+
+    QredoRendezvousResponse *response = [result.responses objectAtIndex:responseIndex];
+
+    [self createConversationAndStoreKeysForResponse:response
+                                  completionHandler:^(QredoConversation *conversation, NSError *error)
+     {
+         if (error && error.code == QredoErrorCodeVaultItemNotFound) {
+             continueToNextItem();
+             return ;
+         }
+
+         BOOL stop = result.responses.lastObject == response;
+
+         if (!conversation && !error) {
+             // Might need to ignore the error, because there is not way for the client application to continue enumeration after this point
+             error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeRendezvousUnknownResponse
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Could not create conversation from response"}];
+         }
+
+         if (error) {
+             completionHandler(error);
+             return;
+         }
+
+         block(conversation, &stop);
+         
+         if (stop) {
+             finishEnumeration();
+             return;
+         }
+
+         continueToNextItem();
+     }];
 }
 
 + (NSData *)signatureForHashedTag:(QredoRendezvousHashedTag *)hashedTag nonce:(NSData *)nonce
 {
     QredoRendezvousCrypto *crypto = [QredoRendezvousCrypto instance];
     SecKeyRef key = [crypto accessControlPrivateKeyWithTag:[hashedTag QUIDString]];
-    
+
     NSMutableData *dataToSign = [NSMutableData dataWithData:[hashedTag data]];
     [dataToSign appendData:nonce];
-    
+
     NSData *signature = [QredoCrypto rsaPssSignMessage:dataToSign saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:key];
-    
+
     return signature;
 }
 
-- (QredoConversation *)createConversationAndStoreKeysForResponse:(QredoRendezvousResponse *)response error:(NSError **)error
+- (void)createConversationAndStoreKeysForResponse:(QredoRendezvousResponse *)response
+                                completionHandler:(void(^)(QredoConversation *conversation, NSError *error))completionHandler
 {
     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
                                                                   rendezvousTag:_tag
@@ -719,25 +786,18 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                                                        transCap:_configuration.transCap];
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
     
-    
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    __block NSError *savingError = nil;
-    
-    [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey publicKey:responderPublicKey rendezvousOwner:YES completionHandler:^(NSError *blockError) {
-        savingError = blockError;
-        
-        dispatch_semaphore_signal(semaphore);
-    }];
-    
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
-    if (savingError) {
-        // Do not return a valid object if we could not save the keys, but return the error
-        if (error) *error = savingError;
-        conversation = nil;
-    }
-    
-    return conversation;
+    [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
+                                           publicKey:responderPublicKey
+                                     rendezvousOwner:YES
+                                   completionHandler:^(NSError *error)
+     {
+         if (error) {
+             completionHandler(nil, error);
+             return ;
+         }
+
+         completionHandler(conversation, nil);
+     }];
 }
 
 - (QredoRendezvousMetadata*)metadata {
