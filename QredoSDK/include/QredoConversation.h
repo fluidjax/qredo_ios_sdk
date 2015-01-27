@@ -2,20 +2,11 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_QredoConversation_h
-#define QredoSDK_QredoConversation_h
-
 #import "QredoQUID.h"
+#import "QredoConversationMessage.h"
 
 @class QredoVault;
-
-typedef NS_ENUM(NSInteger, QredoConversationControlMessageType) {
-    QredoConversationControlMessageTypeNotControlMessage = -2,
-    QredoConversationControlMessageTypeUnknown = -1,
-    QredoConversationControlMessageTypeJoined  = 0,
-    QredoConversationControlMessageTypeLeft
-} ;
-
+@class QredoConversation;
 
 extern NSString *const kQredoConversationVaultItemType;
 
@@ -27,23 +18,6 @@ extern NSString *const kQredoConversationVaultItemType;
 
 extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin;
 
-@class QredoConversation;
-@interface QredoConversationMessage : NSObject
-// metadata
-
-@property (readonly) QredoQUID *messageId;
-@property (readonly) NSString *dataType;
-@property (readonly) NSDictionary *summaryValues;
-@property (readonly) QredoQUID *parentId;
-@property (readonly) BOOL incoming;
-
-@property (readonly) QredoConversationHighWatermark *highWatermark;
-
-@property (readonly) NSData *value;
-
-- (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues;
-
-@end
 
 @interface QredoConversationMetadata : NSObject
 /** Same as `QredoRendezvousConfiguration.conversationType` */
@@ -103,5 +77,3 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 - (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
-
-#endif

@@ -49,8 +49,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 @end
 
-
-
 @implementation QredoRendezvousConfiguration
 
 - (instancetype)initWithConversationType:(NSString*)conversationType
