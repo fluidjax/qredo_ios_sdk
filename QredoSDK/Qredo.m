@@ -213,12 +213,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
     
 }
 
-+ (void)completeAuthorizationWithClient:(QredoClient *)client
-                                  error:(NSError *)error
-                      completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler {
-    
-}
-
 + (void)openSettings {
     QredoManagerAppRootViewController *managerAppRootViewController = [[QredoManagerAppRootViewController alloc] init];
     [managerAppRootViewController show];
@@ -248,11 +242,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
 {
     // rev 1 doesn't have authentication
     return YES;
-}
-
-- (void)authenticateWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
-    completionHandler(nil);
 }
 
 - (void)closeSession
