@@ -494,7 +494,8 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId
+                          completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
         completionHandler(error);
     }];
 
@@ -903,7 +904,10 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
              return;
          }
 
-         QredoConversationQueryItemsResult *resultItems = [QredoConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result] maxSequenceValue:result.sequenceValue current:@0];
+         QredoConversationQueryItemsResult *resultItems
+            = [QredoConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
+                                                                      maxSequenceValue:result.sequenceValue
+                                                                               current:@0];
 
          // Subscriptions (or pseudo subscriptions) should not exclude control messages
          [self enumerateBodyWithResult:resultItems
