@@ -10,6 +10,7 @@
 @class QredoVault;
 
 typedef NS_ENUM(NSInteger, QredoConversationControlMessageType) {
+    QredoConversationControlMessageTypeNotControlMessage = -2,
     QredoConversationControlMessageTypeUnknown = -1,
     QredoConversationControlMessageTypeJoined  = 0,
     QredoConversationControlMessageTypeLeft
@@ -87,6 +88,11 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 - (QredoVault*)store;
 
 - (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+
+- (void)subscribeToMessagesWithBlock:(void(^)(QredoConversationMessage *message))block
+       subscriptionTerminatedHandler:(void (^)(NSError *))subscriptionTerminatedHandler
+                               since:(QredoConversationHighWatermark *)sinceWatermark
+                highWatermarkHandler:(void(^)(QredoConversationHighWatermark *newWatermark))highWatermarkHandler;
 
 /**
  @param block is called for every received message. If the block sets `stop` to `NO`, then it terminates the enumeration

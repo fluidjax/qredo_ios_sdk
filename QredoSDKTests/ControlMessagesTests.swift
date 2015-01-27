@@ -6,6 +6,7 @@ import UIKit
 import XCTest
 
 class ControlMessagesTests: BaseConversation {
+
     func testJoinedControlMessage() {
         var joinedMessageCounter = 0
 
@@ -15,9 +16,10 @@ class ControlMessagesTests: BaseConversation {
             if message.isControlMessage() && message.controlMessageType() == .Joined {
                 joinedMessageCounter++
             }
-        }, incoming: true, completionHandler: { (error) -> Void in
+        }, incoming: true, excludeControlMessages: false, since: QredoConversationHighWatermarkOrigin,
+            completionHandler: { (error) -> Void in
             enumerationExpectation.fulfill()
-        }, since: QredoConversationHighWatermarkOrigin, highWatermarkHandler: nil, excludeControlMessages: false)
+        }, highWatermarkHandler: nil)
 
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 

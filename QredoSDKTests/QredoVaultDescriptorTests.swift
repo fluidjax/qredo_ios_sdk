@@ -18,7 +18,7 @@ class QredoVaultDescriptorTests: XCTestCase {
                 self.client = client
                 createExpectation.fulfill()
         })
-        waitForExpectationsWithTimeout(1.0, handler: nil)
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 
         let vault = client.defaultVault()
 

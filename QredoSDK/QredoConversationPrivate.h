@@ -31,11 +31,10 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 
 - (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
                            incoming:(BOOL)incoming
-                  completionHandler:(void(^)(NSError *error))completionHandler
+             excludeControlMessages:(BOOL)excludeControlMessages
                               since:(QredoConversationHighWatermark*)sinceWatermark
-               highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler
-             excludeControlMessages:(BOOL)excludeControlMessages;
-
+                  completionHandler:(void(^)(NSError *error))completionHandler
+               highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler;
 
 - (void)loadHighestHWMWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 

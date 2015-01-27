@@ -64,7 +64,7 @@ class QredoVaultConsolidationTests: XCTestCase {
                 self.qredo = client
                 createExpectation.fulfill()
         })
-        waitForExpectationsWithTimeout(1.0, handler: nil)
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 
         let systemItemsExpectation = expectationWithDescription("system vault items")
         let vault = qredo.defaultVault()
