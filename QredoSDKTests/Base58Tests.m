@@ -59,10 +59,12 @@ static inline NSString *createRandomEncodedValue() {
 
 - (void)test_0020_SimpleDecoding
 {
+    NSError *error = nil;
     
     NSString *string9 = @"9";
-    NSData *data8 = [QredoBase58 decodeData:string9];
+    NSData *data8 = [QredoBase58 decodeData:string9 error:&error];
     XCTAssertNotNil(data8);
+    XCTAssertNil(error);
     
     NSUInteger data8Length = [data8 length];
     XCTAssertEqual(data8Length, 1);
@@ -71,21 +73,43 @@ static inline NSString *createRandomEncodedValue() {
     XCTAssertEqual(data8Bytes[0], 8);
 }
 
+- (void)test_0025_DecodingWithBadChars
+{
+    NSError *error = nil;
+    
+    NSString *stringWithBadChars = @"9-+";
+    NSData *decodedData = [QredoBase58 decodeData:stringWithBadChars error:&error];
+    XCTAssertNil(decodedData);
+    XCTAssert(error);
+    XCTAssertEqualObjects(error.domain, QredoBase58ErrorDomain);
+    XCTAssertEqual(error.code, QredoBase58ErrorUnrecognizedSymbol);
+}
+
+- (void)test_0026_DecodingWithBadCharsNoErrorPointer
+{
+    NSString *stringWithBadChars = @"9-+";
+    NSData *decodedData = [QredoBase58 decodeData:stringWithBadChars error:nil];
+    XCTAssertNil(decodedData);
+}
+
 - (void)test_0030_EncodingAndDecoding
 {
+    NSError *error = nil;
     
     NSData *dataToEncode = [@"My test data" dataUsingEncoding:NSUTF8StringEncoding];
     
     NSString *encodedString = [QredoBase58 encodeData:dataToEncode];
     XCTAssertNotNil(encodedString);
     
-    NSData *decodedData = [QredoBase58 decodeData:encodedString];
+    NSData *decodedData = [QredoBase58 decodeData:encodedString error:&error];
     XCTAssertNotNil(decodedData);
+    XCTAssertNil(error);
     XCTAssertEqualObjects(decodedData, dataToEncode);
 }
 
 - (void)test_0040_EncodingAndDecodingWithZerosPadding
 {
+    NSError *error = nil;
     
     NSData *nonZeroPaddedData = [@"My test data" dataUsingEncoding:NSUTF8StringEncoding];
     NSMutableData *zeroPaddedData = [NSMutableData dataWithLength:5];
@@ -96,13 +120,15 @@ static inline NSString *createRandomEncodedValue() {
     NSString *encodedString = [QredoBase58 encodeData:dataToEncode];
     XCTAssertNotNil(encodedString);
     
-    NSData *decodedData = [QredoBase58 decodeData:encodedString];
+    NSData *decodedData = [QredoBase58 decodeData:encodedString error:&error];
     XCTAssertNotNil(decodedData);
+    XCTAssertNil(error);
     XCTAssertEqualObjects(decodedData, dataToEncode);
 }
 
 - (void)test_0050_EncodingAndDecodingRandomEquality
 {
+    NSError *error = nil;
     
     NSUInteger kIterations = 1000000;
     srand ( (int)time(NULL) );
@@ -111,7 +137,10 @@ static inline NSString *createRandomEncodedValue() {
         
         NSData *dataToEncode = createRandomData();
         NSString *encodedValue = [QredoBase58 encodeData:dataToEncode];
-        NSData *decodedData = [QredoBase58 decodeData:encodedValue];
+        error = nil;
+        NSData *decodedData = [QredoBase58 decodeData:encodedValue error:&error];
+        XCTAssertNotNil(decodedData);
+        XCTAssertNil(error);
         
         if (![dataToEncode isEqual:decodedData]) {
             XCTFail("Encoding or decoding faild. Data to encode: <%@>, decoded data: <%@>",
@@ -127,6 +156,7 @@ static inline NSString *createRandomEncodedValue() {
 
 - (void)test_0060_DecodingAndEncodingRandomEquality
 {
+    NSError *error = nil;
     
     NSUInteger kIterations = 1000000;
     srand ( (int)time(NULL) );
@@ -134,7 +164,11 @@ static inline NSString *createRandomEncodedValue() {
     for (int i = 1; i <= kIterations; i++) {
         
         NSString *valueToDecode = createRandomEncodedValue();
-        NSData *encodedData = [QredoBase58 decodeData:valueToDecode];
+
+        error = nil;
+        NSData *encodedData = [QredoBase58 decodeData:valueToDecode error:&error];
+        XCTAssertNotNil(encodedData);
+        XCTAssertNil(error);
         NSString *encodedValue = [QredoBase58 encodeData:encodedData];
         
         if (![valueToDecode isEqualToString:encodedValue]) {
@@ -180,6 +214,7 @@ static inline NSString *createRandomEncodedValue() {
 
 - (void)test_0080_DecodingRandomInequality
 {
+    NSError *error = nil;
     
     NSUInteger kIterations = 1000000;
     srand ( (int)time(NULL) );
@@ -192,8 +227,15 @@ static inline NSString *createRandomEncodedValue() {
             valueToDecode2 = createRandomEncodedValue();
         }
         
-        NSData *decodedData1 = [QredoBase58 decodeData:valueToDecode1];
-        NSData *decodedData2 = [QredoBase58 decodeData:valueToDecode2];
+        error = nil;
+        NSData *decodedData1 = [QredoBase58 decodeData:valueToDecode1 error:&error];
+        XCTAssertNotNil(decodedData1);
+        XCTAssertNil(error);
+        
+        error = nil;
+        NSData *decodedData2 = [QredoBase58 decodeData:valueToDecode2 error:&error];
+        XCTAssertNotNil(decodedData2);
+        XCTAssertNil(error);
         
         if ([decodedData1 isEqual:decodedData2]) {
             XCTFail("Decoding of diffent values resulted in same decoded data. Value to decode 1: <%@>, value to decode 2: <%@>, decoded data: <%@>",
