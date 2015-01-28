@@ -97,7 +97,7 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 {
     self = [super initWithCrypto:crypto];
     if (self) {
-        _vk = [self verifyKeyFromTag:self.fullTag error:error];
+        _vk = [self verifyKeyFromTag:fullTag error:error];
         if (!_vk) {
             return nil;
         }
