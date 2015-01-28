@@ -46,8 +46,8 @@ static inline NSString *createRandomEncodedValue() {
 
 @implementation Base58Tests
 
-- (void)test_0010_SimpleEncoding {
-    
+- (void)test_0010_SimpleEncoding
+{
     NSMutableData *data8 = [NSMutableData dataWithLength:1];
     unsigned char *data8Bytes = [data8 mutableBytes];
     NSUInteger data8Length = [data8 length];
@@ -55,10 +55,10 @@ static inline NSString *createRandomEncodedValue() {
     
     NSString *result = [QredoBase58 encodeData:data8];
     XCTAssertEqualObjects(result, @"9");
-    
 }
 
-- (void)test_0020_SimpleDecoding {
+- (void)test_0020_SimpleDecoding
+{
     
     NSString *string9 = @"9";
     NSData *data8 = [QredoBase58 decodeData:string9];
@@ -69,10 +69,10 @@ static inline NSString *createRandomEncodedValue() {
     
     unsigned char *data8Bytes = (unsigned char *)[data8 bytes];
     XCTAssertEqual(data8Bytes[0], 8);
-    
 }
 
-- (void)test_0030_EncodingAndDecoding {
+- (void)test_0030_EncodingAndDecoding
+{
     
     NSData *dataToEncode = [@"My test data" dataUsingEncoding:NSUTF8StringEncoding];
     
@@ -82,10 +82,10 @@ static inline NSString *createRandomEncodedValue() {
     NSData *decodedData = [QredoBase58 decodeData:encodedString];
     XCTAssertNotNil(decodedData);
     XCTAssertEqualObjects(decodedData, dataToEncode);
-    
 }
 
-- (void)test_0040_EncodingAndDecodingWithZerosPadding {
+- (void)test_0040_EncodingAndDecodingWithZerosPadding
+{
     
     NSData *nonZeroPaddedData = [@"My test data" dataUsingEncoding:NSUTF8StringEncoding];
     NSMutableData *zeroPaddedData = [NSMutableData dataWithLength:5];
@@ -99,10 +99,10 @@ static inline NSString *createRandomEncodedValue() {
     NSData *decodedData = [QredoBase58 decodeData:encodedString];
     XCTAssertNotNil(decodedData);
     XCTAssertEqualObjects(decodedData, dataToEncode);
-    
 }
 
-- (void)test_0050_EncodingAndDecodingRandomEquality {
+- (void)test_0050_EncodingAndDecodingRandomEquality
+{
     
     NSUInteger kIterations = 1000000;
     srand ( (int)time(NULL) );
@@ -123,10 +123,10 @@ static inline NSString *createRandomEncodedValue() {
         }
         
     }
-    
 }
 
-- (void)test_0060_DecodingAndEncodingRandomEquality {
+- (void)test_0060_DecodingAndEncodingRandomEquality
+{
     
     NSUInteger kIterations = 1000000;
     srand ( (int)time(NULL) );
@@ -147,11 +147,10 @@ static inline NSString *createRandomEncodedValue() {
         }
         
     }
-    
 }
 
-- (void)test_0070_EncodingRandomInequality {
-    
+- (void)test_0070_EncodingRandomInequality
+{
     NSUInteger kIterations = 1000000;
     srand ( (int)time(NULL) );
     
@@ -177,10 +176,10 @@ static inline NSString *createRandomEncodedValue() {
         }
         
     }
-    
 }
 
-- (void)test_0080_DecodingRandomInequality {
+- (void)test_0080_DecodingRandomInequality
+{
     
     NSUInteger kIterations = 1000000;
     srand ( (int)time(NULL) );
@@ -206,7 +205,6 @@ static inline NSString *createRandomEncodedValue() {
         }
         
     }
-    
 }
 
 @end
