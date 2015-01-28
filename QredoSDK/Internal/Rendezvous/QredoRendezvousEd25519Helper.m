@@ -97,14 +97,11 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 {
     self = [super initWithCrypto:crypto];
     if (self) {
-        if ([fullTag length] < 1) {
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+        _vk = [self verifyKeyFromTag:self.fullTag error:error];
+        if (!_vk) {
             return nil;
         }
         self.fullTag = fullTag;
-        _vk = [self verifyKeyFromTag:self.fullTag error:error];
     }
     return self;
 }
@@ -164,8 +161,10 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
         vkString = [tag substringFromIndex:prefixPos+1];
     }
     
-    NSData *vkData = [QredoBase58 decodeData:vkString];
-    NSAssert([vkData length], @"Malformed tag (on decoding)");
+    NSData *vkData = [QredoBase58 decodeData:vkString error:error];
+    if (!vkData) {
+        return nil;
+    }
     
     vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
     return vk;
