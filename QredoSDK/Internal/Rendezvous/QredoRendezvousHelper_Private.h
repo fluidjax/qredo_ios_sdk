@@ -22,5 +22,9 @@
 @end
 
 
-NSError *qredoRendezvousHelperError(QredoRendezvousHelperError errorCode, NSDictionary *userInfo);
+void updateErrorWithQredoRendezvousHelperError(NSError **error,
+                                               QredoRendezvousHelperError errorCode,
+                                               NSDictionary *userInfo);
+
+
 
