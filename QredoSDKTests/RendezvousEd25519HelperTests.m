@@ -7,6 +7,7 @@
 #import "QredoRendezvousHelpers.h"
 #import "QredoRendezvousEd25519Helper.h"
 #import "QredoClient.h"
+#import "QredoBase58.h"
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
@@ -380,6 +381,22 @@
     XCTAssert(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
+}
+
+- (void)testRespondHelperBadCharsInTag
+{
+    NSError *error = nil;
+    
+    id helper = [QredoRendezvousHelpers
+                 rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                 fullTag:@"test@tv+-"
+                 crypto:self.cryptoImpl
+                 error:&error];
+    
+    XCTAssertNil(helper);
+    XCTAssert(error);
+    XCTAssertEqualObjects(error.domain, QredoBase58ErrorDomain);
+    XCTAssertEqual(error.code, QredoBase58ErrorUnrecognizedSymbol);
 }
 
 @end
