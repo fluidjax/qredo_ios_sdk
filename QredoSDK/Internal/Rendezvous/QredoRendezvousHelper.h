@@ -16,6 +16,7 @@ typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
     
     QredoRendezvousHelperErrorUnknown = 0,
     QredoRendezvousHelperErrorMissingTag,
+    QredoRendezvousHelperErrorWrongSignatureType,
     
 };
 

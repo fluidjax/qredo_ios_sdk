@@ -97,14 +97,11 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 {
     self = [super initWithCrypto:crypto];
     if (self) {
-        if ([fullTag length] < 1) {
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+        _vk = [self verifyKeyFromTag:fullTag error:error];
+        if (!_vk) {
             return nil;
         }
         self.fullTag = fullTag;
-        _vk = [self verifyKeyFromTag:self.fullTag error:error];
     }
     return self;
 }
@@ -142,6 +139,7 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
     }];
     
     if ([signatureData length] < 1) {
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorWrongSignatureType, nil);
         return NO;
     }
     
@@ -150,9 +148,11 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
 
 - (QredoED25519VerifyKey *)verifyKeyFromTag:(NSString *)tag error:(NSError **)error
 {
-    // TODO [GR]: The code in this method should return errors through the **error rather than assert
+    if ([tag length] < 1) {
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
+        return nil;
+    }
     
-    NSAssert([tag length], @"Malformed tag");
     QredoED25519VerifyKey *vk = nil;
     
     NSUInteger prefixPos = [tag rangeOfString:@"@" options:NSBackwardsSearch].location;
@@ -164,8 +164,10 @@ QredoRendezvousAuthSignature *kEmptySignature = nil;
         vkString = [tag substringFromIndex:prefixPos+1];
     }
     
-    NSData *vkData = [QredoBase58 decodeData:vkString];
-    NSAssert([vkData length], @"Malformed tag (on decoding)");
+    NSData *vkData = [QredoBase58 decodeData:vkString error:error];
+    if (!vkData) {
+        return nil;
+    }
     
     vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
     return vk;

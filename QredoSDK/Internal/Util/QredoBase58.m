@@ -4,10 +4,17 @@
 
 #import "QredoBase58.h"
 
+
+
+
 static NSUInteger kAlphabetLength = 0;
 static char kAlphabet[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 static const NSUInteger kIndexesLength  = 128;
 static NSUInteger kIndexes[kIndexesLength];
+
+
+NSString *QredoBase58ErrorDomain = @"QredoBase58ErrorDomain";
+void updateErrorWithQredoBase58Error(NSError **error, QredoBase58Error errorCode, NSDictionary *userInfo);
 
 
 //
@@ -83,7 +90,7 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes, NSUInteger numb
     return [[NSString alloc] initWithData:resultData encoding:NSASCIIStringEncoding];
 }
 
-+ (NSData *)decodeData:(NSString *)string
++ (NSData *)decodeData:(NSString *)string error:(NSError **)error
 {
     if ([string length] < 1) {
         return [NSMutableData dataWithLength:0];
@@ -92,15 +99,13 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes, NSUInteger numb
     unsigned char *input58Bytes = [input58 mutableBytes];
     const NSUInteger input58Length = [input58 length];
     
-    BOOL disallowedChar = NO;
-    
     // Transform the string to a base58 byte sequence
     for (NSUInteger i = 0; i < [string length]; ++i) {
         
         unichar uc = [string characterAtIndex:i];
         if ((uc>>8) != 0) {
-            disallowedChar = YES;
-            break;
+            updateErrorWithQredoBase58Error(error, QredoBase58ErrorUnrecognizedSymbol, nil);
+            return nil;
         }
         
         unsigned char c = (unsigned char)uc;
@@ -109,15 +114,11 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes, NSUInteger numb
             digit58 = kIndexes[c];
         }
         if (digit58 == NSNotFound) {
-            disallowedChar = YES;
-            break;
+            updateErrorWithQredoBase58Error(error, QredoBase58ErrorUnrecognizedSymbol, nil);
+            return nil;
         }
         
         input58Bytes[i] = digit58;
-    }
-    
-    if (disallowedChar) {
-        return nil;
     }
     
     // Count leading zeros
@@ -181,5 +182,14 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes, NSUInteger numb
     }
     return (unsigned char)remainder;
 }
+
+
+void updateErrorWithQredoBase58Error(NSError **error, QredoBase58Error errorCode, NSDictionary *userInfo)
+{
+    if (error) {
+        *error = [NSError errorWithDomain:QredoBase58ErrorDomain code:errorCode userInfo:userInfo];
+    }
+}
+
 
 
