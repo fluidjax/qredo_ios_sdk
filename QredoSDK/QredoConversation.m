@@ -495,7 +495,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
     [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId
-                          completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
         completionHandler(error);
     }];
 
@@ -1190,8 +1190,8 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:metadata value:message.value];
 
-    [self.store putItem:item completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
-        completionHandler(newItemDescriptor, error);
+    [self.store putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+        completionHandler(newItemMetadata.descriptor, error);
     }];
 }
 

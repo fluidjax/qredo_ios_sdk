@@ -499,7 +499,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 
     [systemVault putItem:deviceInfoItem
-       completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+       completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
          if (completionHandler) completionHandler(error);
      }];
