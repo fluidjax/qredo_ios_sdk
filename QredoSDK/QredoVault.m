@@ -235,27 +235,28 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                                                                         descriptor:vaultItemDescriptor];
 
     [_vault putItemWithItem:encryptedVaultItem
-          completionHandler:^void(NSNumber *result, NSError *error) {
-              if ([result boolValue] && !error) {
-                  
-                  [_vaultSequenceCache setItemSequence:itemId
-                                            sequenceId:_sequenceId
-                                         sequenceValue:newSequenceValue];
-                  
-                  
-                  QredoMutableVaultItemMetadata *mutableMetadata = [metadata mutableCopy];
-                  mutableMetadata.descriptor
-                  = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
-                                                                  sequenceValue:newSequenceValue
-                                                                         itemId:itemId];
-                  completionHandler(mutableMetadata, nil);
-                  
-              } else {
-                  
-                  completionHandler(nil, error);
-                  
-              }
-          }];
+          completionHandler:^void(NSNumber *result, NSError *error)
+     {
+         if ([result boolValue] && !error) {
+             
+             [_vaultSequenceCache setItemSequence:itemId
+                                       sequenceId:_sequenceId
+                                    sequenceValue:newSequenceValue];
+             
+             
+             QredoMutableVaultItemMetadata *newMetadata = [metadata mutableCopy];
+             newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
+                                                                                    sequenceValue:newSequenceValue
+                                                                                           itemId:itemId];
+             
+             completionHandler(newMetadata, nil);
+             
+         } else {
+             
+             completionHandler(nil, error);
+             
+         }
+     }];
 }
 
 - (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem
