@@ -210,7 +210,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 - (void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
                        itemId:(QredoQUID*)itemId dataType:(NSString *)dataType
                 summaryValues:(NSDictionary *)summaryValues
-            completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+            completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
 {
 
     QredoVaultSequenceValue *newSequenceValue = [_vaultSequenceCache nextSequenceValue];
@@ -242,10 +242,13 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                                             sequenceId:_sequenceId
                                          sequenceValue:newSequenceValue];
                   
-                  completionHandler([QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
-                                                                                  sequenceValue:newSequenceValue
-                                                                                         itemId:itemId],
-                                    nil);
+                  
+                  QredoMutableVaultItemMetadata *mutableMetadata = [metadata mutableCopy];
+                  mutableMetadata.descriptor
+                  = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
+                                                                  sequenceValue:newSequenceValue
+                                                                         itemId:itemId];
+                  completionHandler(mutableMetadata, nil);
                   
               } else {
                   
@@ -256,7 +259,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 }
 
 - (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem
-         completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
 {
     QredoQUID *itemId = [QredoQUID QUID];
     [self strictlyPutNewItem:vaultItem itemId:itemId completionHandler:completionHandler];
@@ -264,7 +267,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem
                     itemId:(QredoQUID *)itemId
-         completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
 {
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
@@ -277,7 +280,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 }
 
 - (void)strictlyUpdateItem:(QredoVaultItem *)vaultItem
-         completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
 {
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     QredoQUID *itemId = metadata.descriptor.itemId;
@@ -546,7 +549,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 }
 
 - (void)putItem:(QredoVaultItem *)vaultItem
-completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
+completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
 {
     BOOL isNewItemFromDateCreated = vaultItem.metadata.summaryValues[QredoVaultItemMetadataItemDateCreated] == nil;
     BOOL isNewItemFromDescriptor = vaultItem.metadata.descriptor == nil;
@@ -729,7 +732,10 @@ completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError
                          itemId:itemId
                        dataType:QredoVaultItemMetadataItemTypeTombstone
                   summaryValues:newSummaryValues
-              completionHandler:completionHandler];
+              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         completionHandler(newItemMetadata.descriptor, error);
+     }];
 }
 
 
