@@ -2,10 +2,6 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_Qredo_h
-#define QredoSDK_Qredo_h
-
-
 #import <Foundation/Foundation.h>
 #import "QredoQUID.h"
 #import "QredoConversation.h"
@@ -84,4 +80,90 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 @end
 
-#endif
+@class QredoVendorAttestation;
+@class QredoVendorAttestationMetadata; // name, tag
+@class QredoVendorAttestationSession;
+
+@interface QredoClient (Attestation)
+
+- (void)registerVendorAttestation:(NSArray*)attestationTypes /* dob, photo */
+                completionHandler:(void(^)(QredoVendorAttestation *vendorAttestation, NSError *error))completionHandler;
+
+- (void)enumeratateVendorAttestationsWithBlock:(void(^)(QredoVendorAttestation *vendorAttestation, BOOL *stop))block
+                             completionHandler:(void(^)(NSError *error))completionHandler;
+
+@end
+
+@protocol QredoVendorAttestationDelegate <NSObject>
+
+@required
+- (void)qredoVendorAttestation:(QredoVendorAttestation*)vendorAttestation didReceivePresenterSession:(QredoVendorAttestationSession*)vendorAttestationSession;
+
+@optional
+- (void)qredoVendorAttestation:(QredoVendorAttestation*)vendorAttestation didFinishPresenterSession:(QredoVendorAttestationSession*)vendorAttestationSession;
+
+@end
+
+@interface QredoVendorAttestation : NSObject
+
+@property QredoVendorAttestationMetadata *metadata;
+
+@property id<QredoVendorAttestationDelegate> delegate;
+
+// return only new
+- (void)startListening;
+- (void)stopListening;
+
+// return only active
+- (void)enumeratePresentersWithBlock:(void(^)(QredoVendorAttestationSession *))block completionHandler:(void(^)(NSError *error))completionHandler;
+@end
+
+@interface QredoAuthenticationResult : NSObject
+
+@property BOOL verified;
+// signature and other crap
+
+@property NSError *error;
+
+@end
+
+typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
+    QredoAuthenticationStatusAuthenticating,
+    QredoAuthenticationStatusReceivedResult,
+    QredoAuthenticationStatusFailed
+};
+
+@interface QredoClaim : NSObject
+
+@property NSString *name;
+@property NSString *dataType;
+@property NSData   *value;
+
+@property QredoAuthenticationStatus authenticationStatus;
+@property QredoAuthenticationResult *authenticationResult;
+
+@end
+
+@protocol QredoVendorAttestationSessionDelegate <NSObject>
+
+@required
+- (void)qredoVendorAttestationSession:(QredoVendorAttestationSession*)session didReceiveClaims:(NSArray /* QredoClaim */ *)claims;
+- (void)qredoVendorAttestationSessionDidFinishAuthentication:(QredoVendorAttestationSession *)session;
+
+@optional
+- (void)qredoVendorAttestationSession:(QredoVendorAttestationSession*)session claim:(QredoClaim *)claim didChangeStatusTo:(QredoAuthenticationStatus)status;
+
+@end
+
+@interface QredoVendorAttestationSession : NSObject
+
+// if claims are received before the delegate is set, then didReceiveClaims: will be called straight after receiving claims
+@property id<QredoVendorAttestationSessionDelegate> delegate;
+
+- (void)startAuthentication;
+
+- (void)cancelWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+
+- (void)finishAttestationWithResult:(BOOL)result completionHandler:(void(^)(NSError *error))completionHandler;
+
+@end
