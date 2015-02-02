@@ -80,42 +80,42 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 @end
 
-@class QredoVendorAttestation;
-@class QredoVendorAttestationMetadata; // name, tag
-@class QredoVendorAttestationSession;
+@class QredoAttestationRelyingParty;
+@class QredoAttestationRelyingPartyMetadata; // name, tag
+@class QredoClaimantAttestationSession;
 
 @interface QredoClient (Attestation)
 
-- (void)registerVendorAttestation:(NSArray*)attestationTypes /* dob, photo */
-                completionHandler:(void(^)(QredoVendorAttestation *vendorAttestation, NSError *error))completionHandler;
+- (void)registerAttestationRelyingPartyWithTypes:(NSArray*)attestationTypes /* dob, photo */
+                               completionHandler:(void(^)(QredoAttestationRelyingParty *relyingParty, NSError *error))completionHandler;
 
-- (void)enumeratateVendorAttestationsWithBlock:(void(^)(QredoVendorAttestation *vendorAttestation, BOOL *stop))block
-                             completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)enumeratateAttestationRelyingPartiesWithBlock:(void(^)(QredoAttestationRelyingParty *relyingParty, BOOL *stop))block
+                                    completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
 
-@protocol QredoVendorAttestationDelegate <NSObject>
+@protocol QredoAttestationRelyingPartyDelegate <NSObject>
 
 @required
-- (void)qredoVendorAttestation:(QredoVendorAttestation*)vendorAttestation didReceivePresenterSession:(QredoVendorAttestationSession*)vendorAttestationSession;
+- (void)qredoAttestationRelyingParty:(QredoAttestationRelyingParty*)attestationRelyingParty didStartClaimantSession:(QredoClaimantAttestationSession*)claimantAttestationSession;
 
 @optional
-- (void)qredoVendorAttestation:(QredoVendorAttestation*)vendorAttestation didFinishPresenterSession:(QredoVendorAttestationSession*)vendorAttestationSession;
+- (void)qredoAttestationRelyingParty:(QredoAttestationRelyingParty*)attestationRelyingParty didFinishClaimantSession:(QredoClaimantAttestationSession*)claimantAttestationSession;
 
 @end
 
-@interface QredoVendorAttestation : NSObject
+@interface QredoAttestationRelyingParty : NSObject
 
-@property QredoVendorAttestationMetadata *metadata;
+@property QredoAttestationRelyingPartyMetadata *metadata;
 
-@property id<QredoVendorAttestationDelegate> delegate;
+@property id<QredoAttestationRelyingPartyDelegate> delegate;
 
 // return only new
 - (void)startListening;
 - (void)stopListening;
 
 // return only active
-- (void)enumeratePresentersWithBlock:(void(^)(QredoVendorAttestationSession *))block completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)enumerateClaimantSessionsWithBlock:(void(^)(QredoClaimantAttestationSession *))block completionHandler:(void(^)(NSError *error))completionHandler;
 @end
 
 @interface QredoAuthenticationResult : NSObject
@@ -144,21 +144,21 @@ typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
 
 @end
 
-@protocol QredoVendorAttestationSessionDelegate <NSObject>
+@protocol QredoClaimantAttestationSessionDelegate <NSObject>
 
 @required
-- (void)qredoVendorAttestationSession:(QredoVendorAttestationSession*)session didReceiveClaims:(NSArray /* QredoClaim */ *)claims;
-- (void)qredoVendorAttestationSessionDidFinishAuthentication:(QredoVendorAttestationSession *)session;
+- (void)QredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession didReceiveClaims:(NSArray /* QredoClaim */ *)claims;
+- (void)QredoClaimantAttestationSessionDidFinishAuthentication:(QredoClaimantAttestationSession *)claimantSession;
 
 @optional
-- (void)qredoVendorAttestationSession:(QredoVendorAttestationSession*)session claim:(QredoClaim *)claim didChangeStatusTo:(QredoAuthenticationStatus)status;
+- (void)QredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession claim:(QredoClaim *)claim didChangeStatusTo:(QredoAuthenticationStatus)status;
 
 @end
 
-@interface QredoVendorAttestationSession : NSObject
+@interface QredoClaimantAttestationSession : NSObject
 
 // if claims are received before the delegate is set, then didReceiveClaims: will be called straight after receiving claims
-@property id<QredoVendorAttestationSessionDelegate> delegate;
+@property id<QredoClaimantAttestationSessionDelegate> delegate;
 
 - (void)startAuthentication;
 
