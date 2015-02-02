@@ -1,0 +1,40 @@
+digraph ClaimantSession {
+  rankdir="LR"
+ 
+  start -> requestingPresentation [label="publishMessage(presentationRequest)"]
+ 
+  requestingPresentation -> cancel [label = "publish error"]
+  requestingPresentation -> cancelledByOtherSide [label="message(cancel)"]
+  requestingPresentation -> waitingForPresentations [label = "message sent"]
+  requestingPresentation -> cancel [label="cancel button"]
+
+  waitingForPresentations -> cancelledByOtherSide [label="message(cancel)"]
+  waitingForPresentations -> receivedPresentations [label="message(presentations)"]
+  //receivedPresentations -> cancelledByOtherSide [label="message(cancel)"]
+  waitingForPresentations -> cancel [label="cancel button"]
+
+  receivedPresentations -> receivedAuthenticationResults [label="authenticationComplete(results)"]
+  receivedPresentations -> cancel [label="comm. error with authenticator"]
+  receivedPresentations -> cancelledByOtherSide [label="message(cancel)"]
+
+  receivedAuthenticationResults -> sendAttestationResult [label="accept/reject"]
+  receivedAuthenticationResults -> cancelledByOtherSide [label="message(cancel)"]
+
+  sendAttestationResult -> cancel [label="publish error"]
+  sendAttestationResult -> finish [label="message sent"]
+
+  cancel -> finish [label = "messages sent or\nfailed to send"]
+
+  cancelledByOtherSide -> finish [label = "press OK"]
+
+# Labels for the states
+  start [style=filled fillcolor=green]
+  requestingPresentation [label = "Requesting Presentations" style=filled fillcolor=palegreen]
+  waitingForPresentations [label = "Waiting for Presentations" style=filled fillcolor=palegreen]
+  cancelledByOtherSide [label = "Cancelled by Alice\nEnter: Update UI" style=filled fillcolor=red]
+  receivedPresentations [label = "Received Presentations,\nAuthenticating" style=filled fillcolor=palegreen]
+  receivedAuthenticationResults [label = "Received Authentication results\nAccept/Reject UI" style=filled fillcolor=palegreen]
+  sendAttestationResult [label = "Sending attestation result\nEnter: publishMessage(attestationResult)" style=filled fillcolor=palegreen]
+  cancel [label = "Cancel conversation\nOptional: with error"]
+  finish [style=filled fillcolor=green]
+}
