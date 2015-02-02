@@ -11,7 +11,8 @@
 
 @implementation QredoAbstractRendezvousEd25519Helper
 
-QredoRendezvousAuthSignature *kEmptySignature = nil;
+// TODO: DH - Removed as apparently unused
+//QredoRendezvousAuthSignature *kEmptySignature = nil;
 
 - (QredoRendezvousAuthenticationType)type
 {
