@@ -248,6 +248,7 @@
 		0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationBlockDelegate.swift; sourceTree = "<group>"; };
 		0AC016441A7FDA6D006EB7E5 /* QredoAttestationRelyingParty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoAttestationRelyingParty.h; sourceTree = "<group>"; };
 		0AC016451A7FDAC7006EB7E5 /* QredoClaimantAttestationSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoClaimantAttestationSession.h; sourceTree = "<group>"; };
+		0AC016461A7FEF38006EB7E5 /* QredoConversationProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoConversationProtocol.h; sourceTree = "<group>"; };
 		0AD259591A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainReceiverQR.h; sourceTree = "<group>"; };
 		0AD2595A1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainReceiverQR.m; sourceTree = "<group>"; };
 		0AD2595D1A2F7CD800FC8942 /* QredoKeychainSenderQR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainSenderQR.h; sourceTree = "<group>"; };
@@ -580,6 +581,7 @@
 				0A1035281A3898B3002479D9 /* Keychain */,
 				0A16F98919C6F62200639779 /* Rendezvous */,
 				0A16F89A19C3567E00639779 /* Vault */,
+				0AC016461A7FEF38006EB7E5 /* QredoConversationProtocol.h */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
