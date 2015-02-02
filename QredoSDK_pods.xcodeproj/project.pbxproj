@@ -246,6 +246,8 @@
 		0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversationCrypto.m; sourceTree = "<group>"; };
 		0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRendezvous.h; sourceTree = "<group>"; };
 		0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationBlockDelegate.swift; sourceTree = "<group>"; };
+		0AC016441A7FDA6D006EB7E5 /* QredoAttestationRelyingParty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoAttestationRelyingParty.h; sourceTree = "<group>"; };
+		0AC016451A7FDAC7006EB7E5 /* QredoClaimantAttestationSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoClaimantAttestationSession.h; sourceTree = "<group>"; };
 		0AD259591A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainReceiverQR.h; sourceTree = "<group>"; };
 		0AD2595A1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainReceiverQR.m; sourceTree = "<group>"; };
 		0AD2595D1A2F7CD800FC8942 /* QredoKeychainSenderQR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainSenderQR.h; sourceTree = "<group>"; };
@@ -592,6 +594,8 @@
 				0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */,
 				0A9DDDFA19EC2F2700B4248C /* QredoConversation.h */,
 				0A68F7501A77B2AC0045D21D /* QredoConversationMessage.h */,
+				0AC016441A7FDA6D006EB7E5 /* QredoAttestationRelyingParty.h */,
+				0AC016451A7FDAC7006EB7E5 /* QredoClaimantAttestationSession.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
