@@ -252,6 +252,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Creating rendezvous");
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                       XCTAssertNil(error);
                       XCTAssertNotNil(rendezvous);
@@ -266,6 +267,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Creating duplicate rendezvous");
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                       XCTAssertNotNil(error);
                       XCTAssertNil(rendezvous);
@@ -361,6 +363,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Creating rendezvous");
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                       XCTAssertNil(error);
                       XCTAssertNotNil(rendezvous);
@@ -443,6 +446,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client
      createRendezvousWithTag:randomTag
      configuration:configuration
+     signingHandler:nil
      completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
          
          XCTAssertNil(error);
@@ -533,6 +537,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client
      createRendezvousWithTag:randomTag
      configuration:configuration
+     signingHandler:nil
      completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
          
          XCTAssertNil(error);
@@ -625,6 +630,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client
      createRendezvousWithTag:randomTag
      configuration:configuration
+     signingHandler:nil
      completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
          
          XCTAssertNil(error);

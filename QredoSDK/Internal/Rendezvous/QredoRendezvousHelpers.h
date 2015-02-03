@@ -12,6 +12,7 @@
 + (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                   prefix:(NSString *)prefix
                                                                   crypto:(id<CryptoImpl>)crypto
+                                                                signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;
 
 + (id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType

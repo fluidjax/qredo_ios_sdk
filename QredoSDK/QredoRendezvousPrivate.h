@@ -23,7 +23,7 @@
 
 - (instancetype)initWithClient:(QredoClient *)client;
 - (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QredoRendezvousDescriptor*)descriptor;
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration signingHandler:(signDataBlock)signingHandler completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
 

@@ -73,6 +73,7 @@
 
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                       XCTAssertNil(error);
                       XCTAssertNotNil(_rendezvous);

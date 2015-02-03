@@ -47,7 +47,11 @@
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:QredoKeychainTransporterConversationType
                                                                                                  durationSeconds:[NSNumber numberWithUnsignedInteger:QredoKeychainTransporterRendezvousDuration]
                                                                                                 maxResponseCount:@1];
-    [self.client createRendezvousWithTag:randomTag configuration:configuration
+    
+    // TODO: DH - specify a signing handler?
+    [self.client createRendezvousWithTag:randomTag
+                           configuration:configuration
+                          signingHandler:nil
                        completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                            @synchronized (self) {
                                if (cancelled) return ;

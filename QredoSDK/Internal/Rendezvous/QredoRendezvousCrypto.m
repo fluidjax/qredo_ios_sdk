@@ -217,9 +217,9 @@
     return isValidAuthCode && isValidSignature;
 }
 
-- (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType prefix:(NSString *)tag error:(NSError **)error
+- (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType prefix:(NSString *)tag signingHandler:(signDataBlock)signingHandler error:(NSError **)error
 {
-    return [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:authenticationType prefix:tag crypto:_crypto error:error];
+    return [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:authenticationType prefix:tag crypto:_crypto signingHandler:signingHandler error:error];
 }
 
 - (id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthType:(QredoRendezvousAuthType *)authType fullTag:(NSString *)tag error:(NSError **)error

@@ -50,7 +50,7 @@ class BaseConversation: XCTestCase {
         let randomTag = QredoQUID().QUIDString()
         let configuration = QredoRendezvousConfiguration(conversationType: conversationType)
         var creatorRendezvous : QredoRendezvous? = nil
-        creatorClient.createRendezvousWithTag(randomTag, configuration: configuration) { rendezvous, error in
+        creatorClient.createRendezvousWithTag(randomTag, configuration: configuration, signingHandler: nil) { rendezvous, error in
             XCTAssertNil(error, "failed to create rendezvos")
 
             if let actualRendezvous = rendezvous {

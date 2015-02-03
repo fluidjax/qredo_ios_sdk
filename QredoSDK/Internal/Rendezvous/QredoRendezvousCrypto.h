@@ -38,6 +38,7 @@
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                   prefix:(NSString *)tag
+                                                          signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;
 
 

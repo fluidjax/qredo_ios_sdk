@@ -19,7 +19,6 @@ typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
     
 };
 
-
 /**
  * A helper for constructing rendezvous and validating authenticated rendezvous.
  *

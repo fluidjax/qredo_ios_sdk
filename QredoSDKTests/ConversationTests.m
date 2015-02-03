@@ -105,6 +105,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                       NSLog(@"Create rendezvous completion handler called.");
                       XCTAssertNil(error);
@@ -133,6 +134,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     NSLog(@"\nCreating rendezvous");
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                       NSLog(@"\nRendezvous creation completion handler entered");
                       XCTAssertNil(error);
@@ -213,6 +215,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     NSLog(@"Creating Rendezvous (with client 1)");
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                       NSLog(@"Create rendezvous completion handler called.");
                       XCTAssertNil(error);
@@ -438,6 +441,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                       NSLog(@"Create rendezvous completion handler called.");
                       XCTAssertNil(error);
@@ -514,6 +518,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     [client createRendezvousWithTag:randomTag
                       configuration:configuration
+                     signingHandler:nil
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                       NSLog(@"Create rendezvous completion handler called.");
                       XCTAssertNil(error);

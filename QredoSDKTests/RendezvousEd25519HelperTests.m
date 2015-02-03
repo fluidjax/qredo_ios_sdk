@@ -33,12 +33,15 @@
     
     NSString *prefix = @"MyTestRendezVous@";
     
+    signDataBlock signingHandler = nil; // Use internally generated keys
+    
     error = nil;
     id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
        prefix:prefix
        crypto:self.cryptoImpl
+       signingHandler:signingHandler
        error:&error
        ];
     XCTAssertNotNil(signingHelper);
@@ -78,12 +81,15 @@
     
     NSString *prefix = @"MyTestRendez@Vous@";
     
+    signDataBlock signingHandler = nil; // Use internally generated keys
+
     error = nil;
     id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
        prefix:prefix
        crypto:self.cryptoImpl
+       signingHandler:signingHandler
        error:&error
        ];
     XCTAssertNotNil(signingHelper);
@@ -123,12 +129,15 @@
     
     NSString *prefix = @"MyTestRendez@Vous";
     
+    signDataBlock signingHandler = nil; // Use internally generated keys
+    
     error = nil;
     id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
        prefix:prefix
        crypto:self.cryptoImpl
+       signingHandler:signingHandler
        error:&error
        ];
     XCTAssertNotNil(signingHelper);
@@ -168,12 +177,15 @@
     
     NSString *prefix = @"MyTestRendezVous@";
     
+    signDataBlock signingHandler = nil; // Use internally generated keys
+    
     error = nil;
     id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
        prefix:prefix
        crypto:self.cryptoImpl
+       signingHandler:signingHandler
        error:&error
        ];
     XCTAssertNotNil(signingHelper);
@@ -234,12 +246,15 @@
     
     NSString *prefix = nil;
     
+    signDataBlock signingHandler = nil; // Use internally generated keys
+    
     error = nil;
     id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
        prefix:prefix
        crypto:self.cryptoImpl
+       signingHandler:signingHandler
        error:&error
        ];
     XCTAssertNotNil(signingHelper);
@@ -279,12 +294,15 @@
     
     NSString *prefix = nil;
     
+    signDataBlock signingHandler = nil; // Use internally generated keys
+    
     error = nil;
     id<QredoRendezvousCreateHelper> signingHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
        prefix:prefix
        crypto:self.cryptoImpl
+       signingHandler:signingHandler
        error:&error
        ];
     XCTAssertNotNil(signingHelper);
@@ -346,10 +364,13 @@
     
     NSString *prefix = @"MyTestRendezVous@";
     
+    signDataBlock signingHandler = nil; // Use internally generated keys
+    
     XCTAssertThrows([QredoRendezvousHelpers
                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
                      prefix:prefix
                      crypto:nil
+                     signingHandler:signingHandler
                      error:&error
                      ]);
     

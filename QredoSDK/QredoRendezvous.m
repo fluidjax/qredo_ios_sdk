@@ -154,7 +154,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return self;
 }
 
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void(^)(NSError *error))completionHandler
+- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration signingHandler:(signDataBlock)signingHandler completionHandler:(void(^)(NSError *error))completionHandler
 {
     LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
     
@@ -166,7 +166,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
 
     NSError *error = nil;
-    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag error:&error];
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag signingHandler:signingHandler error:&error];
     if (!rendezvousHelper) {
         // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
         // be to much information.

@@ -32,11 +32,12 @@
     QredoED25519SigningKey *_sk;
 }
 @property (nonatomic, copy) NSString *prefix;
+// TODO: DH - add property for blocks
 @end
 
 @implementation QredoRendezvousEd25519CreateHelper
 
-- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {

@@ -272,12 +272,12 @@ static NSString *const QredoKeychainPassword = @"Password123";
 #pragma mark -
 #pragma mark Rendezvous
 
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration signingHandler:(signDataBlock)signingHandler completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
     // although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
     dispatch_async(_rendezvousQueue, ^{
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self];
-        [rendezvous createRendezvousWithTag:tag configuration:configuration completionHandler:^(NSError *error) {
+        [rendezvous createRendezvousWithTag:tag configuration:configuration signingHandler:signingHandler completionHandler:^(NSError *error) {
             if (error) {
                 completionHandler(nil, error);
             } else {

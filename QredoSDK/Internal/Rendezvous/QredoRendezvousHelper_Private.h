@@ -4,11 +4,10 @@
 
 #import "QredoRendezvousHelper.h"
 
-
 @protocol CryptoImpl;
 
 @protocol QredoRendezvousCreatePrivateHelper <QredoRendezvousCreateHelper>
-- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto error:(NSError **)error;
+- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error;
 @end
 
 @protocol QredoRendezvousRespondPrivateHelper <QredoRendezvousRespondHelper>
