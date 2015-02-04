@@ -56,9 +56,9 @@
 
 #pragma mark Events
 
-- (void)vendorDidAcept {}
-- (void)vendorDidReject {}
-- (void)vendorDidCancel {}
+- (void)accept {}
+- (void)reject {}
+- (void)cancel {}
 
 @end
 
@@ -81,7 +81,7 @@
                                                   didReciveAuthentications:self.authentications];
 }
 
-- (void)vendorDidAcept
+- (void)accept
 {
     QredoClaimantAttestationState_SendRelyingPartyChoice *newState
     = self.claimantAttestationProtocol.sendVendorChoiceState;
@@ -89,7 +89,7 @@
     [self.conversationProtocol switchToState:newState];
 }
 
-- (void)vendorDidReject
+- (void)reject
 {
     QredoClaimantAttestationState_SendRelyingPartyChoice *newState
     = self.claimantAttestationProtocol.sendVendorChoiceState;

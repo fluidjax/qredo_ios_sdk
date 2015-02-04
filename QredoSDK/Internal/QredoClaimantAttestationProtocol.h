@@ -23,9 +23,9 @@
 
 #pragma mark Events
 
-- (void)vendorDidAcept;
-- (void)vendorDidReject;
-- (void)vendorDidCancel;
+- (void)accept;
+- (void)reject;
+- (void)cancel;
 
 @end
 
