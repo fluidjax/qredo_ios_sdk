@@ -20,7 +20,7 @@
 
 #pragma mark State life cycle
 
-- (void)didEnterWithBlock:(dispatch_block_t)block;
+- (void)didEnter;
 - (void)willExit;
 
 
@@ -42,7 +42,7 @@
 
 #pragma mark Event handling
 
-- (void)switchToState:(QredoConversationProtocolState *)state withBlock:(dispatch_block_t)block;
+- (void)switchToState:(QredoConversationProtocolState *)state;
 
 - (void)handleEventWithBlock:(dispatch_block_t)block;
 

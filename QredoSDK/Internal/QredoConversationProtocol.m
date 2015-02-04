@@ -29,11 +29,8 @@
 
 #pragma mark State life cycle
 
-- (void)didEnterWithBlock:(dispatch_block_t)block
+- (void)didEnter
 {
-    if (block) {
-        block();
-    }
 }
 
 - (void)willExit
@@ -76,7 +73,7 @@
     dispatch_async(self.protocolQueue, block);
 }
 
-- (void)switchToState:(QredoConversationProtocolState *)state withBlock:(dispatch_block_t)block
+- (void)switchToState:(QredoConversationProtocolState *)state
 {
     dispatch_async(self.protocolQueue, ^{
         
@@ -84,7 +81,7 @@
         
         [_currentState willExit];
         _currentState = state;
-        [_currentState didEnterWithBlock:block];
+        [_currentState didEnter];
         
     });
 }

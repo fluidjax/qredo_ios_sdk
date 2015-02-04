@@ -76,7 +76,7 @@
 
 - (void)didEnterWithBlock:(dispatch_block_t)block
 {
-    [super didEnterWithBlock:block];
+    [super didEnter];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
                                                   didReciveAuthentications:self.authentications];
 }
@@ -85,20 +85,16 @@
 {
     QredoClaimantAttestationState_SendRelyingPartyChoice *newState
     = self.claimantAttestationProtocol.sendVendorChoiceState;
-    
-    [self.conversationProtocol switchToState:newState withBlock:^{
-        newState.claimsAccepted = YES;
-    }];
+    newState.claimsAccepted = YES;
+    [self.conversationProtocol switchToState:newState];
 }
 
 - (void)vendorDidReject
 {
     QredoClaimantAttestationState_SendRelyingPartyChoice *newState
     = self.claimantAttestationProtocol.sendVendorChoiceState;
-    
-    [self.conversationProtocol switchToState:newState withBlock:^{
-        newState.claimsAccepted = NO;
-    }];
+    newState.claimsAccepted = NO;
+    [self.conversationProtocol switchToState:newState];
 }
 
 @end
