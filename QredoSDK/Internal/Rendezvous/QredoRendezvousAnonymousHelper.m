@@ -8,29 +8,25 @@
 
 
 @interface QredoRendezvousAnonymousHelper ()
-@property (nonatomic, copy) NSString *originalTag;
+@property (nonatomic, copy) NSString *fullTag;
 @end
 
 @implementation QredoRendezvousAnonymousHelper
 
-- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
 {
+    // Signing handler is ignored for anonymous rendezvous
     self = [super initWithCrypto:crypto];
     if (self) {
-        self.originalTag = prefix;
+        self.fullTag = fullTag;
     }
     return self;
 }
 
 - (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
 {
-    self = [super initWithCrypto:crypto];
-    if (self) {
-        self.originalTag = fullTag;
-    }
-    return self;
+    return [self initWithFullTag:fullTag crypto:crypto signingHandler:nil error:error];
 }
-
 
 - (QredoRendezvousAuthenticationType)type
 {
@@ -39,7 +35,7 @@
 
 - (NSString *)tag
 {
-    return self.originalTag;
+    return self.fullTag;
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature

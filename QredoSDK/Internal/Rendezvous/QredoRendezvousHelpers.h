@@ -10,7 +10,7 @@
 @interface QredoRendezvousHelpers : NSObject
 
 + (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
-                                                                  prefix:(NSString *)prefix
+                                                                 fullTag:(NSString *)fullTag
                                                                   crypto:(id<CryptoImpl>)crypto
                                                                 signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;

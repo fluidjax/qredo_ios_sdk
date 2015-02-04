@@ -7,7 +7,7 @@
 @protocol CryptoImpl;
 
 @protocol QredoRendezvousCreatePrivateHelper <QredoRendezvousCreateHelper>
-- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error;
+- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error;
 @end
 
 @protocol QredoRendezvousRespondPrivateHelper <QredoRendezvousRespondHelper>
@@ -18,6 +18,8 @@
 @interface QredoAbstractRendezvousHelper : NSObject
 @property (nonatomic, readonly) id<CryptoImpl> cryptoImpl;
 - (instancetype)initWithCrypto:(id<CryptoImpl>)crypto;
+- (NSString *)stripPrefixFromFullTag:(NSString *)tag error:(NSError **)error;
+- (NSString *)getPrefixFromFullTag:(NSString *)fullTag error:(NSError **)error;
 @end
 
 

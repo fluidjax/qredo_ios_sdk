@@ -166,9 +166,12 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
 
     NSError *error = nil;
-    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag signingHandler:signingHandler error:&error];
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType
+                                                                                              fullTag:tag
+                                                                                       signingHandler:signingHandler
+                                                                                                error:&error];
     if (!rendezvousHelper) {
-        // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+        // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
         // be to much information.
         completionHandler(error);
         return;
@@ -207,9 +210,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
         authType= [QredoRendezvousAuthType rendezvousAnonymous];
     } else {
-        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode error:&error];
+        QredoRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode
+                                                                                    error:&error];
         if (!authSignature) {
-            // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+            // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
             // be to much information.
             completionHandler(error);
             return;

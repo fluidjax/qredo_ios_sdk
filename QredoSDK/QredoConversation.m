@@ -505,7 +505,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
             QredoRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
 
-            // TODO [GR]: Take a view whether we need to show this error to the client code.
+            // TODO: [GR]: Take a view whether we need to show this error to the client code.
             
             if ([_rendezvousCrypto validateCreationInfo:creationInfo tag:rendezvousTag error:nil]) {
                 
@@ -1089,7 +1089,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     [_conversationService queryItemsWithQueueId:messageQueue
                                           after:sinceWatermark?[NSSet setWithObject:sinceWatermark.sequenceValue]:nil
-                                      fetchSize:[NSSet setWithObject:@100000] // TODO check what the logic should be
+                                      fetchSize:[NSSet setWithObject:@100000] // TODO: check what the logic should be
                               completionHandler:^(QredoConversationQueryItemsResult *result, NSError *error)
      {
          if (error) {

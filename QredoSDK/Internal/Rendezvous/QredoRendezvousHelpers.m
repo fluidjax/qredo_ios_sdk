@@ -10,7 +10,7 @@
 @implementation QredoRendezvousHelpers
 
 + (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
-                                                                  prefix:(NSString *)prefix
+                                                                 fullTag:(NSString *)fullTag
                                                                   crypto:(id<CryptoImpl>)crypto
                                                                 signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error
@@ -18,13 +18,13 @@
     switch (authenticationType) {
             
         case QredoRendezvousAuthenticationTypeAnonymous:
-            return [[QredoRendezvousAnonymousHelper alloc] initWithPrefix:prefix crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousAnonymousHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeEd25519:
-            return [[QredoRendezvousEd25519CreateHelper alloc] initWithPrefix:prefix crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousEd25519CreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeX509Pem:
-            return [[QredoRendezvousX509PemCreateHelper alloc] initWithPrefix:prefix crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousX509PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
         case QredoRendezvousAuthenticationTypeRsa2048Pem:

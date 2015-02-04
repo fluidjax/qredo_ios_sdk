@@ -30,14 +30,17 @@
 - (SecKeyRef)accessControlPublicKeyWithTag:(NSString*)tag;
 - (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag;
 
-- (NSData *)signChallenge:(NSData*)challenge hashtag:(QredoRendezvousHashedTag*)hashtag nonce:(QredoNonce*)nonce privateKey:(QredoPrivateKey*)privateKey;
+- (NSData *)signChallenge:(NSData*)challenge
+                  hashtag:(QredoRendezvousHashedTag*)hashtag
+                    nonce:(QredoNonce*)nonce
+               privateKey:(QredoPrivateKey*)privateKey;
 
 - (BOOL)validateCreationInfo:(QredoRendezvousCreationInfo *)creationInfo
                          tag:(NSString *)tag
                        error:(NSError **)error;
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
-                                                                  prefix:(NSString *)tag
+                                                                 fullTag:(NSString *)fullTag
                                                           signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;
 

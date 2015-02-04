@@ -31,93 +31,98 @@
     
     NSError *error = nil;
     
-    NSString *prefix = @"MyTestRendezVous@";
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = @""; // No authentication tag = Generate keys internally
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
-    signDataBlock signingHandler = nil; // Use internally generated keys
+    signDataBlock signingHandler = nil; // Using internally generated keys
     
     error = nil;
-    id<QredoRendezvousCreateHelper> signingHelper
+    id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       prefix:prefix
+       fullTag:initialFullTag
        crypto:self.cryptoImpl
        signingHandler:signingHandler
        error:&error
        ];
-    XCTAssertNotNil(signingHelper);
+    XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
-    NSString *fullTag = [signingHelper tag];
-    XCTAssertNotNil(fullTag);
-    XCTAssert([fullTag hasPrefix:prefix]);
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
     
     error = nil;
-    id<QredoRendezvousRespondHelper> verificationHelper
+    id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:fullTag
+       fullTag:finalFullTag
        crypto:self.cryptoImpl
        error:&error];
-    XCTAssertNotNil(verificationHelper);
+    XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     error = nil;
-    BOOL result = [verificationHelper isValidSignature:signature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
     XCTAssert(result);
     XCTAssertNil(error);
-    
 }
 
 - (void)testSignatureAndVerificationSeveralAtCharsInPrefix {
     
     NSError *error = nil;
     
+    // TODO: DH - check this test still does what was originally intended now full tag, not prefix is provided
+//    NSString *prefix = @"MyTestRendez@Vous@";
     NSString *prefix = @"MyTestRendez@Vous@";
+    NSString *authenticationTag = @""; // No authentication tag = Generate keys internally
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
-    signDataBlock signingHandler = nil; // Use internally generated keys
+    signDataBlock signingHandler = nil; // Using internally generated keys
 
     error = nil;
-    id<QredoRendezvousCreateHelper> signingHelper
+    id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       prefix:prefix
+       fullTag:initialFullTag
        crypto:self.cryptoImpl
        signingHandler:signingHandler
        error:&error
        ];
-    XCTAssertNotNil(signingHelper);
+    XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
-    NSString *fullTag = [signingHelper tag];
-    XCTAssertNotNil(fullTag);
-    XCTAssert([fullTag hasPrefix:prefix]);
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
 
     error = nil;
-    id<QredoRendezvousRespondHelper> verificationHelper
+    id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:fullTag
+       fullTag:finalFullTag
        crypto:self.cryptoImpl
        error:&error];
-    XCTAssertNotNil(verificationHelper);
+    XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     error = nil;
-    BOOL result = [verificationHelper isValidSignature:signature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
     XCTAssert(result);
     XCTAssertNil(error);
     
@@ -127,45 +132,49 @@
     
     NSError *error = nil;
     
+    // TODO: DH - check this test still does what was originally intended now full tag, not prefix is provided
+//    NSString *prefix = @"MyTestRendez@Vous";
     NSString *prefix = @"MyTestRendez@Vous";
+    NSString *authenticationTag = @""; // No authentication tag = Generate keys internally
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
-    signDataBlock signingHandler = nil; // Use internally generated keys
+    signDataBlock signingHandler = nil; // Using internally generated keys
     
     error = nil;
-    id<QredoRendezvousCreateHelper> signingHelper
+    id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       prefix:prefix
+       fullTag:initialFullTag
        crypto:self.cryptoImpl
        signingHandler:signingHandler
        error:&error
        ];
-    XCTAssertNotNil(signingHelper);
+    XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
-    NSString *fullTag = [signingHelper tag];
-    XCTAssertNotNil(fullTag);
-    XCTAssert([fullTag hasPrefix:prefix]);
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
     
     error = nil;
-    id<QredoRendezvousRespondHelper> verificationHelper
+    id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:fullTag
+       fullTag:finalFullTag
        crypto:self.cryptoImpl
        error:&error];
-    XCTAssertNotNil(verificationHelper);
+    XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     error = nil;
-    BOOL result = [verificationHelper isValidSignature:signature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
     XCTAssert(result);
     XCTAssertNil(error);
     
@@ -175,39 +184,43 @@
     
     NSError *error = nil;
     
-    NSString *prefix = @"MyTestRendezVous@";
+    // TODO: DH - check this test still does what was originally intended now full tag, not prefix is provided
+//    NSString *prefix = @"MyTestRendezVous@";
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = @""; // No authentication tag = Generate keys internally
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
-    signDataBlock signingHandler = nil; // Use internally generated keys
+    signDataBlock signingHandler = nil; // Using internally generated keys
     
     error = nil;
-    id<QredoRendezvousCreateHelper> signingHelper
+    id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       prefix:prefix
+       fullTag:initialFullTag
        crypto:self.cryptoImpl
        signingHandler:signingHandler
        error:&error
        ];
-    XCTAssertNotNil(signingHelper);
+    XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
-    NSString *fullTag = [signingHelper tag];
-    XCTAssertNotNil(fullTag);
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
     
     error = nil;
-    id<QredoRendezvousRespondHelper> verificationHelper
+    id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:fullTag
+       fullTag:finalFullTag
        crypto:self.cryptoImpl
        error:&error];
-    XCTAssertNotNil(verificationHelper);
+    XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -235,7 +248,7 @@
     QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
     
     error = nil;
-    BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:forgedSignature rendezvousData:data error:&error];
     XCTAssertFalse(result);
     XCTAssertNil(error);
 }
@@ -244,45 +257,47 @@
     
     NSError *error = nil;
     
-    NSString *prefix = nil;
+    NSString *prefix = @"";
+    NSString *authenticationTag = @""; // No authentication tag = Generate keys internally
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
-    signDataBlock signingHandler = nil; // Use internally generated keys
+    signDataBlock signingHandler = nil; // Using internally generated keys
     
     error = nil;
-    id<QredoRendezvousCreateHelper> signingHelper
+    id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       prefix:prefix
+       fullTag:initialFullTag
        crypto:self.cryptoImpl
        signingHandler:signingHandler
        error:&error
        ];
-    XCTAssertNotNil(signingHelper);
+    XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
-    NSString *fullTag = [signingHelper tag];
-    XCTAssertNotNil(fullTag);
-    XCTAssert(![fullTag hasPrefix:@"@"]);
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssertFalse([finalFullTag hasPrefix:@"@"]);
 
     error = nil;
-    id<QredoRendezvousRespondHelper> verificationHelper
+    id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:fullTag
+       fullTag:finalFullTag
        crypto:self.cryptoImpl
        error:&error];
-    XCTAssertNotNil(verificationHelper);
+    XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     error = nil;
-    BOOL result = [verificationHelper isValidSignature:signature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
     XCTAssert(result);
     XCTAssertNil(error);
     
@@ -292,38 +307,41 @@
     
     NSError *error = nil;
     
-    NSString *prefix = nil;
+    // TODO: DH - check this test still does what was originally intended now full tag, not prefix is provided
+//    NSString *prefix = nil;
+    // TODO: DH - nil full tag - that should be an error?
+    NSString *initialFullTag = nil;
     
-    signDataBlock signingHandler = nil; // Use internally generated keys
+    signDataBlock signingHandler = nil; // Using internally generated keys
     
     error = nil;
-    id<QredoRendezvousCreateHelper> signingHelper
+    id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       prefix:prefix
+       fullTag:initialFullTag
        crypto:self.cryptoImpl
        signingHandler:signingHandler
        error:&error
        ];
-    XCTAssertNotNil(signingHelper);
+    XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
-    NSString *fullTag = [signingHelper tag];
-    XCTAssertNotNil(fullTag);
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
     
-    id<QredoRendezvousRespondHelper> verificationHelper
+    id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers
        rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:fullTag
+       fullTag:finalFullTag
        crypto:self.cryptoImpl
        error:&error];
-    XCTAssertNotNil(verificationHelper);
+    XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -352,7 +370,7 @@
     QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
     
     error = nil;
-    BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:forgedSignature rendezvousData:data error:&error];
     XCTAssertFalse(result);
     XCTAssertNil(error);
     
@@ -362,13 +380,17 @@
 {
     NSError *error = nil;
     
-    NSString *prefix = @"MyTestRendezVous@";
+    // TODO: DH - check this test still does what was originally intended now full tag, not prefix is provided
+//    NSString *prefix = @"MyTestRendezVous@";
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = @""; // No authentication tag = Generate keys internally
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
-    signDataBlock signingHandler = nil; // Use internally generated keys
+    signDataBlock signingHandler = nil; // Using internally generated keys
     
     XCTAssertThrows([QredoRendezvousHelpers
                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                     prefix:prefix
+                     fullTag:initialFullTag
                      crypto:nil
                      signingHandler:signingHandler
                      error:&error
@@ -382,7 +404,7 @@
     
     XCTAssertThrows([QredoRendezvousHelpers
                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                     fullTag:@"someTag@244dff345"
+                     fullTag:@"someTag@"
                      crypto:nil
                      error:&error]);
 }

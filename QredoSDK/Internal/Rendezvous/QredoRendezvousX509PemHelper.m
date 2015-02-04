@@ -6,12 +6,20 @@
 #import "QredoClient.h"
 #import "CryptoImpl.h"
 #import "QredoBase58.h"
+#import "QredoCrypto.h"
+#import "QredoCertificateUtils.h"
+#import "QredoLogging.h"
 
 
 @implementation QredoAbstractRendezvousX509PemHelper
 
-// TODO: DH - Removed as apparently unused
-//QredoRendezvousAuthSignature *kEmptySignature = nil;
+// TODO: DH - confirm the minimum length of X.509 authenticated tag (i.e. single certificate with RSA 2048 bit Public key)
+static const NSUInteger kMinX509AuthenticatedRendezvousTagLength = 1;
+
+// TODO: DH - confirm the salt length used for authenticated rendezvous
+// TODO: DH - how to provide the salt length to the signingCallback, so know what salt size should be?
+static const NSUInteger kX509AuthenticatedRendezvousSaltLength = 8;
+static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
 - (QredoRendezvousAuthenticationType)type
 {
@@ -20,31 +28,98 @@
 
 - (QredoRendezvousAuthSignature *)emptySignature
 {
-    // TODO: DH - replace ED25519
-    NSData *emptySignatureData = [self.cryptoImpl qredoED25519EmptySignature];
+    // Empty Signature is just a placeholder of the correct size for a real signature.
+    NSData *emptySignatureData = [NSMutableData dataWithLength:kX509AuthenticatedRendezvousEmptySignatureLength];
     return [QredoRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:emptySignatureData];
+}
+
+- (SecKeyRef)getPublicKeyRefFromX509AuthenticationTag:(NSString *)authenticationTag error:(NSError **)error
+{
+    NSArray *certificateChainRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:authenticationTag];
+    
+    SecKeyRef publicKeyRef = [QredoCertificateUtils validateCertificateChain:certificateChainRefs rootCertificateRefs:[self.cryptoImpl getTrustedRootRefs]];
+    if (!publicKeyRef) {
+        LogError(@"Authentication tag (certificate chain) did not validate correctly. Authentication tag: %@", authenticationTag);
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
+        }
+    }
+    
+    return publicKeyRef;
+}
+
+- (NSString *)stripPrefixFromX509FullTag:(NSString *)fullTag error:(NSError **)error
+{
+    if (!fullTag) {
+        LogError(@"Nil full tag provided.");
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+        }
+        return nil;
+    }
+    
+    if (fullTag.length <= kMinX509AuthenticatedRendezvousTagLength) {
+        LogError(@"Invalid full tag length: %ld. Minimum tag length for X509 Authenticated Rendezvous: %ld",
+                 fullTag.length,
+                 kMinX509AuthenticatedRendezvousTagLength);
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
+        }
+        return nil;
+    }
+    
+    return [self stripPrefixFromFullTag:fullTag error:error];
 }
 
 @end
 
 
-@interface QredoRendezvousX509PemCreateHelper () {
-    // TODO: DH - replace ED25519
-    QredoED25519SigningKey *_sk;
-}
-@property (nonatomic, copy) NSString *prefix;
-// TODO: DH - add property for blocks
+@interface QredoRendezvousX509PemCreateHelper ()
+
+@property (nonatomic, copy) NSString *fullTag;
+@property (nonatomic, assign) SecKeyRef publicKeyRef;
+@property (nonatomic, copy) signDataBlock signingHandler;
+
 @end
 
 @implementation QredoRendezvousX509PemCreateHelper
 
-- (instancetype)initWithPrefix:(NSString *)prefix crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
 {
+    // Signing handler is mandatory for X.509 certs (cannot generate these internally)
+    if (!signingHandler)
+    {
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingSigningHandler, nil);
+        }
+        return nil;
+    }
+    
     self = [super initWithCrypto:crypto];
     if (self) {
-        self.prefix = prefix;
-        // TODO: DH - replace ED25519
-        _sk = [self.cryptoImpl qredoED25519SigningKey];
+        _fullTag = fullTag;
+        
+        NSString *authenticationTag = [self stripPrefixFromX509FullTag:fullTag error:error];
+        if (*error) {
+            LogError(@"Stripping prefix returned error: %@", *error);
+            return nil;
+        }
+        else if (!authenticationTag || [authenticationTag isEqualToString:@""]) {
+            LogError(@"Nil, or empty authentication tag returned: '%@'.  Full tag: '%@'.", authenticationTag, fullTag);
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+        
+        // Confirm that the authentication tag is a PEM certificate chain which validates correctly
+        _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:authenticationTag error:error];
+        if (*error || !_publicKeyRef) {
+            LogError(@"X.509 authentication tag is invalid.");
+            return nil;
+        }
+        
+        _signingHandler = signingHandler;
     }
     return self;
 }
@@ -56,19 +131,8 @@
 
 - (NSString *)tag
 {
-    NSString *trimmedPrefix = [self.prefix stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString *encodedVK = [QredoBase58 encodeData:_sk.verifyKey.data];
-    
-    if ([trimmedPrefix length] == 0) {
-        return encodedVK;
-    }
-    
-    if ([trimmedPrefix hasSuffix:@"@"]) {
-        return [trimmedPrefix stringByAppendingString:encodedVK];
-    }
-    
-    // TODO [GR]: Discuss this appending of '@' with hugh and the rest.
-    return [NSString stringWithFormat:@"%@@%@", trimmedPrefix, encodedVK];
+    // For X.509, we do not generate any keys and the full tag has to be provided during creation, so just return that
+    return self.fullTag;
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature
@@ -78,24 +142,46 @@
 
 - (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
-    NSAssert(_sk, @"Signing key is unknown");
-    // TODO: DH - replace ED25519
-    NSData *sig = [self.cryptoImpl qredoED25519SignMessage:data withKey:_sk error:error];
-    if (!sig) {
+    if (!data) {
+        LogError(@"Data to sign is nil.");
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingDataToSign, nil);
+        }
         return nil;
     }
-    // TODO: DH - replace ED25519
-    return [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:sig];
+    
+    NSData *signature = self.signingHandler(data);
+    if (!signature) {
+        LogError(@"Nil signature was returned by signing handler.");
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
+        }
+        return nil;
+    }
+    
+    // As we did not generate the signature, no guarantee it's valid. Verify it before continuing
+    BOOL signatureValid = [QredoCrypto rsaPssVerifySignature:signature
+                                                  forMessage:data
+                                                  saltLength:kX509AuthenticatedRendezvousSaltLength
+                                                      keyRef:self.publicKeyRef];
+    
+    if (!signatureValid) {
+        LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
+        return nil;
+    }
+    else {
+        return [QredoRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signature];
+    }
 }
 
 @end
 
 
-@interface QredoRendezvousX509PemRespondHelper () {
-    // TODO: DH - replace ED25519
-    QredoED25519VerifyKey *_vk;
-}
+@interface QredoRendezvousX509PemRespondHelper ()
+
 @property (nonatomic, copy) NSString *fullTag;
+@property (nonatomic, assign) SecKeyRef publicKeyRef;
+
 @end
 
 @implementation QredoRendezvousX509PemRespondHelper
@@ -111,7 +197,12 @@
             return nil;
         }
         self.fullTag = fullTag;
-        _vk = [self verifyKeyFromTag:self.fullTag error:error];
+        
+        NSString *authenticationTag = [self stripPrefixFromFullTag:self.fullTag error:error];
+        // TODO: DH - Check error result
+        
+        _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:authenticationTag error:error];
+        // TODO: DH - check error result/ref returned
     }
     return self;
 }
@@ -152,34 +243,9 @@
         return NO;
     }
     
-    // TODO: DH - replace ED25519
-    return [self.cryptoImpl qredoED25519VerifySignature:signatureData ofMessage:rendezvousData verifyKey:_vk error:error];
-}
-
-// TODO: DH - replace ED25519
-- (QredoED25519VerifyKey *)verifyKeyFromTag:(NSString *)tag error:(NSError **)error
-{
-    // TODO [GR]: The code in this method should return errors through the **error rather than assert
+    BOOL signatureIsValid = [QredoCrypto rsaPssVerifySignature:signatureData forMessage:rendezvousData saltLength:kX509AuthenticatedRendezvousSaltLength keyRef:_publicKeyRef];
     
-    NSAssert([tag length], @"Malformed tag");
-    // TODO: DH - replace ED25519
-    QredoED25519VerifyKey *vk = nil;
-    
-    NSUInteger prefixPos = [tag rangeOfString:@"@" options:NSBackwardsSearch].location;
-    
-    NSString *vkString = nil;
-    if (prefixPos == NSNotFound) {
-        vkString = tag;
-    } else {
-        vkString = [tag substringFromIndex:prefixPos+1];
-    }
-    
-    NSData *vkData = [QredoBase58 decodeData:vkString];
-    NSAssert([vkData length], @"Malformed tag (on decoding)");
-    
-    // TODO: DH - replace ED25519
-    vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
-    return vk;
+    return signatureIsValid;
 }
 
 @end
