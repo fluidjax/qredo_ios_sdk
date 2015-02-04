@@ -4,7 +4,7 @@
 
 #import "QredoRendezvousAnonymousHelper.h"
 #import "QredoRendezvousHelper_Private.h"
-
+#import "QredoLogging.h"
 
 
 @interface QredoRendezvousAnonymousHelper ()
@@ -18,7 +18,26 @@
     // Signing handler is ignored for anonymous rendezvous
     self = [super initWithCrypto:crypto];
     if (self) {
-        self.fullTag = fullTag;
+        
+        if (!fullTag) {
+            LogError(@"Full tag is nil.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+        
+        // Signing handler unnecessary for anonymous rendezvous
+        if (signingHandler)
+        {
+            LogError(@"Signing handler provided for anonymous rendezvous.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided, nil);
+            }
+            return nil;
+        }
+
+        _fullTag = fullTag;
     }
     return self;
 }

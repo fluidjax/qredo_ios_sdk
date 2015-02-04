@@ -17,6 +17,8 @@
     return self;
 }
 
+// TODO: DH - wrap these methods into a single method which returns both prefix and authenticated tag parts?
+
 // TODO: DH - Unit test stripPrefixFromFullTag
 - (NSString *)stripPrefixFromFullTag:(NSString *)fullTag error:(NSError **)error
 {
@@ -35,8 +37,18 @@
         }
         return nil;
     }
-    
-    // TODO: DH - Count number of @ in string, more than 1 is malformed.
+
+    // TODO: DH - confirm this check works in all circumstances (e.g. "@")
+    // Only 1x '@' is allowed, any more is a malformed tag
+    NSArray *splitTagParts = [fullTag componentsSeparatedByString:@"@"];
+    NSUInteger separatorCount = splitTagParts.count - 1;
+    if (separatorCount > 1) {
+        LogError(@"Invalid number (%ld) of @ characters present. Max 1. Full tag: '%@'", separatorCount, fullTag)
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
+        }
+        return nil;
+    }
     
     // TODO: DH - Review forward/backward search - Once ensured only 1 @ present, pick shortest route (forward?)
     NSUInteger prefixPos = [fullTag rangeOfString:@"@" options:NSBackwardsSearch].location;
@@ -73,7 +85,17 @@
         return nil;
     }
     
-    // TODO: DH - Count number of @ in string, more than 1 is malformed.
+    // TODO: DH - confirm this check works in all circumstances (e.g. "@")
+    // Only 1x '@' is allowed, any more is a malformed tag
+    NSArray *splitTagParts = [fullTag componentsSeparatedByString:@"@"];
+    NSUInteger separatorCount = splitTagParts.count - 1;
+    if (separatorCount > 1) {
+        LogError(@"Invalid number (%ld) of @ characters present. Max 1. Full tag: '%@'", separatorCount, fullTag)
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
+        }
+        return nil;
+    }
 
     // TODO: DH - Review forward/backward search - Once ensured only 1 @ present, pick shortest route (forward?)
     NSUInteger prefixPos = [fullTag rangeOfString:@"@" options:NSBackwardsSearch].location;

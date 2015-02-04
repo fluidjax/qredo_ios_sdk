@@ -42,8 +42,14 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousTagLength = 1;
     self = [super initWithCrypto:crypto];
     if (self) {
         
-        // TODO: DH - ensure fullTag is present
-
+        if (!fullTag) {
+            LogError(@"Full tag is nil.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+        
         NSString *prefix = [self getPrefixFromFullTag:fullTag error:error];
         if (!prefix) {
             LogError(@"getPrefixFromFullTag returned nil prefix.");
@@ -87,7 +93,7 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousTagLength = 1;
         else {
             // Using externally provided keys, so signing handler must not be nil
             if (!signingHandler) {
-                LogError(@"Provided an authentication tag (public key) but signing handler is nil..");
+                LogError(@"Provided an authentication tag (public key) but signing handler is nil.");
                 if (error) {
                     *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
                 }
@@ -185,15 +191,31 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousTagLength = 1;
 {
     self = [super initWithCrypto:crypto];
     if (self) {
-        if ([fullTag length] < 1) {
+        if (!fullTag) {
+            LogError(@"Full tag is nil.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+        
+        if (fullTag.length < 1) {
             if (error) {
                 *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
             }
             return nil;
         }
         _fullTag = fullTag;
+        
         _vk = [self verifyKeyFromFullTag:self.fullTag error:error];
-        // TODO: If error, return nil
+        if (!_vk) {
+            // Only set the error, if not already set
+            if (!*error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
+            }
+            LogError(@"Nil verify key was returned by verifyKeyFromFullTag. Error: %@", *error);
+            return nil;
+        }
     }
     return self;
 }
@@ -239,14 +261,28 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousTagLength = 1;
 
 - (QredoED25519VerifyKey *)verifyKeyFromFullTag:(NSString *)fullTag error:(NSError **)error
 {
-    // TODO: [GR]: The code in this method should return errors through the **error rather than assert
-    
     // Verify Key is the tag with any prefix removed
-    NSString *vkString = [self stripPrefixFromEd25519FullTag:fullTag error:error];
-    // TODO: DH - Check nil/error
+    NSString *authenticationTag = [self stripPrefixFromEd25519FullTag:fullTag error:error];
+    if (*error) {
+        LogError(@"Stripping prefix returned error: %@", *error);
+        return nil;
+    }
+    else if (!authenticationTag || [authenticationTag isEqualToString:@""]) {
+        LogError(@"Nil, or empty authentication tag returned: '%@'.  Full tag: '%@'.", authenticationTag, fullTag);
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+        }
+        return nil;
+    }
     
-    NSData *vkData = [QredoBase58 decodeData:vkString];
-    NSAssert([vkData length], @"Malformed tag (on decoding)");
+    NSData *vkData = [QredoBase58 decodeData:authenticationTag];
+    if (!vkData || vkData.length == 0) {
+        LogError(@"Base58 decode of authentication tag was nil or 0 length. Authentication Tag: '%@'", authenticationTag);
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
+        }
+        return nil;
+    }
     
     QredoED25519VerifyKey *vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
     return vk;

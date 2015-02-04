@@ -86,17 +86,27 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
 {
-    // Signing handler is mandatory for X.509 certs (cannot generate these internally)
-    if (!signingHandler)
-    {
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingSigningHandler, nil);
-        }
-        return nil;
-    }
-    
     self = [super initWithCrypto:crypto];
     if (self) {
+        
+        if (!fullTag) {
+            LogError(@"Full tag is nil.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+
+        // Signing handler is mandatory for X.509 certs (cannot generate these internally)
+        if (!signingHandler)
+        {
+            LogError(@"No signing handler provided. Mandatory for X.509 authenticated rendezvous as can only use externally generated keys.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
+            }
+            return nil;
+        }
+
         _fullTag = fullTag;
         
         NSString *authenticationTag = [self stripPrefixFromX509FullTag:fullTag error:error];
@@ -190,13 +200,22 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 {
     self = [super initWithCrypto:crypto];
     if (self) {
-        if ([fullTag length] < 1) {
+        if (!fullTag) {
+            LogError(@"Full tag is nil.");
             if (error) {
                 *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
             }
             return nil;
         }
-        self.fullTag = fullTag;
+        
+        if (fullTag.length < 1) {
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+        
+        _fullTag = fullTag;
         
         NSString *authenticationTag = [self stripPrefixFromFullTag:self.fullTag error:error];
         // TODO: DH - Check error result
