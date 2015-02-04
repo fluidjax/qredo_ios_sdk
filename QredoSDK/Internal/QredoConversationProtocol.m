@@ -40,7 +40,7 @@
 
 #pragma mark Events (conversation message handling)
 
-- (void)didReceiveConversationMessage:(id)message
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message
 {
 }
 
