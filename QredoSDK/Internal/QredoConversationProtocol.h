@@ -32,6 +32,15 @@
 
 @end
 
+@interface QredoConversationProtocolCancelableState : QredoConversationProtocolState
+
+@property (nonatomic, copy) NSString *cancelMessageType;
+
+- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message;
+- (void)didReceiveCancelConversationMessageWithError:(NSError *)error;
+
+@end
+
 
 
 @interface QredoConversationProtocol : NSObject

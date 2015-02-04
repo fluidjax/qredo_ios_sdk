@@ -52,6 +52,46 @@
 
 
 
+@implementation QredoConversationProtocolCancelableState
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.cancelMessageType = @"com.qredo.attestation.cancel";
+    }
+    return self;
+}
+
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message
+{
+    if ([message.dataType isEqualToString:self.cancelMessageType]) {
+        // TODO [GR]: Send the correct error in stead of nil.
+        [self didReceiveCancelConversationMessageWithError:nil];
+    } else {
+        [self didReceiveNonCancelConversationMessage:message];
+    }
+}
+
+- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
+{
+    
+}
+
+- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
+{
+    
+}
+
+- (void)otherPartyHasLeftConversation
+{
+    [self didReceiveCancelConversationMessageWithError:nil];
+}
+
+@end
+
+
+
 @implementation QredoConversationProtocol
 
 
