@@ -5,33 +5,41 @@
 #import "QredoClaimantAttestationProtocol.h"
 
 
+
 #pragma mark Interfaces
 
-@interface QredoClaimantAttestationState : QredoConversationProtocolState
-
+@interface QredoClaimantAttestationState()
 @property (nonatomic, readonly) QredoClaimantAttestationProtocol *claimantAttestationProtocol;
-
-#pragma mark Events
-
-- (void)vendorDidAcept;
-- (void)vendorDidReject;
-- (void)vendorDidCancel;
-
 @end
 
 
-@interface QredoClaimantAttestationStateReceivedAuthenticationResults : QredoClaimantAttestationState
+@interface QredoClaimantAttestationState_RequestingPresentaion : QredoClaimantAttestationState
+@end
+
+@interface QredoClaimantAttestationState_WaitingPresentaions : QredoClaimantAttestationState
+@end
+
+@interface QredoClaimantAttestationState_RecievedPresentaions : QredoClaimantAttestationState
+@end
+
+@interface QredoClaimantAttestationState_ReceivedAuthenticationResults : QredoClaimantAttestationState
 @property (nonatomic, copy) NSArray *authentications;
 @end
 
-@interface QredoClaimantAttestationStateSendVendorChoice : QredoClaimantAttestationState
+@interface QredoClaimantAttestationState_SendRelyingPartyChoice : QredoClaimantAttestationState
 @property (nonatomic) BOOL claimsAccepted;
 @end
 
 
 @interface QredoClaimantAttestationProtocol()
-@property (nonatomic) QredoClaimantAttestationStateReceivedAuthenticationResults *receivedAuthenticationResultsState;
-@property (nonatomic) QredoClaimantAttestationStateSendVendorChoice *sendVendorChoiceState;
+@property (nonatomic) QredoClaimantAttestationState_ReceivedAuthenticationResults *receivedAuthenticationResultsState;
+@property (nonatomic) QredoClaimantAttestationState_SendRelyingPartyChoice *sendVendorChoiceState;
+@end
+
+@interface QredoClaimantAttestationState_CancelConversation : QredoClaimantAttestationState
+@end
+
+@interface QredoClaimantAttestationState_Finish : QredoClaimantAttestationState
 @end
 
 
@@ -55,7 +63,16 @@
 @end
 
 
-@implementation QredoClaimantAttestationStateReceivedAuthenticationResults
+@implementation QredoClaimantAttestationState_RequestingPresentaion
+@end
+
+@implementation QredoClaimantAttestationState_WaitingPresentaions
+@end
+
+@implementation QredoClaimantAttestationState_RecievedPresentaions
+@end
+
+@implementation QredoClaimantAttestationState_ReceivedAuthenticationResults
 
 - (void)didEnterWithBlock:(dispatch_block_t)block
 {
@@ -66,7 +83,7 @@
 
 - (void)vendorDidAcept
 {
-    QredoClaimantAttestationStateSendVendorChoice *newState
+    QredoClaimantAttestationState_SendRelyingPartyChoice *newState
     = self.claimantAttestationProtocol.sendVendorChoiceState;
     
     [self.conversationProtocol switchToState:newState withBlock:^{
@@ -76,7 +93,7 @@
 
 - (void)vendorDidReject
 {
-    QredoClaimantAttestationStateSendVendorChoice *newState
+    QredoClaimantAttestationState_SendRelyingPartyChoice *newState
     = self.claimantAttestationProtocol.sendVendorChoiceState;
     
     [self.conversationProtocol switchToState:newState withBlock:^{
@@ -86,14 +103,14 @@
 
 @end
 
-@implementation QredoClaimantAttestationStateSendVendorChoice
-
-
-
+@implementation QredoClaimantAttestationState_SendRelyingPartyChoice
 @end
 
+@implementation QredoClaimantAttestationState_CancelConversation
+@end
 
-
+@implementation QredoClaimantAttestationState_Finish
+@end
 
 
 @implementation QredoClaimantAttestationProtocol
@@ -102,10 +119,12 @@
 {
     self = [super init];
     if (self) {
-        self.receivedAuthenticationResultsState = [QredoClaimantAttestationStateReceivedAuthenticationResults new];
-        self.sendVendorChoiceState = [QredoClaimantAttestationStateSendVendorChoice new];
+        self.receivedAuthenticationResultsState = [QredoClaimantAttestationState_ReceivedAuthenticationResults new];
+        self.sendVendorChoiceState = [QredoClaimantAttestationState_SendRelyingPartyChoice new];
     }
     return self;
 }
 
 @end
+
+

@@ -5,6 +5,11 @@
 #import <Foundation/Foundation.h>
 #import "QredoAttestationRelyingParty.h"
 
+
+@class QredoClaimantAttestationSession;
+
+
+
 @interface QredoAuthenticationResult : NSObject
 
 @property BOOL verified;
@@ -12,11 +17,15 @@
 
 @end
 
+
+
 typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
     QredoAuthenticationStatusAuthenticating,
     QredoAuthenticationStatusReceivedResult,
     QredoAuthenticationStatusFailed
 };
+
+
 
 @interface QredoClaim : NSObject
 
@@ -29,7 +38,7 @@ typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
 
 @end
 
-@class QredoClaimantAttestationSession;
+
 
 @protocol QredoClaimantAttestationSessionDelegate <NSObject>
 
@@ -41,6 +50,8 @@ typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
 - (void)QredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession claim:(QredoClaim *)claim didChangeStatusTo:(QredoAuthenticationStatus)status;
 
 @end
+
+
 
 @interface QredoClaimantAttestationSession : NSObject
 
@@ -54,3 +65,5 @@ typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
 - (void)finishAttestationWithResult:(BOOL)result completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
+
+

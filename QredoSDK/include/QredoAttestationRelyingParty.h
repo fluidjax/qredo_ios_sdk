@@ -6,19 +6,31 @@
 #import "QredoClaimantAttestationSession.h"
 
 @class QredoAttestationRelyingParty;
+@class QredoClaimantAttestationSession;
+
+
+
+
+
 @protocol QredoAttestationRelyingPartyDelegate <NSObject>
 
 @required
-- (void)qredoAttestationRelyingParty:(QredoAttestationRelyingParty*)attestationRelyingParty didStartClaimantSession:(QredoClaimantAttestationSession*)claimantAttestationSession;
+- (void)qredoAttestationRelyingParty:(QredoAttestationRelyingParty*)attestationRelyingParty
+             didStartClaimantSession:(QredoClaimantAttestationSession*)claimantAttestationSession;
 
 @optional
-- (void)qredoAttestationRelyingParty:(QredoAttestationRelyingParty*)attestationRelyingParty didFinishClaimantSession:(QredoClaimantAttestationSession*)claimantAttestationSession;
+- (void)qredoAttestationRelyingParty:(QredoAttestationRelyingParty*)attestationRelyingParty
+            didFinishClaimantSession:(QredoClaimantAttestationSession*)claimantAttestationSession;
 
 @end
+
+
 
 @interface QredoAttestationRelyingPartyMetadata : NSObject
 
 @end
+
+
 
 @interface QredoAttestationRelyingParty : NSObject
 
@@ -31,6 +43,9 @@
 - (void)stopListening;
 
 // return only active
-- (void)enumerateClaimantSessionsWithBlock:(void(^)(QredoClaimantAttestationSession *))block completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)enumerateClaimantSessionsWithBlock:(void(^)(QredoClaimantAttestationSession *))block
+                         completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
+
+

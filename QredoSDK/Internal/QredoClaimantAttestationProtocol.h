@@ -9,7 +9,7 @@
 
 
 
-@protocol QredoClaimantAttestationDelegate <NSObject>
+@protocol QredoClaimantAttestationProtocolDelegate <NSObject>
 
 // connects with UI (similar to the delegates in the keychain transporter
 
@@ -19,12 +19,22 @@
 @end
 
 
+@interface QredoClaimantAttestationState : QredoConversationProtocolState
 
-@interface QredoClaimantAttestationProtocol : QredoConversationProtocol
+#pragma mark Events
 
-@property id<QredoClaimantAttestationDelegate> delegate;
+- (void)vendorDidAcept;
+- (void)vendorDidReject;
+- (void)vendorDidCancel;
 
 @end
 
+
+
+@interface QredoClaimantAttestationProtocol : QredoConversationProtocol
+
+@property id<QredoClaimantAttestationProtocolDelegate> delegate;
+
+@end
 
 
