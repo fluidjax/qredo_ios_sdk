@@ -1,0 +1,32 @@
+digraph Authentication {
+	rankdir = "LR";
+
+	start -> sendingClaims;
+
+	sendingClaims -> waitingForResult [label = "publishMessage(com.qredo.attestation.authentication(credentials)).completionHandler(error == nil)"]
+	sendingClaims -> cancelledByOtherSide [label = "onMessage(msg == com.qredo.attestation.cancel)"]
+	sendingClaims -> error [label = "publishMessage.completionHandler(error != nil)"]
+	sendingClaims -> cancel [label = "onCancel()"]
+
+	waitingForResult -> receivedResult [label = "onMessage(msg == com.qredo.attestation.authentication.result)"]
+	waitingForResult -> cancel [label = "onCancel()"]
+	waitingForResult -> cancelledByOtherSide [label = "onMessage(msg == com.qredo.attestation.cancel)"]
+	waitingForResult -> error [label = "onMessage(msg != com.qredo.attestation.authentication.result) || onTimeout()"]
+
+	receivedResult -> finish
+	cancelledByOtherSide -> finish
+	cancel -> finish [label = "publishMessage.completionHandler(*) || onCancel()"]
+	error -> sentErrorMessage [label = "publishMessage.completionHandler(*) || onCancel()"]
+	sentErrorMessage -> finish
+
+	// States' labels
+	start [shape = point]
+	receivedResult [label = "Received result\nEnter: delegate.didReceiveResult()" style=filled fillcolor=palegreen]
+	cancelledByOtherSide [label = "Cancelled by Authenticator\nEnter: delegate.didFinishWithError(cancelled)"]
+	sendingClaims [label = "Sending claims for authentication\nEnter: publishMessage" style=filled fillcolor=palegreen]
+	waitingForResult [label = "Waiting for authentication result" style=filled fillcolor=palegreen]
+	finish [style=filled fillcolor=green]
+	sentErrorMessage [label = "Sent error message\nEnter: delegate.didFinishWithError(error)"]
+	error [label = "Sending error message\nEnter: publishMessage(com.qredo.attestation.cancel[error=...])"]
+	cancel [label = "Sending cancel message\nEnter: publishMessage(com.qredo.attestation.cancel[error=nil]"]
+}
