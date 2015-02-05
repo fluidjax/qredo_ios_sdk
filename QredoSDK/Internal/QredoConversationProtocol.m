@@ -99,6 +99,7 @@
 {
     self = [super init];
     if (self) {
+        _protocolQueue = dispatch_queue_create("QredoConversationProtocol__protocolQueue", DISPATCH_QUEUE_SERIAL);
         self.conversation = conversation;
         self.conversation.delegate = self;
     }
