@@ -7,6 +7,7 @@
 #import "QredoRendezvousHelpers.h"
 #import "QredoRendezvousEd25519Helper.h"
 #import "QredoClient.h"
+#import "QredoAuthenticatedRendezvousTag.h"
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
@@ -96,8 +97,8 @@
        ];
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
-    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
-    XCTAssertEqual(error.code, QredoRendezvousHelperErrorMalformedTag);
+    XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
+    XCTAssertEqual(error.code, QredoAuthenticatedRendezvousTagErrorMalformedTag);
 }
 
 - (void)testCreateHelper_ExternalKeysMissingSigningHandler
@@ -228,7 +229,7 @@
     
     NSError *error = nil;
 
-    // No prefix and no authentication tag
+    // No prefix and no authentication tag (Note: resultant tag should have preceeding @ even if no prefix provided)
     NSString *initialFullTag = @"@"; // No authentication tag part = Generate keys internally
     
     signDataBlock signingHandler = nil; // Using internally generated keys
@@ -247,7 +248,7 @@
     
     NSString *finalFullTag = [createHelper tag];
     XCTAssertNotNil(finalFullTag);
-    XCTAssertFalse([finalFullTag hasPrefix:@"@"]);
+    XCTAssertTrue([finalFullTag hasPrefix:@"@"]);
 
     error = nil;
     id<QredoRendezvousRespondHelper> respondHelper
@@ -358,8 +359,59 @@
                                                       error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
-    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
-    XCTAssertEqual(error.code, QredoRendezvousHelperErrorMalformedTag);
+    XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
+    XCTAssertEqual(error.code, QredoAuthenticatedRendezvousTagErrorMalformedTag);
+}
+
+- (void)testRespondHelper_Valid_NoPrefixTag {
+    
+    NSError *error = nil;
+    
+    NSString *initialFullTag = @"@AZVZXcTD5Qw6x6goPoRbfifq6MaHJys4xmmyEKozpact";
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
+                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                      fullTag:initialFullTag
+                                                      crypto:self.cryptoImpl
+                                                      error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+}
+
+- (void)testRespondHelper_Valid_WithPrefixTag {
+    
+    NSError *error = nil;
+    
+    NSString *initialFullTag = @"prefix@AZVZXcTD5Qw6x6goPoRbfifq6MaHJys4xmmyEKozpact";
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
+                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                      fullTag:initialFullTag
+                                                      crypto:self.cryptoImpl
+                                                      error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+}
+
+- (void)testRespondHelper_Invalid_MissingAtFromStartOfTag {
+    
+    NSError *error = nil;
+
+    // Missing @ means an unauthenticated (anonymous) rendezvous
+    NSString *initialFullTag = @"AZVZXcTD5Qw6x6goPoRbfifq6MaHJys4xmmyEKozpact";
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
+                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                      fullTag:initialFullTag
+                                                      crypto:self.cryptoImpl
+                                                      error:&error];
+    XCTAssertNil(respondHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
+    XCTAssertEqual(error.code, QredoAuthenticatedRendezvousTagErrorMalformedTag);
 }
 
 @end

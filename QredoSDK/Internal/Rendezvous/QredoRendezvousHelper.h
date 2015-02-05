@@ -14,9 +14,11 @@ static NSString *const QredoRendezvousHelperErrorDomain = @"QredoRendezvousHelpe
 
 typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
     
+    // TODO: DH - Remove unused error values
     QredoRendezvousHelperErrorUnknown = 0,
     QredoRendezvousHelperErrorMissingTag,
     QredoRendezvousHelperErrorMalformedTag,
+    QredoRendezvousHelperErrorAuthenticationTagMissing,
     QredoRendezvousHelperErrorAuthenticationTagInvalid,
     QredoRendezvousHelperErrorMissingDataToSign,
     QredoRendezvousHelperErrorBadSignature,

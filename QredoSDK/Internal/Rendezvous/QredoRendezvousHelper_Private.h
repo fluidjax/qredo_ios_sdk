@@ -18,8 +18,6 @@
 @interface QredoAbstractRendezvousHelper : NSObject
 @property (nonatomic, readonly) id<CryptoImpl> cryptoImpl;
 - (instancetype)initWithCrypto:(id<CryptoImpl>)crypto;
-- (NSString *)stripPrefixFromFullTag:(NSString *)tag error:(NSError **)error;
-- (NSString *)getPrefixFromFullTag:(NSString *)fullTag error:(NSError **)error;
 @end
 
 

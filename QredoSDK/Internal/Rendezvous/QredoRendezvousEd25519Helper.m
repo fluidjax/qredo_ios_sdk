@@ -7,14 +7,12 @@
 #import "CryptoImpl.h"
 #import "QredoBase58.h"
 #import "QredoLogging.h"
+#import "QredoAuthenticatedRendezvousTag.h"
 
 @implementation QredoAbstractRendezvousEd25519Helper
 
-// Minimum length of Ed25519 authenticated tag when creating = 1 (no prefix, just @)
-static const NSUInteger kMinEd25519AuthenticatedRendezvousCreateTagLength = 1;
-
-// TODO: DH - confirm the minimum length of ED25519 authenticated tag (base58 key)
-static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
+// TODO: DH - confirm the minimum length of Ed25519 authentication tag (i.e base58 encoded key)
+static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
 
 - (QredoRendezvousAuthenticationType)type
 {
@@ -25,46 +23,6 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
 {
     NSData *emptySignatureData = [self.cryptoImpl qredoED25519EmptySignature];
     return [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:emptySignatureData];
-}
-
-- (NSString *)stripPrefixFromEd25519FullTag:(NSString *)fullTag creating:(BOOL)creating error:(NSError **)error
-{
-    if (!fullTag) {
-        LogError(@"Nil full tag provided.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-        }
-        return nil;
-    }
-    
-    // TODO: DH - change to a single class to deal with the prefix and authentication tag parts, including validation
-    // Different minimum tag lengths when creating or responding (creating can generate own keys)
-    if (creating) {
-        // When creating, can either provide no key, or a key. Different length requirements on both.
-        if (fullTag.length < kMinEd25519AuthenticatedRendezvousCreateTagLength) {
-            LogError(@"Invalid full tag length: %ld. Minimum tag length to create ED25519 Authenticated Rendezvous: %ld",
-                     fullTag.length,
-                     kMinEd25519AuthenticatedRendezvousCreateTagLength);
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
-            }
-            return nil;
-        }
-    }
-    else {
-        if (fullTag.length < kMinEd25519AuthenticatedRendezvousRespondTagLength) {
-            LogError(@"Invalid full tag length: %ld. Minimum tag length to respond ED25519 Authenticated Rendezvous: %ld",
-                     fullTag.length,
-                     kMinEd25519AuthenticatedRendezvousRespondTagLength);
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
-            }
-            return nil;
-        }
-    }
-    
-    
-    return [self stripPrefixFromFullTag:fullTag error:error];
 }
 
 - (QredoED25519VerifyKey *)verifyKeyFromAuthenticationTag:(NSString *)authenticationTag error:(NSError **)error
@@ -80,12 +38,8 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
     }
     
     QredoED25519VerifyKey *vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
-    if (*error) {
-        LogError(@"Getting Ed25519 key from authentication data returned error: %@", *error);
-        return nil;
-    }
-    else if (!vk) {
-        LogError(@"Nil, Ed25519 verify key returned for authentication tag: '%@'.", authenticationTag);
+    if (!vk) {
+        LogError(@"Nil Ed25519 verify key returned for authentication tag: '%@'.", authenticationTag);
         if (error) {
             *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
         }
@@ -101,8 +55,8 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
 @interface QredoRendezvousEd25519CreateHelper () {
     QredoED25519SigningKey *_sk;
 }
-@property (nonatomic, copy) NSString *fullTag;
-//@property (nonatomic, copy) NSString *authenticationTag;
+
+@property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @property (nonatomic, copy) signDataBlock signingHandler;
 @end
 
@@ -121,23 +75,13 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
             return nil;
         }
         
-        NSString *prefix = [self getPrefixFromFullTag:fullTag error:error];
-        if (!prefix) {
-            LogError(@"getPrefixFromFullTag returned nil prefix.");
-            if (error && !*error) {
-                // Error wasn't already set
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
-            }
+        _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
+        if (!_authenticatedRendezvousTag || *error) {
+            LogError(@"Failed to split up full tag successfully.");
             return nil;
         }
         
-        NSString *authenticationTag = [self stripPrefixFromEd25519FullTag:fullTag creating:YES error:error];
-        if (error && *error) {
-            LogError(@"stripPrefixFromEd25519FullTag returned error: %@", *error);
-            return nil;
-        }
-        
-        if ([authenticationTag isEqualToString:@""]) {
+        if ([_authenticatedRendezvousTag.authenticationTag isEqualToString:@""]) {
             // No authentication tag provided, so need to generate own keys and signing handler must be nil
             if (signingHandler) {
                 LogError(@"Provided a signing handler (so external keys to be used), but authentication tag (public key) also provided.");
@@ -149,28 +93,21 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
             
             // Generate some one-time-use ED25519 keys, and the authentication tag
             _sk = [self.cryptoImpl qredoED25519SigningKey];
-            authenticationTag = [QredoBase58 encodeData:_sk.verifyKey.data];
+            NSString *authenticationTag = [QredoBase58 encodeData:_sk.verifyKey.data];
             
-            // Generate the full tag now, with the newly generated key
-            if (![prefix isEqualToString:@""]) {
-                // There is a prefix
-                _fullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
-            }
-            else {
-                // No prefix, so full tag is just authentication tag (no preceeding @)
-                _fullTag = authenticationTag;
-            }
+            // Re-generate the Authenticated Rendezvous Tag now we have generated keys
+            _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithPrefix:_authenticatedRendezvousTag.prefix authenticationTag:authenticationTag error:error];
         }
         else {
 
             // Using externally provided keys, so must validate those keys
-            QredoED25519VerifyKey *verifyKey = [self verifyKeyFromAuthenticationTag:authenticationTag error:error];
+            QredoED25519VerifyKey *verifyKey = [self verifyKeyFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
             if (!verifyKey) {
                 // Only set the error, if not already set
                 if (!*error) {
                     *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
                 }
-                LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'. Error: %@", authenticationTag, *error);
+                LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'. Error: %@", _authenticatedRendezvousTag.authenticationTag, *error);
                 return nil;
             }
             
@@ -183,7 +120,6 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
                 return nil;
             }
             
-            _fullTag = fullTag;
             _signingHandler = signingHandler;
         }
     }
@@ -197,8 +133,7 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
 
 - (NSString *)tag
 {
-    // We either used the provided full tag, or pre-populated it when generating the keys
-    return self.fullTag;
+    return self.authenticatedRendezvousTag.fullTag;
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature
@@ -265,7 +200,8 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
 @interface QredoRendezvousEd25519RespondHelper () {
     QredoED25519VerifyKey *_vk;
 }
-@property (nonatomic, copy) NSString *fullTag;
+
+@property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @end
 
 @implementation QredoRendezvousEd25519RespondHelper
@@ -282,30 +218,31 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
             return nil;
         }
         
-        if (fullTag.length < 1) {
+        _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
+        if (!_authenticatedRendezvousTag || *error) {
+            LogError(@"Failed to split up full tag successfully.");
+            return nil;
+        }
+
+        if (_authenticatedRendezvousTag.authenticationTag.length < kMinEd25519AuthenticationTagLength) {
+            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for Ed25519 authenticated tag: %ld",
+                     fullTag.length,
+                     kMinEd25519AuthenticationTagLength);
             if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             }
             return nil;
         }
-        
-        NSString *authenticationTag = [self stripPrefixFromEd25519FullTag:fullTag creating:NO error:error];
-        if (error && *error) {
-            LogError(@"stripPrefixFromEd25519FullTag returned error: %@", *error);
-            return nil;
-        }
-        
-        _vk = [self verifyKeyFromAuthenticationTag:authenticationTag error:error];
+
+        _vk = [self verifyKeyFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
         if (!_vk) {
             // Only set the error, if not already set
             if (!*error) {
                 *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
             }
-            LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'. Error: %@", authenticationTag, *error);
+            LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'. Error: %@", _authenticatedRendezvousTag.authenticationTag, *error);
             return nil;
         }
-        
-        _fullTag = fullTag;
     }
     return self;
 }
@@ -317,7 +254,7 @@ static const NSUInteger kMinEd25519AuthenticatedRendezvousRespondTagLength = 1;
 
 - (NSString *)tag
 {
-    return self.fullTag;
+    return self.authenticatedRendezvousTag.authenticationTag;
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature

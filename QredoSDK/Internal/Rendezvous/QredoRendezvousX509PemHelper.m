@@ -9,12 +9,13 @@
 #import "QredoCrypto.h"
 #import "QredoCertificateUtils.h"
 #import "QredoLogging.h"
+#import "QredoAuthenticatedRendezvousTag.h"
 
 
 @implementation QredoAbstractRendezvousX509PemHelper
 
-// TODO: DH - confirm the minimum length of X.509 authenticated tag (i.e. single certificate with RSA 2048 bit Public key)
-static const NSUInteger kMinX509AuthenticatedRendezvousTagLength = 1;
+// TODO: DH - confirm the minimum length of X.509 authentication tag (i.e. single certificate with RSA 2048 bit Public key)
+static const NSUInteger kMinX509AuthenticationTagLength = 1;
 
 // TODO: DH - confirm the salt length used for authenticated rendezvous
 // TODO: DH - how to provide the salt length to the signingCallback, so know what salt size should be?
@@ -48,35 +49,12 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
     return publicKeyRef;
 }
 
-- (NSString *)stripPrefixFromX509FullTag:(NSString *)fullTag error:(NSError **)error
-{
-    if (!fullTag) {
-        LogError(@"Nil full tag provided.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-        }
-        return nil;
-    }
-    
-    if (fullTag.length < kMinX509AuthenticatedRendezvousTagLength) {
-        LogError(@"Invalid full tag length: %ld. Minimum tag length for X509 Authenticated Rendezvous: %ld",
-                 fullTag.length,
-                 kMinX509AuthenticatedRendezvousTagLength);
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
-        }
-        return nil;
-    }
-    
-    return [self stripPrefixFromFullTag:fullTag error:error];
-}
-
 @end
 
 
 @interface QredoRendezvousX509PemCreateHelper ()
 
-@property (nonatomic, copy) NSString *fullTag;
+@property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @property (nonatomic, assign) SecKeyRef publicKeyRef;
 @property (nonatomic, copy) signDataBlock signingHandler;
 
@@ -106,24 +84,23 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
             }
             return nil;
         }
-
-        _fullTag = fullTag;
         
-        NSString *authenticationTag = [self stripPrefixFromX509FullTag:fullTag error:error];
-        if (*error) {
-            LogError(@"Stripping prefix returned error: %@", *error);
+        _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
+        if (!_authenticatedRendezvousTag || *error) {
+            LogError(@"Failed to split up full tag successfully.");
             return nil;
         }
-        else if (!authenticationTag || [authenticationTag isEqualToString:@""]) {
-            LogError(@"Nil, or empty authentication tag returned: '%@'.  Full tag: '%@'.", authenticationTag, fullTag);
+
+        if ([_authenticatedRendezvousTag.authenticationTag isEqualToString:@""]) {
+            LogError(@"Empty authentication tag. X.509 authenticated rendezcous can only use externally generated keys.");
             if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagMissing, nil);
             }
             return nil;
         }
         
         // Confirm that the authentication tag is a PEM certificate chain which validates correctly
-        _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:authenticationTag error:error];
+        _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
         if (*error || !_publicKeyRef) {
             LogError(@"X.509 authentication tag is invalid.");
             return nil;
@@ -141,8 +118,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
 - (NSString *)tag
 {
-    // For X.509, we do not generate any keys and the full tag has to be provided during creation, so just return that
-    return self.fullTag;
+    return self.authenticatedRendezvousTag.fullTag;
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature
@@ -189,7 +165,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
 @interface QredoRendezvousX509PemRespondHelper ()
 
-@property (nonatomic, copy) NSString *fullTag;
+@property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @property (nonatomic, assign) SecKeyRef publicKeyRef;
 
 @end
@@ -215,13 +191,27 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
             return nil;
         }
         
-        _fullTag = fullTag;
+        _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
+        if (!_authenticatedRendezvousTag || *error) {
+            LogError(@"Failed to split up full tag successfully.");
+            return nil;
+        }
         
-        NSString *authenticationTag = [self stripPrefixFromFullTag:self.fullTag error:error];
-        // TODO: DH - Check error result
+        if (_authenticatedRendezvousTag.authenticationTag.length < kMinX509AuthenticationTagLength) {
+            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for X509 authenticated tag: %ld",
+                     fullTag.length,
+                     kMinX509AuthenticationTagLength);
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
+            }
+            return nil;
+        }
         
-        _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:authenticationTag error:error];
-        // TODO: DH - check error result/ref returned
+        _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
+        if (!_publicKeyRef || *error) {
+            LogError(@"Failed to validate/get public key from authentication tag.");
+            return nil;
+        }
     }
     return self;
 }
@@ -233,7 +223,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
 - (NSString *)tag
 {
-    return self.fullTag;
+    return self.authenticatedRendezvousTag.fullTag;
 }
 
 - (QredoRendezvousAuthSignature *)emptySignature
