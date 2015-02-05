@@ -58,7 +58,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
         return nil;
     }
     
-    if (fullTag.length <= kMinX509AuthenticatedRendezvousTagLength) {
+    if (fullTag.length < kMinX509AuthenticatedRendezvousTagLength) {
         LogError(@"Invalid full tag length: %ld. Minimum tag length for X509 Authenticated Rendezvous: %ld",
                  fullTag.length,
                  kMinX509AuthenticatedRendezvousTagLength);
