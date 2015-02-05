@@ -8,7 +8,9 @@
 - (void)testCreateRendezvous;
 - (void)testCreateAndRespondRendezvous;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519;
-- (void)testCreateAndRespondAuthenticatedRendezvousED25519NoTag;
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519NoPrefixTag;
+- (void)testCreateAuthenticatedRendezvousED25519EmptyTag;
+- (void)testCreateAuthenticatedRendezvousED25519NilTag;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519ForgedSignature;
 
 @end

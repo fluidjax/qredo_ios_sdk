@@ -428,8 +428,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519 {
-    
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+
+    // Authenticated rendezvous must contain @ (and if data present after @, the data must be a valid public key)
+    NSString *randomTag = [NSString stringWithFormat:@"%@@", [[QredoQUID QUID] QUIDString]];
     
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
@@ -518,9 +519,10 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousED25519NoTag {
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519NoPrefixTag {
     
-    NSString *randomTag = nil;
+    // Authenticated rendezvous must contain @ (and if data present after @, the data must be a valid public key)
+    NSString *randomTag = @"@"; // No prefix, no authenticated tag part (so will generate that part itself), just @
     
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
@@ -607,11 +609,84 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     [anotherClient closeSession];
     
+}
+
+- (void)testCreateAuthenticatedRendezvousED25519EmptyTag {
+    
+    // Authenticated rendezvous must contain @ (and if data present after @, the data must be a valid public key)
+    NSString *randomTag = @""; // Invalid, empty tag
+    
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc]
+       initWithConversationType:kRendezvousTestConversationType
+       authenticationType:QredoRendezvousAuthenticationTypeEd25519
+       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
+       transCap:nil];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    
+    NSLog(@"Creating rendezvous");
+    [client
+     createRendezvousWithTag:randomTag
+     configuration:configuration
+     signingHandler:nil
+     completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+         
+         XCTAssertNotNil(error);
+         XCTAssertNil(rendezvous);
+         createdRendezvous = rendezvous;
+         [createExpectation fulfill];
+         
+     }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    XCTAssertNil(createdRendezvous);
+}
+
+- (void)testCreateAuthenticatedRendezvousED25519NilTag {
+    
+    // Authenticated rendezvous must contain @ (and if data present after @, the data must be a valid public key)
+    NSString *randomTag = nil; // Invalid, nil tag
+    
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc]
+       initWithConversationType:kRendezvousTestConversationType
+       authenticationType:QredoRendezvousAuthenticationTypeEd25519
+       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
+       transCap:nil];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    
+    NSLog(@"Creating rendezvous");
+    [client
+     createRendezvousWithTag:randomTag
+     configuration:configuration
+     signingHandler:nil
+     completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+         
+         XCTAssertNotNil(error);
+         XCTAssertNil(rendezvous);
+         createdRendezvous = rendezvous;
+         [createExpectation fulfill];
+         
+     }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    XCTAssertNil(createdRendezvous);
 }
 
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519ForgedSignature {
     
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    // Authenticated rendezvous must contain @ (and if data present after @, the data must be a valid public key)
+    NSString *randomTag = [NSString stringWithFormat:@"%@@", [[QredoQUID QUID] QUIDString]];
     
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
