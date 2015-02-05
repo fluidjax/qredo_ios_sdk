@@ -1,82 +1,63 @@
-@class QredoConversationProtocol;
+/*
+ *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
 
-@interface QredoConversationProtocolState : NSObject
+#import <Foundation/Foundation.h>
 
-@property (readonly) QredoConversationProtocol *protocol;
 
-- (instancetype)initWithBlock:(void(^)())block;
+@class QredoConversationProtocol, QredoConversation, QredoConversationMessage;
 
-- (void)onEnter; // calls the block from initWithBlock
-- (void)didReceiveMessage:(QredoConversationMessage *)message;
+@interface QredoConversationProtocolErrorMessage : NSObject
+@property (nonatomic) NSError *error;
+@end
+
+
+
+@protocol QredoConversationProtocolEvents <NSObject>
+
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message;
+- (void)otherPartyHasLeftConversation;
 
 @end
 
-@interface QredoConversationProtocol : NSObject
+@interface QredoConversationProtocolState : NSObject<QredoConversationProtocolEvents>
 
-@property (nonatomic) QredoConversationProtocolState *currentState;
+@property (weak, nonatomic, readonly) QredoConversationProtocol *conversationProtocol;
 
-// public
-- (instancetype)initWithConversation:(QredoConversation *)conversation states:(NSDictionary /* string, QredoProtocolState */ *)states;
 
-- (void)switchToStateWithName:(NSString *)stateName;
+#pragma mark State life cycle
 
-- (QredoConversationProtocolState *)stateForName:(NSString*)stateName;
+- (void)didEnter;
+- (void)willExit;
 
-- (void)cancelWithError:(NSError *)error; // send cancel message. message type in property?
 
-// protected
-- (void)didReceiveCancelMessage; // -> if state defines, otherwise common logic
-- (void)didReceiveMessage:(QredoConversationMessage *)message; // -> state
+#pragma mark Events (conversation message handling)
+
+
 
 @end
 
-@protocol QredoClaimantAttestationDelegate <NSObject>
-// connects with UI (similar to the delegates in the keychain transporter
-@end
+@interface QredoConversationProtocolCancelableState : QredoConversationProtocolState
 
-@interface QredoClaimantAttestationProtocol : QredoConversationProtocol
+@property (nonatomic, copy) NSString *cancelMessageType;
 
-@property id<QredoClaimantAttestationDelegate> uiDelegate;
-
-- (void)switchToReceivedPresentationsStateWithPresentation:(NSArray *)presentations;
+- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message;
+- (void)didReceiveCancelConversationMessageWithError:(NSError *)error;
 
 @end
 
-@interface QredoClaimantAttestationReceivedAuthenticationState : QredoConversationProtocolState
+
+
+@interface QredoConversationProtocol : NSObject<QredoConversationProtocolEvents>
+
+@property (nonatomic, readonly) QredoConversationProtocolState *currentState;
+
+- (instancetype)initWithConversation:(QredoConversation *)conversation;
+
+#pragma mark Event handling
+
+- (void)switchToState:(QredoConversationProtocolState *)state;
 
 @end
 
-@class QredoClaimantAttestationProtocol;
 
-@implementation QredoClaimantAttestationReceivedAuthenticationState
-
-- (void)onEnter {
-    QredoClaimantAttestationProtocol *protocol;
-}
-
-@end
-
-@implementation QredoClaimantAttestationProtocol
-
-- (void)switchToReceivedPresentationsStateWithPresentation:(NSArray *)presentations
-{
-    self.currentState = [[QredoConversationProtocolState alloc] initWithBlock:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [delegate updateUIPresentations:presentations];
-        });
-    }];
-}
-
-- (instancetype)initWithConversation:(QredoConversation *)conversation states:(NSDictionary *)states
-{
-
-    QredoConversationProtocolState *waitingForPresentationState = [[QredoConversationProtocolState alloc] initWithBlock:^{
-
-    }];
-
-    QredoConversationProtocolState *authenticating = [[QredoConversationProtocolState alloc] initWithBlock:^{}];
-
-    self = [super initWithConversation:conversation states:states];
-}
-
-@end
