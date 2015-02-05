@@ -1,9 +1,14 @@
 digraph Authentication {
 	rankdir = "LR";
 
+	subgraph success {
+		node [style=filled fillcolor=palegreen]
+		start; finish; sendingClaims receivedResult waitingForResult
+	}
+
 	start -> sendingClaims;
 
-	sendingClaims -> waitingForResult [label = "publishMessage(com.qredo.attestation.authentication(credentials)).completionHandler(error == nil)"]
+	sendingClaims -> waitingForResult [label = "publishMessage.completionHandler(error == nil)"]
 	sendingClaims -> cancelledByOtherSide [label = "onMessage(msg == com.qredo.attestation.cancel)"]
 	sendingClaims -> error [label = "publishMessage.completionHandler(error != nil)"]
 	sendingClaims -> cancel [label = "onCancel()"]
@@ -21,11 +26,11 @@ digraph Authentication {
 
 	// States' labels
 	start [shape = point]
-	receivedResult [label = "Received result\nEnter: delegate.didReceiveResult()" style=filled fillcolor=palegreen]
+	receivedResult [label = "Received result\nEnter: delegate.didReceiveResult()"]
 	cancelledByOtherSide [label = "Cancelled by Authenticator\nEnter: delegate.didFinishWithError(cancelled)"]
-	sendingClaims [label = "Sending claims for authentication\nEnter: publishMessage" style=filled fillcolor=palegreen]
-	waitingForResult [label = "Waiting for authentication result" style=filled fillcolor=palegreen]
-	finish [style=filled fillcolor=green]
+	sendingClaims [label = "Sending claims for authentication\nEnter: publishMessage(com.qredo.attestation.authentication(credentials))"]
+	waitingForResult [label = "Waiting for authentication result"]
+	finish 
 	sentErrorMessage [label = "Sent error message\nEnter: delegate.didFinishWithError(error)"]
 	error [label = "Sending error message\nEnter: publishMessage(com.qredo.attestation.cancel[error=...])"]
 	cancel [label = "Sending cancel message\nEnter: publishMessage(com.qredo.attestation.cancel[error=nil]"]
