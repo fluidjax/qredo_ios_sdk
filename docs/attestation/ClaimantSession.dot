@@ -1,40 +1,64 @@
 digraph ClaimantSession {
+
   rankdir="LR"
+  node [fontname="Courier", fontsize=11, shape=record, style="filled,rounded", fillcolor=palegreen]
+  edge [fontname="Courier", fontsize=10, color=grey]
+
  
   start -> requestingPresentation 
  
-  requestingPresentation -> cancel [label = "publishMessageHandler(error)\n[error != nil]"]
+  requestingPresentation -> cancel [label = "conversationMessageSent(error)\n[error != nil]"]
   requestingPresentation -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
-  requestingPresentation -> waitingForPresentations [label = "publishMessageHandler(error)\n[error == nil]"]
-  requestingPresentation -> cancel [label="vendorDidCancel()"]
+  requestingPresentation -> cancel [label="conversationMessageReceived(msg)\n[msg != cancel]"]
+  requestingPresentation -> waitingForPresentations [label = "conversationMessageSent(error)\n[error == nil]"]
+  requestingPresentation -> cancel [label="cancel()"]
 
   waitingForPresentations -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
   waitingForPresentations -> receivedPresentations [label="conversationMessageReceived(msg)\n[msg == presentations]"]
-  waitingForPresentations -> cancel [label="vendorDidCancel()"]
+  waitingForPresentations -> cancel [label="conversationMessageReceived(msg)\n[msg != presentations || msg != cancel]"]
+  waitingForPresentations -> cancel [label="cancel()"]
 
   receivedPresentations -> receivedAuthenticationResults [label="authenticationComplete(results)"]
   receivedPresentations -> cancel [label="authenticationCompleteWithError(error)"]
   receivedPresentations -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
+  receivedPresentations -> cancel [label="conversationMessageReceived(msg)\n[msg != cancel]"]
 
-  receivedAuthenticationResults -> sendAttestationResult [label="vendorDidChooseResult(result)"]
-  receivedAuthenticationResults -> cancel [label="vendorDidCancel()"]
+  receivedAuthenticationResults -> sendAttestationResult [label="setResult(result)"]
+  receivedAuthenticationResults -> cancel [label="cancel()"]
   receivedAuthenticationResults -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
+  receivedAuthenticationResults -> cancel [label="conversationMessageReceived(msg)\n[msg != cancel]"]
 
-  sendAttestationResult -> cancel [label="sendVendorChoiceCompletionHandler(error)\n[error != nil]"]
-  sendAttestationResult -> finish [label="sendVendorChoiceCompletionHandler(error)\n[error == nil]"]
+  sendAttestationResult -> atestationResultSent [label="sendAtestationChoiceCompleted(error)\n[error == nil]"]
+  sendAttestationResult -> cancel [label="sendAtestationChoiceCompleted(error)\n[error != nil]"]
+  sendAttestationResult -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
+  sendAttestationResult -> cancel [label="conversationMessageReceived(msg)\n[msg != cancel]"]
+  
+  atestationResultSent -> finish 
+  cancel -> finish 
+  cancelledByOtherSide -> finish 
 
-  cancel -> finish [label = "cancelConversationHander(error)"]
-
-  cancelledByOtherSide -> finish [label = "vendorDidPressOK()"]
 
 # Labels for the states
-  start [label="Start", style=filled, fillcolor=green]
-  requestingPresentation [label = "Requesting Presentations\nEnter: publishMessage(presentationRequest)", shape=box, style="filled,rounded", fillcolor=palegreen]
-  waitingForPresentations [label = "Waiting for Presentations\n(Accept/Reject UI)\nEnter: updateUI()", shape=box, style="filled,rounded", fillcolor=palegreen]
-  cancelledByOtherSide [label = "Cancelled by Alice\nEnter: updateUI()", shape=box, style="filled,rounded", fillcolor=red]
-  receivedPresentations [label = "Received Presentations\n(Accept/Reject UI)\nEnter: updateUI(presentations); authenticatePresentations()", shape=box, style="filled,rounded", fillcolor=palegreen]
-  receivedAuthenticationResults [label = "Received Authentication results\n(Accept/Reject UI)\nEnter: updateUI(authentications)", shape=box, style="filled,rounded", fillcolor=palegreen]
-  sendAttestationResult [label = "Send vendor choice\nEnter: sendVendorChoice(attestationResult)", shape=box, style="filled,rounded", fillcolor=palegreen]
-  cancel [label = "Cancel conversation\ncancelConversation(error)", shape=box, style="filled,rounded"]
-  finish [label = "Finish\nEnter: nupdateUI()", style=filled, fillcolor=palegreen]
+
+  start [label="Start", shape=ellipse style="filled"]
+  
+  requestingPresentation [label = "Requesting Presentations | {Enter: |{sendPesentationRequest(presentationRequest) | delegate.claimentSessionStarted()}}", ]
+  waitingForPresentations [label = "Waiting for Presentations| {Enter: | nop}"]
+  receivedPresentations [label = "Presentations Received | {Enter: | {authenticatePresentations() | delegate.didRecievePresentations(presentations)}}"]
+  receivedAuthenticationResults [label = "Authentication Results Received | {Enter: | delegate.didReceiveAuthentications(authentications)}"]
+  sendAttestationResult [label = "Send Relying Party Choice| {Enter: | {sendRelyingPartyChoice(attestationResult) | delegate.sendingRelyingPartyChoice()}}"]
+  atestationResultSent [label = "Relying Party Choice Sent | {Enter: | {cancelConversarion(nil) | delegate.didSendingRelyingPartyChoice()}}"]
+  
+  cancelledByOtherSide [label = "Cancelled by Claimant | {Enter: | delegate.canceledByClaimant(error)}", fillcolor=pink]
+  cancel [label = "Cancel Conversation | {Enter: | cancelConversation(error)}", fillcolor=grey]
+  
+  finish [label = "Finish", shape=ellipse, style=filled]
+
+  
+  {rank=min; cancelledByOtherSide}
+  {rank="same"; start requestingPresentation waitingForPresentations receivedPresentations receivedAuthenticationResults sendAttestationResult atestationResultSent finish}
+  {rank=max; cancel}
+  
 }
+
+
