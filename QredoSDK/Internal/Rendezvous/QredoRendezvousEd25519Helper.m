@@ -76,7 +76,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         }
         
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
-        if (!_authenticatedRendezvousTag || *error) {
+        if (!_authenticatedRendezvousTag || (error && *error)) {
             LogError(@"Failed to split up full tag successfully.");
             return nil;
         }
@@ -104,10 +104,11 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
             QredoED25519VerifyKey *verifyKey = [self verifyKeyFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
             if (!verifyKey) {
                 // Only set the error, if not already set
-                if (!*error) {
+                if (error && !*error) {
                     *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
                 }
-                LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'. Error: %@", _authenticatedRendezvousTag.authenticationTag, *error);
+                LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'",
+                         _authenticatedRendezvousTag.authenticationTag);
                 return nil;
             }
             
@@ -183,10 +184,10 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         signature = [self.cryptoImpl qredoED25519SignMessage:data withKey:_sk error:error];
         if (!signature) {
             // Only set the error, if not already set
-            if (!*error) {
+            if (error && !*error) {
                 *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
             }
-            LogError(@"Nil signature was returned by qredoED25519SignMessage. Error: %@", *error);
+            LogError(@"Nil signature was returned by qredoED25519SignMessage");
             return nil;
         }
     }
@@ -219,7 +220,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         }
         
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
-        if (!_authenticatedRendezvousTag || *error) {
+        if (!_authenticatedRendezvousTag || (error && *error)) {
             LogError(@"Failed to split up full tag successfully.");
             return nil;
         }
@@ -237,10 +238,11 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         _vk = [self verifyKeyFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
         if (!_vk) {
             // Only set the error, if not already set
-            if (!*error) {
+            if (error && !*error) {
                 *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
             }
-            LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'. Error: %@", _authenticatedRendezvousTag.authenticationTag, *error);
+            LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'",
+                     _authenticatedRendezvousTag.authenticationTag);
             return nil;
         }
     }

@@ -86,7 +86,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
         }
         
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
-        if (!_authenticatedRendezvousTag || *error) {
+        if (!_authenticatedRendezvousTag || (error && *error)) {
             LogError(@"Failed to split up full tag successfully.");
             return nil;
         }
@@ -101,7 +101,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
         
         // Confirm that the authentication tag is a PEM certificate chain which validates correctly
         _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
-        if (*error || !_publicKeyRef) {
+        if (!_publicKeyRef || (error && *error)) {
             LogError(@"X.509 authentication tag is invalid.");
             return nil;
         }
@@ -192,7 +192,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
         }
         
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
-        if (!_authenticatedRendezvousTag || *error) {
+        if (!_authenticatedRendezvousTag || (error && *error)) {
             LogError(@"Failed to split up full tag successfully.");
             return nil;
         }
@@ -208,7 +208,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
         }
         
         _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
-        if (!_publicKeyRef || *error) {
+        if (!_publicKeyRef || (error && *error)) {
             LogError(@"Failed to validate/get public key from authentication tag.");
             return nil;
         }
