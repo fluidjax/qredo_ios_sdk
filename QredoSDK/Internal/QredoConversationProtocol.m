@@ -73,24 +73,28 @@
     }
 }
 
-- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
-{
-    
-}
-
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
-{
-    
-}
-
 - (void)otherPartyHasLeftConversation
 {
     [self didReceiveCancelConversationMessageWithError:nil];
 }
 
+- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
+{
+}
+
+- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
+{
+}
+
 @end
 
 
+
+#pragma GCC diagnostic push
+#pragma clang diagnostic push
+
+#pragma GCC diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wprotocol"
 
 @implementation QredoConversationProtocol
 
@@ -109,22 +113,38 @@
 
 #pragma mark Event handling
 
-- (void)handleEventWithBlock:(dispatch_block_t)block
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector
 {
-    dispatch_async(self.protocolQueue, block);
+    NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];
+    if (!signature) {
+        signature = [self.currentState methodSignatureForSelector:aSelector];
+    }
+    return signature;
 }
 
-- (void)switchToState:(QredoConversationProtocolState *)state
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation
 {
     dispatch_async(self.protocolQueue, ^{
         
+        if ([self.currentState respondsToSelector:[anInvocation selector]]) {
+            [anInvocation invokeWithTarget:self.currentState];
+        } else {
+            [super forwardInvocation:anInvocation];
+        }
+        
+    });
+    
+}
+
+
+- (void)switchToState:(QredoConversationProtocolState *)state
+{
         state.conversationProtocol = self;
         
         [_currentState willExit];
         _currentState = state;
         [_currentState didEnter];
-        
-    });
 }
 
 
@@ -133,19 +153,20 @@
 - (void)qredoConversation:(QredoConversation *)conversation
      didReceiveNewMessage:(QredoConversationMessage *)message
 {
-    [self handleEventWithBlock:^{
-        [self.currentState didReceiveConversationMessage:message];
-    }];
+    [self didReceiveConversationMessage:message];
 }
 
 - (void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation
 {
-    [self handleEventWithBlock:^{
-        [self.currentState otherPartyHasLeftConversation];
-    }];
+    [self otherPartyHasLeftConversation];
 }
 
 
 @end
+
+
+#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
+
 
 
