@@ -51,6 +51,7 @@
 @interface QredoConversationProtocol : NSObject<QredoConversationProtocolEvents>
 
 @property (nonatomic, readonly) QredoConversationProtocolState *currentState;
+@property (nonatomic, readonly) QredoConversation *conversation;
 
 - (instancetype)initWithConversation:(QredoConversation *)conversation;
 
