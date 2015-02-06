@@ -1,10 +1,6 @@
-//
-//  QredoRendezvousX509PemHelperTests.m
-//  QredoSDK_pods
-//
-//  Created by David Hearn on 03/02/2015.
-//
-//
+/*
+ *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>

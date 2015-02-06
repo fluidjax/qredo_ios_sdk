@@ -2,7 +2,6 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-
 #import "CryptoImplV1.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoRendezvousEd25519Helper.h"

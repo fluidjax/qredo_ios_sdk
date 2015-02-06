@@ -60,7 +60,7 @@
     }
 
     NSString *prefixValue = @"";
-    NSString *authenticatedTagValue = @"";
+    NSString *authenticationTagValue = @"";
 
     // TODO: DH - confirm this check works in all circumstances (e.g. "@")
 
@@ -80,11 +80,11 @@
     else {
         // Just 1 separator, and 2 elements to the parts array (prefix and then authentication tag)
         prefixValue = [splitTagParts objectAtIndex:0];
-        authenticatedTagValue = [splitTagParts objectAtIndex:1];
+        authenticationTagValue = [splitTagParts objectAtIndex:1];
     }
     
     self.prefix = prefixValue;
-    self.authenticationTag = authenticatedTagValue;
+    self.authenticationTag = authenticationTagValue;
     
     return YES;
 }
@@ -93,18 +93,18 @@
 {
     // Ignore nil arguments, and replace with empty strings (avoids 'nil' appearing in the final string)
     NSString *prefixValue = @"";
-    NSString *authenticatedTagValue = @"";
+    NSString *authenticationTagValue = @"";
     
     if (prefix) {
         prefixValue = prefix;
     }
     
     if (authenticationTag) {
-        authenticatedTagValue = authenticationTag;
+        authenticationTagValue = authenticationTag;
     }
     
     // An authenticated rendezvous always starts with @, even if no prefix present
-    NSString *fullTag = [NSString stringWithFormat:@"%@@%@", prefixValue, authenticatedTagValue];
+    NSString *fullTag = [NSString stringWithFormat:@"%@@%@", prefixValue, authenticationTagValue];
     
     return fullTag;
 }
