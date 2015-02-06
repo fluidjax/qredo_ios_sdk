@@ -11,6 +11,8 @@
 
 @interface QredoConversationProtocolState ()
 @property (weak, nonatomic) QredoConversationProtocol *conversationProtocol;
+- (void)prepareForReuseWithConversationProtocol:(QredoConversationProtocol *)conversationProtocol
+                                    configBlock:(dispatch_block_t)configBlock;
 @end
 
 
@@ -25,6 +27,21 @@
 #pragma mark Implementations
 
 @implementation QredoConversationProtocolState
+
+
+- (void)prepareForReuseWithConversationProtocol:(QredoConversationProtocol *)conversationProtocol
+                                    configBlock:(dispatch_block_t)configBlock
+{
+    self.conversationProtocol = conversationProtocol;
+    if (configBlock) {
+        configBlock();
+    }
+}
+
+- (void)prepareForReuse
+{
+    
+}
 
 
 #pragma mark State life cycle
@@ -138,13 +155,13 @@
 }
 
 
-- (void)switchToState:(QredoConversationProtocolState *)state
+- (void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock
 {
-        state.conversationProtocol = self;
-        
-        [_currentState willExit];
-        _currentState = state;
-        [_currentState didEnter];
+    [state prepareForReuseWithConversationProtocol:self configBlock:configBlock];
+    
+    [_currentState willExit];
+    _currentState = state;
+    [_currentState didEnter];
 }
 
 

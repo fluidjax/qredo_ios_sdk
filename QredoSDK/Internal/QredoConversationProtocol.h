@@ -24,6 +24,13 @@
 
 @property (weak, nonatomic, readonly) QredoConversationProtocol *conversationProtocol;
 
+/**
+ * Must be overidden in subclasses which declare properties. This method is called by
+ * switch state before swiching to this state. Subclass implementations should reset the
+ * properties of the state that need to be reset before the state becomes active.
+ */
+- (void)prepareForReuse;
+
 
 #pragma mark State life cycle
 
@@ -57,7 +64,7 @@
 
 #pragma mark Event handling
 
-- (void)switchToState:(QredoConversationProtocolState *)state;
+- (void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock;
 
 @end
 

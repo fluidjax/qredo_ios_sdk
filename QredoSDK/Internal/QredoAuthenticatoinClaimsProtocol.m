@@ -75,19 +75,29 @@
 @implementation QredoAuthenticationState_Finish
 @end
 @implementation QredoAuthenticationState_SentErrorMessage
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    self.error = nil;
+}
 - (void)didEnter
 {
     [self.authenticationProtocol.delegate qredoAuthenticationProtocol:self.authenticationProtocol didFailWithError:self.error];
-    [self.authenticationProtocol switchToState:self.authenticationProtocol.finishState];
+    [self.authenticationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
 }
 @end
 @implementation QredoAuthenticationState_Start
 @end
 @implementation QredoAuthenticationState_ReceivedResult
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    self.results = nil;
+}
 - (void)didEnter
 {
     [self.authenticationProtocol.delegate qredoAuthenticationProtocol:self.authenticationProtocol didFinishWithResults:self.results];
-    [self.authenticationProtocol switchToState:self.authenticationProtocol.finishState];
+    [self.authenticationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
 }
 @end
 @implementation QredoAuthenticationState_SendingClaims
@@ -97,50 +107,62 @@
     [self.conversationProtocol.conversation publishMessage:claimsMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
 
         if (error) {
-            [self.conversationProtocol switchToState:self.authenticationProtocol.errorState];
+            [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
+                self.authenticationProtocol.errorState.error = error;
+            }];
         } else {
-            [self.conversationProtocol switchToState:self.authenticationProtocol.waitingForResultState];
+            [self.conversationProtocol switchToState:self.authenticationProtocol.waitingForResultState
+                                     withConfigBlock:nil];
         }
     }];
 }
 - (void)cancel
 {
-    [self.conversationProtocol switchToState:self.authenticationProtocol.cancelState];
+    [self.conversationProtocol switchToState:self.authenticationProtocol.cancelState withConfigBlock:nil];
 }
 - (void)didReceivedMessage:(QredoConversationMessage *)message
 {
     if ([message.dataType isEqualToString: @"com.qredo.attestation.cancel"]) {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState];
+        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
     } else
     {
-        self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
-        [self.conversationProtocol switchToState:self.authenticationProtocol.errorState];
+        [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
+            self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
+        }];
     }
 }
 @end
 @implementation QredoAuthenticationState_WaitingForResult
 - (void)cancel
 {
-    [self.conversationProtocol switchToState:self.authenticationProtocol.cancelState];
+    [self.conversationProtocol switchToState:self.authenticationProtocol.cancelState withConfigBlock:nil];
 }
 - (void)didTimeout
 {
-    [self.conversationProtocol switchToState:self.authenticationProtocol.errorState];
+    [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
+        self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
+    }];
 }
 - (void)didReceivedMessage:(QredoConversationMessage *)message
 {
     if ([message.dataType isEqualToString: @"com.qredo.attestation.authentication.result"]) {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState];
+        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
     } else if ([message.dataType isEqualToString: @"com.qredo.attestation.cancel"]) {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState];
+        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
     } else {
-        self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
-        [self.conversationProtocol switchToState:self.authenticationProtocol.errorState];
+        [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
+            self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
+        }];
     }
 }
 
 @end
 @implementation QredoAuthenticationState_Error
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    self.error = nil;
+}
 - (void)didEnter
 {
     // TODO: Enter: publishMessage(com.qredo.attestation.cancel[error=...])
@@ -149,13 +171,17 @@
                                          completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,
                                                              NSError *error)
     {
-        self.authenticationProtocol.sentErrorMessageState.error = error;
-        [self.conversationProtocol switchToState:self.authenticationProtocol.sentErrorMessageState];
+        [self.conversationProtocol switchToState:self.authenticationProtocol.sentErrorMessageState
+                                 withConfigBlock:^
+        {
+            self.authenticationProtocol.sentErrorMessageState.error = error;
+        }];
     }];
 }
 - (void)cancel
 {
-    [self.conversationProtocol switchToState:self.authenticationProtocol.sentErrorMessageState];
+    [self.conversationProtocol switchToState:self.authenticationProtocol.sentErrorMessageState
+                             withConfigBlock:nil];
 }
 @end
 @implementation QredoAuthenticationState_Cancel
@@ -166,12 +192,12 @@
                                          completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,
                                                              NSError *error)
      {
-         [self.conversationProtocol switchToState:self.authenticationProtocol.finishState];
+         [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
      }];
 }
 - (void)cancel
 {
-    [self.conversationProtocol switchToState:self.authenticationProtocol.finishState];
+    [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
 }
 @end
 @implementation QredoAuthenticationState_CancelledByOtherSide
