@@ -52,11 +52,11 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
 @end
 
 
-@interface QredoRendezvousEd25519CreateHelper () {
-    QredoED25519SigningKey *_sk;
-}
+@interface QredoRendezvousEd25519CreateHelper ()
 
 @property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
+@property (nonatomic, strong) QredoED25519SigningKey *signingKey; // Only used for internally generated keys
+@property (nonatomic, strong) QredoED25519VerifyKey *verifyKey; // Only used for externally generated keys
 @property (nonatomic, copy) signDataBlock signingHandler;
 @end
 
@@ -92,8 +92,8 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
             }
             
             // Generate some one-time-use ED25519 keys, and the authentication tag
-            _sk = [self.cryptoImpl qredoED25519SigningKey];
-            NSString *authenticationTag = [QredoBase58 encodeData:_sk.verifyKey.data];
+            _signingKey = [self.cryptoImpl qredoED25519SigningKey];
+            NSString *authenticationTag = [QredoBase58 encodeData:_signingKey.verifyKey.data];
             
             // Re-generate the Authenticated Rendezvous Tag now we have generated keys
             _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithPrefix:_authenticatedRendezvousTag.prefix authenticationTag:authenticationTag error:error];
@@ -101,8 +101,8 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         else {
 
             // Using externally provided keys, so must validate those keys
-            QredoED25519VerifyKey *verifyKey = [self verifyKeyFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
-            if (!verifyKey) {
+            _verifyKey = [self verifyKeyFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
+            if (!_verifyKey) {
                 // Only set the error, if not already set
                 if (error && !*error) {
                     *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
@@ -154,7 +154,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
     
     NSData *signature = nil;
     
-    if (!_sk) {
+    if (!self.signingKey) {
         // No signing key generated, so using external signing handler
         signature = self.signingHandler(data);
         if (!signature) {
@@ -168,7 +168,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         // As we did not generate the signature, no guarantee it's valid. Verify it before continuing
         BOOL signatureValid = [self.cryptoImpl qredoED25519VerifySignature:signature
                                                                  ofMessage:data
-                                                                 verifyKey:_sk.verifyKey
+                                                                 verifyKey:self.verifyKey
                                                                      error:error];
         
         if (!signatureValid) {
@@ -176,12 +176,12 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
             return nil;
         }
         else {
-            return [QredoRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signature];
+            return [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:signature];
         }
     }
     else {
         // Internally generated keys, so sign inside SDK
-        signature = [self.cryptoImpl qredoED25519SignMessage:data withKey:_sk error:error];
+        signature = [self.cryptoImpl qredoED25519SignMessage:data withKey:self.signingKey error:error];
         if (!signature) {
             // Only set the error, if not already set
             if (error && !*error) {

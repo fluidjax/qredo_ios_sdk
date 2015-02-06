@@ -8,6 +8,7 @@
 #import "QredoRendezvousEd25519Helper.h"
 #import "QredoClient.h"
 #import "QredoAuthenticatedRendezvousTag.h"
+#import "QredoBase58.h"
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
@@ -28,7 +29,7 @@
     [super tearDown];
 }
 
-- (void)testSignatureAndVerification {
+- (void)testSignatureAndVerification_InternalKeys {
     
     NSError *error = nil;
     
@@ -37,6 +38,64 @@
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     signDataBlock signingHandler = nil; // Using internally generated keys
+    
+    error = nil;
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers
+       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+       fullTag:initialFullTag
+       crypto:self.cryptoImpl
+       signingHandler:signingHandler
+       error:&error
+       ];
+    XCTAssertNotNil(createHelper);
+    XCTAssertNil(error);
+    
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers
+       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+       fullTag:finalFullTag
+       crypto:self.cryptoImpl
+       error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    
+    NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    error = nil;
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
+    XCTAssertNotNil(signature);
+    XCTAssertNil(error);
+    
+    error = nil;
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
+    XCTAssert(result);
+    XCTAssertNil(error);
+}
+
+- (void)testSignatureAndVerification_ExternalKeys {
+    
+    __block NSError *error = nil;
+    
+    // Generate a keypair
+    QredoED25519SigningKey *signingKey = [self.cryptoImpl qredoED25519SigningKey];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = [QredoBase58 encodeData:signingKey.verifyKey.data];
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data) {
+        XCTAssertNotNil(data);
+        NSData *signature = [self.cryptoImpl qredoED25519SignMessage:data withKey:signingKey error:&error];
+        XCTAssertNotNil(signature);
+        XCTAssertNil(error);
+        return signature;
+    };
     
     error = nil;
     id<QredoRendezvousCreateHelper> createHelper
