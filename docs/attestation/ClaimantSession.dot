@@ -7,31 +7,31 @@ digraph ClaimantSession {
  
   start -> requestingPresentation 
  
-  requestingPresentation -> cancel [label = "conversationMessageSent(error)\n[error != nil]"]
-  requestingPresentation -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
-  requestingPresentation -> cancel [label="conversationMessageReceived(msg)\n[msg != cancel]"]
-  requestingPresentation -> waitingForPresentations [label = "conversationMessageSent(error)\n[error == nil]"]
+  requestingPresentation -> cancel [label = "conversationMessageSent(error != nil)"]
+  requestingPresentation -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
+  requestingPresentation -> cancel [label="conversationMessageReceived(msg != cancel)"]
+  requestingPresentation -> waitingForPresentations [label = "conversationMessageSent(error == nil)"]
   requestingPresentation -> cancel [label="cancel()"]
 
-  waitingForPresentations -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
-  waitingForPresentations -> receivedPresentations [label="conversationMessageReceived(msg)\n[msg == presentations]"]
-  waitingForPresentations -> cancel [label="conversationMessageReceived(msg)\n[msg != presentations || msg != cancel]"]
+  waitingForPresentations -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
+  waitingForPresentations -> receivedPresentations [label="conversationMessageReceived(msg == presentations)"]
+  waitingForPresentations -> cancel [label="conversationMessageReceived(msg _unhandled)"]
   waitingForPresentations -> cancel [label="cancel()"]
 
   receivedPresentations -> receivedAuthenticationResults [label="authenticationComplete(results)"]
   receivedPresentations -> cancel [label="authenticationCompleteWithError(error)"]
-  receivedPresentations -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
-  receivedPresentations -> cancel [label="conversationMessageReceived(msg)\n[msg != cancel]"]
+  receivedPresentations -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
+  receivedPresentations -> cancel [label="conversationMessageReceived(msg != cancel)"]
 
   receivedAuthenticationResults -> sendAttestationResult [label="setResult(result)"]
   receivedAuthenticationResults -> cancel [label="cancel()"]
-  receivedAuthenticationResults -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
-  receivedAuthenticationResults -> cancel [label="conversationMessageReceived(msg)\n[msg != cancel]"]
+  receivedAuthenticationResults -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
+  receivedAuthenticationResults -> cancel [label="conversationMessageReceived(msg != cancel)"]
 
-  sendAttestationResult -> atestationResultSent [label="sendAtestationChoiceCompleted(error)\n[error == nil]"]
-  sendAttestationResult -> cancel [label="sendAtestationChoiceCompleted(error)\n[error != nil]"]
-  sendAttestationResult -> cancelledByOtherSide [label="conversationMessageReceived(msg)\n[msg == cancel]"]
-  sendAttestationResult -> cancel [label="conversationMessageReceived(msg)\n[msg != cancel]"]
+  sendAttestationResult -> atestationResultSent [label="sendAtestationChoiceCompleted(error == nil)"]
+  sendAttestationResult -> cancel [label="sendAtestationChoiceCompleted(error != nil)"]
+  sendAttestationResult -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
+  sendAttestationResult -> cancel [label="conversationMessageReceived(msg != cancel)"]
   
   atestationResultSent -> finish 
   cancel -> finish 
