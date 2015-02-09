@@ -88,7 +88,7 @@
     NSString *authenticationTag = [QredoBase58 encodeData:signingKey.verifyKey.data];
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
-    signDataBlock signingHandler = ^NSData *(NSData *data) {
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
         XCTAssertNotNil(data);
         NSData *signature = [self.cryptoImpl qredoED25519SignMessage:data withKey:signingKey error:&error];
         XCTAssertNotNil(signature);
@@ -192,7 +192,7 @@
     NSString *authenticationTag = @"Vous";
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
-    signDataBlock signingHandler = ^NSData *(NSData *data) {
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
         // This block shouldn't be called (due to validation errors), so just return the input data
         return data;
     };

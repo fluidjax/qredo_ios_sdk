@@ -4,6 +4,9 @@
 
 #import "QredoRendezvousHelper_Private.h"
 
+// Length of salt used for signing X509 authenticated rendezvous
+extern const NSInteger kX509AuthenticatedRendezvousSaltLength;
+
 @interface QredoAbstractRendezvousX509PemHelper : QredoAbstractRendezvousHelper
 @end
 

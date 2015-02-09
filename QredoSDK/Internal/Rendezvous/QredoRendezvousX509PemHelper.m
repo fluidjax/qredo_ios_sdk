@@ -14,13 +14,12 @@
 
 @implementation QredoAbstractRendezvousX509PemHelper
 
+// TODO: DH - confirm the salt length used for authenticated rendezvous
+const NSInteger kX509AuthenticatedRendezvousSaltLength = 8;
+static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
+
 // TODO: DH - confirm the minimum length of X.509 authentication tag (i.e. single certificate with RSA 2048 bit Public key)
 static const NSUInteger kMinX509AuthenticationTagLength = 1;
-
-// TODO: DH - confirm the salt length used for authenticated rendezvous
-// TODO: DH - how to provide the salt length to the signingCallback, so know what salt size should be?
-static const NSUInteger kX509AuthenticatedRendezvousSaltLength = 8;
-static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
 - (QredoRendezvousAuthenticationType)type
 {
@@ -38,7 +37,9 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 {
     NSArray *certificateChainRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:authenticationTag];
     
-    SecKeyRef publicKeyRef = [QredoCertificateUtils validateCertificateChain:certificateChainRefs rootCertificateRefs:[self.cryptoImpl getTrustedRootRefs]];
+    NSArray *trustedRootRefs = [self.cryptoImpl getTrustedRootRefs];
+    SecKeyRef publicKeyRef = [QredoCertificateUtils validateCertificateChain:certificateChainRefs
+                                                         rootCertificateRefs:trustedRootRefs];
     if (!publicKeyRef) {
         LogError(@"Authentication tag (certificate chain) did not validate correctly. Authentication tag: %@", authenticationTag);
         if (error) {
@@ -100,7 +101,8 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
         }
         
         // Confirm that the authentication tag is a PEM certificate chain which validates correctly
-        _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
+        _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:_authenticatedRendezvousTag.authenticationTag
+                                                                 error:error];
         if (!_publicKeyRef || (error && *error)) {
             LogError(@"X.509 authentication tag is invalid.");
             return nil;
@@ -136,7 +138,7 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
         return nil;
     }
     
-    NSData *signature = self.signingHandler(data);
+    NSData *signature = self.signingHandler(data, self.type);
     if (!signature) {
         LogError(@"Nil signature was returned by signing handler.");
         if (error) {
@@ -253,6 +255,8 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
     }
     
     BOOL signatureIsValid = [QredoCrypto rsaPssVerifySignature:signatureData forMessage:rendezvousData saltLength:kX509AuthenticatedRendezvousSaltLength keyRef:_publicKeyRef];
+    
+    LogDebug(@"X.509 Authenticated Rendezvous signature valid: %@", signatureIsValid ? @"YES" : @"NO");
     
     return signatureIsValid;
 }

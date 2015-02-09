@@ -69,6 +69,7 @@
 
 - (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
+    LogDebug(@"Anonymous Rendezvous - signature is always valid!");
     return YES;
 }
 

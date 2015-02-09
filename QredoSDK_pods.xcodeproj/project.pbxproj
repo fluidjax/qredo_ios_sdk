@@ -133,6 +133,7 @@
 		DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */; };
 		DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */; };
 		DCC22DAE1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAD1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m */; };
+		DCC22DB01A88BC840047AB18 /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB505E1A65488500EE22FB /* TestCertificates.m */; };
 		DCDBA2B81A80B64A00C295D6 /* QredoRendezvousPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = DCDBA2B71A80B64A00C295D6 /* QredoRendezvousPrivate.h */; };
 		DCE378EA1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCE378E81A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h */; };
 		DCE378EB1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE378E91A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m */; };
@@ -1130,6 +1131,7 @@
 				0A19C0211A6E9F81004B5783 /* ConversationMessageStoreTests.swift in Sources */,
 				0AEE5C5E1A5C13B10018BE19 /* ControlMessagesTests.swift in Sources */,
 				0A65741A1A2F3B7200D5502E /* QredoVaultTests.m in Sources */,
+				DCC22DB01A88BC840047AB18 /* TestCertificates.m in Sources */,
 				0ABF4D971A5D84F20096BF19 /* ConversationBlockDelegate.swift in Sources */,
 				7810CC5C1A388BCE00421892 /* KeychainTransporterTests.swift in Sources */,
 				0A6574141A2F3B7200D5502E /* QredoRendezvousTests.m in Sources */,

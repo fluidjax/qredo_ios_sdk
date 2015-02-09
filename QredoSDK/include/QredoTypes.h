@@ -9,8 +9,6 @@
 
 typedef NSUInteger QredoAccessLevel; // for now just an integer, but probably needs enum values
 
-typedef NSData * (^signDataBlock)(NSData *data);
-
 typedef NS_ENUM(NSUInteger, QredoRendezvousAuthenticationType) {
     QredoRendezvousAuthenticationTypeAnonymous = 0,                         // The tag is just a string, has no cryptographic identity
     QredoRendezvousAuthenticationTypeX509Pem,
@@ -19,5 +17,7 @@ typedef NS_ENUM(NSUInteger, QredoRendezvousAuthenticationType) {
     QredoRendezvousAuthenticationTypeRsa2048Pem,
     QredoRendezvousAuthenticationTypeRsa4096Pem
 };
+
+typedef NSData * (^signDataBlock)(NSData *data, QredoRendezvousAuthenticationType authenticationType);
 
 #endif

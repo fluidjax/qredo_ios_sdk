@@ -6,6 +6,7 @@
 #import "QredoRendezvousAnonymousHelper.h"
 #import "QredoRendezvousEd25519Helper.h"
 #import "QredoRendezvousX509PemHelper.h"
+#import "QredoLogging.h"
 
 @implementation QredoRendezvousHelpers
 
@@ -62,6 +63,26 @@
     }
     
     return nil;
+}
+
++ (NSInteger)saltLengthForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
+{
+    switch (authenticationType) {
+            
+        case QredoRendezvousAuthenticationTypeAnonymous:
+        case QredoRendezvousAuthenticationTypeEd25519:
+            return -1; // Salt not used
+
+        case QredoRendezvousAuthenticationTypeX509Pem:
+            return kX509AuthenticatedRendezvousSaltLength;
+            
+        case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
+        case QredoRendezvousAuthenticationTypeRsa2048Pem:
+        case QredoRendezvousAuthenticationTypeRsa4096Pem:
+            LogError(@"To be completed!");
+            NSAssert(0, @"To be completed!");
+            return -1;
+    }
 }
 
 @end

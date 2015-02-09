@@ -20,6 +20,8 @@
                                                                    crypto:(id<CryptoImpl>)crypto
                                                                     error:(NSError **)error;
 
++ (NSInteger)saltLengthForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType;
+
 @end
 
 

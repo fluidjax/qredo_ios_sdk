@@ -156,7 +156,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
     
     if (!self.signingKey) {
         // No signing key generated, so using external signing handler
-        signature = self.signingHandler(data);
+        signature = self.signingHandler(data, self.type);
         if (!signature) {
             LogError(@"Nil signature was returned by signing handler.");
             if (error) {
@@ -285,7 +285,10 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         return NO;
     }
     
-    return [self.cryptoImpl qredoED25519VerifySignature:signatureData ofMessage:rendezvousData verifyKey:_vk error:error];
+    BOOL signatureIsValid = [self.cryptoImpl qredoED25519VerifySignature:signatureData ofMessage:rendezvousData verifyKey:_vk error:error];
+    LogDebug(@"Ed25519 Authenticated Rendezvous signature valid: %@", signatureIsValid ? @"YES" : @"NO");
+
+    return signatureIsValid;
 }
 
 @end

@@ -79,8 +79,8 @@
     }
     else {
         // Just 1 separator, and 2 elements to the parts array (prefix and then authentication tag)
-        prefixValue = [splitTagParts objectAtIndex:0];
-        authenticationTagValue = [splitTagParts objectAtIndex:1];
+        prefixValue = splitTagParts[0];
+        authenticationTagValue = splitTagParts[1];
     }
     
     self.prefix = prefixValue;
