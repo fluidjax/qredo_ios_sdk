@@ -11,27 +11,48 @@
 
 @protocol QredoClaimantAttestationProtocolDelegate <NSObject>
 
-// connects with UI (similar to the delegates in the keychain transporter
+- (void)didStartClaimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol;
+
+- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
+             didRecivePresentations:(NSArray *)presentations;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
            didReciveAuthentications:(NSArray *)authentications;
 
+- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
+  didStartSendingRelyingPartyChoice:(BOOL)claimsAccepted;
+
+- (void)claimantAttestationProtocolDidFinishSendingRelyingPartyChoice:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol;
+
+- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
+                 didFinishWithError:(NSError *)error;
+
 @end
 
 
-@interface QredoClaimantAttestationState : QredoConversationProtocolState
 
-#pragma mark Events
+@protocol QredoClaimantAttestationProtocolEvents <NSObject>
 
 - (void)accept;
 - (void)reject;
 - (void)cancel;
 
+- (void)presentationRequestPublishedWithError:(NSError *)error;
+
+- (void)sendAtestationChioiceCompletedWithError:(NSError *)error;
+
+- (void)conversationCanceledWithError:(NSError *)error;
+
 @end
 
 
 
-@interface QredoClaimantAttestationProtocol : QredoConversationProtocol
+@interface QredoClaimantAttestationState : QredoConversationProtocolCancelableState<QredoClaimantAttestationProtocolEvents>
+@end
+
+
+
+@interface QredoClaimantAttestationProtocol : QredoConversationProtocol<QredoClaimantAttestationProtocolEvents>
 
 @property id<QredoClaimantAttestationProtocolDelegate> delegate;
 
