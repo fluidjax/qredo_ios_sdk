@@ -14,10 +14,22 @@
 
 @end
 
-@interface QredoAuthenticationState : QredoConversationProtocolCancelableState
-// Events
+@protocol QredoAuthenticationProtocolEvents <NSObject>
+
+- (void)didSendClaims;
+- (void)didFailToSendClaimsWithError:(NSError *)error;
+
+- (void)didFinishSendingCancelMessage;
+- (void)didFinishSendingMessageWithError:(NSError *)error;
+
+
 @end
 
-@interface QredoAuthenticationProtocol : QredoConversationProtocol
+@interface QredoAuthenticationState : QredoConversationProtocolCancelableState <QredoAuthenticationProtocolEvents>
+// Events
+
+@end
+
+@interface QredoAuthenticationProtocol : QredoConversationProtocol <QredoAuthenticationProtocolEvents>
 @property id<QredoAuthenticationProtocolDelegate> delegate;
 @end

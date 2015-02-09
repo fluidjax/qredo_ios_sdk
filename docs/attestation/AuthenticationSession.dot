@@ -8,9 +8,9 @@ digraph Authentication {
 
 	start -> sendingClaims;
 
-	sendingClaims -> waitingForResult [label = "publishMessage.completionHandler(error == nil)"]
+	sendingClaims -> waitingForResult [label = "publishMessage.completionHandler(error == nil)\ndidSendClaims()"]
 	sendingClaims -> cancelledByOtherSide [label = "onMessage(msg == com.qredo.attestation.cancel)"]
-	sendingClaims -> error [label = "publishMessage.completionHandler(error != nil)"]
+	sendingClaims -> error [label = "publishMessage.completionHandler(error != nil)\ndidFailToSendClaims()"]
 	sendingClaims -> cancel [label = "onCancel()"]
 
 	waitingForResult -> receivedResult [label = "onMessage(msg == com.qredo.attestation.authentication.result)"]
@@ -20,8 +20,8 @@ digraph Authentication {
 
 	receivedResult -> finish
 	cancelledByOtherSide -> finish
-	cancel -> finish [label = "publishMessage.completionHandler(*) || onCancel()"]
-	error -> sentErrorMessage [label = "publishMessage.completionHandler(*) || onCancel()"]
+	cancel -> finish [label = "publishMessage.completionHandler(*) -> didFinishSendingCancelMessage() || onCancel()"]
+	error -> sentErrorMessage [label = "publishMessage.completionHandler(*) -> didFinishSendingErrorMessage() || onCancel()"]
 	sentErrorMessage -> finish
 
 	// States' labels
