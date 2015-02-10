@@ -20,6 +20,8 @@ typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
     QredoRendezvousHelperErrorMalformedTag,
     QredoRendezvousHelperErrorAuthenticationTagMissing,
     QredoRendezvousHelperErrorAuthenticationTagInvalid,
+    QredoRendezvousHelperErrorKeyGenerationFailed,
+    QredoRendezvousHelperErrorKeyProcessingFailed,
     QredoRendezvousHelperErrorMissingDataToSign,
     QredoRendezvousHelperErrorBadSignature,
     QredoRendezvousHelperErrorSignatureHandlerMissing,

@@ -6,6 +6,7 @@
 #import "QredoRendezvousAnonymousHelper.h"
 #import "QredoRendezvousEd25519Helper.h"
 #import "QredoRendezvousX509PemHelper.h"
+#import "QredoRendezvousRsa2048PemHelper.h"
 #import "QredoLogging.h"
 
 @implementation QredoRendezvousHelpers
@@ -27,9 +28,11 @@
         case QredoRendezvousAuthenticationTypeX509Pem:
             return [[QredoRendezvousX509PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
-        case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
         case QredoRendezvousAuthenticationTypeRsa2048Pem:
+            return [[QredoRendezvousRsa2048PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
+        case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add all other authentication types
             return nil;
             

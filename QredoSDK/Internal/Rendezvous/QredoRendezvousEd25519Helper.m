@@ -100,12 +100,12 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         }
         else {
 
-            // Using externally provided keys, so must validate those keys
+            // Using externally provided keys, so must validate the authentication tag is valid key
             _verifyKey = [self verifyKeyFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
             if (!_verifyKey) {
                 // Only set the error, if not already set
                 if (error && !*error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
+                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
                 }
                 LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'",
                          _authenticatedRendezvousTag.authenticationTag);

@@ -5,7 +5,6 @@
 #import "QredoRendezvousX509PemHelper.h"
 #import "QredoClient.h"
 #import "CryptoImpl.h"
-#import "QredoBase58.h"
 #import "QredoCrypto.h"
 #import "QredoCertificateUtils.h"
 #import "QredoLogging.h"
@@ -14,7 +13,7 @@
 
 @implementation QredoAbstractRendezvousX509PemHelper
 
-// TODO: DH - confirm the salt length used for authenticated rendezvous
+// TODO: DH - confirm the salt length used for X.509 authenticated rendezvous
 const NSInteger kX509AuthenticatedRendezvousSaltLength = 8;
 static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
