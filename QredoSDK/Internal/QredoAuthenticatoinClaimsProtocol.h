@@ -4,13 +4,14 @@
 
 #import <Foundation/Foundation.h>
 #import "QredoConversationProtocol.h"
-
+#import "QredoClient.h"
 
 @class QredoAuthenticationProtocol;
 @protocol QredoAuthenticationProtocolDelegate
 
+- (void)qredoAuthenticationProtocolDidSendClaims:(QredoAuthenticationProtocol *)protocol;;
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error;
-- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFinishWithResults:(NSArray *)results;
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFinishWithResults:(QredoAuthenticationResponse *)results;
 
 @end
 
@@ -32,4 +33,6 @@
 
 @interface QredoAuthenticationProtocol : QredoConversationProtocol <QredoAuthenticationProtocolEvents>
 @property id<QredoAuthenticationProtocolDelegate> delegate;
+
+- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest;
 @end

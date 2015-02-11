@@ -13,7 +13,7 @@ class BaseConversation: XCTestCase {
 
     var creatorConversation : QredoConversation!
     var responderConversation : QredoConversation!
-    let conversationType = "com.qredo.test"
+    var conversationType = "com.qredo.test"
     let plainTextMessageType = "com.qredo.plaintext"
 
     var useMQTT = false
