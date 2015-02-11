@@ -3,11 +3,24 @@
  */
 
 #import "QredoClaimantAttestationProtocol.h"
+#import "QredoConversation.h"
 #import "QredoConversationMessage.h"
+#import "QredoAttestationInternal.h"
+#import <QredoClient.h>
+#import <QredoPrimitiveMarshallers.h>
+#import <QredoClientMarshallers.h>
 
+
+static NSString *KAttestationClaimantConversationType = @"com.qredo.attesation.relyingparty";
 
 static NSString *kAttestationPresentationRequestMessageType = @"com.qredo.attestation.presentation.request";
 static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.presentation";
+
+static NSString *kAttestationRelyingPartyChoiceMessageType = @"com.qredo.attestation.relyingparty.decision";
+static NSString *kAttestationRelyingPartyChoiceAccepted = @"ACCEPTED";
+static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
+
+
 
 
 
@@ -19,17 +32,19 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 
 
 @interface QredoClaimantAttestationState_RequestingPresentaion : QredoClaimantAttestationState
+@property (nonatomic, copy) NSSet *attestationTypes;
+@property (nonatomic, copy) NSString *authenticator;
 @end
 
 @interface QredoClaimantAttestationState_WaitingForPresentaions : QredoClaimantAttestationState
 @end
 
 @interface QredoClaimantAttestationState_PresentaionsRecieved : QredoClaimantAttestationState
-@property (nonatomic, copy) NSArray *presentations;
+@property (nonatomic) QredoPresentation *presentation;
 @end
 
 @interface QredoClaimantAttestationState_AuthenticationResultsReceived : QredoClaimantAttestationState
-@property (nonatomic, copy) NSArray *authentications;
+@property (nonatomic, copy) QredoAuthenticationResponse *authentications;
 @end
 
 @interface QredoClaimantAttestationState_SendRelyingPartyChoice : QredoClaimantAttestationState
@@ -122,8 +137,7 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         // TODO [GR]: Set the correct error on the next line.
-         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+         self.claimantAttestationProtocol.cancelConversationState.error = error;
      }];
 }
 
@@ -132,8 +146,7 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         // TODO [GR]: Set the correct error on the next line.
-         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+         self.claimantAttestationProtocol.cancelConversationState.error = error;
      }];
 }
 
@@ -147,6 +160,13 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 
 
 @implementation QredoClaimantAttestationState_RequestingPresentaion
+
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    self.attestationTypes = nil;
+    self.authenticator = nil;
+}
 
 - (void)didEnter
 {
@@ -190,7 +210,23 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 
 - (void)publishPresentationRequestWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    // TODO [GR]: Implement this.
+    QredoPresentationRequest *presentationRequest
+    = [[QredoPresentationRequest alloc] initWithRequestedAttestationTypes:self.attestationTypes
+                                                            authenticator:self.authenticator];
+    NSData *messageValue
+    = [QredoPrimitiveMarshallers marshalObject:presentationRequest
+                                    marshaller:[QredoClientMarshallers presentationRequestMarshaller]];
+    
+    QredoConversationMessage *message
+    = [[QredoConversationMessage alloc] initWithValue:messageValue
+                                             dataType:kAttestationPresentationRequestMessageType
+                                        summaryValues:nil];
+    
+    [self.conversationProtocol.conversation publishMessage:message
+                                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
+     {
+         completionHandler(error);
+     }];
 }
 
 @end
@@ -217,36 +253,55 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 
 - (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
 {
-    if ([message.dataType isEqualToString:kAttestationPresentationMessageType]) {
+    NSError *error = nil;
+    
+    QredoPresentation *presentation = [self presentationFromMessage:message error:&error];
+    if (presentation) {
+        
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.presentaionsRecievedState
                                         withConfigBlock:^
          {
-             self.claimantAttestationProtocol.presentaionsRecievedState.presentations
-             = [self presentationsFromMessage:message];
+             self.claimantAttestationProtocol.presentaionsRecievedState.presentation = presentation;
          }];
         
     } else {
+        
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                         withConfigBlock:^
          {
-             // TODO [GR]: Pass the correct error to cancel conversation state.
-             self.claimantAttestationProtocol.cancelConversationState.error = nil;
+             self.claimantAttestationProtocol.cancelConversationState.error = error;
          }];
+        
     }
 }
 
-- (void)presentationRequestPublishedWithError:(NSError *)error
-{
-    // TODO [GR]: Send to error state
-}
-
-
 #pragma mark Utility methods
 
-- (NSArray *)presentationsFromMessage:(QredoConversationMessage *)message
+- (QredoPresentation *)presentationFromMessage:(QredoConversationMessage *)message error:(NSError **)error
 {
-    // TODO [GR]: Implement this.
-    return nil;
+    if (![message.dataType isEqualToString:kAttestationPresentationMessageType]) {
+        updateQredoClaimantAttestationProtocolError(error, QredoAttestationErrorCodeUnexpectedMessageType, nil);
+        return nil;
+    }
+    
+    if ([message.value length] < 1) {
+        updateQredoClaimantAttestationProtocolError(error, QredoAttestationErrorCodePresentationMessageDoesNotHaveValue, nil);
+        return nil;
+    }
+    
+    QredoPresentation *presentation = nil;
+    @try {
+        presentation = [QredoPrimitiveMarshallers unmarshalObject:message.value
+                                                     unmarshaller:[QredoClientMarshallers presentationUnmarshaller]];
+    }
+    @catch (NSException *exception) {
+        updateQredoClaimantAttestationProtocolError(error, QredoAttestationErrorCodePresentationMessageHasCorruptValue, nil);
+        presentation = nil;
+    }
+    @finally {
+    }
+    
+    return presentation;
 }
 
 @end
@@ -256,14 +311,14 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-    self.presentations = nil;
+    self.presentation = nil;
 }
 
 - (void)didEnter
 {
     [super didEnter];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
-                                                    didRecivePresentations:self.presentations];
+                                                    didRecivePresentations:self.presentation];
 }
 
 #pragma mark Events
@@ -351,8 +406,7 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                         withConfigBlock:^
          {
-             // TODO [GR]: Set the correct error on the next line.
-             self.claimantAttestationProtocol.cancelConversationState.error = nil;
+             self.claimantAttestationProtocol.cancelConversationState.error = error;
          }];
     } else {
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.relyingPartyChoiceSentState
@@ -365,7 +419,21 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 
 - (void)sendRelyingPartyChoiceWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    // TODO [GR]: Implement this.
+    NSString *choiceString
+    = self.claimsAccepted ? kAttestationRelyingPartyChoiceAccepted : kAttestationRelyingPartyChoiceRejected;
+    
+    NSData *messageValue = [choiceString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    QredoConversationMessage *message
+    = [[QredoConversationMessage alloc] initWithValue:messageValue
+                                             dataType:kAttestationRelyingPartyChoiceMessageType
+                                        summaryValues:nil];
+    
+    [self.claimantAttestationProtocol.conversation publishMessage:message
+                                                completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
+    {
+        completionHandler(error);
+    }];
 }
 
 @end
@@ -389,11 +457,19 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
                                     withConfigBlock:nil];
 }
 
+- (void)conversationCanceledWithError:(NSError *)error
+{
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
+                                    withConfigBlock:nil];
+}
+
 #pragma mark Utility methods
 
 - (void)cancelConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    // TODO [GR]: Implement this.
+    [self.claimantAttestationProtocol.conversation deleteConversationWithCompletionHandler:^(NSError *error) {
+        completionHandler(error);
+    }];
 }
 
 @end
@@ -408,6 +484,9 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 - (void)didEnter
 {
     [super didEnter];
+    [self cancelConversationWithCompletionHandler:^(NSError *error) {
+        [self.claimantAttestationProtocol conversationCanceledWithError:error];
+    }];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
                                                         didFinishWithError:self.error];
 }
@@ -424,6 +503,15 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
                                     withConfigBlock:nil];
+}
+
+#pragma mark Utility methods
+
+- (void)cancelConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+    [self.claimantAttestationProtocol.conversation deleteConversationWithCompletionHandler:^(NSError *error) {
+        completionHandler(error);
+    }];
 }
 
 @end
@@ -478,11 +566,27 @@ static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.p
 @implementation QredoClaimantAttestationProtocol
 
 - (instancetype)initWithConversation:(QredoConversation *)conversation
+                    attestationTypes:(NSSet *)attestationTypes
+                       authenticator:(NSString *)authenticator
 {
-    self = [super init];
+    self = [super initWithConversation:conversation];
     if (self) {
+        
+        self.requestingPresentaionState = [QredoClaimantAttestationState_RequestingPresentaion new];
+        self.waitingForPresentaionsState = [QredoClaimantAttestationState_WaitingForPresentaions new];
+        self.presentaionsRecievedState = [QredoClaimantAttestationState_PresentaionsRecieved new];
         self.authenticationResultsReceivedState = [QredoClaimantAttestationState_AuthenticationResultsReceived new];
         self.sendRelyingPartyChoiceState = [QredoClaimantAttestationState_SendRelyingPartyChoice new];
+        self.relyingPartyChoiceSentState = [QredoClaimantAttestationState_RelyingPartyChoiceSent new];
+        self.cancelConversationState = [QredoClaimantAttestationState_CancelConversation new];
+        self.canceledByClaimantState = [QredoClaimantAttestationState_CanceledByClaimant new];
+        self.finishState = [QredoClaimantAttestationState_Finish new];
+        
+        [self switchToState:self.requestingPresentaionState withConfigBlock:^{
+            self.requestingPresentaionState.attestationTypes = attestationTypes;
+            self.requestingPresentaionState.authenticator = authenticator;
+        }];
+        
     }
     return self;
 }

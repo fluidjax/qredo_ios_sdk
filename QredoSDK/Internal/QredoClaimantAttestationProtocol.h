@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 
 @class QredoClaimantAttestationProtocol;
-
+@class QredoPresentation, QredoAuthenticationResponse;
 
 
 @protocol QredoClaimantAttestationProtocolDelegate <NSObject>
@@ -14,10 +14,10 @@
 - (void)didStartClaimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-             didRecivePresentations:(NSArray *)presentations;
+             didRecivePresentations:(QredoPresentation *)presentation;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
-           didReciveAuthentications:(NSArray *)authentications;
+           didReciveAuthentications:(QredoAuthenticationResponse *)authentications;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
   didStartSendingRelyingPartyChoice:(BOOL)claimsAccepted;
@@ -55,6 +55,10 @@
 @interface QredoClaimantAttestationProtocol : QredoConversationProtocol<QredoClaimantAttestationProtocolEvents>
 
 @property id<QredoClaimantAttestationProtocolDelegate> delegate;
+
+- (instancetype)initWithConversation:(QredoConversation *)conversation
+                    attestationTypes:(NSSet *)attestationTypes
+                       authenticator:(NSString *)authenticator;
 
 @end
 
