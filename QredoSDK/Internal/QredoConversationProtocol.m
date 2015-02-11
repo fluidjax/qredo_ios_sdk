@@ -142,21 +142,21 @@
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
+    [anInvocation retainArguments];
     dispatch_async(self.protocolQueue, ^{
-        
         if ([self.currentState respondsToSelector:[anInvocation selector]]) {
             [anInvocation invokeWithTarget:self.currentState];
         } else {
             [super forwardInvocation:anInvocation];
         }
-        
     });
-    
 }
 
 
 - (void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock
 {
+    NSAssert(state != nil, @"State is not initialized");
+
     [state prepareForReuseWithConversationProtocol:self configBlock:configBlock];
     
     [_currentState willExit];
