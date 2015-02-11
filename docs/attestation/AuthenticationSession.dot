@@ -7,6 +7,7 @@ digraph Authentication {
 	}
 
 	start -> sendingClaims;
+	start -> cancel [label = "onCancel()"]
 
 	sendingClaims -> waitingForResult [label = "publishMessage.completionHandler(error == nil)\ndidSendClaims()"]
 	sendingClaims -> cancelledByOtherSide [label = "onMessage(msg == com.qredo.attestation.cancel)"]
@@ -25,12 +26,12 @@ digraph Authentication {
 	sentErrorMessage -> finish
 
 	// States' labels
-	start [shape = point]
+	start [label = "Start\nEnter: conversation.startListening()"]
 	receivedResult [label = "Received result\nEnter: delegate.didReceiveResult()"]
 	cancelledByOtherSide [label = "Cancelled by Authenticator\nEnter: delegate.didFinishWithError(cancelled)"]
 	sendingClaims [label = "Sending claims for authentication\nEnter: publishMessage(com.qredo.attestation.authentication(credentials))"]
 	waitingForResult [label = "Waiting for authentication result"]
-	finish 
+	finish [label = "Finish\nEnter: conversation.stopListening()"] 
 	sentErrorMessage [label = "Sent error message\nEnter: delegate.didFinishWithError(error)"]
 	error [label = "Sending error message\nEnter: publishMessage(com.qredo.attestation.cancel[error=...])"]
 	cancel [label = "Sending cancel message\nEnter: publishMessage(com.qredo.attestation.cancel[error=nil]"]
