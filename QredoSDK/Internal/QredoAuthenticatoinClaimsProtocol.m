@@ -4,8 +4,14 @@
 
 #import "QredoAuthenticatoinClaimsProtocol.h"
 #import "QredoConversation.h"
+#import "QredoErrorCodes.h"
+#import "QredoPrimitiveMarshallers.h"
+#import "QredoClientMarshallers.h"
+#import "QredoClient.h"
 
-
+static NSString *const kAttestationCancelMessageType = @"com.qredo.attestation.cancel";
+static NSString *const kAttestationValidationRequestMessageType = @"com.qredo.attestation.authentication.claims";
+static NSString *const kAttestationValidationResultMessageType = @"com.qredo.attestation.authentication.result";
 //
 @interface QredoAuthenticationState_Finish : QredoAuthenticationState
 @end
@@ -14,17 +20,10 @@
 @interface QredoAuthenticationState_SentErrorMessage : QredoAuthenticationState
 @property (nonatomic) NSError *error;
 @end
-//
-@interface QredoAuthenticationState_Start : QredoAuthenticationState
-@end
-// Received result
-// Enter: delegate.didReceiveResult()
-@interface QredoAuthenticationState_ReceivedResult : QredoAuthenticationState
-@property (nonatomic) NSArray *results;
-@end
 // Sending claims for authentication
 // Enter: publishMessage(com.qredo.attestation.authentication(credentials))
 @interface QredoAuthenticationState_SendingClaims : QredoAuthenticationState
+@property (nonatomic) QredoAuthenticationRequest *authenticationRequest;
 @end
 // Waiting for authentication result
 @interface QredoAuthenticationState_WaitingForResult : QredoAuthenticationState
@@ -44,10 +43,9 @@
 @end
 
 @interface QredoAuthenticationProtocol ()
+@property (nonatomic) dispatch_queue_t queue;
 @property (nonatomic) QredoAuthenticationState_Finish *finishState;
 @property (nonatomic) QredoAuthenticationState_SentErrorMessage *sentErrorMessageState;
-@property (nonatomic) QredoAuthenticationState_Start *startState;
-@property (nonatomic) QredoAuthenticationState_ReceivedResult *receivedResultState;
 @property (nonatomic) QredoAuthenticationState_SendingClaims *sendingClaimsState;
 @property (nonatomic) QredoAuthenticationState_WaitingForResult *waitingForResultState;
 @property (nonatomic) QredoAuthenticationState_Error *errorState;
@@ -60,15 +58,101 @@
 @end
 
 @implementation QredoAuthenticationState
+
+- (instancetype)init {
+    self = [super init];
+
+    if (!self) return nil;
+
+    self.cancelMessageType = kAttestationCancelMessageType;
+
+    return self;
+}
+
 - (QredoAuthenticationProtocol *)authenticationProtocol
 {
     return (QredoAuthenticationProtocol *)self.conversationProtocol;
 }
+
+- (void)didSendClaims
+{
+
+}
+
+- (void)didFailToSendClaimsWithError:(NSError *)error
+{
+
+}
+
+- (void)didFinishSendingCancelMessage
+{
+
+}
+
+- (void)didFinishSendingMessageWithError:(NSError *)error
+{
+    
+}
+
+- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
+{
+
+}
+
+- (void)didReceiveUnexpectedMessage
+{
+    NSError * error = [NSError errorWithDomain:QredoErrorDomain
+                                          code:QredoErrorCodeConversationProtocolUnexpectedMessageType
+                                      userInfo:@{NSLocalizedDescriptionKey: @"Unexpected message type"}];
+
+    dispatch_async(self.authenticationProtocol.queue, ^{
+        [self.authenticationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
+            self.authenticationProtocol.errorState.error = error;
+        }];
+    });
+}
+
 @end
+
+#pragma GCC diagnostic push
+#pragma clang diagnostic push
+
+#pragma GCC diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wprotocol"
+
 
 @implementation QredoAuthenticationProtocol
+
+- (instancetype)initWithConversation:(QredoConversation *)conversation
+{
+    self = [super initWithConversation:conversation];
+    if (!self) return nil;
+
+    self.queue = dispatch_queue_create("com.qredo.attestation.authentication.protocol", nil);
+
+    self.finishState = [[QredoAuthenticationState_Finish alloc] init];
+    self.sentErrorMessageState = [[QredoAuthenticationState_SentErrorMessage alloc] init];
+    self.sendingClaimsState = [[QredoAuthenticationState_SendingClaims alloc] init];
+    self.waitingForResultState = [[QredoAuthenticationState_WaitingForResult alloc] init];
+    self.errorState = [[QredoAuthenticationState_Error alloc] init];
+    self.cancelState = [[QredoAuthenticationState_Cancel alloc] init];
+    self.cancelledByOtherSideState = [[QredoAuthenticationState_CancelledByOtherSide alloc] init];
+
+    return self;
+}
+
+- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
+{
+    [self.conversation startListening];
+    [self switchToState:self.sendingClaimsState withConfigBlock:^{
+        self.sendingClaimsState.authenticationRequest = authenticationRequest;
+    }];
+}
+
 @end
 
+#pragma clang diagnostic pop
+#pragma GCC diagnostic pop
 
 #pragma mark - States implementation
 
@@ -86,124 +170,177 @@
     [self.authenticationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
 }
 @end
-@implementation QredoAuthenticationState_Start
-@end
-@implementation QredoAuthenticationState_ReceivedResult
+
+@implementation QredoAuthenticationState_SendingClaims
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-    self.results = nil;
+    self.authenticationRequest = nil;
 }
-- (void)didEnter
-{
-    [self.authenticationProtocol.delegate qredoAuthenticationProtocol:self.authenticationProtocol didFinishWithResults:self.results];
-    [self.authenticationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
-}
-@end
-@implementation QredoAuthenticationState_SendingClaims
-- (void)didEnter
-{
-    QredoConversationMessage *claimsMessage = nil; // TODO:
-    [self.conversationProtocol.conversation publishMessage:claimsMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
 
+- (void)didEnter
+{
+    NSData *serializedCredentials = [QredoPrimitiveMarshallers marshalObject:self.authenticationRequest
+                                                                  marshaller:[QredoClientMarshallers authenticationRequestMarshaller]];
+
+    QredoConversationMessage *claimsMessage = [[QredoConversationMessage alloc] initWithValue:serializedCredentials
+                                                                                     dataType:kAttestationValidationRequestMessageType
+                                                                                summaryValues:nil];
+    [self.conversationProtocol.conversation publishMessage:claimsMessage
+                                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
+    {
         if (error) {
-            [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
-                self.authenticationProtocol.errorState.error = error;
-            }];
+            [self.authenticationProtocol didFailToSendClaimsWithError:error];
         } else {
-            [self.conversationProtocol switchToState:self.authenticationProtocol.waitingForResultState
-                                     withConfigBlock:nil];
+            [self.authenticationProtocol didSendClaims];
         }
     }];
 }
+
+- (void)didSendClaims
+{
+    [self.conversationProtocol switchToState:self.authenticationProtocol.waitingForResultState
+                             withConfigBlock:nil];
+
+}
+
+- (void)didFailToSendClaimsWithError:(NSError *)error
+{
+    [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
+        self.authenticationProtocol.errorState.error = error;
+    }];
+}
+
 - (void)cancel
 {
     [self.conversationProtocol switchToState:self.authenticationProtocol.cancelState withConfigBlock:nil];
 }
-- (void)didReceivedMessage:(QredoConversationMessage *)message
+
+- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
 {
-    if ([message.dataType isEqualToString: @"com.qredo.attestation.cancel"]) {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
-    } else
-    {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
-            self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
-        }];
-    }
+    [self didReceiveUnexpectedMessage];
 }
+
 @end
+
 @implementation QredoAuthenticationState_WaitingForResult
+
+- (void)didEnter
+{
+    [self.authenticationProtocol.delegate qredoAuthenticationProtocolDidSendClaims:self.authenticationProtocol];
+}
+
 - (void)cancel
 {
     [self.conversationProtocol switchToState:self.authenticationProtocol.cancelState withConfigBlock:nil];
 }
+
 - (void)didTimeout
 {
     [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
         self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
     }];
 }
-- (void)didReceivedMessage:(QredoConversationMessage *)message
+
+- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
 {
-    if ([message.dataType isEqualToString: @"com.qredo.attestation.authentication.result"]) {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
-    } else if ([message.dataType isEqualToString: @"com.qredo.attestation.cancel"]) {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
+    if ([message.dataType isEqualToString: kAttestationValidationResultMessageType]) {
+        @try {
+            QredoAuthenticationResponse * results = [QredoPrimitiveMarshallers unmarshalObject:message.value
+                                                                                  unmarshaller:[QredoClientMarshallers authenticationResponseUnmarshaller]];
+
+
+            dispatch_async(self.authenticationProtocol.queue, ^{
+                [self.authenticationProtocol.delegate qredoAuthenticationProtocol:self.authenticationProtocol
+                                                             didFinishWithResults:results];
+
+                [self.authenticationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
+            });
+        }
+        @catch (NSException *exception) {
+            [self didReceiveUnexpectedMessage];
+        }
     } else {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
-            self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
-        }];
+        [self didReceiveUnexpectedMessage];
     }
 }
-
 @end
+
 @implementation QredoAuthenticationState_Error
 - (void)prepareForReuse
 {
     [super prepareForReuse];
     self.error = nil;
 }
+
 - (void)didEnter
 {
-    // TODO: Enter: publishMessage(com.qredo.attestation.cancel[error=...])
-    QredoConversationMessage *errorMessage = nil; // TODO:
+    NSData *messageValue = [self.error.localizedDescription dataUsingEncoding:NSUTF8StringEncoding];
+
+    QredoConversationMessage *errorMessage = [[QredoConversationMessage alloc] initWithValue:messageValue
+                                                                                    dataType:kAttestationCancelMessageType
+                                                                               summaryValues:nil];
     [self.conversationProtocol.conversation publishMessage:errorMessage
                                          completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,
                                                              NSError *error)
     {
-        [self.conversationProtocol switchToState:self.authenticationProtocol.sentErrorMessageState
-                                 withConfigBlock:^
-        {
-            self.authenticationProtocol.sentErrorMessageState.error = error;
-        }];
+        [self.authenticationProtocol didFinishSendingMessageWithError:self.error];
     }];
 }
+
+- (void)didFinishSendingMessageWithError:(NSError *)error
+{
+    dispatch_async(self.authenticationProtocol.queue, ^{
+        [self.conversationProtocol switchToState:self.authenticationProtocol.sentErrorMessageState
+                                 withConfigBlock:^
+         {
+             self.authenticationProtocol.sentErrorMessageState.error = error;
+         }];
+    });
+}
+
 - (void)cancel
 {
     [self.conversationProtocol switchToState:self.authenticationProtocol.sentErrorMessageState
                              withConfigBlock:nil];
 }
+
 @end
+
 @implementation QredoAuthenticationState_Cancel
+
 - (void)didEnter
 {
-    QredoConversationMessage *cancelMessage = nil; // TODO:
+    QredoConversationMessage *cancelMessage = [[QredoConversationMessage alloc] initWithValue:nil
+                                                                                     dataType:kAttestationCancelMessageType
+                                                                                summaryValues:nil];
     [self.conversationProtocol.conversation publishMessage:cancelMessage
                                          completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,
                                                              NSError *error)
      {
-         [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
+         [self.authenticationProtocol didFinishSendingCancelMessage];
      }];
 }
+
 - (void)cancel
 {
     [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
 }
+
+- (void)didFinishSendingCancelMessage
+{
+    [self.conversationProtocol switchToState:self.authenticationProtocol.finishState withConfigBlock:nil];
+}
 @end
+
 @implementation QredoAuthenticationState_CancelledByOtherSide
 - (void)didEnter
 {
-    NSError *cancelError = nil; // TODO: fill in error
-    [self.authenticationProtocol.delegate qredoAuthenticationProtocol:self.authenticationProtocol didFailWithError:cancelError];
+    NSError *cancelError = [NSError errorWithDomain:QredoErrorDomain
+                                               code:QredoErrorCodeConversationProtocolCancelledByOtherSide
+                                           userInfo:@{NSLocalizedDescriptionKey: @"Cancelled by the other side"}];
+
+    [self.authenticationProtocol.delegate qredoAuthenticationProtocol:self.authenticationProtocol
+                                                     didFailWithError:cancelError];
 }
 @end

@@ -41,9 +41,11 @@
 }
 
 - (QredoVaultSequenceValue *)nextSequenceValue {
-    _sequenceValue = @([_sequenceValue unsignedIntValue] + 1);
-    [self saveSequenceValue:_sequenceValue];
-    return _sequenceValue;
+    @synchronized(self) {
+        _sequenceValue = @([_sequenceValue unsignedIntValue] + 1);
+        [self saveSequenceValue:_sequenceValue];
+        return _sequenceValue;
+    }
 }
 
 - (void)saveSequenceValue:(NSNumber *)sequenceValue {
