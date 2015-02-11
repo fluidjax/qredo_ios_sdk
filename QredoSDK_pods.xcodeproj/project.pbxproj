@@ -128,6 +128,7 @@
 		78F868DB1A5F1A37009CAFFE /* QredoBase58.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F868D91A5F1A37009CAFFE /* QredoBase58.m */; };
 		840D86AE4E7AF880C6473A37 /* libPods-QredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7AE6692B1DA0D298F3A8A2 /* libPods-QredoSDK.a */; };
 		BAF7995EAF867BF94BC03324 /* libPods-LinguaFrancaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */; };
+		DC0EAA041A8A46B50059BA4C /* QredoSecKeyRefPairTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0EAA031A8A46B50059BA4C /* QredoSecKeyRefPairTests.m */; };
 		DC1B55161A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC1B55151A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m */; };
 		DC3A0FF41A6D313D003B4A73 /* QredoServiceInvokerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3A0FF31A6D313D003B4A73 /* QredoServiceInvokerTests.m */; };
 		DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */; };
@@ -334,6 +335,7 @@
 		BF3DA7D8DDBFBA6C2BF7FAA2 /* Pods-QredoSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LinguaFrancaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C87E16460AC916F97E987172 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC0EAA031A8A46B50059BA4C /* QredoSecKeyRefPairTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoSecKeyRefPairTests.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/QredoSecKeyRefPairTests.m"; sourceTree = "<group>"; };
 		DC1B55151A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousX509PemHelperTests.m; sourceTree = "<group>"; };
 		DC3A0FF31A6D313D003B4A73 /* QredoServiceInvokerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoServiceInvokerTests.m; path = "../../LinguaFranca/objc-wire-format/LinguaFrancaTests/QredoServiceInvokerTests.m"; sourceTree = "<group>"; };
 		DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoAuthenticatedRendezvousTag.h; sourceTree = "<group>"; };
@@ -564,6 +566,7 @@
 				0A6573CA1A2DEA1100D5502E /* QredoRsaBlindSignatureTests.m */,
 				0A6573CB1A2DEA1100D5502E /* QredoRsaPrivateKeyTests.m */,
 				0A6573CC1A2DEA1100D5502E /* QredoRsaPublicKeyTests.m */,
+				DC0EAA031A8A46B50059BA4C /* QredoSecKeyRefPairTests.m */,
 				DCEB505D1A65488500EE22FB /* TestCertificates.h */,
 				DCEB505E1A65488500EE22FB /* TestCertificates.m */,
 				0A6573B81A2DE88100D5502E /* Supporting Files */,
@@ -1196,6 +1199,7 @@
 				0A6573D61A2DEA1100D5502E /* QredoRsaBlindSignatureTests.m in Sources */,
 				DCEB505F1A65488500EE22FB /* TestCertificates.m in Sources */,
 				0A6573D41A2DEA1100D5502E /* QredoKeyTests.m in Sources */,
+				DC0EAA041A8A46B50059BA4C /* QredoSecKeyRefPairTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

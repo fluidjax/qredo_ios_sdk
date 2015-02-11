@@ -127,10 +127,11 @@
     
     LogDebug(@"Attempting to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
 
-    BOOL success = [QredoCrypto generateRsaKeyPairOfLength:2048
-                                       publicKeyIdentifier:publicKeyId
-                                      privateKeyIdentifier:privateKeyId persistInAppleKeychain:YES];
-    if (!success) {
+    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:2048
+                                                         publicKeyIdentifier:publicKeyId
+                                                        privateKeyIdentifier:privateKeyId
+                                                      persistInAppleKeychain:YES];
+    if (!keyPairRef) {
         // TODO: What should happen if keypair generation failed? More than just log it
         LogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
     }
