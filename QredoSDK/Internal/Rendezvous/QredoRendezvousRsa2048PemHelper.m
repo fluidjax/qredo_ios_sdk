@@ -17,7 +17,7 @@
 
 // TODO: DH - confirm the salt length used for RSA 2048 authenticated rendezvous
 const NSInteger kRsa2048AuthenticatedRendezvousSaltLength = 8;
-//static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
+static const NSUInteger kRsa2048AuthenticatedRendezvousEmptySignatureLength = 256;
 
 // TODO: DH - confirm the minimum length of RSA 2048 authentication tag (i.e. single RSA 2048 bit Public key as PEM)
 static const NSUInteger kMinRsa2048AuthenticationTagLength = 1;
@@ -33,7 +33,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 - (QredoRendezvousAuthSignature *)emptySignature
 {
     // Empty Signature is just a placeholder of the correct size for a real signature.
-    NSData *emptySignatureData = [NSMutableData dataWithLength:kRsa2048AuthenticatedRendezvousSaltLength];
+    NSData *emptySignatureData = [NSMutableData dataWithLength:kRsa2048AuthenticatedRendezvousEmptySignatureLength];
     return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:emptySignatureData];
 }
 
