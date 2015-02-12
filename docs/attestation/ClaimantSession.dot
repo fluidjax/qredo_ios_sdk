@@ -2,40 +2,41 @@ digraph ClaimantSession {
 
   rankdir="LR"
   node [fontname="Courier", fontsize=11, shape=record, style="filled,rounded", fillcolor=palegreen]
-  edge [fontname="Courier", fontsize=10, color=grey]
+  edge [fontname="Courier", fontsize=10, color=dimgrey, fontcolor=dimgrey]
 
  
-  start -> requestingPresentation 
+  start -> requestingPresentation  [color=navy]
  
   requestingPresentation -> cancel [label = "conversationMessageSent(error != nil)"]
   requestingPresentation -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
   requestingPresentation -> cancel [label="conversationMessageReceived(msg != cancel)"]
-  requestingPresentation -> waitingForPresentations [label = "conversationMessageSent(error == nil)"]
+  requestingPresentation -> waitingForPresentations [label = "conversationMessageSent(error == nil)", color=navy, fontcolor=blue]
   requestingPresentation -> cancel [label="cancel()"]
 
   waitingForPresentations -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
-  waitingForPresentations -> receivedPresentations [label="conversationMessageReceived(msg == presentations)"]
+  waitingForPresentations -> receivedPresentations [label="conversationMessageReceived(msg == presentations)", color=navy, fontcolor=blue]
   waitingForPresentations -> cancel [label="conversationMessageReceived(msg _unhandled)"]
   waitingForPresentations -> cancel [label="cancel()"]
 
-  receivedPresentations -> receivedAuthenticationResults [label="authenticationComplete(results)"]
+  receivedPresentations -> receivedAuthenticationResults [label="authenticationComplete(results)", color=navy, fontcolor=blue]
   receivedPresentations -> cancel [label="authenticationCompleteWithError(error)"]
   receivedPresentations -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
   receivedPresentations -> cancel [label="conversationMessageReceived(msg != cancel)"]
+  receivedPresentations -> sendAttestationResult [label="setResult(result)", color=navy, fontcolor=blue]
 
-  receivedAuthenticationResults -> sendAttestationResult [label="setResult(result)"]
+  receivedAuthenticationResults -> sendAttestationResult [label="setResult(result)", color=navy, fontcolor=blue]
   receivedAuthenticationResults -> cancel [label="cancel()"]
   receivedAuthenticationResults -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
   receivedAuthenticationResults -> cancel [label="conversationMessageReceived(msg != cancel)"]
 
-  sendAttestationResult -> atestationResultSent [label="sendAtestationChoiceCompleted(error == nil)"]
+  sendAttestationResult -> atestationResultSent [label="sendAtestationChoiceCompleted(error == nil)", color=navy, fontcolor=blue]
   sendAttestationResult -> cancel [label="sendAtestationChoiceCompleted(error != nil)"]
   sendAttestationResult -> cancelledByOtherSide [label="conversationMessageReceived(msg == cancel)"]
   sendAttestationResult -> cancel [label="conversationMessageReceived(msg != cancel)"]
   
-  atestationResultSent -> finish 
-  cancel -> finish 
-  cancelledByOtherSide -> finish 
+  atestationResultSent -> finish [color=navy]
+  cancel -> finish
+  cancelledByOtherSide -> finish
 
 
 # Labels for the states

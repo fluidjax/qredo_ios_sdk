@@ -136,6 +136,8 @@
 		78E5E1B31A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E5E1B11A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.m */; };
 		78E5E1B61A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 78E5E1B41A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.h */; };
 		78E5E1B71A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E5E1B51A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.m */; };
+		78F0503B1A8B6E150043472E /* QredoAttestationInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 78F050391A8B6E150043472E /* QredoAttestationInternal.h */; };
+		78F0503C1A8B6E150043472E /* QredoAttestationInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F0503A1A8B6E150043472E /* QredoAttestationInternal.m */; };
 		78F868DA1A5F1A37009CAFFE /* QredoBase58.h in Headers */ = {isa = PBXBuildFile; fileRef = 78F868D81A5F1A37009CAFFE /* QredoBase58.h */; };
 		78F868DB1A5F1A37009CAFFE /* QredoBase58.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F868D91A5F1A37009CAFFE /* QredoBase58.m */; };
 		840D86AE4E7AF880C6473A37 /* libPods-QredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7AE6692B1DA0D298F3A8A2 /* libPods-QredoSDK.a */; };
@@ -337,6 +339,8 @@
 		78E5E1B11A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainQRCodeDisplayViewController.m; sourceTree = "<group>"; };
 		78E5E1B41A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainFingerprintConfirmationViewController.h; sourceTree = "<group>"; };
 		78E5E1B51A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainFingerprintConfirmationViewController.m; sourceTree = "<group>"; };
+		78F050391A8B6E150043472E /* QredoAttestationInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoAttestationInternal.h; sourceTree = "<group>"; };
+		78F0503A1A8B6E150043472E /* QredoAttestationInternal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoAttestationInternal.m; sourceTree = "<group>"; };
 		78F868D81A5F1A37009CAFFE /* QredoBase58.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoBase58.h; sourceTree = "<group>"; };
 		78F868D91A5F1A37009CAFFE /* QredoBase58.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoBase58.m; sourceTree = "<group>"; };
 		94F7A4CC056A96641D0219C3 /* Pods-CryptoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CryptoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CryptoTests/Pods-CryptoTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -608,6 +612,8 @@
 				0A16F89A19C3567E00639779 /* Vault */,
 				0AC016461A7FEF38006EB7E5 /* QredoConversationProtocol.h */,
 				78375E2A1A80F08D009CDFC2 /* QredoConversationProtocol.m */,
+				78F050391A8B6E150043472E /* QredoAttestationInternal.h */,
+				78F0503A1A8B6E150043472E /* QredoAttestationInternal.m */,
 				78AB8C6C1A810B7200A3CCA7 /* QredoClaimantAttestationProtocol.h */,
 				78AB8C6D1A810B7200A3CCA7 /* QredoClaimantAttestationProtocol.m */,
 				0A64FFAA1A83F431004F8BFA /* QredoAuthenticatoinClaimsProtocol.h */,
@@ -769,6 +775,7 @@
 				0A68F7521A77B2AC0045D21D /* QredoConversationMessage.h in Headers */,
 				78E5E1AA1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.h in Headers */,
 				78A2F1ED1A431F6C00974EFB /* QredoManagerAppRootViewController.h in Headers */,
+				78F0503B1A8B6E150043472E /* QredoAttestationInternal.h in Headers */,
 				0AADB0841A15848C00CFD014 /* QredoRendezvous.h in Headers */,
 				0AD2595F1A2F7CD800FC8942 /* QredoKeychainSenderQR.h in Headers */,
 				78A2F2061A4455DA00974EFB /* UIButton+Qredo.h in Headers */,
@@ -1100,6 +1107,7 @@
 				781D137F1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m in Sources */,
 				0A10352C1A389DFD002479D9 /* QredoKeychain.m in Sources */,
 				0A16F8DA19C3590700639779 /* QredoVaultSequenceCache.m in Sources */,
+				78F0503C1A8B6E150043472E /* QredoAttestationInternal.m in Sources */,
 				78A2F2071A4455DA00974EFB /* UIButton+Qredo.m in Sources */,
 				0AA03C8919E2E6CF00F2CF43 /* Qredo.m in Sources */,
 				0A16F99019C6F62200639779 /* QredoRendezvousCrypto.m in Sources */,
