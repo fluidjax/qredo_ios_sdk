@@ -7,6 +7,7 @@
 #import "QredoRendezvousEd25519Helper.h"
 #import "QredoRendezvousX509PemHelper.h"
 #import "QredoRendezvousRsa2048PemHelper.h"
+#import "QredoRendezvousRsa4096PemHelper.h"
 #import "QredoLogging.h"
 
 @implementation QredoRendezvousHelpers
@@ -32,6 +33,8 @@
             return [[QredoRendezvousRsa2048PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
+//            return [[QredoRendezvousRsa4096PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add all other authentication types
             return nil;
@@ -57,9 +60,13 @@
         case QredoRendezvousAuthenticationTypeX509Pem:
             return [[QredoRendezvousX509PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
             
-        case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
         case QredoRendezvousAuthenticationTypeRsa2048Pem:
+            return [[QredoRendezvousRsa2048PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
+//            return [[QredoRendezvousRsa4096PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+
+        case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add all other authentication types
             return nil;
             
@@ -79,9 +86,13 @@
         case QredoRendezvousAuthenticationTypeX509Pem:
             return kX509AuthenticatedRendezvousSaltLength;
             
-        case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
         case QredoRendezvousAuthenticationTypeRsa2048Pem:
+            return kRsa2048AuthenticatedRendezvousSaltLength;
+
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
+//            return kX509AuthenticatedRendezvousSaltLength;
+        
+        case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             LogError(@"To be completed!");
             NSAssert(0, @"To be completed!");
             return -1;

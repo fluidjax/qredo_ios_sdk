@@ -37,48 +37,45 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:emptySignatureData];
 }
 
-//- (SecKeyRef)getPublicKeyRefFromX509AuthenticationTag:(NSString *)authenticationTag error:(NSError **)error
-//{
-//    NSArray *certificateChainRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:authenticationTag];
-//    
-//    NSArray *trustedRootRefs = [self.cryptoImpl getTrustedRootRefs];
-//    SecKeyRef publicKeyRef = [QredoCertificateUtils validateCertificateChain:certificateChainRefs
-//                                                         rootCertificateRefs:trustedRootRefs];
-//    if (!publicKeyRef) {
-//        LogError(@"Authentication tag (certificate chain) did not validate correctly. Authentication tag: %@", authenticationTag);
-//        if (error) {
-//            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-//        }
-//    }
-//    
-//    return publicKeyRef;
-//}
-
-- (SecKeyRef)publicKeyRefFromAuthenticationTag:(NSString *)authenticationTag error:(NSError **)error
+- (SecKeyRef)publicKeyRefFromAuthenticationTag:(NSString *)authenticationTag publicKeyIdentifier:(NSString *)publicKeyIdentifier error:(NSError **)error
 {
+    // TODO: DH - Validate arguments (and use NSError)
+    
     // Public key is PEM encoded RSA key (2048 bits)
     SecKeyRef publicKeyRef = nil;
     
-    // TODO: DH - get public key from authentication tag
+    // Convert the Authentication Tag (PEM encoded RSA key) to DER data (PKCS#1 format)
+    // Import the DER data into Keychain and get a SecKeyRef out, which gets returned.
     
-//    // Verify Key is the authentication tag, once Base58 decoded
-//    NSData *vkData = [QredoBase58 decodeData:authenticationTag];
-//    if (!vkData || vkData.length == 0) {
-//        LogError(@"Base58 decode of authentication tag was nil or 0 length. Authentication Tag: '%@'", authenticationTag);
-//        if (error) {
-//            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
-//        }
-//        return nil;
-//    }
-//    
-//    QredoED25519VerifyKey *vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
-//    if (!vk) {
-//        LogError(@"Nil Ed25519 verify key returned for authentication tag: '%@'.", authenticationTag);
-//        if (error) {
-//            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-//        }
-//        return nil;
-//    }
+    // TODO: DH - what happens if this method is called twice (why might it?) - could end up trying to create the key again, despite it already being in keychain, and thus failing? Import could fail if the key exists, or if the identifier already exists (unlikely for random?)
+
+    // TODO: DH - should we attempt to detect X.509 'SubjectPublicKeyInfo' format and convert if necessary? What impact is there of that? Could we end up inadvertently changing the authentication tag (from X.509 'SubjectPublicKeyInfo' to PKCS#1 'RSAPublicKey' format?
+    
+    // TODO: DH - Validate the data is 2048 bits (may find importKeyData does that - write a test to confirm whether incorrect key length arg is detected against NSData provided)
+
+    // Get the DER formatted public key from the PEM string
+    // Note: This only converts from PEM to DER - doesn't validate which DER format it is.
+    NSData *publicKeyData = [QredoCertificateUtils convertPemPublicKeyToDer:authenticationTag];
+    if (!publicKeyData) {
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
+        }
+        LogError(@"Nil public key was returned by convertPemPublicKeyToDer. Authentication Tag: '%@'", authenticationTag);
+        return nil;
+    }
+
+    // Import the PKCS1 DER encoded public key data into Apple Keychain (gets us the SecKeyRef for signing/verify)
+    publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyData
+                                     keyLengthBits:kRsa2048KeyLengthBits
+                                     keyIdentifier:publicKeyIdentifier
+                                         isPrivate:NO];
+    if (!publicKeyRef) {
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
+        }
+        LogError(@"Could not import Public Key data (must be PKCS#1 'RSAPublicKey' format, not X.509 'SubjectPublicKeyInfo' format). Authentication Tag: '%@'", authenticationTag);
+        return nil;
+    }
     
     return publicKeyRef;
 }
@@ -91,8 +88,8 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 @property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @property (nonatomic, copy) NSString *publicKeyIdentifier;
 @property (nonatomic, copy) NSString *privateKeyIdentifier;
-@property (nonatomic, assign) SecKeyRef publicKeyRef;
-@property (nonatomic, assign) SecKeyRef privateKeyRef;
+@property (nonatomic, strong) QredoSecKeyRefPair *keyPairRef; // Used for Internally generated keys
+@property (nonatomic, assign) SecKeyRef publicKeyRef; // Used for Externally generated keys
 @property (nonatomic, copy) signDataBlock signingHandler;
 
 @end
@@ -136,27 +133,15 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
             
             _privateKeyIdentifier = [keyId stringByAppendingString:@".private"];
 
-            // Generate some one-time-use RSA 2048-bit keys (so do not persist), and the authentication tag
-            BOOL success = [QredoCrypto generateRsaKeyPairOfLength:kRsa2048KeyLengthBits
-                                               publicKeyIdentifier:_publicKeyIdentifier
-                                              privateKeyIdentifier:_privateKeyIdentifier
-                                            persistInAppleKeychain:NO];
-            if (!success) {
+            // Generate some one-time-use RSA 2048-bit keys. However, to be able to get the key data (needed to generate the public key PEM for authentication tag) the key must be persisted. So must delete the keys later.
+            _keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:kRsa2048KeyLengthBits
+                                              publicKeyIdentifier:_publicKeyIdentifier
+                                             privateKeyIdentifier:_privateKeyIdentifier
+                                           persistInAppleKeychain:YES];
+            if (!_keyPairRef) {
                 LogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", _publicKeyIdentifier, _privateKeyIdentifier);
                 if (error) {
                     *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorKeyGenerationFailed, nil);
-                }
-                return nil;
-            }
-
-            // TODO: DH - check whether returning the key ref would work with non-persisted keys?
-            
-            
-            _privateKeyRef = [QredoCrypto getRsaSecKeyReferenceForIdentifier:_privateKeyIdentifier];
-            if (!_privateKeyRef) {
-                LogError(@"Nil SecKeyRef returned for private key ID: %@", _privateKeyIdentifier);
-                if (error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorKeyProcessingFailed, nil);
                 }
                 return nil;
             }
@@ -170,32 +155,11 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         else {
             
             // Using externally provided keys, so must validate those keys
-            
-            // Get the DER formatted public key from the PEM string
-            NSData *publicKeyData = [QredoCertificateUtils convertPemPublicKeyToDer:_authenticatedRendezvousTag.authenticationTag];
-            if (!publicKeyData) {
-                if (error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-                }
-                LogError(@"Nil public key was returned by publicKeyRefFromAuthenticationTag. Authentication Tag: '%@'",
-                         _authenticatedRendezvousTag.authenticationTag);
-                return nil;
-            }
-            
-            // TODO: DH - Validate the data is 2048 bits (may find importKeyData does that - write a test to confirm whether incorrect key length arg is detected against NSData provided)
-            
-            // Import the DER encoded public key data into Apple Keychain (allows us to get the SecKeyRef for signing/verify)
-            BOOL success = [QredoCrypto importKeyData:publicKeyData
-                                        keyLengthBits:kRsa2048KeyLengthBits
-                                        keyIdentifier:_publicKeyIdentifier
-                                            isPrivate:NO
-                               persistInAppleKeychain:NO];
-            if (!success) {
-                if (error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-                }
-                LogError(@"Could not import DER data. Authentication Tag: '%@'",
-                         _authenticatedRendezvousTag.authenticationTag);
+            _publicKeyRef = [self publicKeyRefFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag
+                                                publicKeyIdentifier:_publicKeyIdentifier
+                                                              error:error];
+            if (!_publicKeyRef || (error && *error)) {
+                LogError(@"Failed to validate/get public key from authentication tag: %@", _authenticatedRendezvousTag.authenticationTag);
                 return nil;
             }
             
@@ -210,17 +174,20 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
             
             _signingHandler = signingHandler;
         }
-        
-        _publicKeyRef = [QredoCrypto getRsaSecKeyReferenceForIdentifier:_publicKeyIdentifier];
-        if (!_publicKeyRef) {
-            LogError(@"Nil SecKeyRef returned for public key ID: %@", _publicKeyIdentifier);
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorKeyProcessingFailed, nil);
-            }
-            return nil;
-        }
     }
     return self;
+}
+
+- (void)dealloc
+{
+    // Delete any keys we generated or imported (as they should be transitory)
+    if (_publicKeyIdentifier) {
+        [QredoCrypto deleteKeyInAppleKeychainWithIdentifier:_publicKeyIdentifier];
+    }
+    
+    if (_privateKeyIdentifier) {
+        [QredoCrypto deleteKeyInAppleKeychainWithIdentifier:_privateKeyIdentifier];
+    }
 }
 
 - (QredoRendezvousAuthenticationType)type
@@ -247,29 +214,46 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         }
         return nil;
     }
+
+    NSData *signature = nil;
     
-    NSData *signature = self.signingHandler(data, self.type);
-    if (!signature) {
-        LogError(@"Nil signature was returned by signing handler.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
+    if (self.keyPairRef) {
+        // Internally generated keys, we sign it ourselves
+        signature = [QredoCrypto rsaPssSignMessage:data
+                                        saltLength:kRsa2048AuthenticatedRendezvousSaltLength
+                                            keyRef:self.keyPairRef.privateKeyRef];
+        if (!signature) {
+            LogError(@"Nil signature was returned by rsaPssSignMessage.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
+            }
+            return nil;
         }
-        return nil;
-    }
-    
-    // As we did not generate the signature, no guarantee it's valid. Verify it before continuing
-    BOOL signatureValid = [QredoCrypto rsaPssVerifySignature:signature
-                                                  forMessage:data
-                                                  saltLength:kRsa2048AuthenticatedRendezvousSaltLength
-                                                      keyRef:self.publicKeyRef];
-    
-    if (!signatureValid) {
-        LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
-        return nil;
     }
     else {
-        return [QredoRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signature];
+        // Externally generated keys, so use the signing handler
+        signature = self.signingHandler(data, self.type);
+        if (!signature) {
+            LogError(@"Nil signature was returned by signing handler.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
+            }
+            return nil;
+        }
+        
+        // As we did not generate the signature, no guarantee it's valid. Verify it before continuing
+        BOOL signatureValid = [QredoCrypto rsaPssVerifySignature:signature
+                                                      forMessage:data
+                                                      saltLength:kRsa2048AuthenticatedRendezvousSaltLength
+                                                          keyRef:self.publicKeyRef];
+        
+        if (!signatureValid) {
+            LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
+            return nil;
+        }
     }
+    
+    return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signature];
 }
 
 @end
@@ -278,6 +262,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 @interface QredoRendezvousRsa2048PemRespondHelper ()
 
 @property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
+@property (nonatomic, copy) NSString *publicKeyIdentifier;
 @property (nonatomic, assign) SecKeyRef publicKeyRef;
 
 @end
@@ -319,13 +304,24 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
             return nil;
         }
         
-        _publicKeyRef = [self publicKeyRefFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
+        // Generate a random ID to temporarily (for life of this object) 'name' the keys.
+        NSString *keyId = [QredoLogging hexRepresentationOfNSData:[NSData dataWithRandomBytesOfLength:kRandomKeyIdentifierLength]];
+        _publicKeyIdentifier = [keyId stringByAppendingString:@".public"];
+
+        _publicKeyRef = [self publicKeyRefFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag
+                                            publicKeyIdentifier:_publicKeyIdentifier
+                                                          error:error];
         if (!_publicKeyRef || (error && *error)) {
-            LogError(@"Failed to validate/get public key from authentication tag.");
+            LogError(@"Failed to validate/get public key from authentication tag: %@", _authenticatedRendezvousTag.authenticationTag);
             return nil;
         }
     }
     return self;
+}
+
+- (void)dealloc
+{
+    
 }
 
 - (QredoRendezvousAuthenticationType)type
