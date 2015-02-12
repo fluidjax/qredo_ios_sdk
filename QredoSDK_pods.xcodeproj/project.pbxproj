@@ -16,6 +16,8 @@
 		0A19C0231A6EA0A4004B5783 /* BaseConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A19C0221A6EA0A4004B5783 /* BaseConversation.swift */; };
 		0A27BEB61A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A27BEB41A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h */; };
 		0A27BEB71A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEB51A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m */; };
+		0A38C5F81A8CDAE700C458A7 /* AuthenticationManualTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A38C5F71A8CDAE700C458A7 /* AuthenticationManualTest.swift */; };
+		0A38C5FA1A8CDC2800C458A7 /* AuthenticationProtocolBlockDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A38C5F91A8CDC2800C458A7 /* AuthenticationProtocolBlockDelegate.swift */; };
 		0A4269321A8A7CB200E93071 /* AuthenticationProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A4269311A8A7CB200E93071 /* AuthenticationProtocolTests.swift */; };
 		0A64FFAC1A83F431004F8BFA /* QredoAuthenticatoinClaimsProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A64FFAA1A83F431004F8BFA /* QredoAuthenticatoinClaimsProtocol.h */; };
 		0A64FFAD1A83F431004F8BFA /* QredoAuthenticatoinClaimsProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A64FFAB1A83F431004F8BFA /* QredoAuthenticatoinClaimsProtocol.m */; };
@@ -187,6 +189,8 @@
 		0A19C0221A6EA0A4004B5783 /* BaseConversation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseConversation.swift; sourceTree = "<group>"; };
 		0A27BEB41A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+QUIDSerialization.h"; path = "Internal/NSDictionary+QUIDSerialization.h"; sourceTree = "<group>"; };
 		0A27BEB51A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+QUIDSerialization.m"; path = "Internal/NSDictionary+QUIDSerialization.m"; sourceTree = "<group>"; };
+		0A38C5F71A8CDAE700C458A7 /* AuthenticationManualTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationManualTest.swift; sourceTree = "<group>"; };
+		0A38C5F91A8CDC2800C458A7 /* AuthenticationProtocolBlockDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationProtocolBlockDelegate.swift; sourceTree = "<group>"; };
 		0A4269311A8A7CB200E93071 /* AuthenticationProtocolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationProtocolTests.swift; sourceTree = "<group>"; };
 		0A5D371B1A371BF900A9D1A2 /* KeychainTransporterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTransporterTests.swift; sourceTree = "<group>"; };
 		0A5D371D1A371C2600A9D1A2 /* KeychainSenderMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainSenderMock.swift; sourceTree = "<group>"; };
@@ -499,6 +503,8 @@
 				0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */,
 				0A19C0201A6E9F81004B5783 /* ConversationMessageStoreTests.swift */,
 				0A4269311A8A7CB200E93071 /* AuthenticationProtocolTests.swift */,
+				0A38C5F71A8CDAE700C458A7 /* AuthenticationManualTest.swift */,
+				0A38C5F91A8CDC2800C458A7 /* AuthenticationProtocolBlockDelegate.swift */,
 			);
 			path = QredoSDKTests;
 			sourceTree = "<group>";
@@ -1119,6 +1125,7 @@
 				0A6574111A2F3B7200D5502E /* NSDictionary+Contains.m in Sources */,
 				7810CC5B1A388BCE00421892 /* KeychainTransporterReceiverTests.swift in Sources */,
 				0A19C0231A6EA0A4004B5783 /* BaseConversation.swift in Sources */,
+				0A38C5FA1A8CDC2800C458A7 /* AuthenticationProtocolBlockDelegate.swift in Sources */,
 				0A6574151A2F3B7200D5502E /* QredoSExpressionTests.m in Sources */,
 				0AEE5C601A5C3B110018BE19 /* RendezvousBlockDelegate.swift in Sources */,
 				0A6574101A2F3B7200D5502E /* HighwatermarksTests.m in Sources */,
@@ -1132,6 +1139,7 @@
 				0A6574141A2F3B7200D5502E /* QredoRendezvousTests.m in Sources */,
 				0A65740F1A2F3B7200D5502E /* Dictionary+Contains.swift in Sources */,
 				0A65741D1A2F3B7200D5502E /* RendezvousListenerTests.m in Sources */,
+				0A38C5F81A8CDAE700C458A7 /* AuthenticationManualTest.swift in Sources */,
 				7810CC5E1A388BCE00421892 /* KeychainReceiverMock.swift in Sources */,
 				7810CC5D1A388BCE00421892 /* KeychainSenderMock.swift in Sources */,
 				0A65740D1A2F3B7200D5502E /* ConversationMQTTTests.m in Sources */,
