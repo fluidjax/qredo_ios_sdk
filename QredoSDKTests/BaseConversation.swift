@@ -56,6 +56,8 @@ class BaseConversation: XCTestCase {
             if let actualRendezvous = rendezvous {
                 creatorRendezvous = actualRendezvous
                 rendezvousExpectation.fulfill()
+
+                creatorRendezvous?.stopListening()
             }
         }
 
@@ -81,5 +83,13 @@ class BaseConversation: XCTestCase {
         })
         
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+    }
+
+    override func tearDown() {
+        responderConversation.stopListening()
+        creatorConversation.stopListening()
+
+        creatorClient.closeSession()
+        responderClient.closeSession()
     }
 }
