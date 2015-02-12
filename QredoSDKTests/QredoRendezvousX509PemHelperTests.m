@@ -37,6 +37,10 @@
 
 - (void)testSignatureAndVerification_ExternalKeys {
     
+    // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to raw private RSA key, and the PEM public certificates
+    
+    // TODO: DH - extract the getting of the necessary refs/certs into a re-usable method for other tests
+
     // Import some PKCS#12 data and then get the certificate chain refs from the identity.
     // Use SecCertificateRefs to create a PEM which is then processed (to confirm validity)
     

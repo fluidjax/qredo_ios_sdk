@@ -48,8 +48,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     // Import the DER data into Keychain and get a SecKeyRef out, which gets returned.
     
     // TODO: DH - what happens if this method is called twice (why might it?) - could end up trying to create the key again, despite it already being in keychain, and thus failing? Import could fail if the key exists, or if the identifier already exists (unlikely for random?)
-
-    // TODO: DH - should we attempt to detect X.509 'SubjectPublicKeyInfo' format and convert if necessary? What impact is there of that? Could we end up inadvertently changing the authentication tag (from X.509 'SubjectPublicKeyInfo' to PKCS#1 'RSAPublicKey' format?
     
     // TODO: DH - Validate the data is 2048 bits (may find importKeyData does that - write a test to confirm whether incorrect key length arg is detected against NSData provided)
 
@@ -64,8 +62,11 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         return nil;
     }
 
+    // Handle possibility of getting X.509 DER encoded Public Key Data - we need it in PKCS#1 format
+    NSData *publicKeyPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyData];
+
     // Import the PKCS1 DER encoded public key data into Apple Keychain (gets us the SecKeyRef for signing/verify)
-    publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyData
+    publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyPkcs1Data
                                      keyLengthBits:kRsa2048KeyLengthBits
                                      keyIdentifier:publicKeyIdentifier
                                          isPrivate:NO];
