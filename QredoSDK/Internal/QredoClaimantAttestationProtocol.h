@@ -3,6 +3,7 @@
  */
 
 #import "QredoConversationProtocol.h"
+#import "QredoAuthenticatoinClaimsProtocol.h"
 #import <Foundation/Foundation.h>
 
 @class QredoClaimantAttestationProtocol;
@@ -20,12 +21,22 @@
            didReciveAuthentications:(QredoAuthenticationResponse *)authentications;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
+           didFinishAuthenticationWithError:(NSError *)error;
+
+- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
   didStartSendingRelyingPartyChoice:(BOOL)claimsAccepted;
 
 - (void)claimantAttestationProtocolDidFinishSendingRelyingPartyChoice:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
                  didFinishWithError:(NSError *)error;
+
+@end
+
+@protocol QredoClaimantAttestationProtocolDataSource <NSObject>
+
+- (QredoAuthenticationProtocol *)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
+                             authenticationProtocolWithError:(NSError **)error;
 
 @end
 
@@ -39,7 +50,9 @@
 
 - (void)presentationRequestPublishedWithError:(NSError *)error;
 
-- (void)sendAtestationChioiceCompletedWithError:(NSError *)error;
+- (void)authenticationResultsRecievedWithError:(NSError *)error;
+
+- (void)relyingPartyChioiceSentWithError:(NSError *)error;
 
 - (void)conversationCanceledWithError:(NSError *)error;
 
@@ -52,14 +65,20 @@
 
 
 
-@interface QredoClaimantAttestationProtocol : QredoConversationProtocol<QredoClaimantAttestationProtocolEvents>
+@interface QredoClaimantAttestationProtocol : QredoConversationProtocol
 
 @property id<QredoClaimantAttestationProtocolDelegate> delegate;
+@property id<QredoClaimantAttestationProtocolDataSource> dataSource;
 
 - (instancetype)initWithConversation:(QredoConversation *)conversation
                     attestationTypes:(NSSet *)attestationTypes
                        authenticator:(NSString *)authenticator;
 
+@end
+
+
+
+@interface QredoClaimantAttestationProtocol(Events)<QredoClaimantAttestationProtocolEvents>
 @end
 
 
