@@ -22,14 +22,18 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 
 
+//===============================
+#pragma mark - State interfaces -
+//===============================
 
-
-#pragma mark Interfaces
 
 @interface QredoClaimantAttestationState()
 @property (nonatomic, readonly) QredoClaimantAttestationProtocol *claimantAttestationProtocol;
 @end
 
+
+//------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState_RequestingPresentaion : QredoClaimantAttestationState
 @property (nonatomic, copy) NSSet *attestationTypes;
@@ -37,8 +41,16 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 @property (nonatomic) NSError *error;
 @end
 
+
+//------------
+#pragma mark -
+
 @interface QredoClaimantAttestationState_WaitingForPresentaions : QredoClaimantAttestationState
 @end
+
+
+//------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState_Authenticate : QredoClaimantAttestationState<QredoAuthenticationProtocolDelegate>
 @property (nonatomic) QredoPresentation *presentation;
@@ -47,26 +59,56 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 @property (nonatomic) NSError *authenticationError;
 @end
 
+
+//------------
+#pragma mark -
+
 @interface QredoClaimantAttestationState_AuthenticationResultsReceived : QredoClaimantAttestationState
 @end
+
+
+//------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState_SendRelyingPartyChoice : QredoClaimantAttestationState
 @property (nonatomic) BOOL claimsAccepted;
 @end
 
+
+//------------
+#pragma mark -
+
 @interface QredoClaimantAttestationState_RelyingPartyChoiceSent : QredoClaimantAttestationState
 @end
+
+
+//------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState_CancelConversation : QredoClaimantAttestationState
 @property (nonatomic) NSError *error;
 @end
 
+
+//------------
+#pragma mark -
+
 @interface QredoClaimantAttestationState_CanceledByClaimant : QredoClaimantAttestationState
 @property (nonatomic) NSError *error;
 @end
 
+
+//------------
+#pragma mark -
+
 @interface QredoClaimantAttestationState_Finish : QredoClaimantAttestationState
 @end
+
+
+
+//=================================
+#pragma mark - Protocol interface -
+//=================================
 
 
 @interface QredoClaimantAttestationProtocol()
@@ -87,7 +129,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 
 
-#pragma mark Implementations
+//====================================
+#pragma mark - State implementations -
+//====================================
+
 
 @implementation QredoClaimantAttestationState
 
@@ -175,6 +220,9 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 @end
 
 
+//------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_RequestingPresentaion
 
 - (void)prepareForReuse
@@ -246,6 +294,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 }
 
 @end
+
+
+//------------
+#pragma mark -
 
 @implementation QredoClaimantAttestationState_WaitingForPresentaions
 
@@ -321,6 +373,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 }
 
 @end
+
+
+//------------
+#pragma mark -
 
 @implementation QredoClaimantAttestationState_Authenticate
 
@@ -444,6 +500,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
+
+//------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_AuthenticationResultsReceived
 
 - (void)prepareForReuse
@@ -477,6 +537,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 }
 
 @end
+
+
+//------------
+#pragma mark -
 
 @implementation QredoClaimantAttestationState_SendRelyingPartyChoice
 
@@ -536,6 +600,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
+
+//------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_RelyingPartyChoiceSent
 
 - (void)didEnter
@@ -571,6 +639,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 }
 
 @end
+
+
+//------------
+#pragma mark -
 
 @implementation QredoClaimantAttestationState_CancelConversation
 - (void)prepareForReuse
@@ -620,6 +692,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
+
+//------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_CanceledByClaimant
 
 - (void)prepareForReuse
@@ -649,6 +725,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
+
+//------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_Finish
 
 #pragma mark Events
@@ -665,6 +745,11 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
+
+
+//======================================
+#pragma mark - Protocol implementation -
+//======================================
 
 
 @implementation QredoClaimantAttestationProtocol

@@ -7,7 +7,10 @@
 
 
 
-#pragma mark Interfaces
+//=========================
+#pragma mark - Interfaces -
+//=========================
+
 
 @interface QredoConversationProtocolState ()
 @property (weak, nonatomic) QredoConversationProtocol *conversationProtocol;
@@ -16,6 +19,8 @@
 @end
 
 
+//------------
+#pragma mark -
 
 @interface QredoConversationProtocol ()<QredoConversationDelegate>
 @property (nonatomic) dispatch_queue_t protocolQueue;
@@ -24,7 +29,10 @@
 
 
 
-#pragma mark Implementations
+//====================================
+#pragma mark - State Implementations -
+//====================================
+
 
 @implementation QredoConversationProtocolState
 
@@ -68,6 +76,8 @@
 @end
 
 
+//------------
+#pragma mark -
 
 @implementation QredoConversationProtocolCancelableState
 
@@ -107,11 +117,10 @@
 
 
 
-#pragma GCC diagnostic push
-#pragma clang diagnostic push
+//======================================
+#pragma mark - Protocol Implementation -
+//======================================
 
-#pragma GCC diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wprotocol"
 
 @implementation QredoConversationProtocol
 
@@ -182,8 +191,16 @@
 @end
 
 
+#pragma GCC diagnostic push
+#pragma clang diagnostic push
+
+#pragma GCC diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wprotocol"
+
+@implementation QredoConversationProtocol(Events)
+@end
+
 #pragma clang diagnostic pop
 #pragma GCC diagnostic pop
-
 
 

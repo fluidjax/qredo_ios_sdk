@@ -10,6 +10,12 @@
 @class QredoPresentation, QredoAuthenticationResponse;
 
 
+
+//=======================================
+#pragma mark - Delegate and data source -
+//=======================================
+
+
 @protocol QredoClaimantAttestationProtocolDelegate <NSObject>
 
 - (void)didStartClaimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol;
@@ -42,6 +48,11 @@
 
 
 
+//=======================
+#pragma mark - Protocol -
+//=======================
+
+
 @protocol QredoClaimantAttestationProtocolEvents <NSObject>
 
 - (void)accept;
@@ -59,11 +70,15 @@
 @end
 
 
+//------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState : QredoConversationProtocolCancelableState<QredoClaimantAttestationProtocolEvents>
 @end
 
 
+//------------
+#pragma mark -
 
 @interface QredoClaimantAttestationProtocol : QredoConversationProtocol
 
@@ -75,7 +90,6 @@
                        authenticator:(NSString *)authenticator;
 
 @end
-
 
 
 @interface QredoClaimantAttestationProtocol(Events)<QredoClaimantAttestationProtocolEvents>
