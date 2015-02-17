@@ -75,7 +75,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     // Convert the Authentication Tag (PEM encoded RSA key) to DER data (PKCS#1 format)
     // Import the DER data into Keychain and get a SecKeyRef out, which gets returned.
     
-    // TODO: DH - Validate the data is 2048 bits (may find importKeyData does that - write a test to confirm whether incorrect key length arg is detected against NSData provided)
+    // TODO: DH - How to validate the key is 2048 bits?
 
     // Get the DER formatted public key from the PEM string
     // Note: This only converts from PEM to DER - doesn't validate which DER format it is.
