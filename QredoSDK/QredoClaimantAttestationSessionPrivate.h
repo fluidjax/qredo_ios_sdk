@@ -4,11 +4,15 @@
 
 #import "Qredo.h"
 #import "QredoClaimantAttestationSession.h"
+#import "QredoClaimantAttestationProtocol.h"
 
-@interface QredoClaimantAttestationSession ()
+@interface QredoClaimantAttestationSession () <QredoClaimantAttestationProtocolDelegate, QredoClaimantAttestationProtocolDataSource>
 
-@property (nonatomic) QredoConversation *conversation;
+@property (nonatomic) QredoClaimantAttestationProtocol *attestationProtocol;
 
-- (instancetype)initWithConversation:(QredoConversation *)conversation;
+- (instancetype)initWithConversation:(QredoConversation *)conversation
+                    attestationTypes:(NSSet *)attestationTypes
+                       authenticator:(NSString *)authenticator;
+
 
 @end

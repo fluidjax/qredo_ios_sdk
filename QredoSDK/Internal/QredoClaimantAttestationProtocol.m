@@ -491,11 +491,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
         
         NSData *claimHash = attestation.credential.hashedClaim;
         
-        QredoClaimMessage *claimMessage
-        = [[QredoClaimMessage alloc] initWithClaimHash:claimHash credential:attestation.credential];
+        QredoClaimMessage *claimMessage = [[QredoClaimMessage alloc] initWithClaimHash:claimHash
+                                                                            credential:attestation.credential];
         
         [claimMessages addObject:claimMessage];
-        
     }
     
     QredoAuthenticationRequest *authenticationRequest

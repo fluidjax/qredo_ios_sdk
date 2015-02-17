@@ -29,6 +29,8 @@
              return ;
          }
 
+         // TODO: add attestation types to QredoAttestationRelyingParty
+
          QredoAttestationRelyingParty *attestation = [[QredoAttestationRelyingParty alloc] initWithRendezvous:rendezvous];
          completionHandler(attestation, nil);
      }];

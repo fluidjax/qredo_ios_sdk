@@ -49,7 +49,10 @@
 
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
-    QredoClaimantAttestationSession *attestationSession = [[QredoClaimantAttestationSession alloc] initWithConversation:conversation];
+    // TODO:
+    QredoClaimantAttestationSession *attestationSession = [[QredoClaimantAttestationSession alloc] initWithConversation:conversation
+                                                                                                       attestationTypes:nil
+                                                                                                          authenticator:nil];
     [self.delegate qredoAttestationRelyingParty:self didStartClaimantSession:attestationSession];
 }
 
