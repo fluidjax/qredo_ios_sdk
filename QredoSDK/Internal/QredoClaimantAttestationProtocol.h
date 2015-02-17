@@ -55,6 +55,8 @@
 
 @protocol QredoClaimantAttestationProtocolEvents <NSObject>
 
+- (void)start;
+
 - (void)accept;
 - (void)reject;
 - (void)cancel;
@@ -88,6 +90,7 @@
 - (instancetype)initWithConversation:(QredoConversation *)conversation
                     attestationTypes:(NSSet *)attestationTypes
                        authenticator:(NSString *)authenticator;
+
 
 @end
 
