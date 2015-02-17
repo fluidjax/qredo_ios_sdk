@@ -8,8 +8,6 @@
 
 @class QredoClaimantAttestationSession;
 
-
-
 @interface QredoAuthenticationResult : NSObject
 
 @property BOOL verified;
@@ -43,11 +41,11 @@ typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
 @protocol QredoClaimantAttestationSessionDelegate <NSObject>
 
 @required
-- (void)QredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession didReceiveClaims:(NSArray /* QredoClaim */ *)claims;
-- (void)QredoClaimantAttestationSessionDidFinishAuthentication:(QredoClaimantAttestationSession *)claimantSession;
+- (void)qredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession didReceiveClaims:(NSArray /* QredoClaim */ *)claims;
+- (void)qredoClaimantAttestationSessionDidFinishAuthentication:(QredoClaimantAttestationSession *)claimantSession;
 
 @optional
-- (void)QredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession claim:(QredoClaim *)claim didChangeStatusTo:(QredoAuthenticationStatus)status;
+- (void)qredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession claim:(QredoClaim *)claim didChangeStatusTo:(QredoAuthenticationStatus)status;
 
 @end
 

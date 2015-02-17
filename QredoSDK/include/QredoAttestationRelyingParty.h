@@ -28,6 +28,8 @@
 
 @interface QredoAttestationRelyingPartyMetadata : NSObject
 
+@property (nonatomic, readonly) NSString *tag;
+
 @end
 
 

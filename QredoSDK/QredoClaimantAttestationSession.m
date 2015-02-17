@@ -3,7 +3,7 @@
  */
 
 #import "QredoClaimantAttestationSession.h"
-
+#import "QredoClaimantAttestationSessionPrivate.h"
 
 
 
@@ -14,8 +14,17 @@
 @end
 
 
-
 @implementation QredoClaimantAttestationSession
+
+- (instancetype)initWithConversation:(QredoConversation *)conversation
+{
+    self = [super init];
+    if (!self) return nil;
+
+    self.conversation = conversation;
+
+    return self;
+}
 
 - (void)startAuthentication
 {
@@ -31,6 +40,7 @@
 {
     // TODO [GR]: Implement this
 }
+
 
 @end
 
