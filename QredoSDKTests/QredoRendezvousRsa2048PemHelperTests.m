@@ -185,5 +185,160 @@
     XCTAssertNil(error);
 }
 
+- (void)testSignatureAndVerification_ExternalKeys_MultiUse {
+    
+    // Importing the same key (even under different name) into Apple Keychain has been seen to fail at times.
+    // Under the hood, for external keys, this helper imports the public key to get SecKeyRefs needed for verifying
+    // signatures, before deleting it again once helper is deallocated.
+    // This test will ensure multiple helpers using the same authentication tag (public key) can be created
+    // simutaneously without issue. Will use same prefix, and different prefix to test this.
+    
+    // Import a known Public Key and Private Key into Keychain
+    // NOTE: This test will fail if the key has already been imported (even with different identifier)
+    NSInteger keySizeBits = 2048;
+    
+    NSData *publicKeyX509Data = [NSData dataWithBytes:TestPubKeyJavaSdkClient2048X509DerArray
+                                               length:sizeof(TestPubKeyJavaSdkClient2048X509DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(publicKeyX509Data);
+    
+    NSData *publicKeyPkcs1Data = [QredoCertificateUtils convertX509PublicKeyToPkcs1PublicKey:publicKeyX509Data];
+    XCTAssertNotNil(publicKeyPkcs1Data);
+    
+    NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient2048Pkcs1DerArray
+                                            length:sizeof(TestPrivKeyJavaSdkClient2048Pkcs1DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(privateKeyData);
+    
+    QredoSecKeyRefPair *keyRefPair = [self setupKeypairForPublicKeyData:publicKeyPkcs1Data
+                                                         privateKeyData:privateKeyData
+                                                            keySizeBits:keySizeBits];
+    XCTAssertNotNil(keyRefPair);
+    
+    NSError *error = nil;
+    
+    NSString *authenticationTag = TestKeyJavaSdkClient2048Pem;
+    NSString *prefix1 = @"MyTestRendezVous";
+    NSString *initialFullTag1 = [NSString stringWithFormat:@"%@@%@", prefix1, authenticationTag];
+    
+    NSString *prefix2 = @"MyOtherTestRendezVous";
+    NSString *initialFullTag2 = [NSString stringWithFormat:@"%@@%@", prefix2, authenticationTag];
 
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:keyRefPair.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    // Use 1st time
+    error = nil;
+    id<QredoRendezvousCreateHelper> createHelper1
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
+                                                            fullTag:initialFullTag1
+                                                             crypto:self.cryptoImpl
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper1);
+    XCTAssertNil(error);
+    
+    NSString *finalFullTag1 = [createHelper1 tag];
+    XCTAssertNotNil(finalFullTag1);
+    XCTAssert([finalFullTag1 hasPrefix:prefix1]);
+    
+    // Use 2nd time (same prefix)
+    error = nil;
+    id<QredoRendezvousCreateHelper> createHelper2
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
+                                                            fullTag:initialFullTag1
+                                                             crypto:self.cryptoImpl
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper2);
+    XCTAssertNil(error);
+    
+    NSString *finalFullTag2 = [createHelper2 tag];
+    XCTAssertNotNil(finalFullTag2);
+    XCTAssert([finalFullTag2 hasPrefix:prefix1]);
+    
+    // Use 3rd time (different prefix)
+    error = nil;
+    id<QredoRendezvousCreateHelper> createHelper3
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
+                                                            fullTag:initialFullTag2
+                                                             crypto:self.cryptoImpl
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper3);
+    XCTAssertNil(error);
+    
+    NSString *finalFullTag3 = [createHelper3 tag];
+    XCTAssertNotNil(finalFullTag3);
+    XCTAssert([finalFullTag3 hasPrefix:prefix2]);
+    
+    // Use 1st time
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper1
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
+                                                            fullTag:finalFullTag1
+                                                             crypto:self.cryptoImpl
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper1);
+    XCTAssertNil(error);
+    
+    NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    error = nil;
+    QredoRendezvousAuthSignature *signature1 = [createHelper1 signatureWithData:data error:&error];
+    XCTAssertNotNil(signature1);
+    XCTAssertNil(error);
+    
+    error = nil;
+    BOOL result = [respondHelper1 isValidSignature:signature1 rendezvousData:data error:&error];
+    XCTAssert(result);
+    XCTAssertNil(error);
+    
+    // Use 2nd time (same tag)
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper2
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
+                                                            fullTag:finalFullTag1
+                                                             crypto:self.cryptoImpl
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper2);
+    XCTAssertNil(error);
+    
+    error = nil;
+    QredoRendezvousAuthSignature *signature2 = [createHelper2 signatureWithData:data error:&error];
+    XCTAssertNotNil(signature2);
+    XCTAssertNil(error);
+    
+    error = nil;
+    result = [respondHelper2 isValidSignature:signature2 rendezvousData:data error:&error];
+    XCTAssert(result);
+    XCTAssertNil(error);
+    
+    // Use 3rd time (different tag)
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper3
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
+                                                            fullTag:finalFullTag2
+                                                             crypto:self.cryptoImpl
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper2);
+    XCTAssertNil(error);
+    
+    error = nil;
+    QredoRendezvousAuthSignature *signature3 = [createHelper2 signatureWithData:data error:&error];
+    XCTAssertNotNil(signature3);
+    XCTAssertNil(error);
+    
+    error = nil;
+    result = [respondHelper3 isValidSignature:signature3 rendezvousData:data error:&error];
+    XCTAssert(result);
+    XCTAssertNil(error);
+}
 @end
