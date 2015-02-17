@@ -5,24 +5,6 @@
 import UIKit
 import XCTest
 
-class AuthenticationProtocolBlockDelegate : QredoAuthenticationProtocolDelegate {
-    var failureBlock : ((NSError) -> Void)?
-    var successBlock : ((QredoAuthenticationResponse) -> Void)?
-    var sentClaimsBlock : (Void -> Void)?
-
-    func qredoAuthenticationProtocol(authProtocol: QredoAuthenticationProtocol!, didFailWithError error: NSError!) {
-        failureBlock?(error)
-    }
-
-    func qredoAuthenticationProtocol(authProtocol: QredoAuthenticationProtocol!, didFinishWithResults results: QredoAuthenticationResponse!) {
-        successBlock?(results)
-    }
-
-    func qredoAuthenticationProtocolDidSendClaims(authProtocol: QredoAuthenticationProtocol!) {
-        sentClaimsBlock?()
-    }
-}
-
 class AuthenticationProtocolTests: BaseConversation {
 
     override func setUp() {
