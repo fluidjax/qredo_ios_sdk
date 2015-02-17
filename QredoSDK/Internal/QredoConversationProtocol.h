@@ -7,10 +7,11 @@
 
 @class QredoConversationProtocol, QredoConversation, QredoConversationMessage;
 
-@interface QredoConversationProtocolErrorMessage : NSObject
-@property (nonatomic) NSError *error;
-@end
 
+
+//=====================
+#pragma mark - Events -
+//=====================
 
 
 @protocol QredoConversationProtocolEvents <NSObject>
@@ -19,6 +20,13 @@
 - (void)otherPartyHasLeftConversation;
 
 @end
+
+
+
+//=====================
+#pragma mark - States -
+//=====================
+
 
 @interface QredoConversationProtocolState : NSObject<QredoConversationProtocolEvents>
 
@@ -40,9 +48,14 @@
 
 #pragma mark Events (conversation message handling)
 
-
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message;
+- (void)otherPartyHasLeftConversation;
 
 @end
+
+
+//------------
+#pragma mark -
 
 @interface QredoConversationProtocolCancelableState : QredoConversationProtocolState
 
@@ -55,7 +68,12 @@
 
 
 
-@interface QredoConversationProtocol : NSObject<QredoConversationProtocolEvents>
+//=======================
+#pragma mark - Protocol -
+//=======================
+
+
+@interface QredoConversationProtocol : NSObject
 
 @property (nonatomic, readonly) QredoConversationProtocolState *currentState;
 @property (nonatomic, readonly) QredoConversation *conversation;
@@ -66,6 +84,10 @@
 
 - (void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock;
 
+@end
+
+
+@interface QredoConversationProtocol(Events)<QredoConversationProtocolEvents>
 @end
 
 

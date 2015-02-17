@@ -22,55 +22,106 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 
 
+//==============================================================================================================
+#pragma mark - State interfaces -
+//==============================================================================================================
 
-
-#pragma mark Interfaces
 
 @interface QredoClaimantAttestationState()
 @property (nonatomic, readonly) QredoClaimantAttestationProtocol *claimantAttestationProtocol;
 @end
 
 
-@interface QredoClaimantAttestationState_RequestingPresentaion : QredoClaimantAttestationState
-@property (nonatomic, copy) NSSet *attestationTypes;
-@property (nonatomic, copy) NSString *authenticator;
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+@interface QredoClaimantAttestationState_Start : QredoClaimantAttestationState
 @end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+@interface QredoClaimantAttestationState_RequestingPresentaion : QredoClaimantAttestationState
+@property (nonatomic) NSError *error;
+@end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState_WaitingForPresentaions : QredoClaimantAttestationState
 @end
 
-@interface QredoClaimantAttestationState_PresentaionsRecieved : QredoClaimantAttestationState
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+@interface QredoClaimantAttestationState_Authenticate : QredoClaimantAttestationState<QredoAuthenticationProtocolDelegate>
 @property (nonatomic) QredoPresentation *presentation;
+@property (nonatomic) QredoAuthenticationProtocol *authenticationProtocol;
+@property (nonatomic) QredoAuthenticationResponse *authenticationResponse;
+@property (nonatomic) NSError *authenticationError;
 @end
 
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 @interface QredoClaimantAttestationState_AuthenticationResultsReceived : QredoClaimantAttestationState
-@property (nonatomic, copy) QredoAuthenticationResponse *authentications;
 @end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState_SendRelyingPartyChoice : QredoClaimantAttestationState
 @property (nonatomic) BOOL claimsAccepted;
 @end
 
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 @interface QredoClaimantAttestationState_RelyingPartyChoiceSent : QredoClaimantAttestationState
 @end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState_CancelConversation : QredoClaimantAttestationState
 @property (nonatomic) NSError *error;
 @end
 
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 @interface QredoClaimantAttestationState_CanceledByClaimant : QredoClaimantAttestationState
 @property (nonatomic) NSError *error;
 @end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 @interface QredoClaimantAttestationState_Finish : QredoClaimantAttestationState
 @end
 
 
+
+//==============================================================================================================
+#pragma mark - Protocol interface -
+//==============================================================================================================
+
+
 @interface QredoClaimantAttestationProtocol()
 
+@property (nonatomic) QredoClaimantAttestationState_Start *startState;
 @property (nonatomic) QredoClaimantAttestationState_RequestingPresentaion *requestingPresentaionState;
 @property (nonatomic) QredoClaimantAttestationState_WaitingForPresentaions *waitingForPresentaionsState;
-@property (nonatomic) QredoClaimantAttestationState_PresentaionsRecieved *presentaionsRecievedState;
+@property (nonatomic) QredoClaimantAttestationState_Authenticate *presentaionsRecievedState;
 @property (nonatomic) QredoClaimantAttestationState_AuthenticationResultsReceived *authenticationResultsReceivedState;
 @property (nonatomic) QredoClaimantAttestationState_SendRelyingPartyChoice *sendRelyingPartyChoiceState;
 @property (nonatomic) QredoClaimantAttestationState_RelyingPartyChoiceSent *relyingPartyChoiceSentState;
@@ -78,11 +129,19 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 @property (nonatomic) QredoClaimantAttestationState_CanceledByClaimant *canceledByClaimantState;
 @property (nonatomic) QredoClaimantAttestationState_Finish *finishState;
 
+@property (nonatomic, copy) NSSet *attestationTypes;
+@property (nonatomic, copy) NSString *authenticator;
+
+@property (nonatomic) QredoAuthenticationProtocol *authenticationProtocol;
+
 @end
 
 
 
-#pragma mark Implementations
+//==============================================================================================================
+#pragma mark - State implementations -
+//==============================================================================================================
+
 
 @implementation QredoClaimantAttestationState
 
@@ -94,6 +153,16 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 
 #pragma mark Events
+
+- (void)start
+{
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
+                                    withConfigBlock:^
+     {
+         // TODO [GR]: Set the correct error on the next line.
+         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+     }];
+}
 
 - (void)accept
 {
@@ -131,22 +200,33 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
      }];
 }
 
-
 - (void)presentationRequestPublishedWithError:(NSError *)error
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         self.claimantAttestationProtocol.cancelConversationState.error = error;
+         // TODO [GR]: Set the correct error on the next line.
+         self.claimantAttestationProtocol.cancelConversationState.error = nil;
      }];
 }
 
-- (void)sendAtestationChioiceCompletedWithError:(NSError *)error
+- (void)authenticationResultsRecievedWithError:(NSError *)error
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         self.claimantAttestationProtocol.cancelConversationState.error = error;
+         // TODO [GR]: Set the correct error on the next line.
+         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+     }];
+}
+
+- (void)relyingPartyChioiceSentWithError:(NSError *)error
+{
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
+                                    withConfigBlock:^
+     {
+         // TODO [GR]: Set the correct error on the next line.
+         self.claimantAttestationProtocol.cancelConversationState.error = nil;
      }];
 }
 
@@ -159,13 +239,29 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 @end
 
 
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+@implementation QredoClaimantAttestationState_Start
+
+- (void)start
+{
+    [self.conversationProtocol.conversation startListening];
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.requestingPresentaionState
+                                   withConfigBlock:^{}];
+}
+
+@end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_RequestingPresentaion
 
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-    self.attestationTypes = nil;
-    self.authenticator = nil;
 }
 
 - (void)didEnter
@@ -210,9 +306,12 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 - (void)publishPresentationRequestWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
+    NSSet *attestationTypes = self.claimantAttestationProtocol.attestationTypes;
+    NSString *authenticator = self.claimantAttestationProtocol.authenticator;
+    
     QredoPresentationRequest *presentationRequest
-    = [[QredoPresentationRequest alloc] initWithRequestedAttestationTypes:self.attestationTypes
-                                                            authenticator:self.authenticator];
+    = [[QredoPresentationRequest alloc] initWithRequestedAttestationTypes:attestationTypes
+                                                            authenticator:authenticator];
     NSData *messageValue
     = [QredoPrimitiveMarshallers marshalObject:presentationRequest
                                     marshaller:[QredoClientMarshallers presentationRequestMarshaller]];
@@ -230,6 +329,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 }
 
 @end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 @implementation QredoClaimantAttestationState_WaitingForPresentaions
 
@@ -306,19 +409,50 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
-@implementation QredoClaimantAttestationState_PresentaionsRecieved
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+@implementation QredoClaimantAttestationState_Authenticate
 
 - (void)prepareForReuse
 {
     [super prepareForReuse];
     self.presentation = nil;
+    self.authenticationProtocol = nil;
+    self.authenticationResponse = nil;
+    self.authenticationError = nil;
 }
 
 - (void)didEnter
 {
     [super didEnter];
+    
+    NSError *error = nil;
+    
+    self.authenticationProtocol = [self createAuthenticationProtocolWithError:&error];
+    if (self.authenticationProtocol) {
+        
+        self.authenticationProtocol.delegate = self;
+        if (![self sendAuthenticationRequestWithError:&error]) {
+            [self authenticationResultsRecievedWithError:error];
+        };
+        
+    } else {
+        [self authenticationResultsRecievedWithError:error];
+    }
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
                                                     didRecivePresentations:self.presentation];
+}
+
+- (void)willExit
+{
+    [super willExit];
+    self.authenticationProtocol.delegate = nil;
+    // TODO [GR]: Think of other things to cancel or nil here.
+    
+    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
+                                          didFinishAuthenticationWithError:self.authenticationError];
 }
 
 #pragma mark Events
@@ -341,21 +475,80 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
      }];
 }
 
+- (void)authenticationResultsRecievedWithError:(NSError *)error
+{
+    self.authenticationError = error;
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.authenticationResultsReceivedState
+                                    withConfigBlock:nil];
+}
+
+#pragma mark Utility methods
+
+- (BOOL)sendAuthenticationRequestWithError:(NSError **)error
+{
+    NSMutableArray *claimMessages = [[NSMutableArray alloc] init];
+    for (QredoAttestation *attestation in self.presentation.attestations) {
+        
+        NSData *claimHash = attestation.credential.hashedClaim;
+        
+        QredoClaimMessage *claimMessage
+        = [[QredoClaimMessage alloc] initWithClaimHash:claimHash credential:attestation.credential];
+        
+        [claimMessages addObject:claimMessage];
+        
+    }
+    
+    QredoAuthenticationRequest *authenticationRequest
+    = [[QredoAuthenticationRequest alloc] initWithClaimMessages:claimMessages conversationSecret:nil];
+    
+    [self.authenticationProtocol sendAuthenticationRequest:authenticationRequest];
+    
+    return YES;
+}
+
+- (QredoAuthenticationProtocol *)createAuthenticationProtocolWithError:(NSError **)error
+{
+    return [self.claimantAttestationProtocol.dataSource claimantAttestationProtocol:self.claimantAttestationProtocol
+                                                    authenticationProtocolWithError:error];
+}
+
+#pragma mark QredoAuthenticationProtocolDelegate methods
+
+- (void)qredoAuthenticationProtocolDidSendClaims:(QredoAuthenticationProtocol *)protocol
+{
+    // Ignored
+}
+
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error
+{
+    [self.claimantAttestationProtocol authenticationResultsRecievedWithError:error];
+}
+
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
+               didFinishWithResults:(QredoAuthenticationResponse *)results
+{
+    self.authenticationResponse = results;
+    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
+                                                  didReciveAuthentications:self.authenticationResponse];
+    [self.claimantAttestationProtocol authenticationResultsRecievedWithError:nil];
+}
+
 @end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 @implementation QredoClaimantAttestationState_AuthenticationResultsReceived
 
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-    self.authentications = nil;
 }
 
 - (void)didEnter
 {
     [super didEnter];
-    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
-                                                  didReciveAuthentications:self.authentications];
 }
 
 #pragma mark Events
@@ -380,6 +573,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_SendRelyingPartyChoice
 
 - (void)prepareForReuse
@@ -392,7 +589,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 {
     [super didEnter];
     [self sendRelyingPartyChoiceWithCompletionHandler:^(NSError *error) {
-        [self.claimantAttestationProtocol sendAtestationChioiceCompletedWithError:error];
+        [self.claimantAttestationProtocol relyingPartyChioiceSentWithError:error];
     }];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
                                          didStartSendingRelyingPartyChoice:self.claimsAccepted];
@@ -400,7 +597,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 #pragma mark Events
 
-- (void)sendAtestationChioiceCompletedWithError:(NSError *)error
+- (void)relyingPartyChioiceSentWithError:(NSError *)error
 {
     if (error) {
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
@@ -438,6 +635,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_RelyingPartyChoiceSent
 
 - (void)didEnter
@@ -447,6 +648,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
         [self.claimantAttestationProtocol conversationCanceledWithError:error];
     }];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocolDidFinishSendingRelyingPartyChoice:self.claimantAttestationProtocol];
+    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol didFinishWithError:nil];
 }
 
 #pragma mark Events
@@ -474,6 +676,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @end
 
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_CancelConversation
 - (void)prepareForReuse
 {
@@ -497,13 +703,19 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)reject {}
 - (void)cancel {}
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
-- (void)sendAtestationChioiceCompletedWithError:(NSError *)error {}
+- (void)relyingPartyChioiceSentWithError:(NSError *)error {}
 
 - (void)conversationCanceledWithError:(NSError *)error
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
                                     withConfigBlock:nil];
 }
+
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
+
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
+               didFinishWithResults:(QredoAuthenticationResponse *)results {}
+
 
 #pragma mark Utility methods
 
@@ -515,6 +727,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 }
 
 @end
+
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
 
 @implementation QredoClaimantAttestationState_CanceledByClaimant
 
@@ -537,12 +753,26 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)reject {}
 - (void)cancel {}
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
-- (void)sendAtestationChioiceCompletedWithError:(NSError *)error {}
+- (void)relyingPartyChioiceSentWithError:(NSError *)error {}
 - (void)conversationCanceledWithError:(NSError *)error {}
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
+               didFinishWithResults:(QredoAuthenticationResponse *)results {}
 
 @end
 
+
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
 @implementation QredoClaimantAttestationState_Finish
+
+- (void)didEnter
+{
+    [super didEnter];
+    [self.conversationProtocol.conversation stopListening];
+
+}
 
 #pragma mark Events
 
@@ -550,8 +780,49 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)reject {}
 - (void)cancel {}
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
-- (void)sendAtestationChioiceCompletedWithError:(NSError *)error {}
+- (void)relyingPartyChioiceSentWithError:(NSError *)error {}
 - (void)conversationCanceledWithError:(NSError *)error {}
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
+               didFinishWithResults:(QredoAuthenticationResponse *)results {}
+
+@end
+
+
+
+//==============================================================================================================
+#pragma mark - Protocol implementation -
+//==============================================================================================================
+
+
+@implementation QredoClaimantAttestationProtocol
+
+- (instancetype)initWithConversation:(QredoConversation *)conversation
+                    attestationTypes:(NSSet *)attestationTypes
+                       authenticator:(NSString *)authenticator
+{
+    self = [super initWithConversation:conversation];
+    if (self) {
+        
+        self.attestationTypes = attestationTypes;
+        self.authenticator = authenticator;
+        
+        self.startState = [QredoClaimantAttestationState_Start new];
+        self.requestingPresentaionState = [QredoClaimantAttestationState_RequestingPresentaion new];
+        self.waitingForPresentaionsState = [QredoClaimantAttestationState_WaitingForPresentaions new];
+        self.presentaionsRecievedState = [QredoClaimantAttestationState_Authenticate new];
+        self.authenticationResultsReceivedState = [QredoClaimantAttestationState_AuthenticationResultsReceived new];
+        self.sendRelyingPartyChoiceState = [QredoClaimantAttestationState_SendRelyingPartyChoice new];
+        self.relyingPartyChoiceSentState = [QredoClaimantAttestationState_RelyingPartyChoiceSent new];
+        self.cancelConversationState = [QredoClaimantAttestationState_CancelConversation new];
+        self.canceledByClaimantState = [QredoClaimantAttestationState_CanceledByClaimant new];
+        self.finishState = [QredoClaimantAttestationState_Finish new];
+        
+        [self switchToState:self.startState withConfigBlock:^{}];
+        
+    }
+    return self;
+}
 
 @end
 
@@ -563,36 +834,8 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 #pragma GCC diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wprotocol"
 
-@implementation QredoClaimantAttestationProtocol
-
-- (instancetype)initWithConversation:(QredoConversation *)conversation
-                    attestationTypes:(NSSet *)attestationTypes
-                       authenticator:(NSString *)authenticator
-{
-    self = [super initWithConversation:conversation];
-    if (self) {
-        
-        self.requestingPresentaionState = [QredoClaimantAttestationState_RequestingPresentaion new];
-        self.waitingForPresentaionsState = [QredoClaimantAttestationState_WaitingForPresentaions new];
-        self.presentaionsRecievedState = [QredoClaimantAttestationState_PresentaionsRecieved new];
-        self.authenticationResultsReceivedState = [QredoClaimantAttestationState_AuthenticationResultsReceived new];
-        self.sendRelyingPartyChoiceState = [QredoClaimantAttestationState_SendRelyingPartyChoice new];
-        self.relyingPartyChoiceSentState = [QredoClaimantAttestationState_RelyingPartyChoiceSent new];
-        self.cancelConversationState = [QredoClaimantAttestationState_CancelConversation new];
-        self.canceledByClaimantState = [QredoClaimantAttestationState_CanceledByClaimant new];
-        self.finishState = [QredoClaimantAttestationState_Finish new];
-        
-        [self switchToState:self.requestingPresentaionState withConfigBlock:^{
-            self.requestingPresentaionState.attestationTypes = attestationTypes;
-            self.requestingPresentaionState.authenticator = authenticator;
-        }];
-        
-    }
-    return self;
-}
-
+@implementation QredoClaimantAttestationProtocol(Events)
 @end
-
 
 #pragma clang diagnostic pop
 #pragma GCC diagnostic pop
