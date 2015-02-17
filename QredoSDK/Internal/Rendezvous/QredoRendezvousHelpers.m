@@ -8,6 +8,7 @@
 #import "QredoRendezvousX509PemHelper.h"
 #import "QredoRendezvousRsa2048PemHelper.h"
 #import "QredoRendezvousRsa4096PemHelper.h"
+#import "QredoRendezvousRsaPemCommonHelper.h"
 #import "QredoLogging.h"
 
 @implementation QredoRendezvousHelpers
@@ -33,7 +34,7 @@
             return [[QredoRendezvousRsa2048PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
-//            return [[QredoRendezvousRsa4096PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousRsa4096PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add all other authentication types
@@ -64,7 +65,7 @@
             return [[QredoRendezvousRsa2048PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
             
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
-//            return [[QredoRendezvousRsa4096PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            return [[QredoRendezvousRsa4096PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
 
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add all other authentication types
@@ -87,10 +88,8 @@
             return kX509AuthenticatedRendezvousSaltLength;
             
         case QredoRendezvousAuthenticationTypeRsa2048Pem:
-            return kRsa2048AuthenticatedRendezvousSaltLength;
-
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
-//            return kX509AuthenticatedRendezvousSaltLength;
+            return kRsaAuthenticatedRendezvousSaltLength;
         
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             LogError(@"To be completed!");

@@ -4,6 +4,7 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+// TODO: DH - check whether all these are needed
 #import "QredoRendezvousHelpers.h"
 #import "QredoCrypto.h"
 #import "CryptoImplV1.h"
@@ -34,6 +35,7 @@
     [super tearDown];
 }
 
+// TODO: DH - this method is used in other tests - move this somewhere common, to prevent duplication?
 - (QredoSecKeyRefPair *)setupKeypairForPublicKeyData:(NSData *)publicKeyData privateKeyData:(NSData *)privateKeyData keySizeBits:(NSInteger)keySizeBits {
     
     // Import a known Public Key and Private Key into Keychain
@@ -108,7 +110,7 @@
     
     error = nil;
     BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
-    XCTAssert(result);
+    XCTAssertTrue(result);
     XCTAssertNil(error);
 }
 
@@ -181,7 +183,7 @@
     
     error = nil;
     BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
-    XCTAssert(result);
+    XCTAssertTrue(result);
     XCTAssertNil(error);
 }
 
@@ -298,7 +300,7 @@
     
     error = nil;
     BOOL result = [respondHelper1 isValidSignature:signature1 rendezvousData:data error:&error];
-    XCTAssert(result);
+    XCTAssertTrue(result);
     XCTAssertNil(error);
     
     // Use 2nd time (same tag)
@@ -318,7 +320,7 @@
     
     error = nil;
     result = [respondHelper2 isValidSignature:signature2 rendezvousData:data error:&error];
-    XCTAssert(result);
+    XCTAssertTrue(result);
     XCTAssertNil(error);
     
     // Use 3rd time (different tag)
@@ -338,7 +340,7 @@
     
     error = nil;
     result = [respondHelper3 isValidSignature:signature3 rendezvousData:data error:&error];
-    XCTAssert(result);
+    XCTAssertTrue(result);
     XCTAssertNil(error);
 }
 @end

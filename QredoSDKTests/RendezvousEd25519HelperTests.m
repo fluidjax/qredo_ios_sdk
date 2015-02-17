@@ -73,7 +73,7 @@
     
     error = nil;
     BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
-    XCTAssert(result);
+    XCTAssertTrue(result);
     XCTAssertNil(error);
 }
 
@@ -131,7 +131,7 @@
     
     error = nil;
     BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
-    XCTAssert(result);
+    XCTAssertTrue(result);
     XCTAssertNil(error);
 }
 
@@ -327,7 +327,7 @@
     
     error = nil;
     BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
-    XCTAssert(result);
+    XCTAssertTrue(result);
     XCTAssertNil(error);
     
 }

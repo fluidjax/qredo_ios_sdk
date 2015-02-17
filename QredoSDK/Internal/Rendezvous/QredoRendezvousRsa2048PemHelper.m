@@ -373,16 +373,12 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 {
     __block NSData *signatureData = nil;
     [signature ifX509_PEM:^(NSData *signature) {
-        signatureData = nil;
     } X509_PEM_SELFISGNED:^(NSData *signature) {
-        signatureData = nil;
     } ED25519:^(NSData *signature) {
-        signatureData = nil;
     } RSA2048_PEM:^(NSData *signature) {
         signatureData = signature;
     } RSA4096_PEM:^(NSData *signature) {
     } other:^{
-        signatureData = nil;
     }];
     
     if ([signatureData length] < 1) {
