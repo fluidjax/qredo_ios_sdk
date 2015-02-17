@@ -34,6 +34,37 @@
     [super tearDown];
 }
 
+- (QredoSecKeyRefPair *)setupKeypairForPublicKeyData:(NSData *)publicKeyData privateKeyData:(NSData *)privateKeyData keySizeBits:(NSInteger)keySizeBits {
+    
+    // Import a known Public Key and Private Key into Keychain
+    
+    // NOTE: This will fail if the key has already been imported (even with different identifier)
+    NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyImport1";
+    NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyImport1";
+    
+    XCTAssertNotNil(publicKeyData);
+    NSLog(@"Public key (PKCS#1) data (%ld bytes): %@", publicKeyData.length, [QredoLogging hexRepresentationOfNSData:publicKeyData]);
+    
+    XCTAssertNotNil(privateKeyData);
+    NSLog(@"Private key data (%ld bytes): %@", privateKeyData.length, [QredoLogging hexRepresentationOfNSData:privateKeyData]);
+    
+    SecKeyRef publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyData
+                                               keyLengthBits:keySizeBits
+                                               keyIdentifier:publicKeyIdentifier
+                                                   isPrivate:NO];
+    XCTAssertTrue((__bridge id)publicKeyRef, @"Public Key import failed.");
+    
+    SecKeyRef privateKeyRef = [QredoCrypto importPkcs1KeyData:privateKeyData
+                                                keyLengthBits:keySizeBits
+                                                keyIdentifier:privateKeyIdentifier
+                                                    isPrivate:YES];
+    XCTAssertTrue((__bridge id)privateKeyRef, @"Private Key import failed.");
+    
+    QredoSecKeyRefPair *keyRefPair = [[QredoSecKeyRefPair alloc] initWithPublicKeyRef:publicKeyRef privateKeyRef:privateKeyRef];
+    
+    return keyRefPair;
+}
+
 - (void)testSignatureAndVerification_InternalKeys {
     
     NSError *error = nil;
@@ -84,48 +115,29 @@
 - (void)testSignatureAndVerification_ExternalKeys {
     
     // Import a known Public Key and Private Key into Keychain
-    
-    // TODO: DH - extract the getting of the necessary refs into a re-usable method for other tests
-
     // NOTE: This test will fail if the key has already been imported (even with different identifier)
-    NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyImport1";
-    NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyImport1";
     NSInteger keySizeBits = 2048;
     
     NSData *publicKeyX509Data = [NSData dataWithBytes:TestPubKeyJavaSdkClient2048X509DerArray
                                                length:sizeof(TestPubKeyJavaSdkClient2048X509DerArray) / sizeof(uint8_t)];
     XCTAssertNotNil(publicKeyX509Data);
-    NSLog(@"Public key (X509) data (%ld bytes): %@", publicKeyX509Data.length, [QredoLogging hexRepresentationOfNSData:publicKeyX509Data]);
-    
+
     NSData *publicKeyPkcs1Data = [QredoCertificateUtils convertX509PublicKeyToPkcs1PublicKey:publicKeyX509Data];
     XCTAssertNotNil(publicKeyPkcs1Data);
-    NSLog(@"Public key (PKCS#1) data (%ld bytes): %@", publicKeyPkcs1Data.length, [QredoLogging hexRepresentationOfNSData:publicKeyPkcs1Data]);
-    
+
     NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient2048Pkcs1DerArray
                                             length:sizeof(TestPrivKeyJavaSdkClient2048Pkcs1DerArray) / sizeof(uint8_t)];
     XCTAssertNotNil(privateKeyData);
-    NSLog(@"Private key data (%ld bytes): %@", privateKeyData.length, [QredoLogging hexRepresentationOfNSData:privateKeyData]);
-    
-    SecKeyRef publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyPkcs1Data
-                                               keyLengthBits:keySizeBits
-                                               keyIdentifier:publicKeyIdentifier
-                                                   isPrivate:NO];
-    XCTAssertTrue((__bridge id)publicKeyRef, @"Public Key import failed.");
-    
-    SecKeyRef privateKeyRef = [QredoCrypto importPkcs1KeyData:privateKeyData
-                                                keyLengthBits:keySizeBits
-                                                keyIdentifier:privateKeyIdentifier
-                                                    isPrivate:YES];
-    XCTAssertTrue((__bridge id)privateKeyRef, @"Private Key import failed.");
-    
-    QredoSecKeyRefPair *keyRefPair = [[QredoSecKeyRefPair alloc] initWithPublicKeyRef:publicKeyRef privateKeyRef:privateKeyRef];
-    
-    // TODO: DH - end setup - keyRefPair contains the keypairs we need
+
+    QredoSecKeyRefPair *keyRefPair = [self setupKeypairForPublicKeyData:publicKeyPkcs1Data
+                                                         privateKeyData:privateKeyData
+                                                            keySizeBits:keySizeBits];
+    XCTAssertNotNil(keyRefPair);
     
     NSError *error = nil;
     
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient2048Pem;  // TODO: DH - may be in wrong format?
+    NSString *authenticationTag = TestKeyJavaSdkClient2048Pem;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
@@ -172,5 +184,6 @@
     XCTAssert(result);
     XCTAssertNil(error);
 }
+
 
 @end

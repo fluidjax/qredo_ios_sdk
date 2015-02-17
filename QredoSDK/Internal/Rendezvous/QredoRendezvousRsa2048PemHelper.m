@@ -2,21 +2,18 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-// TODO: DH - check which header files are needed
 #import "QredoRendezvousRsa2048PemHelper.h"
 #import "QredoClient.h"
-#import "CryptoImpl.h"
 #import "QredoCrypto.h"
 #import "QredoCertificateUtils.h"
 #import "QredoLogging.h"
 #import "QredoAuthenticatedRendezvousTag.h"
-#import "QredoRsaPublicKey.h"
 #import "NSData+QredoRandomData.h"
 
 @implementation QredoAbstractRendezvousRsa2048PemHelper
 
-// TODO: DH - confirm the salt length used for RSA 2048 authenticated rendezvous
-const NSInteger kRsa2048AuthenticatedRendezvousSaltLength = 8;
+// Salt length for RSA PSS signing (related to hash length)
+const NSInteger kRsa2048AuthenticatedRendezvousSaltLength = 32;
 static const NSUInteger kRsa2048AuthenticatedRendezvousEmptySignatureLength = 256;
 
 /*
@@ -56,15 +53,29 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 
 - (SecKeyRef)publicKeyRefFromAuthenticationTag:(NSString *)authenticationTag publicKeyIdentifier:(NSString *)publicKeyIdentifier error:(NSError **)error
 {
-    // TODO: DH - Validate arguments (and use NSError)
-    
-    // Public key is PEM encoded RSA key (2048 bits)
+    if (!authenticationTag) {
+        LogError(@"Authentication tag is nil.");
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagMissing, nil);
+        }
+        return nil;
+    }
+
+    if (!publicKeyIdentifier) {
+        LogError(@"Public key identifier is nil.");
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorPublicKeyIdentifierMissing, nil);
+        }
+        return nil;
+    }
+
+    // Public key is PEM encoded 2048-bit RSA key
     SecKeyRef publicKeyRef = nil;
     
     // Convert the Authentication Tag (PEM encoded RSA key) to DER data (PKCS#1 format)
     // Import the DER data into Keychain and get a SecKeyRef out, which gets returned.
     
-    // TODO: DH - what happens if this method is called twice (why might it?) - could end up trying to create the key again, despite it already being in keychain, and thus failing? Import could fail if the key exists, or if the identifier already exists (unlikely for random?)
+    // TODO: DH - Import could fail if the key already exists (even with different name)
     
     // TODO: DH - Validate the data is 2048 bits (may find importKeyData does that - write a test to confirm whether incorrect key length arg is detected against NSData provided)
 
@@ -339,7 +350,10 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 
 - (void)dealloc
 {
-    
+    // Delete any keys we generated or imported (as they should be transitory)
+    if (_publicKeyIdentifier) {
+        [QredoCrypto deleteKeyInAppleKeychainWithIdentifier:_publicKeyIdentifier];
+    }
 }
 
 - (QredoRendezvousAuthenticationType)type

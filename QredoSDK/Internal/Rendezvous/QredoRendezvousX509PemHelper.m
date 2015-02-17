@@ -13,8 +13,8 @@
 
 @implementation QredoAbstractRendezvousX509PemHelper
 
-// TODO: DH - confirm the salt length used for X.509 authenticated rendezvous
-const NSInteger kX509AuthenticatedRendezvousSaltLength = 8;
+// Salt length for RSA PSS signing (related to hash length)
+const NSInteger kX509AuthenticatedRendezvousSaltLength = 32;
 static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
 // TODO: DH - confirm the minimum length of X.509 authentication tag (i.e. single certificate with RSA 2048 bit Public key)
