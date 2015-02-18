@@ -474,10 +474,12 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     protocol.dataSource = protocolDelegate;
     
     
+    // Starting the protocol and send presentation request
+    // ---------------------------------------------------
+    
     __block QredoConversationMessage *message = nil;
     __block QredoPresentationRequest *presentationRequest = nil;
     __block NSException *exception = nil;
-    
     
     __block XCTestExpectation *protocolStartsExpectation = [self expectationWithDescription:@"Protocol starts"];
     
@@ -513,6 +515,9 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     XCTAssert([presentationRequest.requestedAttestationTypes containsObject:@"dob"]);
     XCTAssertNil(exception);
     
+    
+    // Recive presentation and send authenticaion request
+    // --------------------------------------------------
     
     __block QredoPresentation *alicePresentation = nil;
     __block QredoPresentation *receivedPresentation = nil;
@@ -594,6 +599,9 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     XCTAssert([protocol canAcceptOrRejct]);
     
     
+    // Recive presentation request and wait for Bob's choice
+    // -----------------------------------------------------
+    
     __block QredoAuthenticationResponse *authenticationResponse = nil;
     
     __block XCTestExpectation *protocolReceivsAuthenticationsExpectation = [self expectationWithDescription:@"Protocol receives the authenticaiont results"];
@@ -643,6 +651,9 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     XCTAssertNotNil(authenticationResponse);
     // TODO [GR]: Add more tests
     
+    
+    // Bob makes a choice and the protocol finishes
+    // --------------------------------------------
     
     __block NSString *bobsChoiceString = nil;
     
