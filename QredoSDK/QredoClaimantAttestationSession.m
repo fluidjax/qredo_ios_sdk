@@ -103,10 +103,11 @@
 
 #pragma mark - Data Source
 
-- (QredoAuthenticationProtocol *)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-                             authenticationProtocolWithError:(NSError **)error
+- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
+                authenticateRequest:(QredoAuthenticationRequest *)authenticationRequest
+                      authenticator:(NSString *)authenticator
+                  completionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)completionHandler;
 {
-    return nil;
 }
 
 

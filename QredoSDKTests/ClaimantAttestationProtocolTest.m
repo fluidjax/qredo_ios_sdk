@@ -191,70 +191,6 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 
 
 //===============================================================================================================
-#pragma mark - Authentication protocol mock -
-//===============================================================================================================
-
-
-@interface ClaimantAttestationProtocolTest_AuthenticationProtocol : QredoAuthenticationProtocol
-
-@property (nonatomic) QredoConversation *conversationUsed;
-
-@property (nonatomic, copy) void(^onSendAuthenticationRequest)(QredoAuthenticationRequest *authenticationRequest);
-
-- (void)finishWithResponseWithBlock:(QredoAuthenticationResponse *(^)())authenticationResponseBlock;
-- (void)finishWithError:(NSError *)error;
-
-@end
-
-@implementation ClaimantAttestationProtocolTest_AuthenticationProtocol
-
-- (instancetype)initWithConversation:(QredoConversation *)conversation
-{
-    self = [super initWithConversation:conversation];
-    if (self) {
-        self.conversationUsed = conversation;
-    }
-    return self;
-}
-
-- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
-{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        
-        [self.delegate qredoAuthenticationProtocolDidSendClaims:self];
-        
-        if (self.onSendAuthenticationRequest) {
-            self.onSendAuthenticationRequest(authenticationRequest);
-        }
-        
-    });
-    
-}
-
-- (void)finishWithResponseWithBlock:(QredoAuthenticationResponse *(^)())authenticationResponseBlock
-{
-    QredoAuthenticationResponse *authenticationResponse = !authenticationResponseBlock ? nil : (
-        authenticationResponseBlock()
-    );
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.delegate qredoAuthenticationProtocol:self didFinishWithResults:authenticationResponse];
-    });
-}
-
-- (void)finishWithError:(NSError *)error
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.delegate qredoAuthenticationProtocol:self didFailWithError:error];
-    });
-}
-
-@end
-
-typedef ClaimantAttestationProtocolTest_AuthenticationProtocol AuthenticationProtocol;
-
-
-
-//===============================================================================================================
 #pragma mark - Delegate and datasource -
 //===============================================================================================================
 
@@ -269,7 +205,7 @@ typedef ClaimantAttestationProtocolTest_AuthenticationProtocol AuthenticationPro
 @property (nonatomic, copy) void(^didFinishSendingRelyingPartyChoice)(QredoClaimantAttestationProtocol *protocol);
 @property (nonatomic, copy) void(^didFinishWithError)(QredoClaimantAttestationProtocol *protocol, NSError *error);
 
-@property (nonatomic, copy) QredoAuthenticationProtocol *(^authenticationProtocolWithError)(QredoClaimantAttestationProtocol *protocol, NSError **error);
+@property (nonatomic, copy) void(^authenticateRequest)(QredoClaimantAttestationProtocol *protocol,QredoAuthenticationRequest *authenticationRequest, NSString *authenticator, QredoClaimantAttestationProtocolAuthenticationCompletionHandler completionHandler);
 
 @end
 
@@ -330,14 +266,14 @@ typedef ClaimantAttestationProtocolTest_AuthenticationProtocol AuthenticationPro
     }
 }
 
-
-- (QredoAuthenticationProtocol *)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-                             authenticationProtocolWithError:(NSError **)error
+- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
+                authenticateRequest:(QredoAuthenticationRequest *)authenticationRequest
+                      authenticator:(NSString *)authenticator
+                  completionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)completionHandler
 {
-    if (self.authenticationProtocolWithError) {
-        return self.authenticationProtocolWithError(protocol, error);
+    if (self.authenticateRequest) {
+        self.authenticateRequest(protocol, authenticationRequest, authenticator, completionHandler);
     }
-    return nil;
 }
 
 @end
@@ -357,6 +293,10 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
 @property (nonatomic) QredoConversation *conversation;
 
 @property (nonatomic, copy) void (^rendezvousResponseHandler)(QredoConversation *conversation);
+
+- (void)finishAuthenticationWithCompletionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)complitionHandler
+                                            block:(QredoAuthenticationResponse *(^)())authenticationResponseBlock
+                                       errorBlock:(NSError *(^)())errorBlock;
 
 @end
 
@@ -432,6 +372,16 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
     }
 }
 
+
+- (void)finishAuthenticationWithCompletionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)complitionHandler
+                                            block:(QredoAuthenticationResponse *(^)())authenticationResponseBlock
+                                       errorBlock:(NSError *(^)())errorBlock
+{
+    QredoAuthenticationResponse *response = authenticationResponseBlock ? authenticationResponseBlock() : nil;
+    NSError *error = errorBlock ? errorBlock() : nil;
+    complitionHandler(response, error);
+    
+}
 
 #pragma mark QredoRendezvousDelegate
 
@@ -513,15 +463,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 
 - (void)testNormalFlow
 {
-    AuthenticationProtocol *authenticationProtocol = [[AuthenticationProtocol alloc] initWithConversation:nil];
-    
     ProtocolDelegate *protocolDelegate = [[ProtocolDelegate alloc] init];
-    [protocolDelegate setAuthenticationProtocolWithError:^QredoAuthenticationProtocol *(QredoClaimantAttestationProtocol *protocol, NSError **error)
-     {
-         return authenticationProtocol;
-     }];
-    
-    
     
     QredoClaimantAttestationProtocol *protocol
     = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
@@ -544,21 +486,24 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
         [protocolStartsExpectation fulfill];
     }];
     
-    __block XCTestExpectation *aliceExepctation = [self expectationWithDescription:@"Alice recieves a presentation request"];
+    __block XCTestExpectation *aliceReceivesPresentationRequestExepctation = [self expectationWithDescription:@"Alice recieves a presentation request"];
     [self.alicesDevice setOnPresentationRequest:^(QredoConversationMessage *m, QredoPresentationRequest *pr, NSException *e)
      {
          message = m;
          presentationRequest = pr;
          exception = e;
-         [aliceExepctation fulfill];
+         [aliceReceivesPresentationRequestExepctation fulfill];
      }];
     
     [protocol start];
     
     [self waitForExpectationsWithTimeout:kDefaultExpectationTimeout handler:^(NSError *error) {
         protocolStartsExpectation = nil;
-        aliceExepctation = nil;
+        aliceReceivesPresentationRequestExepctation = nil;
     }];
+    
+    XCTAssert([protocol canCancel]);
+    XCTAssertFalse([protocol canAcceptOrRejct]);
 
     
     XCTAssertNotNil(message);
@@ -573,6 +518,8 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     __block QredoPresentation *receivedPresentation = nil;
     __block QredoAuthenticationRequest *authenticationRequest = nil;
     
+    __block QredoClaimantAttestationProtocolAuthenticationCompletionHandler authenticationCompletionHandler = nil;
+    
     
     __block XCTestExpectation *protocolReceivesPresentationExpectation = [self expectationWithDescription:@"Protocol receives presentation"];
     [protocolDelegate setDidRecivePresentations:^(QredoClaimantAttestationProtocol *p, QredoPresentation *pres) {
@@ -582,11 +529,12 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     }];
     
     __block XCTestExpectation *authenticationRequestExpectation = [self expectationWithDescription:@"Has send authentication request"];
-    [authenticationProtocol setOnSendAuthenticationRequest:^(QredoAuthenticationRequest *ar) {
+    [protocolDelegate setAuthenticateRequest:^(QredoClaimantAttestationProtocol *p, QredoAuthenticationRequest *ar, NSString *authenticator, QredoClaimantAttestationProtocolAuthenticationCompletionHandler compHandler) {
         authenticationRequest = ar;
+        authenticationCompletionHandler = compHandler;
         [authenticationRequestExpectation fulfill];
     }];
-    
+
     __block XCTestExpectation *aliceHasSentPresentationExpectation = [self expectationWithDescription:@"Alice has sent presentation"];
     [self.alicesDevice sendPresentationWithBlock:^QredoPresentation *{
         
@@ -642,6 +590,10 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // TODO [GR]: Add more tests here.
 
     
+    XCTAssert([protocol canCancel]);
+    XCTAssert([protocol canAcceptOrRejct]);
+    
+    
     __block QredoAuthenticationResponse *authenticationResponse = nil;
     
     __block XCTestExpectation *protocolReceivsAuthenticationsExpectation = [self expectationWithDescription:@"Protocol receives the authenticaiont results"];
@@ -652,32 +604,37 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     }];
     
     __block QredoAuthenticationResponse *authenticatorAuthenticationResponse = nil;
-    [authenticationProtocol finishWithResponseWithBlock:^QredoAuthenticationResponse *{
-        
-        NSMutableArray *credentialValidationResults = [NSMutableArray new];
-        
-        for (QredoClaimMessage *claimMessage in authenticationRequest.claimMessages) {
-            
-            QredoAuthenticationCode *claimHash = claimMessage.claimHash;
-            QredoCredentialValidationResult *validationResult = [QredoCredentialValidationResult credentialValidity];
-            
-            QredoAuthenticatedClaim *authenticatedClaim
-            = [[QredoAuthenticatedClaim alloc] initWithValidity:validationResult
-                                                      claimHash:claimHash
-                                                   attesterInfo:nil];
-            
-            [credentialValidationResults addObject:authenticatedClaim];
-            
-        }
-        
-        authenticatorAuthenticationResponse
-        = [[QredoAuthenticationResponse alloc] initWithCredentialValidationResults:credentialValidationResults
-                                                                      sameIdentity:YES
-                                                            authenticatorCertChain:[NSData new]
-                                                                         signature:[NSData new]];
-        
-        return authenticatorAuthenticationResponse;
-    }];
+    [self.bobHelper finishAuthenticationWithCompletionHandler:authenticationCompletionHandler
+                                                        block:^QredoAuthenticationResponse *
+     {
+         NSMutableArray *credentialValidationResults = [NSMutableArray new];
+         
+         for (QredoClaimMessage *claimMessage in authenticationRequest.claimMessages) {
+             
+             QredoAuthenticationCode *claimHash = claimMessage.claimHash;
+             QredoCredentialValidationResult *validationResult = [QredoCredentialValidationResult credentialValidity];
+             
+             QredoAuthenticatedClaim *authenticatedClaim
+             = [[QredoAuthenticatedClaim alloc] initWithValidity:validationResult
+                                                       claimHash:claimHash
+                                                    attesterInfo:nil];
+             
+             [credentialValidationResults addObject:authenticatedClaim];
+             
+         }
+         
+         authenticatorAuthenticationResponse
+         = [[QredoAuthenticationResponse alloc] initWithCredentialValidationResults:credentialValidationResults
+                                                                       sameIdentity:YES
+                                                             authenticatorCertChain:[NSData new]
+                                                                          signature:[NSData new]];
+         
+         return authenticatorAuthenticationResponse;
+     }
+                                                   errorBlock:^NSError *
+     {
+         return nil;
+     }];
     
     [self waitForExpectationsWithTimeout:kDefaultExpectationTimeout handler:^(NSError *error) {
         protocolReceivsAuthenticationsExpectation = nil;

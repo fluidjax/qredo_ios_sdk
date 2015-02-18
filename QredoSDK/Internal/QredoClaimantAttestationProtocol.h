@@ -11,12 +11,14 @@
 
 
 
-//=======================================
+//==============================================================================================================
 #pragma mark - Delegate and data source -
-//=======================================
+//==============================================================================================================
 
 
 @protocol QredoClaimantAttestationProtocolDelegate <NSObject>
+
+@optional
 
 - (void)didStartClaimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol;
 
@@ -39,18 +41,22 @@
 
 @end
 
+typedef void(^QredoClaimantAttestationProtocolAuthenticationCompletionHandler)(QredoAuthenticationResponse *response, NSError *error);
+
 @protocol QredoClaimantAttestationProtocolDataSource <NSObject>
 
-- (QredoAuthenticationProtocol *)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-                             authenticationProtocolWithError:(NSError **)error;
+- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
+                authenticateRequest:(QredoAuthenticationRequest *)authenticationRequest
+                      authenticator:(NSString *)authenticator
+                  completionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)completionHandler;
 
 @end
 
 
 
-//=======================
+//==============================================================================================================
 #pragma mark - Protocol -
-//=======================
+//==============================================================================================================
 
 
 @protocol QredoClaimantAttestationProtocolEvents <NSObject>
@@ -63,8 +69,6 @@
 
 - (void)presentationRequestPublishedWithError:(NSError *)error;
 
-- (void)authenticationResultsRecievedWithError:(NSError *)error;
-
 - (void)relyingPartyChioiceSentWithError:(NSError *)error;
 
 - (void)conversationCanceledWithError:(NSError *)error;
@@ -72,14 +76,25 @@
 @end
 
 
-//------------
+//--------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-@interface QredoClaimantAttestationState : QredoConversationProtocolCancelableState<QredoClaimantAttestationProtocolEvents>
+@protocol QredoClaimantAttestationProtocolInfoMethods <NSObject>
+
+- (BOOL)canCancel;
+- (BOOL)canAcceptOrRejct;
+
 @end
 
 
-//------------
+//--------------------------------------------------------------------------------------------------------------
+#pragma mark -
+
+@interface QredoClaimantAttestationState : QredoConversationProtocolCancelableState<QredoClaimantAttestationProtocolEvents, QredoClaimantAttestationProtocolInfoMethods>
+@end
+
+
+//--------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 @interface QredoClaimantAttestationProtocol : QredoConversationProtocol
@@ -95,7 +110,7 @@
 @end
 
 
-@interface QredoClaimantAttestationProtocol(Events)<QredoClaimantAttestationProtocolEvents>
+@interface QredoClaimantAttestationProtocol(EventsAndInfo)<QredoClaimantAttestationProtocolEvents, QredoClaimantAttestationProtocolInfoMethods>
 @end
 
 

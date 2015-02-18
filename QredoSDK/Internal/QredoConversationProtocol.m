@@ -152,12 +152,19 @@
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
     [anInvocation retainArguments];
+    
+    if (![self.currentState respondsToSelector:[anInvocation selector]]) {
+        [super forwardInvocation:anInvocation];
+        return;
+    }
+    
+    if (anInvocation.methodSignature.methodReturnLength > 0) {
+        [anInvocation invokeWithTarget:self.currentState];
+        return;
+    }
+    
     dispatch_async(self.protocolQueue, ^{
-        if ([self.currentState respondsToSelector:[anInvocation selector]]) {
-            [anInvocation invokeWithTarget:self.currentState];
-        } else {
-            [super forwardInvocation:anInvocation];
-        }
+        [anInvocation invokeWithTarget:self.currentState];
     });
 }
 
