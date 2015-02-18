@@ -238,6 +238,8 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         return nil;
     }
     
+    // TODO: DH - Can signature length be used to validate key lengths?
+
     NSData *signature = nil;
     
     if (self.keyPairRef) {
@@ -385,6 +387,8 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     if (!rendezvousData) {
         return NO;
     }
+    
+    // TODO: DH - Can signature length be used to validate key lengths?
 
     BOOL signatureIsValid = [QredoCrypto rsaPssVerifySignature:signatureData forMessage:rendezvousData saltLength:kRsaAuthenticatedRendezvousSaltLength keyRef:_publicKeyRef];
     

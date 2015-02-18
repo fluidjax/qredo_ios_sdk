@@ -5,10 +5,6 @@
 #import <Foundation/Foundation.h>
 #import "QredoRendezvousRsaPemCommonHelper.h"
 
-//@interface QredoRendezvousRsa4096PemHelper : QredoRendezvousRsaPemCommonHelper
-//
-//@end
-//
 @interface QredoRendezvousRsa4096PemCreateHelper : QredoRendezvousRsaPemCreateHelper<QredoRendezvousCreatePrivateHelper>
 @end
 
