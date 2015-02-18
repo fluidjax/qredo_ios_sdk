@@ -460,6 +460,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 }
 
 
+#pragma mark Tests
 
 - (void)testNormalFlow
 {
