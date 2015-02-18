@@ -18,6 +18,7 @@
 
 
 typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
+    QredoAuthenticationStatusWaitingAuthentication,
     QredoAuthenticationStatusAuthenticating,
     QredoAuthenticationStatusReceivedResult,
     QredoAuthenticationStatusFailed

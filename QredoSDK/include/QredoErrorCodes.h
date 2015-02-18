@@ -35,6 +35,7 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
 
     // Conversation protocol errors
     QredoErrorCodeConversationProtocolUnknown = 5000,
+    QredoErrorCodeConversationProtocolWrongState,
     QredoErrorCodeConversationProtocolCancelledByOtherSide,
     QredoErrorCodeConversationProtocolUnexpectedMessageType,
     QredoErrorCodeConversationProtocolReceivedMalformedData,

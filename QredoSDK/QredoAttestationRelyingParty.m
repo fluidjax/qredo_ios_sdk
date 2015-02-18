@@ -22,6 +22,9 @@
     self.rendezvous = rendezvous;
     self.rendezvous.delegate = self;
 
+    self.metadata = [[QredoAttestationRelyingPartyMetadata alloc] init];
+    self.metadata.tag = self.rendezvous.tag;
+
     return self;
 }
 
