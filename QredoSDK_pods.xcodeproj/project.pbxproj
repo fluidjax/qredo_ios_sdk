@@ -831,6 +831,7 @@
 			buildConfigurationList = 0A16F8CF19C358B400639779 /* Build configuration list for PBXNativeTarget "QredoSDK" */;
 			buildPhases = (
 				A4D230993ACB1C91984416F9 /* Check Pods Manifest.lock */,
+				DCCB414C1A94E57D00FEFE04 /* ShellScript */,
 				0A16F8BC19C358B400639779 /* Sources */,
 				0A16F8BD19C358B400639779 /* Frameworks */,
 				0A16F8BE19C358B400639779 /* CopyFiles */,
@@ -850,6 +851,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A16F8D219C358B400639779 /* Build configuration list for PBXNativeTarget "QredoSDKTests" */;
 			buildPhases = (
+				DCCB414D1A94E5BE00FEFE04 /* ShellScript */,
 				0A16F8C719C358B400639779 /* Sources */,
 				0A16F8C819C358B400639779 /* Frameworks */,
 				0A16F8C919C358B400639779 /* Resources */,
@@ -868,6 +870,7 @@
 			buildConfigurationList = 0A6573C11A2DE88100D5502E /* Build configuration list for PBXNativeTarget "CryptoTests" */;
 			buildPhases = (
 				F44EE6B232E54EAD1EB532F7 /* Check Pods Manifest.lock */,
+				DCCB414E1A94E5CA00FEFE04 /* ShellScript */,
 				0A6573B21A2DE88100D5502E /* Sources */,
 				0A6573B31A2DE88100D5502E /* Frameworks */,
 				0A6573B41A2DE88100D5502E /* Resources */,
@@ -888,6 +891,7 @@
 			buildConfigurationList = 0A6573E41A2DEBA300D5502E /* Build configuration list for PBXNativeTarget "LinguaFrancaTests" */;
 			buildPhases = (
 				195D91B54897DC81CC9DD289 /* Check Pods Manifest.lock */,
+				DCCB414F1A94E5D900FEFE04 /* ShellScript */,
 				0A6573DA1A2DEBA300D5502E /* Sources */,
 				0A6573DB1A2DEBA300D5502E /* Frameworks */,
 				0A6573DC1A2DEBA300D5502E /* Resources */,
@@ -906,6 +910,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0AD259911A2F98F300FC8942 /* Build configuration list for PBXNativeTarget "KeychainTransporterTestUI" */;
 			buildPhases = (
+				DCCB41501A94E5EC00FEFE04 /* ShellScript */,
 				0AD259711A2F98F300FC8942 /* Sources */,
 				0AD259721A2F98F300FC8942 /* Frameworks */,
 				0AD259731A2F98F300FC8942 /* Resources */,
@@ -1061,6 +1066,71 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CryptoTests/Pods-CryptoTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		DCCB414C1A94E57D00FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
+		DCCB414D1A94E5BE00FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
+		DCCB414E1A94E5CA00FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
+		DCCB414F1A94E5D900FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
+		DCCB41501A94E5EC00FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
 		};
 		DF3B137B78C6BFD1A7DF97BC /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
