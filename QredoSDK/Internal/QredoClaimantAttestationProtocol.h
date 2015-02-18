@@ -69,7 +69,7 @@ typedef void(^QredoClaimantAttestationProtocolAuthenticationCompletionHandler)(Q
 
 - (void)presentationRequestPublishedWithError:(NSError *)error;
 
-- (void)relyingPartyChioiceSentWithError:(NSError *)error;
+- (void)relyingPartyChoiceSentWithError:(NSError *)error;
 
 - (void)conversationCanceledWithError:(NSError *)error;
 

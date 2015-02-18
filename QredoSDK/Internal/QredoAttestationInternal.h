@@ -15,7 +15,7 @@ typedef NS_ENUM(NSUInteger, QredoAttestationErrorCode) {
     QredoAttestationErrorCodePresentationMessageDoesNotHaveValue,
     QredoAttestationErrorCodePresentationMessageHasCorruptValue,
     
-    QredoAttestationErrorCodeAuthenticationFaild,
+    QredoAttestationErrorCodeAuthenticationFailed,
     
     
 };

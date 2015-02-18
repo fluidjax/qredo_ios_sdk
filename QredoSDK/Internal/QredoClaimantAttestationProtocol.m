@@ -234,7 +234,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
      }];
 }
 
-- (void)relyingPartyChioiceSentWithError:(NSError *)error
+- (void)relyingPartyChoiceSentWithError:(NSError *)error
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
@@ -544,7 +544,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     
     
     NSError *error = nil;
-    updateQredoClaimantAttestationProtocolError(&error, QredoAttestationErrorCodeAuthenticationFaild, nil);
+    updateQredoClaimantAttestationProtocolError(&error, QredoAttestationErrorCodeAuthenticationFailed, nil);
     [protocol authenticationFinishedWithResponse:nil error:error];
 }
 
@@ -612,7 +612,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 {
     [super didEnter];
     [self sendRelyingPartyChoiceWithCompletionHandler:^(NSError *error) {
-        [self.claimantAttestationProtocol relyingPartyChioiceSentWithError:error];
+        [self.claimantAttestationProtocol relyingPartyChoiceSentWithError:error];
     }];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
                                          didStartSendingRelyingPartyChoice:self.claimsAccepted];
@@ -620,7 +620,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 #pragma mark Events
 
-- (void)relyingPartyChioiceSentWithError:(NSError *)error
+- (void)relyingPartyChoiceSentWithError:(NSError *)error
 {
     if (error) {
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
@@ -726,7 +726,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)reject {}
 - (void)cancel {}
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
-- (void)relyingPartyChioiceSentWithError:(NSError *)error {}
+- (void)relyingPartyChoiceSentWithError:(NSError *)error {}
 
 - (void)conversationCanceledWithError:(NSError *)error
 {
@@ -783,7 +783,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)reject {}
 - (void)cancel {}
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
-- (void)relyingPartyChioiceSentWithError:(NSError *)error {}
+- (void)relyingPartyChoiceSentWithError:(NSError *)error {}
 - (void)conversationCanceledWithError:(NSError *)error {}
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
@@ -817,7 +817,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)reject {}
 - (void)cancel {}
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
-- (void)relyingPartyChioiceSentWithError:(NSError *)error {}
+- (void)relyingPartyChoiceSentWithError:(NSError *)error {}
 - (void)conversationCanceledWithError:(NSError *)error {}
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
