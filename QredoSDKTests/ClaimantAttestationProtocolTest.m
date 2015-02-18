@@ -490,7 +490,8 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     }];
     
     __block XCTestExpectation *aliceReceivesPresentationRequestExepctation = [self expectationWithDescription:@"Alice recieves a presentation request"];
-    [self.alicesDevice setOnPresentationRequest:^(QredoConversationMessage *m, QredoPresentationRequest *pr, NSException *e)
+    [self.alicesDevice setOnPresentationRequest:^(QredoConversationMessage *m,
+                                                  QredoPresentationRequest *pr, NSException *e)
      {
          message = m;
          presentationRequest = pr;
@@ -535,7 +536,10 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     }];
     
     __block XCTestExpectation *authenticationRequestExpectation = [self expectationWithDescription:@"Has send authentication request"];
-    [protocolDelegate setAuthenticateRequest:^(QredoClaimantAttestationProtocol *p, QredoAuthenticationRequest *ar, NSString *authenticator, QredoClaimantAttestationProtocolAuthenticationCompletionHandler compHandler) {
+    [protocolDelegate setAuthenticateRequest:^(QredoClaimantAttestationProtocol *p,
+                                               QredoAuthenticationRequest *ar,
+                                               NSString *authenticator,
+                                               QredoClaimantAttestationProtocolAuthenticationCompletionHandler compHandler) {
         authenticationRequest = ar;
         authenticationCompletionHandler = compHandler;
         [authenticationRequestExpectation fulfill];
@@ -606,7 +610,8 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     __block QredoAuthenticationResponse *authenticationResponse = nil;
     
     __block XCTestExpectation *protocolReceivsAuthenticationsExpectation = [self expectationWithDescription:@"Protocol receives the authenticaiont results"];
-    [protocolDelegate setDidReciveAuthentications:^(QredoClaimantAttestationProtocol *p, QredoAuthenticationResponse *ar) {
+    [protocolDelegate setDidReciveAuthentications:^(QredoClaimantAttestationProtocol *p,
+                                                    QredoAuthenticationResponse *ar) {
         XCTAssertEqual(protocol, p);
         authenticationResponse = ar;
         [protocolReceivsAuthenticationsExpectation fulfill];
