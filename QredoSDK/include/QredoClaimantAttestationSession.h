@@ -44,6 +44,7 @@ typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
 @required
 - (void)qredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession didReceiveClaims:(NSArray /* QredoClaim */ *)claims;
 - (void)qredoClaimantAttestationSessionDidFinishAuthentication:(QredoClaimantAttestationSession *)claimantSession;
+- (void)qredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession didFailWithError:(NSError *)error;
 
 @optional
 - (void)qredoClaimantAttestationSession:(QredoClaimantAttestationSession*)claimantSession claim:(QredoClaim *)claim didChangeStatusTo:(QredoAuthenticationStatus)status;

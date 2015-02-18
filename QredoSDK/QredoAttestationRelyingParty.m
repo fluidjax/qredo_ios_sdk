@@ -7,12 +7,12 @@
 #import "QredoClaimantAttestationSessionPrivate.h"
 
 
-@implementation QredoAttestationRelyingPartyMetadata : NSObject
+@implementation QredoAttestationRelyingPartyMetadata
 
 @end
 
 
-@implementation QredoAttestationRelyingParty : NSObject
+@implementation QredoAttestationRelyingParty
 
 - (instancetype)initWithRendezvous:(QredoRendezvous *)rendezvous
 {
@@ -52,7 +52,7 @@
 
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
-    // TODO:
+    NSLog(@"received response on rendezvous");
     QredoClaimantAttestationSession *attestationSession = [[QredoClaimantAttestationSession alloc] initWithConversation:conversation
                                                                                                        attestationTypes:nil
                                                                                                           authenticator:nil];

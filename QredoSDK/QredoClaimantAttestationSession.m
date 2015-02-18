@@ -13,7 +13,7 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA11";
 @implementation QredoAuthenticationResult
 @end
 
-@implementation QredoClaim : NSObject
+@implementation QredoClaim
 @end
 
 
@@ -131,7 +131,7 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA11";
         claim.authenticationStatus = QredoAuthenticationStatusWaitingAuthentication;
 
         [claims addObject:claim];
-        [hashes setObject:claims forKey:attestation.credential.hashedClaim];
+        [hashes setObject:claim forKey:attestation.credential.hashedClaim];
     }
 
     // making immutable copies
@@ -181,14 +181,22 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA11";
 {
     // call completionHandler from cancelWithCompletionHandler and return
 
+    BOOL notifiedCompletionHandler = NO;
+
     if (cancelCompletionHandler) {
         cancelCompletionHandler(error);
         cancelCompletionHandler = nil;
+        notifiedCompletionHandler = YES;
     }
 
     if (sendResultsCompletionHandler) {
         sendResultsCompletionHandler(error);
         sendResultsCompletionHandler = nil;
+        notifiedCompletionHandler = YES;
+    }
+
+    if (!notifiedCompletionHandler && error) {
+        [self.delegate qredoClaimantAttestationSession:self didFailWithError:error];
     }
 }
 
