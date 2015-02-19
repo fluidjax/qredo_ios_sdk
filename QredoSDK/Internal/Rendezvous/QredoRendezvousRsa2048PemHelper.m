@@ -35,19 +35,13 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
     self = [super initWithFullTag:fullTag
                            crypto:crypto
                    signingHandler:signingHandler
-                             type:QredoRendezvousAuthenticationTypeRsa4096Pem
+                             type:QredoRendezvousAuthenticationTypeRsa2048Pem
                       keySizeBits:kRsa2048KeyLengthBits
    minimumAuthenticationTagLength:kMinRsa2048AuthenticationTagLength error:error];
     if (self) {
         
     }
     return self;
-}
-
-- (QredoRendezvousAuthenticationType)type
-{
-    // TODO: DH - see whether can make a common (parent?) method between create and respond helpers
-    return QredoRendezvousAuthenticationTypeRsa2048Pem;
 }
 
 - (NSString *)tag
@@ -57,7 +51,6 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
 
 - (QredoRendezvousAuthSignature *)emptySignature
 {
-    // TODO: DH - see whether can make a common (parent?) method between create and respond helpers
     NSData *emptySignatureData = [super emptySignatureData];
     return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:emptySignatureData];
 }
@@ -66,7 +59,11 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
 {
     NSData *signatureData = [super signatureForData:data error:error];
     
-    // TODO: DH - check for error?
+    if (!signatureData || (error && *error)) {
+        LogError(@"Signature generation unsuccessful.");
+        return nil;
+    }
+    
     return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
 }
 
@@ -78,7 +75,7 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
 {
     self = [super initWithFullTag:fullTag
                            crypto:crypto
-                             type:QredoRendezvousAuthenticationTypeRsa4096Pem
+                             type:QredoRendezvousAuthenticationTypeRsa2048Pem
                       keySizeBits:kRsa2048KeyLengthBits
    minimumAuthenticationTagLength:kMinRsa2048AuthenticationTagLength
                             error:error];
@@ -88,11 +85,6 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
     return self;
 }
 
-- (QredoRendezvousAuthenticationType)type
-{
-    return QredoRendezvousAuthenticationTypeRsa2048Pem;
-}
-
 - (NSString *)tag
 {
     return super.authenticatedRendezvousTag.fullTag;
@@ -100,7 +92,6 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
 
 - (QredoRendezvousAuthSignature *)emptySignature
 {
-    // TODO: DH - see whether can make a common (parent?) method between create and respond helpers
     NSData *emptySignatureData = [super emptySignatureData];
     return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:emptySignatureData];
 }

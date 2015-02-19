@@ -9,10 +9,9 @@
 #import "QredoLogging.h"
 #import "NSData+QredoRandomData.h"
 
-// TODO: DH - ensure all key sizes are removed from this class
 @implementation QredoAbstractRendezvousRsaPemHelper
 
-// Salt length for RSA PSS signing of authenticated rendezvous (related to hash length)
+// Salt length for RSA PSS signing of authenticated rendezvous (related to hash length, we use SHA256)
 const NSInteger kRsaAuthenticatedRendezvousSaltLength = 32;
 
 static const NSUInteger kRandomKeyIdentifierLength = 32;
@@ -28,12 +27,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     return self;
 }
 
-//- (QredoRendezvousAuthenticationType)type
-//{
-//    return QredoRendezvousAuthenticationTypeRsa2048Pem;
-//}
-
-// TODO: DH - ensure that empty signature is implemented in child classes (make part of the protocol?)
 - (NSData *)emptySignatureData
 {
     // Empty Signature is just a placeholder of the correct size for a real signature, which for RSA is equal to key size (in bits)
@@ -65,7 +58,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     // Convert the Authentication Tag (PEM encoded RSA key) to DER data (PKCS#1 format)
     // Import the DER data into Keychain and get a SecKeyRef out, which gets returned.
     
-    // TODO: DH - How to validate the key is expected length?
+    // TODO: DH - How to validate the key is expected length? Apple doesn't expose that info?
     
     // Get the DER formatted public key from the PEM string
     // Note: This only converts from PEM to DER - doesn't validate which DER format it is.
@@ -80,8 +73,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     
     // Handle possibility of getting X.509 DER encoded Public Key Data - we need it in PKCS#1 format
     NSData *publicKeyPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyData];
-    
-    // TODO: DH - ensure that self.keySizeBits is always initialised
     
     // Import the PKCS1 DER encoded public key data into Apple Keychain (gets us the SecKeyRef for signing/verify)
     publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyPkcs1Data
@@ -104,7 +95,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 
 @interface QredoRendezvousRsaPemCreateHelper ()
 
-//@property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @property (nonatomic, copy) NSString *publicKeyIdentifier;
 @property (nonatomic, copy) NSString *privateKeyIdentifier;
 @property (nonatomic, strong) QredoSecKeyRefPair *keyPairRef; // Used for Internally generated keys
@@ -212,22 +202,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     }
 }
 
-- (QredoRendezvousAuthenticationType)type
-{
-    return super.type;
-}
-
-- (NSString *)tag
-{
-    return self.authenticatedRendezvousTag.fullTag;
-}
-
-// TODO: DH - deal with empty signature
-//- (QredoRendezvousAuthSignature *)emptySignature
-//{
-//    return [super emptySignature];
-//}
-
 - (NSData *)signatureForData:(NSData *)data error:(NSError **)error
 {
     if (!data) {
@@ -238,7 +212,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         return nil;
     }
     
-    // TODO: DH - Can signature length be used to validate key lengths?
+    // TODO: DH - Can signature length be used to validate key lengths? Bit late though after creating the helper
 
     NSData *signature = nil;
     
@@ -274,6 +248,9 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         
         if (!signatureValid) {
             LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
+            }
             return nil;
         }
     }
@@ -286,7 +263,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 
 @interface QredoRendezvousRsaPemRespondHelper ()
 
-//@property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @property (nonatomic, copy) NSString *publicKeyIdentifier;
 @property (nonatomic, assign) SecKeyRef publicKeyRef;
 
@@ -322,8 +298,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
             return nil;
         }
         
-        // TODO: DH - ensure that minimumAuthenticationTagLength is configured
-        
         if (_authenticatedRendezvousTag.authenticationTag.length < super.minimumAuthenticationTagLength) {
             LogError(@"Invalid authentication tag length: %ld. Minimum tag length for %ld-bit RSA authenticated tag: %ld",
                      fullTag.length,
@@ -358,22 +332,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     }
 }
 
-- (QredoRendezvousAuthenticationType)type
-{
-    return super.type;
-}
-
-- (NSString *)tag
-{
-    return self.authenticatedRendezvousTag.fullTag;
-}
-
-// TODO: DH - deal with empty signature
-//- (QredoRendezvousAuthSignature *)emptySignature
-//{
-//    return [super emptySignature];
-//}
-
 - (BOOL)isSignatureDataValid:(NSData *)signatureData rendezvousData:(NSData *)rendezvousData
 {
     if (!signatureData) {
@@ -388,7 +346,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         return NO;
     }
     
-    // TODO: DH - Can signature length be used to validate key lengths?
+    // TODO: DH - Can signature length be used to validate key lengths? Bit late though after creating the helper
 
     BOOL signatureIsValid = [QredoCrypto rsaPssVerifySignature:signatureData forMessage:rendezvousData saltLength:kRsaAuthenticatedRendezvousSaltLength keyRef:_publicKeyRef];
     

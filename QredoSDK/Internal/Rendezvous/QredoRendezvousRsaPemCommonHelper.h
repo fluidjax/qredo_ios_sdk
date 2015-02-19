@@ -12,6 +12,7 @@ extern const NSInteger kRsaAuthenticatedRendezvousSaltLength;
 @interface QredoAbstractRendezvousRsaPemHelper : QredoAbstractRendezvousHelper
 
 // TODO: DH - look at moving some of these things into a separate protocol (as we're manually duplicating elements from a protocol the child implements)
+// TODO: DH - put into a private header
 - (instancetype)initWithCrypto:(id<CryptoImpl>)crypto type:(QredoRendezvousAuthenticationType)type keySizeBits:(NSUInteger)keySizeBits minimumAuthenticationTagLength:(NSUInteger)minimumAuthenticationTagLength;
 - (NSData *)emptySignatureData;
 

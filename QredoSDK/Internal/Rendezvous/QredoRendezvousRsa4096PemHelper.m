@@ -39,15 +39,9 @@ static const NSUInteger kRsa4096KeyLengthBits = 4096;
                       keySizeBits:kRsa4096KeyLengthBits
    minimumAuthenticationTagLength:kMinRsa4096AuthenticationTagLength error:error];
     if (self) {
-
+        
     }
     return self;
-}
-
-- (QredoRendezvousAuthenticationType)type
-{
-    // TODO: DH - see whether can make a common (parent?) method between create and respond helpers
-    return QredoRendezvousAuthenticationTypeRsa4096Pem;
 }
 
 - (NSString *)tag
@@ -57,7 +51,6 @@ static const NSUInteger kRsa4096KeyLengthBits = 4096;
 
 - (QredoRendezvousAuthSignature *)emptySignature
 {
-    // TODO: DH - see whether can make a common (parent?) method between create and respond helpers
     NSData *emptySignatureData = [super emptySignatureData];
     return [QredoRendezvousAuthSignature rendezvousAuthRSA4096_PEMWithSignature:emptySignatureData];
 }
@@ -65,8 +58,12 @@ static const NSUInteger kRsa4096KeyLengthBits = 4096;
 - (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
     NSData *signatureData = [super signatureForData:data error:error];
-
-    // TODO: DH - check for error?
+    
+    if (!signatureData || (error && *error)) {
+        LogError(@"Signature generation unsuccessful.");
+        return nil;
+    }
+    
     return [QredoRendezvousAuthSignature rendezvousAuthRSA4096_PEMWithSignature:signatureData];
 }
 
@@ -83,14 +80,9 @@ static const NSUInteger kRsa4096KeyLengthBits = 4096;
    minimumAuthenticationTagLength:kMinRsa4096AuthenticationTagLength
                             error:error];
     if (self) {
-
+        
     }
     return self;
-}
-
-- (QredoRendezvousAuthenticationType)type
-{
-    return QredoRendezvousAuthenticationTypeRsa4096Pem;
 }
 
 - (NSString *)tag
@@ -100,7 +92,6 @@ static const NSUInteger kRsa4096KeyLengthBits = 4096;
 
 - (QredoRendezvousAuthSignature *)emptySignature
 {
-    // TODO: DH - see whether can make a common (parent?) method between create and respond helpers
     NSData *emptySignatureData = [super emptySignatureData];
     return [QredoRendezvousAuthSignature rendezvousAuthRSA4096_PEMWithSignature:emptySignatureData];
 }

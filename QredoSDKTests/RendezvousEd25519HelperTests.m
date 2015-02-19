@@ -64,15 +64,15 @@
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
-    NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     error = nil;
-    BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
     XCTAssertTrue(result);
     XCTAssertNil(error);
 }
@@ -122,15 +122,15 @@
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
-    NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     error = nil;
-    BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
     XCTAssertTrue(result);
     XCTAssertNil(error);
 }
@@ -247,10 +247,10 @@
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
-    NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -278,7 +278,7 @@
     QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
     
     error = nil;
-    BOOL result = [respondHelper isValidSignature:forgedSignature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:forgedSignature rendezvousData:dataToSign error:&error];
     XCTAssertFalse(result);
     XCTAssertNil(error);
 }
@@ -318,15 +318,15 @@
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
-    NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:data error:&error];
+    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     error = nil;
-    BOOL result = [respondHelper isValidSignature:signature rendezvousData:data error:&error];
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
     XCTAssertTrue(result);
     XCTAssertNil(error);
     
