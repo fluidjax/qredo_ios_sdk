@@ -6,6 +6,9 @@
 #import "QredoConversation.h"
 
 
+static NSString *const kDefaultCancelMessageType = @"com.qredo.attestation.cancel";
+
+
 
 //=========================
 #pragma mark - Interfaces -
@@ -85,7 +88,7 @@
 {
     self = [super init];
     if (self) {
-        self.cancelMessageType = @"com.qredo.attestation.cancel";
+        self.cancelMessageType = kDefaultCancelMessageType;
     }
     return self;
 }
