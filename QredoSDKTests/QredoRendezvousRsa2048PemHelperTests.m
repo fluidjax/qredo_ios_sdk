@@ -239,7 +239,6 @@
     NSString *prefix2 = @"MyOtherTestRendezVous";
     NSString *initialFullTag2 = [NSString stringWithFormat:@"%@@%@", prefix2, authenticationTag];
 
-    
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
         XCTAssertNotNil(data);
         NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem];
@@ -1034,6 +1033,60 @@
     NSData *rendezvousData = [@"dummy data" dataUsingEncoding:NSUTF8StringEncoding];
     NSData *signatureData = [[NSData alloc] init];
     QredoRendezvousAuthSignature *signature = [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
+    BOOL expectedValidity = NO;
+    
+    error = nil;
+    BOOL signatureValid = [respondHelper isValidSignature:signature
+                                           rendezvousData:rendezvousData
+                                                    error:&error];
+    XCTAssertEqual(signatureValid, expectedValidity);
+}
+
+- (void)testRespondHelper_Invalid_NilSignatureData
+{
+    NSError *error = nil;
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = TestKeyJavaSdkClient2048Pem;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    
+    NSData *rendezvousData = [@"dummy data" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *signatureData = nil;
+    QredoRendezvousAuthSignature *signature = [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
+    BOOL expectedValidity = NO;
+    
+    error = nil;
+    BOOL signatureValid = [respondHelper isValidSignature:signature
+                                           rendezvousData:rendezvousData
+                                                    error:&error];
+    XCTAssertEqual(signatureValid, expectedValidity);
+}
+
+- (void)testRespondHelper_Invalid_IncorrectSignatureType
+{
+    NSError *error = nil;
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = TestKeyJavaSdkClient2048Pem;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    
+    NSData *rendezvousData = [@"dummy data" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *signatureData = [[NSData alloc] init];
+    QredoRendezvousAuthSignature *signature = [QredoRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signatureData];
     BOOL expectedValidity = NO;
     
     error = nil;

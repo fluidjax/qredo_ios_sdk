@@ -17,8 +17,8 @@
 const NSInteger kX509AuthenticatedRendezvousSaltLength = 32;
 static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 
-// TODO: DH - confirm the minimum length of X.509 authentication tag (i.e. single certificate with RSA 2048 bit Public key)
-static const NSUInteger kMinX509AuthenticationTagLength = 1;
+// TODO: DH - confirm the minimum length of X.509 authentication tag (i.e. single certificate with RSA 2048 bit Public key) - 2048 bit key must be at least 256 bytes long, unsure how much certificate wrapping adds
+static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 - (QredoRendezvousAuthenticationType)type
 {
@@ -75,6 +75,13 @@ static const NSUInteger kMinX509AuthenticationTagLength = 1;
             return nil;
         }
 
+        if (fullTag.length < 1) {
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+        
         // Signing handler is mandatory for X.509 certs (cannot generate these internally)
         if (!signingHandler)
         {
@@ -154,6 +161,9 @@ static const NSUInteger kMinX509AuthenticationTagLength = 1;
     
     if (!signatureValid) {
         LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
+        if (error) {
+            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
+        }
         return nil;
     }
     else {
@@ -238,17 +248,20 @@ static const NSUInteger kMinX509AuthenticationTagLength = 1;
     [signature ifX509_PEM:^(NSData *signature) {
         signatureData = signature;
     } X509_PEM_SELFISGNED:^(NSData *signature) {
-        signatureData = nil;
     } ED25519:^(NSData *signature) {
-        signatureData = nil;
     } RSA2048_PEM:^(NSData *signature) {
-        signatureData = nil;
     } RSA4096_PEM:^(NSData *signature) {
-        signatureData = nil;
     } other:^{
-        signatureData = nil;
     }];
     
+    if (!signatureData) {
+        return NO;
+    }
+    
+    if (!rendezvousData) {
+        return NO;
+    }
+
     if ([signatureData length] < 1) {
         return NO;
     }
