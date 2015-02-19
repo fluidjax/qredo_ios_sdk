@@ -12,6 +12,7 @@
 #import "QredoLogging.h"
 #import "QredoClient.h"
 #import "QredoAuthenticatedRendezvousTag.h"
+#import "NSData+QredoRandomData.h"
 
 @interface QredoRendezvousRsa4096PemHelperTests : XCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
@@ -600,6 +601,49 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
 }
 
+- (void)testCreateHelper_Invalid_TooShortTag
+{
+    NSError *error = nil;
+    NSString *initialFullTag = @"@somethingtooshort";
+    signDataBlock signingHandler = nil;
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorAuthenticationTagInvalid);
+}
+
+- (void)testCreateHelper_Invalid_InvalidPublicKey
+{
+    NSError *error = nil;
+    NSString *prefix = @"MyTestRendezVous";
+    
+    // Authentication tag needs to be at least 753 bytes to enable it to try to be imported
+    NSString *authenticationTag = [[NSString alloc] initWithData:[NSData dataWithRandomBytesOfLength:573]
+                                                        encoding:NSUTF8StringEncoding]; // Min length check is 753 bytes
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    signDataBlock signingHandler = nil;
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorAuthenticationTagInvalid);
+}
+
 - (void)testCreateHelper_Invalid_MultipleAtsInTag
 {
     NSError *error = nil;
@@ -848,6 +892,44 @@
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
+}
+
+- (void)testRespondHelper_Invalid_TooShortTag
+{
+    NSError *error = nil;
+    NSString *initialFullTag = @"@somethingtooshort";
+    
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                              error:&error];
+    XCTAssertNil(respondHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorAuthenticationTagInvalid);
+}
+
+
+- (void)testRespondHelper_Invalid_InvalidPublicKey
+{
+    NSError *error = nil;
+    NSString *prefix = @"MyTestRendezVous";
+    
+    // Authentication tag needs to be at least 753 bytes to enable it to try to be imported
+    NSString *authenticationTag = [[NSString alloc] initWithData:[NSData dataWithRandomBytesOfLength:753]
+                                                        encoding:NSUTF8StringEncoding]; // Min length check is 753 bytes
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                              error:&error];
+    XCTAssertNil(respondHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorAuthenticationTagInvalid);
 }
 
 - (void)testRespondHelper_Invalid_MultipleAtsInTag

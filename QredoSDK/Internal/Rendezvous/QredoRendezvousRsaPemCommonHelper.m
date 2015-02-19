@@ -121,6 +121,13 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
             return nil;
         }
         
+        if (fullTag.length < 1) {
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+        
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
         if (!_authenticatedRendezvousTag || (error && *error)) {
             LogError(@"Failed to split up full tag successfully.");
