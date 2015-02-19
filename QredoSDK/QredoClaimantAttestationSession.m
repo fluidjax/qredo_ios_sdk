@@ -7,7 +7,7 @@
 
 #import "QredoConversationPrivate.h"
 
-static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA11";
+static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
 
 
 @implementation QredoAuthenticationResult

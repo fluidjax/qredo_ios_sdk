@@ -15,9 +15,12 @@
 @implementation QredoAttestationRelyingParty
 
 - (instancetype)initWithRendezvous:(QredoRendezvous *)rendezvous
+                  attestationTypes:(NSArray */* NSString */)attestationTypes
 {
     self = [super init];
     if (!self) return nil;
+
+    self.attestationTypes = [attestationTypes copy];
 
     self.rendezvous = rendezvous;
     self.rendezvous.delegate = self;
@@ -54,8 +57,8 @@
 {
     NSLog(@"received response on rendezvous");
     QredoClaimantAttestationSession *attestationSession = [[QredoClaimantAttestationSession alloc] initWithConversation:conversation
-                                                                                                       attestationTypes:nil
-                                                                                                          authenticator:nil];
+                                                                                                       attestationTypes:[NSSet setWithArray:self.attestationTypes]
+                                                                                                          authenticator:@"VISA"];
     [self.delegate qredoAttestationRelyingParty:self didStartClaimantSession:attestationSession];
 }
 

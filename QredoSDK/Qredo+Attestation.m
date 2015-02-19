@@ -6,19 +6,24 @@
 
 #import "QredoAttestationRelyingPartyPrivate.h"
 
+static NSString *KAttestationClaimantConversationType = @"com.qredo.attestation.demo.relyingparty";
+
+
+
 @implementation QredoClient (Attestation)
 
 - (void)registerAttestationRelyingPartyWithTypes:(NSArray*)attestationTypes /* dob, photo */
                                completionHandler:(void(^)(QredoAttestationRelyingParty *relyingParty, NSError *error))completionHandler
 {
 
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"com.qredo.attestation.demo"
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:KAttestationClaimantConversationType
                                                                                               authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                                                                  durationSeconds:nil
                                                                                                 maxResponseCount:nil
                                                                                                         transCap:nil];
 
     NSString *tag = [[QredoQUID QUID] QUIDString];
+//    NSString *tag = [NSString stringWithFormat:@"att-%ld", random() % 20000]; // TODO: short tags for manual testing only
     [self createRendezvousWithTag:tag
                     configuration:configuration
                 completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
@@ -31,7 +36,7 @@
 
          // TODO: add attestation types to QredoAttestationRelyingParty
 
-         QredoAttestationRelyingParty *attestation = [[QredoAttestationRelyingParty alloc] initWithRendezvous:rendezvous];
+         QredoAttestationRelyingParty *attestation = [[QredoAttestationRelyingParty alloc] initWithRendezvous:rendezvous attestationTypes:attestationTypes];
          completionHandler(attestation, nil);
      }];
 

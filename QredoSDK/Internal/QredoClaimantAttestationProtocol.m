@@ -11,12 +11,10 @@
 #import <QredoClientMarshallers.h>
 
 
-static NSString *KAttestationClaimantConversationType = @"com.qredo.attesation.relyingparty";
+static NSString *kAttestationPresentationRequestMessageType = @"com.qredo.attestation.demo.presentation.request";
+static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.demo.presentation";
 
-static NSString *kAttestationPresentationRequestMessageType = @"com.qredo.attestation.presentation.request";
-static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.presentation";
-
-static NSString *kAttestationRelyingPartyChoiceMessageType = @"com.qredo.attestation.relyingparty.decision";
+static NSString *kAttestationRelyingPartyChoiceMessageType = @"com.qredo.attestation.demo.relyingparty.decision";
 static NSString *kAttestationRelyingPartyChoiceAccepted = @"ACCEPTED";
 static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
