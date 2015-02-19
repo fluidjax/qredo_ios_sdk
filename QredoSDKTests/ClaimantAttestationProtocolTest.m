@@ -16,12 +16,11 @@
 
 static NSString *const kDefaultCancelMessageType = @"com.qredo.attestation.cancel";
 
-static NSString *KAttestationClaimantConversationType = @"com.qredo.attesation.relyingparty";
+static NSString *kAttestationPresentationCancelMessageType = @"com.qredo.attestation.demo.presentation.cancel";
+static NSString *kAttestationPresentationRequestMessageType = @"com.qredo.attestation.demo.presentation.request";
+static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.demo.presentation";
 
-static NSString *kAttestationPresentationRequestMessageType = @"com.qredo.attestation.presentation.request";
-static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.presentation";
-
-static NSString *kAttestationRelyingPartyChoiceMessageType = @"com.qredo.attestation.relyingparty.decision";
+static NSString *kAttestationRelyingPartyChoiceMessageType = @"com.qredo.attestation.demo.relyingparty.decision";
 static NSString *kAttestationRelyingPartyChoiceAccepted = @"ACCEPTED";
 static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
@@ -235,11 +234,11 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
     self.receivedMemessage = message;
     
     NSString *messageType = message.dataType;
-    if ([messageType isEqualToString:@"com.qredo.attestation.presentation.request"]) {
+    if ([messageType isEqualToString:kAttestationPresentationRequestMessageType]) {
         [self didRecivePresentationRequestMessage:message];
-    } else if ([messageType isEqualToString:@"com.qredo.attestation.relyingparty.decision"]) {
+    } else if ([messageType isEqualToString:kAttestationRelyingPartyChoiceMessageType]) {
         [self didReciveRelyingPartyDecisionMessage:message];
-    } else if ([messageType isEqualToString:@"com.qredo.attestation.cancel"]) {
+    } else if ([messageType isEqualToString:kDefaultCancelMessageType]) {
         [self didReciveCancelMessage:message];
     } else {
         // TODO [GR]: Implement this.
@@ -527,6 +526,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 @property (nonatomic) BobHelper *bobHelper;
 @property (nonatomic) ProtocolDelegate *protocolDelegate;
 @property (nonatomic) AlicesDevice *alicesDevice;
+@property (nonatomic) NSError *testStepError;
 @end
 
 @implementation ClaimantAttestationProtocolTest
@@ -534,6 +534,8 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 - (void)setUp
 {
     [super setUp];
+    
+    self.testStepError = nil;
     
     self.bobHelper = [[BobHelper alloc] init];
     self.protocolDelegate = [[ProtocolDelegate alloc] init];
@@ -582,7 +584,6 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 
 - (void)testNormalFlow
 {
-    
     QredoClaimantAttestationProtocol *protocol
     = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
                                                     attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
@@ -610,6 +611,11 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     XCTAssert([protocol canCancel]);
     XCTAssertFalse([protocol canAcceptOrRejct]);
     
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+    
     
     // Recive presentation and send authenticaion request
     // --------------------------------------------------
@@ -633,16 +639,29 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     XCTAssert([protocol canCancel]);
     XCTAssert([protocol canAcceptOrRejct]);
     
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
     
-    // Recive presentation request and wait for Bob's choice
-    // -----------------------------------------------------
     
-    [self recivePresentationRequestAndWaitForBobsChoice];
+    // Recive authentication response and wait for Bob's choice
+    // --------------------------------------------------------
+    
+    [self reciveAuthenticationResponseAndWaitForBobsChoice];
     
     XCTAssertEqual(protocol, self.bobHelper.authenticateRequestProtocol);
     XCTAssertNotNil(self.bobHelper.finishAuthenticationAuthenticationResponse);
     // TODO [GR]: Add more tests
     
+    XCTAssert([protocol canCancel]);
+    XCTAssert([protocol canAcceptOrRejct]);
+    
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+
     
     // Bob makes a choice and the protocol finishes
     // --------------------------------------------
@@ -658,9 +677,15 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     XCTAssertEqual(protocol, self.protocolDelegate.didFinishWithErrorProtocol);
     XCTAssertNil(self.protocolDelegate.didFinishWithErrorError);
     
+    XCTAssertFalse([protocol canCancel]);
+    XCTAssertFalse([protocol canAcceptOrRejct]);
+    
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
     
     // TODO [GR]: FINISH UP
-    
 }
 
 #pragma mark Steps
@@ -686,6 +711,9 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     [self waitForExpectationsWithTimeout:kDefaultExpectationTimeout handler:^(NSError *error) {
         protocolStartsExpectation = nil;
         aliceReceivesPresentationRequestExepctation = nil;
+        if (error) {
+            self.testStepError = error;
+        }
     }];
 }
 
@@ -745,11 +773,12 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
         protocolReceivesPresentationExpectation = nil;
         authenticationRequestExpectation = nil;
         aliceHasSentPresentationExpectation = nil;
+        self.testStepError = error;
     }];
 
 }
 
-- (void)recivePresentationRequestAndWaitForBobsChoice
+- (void)reciveAuthenticationResponseAndWaitForBobsChoice
 {
     __block XCTestExpectation *protocolReceivsAuthenticationsExpectation = [self expectationWithDescription:@"Protocol receives the authenticaiont results"];
     [self.protocolDelegate setDidReciveAuthentications:^(QredoClaimantAttestationProtocol *p,
@@ -788,6 +817,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     
     [self waitForExpectationsWithTimeout:kDefaultExpectationTimeout handler:^(NSError *error) {
         protocolReceivsAuthenticationsExpectation = nil;
+        self.testStepError = error;
     }];
 }
 
@@ -824,6 +854,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
         hasSendChoiceExpectation = nil;
         aliceHasRecivedChoiceExpectation = nil;
         protocolHasFinishedExpectation = nil;
+        self.testStepError = error;
     }];
 
 }
