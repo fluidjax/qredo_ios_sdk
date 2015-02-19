@@ -9,8 +9,10 @@
 #import <QredoClient.h>
 #import <QredoPrimitiveMarshallers.h>
 #import <QredoClientMarshallers.h>
+#import "QredoErrorCodes.h"
 
 
+static NSString *kAttestationPresentationCancelMessageType = @"com.qredo.attestation.demo.presentation.cancel";
 static NSString *kAttestationPresentationRequestMessageType = @"com.qredo.attestation.demo.presentation.request";
 static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.demo.presentation";
 
@@ -156,6 +158,15 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @implementation QredoClaimantAttestationState
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) return nil;
+
+    self.cancelMessageType = kAttestationPresentationCancelMessageType;
+
+    return self;
+}
 
 - (QredoClaimantAttestationProtocol *)claimantAttestationProtocol
 {
@@ -207,7 +218,16 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.canceledByClaimantState
                                     withConfigBlock:^
      {
-         self.claimantAttestationProtocol.canceledByClaimantState.error = error;
+         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:@"Cancelled by other side"
+                                                                            forKey:NSLocalizedDescriptionKey];
+         if (error) {
+             [userInfo setValue:error forKey:NSUnderlyingErrorKey];
+         }
+
+         self.claimantAttestationProtocol.canceledByClaimantState.error
+             = [NSError errorWithDomain:QredoErrorDomain
+                                   code:QredoErrorCodeConversationProtocolCancelledByOtherSide
+                               userInfo:userInfo];
      }];
 }
 
