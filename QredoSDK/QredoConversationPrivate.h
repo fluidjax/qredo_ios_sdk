@@ -19,6 +19,8 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 
 @interface QredoConversation (Private)
 
+@property (nonatomic, readonly) QredoClient *client;
+
 - (instancetype)initWithClient:(QredoClient *)client;
 - (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QredoConversationDescriptor*)descriptor;
 - (instancetype)initWithClient:(QredoClient *)client rendezvousTag:(NSString *)rendezvousTag converationType:(NSString *)conversationTag transCap:(NSSet *)transCap;

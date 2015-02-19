@@ -119,7 +119,6 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
 @interface QredoConversation ()
 {
-    QredoClient *_client;
     id<CryptoImpl> _crypto;
     QredoConversationCrypto *_conversationCrypto;
     QredoConversations *_conversationService;
@@ -160,6 +159,8 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     int scheduled, responded; // TODO: use locks for queues
 }
 
+@property (nonatomic, readwrite) QredoClient *client;
+
 @end
 
 @implementation QredoConversation (Private)
@@ -177,7 +178,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     self = [super init];
     if (!self) return nil;
 
-    _client = client;
+    self.client = client;
 
     // TODO: move to a singleton to avoid creation of these stateless objects for every conversation
     // or make all the methods as class methods
@@ -190,7 +191,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     _queue = dispatch_queue_create("com.qredo.conversation.updates", nil);
     _enumerationQueue = dispatch_queue_create("com.qredo.enumeration", nil);
-    _conversationService = [QredoConversations conversationsWithServiceInvoker:_client.serviceInvoker];
+    _conversationService = [QredoConversations conversationsWithServiceInvoker:self.client.serviceInvoker];
 
 
     _metadata = [[QredoConversationMetadata alloc] init];
@@ -264,7 +265,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
 - (QredoVaultItemDescriptor*)vaultItemDescriptor
 {
-    QredoVault *vault = [_client systemVault];
+    QredoVault *vault = [self.client systemVault];
 
     QredoVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
 
@@ -281,7 +282,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 {
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey rendezvousOwner:rendezvousOwner];
 
-    QredoVault *vault = [_client systemVault];
+    QredoVault *vault = [self.client systemVault];
 
     QredoVaultItemDescriptor *itemDescriptor = [self vaultItemDescriptor];
 
@@ -398,7 +399,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     LogDebug(@"Responding to (hashed) tag: %@", rendezvousTag);
     
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
-    QredoInternalRendezvous *_rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
+    QredoInternalRendezvous *_rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:self.client.serviceInvoker];
 
     QredoAuthenticationCode *authKey = [_rendezvousCrypto authKey:rendezvousTag];
     QredoRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithAuthKey:authKey];
@@ -460,7 +461,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
 - (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    QredoVault *vault = _client.systemVault;
+    QredoVault *vault = self.client.systemVault;
 
     QredoVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
 
@@ -494,8 +495,8 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId
-                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+    [self.client.systemVault strictlyPutNewItem:vaultItem itemId:itemId
+                              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
         completionHandler(error);
     }];
 
