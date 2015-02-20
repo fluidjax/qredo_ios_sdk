@@ -6,6 +6,7 @@
 #import "QredoConversation.h"
 #import "QredoConversationMessage.h"
 #import "QredoAttestationInternal.h"
+#import "QredoCrypto.h"
 #import <QredoClient.h>
 #import <QredoPrimitiveMarshallers.h>
 #import <QredoClientMarshallers.h>
@@ -538,7 +539,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
         NSMutableArray *claimMessages = [[NSMutableArray alloc] init];
         for (QredoAttestation *attestation in self.presentation.attestations) {
             
-            NSData *claimHash = attestation.credential.hashedClaim;
+            NSData *claimHash = [self calculateHashOfClaim:attestation.claim];
+            if (!claimHash) {
+                // TODO [GR]: Handle error here.
+            }
             
             QredoClaimMessage *claimMessage = [[QredoClaimMessage alloc] initWithClaimHash:claimHash
                                                                                 credential:attestation.credential];
@@ -566,6 +570,15 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     [protocol authenticationFinishedWithResponse:nil error:error];
 }
 
+- (NSData *)calculateHashOfClaim:(QredoLFClaim *)claim
+{
+    if (!claim) {
+        return nil;
+    }
+    NSData *claimData = [QredoPrimitiveMarshallers marshalObject:claim
+                                                      marshaller:[QredoClientMarshallers claimMarshaller]];
+    return [QredoCrypto sha256:claimData];
+}
 
 @end
 
