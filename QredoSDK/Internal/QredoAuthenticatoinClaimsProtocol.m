@@ -300,7 +300,6 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 - (void)didEnter
 {
     [self.authenticationProtocol.delegate qredoAuthenticationProtocolDidSendClaims:self.authenticationProtocol];
-    self.authenticationProtocol.conversation.delegate = (id<QredoConversationDelegate>)self.conversationProtocol;
     [self.authenticationProtocol.conversation startListening];
 }
 
