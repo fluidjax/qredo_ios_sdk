@@ -210,6 +210,11 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 - (void)didEnter {
     [self.authenticationProtocol.conversation stopListening];
 }
+
+- (void)didReceiveCancelConversationMessageWithError:(NSError *)error {
+    // do nothing
+}
+
 @end
 
 @implementation QredoAuthenticationState_SentErrorMessage
