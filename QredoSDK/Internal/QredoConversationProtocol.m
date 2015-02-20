@@ -6,7 +6,7 @@
 #import "QredoConversation.h"
 
 
-static NSString *const kDefaultCancelMessageType = @"com.qredo.attestation.cancel";
+static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
 
 
@@ -114,6 +114,22 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.attestation.cance
 
 - (void)didReceiveCancelConversationMessageWithError:(NSError *)error
 {
+}
+
+#pragma mark Utilities
+
+- (void)publishCancelMessageWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+{
+    QredoConversationMessage *message
+    = [[QredoConversationMessage alloc] initWithValue:nil
+                                             dataType:self.cancelMessageType
+                                        summaryValues:nil];
+    [self.conversationProtocol.conversation publishMessage:message
+                                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,
+                                                             NSError *error)
+     {
+         completionHandler(error);
+     }];
 }
 
 @end

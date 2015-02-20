@@ -14,8 +14,6 @@
 #import <XCTest/XCTest.h>
 
 
-static NSString *const kDefaultCancelMessageType = @"com.qredo.attestation.cancel";
-
 static NSString *kAttestationPresentationCancelMessageType = @"com.qredo.attestation.demo.presentation.cancel";
 static NSString *kAttestationPresentationRequestMessageType = @"com.qredo.attestation.demo.presentation.request";
 static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.demo.presentation";
@@ -118,7 +116,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 {
     QredoConversationMessage *message
     = [[QredoConversationMessage alloc] initWithValue:nil
-                                             dataType:kDefaultCancelMessageType
+                                             dataType:kAttestationPresentationCancelMessageType
                                         summaryValues:nil];
     self.sendCancelMemessage = message;
     [self.conversation publishMessage:message
@@ -238,7 +236,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
         [self didRecivePresentationRequestMessage:message];
     } else if ([messageType isEqualToString:kAttestationRelyingPartyChoiceMessageType]) {
         [self didReciveRelyingPartyDecisionMessage:message];
-    } else if ([messageType isEqualToString:kDefaultCancelMessageType]) {
+    } else if ([messageType isEqualToString:kAttestationPresentationCancelMessageType]) {
         [self didReciveCancelMessage:message];
     } else {
         // TODO [GR]: Implement this.

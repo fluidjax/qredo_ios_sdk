@@ -652,6 +652,12 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     }
 }
 
+#pragma mark Info methods
+
+- (BOOL)canCancel
+{
+    return NO;
+}
 
 #pragma mark Utility methods
 
@@ -685,9 +691,6 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)didEnter
 {
     [super didEnter];
-    [self cancelConversationWithCompletionHandler:^(NSError *error) {
-        [self.claimantAttestationProtocol conversationCanceledWithError:error];
-    }];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocolDidFinishSendingRelyingPartyChoice:self.claimantAttestationProtocol];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol didFinishWithError:nil];
 }
@@ -706,13 +709,11 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
                                     withConfigBlock:nil];
 }
 
-#pragma mark Utility methods
+#pragma mark Info methods
 
-- (void)cancelConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
+- (BOOL)canCancel
 {
-    [self.claimantAttestationProtocol.conversation deleteConversationWithCompletionHandler:^(NSError *error) {
-        completionHandler(error);
-    }];
+    return NO;
 }
 
 @end
@@ -740,6 +741,9 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 #pragma mark Events
 
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
+- (void)otherPartyHasLeftConversation {}
+
 - (void)accept {}
 - (void)reject {}
 - (void)cancel {}
@@ -757,21 +761,18 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
                didFinishWithResults:(QredoAuthenticationResponse *)results {}
 
-
-#pragma mark Utility methods
-
-- (void)cancelConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
-    [self.claimantAttestationProtocol.conversation deleteConversationWithCompletionHandler:^(NSError *error) {
-        completionHandler(error);
-    }];
-}
-
 #pragma mark Info methods
 
 - (BOOL)canCancel
 {
     return NO;
+}
+
+#pragma mark Utility methods
+
+- (void)cancelConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+    [self publishCancelMessageWithCompletionHandler:completionHandler];
 }
 
 @end
@@ -796,6 +797,9 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 }
 
 #pragma mark Events
+
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
+- (void)otherPartyHasLeftConversation {}
 
 - (void)accept {}
 - (void)reject {}
@@ -830,6 +834,9 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 }
 
 #pragma mark Events
+
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
+- (void)otherPartyHasLeftConversation {}
 
 - (void)accept {}
 - (void)reject {}

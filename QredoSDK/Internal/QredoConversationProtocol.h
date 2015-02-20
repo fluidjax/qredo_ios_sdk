@@ -64,6 +64,10 @@
 - (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message;
 - (void)didReceiveCancelConversationMessageWithError:(NSError *)error;
 
+#pragma mark Utilities
+
+- (void)publishCancelMessageWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+
 @end
 
 
