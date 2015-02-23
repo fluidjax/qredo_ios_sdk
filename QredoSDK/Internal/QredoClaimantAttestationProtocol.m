@@ -118,6 +118,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 #pragma mark -
 
 @interface QredoClaimantAttestationState_Finish : QredoClaimantAttestationState
+@property (nonatomic) NSError *error;
 @end
 
 
@@ -657,6 +658,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                         withConfigBlock:^
          {
+             // TODO [GR]: Create new error and set `error` as underlying error.
              self.claimantAttestationProtocol.cancelConversationState.error = error;
          }];
     } else {
@@ -705,19 +707,6 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 {
     [super didEnter];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocolDidFinishSendingRelyingPartyChoice:self.claimantAttestationProtocol];
-    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol didFinishWithError:nil];
-}
-
-#pragma mark Events
-
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
-{
-    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
-                                    withConfigBlock:nil];
-}
-
-- (void)conversationCanceledWithError:(NSError *)error
-{
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
                                     withConfigBlock:nil];
 }
@@ -748,8 +737,6 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     [self cancelConversationWithCompletionHandler:^(NSError *error) {
         [self.claimantAttestationProtocol conversationCanceledWithError:error];
     }];
-    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
-                                                        didFinishWithError:self.error];
 }
 
 #pragma mark Events
@@ -766,7 +753,19 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)conversationCanceledWithError:(NSError *)error
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
-                                    withConfigBlock:nil];
+                                    withConfigBlock:^
+     {
+         NSError *actualError = nil;
+         if (self.error && error) {
+             // TODO [GR]: Create new error setting `error` as underlying error and `self.error` as previous error,
+             // and update `actualError`.
+         } else if (self.error) {
+             actualError = self.error;
+         } else if (error) {
+             // TODO [GR]: Create new error with error as underlying error and update `actualError`.
+         }
+         self.claimantAttestationProtocol.finishState.error = actualError;
+     }];
 }
 
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
@@ -807,6 +806,12 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     [super didEnter];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
                                                         didFinishWithError:self.error];
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
+                                    withConfigBlock:^
+    {
+        // TODO [GR]: Set the error to "cancelled by Alice".
+        self.claimantAttestationProtocol.finishState.error = nil;
+    }];
 }
 
 #pragma mark Events
@@ -839,11 +844,18 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @implementation QredoClaimantAttestationState_Finish
 
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    self.error = nil;
+}
+
 - (void)didEnter
 {
     [super didEnter];
     [self.conversationProtocol.conversation stopListening];
-
+    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
+                                                        didFinishWithError:self.error];
 }
 
 #pragma mark Events
