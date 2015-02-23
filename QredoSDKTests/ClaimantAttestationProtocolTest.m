@@ -36,7 +36,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 
 @property (nonatomic) QredoConversationMessage *receivedMemessage;
 
-@property (nonatomic) QredoConversationMessage *onPresentationRequestMemessage;
+@property (nonatomic) QredoConversationMessage *onPresentationRequestMessage;
 @property (nonatomic) QredoPresentationRequest *onPresentationRequestPresentationRequest;
 @property (nonatomic) NSException *onPresentationRequestException;
 @property (nonatomic, copy) void(^onPresentationRequest)(QredoConversationMessage *message, QredoPresentationRequest *presentationRequest, NSException *unmarshalException);
@@ -159,7 +159,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 
 - (void)didRecivePresentationRequestMessage:(QredoConversationMessage *)message
 {
-    self.onPresentationRequestMemessage = message;
+    self.onPresentationRequestMessage = message;
     
     if ([message.value length] < 1) {
         if (self.onPresentationRequest) {
@@ -599,7 +599,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     
     XCTAssertEqual(protocol, self.protocolDelegate.didStartBlockProtocol);
     
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMemessage);
+    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
     XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
     XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
     XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
@@ -703,7 +703,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     
     XCTAssertEqual(protocol, self.protocolDelegate.didStartBlockProtocol);
     
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMemessage);
+    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
     XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
     XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
     XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
@@ -807,7 +807,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     
     XCTAssertEqual(protocol, self.protocolDelegate.didStartBlockProtocol);
     
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMemessage);
+    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
     XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
     XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
     XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
@@ -893,7 +893,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     
     XCTAssertEqual(protocol, self.protocolDelegate.didStartBlockProtocol);
     
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMemessage);
+    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
     XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
     XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
     XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
