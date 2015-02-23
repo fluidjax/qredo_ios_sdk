@@ -582,110 +582,16 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 
 - (void)testNormalFlowBobAccepts
 {
-    QredoClaimantAttestationProtocol *protocol
-    = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
-                                                    attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
-                                                       authenticator:nil];
-    
-    protocol.delegate = self.protocolDelegate;
-    protocol.dataSource = self.bobHelper;
-    self.protocol = protocol;
-    
-    
-    // Starting the protocol and send presentation request
-    // ---------------------------------------------------
-    
-    [self startTheProtocolAndSendPresentationRequest];
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didStartBlockProtocol);
-    
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
-    XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
-    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
-    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"dob"]);
-    XCTAssertNil(self.alicesDevice.onPresentationRequestException);
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
-    
-    XCTAssertNil(self.testStepError);
-    if (self.testStepError) {
-        return;
-    }
-    
-    
-    // Recive presentation and send authenticaion request
-    // --------------------------------------------------
-    
-    [self recivePresentationAndSendAuthenticaionRequest];
-
-    XCTAssertNil(self.alicesDevice.sendPresentationError);
-
-    XCTAssertEqual(self.protocolDelegate.didRecivePresentationsProtocol, protocol);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(self.protocolDelegate.didRecivePresentationsPresentation);
-    XCTAssertEqual([self.protocolDelegate.didRecivePresentationsPresentation.attestations count],
-                   [self.alicesDevice.sendPresentationPresentation.attestations count]);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(self.bobHelper.authenticateRequestAuthenticationRequest);
-    // TODO [GR]: Add more tests here.
-
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssert([protocol canAcceptOrRejct]);
-    
-    XCTAssertNil(self.testStepError);
-    if (self.testStepError) {
-        return;
-    }
-    
-    
-    // Recive authentication response and wait for Bob's choice
-    // --------------------------------------------------------
-    
-    [self reciveAuthenticationResponseAndWaitForBobsChoice];
-    
-    XCTAssertEqual(protocol, self.bobHelper.authenticateRequestProtocol);
-    XCTAssertNotNil(self.bobHelper.finishAuthenticationAuthenticationResponse);
-    // TODO [GR]: Add more tests
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssert([protocol canAcceptOrRejct]);
-    
-    XCTAssertNil(self.testStepError);
-    if (self.testStepError) {
-        return;
-    }
-
-    
-    // Bob makes a choice and the protocol finishes
-    // --------------------------------------------
-    
-    [self bobMakesAChoiceAndTheProtocolFinishesWithBobsChoiceAccept:YES];
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didStartSendingRelyingPartyChoiceProtocol);
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didFinishSendingRelyingPartyChoiceProtocol);
-    
-    XCTAssertEqualObjects(self.alicesDevice.onBobsChoiceChoice, kAttestationRelyingPartyChoiceAccepted);
-
-    XCTAssertEqual(protocol, self.protocolDelegate.didFinishWithErrorProtocol);
-    XCTAssertNil(self.protocolDelegate.didFinishWithErrorError);
-    
-    XCTAssertFalse([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
-    
-    XCTAssertNil(self.testStepError);
-    if (self.testStepError) {
-        return;
-    }
+    [self runNormalFlowWithBobsAccept:YES];
 }
 
 - (void)testNormalFlowBobRejects
 {
+    [self runNormalFlowWithBobsAccept:NO];
+}
+
+- (void)runNormalFlowWithBobsAccept:(BOOL)bobAccept
+{
     QredoClaimantAttestationProtocol *protocol
     = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
                                                     attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
@@ -699,20 +605,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Starting the protocol and send presentation request
     // ---------------------------------------------------
     
-    [self startTheProtocolAndSendPresentationRequest];
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didStartBlockProtocol);
-    
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
-    XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
-    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
-    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"dob"]);
-    XCTAssertNil(self.alicesDevice.onPresentationRequestException);
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
-    
+    [self startTheProtocolAndSendPresentationRequestIncludingAsserts];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -722,25 +615,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Recive presentation and send authenticaion request
     // --------------------------------------------------
     
-    [self recivePresentationAndSendAuthenticaionRequest];
-    
-    XCTAssertNil(self.alicesDevice.sendPresentationError);
-    
-    XCTAssertEqual(self.protocolDelegate.didRecivePresentationsProtocol, protocol);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(self.protocolDelegate.didRecivePresentationsPresentation);
-    XCTAssertEqual([self.protocolDelegate.didRecivePresentationsPresentation.attestations count],
-                   [self.alicesDevice.sendPresentationPresentation.attestations count]);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(self.bobHelper.authenticateRequestAuthenticationRequest);
-    // TODO [GR]: Add more tests here.
-    
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssert([protocol canAcceptOrRejct]);
-    
+    [self recivePresentationAndSendAuthenticaionRequestIncludingAsserts];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -750,15 +625,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Recive authentication response and wait for Bob's choice
     // --------------------------------------------------------
     
-    [self reciveAuthenticationResponseAndWaitForBobsChoice];
-    
-    XCTAssertEqual(protocol, self.bobHelper.authenticateRequestProtocol);
-    XCTAssertNotNil(self.bobHelper.finishAuthenticationAuthenticationResponse);
-    // TODO [GR]: Add more tests
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssert([protocol canAcceptOrRejct]);
-    
+    [self reciveAuthenticationResponseAndWaitForBobsChoiceIncludingAsserts];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -768,113 +635,25 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Bob makes a choice and the protocol finishes
     // --------------------------------------------
     
-    [self bobMakesAChoiceAndTheProtocolFinishesWithBobsChoiceAccept:NO];
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didStartSendingRelyingPartyChoiceProtocol);
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didFinishSendingRelyingPartyChoiceProtocol);
-    
-    XCTAssertEqualObjects(self.alicesDevice.onBobsChoiceChoice, kAttestationRelyingPartyChoiceRejected);
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didFinishWithErrorProtocol);
-    XCTAssertNil(self.protocolDelegate.didFinishWithErrorError);
-    
-    XCTAssertFalse([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
-    
+    [self bobMakesAChoiceAndTheProtocolFinishesIncludingAssertsWithBobsChoiceAccept:bobAccept];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
     }
+
 }
 
 - (void)testNormalFlowBobAcceptsEarly
 {
-    QredoClaimantAttestationProtocol *protocol
-    = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
-                                                    attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
-                                                       authenticator:nil];
-    
-    protocol.delegate = self.protocolDelegate;
-    protocol.dataSource = self.bobHelper;
-    self.protocol = protocol;
-    
-    
-    // Starting the protocol and send presentation request
-    // ---------------------------------------------------
-    
-    [self startTheProtocolAndSendPresentationRequest];
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didStartBlockProtocol);
-    
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
-    XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
-    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
-    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"dob"]);
-    XCTAssertNil(self.alicesDevice.onPresentationRequestException);
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
-    
-    XCTAssertNil(self.testStepError);
-    if (self.testStepError) {
-        return;
-    }
-    
-    
-    // Recive presentation and send authenticaion request
-    // --------------------------------------------------
-    
-    [self recivePresentationAndSendAuthenticaionRequest];
-    
-    XCTAssertNil(self.alicesDevice.sendPresentationError);
-    
-    XCTAssertEqual(self.protocolDelegate.didRecivePresentationsProtocol, protocol);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(self.protocolDelegate.didRecivePresentationsPresentation);
-    XCTAssertEqual([self.protocolDelegate.didRecivePresentationsPresentation.attestations count],
-                   [self.alicesDevice.sendPresentationPresentation.attestations count]);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(self.bobHelper.authenticateRequestAuthenticationRequest);
-    // TODO [GR]: Add more tests here.
-    
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssert([protocol canAcceptOrRejct]);
-    
-    XCTAssertNil(self.testStepError);
-    if (self.testStepError) {
-        return;
-    }
-    
-    
-    // Bob makes a choice and the protocol finishes
-    // --------------------------------------------
-    
-    [self bobMakesAChoiceAndTheProtocolFinishesWithBobsChoiceAccept:YES];
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didStartSendingRelyingPartyChoiceProtocol);
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didFinishSendingRelyingPartyChoiceProtocol);
-    
-    XCTAssertEqualObjects(self.alicesDevice.onBobsChoiceChoice, kAttestationRelyingPartyChoiceAccepted);
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didFinishWithErrorProtocol);
-    XCTAssertNil(self.protocolDelegate.didFinishWithErrorError);
-    
-    XCTAssertFalse([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
-    
-    XCTAssertNil(self.testStepError);
-    if (self.testStepError) {
-        return;
-    }
+    [self runNormalFlowBobMakingEarlyChoiceWithBobsAccept:YES];
 }
 
 - (void)testNormalFlowBobRejectsEarly
+{
+    [self runNormalFlowBobMakingEarlyChoiceWithBobsAccept:NO];
+}
+
+- (void)runNormalFlowBobMakingEarlyChoiceWithBobsAccept:(BOOL)bobAccept
 {
     QredoClaimantAttestationProtocol *protocol
     = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
@@ -889,20 +668,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Starting the protocol and send presentation request
     // ---------------------------------------------------
     
-    [self startTheProtocolAndSendPresentationRequest];
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didStartBlockProtocol);
-    
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
-    XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
-    XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
-    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
-    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"dob"]);
-    XCTAssertNil(self.alicesDevice.onPresentationRequestException);
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
-    
+    [self startTheProtocolAndSendPresentationRequestIncludingAsserts];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -912,25 +678,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Recive presentation and send authenticaion request
     // --------------------------------------------------
     
-    [self recivePresentationAndSendAuthenticaionRequest];
-    
-    XCTAssertNil(self.alicesDevice.sendPresentationError);
-    
-    XCTAssertEqual(self.protocolDelegate.didRecivePresentationsProtocol, protocol);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(self.protocolDelegate.didRecivePresentationsPresentation);
-    XCTAssertEqual([self.protocolDelegate.didRecivePresentationsPresentation.attestations count],
-                   [self.alicesDevice.sendPresentationPresentation.attestations count]);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(self.bobHelper.authenticateRequestAuthenticationRequest);
-    // TODO [GR]: Add more tests here.
-    
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssert([protocol canAcceptOrRejct]);
-    
+    [self recivePresentationAndSendAuthenticaionRequestIncludingAsserts];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -940,20 +688,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Bob makes a choice and the protocol finishes
     // --------------------------------------------
     
-    [self bobMakesAChoiceAndTheProtocolFinishesWithBobsChoiceAccept:NO];
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didStartSendingRelyingPartyChoiceProtocol);
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didFinishSendingRelyingPartyChoiceProtocol);
-    
-    XCTAssertEqualObjects(self.alicesDevice.onBobsChoiceChoice, kAttestationRelyingPartyChoiceRejected);
-    
-    XCTAssertEqual(protocol, self.protocolDelegate.didFinishWithErrorProtocol);
-    XCTAssertNil(self.protocolDelegate.didFinishWithErrorError);
-    
-    XCTAssertFalse([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
-    
+    [self bobMakesAChoiceAndTheProtocolFinishesIncludingAssertsWithBobsChoiceAccept:bobAccept];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -1129,6 +864,80 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
         self.testStepError = error;
     }];
 
+}
+
+
+- (void)startTheProtocolAndSendPresentationRequestIncludingAsserts
+{
+    [self startTheProtocolAndSendPresentationRequest];
+    
+    XCTAssertEqual(self.protocol, self.protocolDelegate.didStartBlockProtocol);
+    
+    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
+    XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
+    XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
+    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
+    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"dob"]);
+    XCTAssertNil(self.alicesDevice.onPresentationRequestException);
+    
+    XCTAssert([self.protocol canCancel]);
+    XCTAssertFalse([self.protocol canAcceptOrRejct]);
+
+}
+
+- (void)recivePresentationAndSendAuthenticaionRequestIncludingAsserts
+{
+    [self recivePresentationAndSendAuthenticaionRequest];
+    
+    XCTAssertNil(self.alicesDevice.sendPresentationError);
+    
+    XCTAssertEqual(self.protocolDelegate.didRecivePresentationsProtocol, self.protocol);
+    // TODO [GR]: Add more tests here.
+    
+    XCTAssertNotNil(self.protocolDelegate.didRecivePresentationsPresentation);
+    XCTAssertEqual([self.protocolDelegate.didRecivePresentationsPresentation.attestations count],
+                   [self.alicesDevice.sendPresentationPresentation.attestations count]);
+    // TODO [GR]: Add more tests here.
+    
+    XCTAssertNotNil(self.bobHelper.authenticateRequestAuthenticationRequest);
+    // TODO [GR]: Add more tests here.
+    
+    
+    XCTAssert([self.protocol canCancel]);
+    XCTAssert([self.protocol canAcceptOrRejct]);
+}
+
+- (void)reciveAuthenticationResponseAndWaitForBobsChoiceIncludingAsserts
+{
+    [self reciveAuthenticationResponseAndWaitForBobsChoice];
+    
+    XCTAssertEqual(self.protocol, self.bobHelper.authenticateRequestProtocol);
+    XCTAssertNotNil(self.bobHelper.finishAuthenticationAuthenticationResponse);
+    // TODO [GR]: Add more tests
+    
+    XCTAssert([self.protocol canCancel]);
+    XCTAssert([self.protocol canAcceptOrRejct]);
+}
+
+- (void)bobMakesAChoiceAndTheProtocolFinishesIncludingAssertsWithBobsChoiceAccept:(BOOL)bobAccept
+{
+    [self bobMakesAChoiceAndTheProtocolFinishesWithBobsChoiceAccept:bobAccept];
+    
+    XCTAssertEqual(self.protocol, self.protocolDelegate.didStartSendingRelyingPartyChoiceProtocol);
+    
+    XCTAssertEqual(self.protocol, self.protocolDelegate.didFinishSendingRelyingPartyChoiceProtocol);
+    
+    if (bobAccept) {
+        XCTAssertEqualObjects(self.alicesDevice.onBobsChoiceChoice, kAttestationRelyingPartyChoiceAccepted);
+    } else {
+        XCTAssertEqualObjects(self.alicesDevice.onBobsChoiceChoice, kAttestationRelyingPartyChoiceRejected);
+    }
+    
+    XCTAssertEqual(self.protocol, self.protocolDelegate.didFinishWithErrorProtocol);
+    XCTAssertNil(self.protocolDelegate.didFinishWithErrorError);
+    
+    XCTAssertFalse([self.protocol canCancel]);
+    XCTAssertFalse([self.protocol canAcceptOrRejct]);
 }
 
 @end
