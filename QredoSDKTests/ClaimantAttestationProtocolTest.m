@@ -217,7 +217,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
     }
 }
 
-- (void)didReciveCancelMessage:(QredoConversationMessage *)message
+- (void)didReceiveCancelMessage:(QredoConversationMessage *)message
 {
     self.onBobsCancelMemessage = message;
     if (self.onBobsCancel) {
@@ -237,7 +237,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
     } else if ([messageType isEqualToString:kAttestationRelyingPartyChoiceMessageType]) {
         [self didReciveRelyingPartyDecisionMessage:message];
     } else if ([messageType isEqualToString:kAttestationPresentationCancelMessageType]) {
-        [self didReciveCancelMessage:message];
+        [self didReceiveCancelMessage:message];
     } else {
         // TODO [GR]: Implement this.
     }
