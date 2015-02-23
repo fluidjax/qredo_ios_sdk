@@ -1353,8 +1353,6 @@
 		0A16F88C19C3566B00639779 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = NO;
 			};
 			name = Release;
 		};
