@@ -32,6 +32,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 
 //
 @interface QredoAuthenticationState_Start : QredoAuthenticationState
+@property (nonatomic) QredoAuthenticationRequest *authenticationRequest;
 @end
 
 //
@@ -118,6 +119,16 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
     
 }
 
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message
+{
+    [super didReceiveConversationMessage:message];
+}
+
+- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
+{
+
+}
+
 - (void)didReceiveCancelConversationMessageWithError:(NSError *)error
 {
     dispatch_async(self.authenticationProtocol.queue, ^{
@@ -177,8 +188,8 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 - (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
 {
 
-    [self switchToState:self.sendingClaimsState withConfigBlock:^{
-        self.sendingClaimsState.authenticationRequest = authenticationRequest;
+    [self switchToState:self.startState withConfigBlock:^{
+        self.startState.authenticationRequest = authenticationRequest;
     }];
 }
 
@@ -196,7 +207,9 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 @implementation QredoAuthenticationState_Start
 - (void)didEnter
 {
-    [self.authenticationProtocol.conversation startListening];
+    [self.conversationProtocol switchToState:self.authenticationProtocol.sendingClaimsState withConfigBlock:^{
+        self.authenticationProtocol.sendingClaimsState.authenticationRequest = self.authenticationRequest;
+    }];
 }
 
 - (void)cancel
@@ -287,6 +300,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 - (void)didEnter
 {
     [self.authenticationProtocol.delegate qredoAuthenticationProtocolDidSendClaims:self.authenticationProtocol];
+    [self.authenticationProtocol.conversation startListening];
 }
 
 - (void)cancel
@@ -297,7 +311,9 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 - (void)didTimeout
 {
     [self.conversationProtocol switchToState:self.authenticationProtocol.errorState withConfigBlock:^{
-        self.authenticationProtocol.errorState.error = nil; // TODO: fill an error
+        self.authenticationProtocol.errorState.error = [NSError errorWithDomain:QredoErrorDomain
+                                                                           code:QredoErrorCodeConversationProtocolTimeout
+                                                                       userInfo:@{NSLocalizedDescriptionKey : @"Timeout"}];
     }];
 }
 
