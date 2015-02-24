@@ -83,8 +83,15 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 
 @implementation ProtocolUnderTestState
 
-- (void)goToMainTimeoutState {}
-- (void)goToDidNotTimeoutState {}
+- (void)goToMainTimeoutState
+{
+    [self.protocolUnderTest switchToState:self.protocolUnderTest.mainTimeoutState withConfigBlock:^{}];
+}
+
+- (void)goToDidNotTimeoutState
+{
+    [self.protocolUnderTest switchToState:self.protocolUnderTest.didNotTimeoutState withConfigBlock:^{}];
+}
 
 - (ProtocolUnderTest *)protocolUnderTest
 {
