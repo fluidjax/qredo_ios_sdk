@@ -9,9 +9,9 @@
 
 
 
-//=====================
+//==============================================================================================================
 #pragma mark - Events -
-//=====================
+//==============================================================================================================
 
 
 @protocol QredoConversationProtocolEvents <NSObject>
@@ -23,9 +23,9 @@
 
 
 
-//=====================
+//==============================================================================================================
 #pragma mark - States -
-//=====================
+//==============================================================================================================
 
 
 @interface QredoConversationProtocolState : NSObject<QredoConversationProtocolEvents>
@@ -51,10 +51,15 @@
 - (void)didReceiveConversationMessage:(QredoConversationMessage *)message;
 - (void)otherPartyHasLeftConversation;
 
+#pragma mark Utility methods
+
+- (void)setTimeout:(NSTimeInterval)timeout;
+- (void)didTimeout;
+
 @end
 
 
-//------------
+//--------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 @interface QredoConversationProtocolCancelableState : QredoConversationProtocolState
@@ -72,9 +77,9 @@
 
 
 
-//=======================
+//==============================================================================================================
 #pragma mark - Protocol -
-//=======================
+//==============================================================================================================
 
 
 @interface QredoConversationProtocol : NSObject
