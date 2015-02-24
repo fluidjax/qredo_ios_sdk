@@ -221,6 +221,33 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
     XCTAssertEqual(self.protocol.currentState, self.protocol.didTimeoutState);
 }
 
+- (void)testTimeoutWhereStateDoesNotTimeout
+{
+    __block XCTestExpectation *didNotTimeoutStateEnteredExpectation = [self expectationWithDescription:@"Did not timeout state entered"];
+    [self.protocol.didNotTimeoutState setDidEnterBlock:^{
+        [didNotTimeoutStateEnteredExpectation fulfill];
+    }];
+    
+    [self.protocol.mainTimeoutState setTimeout:4];
+    [self.protocol switchToState:self.protocol.mainTimeoutState withConfigBlock:^{}];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.protocol goToDidNotTimeoutState];
+    });
+    
+    __block XCTestExpectation *haveWaitedUntilTimeoutHasFiredExpectation = [self expectationWithDescription:@"Have waited until timout has fired"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [haveWaitedUntilTimeoutHasFiredExpectation fulfill];
+    });
+    
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        didNotTimeoutStateEnteredExpectation = nil;
+        haveWaitedUntilTimeoutHasFiredExpectation = nil;
+    }];
+    
+    XCTAssertEqual(self.protocol.currentState, self.protocol.didNotTimeoutState);
+}
+
 @end
 
 
