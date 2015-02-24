@@ -211,6 +211,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
         didTimeoutStateEnteredExpectation = nil;
     }];
     
+    XCTAssertEqual(self.protocol.currentState, self.protocol.didTimeoutState);
 }
 
 @end
