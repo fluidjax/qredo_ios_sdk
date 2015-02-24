@@ -615,7 +615,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Recive presentation and send authenticaion request
     // --------------------------------------------------
     
-    [self recivePresentationAndSendAuthenticaionRequestIncludingAsserts];
+    [self receivePresentationAndSendAuthenticaionRequestIncludingAsserts];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -678,7 +678,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Recive presentation and send authenticaion request
     // --------------------------------------------------
     
-    [self recivePresentationAndSendAuthenticaionRequestIncludingAsserts];
+    [self receivePresentationAndSendAuthenticaionRequestIncludingAsserts];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -885,7 +885,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 
 }
 
-- (void)recivePresentationAndSendAuthenticaionRequestIncludingAsserts
+- (void)receivePresentationAndSendAuthenticaionRequestIncludingAsserts
 {
     [self recivePresentationAndSendAuthenticaionRequest];
     
