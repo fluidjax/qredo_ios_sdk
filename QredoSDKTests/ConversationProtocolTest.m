@@ -11,9 +11,12 @@
 
 @class ProtocolUnderTest;
 
+
+
 //===============================================================================================================
 #pragma mark - Events -
 //===============================================================================================================
+
 
 @protocol ConversationProtocolTestEvents <NSObject>
 
@@ -63,6 +66,8 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 //===============================================================================================================
 #pragma mark - Protocol interfaces -
 //===============================================================================================================
+
+
 @interface ProtocolUnderTest : QredoConversationProtocol
 
 @property (nonatomic) MainTimeoutState *mainTimeoutState;
@@ -176,7 +181,6 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 
 #pragma clang diagnostic pop
 #pragma GCC diagnostic pop
-
 
 
 
