@@ -635,7 +635,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Bob makes a choice and the protocol finishes
     // --------------------------------------------
     
-    [self bobMakesAChoiceAndTheProtocolFinishesIncludingAssertsWithBobsChoiceAccept:bobAccept];
+    [self sendBobsChoiceIncludingAssertsWithChoiceAccept:bobAccept];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -645,15 +645,15 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 
 - (void)testNormalFlowBobAcceptsEarly
 {
-    [self runNormalFlowBobMakingEarlyChoiceWithBobsAccept:YES];
+    [self runNormalFlowAndMakeBobChoiceEarlyWithChoiceAccept:YES];
 }
 
 - (void)testNormalFlowBobRejectsEarly
 {
-    [self runNormalFlowBobMakingEarlyChoiceWithBobsAccept:NO];
+    [self runNormalFlowAndMakeBobChoiceEarlyWithChoiceAccept:NO];
 }
 
-- (void)runNormalFlowBobMakingEarlyChoiceWithBobsAccept:(BOOL)bobAccept
+- (void)runNormalFlowAndMakeBobChoiceEarlyWithChoiceAccept:(BOOL)bobAccept
 {
     QredoClaimantAttestationProtocol *protocol
     = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
@@ -688,7 +688,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     // Bob makes a choice and the protocol finishes
     // --------------------------------------------
     
-    [self bobMakesAChoiceAndTheProtocolFinishesIncludingAssertsWithBobsChoiceAccept:bobAccept];
+    [self sendBobsChoiceIncludingAssertsWithChoiceAccept:bobAccept];
     XCTAssertNil(self.testStepError);
     if (self.testStepError) {
         return;
@@ -828,7 +828,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     }];
 }
 
-- (void)bobMakesAChoiceAndTheProtocolFinishesWithBobsChoiceAccept:(BOOL)bobAccept
+- (void)sendBobsChoiceWithChoiceAccept:(BOOL)bobAccept
 {
     __block XCTestExpectation *sendtingBobsChoiceHasStartedExpectation = [self expectationWithDescription:@"Sending Bob choice has been started"];
     [self.protocolDelegate setDidStartSendingRelyingPartyChoice:^(QredoClaimantAttestationProtocol *p, BOOL accetped) {
@@ -919,9 +919,9 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     XCTAssert([self.protocol canAcceptOrRejct]);
 }
 
-- (void)bobMakesAChoiceAndTheProtocolFinishesIncludingAssertsWithBobsChoiceAccept:(BOOL)bobAccept
+- (void)sendBobsChoiceIncludingAssertsWithChoiceAccept:(BOOL)bobAccept
 {
-    [self bobMakesAChoiceAndTheProtocolFinishesWithBobsChoiceAccept:bobAccept];
+    [self sendBobsChoiceWithChoiceAccept:bobAccept];
     
     XCTAssertEqual(self.protocol, self.protocolDelegate.didStartSendingRelyingPartyChoiceProtocol);
     
