@@ -14,12 +14,17 @@
 #import <XCTest/XCTest.h>
 
 
-static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.presentation";
+static NSString *kAttestationPresentationCancelMessageType = @"com.qredo.attestation.demo.presentation.cancel";
+static NSString *kAttestationPresentationRequestMessageType = @"com.qredo.attestation.demo.presentation.request";
+static NSString *kAttestationPresentationMessageType = @"com.qredo.attestation.demo.presentation";
 
-static NSString *kBobAcceptedString = @"ACCEPTED";
-static NSString *kBobRejectedString = @"REJECTED";
+static NSString *kAttestationRelyingPartyChoiceMessageType = @"com.qredo.attestation.demo.relyingparty.decision";
+static NSString *kAttestationRelyingPartyChoiceAccepted = @"ACCEPTED";
+static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
+
 
 static NSTimeInterval kDefaultExpectationTimeout = 5.0;
+
 
 
 //===============================================================================================================
@@ -29,9 +34,27 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 
 @interface ClaimantAttestationProtocolTest_AliceDevice : NSObject<QredoConversationDelegate>
 
+@property (nonatomic) QredoConversationMessage *receivedMemessage;
+
+@property (nonatomic) QredoConversationMessage *onPresentationRequestMessage;
+@property (nonatomic) QredoPresentationRequest *onPresentationRequestPresentationRequest;
+@property (nonatomic) NSException *onPresentationRequestException;
 @property (nonatomic, copy) void(^onPresentationRequest)(QredoConversationMessage *message, QredoPresentationRequest *presentationRequest, NSException *unmarshalException);
+
+@property (nonatomic) QredoConversationMessage *sendPresentationMessage;
+@property (nonatomic) QredoPresentation *sendPresentationPresentation;
+@property (nonatomic) NSError *sendPresentationError;
+
+@property (nonatomic) QredoConversationMessage *onBobsChoiceMemessage;
+@property (nonatomic, copy) NSString *onBobsChoiceChoice;
+@property (nonatomic) NSException *onBobsChoiceException;
 @property (nonatomic, copy) void(^onBobsChoice)(QredoConversationMessage *message, NSString *choice, NSException *unmarshalException);
+
+@property (nonatomic) QredoConversationMessage *onBobsCancelMemessage;
 @property (nonatomic, copy) void(^onBobsCancel)(QredoConversationMessage *message);
+
+@property (nonatomic) QredoConversationMessage *sendCancelMemessage;
+@property (nonatomic) NSError *sendCancelError;
 
 @property (nonatomic) QredoConversation *conversation;
 
@@ -46,6 +69,8 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 {
     QredoClient *_qredoClient;
 }
+
+#pragma mark Actions
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void (^)(NSError *))completionHandler
 {
@@ -66,6 +91,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 {
     
     QredoPresentation *presentation = !presentationBlock ? nil : presentationBlock();
+    self.sendPresentationPresentation = presentation;
     
     NSData *messageValue
     = [QredoPrimitiveMarshallers marshalObject:presentation
@@ -75,14 +101,35 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
     = [[QredoConversationMessage alloc] initWithValue:messageValue
                                              dataType:kAttestationPresentationMessageType
                                         summaryValues:nil];
+    self.sendPresentationMessage = message;
     [self.conversation publishMessage:message
                     completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
     {
+        self.sendPresentationError = error;
         if (completionHandler) {
             completionHandler(error);
         }
     }];
 }
+
+- (void)sendCancelMessageWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+    QredoConversationMessage *message
+    = [[QredoConversationMessage alloc] initWithValue:nil
+                                             dataType:kAttestationPresentationCancelMessageType
+                                        summaryValues:nil];
+    self.sendCancelMemessage = message;
+    [self.conversation publishMessage:message
+                    completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
+     {
+         self.sendCancelError = error;
+         if (completionHandler) {
+             completionHandler(error);
+         }
+     }];
+}
+
+#pragma mark Internal
 
 /**
  * Not thread safe. This needs to be used instead of reading _qredoClient.
@@ -112,6 +159,8 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 
 - (void)didRecivePresentationRequestMessage:(QredoConversationMessage *)message
 {
+    self.onPresentationRequestMessage = message;
+    
     if ([message.value length] < 1) {
         if (self.onPresentationRequest) {
             self.onPresentationRequest(message, nil, nil);
@@ -130,6 +179,8 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
         unmarshalException = exception;
     }
     @finally {
+        self.onPresentationRequestPresentationRequest = presentationRequest;
+        self.onPresentationRequestException = unmarshalException;
         if (self.onPresentationRequest) {
             self.onPresentationRequest(message, presentationRequest, unmarshalException);
         }
@@ -138,6 +189,8 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 
 - (void)didReciveRelyingPartyDecisionMessage:(QredoConversationMessage *)message
 {
+    self.onBobsChoiceMemessage = message;
+    
     static NSString *const kDecodingExeptionName = @"ClaimantAttestationProtocolTest_AliceDevice_MessageDecodingError";
     if (self.onBobsChoice) {
         
@@ -149,19 +202,24 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
         
         NSString *choiceString = [[NSString alloc] initWithData:choiceData encoding:NSUTF8StringEncoding];
         
-        if ([choiceString isEqualToString:kBobAcceptedString]) {
+        self.onBobsChoiceChoice = choiceString;
+        if ([choiceString isEqualToString:kAttestationRelyingPartyChoiceAccepted]) {
             self.onBobsChoice(message, choiceString, nil);
-        } else if ([choiceString isEqualToString:kBobRejectedString]) {
+        } else if ([choiceString isEqualToString:kAttestationRelyingPartyChoiceRejected]) {
             self.onBobsChoice(message, choiceString, nil);
         } else {
-            self.onBobsChoice(message, nil, [NSException exceptionWithName:kDecodingExeptionName
-                                                                    reason:@"MalformedData" userInfo:nil]);
+            NSException *e = [NSException exceptionWithName:kDecodingExeptionName
+                                                     reason:@"MalformedData"
+                                                   userInfo:nil];
+            self.onBobsChoiceException = e;
+            self.onBobsChoice(message, nil, e);
         }
     }
 }
 
-- (void)didReciveCancelMessage:(QredoConversationMessage *)message
+- (void)didReceiveCancelMessage:(QredoConversationMessage *)message
 {
+    self.onBobsCancelMemessage = message;
     if (self.onBobsCancel) {
         self.onBobsCancel(nil);
     }
@@ -171,13 +229,15 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 - (void)qredoConversation:(QredoConversation *)conversation
      didReceiveNewMessage:(QredoConversationMessage *)message
 {
+    self.receivedMemessage = message;
+    
     NSString *messageType = message.dataType;
-    if ([messageType isEqualToString:@"com.qredo.attestation.presentation.request"]) {
+    if ([messageType isEqualToString:kAttestationPresentationRequestMessageType]) {
         [self didRecivePresentationRequestMessage:message];
-    } else if ([messageType isEqualToString:@"com.qredo.attestation.relyingparty.decision"]) {
+    } else if ([messageType isEqualToString:kAttestationRelyingPartyChoiceMessageType]) {
         [self didReciveRelyingPartyDecisionMessage:message];
-    } else if ([messageType isEqualToString:@"com.qredo.attestation.cancel"]) {
-        [self didReciveCancelMessage:message];
+    } else if ([messageType isEqualToString:kAttestationPresentationCancelMessageType]) {
+        [self didReceiveCancelMessage:message];
     } else {
         // TODO [GR]: Implement this.
     }
@@ -195,7 +255,27 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 //===============================================================================================================
 
 
-@interface ClaimantAttestationProtocolTest_ProtocolDelegate: NSObject<QredoClaimantAttestationProtocolDelegate, QredoClaimantAttestationProtocolDataSource>
+@interface ClaimantAttestationProtocolTest_ProtocolDelegate: NSObject<QredoClaimantAttestationProtocolDelegate>
+
+@property (nonatomic) QredoClaimantAttestationProtocol *didStartBlockProtocol;
+
+@property (nonatomic) QredoClaimantAttestationProtocol *didRecivePresentationsProtocol;
+@property (nonatomic) QredoPresentation *didRecivePresentationsPresentation;
+
+@property (nonatomic) QredoClaimantAttestationProtocol *didReciveAuthenticationsProtocol;
+@property (nonatomic) QredoAuthenticationResponse *didReciveAuthenticationsAuthenticationResponse;
+
+@property (nonatomic) QredoClaimantAttestationProtocol *didFinishAuthenticationWithErrorProtocol;
+@property (nonatomic) NSError *didFinishAuthenticationWithErrorError;
+
+@property (nonatomic) QredoClaimantAttestationProtocol *didStartSendingRelyingPartyChoiceProtocol;
+@property (nonatomic) BOOL didStartSendingRelyingPartyChoiceClaimsAccepted;
+
+@property (nonatomic) QredoClaimantAttestationProtocol *didFinishSendingRelyingPartyChoiceProtocol;
+
+@property (nonatomic) QredoClaimantAttestationProtocol *didFinishWithErrorProtocol;
+@property (nonatomic) NSError *didFinishWithErrorError;
+
 
 @property (nonatomic, copy) void(^didStartBlock)(QredoClaimantAttestationProtocol *protocol);
 @property (nonatomic, copy) void(^didRecivePresentations)(QredoClaimantAttestationProtocol *protocol, QredoPresentation *presentation);
@@ -205,7 +285,6 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 @property (nonatomic, copy) void(^didFinishSendingRelyingPartyChoice)(QredoClaimantAttestationProtocol *protocol);
 @property (nonatomic, copy) void(^didFinishWithError)(QredoClaimantAttestationProtocol *protocol, NSError *error);
 
-@property (nonatomic, copy) void(^authenticateRequest)(QredoClaimantAttestationProtocol *protocol,QredoAuthenticationRequest *authenticationRequest, NSString *authenticator, QredoClaimantAttestationProtocolAuthenticationCompletionHandler completionHandler);
 
 @end
 
@@ -214,6 +293,7 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 
 - (void)didStartClaimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
 {
+    self.didStartBlockProtocol = protocol;
     if (self.didStartBlock) {
         self.didStartBlock(protocol);
     }
@@ -222,6 +302,8 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
              didRecivePresentations:(QredoPresentation *)presentation
 {
+    self.didRecivePresentationsProtocol = protocol;
+    self.didRecivePresentationsPresentation = presentation;
     if (self.didRecivePresentations) {
         self.didRecivePresentations(protocol, presentation);
     }
@@ -230,6 +312,8 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
            didReciveAuthentications:(QredoAuthenticationResponse *)authentications
 {
+    self.didReciveAuthenticationsProtocol = claimantAttestationProtocol;
+    self.didReciveAuthenticationsAuthenticationResponse = authentications;
     if (self.didReciveAuthentications) {
         self.didReciveAuthentications(claimantAttestationProtocol, authentications);
     }
@@ -238,6 +322,8 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
    didFinishAuthenticationWithError:(NSError *)error
 {
+    self.didFinishAuthenticationWithErrorProtocol = claimantAttestationProtocol;
+    self.didFinishAuthenticationWithErrorError = error;
     if (self.didFinishAuthenticationWithError) {
         self.didFinishAuthenticationWithError(claimantAttestationProtocol, error);
     }
@@ -246,6 +332,8 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
   didStartSendingRelyingPartyChoice:(BOOL)claimsAccepted
 {
+    self.didStartSendingRelyingPartyChoiceProtocol = claimantAttestationProtocol;
+    self.didStartSendingRelyingPartyChoiceClaimsAccepted = claimsAccepted;
     if (self.didStartSendingRelyingPartyChoice) {
         self.didStartSendingRelyingPartyChoice(claimantAttestationProtocol, claimsAccepted);
     }
@@ -253,6 +341,7 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 
 - (void)claimantAttestationProtocolDidFinishSendingRelyingPartyChoice:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
 {
+    self.didFinishSendingRelyingPartyChoiceProtocol = claimantAttestationProtocol;
     if (self.didFinishSendingRelyingPartyChoice) {
         self.didFinishSendingRelyingPartyChoice(claimantAttestationProtocol);
     }
@@ -261,18 +350,10 @@ typedef ClaimantAttestationProtocolTest_AliceDevice AlicesDevice;
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
                  didFinishWithError:(NSError *)error
 {
+    self.didFinishWithErrorProtocol = claimantAttestationProtocol;
+    self.didFinishWithErrorError = error;
     if (self.didFinishWithError) {
         self.didFinishWithError(claimantAttestationProtocol, error);
-    }
-}
-
-- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-                authenticateRequest:(QredoAuthenticationRequest *)authenticationRequest
-                      authenticator:(NSString *)authenticator
-                  completionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)completionHandler
-{
-    if (self.authenticateRequest) {
-        self.authenticateRequest(protocol, authenticationRequest, authenticator, completionHandler);
     }
 }
 
@@ -287,10 +368,20 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
 //===============================================================================================================
 
 
-@interface ClaimantAttestationProtocolTest_BobHelper : NSObject<QredoRendezvousDelegate>
+@interface ClaimantAttestationProtocolTest_BobHelper : NSObject<QredoRendezvousDelegate, QredoClaimantAttestationProtocolDataSource>
 
 @property (nonatomic) QredoRendezvous *rendezvous;
 @property (nonatomic) QredoConversation *conversation;
+
+@property (nonatomic) QredoClaimantAttestationProtocol *authenticateRequestProtocol;
+@property (nonatomic) QredoAuthenticationRequest *authenticateRequestAuthenticationRequest;
+@property (nonatomic, copy) NSString *authenticateRequestAuthenticator;
+@property (nonatomic, copy) QredoClaimantAttestationProtocolAuthenticationCompletionHandler authenticateRequestCompletionHandler;
+@property (nonatomic, copy) void(^authenticateRequest)(QredoClaimantAttestationProtocol *protocol, QredoAuthenticationRequest *authenticationRequest, NSString *authenticator, QredoClaimantAttestationProtocolAuthenticationCompletionHandler completionHandler);
+
+@property (nonatomic) QredoAuthenticationResponse *finishAuthenticationAuthenticationResponse;
+@property (nonatomic) NSError *finishAuthenticationError;
+
 
 @property (nonatomic, copy) void (^rendezvousResponseHandler)(QredoConversation *conversation);
 
@@ -321,10 +412,10 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
                                configuration:configuration
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
          {
+             self.rendezvous = rendezvous;
              rendezvous.delegate = self;
              [rendezvous startListening];
              
-             self.rendezvous = rendezvous;
              if (completionHandler) {
                  completionHandler(error);
              }
@@ -372,16 +463,36 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
     }
 }
 
+#pragma mark Authentication action
 
 - (void)finishAuthenticationWithCompletionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)complitionHandler
                                             block:(QredoAuthenticationResponse *(^)())authenticationResponseBlock
                                        errorBlock:(NSError *(^)())errorBlock
 {
     QredoAuthenticationResponse *response = authenticationResponseBlock ? authenticationResponseBlock() : nil;
+    self.finishAuthenticationAuthenticationResponse = response;
     NSError *error = errorBlock ? errorBlock() : nil;
+    self.finishAuthenticationError = error;
     complitionHandler(response, error);
     
 }
+
+#pragma mark QredoClaimantAttestationProtocolDataSource
+
+- (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
+                authenticateRequest:(QredoAuthenticationRequest *)authenticationRequest
+                      authenticator:(NSString *)authenticator
+                  completionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)completionHandler
+{
+    self.authenticateRequestProtocol = protocol;
+    self.authenticateRequestAuthenticationRequest = authenticationRequest;
+    self.authenticateRequestAuthenticator = authenticator;
+    self.authenticateRequestCompletionHandler = completionHandler;
+    if (self.authenticateRequest) {
+        self.authenticateRequest(protocol, authenticationRequest, authenticator, completionHandler);
+    }
+}
+
 
 #pragma mark QredoRendezvousDelegate
 
@@ -409,8 +520,11 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 
 
 @interface ClaimantAttestationProtocolTest : XCTestCase
+@property (nonatomic) QredoClaimantAttestationProtocol *protocol;
 @property (nonatomic) BobHelper *bobHelper;
+@property (nonatomic) ProtocolDelegate *protocolDelegate;
 @property (nonatomic) AlicesDevice *alicesDevice;
+@property (nonatomic) NSError *testStepError;
 @end
 
 @implementation ClaimantAttestationProtocolTest
@@ -419,12 +533,15 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 {
     [super setUp];
     
+    self.testStepError = nil;
+    
     self.bobHelper = [[BobHelper alloc] init];
+    self.protocolDelegate = [[ProtocolDelegate alloc] init];
     self.alicesDevice = [[AlicesDevice alloc] init];
     
     __block XCTestExpectation *bobCreatesRendezvousExpectation = [self expectationWithDescription:@"Bob creates rendezvous"];
     [self.bobHelper createRendezvousWithCompletionHandler:^(NSError *error) {
-        XCTAssertNil(error);
+        NSAssert(!error, @"Could not create rendezvous for Bob.");
         [bobCreatesRendezvousExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:kDefaultExpectationTimeout handler:^(NSError *error) {
@@ -440,7 +557,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     [self.alicesDevice respondToRendezvousWithTag:self.bobHelper.rendezvous.tag
                                 completionHandler:^(NSError *error)
      {
-         XCTAssertNil(error);
+         NSAssert(!error, @"Alice could nor respond to Bob's rendezvous.");
          [aliceRespondsToRendezvousExpectation fulfill];
      }];
 
@@ -448,98 +565,185 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
         aliceRespondsToRendezvousExpectation = nil;
         bobsConversationIsCreatedExpectation = nil;
     }];
-
-    XCTAssertNotNil(self.bobHelper.conversation);
+    
+    NSAssert(self.bobHelper.conversation, @"Bob has not got he's end of the conversation.");
 }
 
 - (void)tearDown
 {
     self.bobHelper = nil;
+    self.protocolDelegate = nil;
     self.alicesDevice = nil;
     [super tearDown];
 }
 
 
+#pragma mark Tests
 
-- (void)testNormalFlow
+- (void)testNormalFlowBobAccepts
 {
-    ProtocolDelegate *protocolDelegate = [[ProtocolDelegate alloc] init];
-    
+    [self runNormalFlowWithBobsAccept:YES];
+}
+
+- (void)testNormalFlowBobRejects
+{
+    [self runNormalFlowWithBobsAccept:NO];
+}
+
+- (void)runNormalFlowWithBobsAccept:(BOOL)bobAccept
+{
     QredoClaimantAttestationProtocol *protocol
     = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
                                                     attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
                                                        authenticator:nil];
     
-    protocol.delegate = protocolDelegate;
-    protocol.dataSource = protocolDelegate;
+    protocol.delegate = self.protocolDelegate;
+    protocol.dataSource = self.bobHelper;
+    self.protocol = protocol;
     
     
-    __block QredoConversationMessage *message = nil;
-    __block QredoPresentationRequest *presentationRequest = nil;
-    __block NSException *exception = nil;
+    // Starting the protocol and send presentation request
+    // ---------------------------------------------------
+    
+    [self startTheProtocolAndSendPresentationRequestIncludingAsserts];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
     
     
+    // Recive presentation and send authenticaion request
+    // --------------------------------------------------
+    
+    [self receivePresentationAndSendAuthenticaionRequestIncludingAsserts];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+    
+    
+    // Recive authentication response and wait for Bob's choice
+    // --------------------------------------------------------
+    
+    [self reciveAuthenticationResponseAndWaitForBobsChoiceIncludingAsserts];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+    
+    
+    // Bob makes a choice and the protocol finishes
+    // --------------------------------------------
+    
+    [self sendBobsChoiceIncludingAssertsWithChoiceAccept:bobAccept];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+
+}
+
+- (void)testNormalFlowBobAcceptsEarly
+{
+    [self runNormalFlowAndMakeBobChoiceEarlyWithChoiceAccept:YES];
+}
+
+- (void)testNormalFlowBobRejectsEarly
+{
+    [self runNormalFlowAndMakeBobChoiceEarlyWithChoiceAccept:NO];
+}
+
+- (void)runNormalFlowAndMakeBobChoiceEarlyWithChoiceAccept:(BOOL)bobAccept
+{
+    QredoClaimantAttestationProtocol *protocol
+    = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
+                                                    attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
+                                                       authenticator:nil];
+    
+    protocol.delegate = self.protocolDelegate;
+    protocol.dataSource = self.bobHelper;
+    self.protocol = protocol;
+    
+    
+    // Starting the protocol and send presentation request
+    // ---------------------------------------------------
+    
+    [self startTheProtocolAndSendPresentationRequestIncludingAsserts];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+    
+    
+    // Recive presentation and send authenticaion request
+    // --------------------------------------------------
+    
+    [self receivePresentationAndSendAuthenticaionRequestIncludingAsserts];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+    
+    
+    // Bob makes a choice and the protocol finishes
+    // --------------------------------------------
+    
+    [self sendBobsChoiceIncludingAssertsWithChoiceAccept:bobAccept];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+}
+
+#pragma mark Steps
+
+- (void)startTheProtocolAndSendPresentationRequest
+{
     __block XCTestExpectation *protocolStartsExpectation = [self expectationWithDescription:@"Protocol starts"];
     
-    [protocolDelegate setDidStartBlock:^(QredoClaimantAttestationProtocol *p) {
-        XCTAssertEqual(protocol, p);
+    [self.protocolDelegate setDidStartBlock:^(QredoClaimantAttestationProtocol *p) {
         [protocolStartsExpectation fulfill];
     }];
     
     __block XCTestExpectation *aliceReceivesPresentationRequestExepctation = [self expectationWithDescription:@"Alice recieves a presentation request"];
-    [self.alicesDevice setOnPresentationRequest:^(QredoConversationMessage *m, QredoPresentationRequest *pr, NSException *e)
+    [self.alicesDevice setOnPresentationRequest:^(QredoConversationMessage *m,
+                                                  QredoPresentationRequest *pr,
+                                                  NSException *e)
      {
-         message = m;
-         presentationRequest = pr;
-         exception = e;
          [aliceReceivesPresentationRequestExepctation fulfill];
      }];
     
-    [protocol start];
+    [self.protocol start];
     
     [self waitForExpectationsWithTimeout:kDefaultExpectationTimeout handler:^(NSError *error) {
         protocolStartsExpectation = nil;
         aliceReceivesPresentationRequestExepctation = nil;
+        if (error) {
+            self.testStepError = error;
+        }
     }];
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssertFalse([protocol canAcceptOrRejct]);
+}
 
-    
-    XCTAssertNotNil(message);
-    XCTAssertNotNil(presentationRequest);
-    XCTAssertEqual([presentationRequest.requestedAttestationTypes count], 2);
-    XCTAssert([presentationRequest.requestedAttestationTypes containsObject:@"picture"]);
-    XCTAssert([presentationRequest.requestedAttestationTypes containsObject:@"dob"]);
-    XCTAssertNil(exception);
-    
-    
-    __block QredoPresentation *alicePresentation = nil;
-    __block QredoPresentation *receivedPresentation = nil;
-    __block QredoAuthenticationRequest *authenticationRequest = nil;
-    
-    __block QredoClaimantAttestationProtocolAuthenticationCompletionHandler authenticationCompletionHandler = nil;
-    
-    
+- (void)recivePresentationAndSendAuthenticaionRequest
+{
     __block XCTestExpectation *protocolReceivesPresentationExpectation = [self expectationWithDescription:@"Protocol receives presentation"];
-    [protocolDelegate setDidRecivePresentations:^(QredoClaimantAttestationProtocol *p, QredoPresentation *pres) {
-        XCTAssertEqual(protocol, p);
-        receivedPresentation = pres;
+    [self.protocolDelegate setDidRecivePresentations:^(QredoClaimantAttestationProtocol *p, QredoPresentation *pres) {
         [protocolReceivesPresentationExpectation fulfill];
     }];
     
     __block XCTestExpectation *authenticationRequestExpectation = [self expectationWithDescription:@"Has send authentication request"];
-    [protocolDelegate setAuthenticateRequest:^(QredoClaimantAttestationProtocol *p, QredoAuthenticationRequest *ar, NSString *authenticator, QredoClaimantAttestationProtocolAuthenticationCompletionHandler compHandler) {
-        authenticationRequest = ar;
-        authenticationCompletionHandler = compHandler;
+    [self.bobHelper setAuthenticateRequest:^(QredoClaimantAttestationProtocol *p,
+                                             QredoAuthenticationRequest *ar,
+                                             NSString *authenticator,
+                                             QredoClaimantAttestationProtocolAuthenticationCompletionHandler compHandler) {
         [authenticationRequestExpectation fulfill];
     }];
-
+    
     __block XCTestExpectation *aliceHasSentPresentationExpectation = [self expectationWithDescription:@"Alice has sent presentation"];
     [self.alicesDevice sendPresentationWithBlock:^QredoPresentation *{
         
         NSMutableSet *attestations = [NSMutableSet new];
-        for (NSString *attestationType in presentationRequest.requestedAttestationTypes) {
+        for (NSString *attestationType in self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes) {
             
             QredoLFClaim *lfClaim
             = [[QredoLFClaim alloc] initWithName:[NSSet new]
@@ -564,14 +768,10 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
             
         }
         
-        
-        alicePresentation = [[QredoPresentation alloc] initWithAttestations:attestations];
-        
-        return alicePresentation;
+        return [[QredoPresentation alloc] initWithAttestations:attestations];
         
     } completionHandler:^(NSError *error) {
         
-        XCTAssertNil(error);
         [aliceHasSentPresentationExpectation fulfill];
         
     }];
@@ -580,36 +780,25 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
         protocolReceivesPresentationExpectation = nil;
         authenticationRequestExpectation = nil;
         aliceHasSentPresentationExpectation = nil;
+        self.testStepError = error;
     }];
-    
-    XCTAssertNotNil(receivedPresentation);
-    XCTAssertEqual([receivedPresentation.attestations count], [alicePresentation.attestations count]);
-    // TODO [GR]: Add more tests here.
-    
-    XCTAssertNotNil(authenticationRequest);
-    // TODO [GR]: Add more tests here.
 
-    
-    XCTAssert([protocol canCancel]);
-    XCTAssert([protocol canAcceptOrRejct]);
-    
-    
-    __block QredoAuthenticationResponse *authenticationResponse = nil;
-    
+}
+
+- (void)reciveAuthenticationResponseAndWaitForBobsChoice
+{
     __block XCTestExpectation *protocolReceivsAuthenticationsExpectation = [self expectationWithDescription:@"Protocol receives the authenticaiont results"];
-    [protocolDelegate setDidReciveAuthentications:^(QredoClaimantAttestationProtocol *p, QredoAuthenticationResponse *ar) {
-        XCTAssertEqual(protocol, p);
-        authenticationResponse = ar;
+    [self.protocolDelegate setDidReciveAuthentications:^(QredoClaimantAttestationProtocol *p,
+                                                         QredoAuthenticationResponse *ar) {
         [protocolReceivsAuthenticationsExpectation fulfill];
     }];
     
-    __block QredoAuthenticationResponse *authenticatorAuthenticationResponse = nil;
-    [self.bobHelper finishAuthenticationWithCompletionHandler:authenticationCompletionHandler
+    [self.bobHelper finishAuthenticationWithCompletionHandler:self.bobHelper.authenticateRequestCompletionHandler
                                                         block:^QredoAuthenticationResponse *
      {
          NSMutableArray *credentialValidationResults = [NSMutableArray new];
          
-         for (QredoClaimMessage *claimMessage in authenticationRequest.claimMessages) {
+         for (QredoClaimMessage *claimMessage in self.bobHelper.authenticateRequestAuthenticationRequest.claimMessages) {
              
              QredoAuthenticationCode *claimHash = claimMessage.claimHash;
              QredoCredentialValidationResult *validationResult = [QredoCredentialValidationResult credentialValidity];
@@ -623,13 +812,10 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
              
          }
          
-         authenticatorAuthenticationResponse
-         = [[QredoAuthenticationResponse alloc] initWithCredentialValidationResults:credentialValidationResults
-                                                                       sameIdentity:YES
-                                                             authenticatorCertChain:[NSData new]
-                                                                          signature:[NSData new]];
-         
-         return authenticatorAuthenticationResponse;
+         return [[QredoAuthenticationResponse alloc] initWithCredentialValidationResults:credentialValidationResults
+                                                                            sameIdentity:YES
+                                                                  authenticatorCertChain:[NSData new]
+                                                                               signature:[NSData new]];
      }
                                                    errorBlock:^NSError *
      {
@@ -638,56 +824,121 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     
     [self waitForExpectationsWithTimeout:kDefaultExpectationTimeout handler:^(NSError *error) {
         protocolReceivsAuthenticationsExpectation = nil;
+        self.testStepError = error;
     }];
-    
-    XCTAssertNotNil(authenticationResponse);
-    // TODO [GR]: Add more tests
-    
-    
-    __block NSString *bobsChoiceString = nil;
-    
+}
+
+- (void)sendBobsChoiceWithChoiceAccept:(BOOL)bobAccept
+{
     __block XCTestExpectation *sendtingBobsChoiceHasStartedExpectation = [self expectationWithDescription:@"Sending Bob choice has been started"];
-    [protocolDelegate setDidStartSendingRelyingPartyChoice:^(QredoClaimantAttestationProtocol *p, BOOL accetped) {
-        XCTAssertEqual(protocol, p);
+    [self.protocolDelegate setDidStartSendingRelyingPartyChoice:^(QredoClaimantAttestationProtocol *p, BOOL accetped) {
         [sendtingBobsChoiceHasStartedExpectation fulfill];
     }];
     
     __block XCTestExpectation *hasSendChoiceExpectation = [self expectationWithDescription:@"Bob choice has been sent"];
-    [protocolDelegate setDidFinishSendingRelyingPartyChoice:^(QredoClaimantAttestationProtocol *p) {
-        XCTAssertEqual(protocol, p);
+    [self.protocolDelegate setDidFinishSendingRelyingPartyChoice:^(QredoClaimantAttestationProtocol *p) {
         [hasSendChoiceExpectation fulfill];
     }];
     
     __block XCTestExpectation *aliceHasRecivedChoiceExpectation = [self expectationWithDescription:@"Alice has received choice"];
     [self.alicesDevice setOnBobsChoice:^(QredoConversationMessage *m, NSString *choiceString, NSException *e) {
-        bobsChoiceString = choiceString;
         [aliceHasRecivedChoiceExpectation fulfill];
     }];
     
     __block XCTestExpectation *protocolHasFinishedExpectation = [self expectationWithDescription:@"Protocol has finished"];
-    [protocolDelegate setDidFinishWithError:^(QredoClaimantAttestationProtocol *p, NSError *e) {
-        XCTAssertEqual(protocol, p);
-        XCTAssertNil(e);
+    [self.protocolDelegate setDidFinishWithError:^(QredoClaimantAttestationProtocol *p, NSError *e) {
         [protocolHasFinishedExpectation fulfill];
     }];
     
-    [protocol accept];
+    if (bobAccept) {
+        [self.protocol accept];
+    } else {
+        [self.protocol reject];
+    }
     
     [self waitForExpectationsWithTimeout:kDefaultExpectationTimeout handler:^(NSError *error) {
         sendtingBobsChoiceHasStartedExpectation = nil;
         hasSendChoiceExpectation = nil;
         aliceHasRecivedChoiceExpectation = nil;
         protocolHasFinishedExpectation = nil;
+        self.testStepError = error;
     }];
-    
-    XCTAssertEqualObjects(bobsChoiceString, kBobAcceptedString);
-    
-    
-    
-    // TODO [GR]: FINISH UP
-    
+
 }
 
+
+- (void)startTheProtocolAndSendPresentationRequestIncludingAsserts
+{
+    [self startTheProtocolAndSendPresentationRequest];
+    
+    XCTAssertEqual(self.protocol, self.protocolDelegate.didStartBlockProtocol);
+    
+    XCTAssertNotNil(self.alicesDevice.onPresentationRequestMessage);
+    XCTAssertNotNil(self.alicesDevice.onPresentationRequestPresentationRequest);
+    XCTAssertEqual([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes count], 2);
+    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"picture"]);
+    XCTAssert([self.alicesDevice.onPresentationRequestPresentationRequest.requestedAttestationTypes containsObject:@"dob"]);
+    XCTAssertNil(self.alicesDevice.onPresentationRequestException);
+    
+    XCTAssert([self.protocol canCancel]);
+    XCTAssertFalse([self.protocol canAcceptOrRejct]);
+
+}
+
+- (void)receivePresentationAndSendAuthenticaionRequestIncludingAsserts
+{
+    [self recivePresentationAndSendAuthenticaionRequest];
+    
+    XCTAssertNil(self.alicesDevice.sendPresentationError);
+    
+    XCTAssertEqual(self.protocolDelegate.didRecivePresentationsProtocol, self.protocol);
+    // TODO [GR]: Add more tests here.
+    
+    XCTAssertNotNil(self.protocolDelegate.didRecivePresentationsPresentation);
+    XCTAssertEqual([self.protocolDelegate.didRecivePresentationsPresentation.attestations count],
+                   [self.alicesDevice.sendPresentationPresentation.attestations count]);
+    // TODO [GR]: Add more tests here.
+    
+    XCTAssertNotNil(self.bobHelper.authenticateRequestAuthenticationRequest);
+    // TODO [GR]: Add more tests here.
+    
+    
+    XCTAssert([self.protocol canCancel]);
+    XCTAssert([self.protocol canAcceptOrRejct]);
+}
+
+- (void)reciveAuthenticationResponseAndWaitForBobsChoiceIncludingAsserts
+{
+    [self reciveAuthenticationResponseAndWaitForBobsChoice];
+    
+    XCTAssertEqual(self.protocol, self.bobHelper.authenticateRequestProtocol);
+    XCTAssertNotNil(self.bobHelper.finishAuthenticationAuthenticationResponse);
+    // TODO [GR]: Add more tests
+    
+    XCTAssert([self.protocol canCancel]);
+    XCTAssert([self.protocol canAcceptOrRejct]);
+}
+
+- (void)sendBobsChoiceIncludingAssertsWithChoiceAccept:(BOOL)bobAccept
+{
+    [self sendBobsChoiceWithChoiceAccept:bobAccept];
+    
+    XCTAssertEqual(self.protocol, self.protocolDelegate.didStartSendingRelyingPartyChoiceProtocol);
+    
+    XCTAssertEqual(self.protocol, self.protocolDelegate.didFinishSendingRelyingPartyChoiceProtocol);
+    
+    if (bobAccept) {
+        XCTAssertEqualObjects(self.alicesDevice.onBobsChoiceChoice, kAttestationRelyingPartyChoiceAccepted);
+    } else {
+        XCTAssertEqualObjects(self.alicesDevice.onBobsChoiceChoice, kAttestationRelyingPartyChoiceRejected);
+    }
+    
+    XCTAssertEqual(self.protocol, self.protocolDelegate.didFinishWithErrorProtocol);
+    XCTAssertNil(self.protocolDelegate.didFinishWithErrorError);
+    
+    XCTAssertFalse([self.protocol canCancel]);
+    XCTAssertFalse([self.protocol canAcceptOrRejct]);
+}
 
 @end
 

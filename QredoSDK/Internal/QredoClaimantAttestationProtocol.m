@@ -6,6 +6,7 @@
 #import "QredoConversation.h"
 #import "QredoConversationMessage.h"
 #import "QredoAttestationInternal.h"
+#import "QredoCrypto.h"
 #import <QredoClient.h>
 #import <QredoPrimitiveMarshallers.h>
 #import <QredoClientMarshallers.h>
@@ -117,6 +118,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 #pragma mark -
 
 @interface QredoClaimantAttestationState_Finish : QredoClaimantAttestationState
+@property (nonatomic) NSError *error;
 @end
 
 
@@ -538,7 +540,10 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
         NSMutableArray *claimMessages = [[NSMutableArray alloc] init];
         for (QredoAttestation *attestation in self.presentation.attestations) {
             
-            NSData *claimHash = attestation.credential.hashedClaim;
+            NSData *claimHash = [self calculateHashOfClaim:attestation.claim];
+            if (!claimHash) {
+                // TODO [GR]: Handle error here.
+            }
             
             QredoClaimMessage *claimMessage = [[QredoClaimMessage alloc] initWithClaimHash:claimHash
                                                                                 credential:attestation.credential];
@@ -566,6 +571,15 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     [protocol authenticationFinishedWithResponse:nil error:error];
 }
 
+- (NSData *)calculateHashOfClaim:(QredoLFClaim *)claim
+{
+    if (!claim) {
+        return nil;
+    }
+    NSData *claimData = [QredoPrimitiveMarshallers marshalObject:claim
+                                                      marshaller:[QredoClientMarshallers claimMarshaller]];
+    return [QredoCrypto sha256:claimData];
+}
 
 @end
 
@@ -644,6 +658,7 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                         withConfigBlock:^
          {
+             // TODO [GR]: Create new error and set `error` as underlying error.
              self.claimantAttestationProtocol.cancelConversationState.error = error;
          }];
     } else {
@@ -652,6 +667,12 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     }
 }
 
+#pragma mark Info methods
+
+- (BOOL)canCancel
+{
+    return NO;
+}
 
 #pragma mark Utility methods
 
@@ -685,34 +706,16 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)didEnter
 {
     [super didEnter];
-    [self cancelConversationWithCompletionHandler:^(NSError *error) {
-        [self.claimantAttestationProtocol conversationCanceledWithError:error];
-    }];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocolDidFinishSendingRelyingPartyChoice:self.claimantAttestationProtocol];
-    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol didFinishWithError:nil];
-}
-
-#pragma mark Events
-
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
-{
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
                                     withConfigBlock:nil];
 }
 
-- (void)conversationCanceledWithError:(NSError *)error
-{
-    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
-                                    withConfigBlock:nil];
-}
+#pragma mark Info methods
 
-#pragma mark Utility methods
-
-- (void)cancelConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
+- (BOOL)canCancel
 {
-    [self.claimantAttestationProtocol.conversation deleteConversationWithCompletionHandler:^(NSError *error) {
-        completionHandler(error);
-    }];
+    return NO;
 }
 
 @end
@@ -734,11 +737,12 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     [self cancelConversationWithCompletionHandler:^(NSError *error) {
         [self.claimantAttestationProtocol conversationCanceledWithError:error];
     }];
-    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
-                                                        didFinishWithError:self.error];
 }
 
 #pragma mark Events
+
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
+- (void)otherPartyHasLeftConversation {}
 
 - (void)accept {}
 - (void)reject {}
@@ -749,7 +753,19 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)conversationCanceledWithError:(NSError *)error
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
-                                    withConfigBlock:nil];
+                                    withConfigBlock:^
+     {
+         NSError *actualError = nil;
+         if (self.error && error) {
+             // TODO [GR]: Create new error setting `error` as underlying error and `self.error` as previous error,
+             // and update `actualError`.
+         } else if (self.error) {
+             actualError = self.error;
+         } else if (error) {
+             // TODO [GR]: Create new error with error as underlying error and update `actualError`.
+         }
+         self.claimantAttestationProtocol.finishState.error = actualError;
+     }];
 }
 
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
@@ -757,21 +773,18 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
                didFinishWithResults:(QredoAuthenticationResponse *)results {}
 
-
-#pragma mark Utility methods
-
-- (void)cancelConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
-    [self.claimantAttestationProtocol.conversation deleteConversationWithCompletionHandler:^(NSError *error) {
-        completionHandler(error);
-    }];
-}
-
 #pragma mark Info methods
 
 - (BOOL)canCancel
 {
     return NO;
+}
+
+#pragma mark Utility methods
+
+- (void)cancelConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+    [self publishCancelMessageWithCompletionHandler:completionHandler];
 }
 
 @end
@@ -793,9 +806,18 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     [super didEnter];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
                                                         didFinishWithError:self.error];
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
+                                    withConfigBlock:^
+    {
+        // TODO [GR]: Set the error to "cancelled by Alice".
+        self.claimantAttestationProtocol.finishState.error = nil;
+    }];
 }
 
 #pragma mark Events
+
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
+- (void)otherPartyHasLeftConversation {}
 
 - (void)accept {}
 - (void)reject {}
@@ -822,14 +844,24 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @implementation QredoClaimantAttestationState_Finish
 
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    self.error = nil;
+}
+
 - (void)didEnter
 {
     [super didEnter];
     [self.conversationProtocol.conversation stopListening];
-
+    [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
+                                                        didFinishWithError:self.error];
 }
 
 #pragma mark Events
+
+- (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
+- (void)otherPartyHasLeftConversation {}
 
 - (void)accept {}
 - (void)reject {}
