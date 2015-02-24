@@ -5,6 +5,7 @@
 #import "QredoKeychainArchiverForAppleKeychain.h"
 #import "QredoKeychain.h"
 #import "QredoErrorCodes.h"
+#import "QredoLogging.h"
 
 static NSString *kUnderlyingErrorSource = @"Underlying error source";
 static NSString *kUnderlyingErrorCode = @"Underlying error code";
@@ -100,6 +101,8 @@ static NSString *kCurrentService = @"CurrentService";
     [queryDictionary setObject:@YES forKey:(__bridge id<NSCopying>)(kSecReturnAttributes)];
     [queryDictionary setObject:@YES forKey:(__bridge id<NSCopying>)(kSecReturnData)];
     
+    LogDebug(@"loadQredoKeychainWithIdentifier is calling SecItemCopyMatching for identifier: '%@'", identifier);
+
     CFDictionaryRef result = nil;
     OSStatus sanityCheck = SecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary), (CFTypeRef *)&result);
     
@@ -185,6 +188,8 @@ static NSString *kCurrentService = @"CurrentService";
 
 - (OSStatus)hasQredoKeychainWithIdentifier:(NSString *)identifier {
     
+    LogDebug(@"hasQredoKeychainWithIdentifier is calling SecItemCopyMatching for identifier: '%@'", identifier);
+
     NSMutableDictionary *queryDictionary = [[NSMutableDictionary alloc] init];
     [queryDictionary setObject: (__bridge id)kSecClassGenericPassword forKey: (__bridge id<NSCopying>)kSecClass];
     [queryDictionary setObject:kCurrentService forKey:(__bridge id<NSCopying>)kSecAttrService];
