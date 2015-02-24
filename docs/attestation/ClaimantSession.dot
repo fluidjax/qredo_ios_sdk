@@ -35,7 +35,7 @@ digraph ClaimantSession {
   sendAttestationResult -> cancel [label="conversationMessageReceived(msg != cancel)"]
   
   atestationResultSent -> finish [color=navy]
-  cancel -> finish
+  cancel -> finish [label="cancelMessageSent()"]
   cancelledByOtherSide -> finish
 
 
@@ -48,10 +48,10 @@ digraph ClaimantSession {
   receivedPresentations [label = "Authenticate (Presentations Received)| {Enter: | authenticatePresentations() } | {Exit: | { delegate.didReceiveAuthentications(authentications) | cancelPresentationAuthentication() }}"]
   receivedAuthenticationResults [label = "Authentication Results Received | {Enter: | nop} | {Exit: | nop }"]
   sendAttestationResult [label = "Send Relying Party Choice| {Enter: | {sendRelyingPartyChoice(attestationResult) | delegate.sendingRelyingPartyChoice()}} | {Exit: | delegate.didSendingRelyingPartyChoice() }"]
-  atestationResultSent [label = "Relying Party Choice Sent | {Enter: | {cancelConversarion(nil) }} | {Exit: | nop }"]
+  atestationResultSent [label = "Relying Party Choice Sent | {Enter: | { delegate.didFinishWithError(nil) }} | {Exit: | nop }"]
   
-  cancelledByOtherSide [label = "Cancelled by Claimant | {Enter: | delegate.canceledByClaimant(error)}", fillcolor=pink]
-  cancel [label = "Cancel Conversation | {Enter: | cancelConversation(error)}", fillcolor=grey]
+  cancelledByOtherSide [label = "Cancelled by Claimant | {Enter: | delegate.canceledByClaimant(error)} | {Exit: | delegate.didFinishWithError(error)}", fillcolor=pink]
+  cancel [label = "Cancel Conversation | {Enter: | sendCancelMessage()} | {Exit: | delegate.didFinishWithError(error)}", fillcolor=grey]
   
   finish [label = "Finish", shape=ellipse, style=filled]
 

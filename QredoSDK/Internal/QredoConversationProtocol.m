@@ -10,9 +10,21 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
 
 
-//=========================
+//==============================================================================================================
+#pragma mark - Private events -
+//==============================================================================================================
+
+
+@protocol QredoConversationProtocolPrivateEvents <NSObject>
+
+- (void)didReceiveTimeoutCallbackWithIdentifier:(QredoQUID *)identifier;
+
+@end
+
+
+//==============================================================================================================
 #pragma mark - Interfaces -
-//=========================
+//==============================================================================================================
 
 
 @interface QredoConversationProtocolState ()
@@ -22,7 +34,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 @end
 
 
-//------------
+//--------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 @interface QredoConversationProtocol ()<QredoConversationDelegate>
@@ -30,15 +42,22 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 @property (nonatomic) QredoConversation *conversation;
 @end
 
+@interface QredoConversationProtocol (PrivateEvents)<QredoConversationProtocolPrivateEvents>
+@end
 
 
-//====================================
+
+//==============================================================================================================
 #pragma mark - State Implementations -
-//====================================
+//==============================================================================================================
 
 
 @implementation QredoConversationProtocolState
-
+{
+    BOOL _timeoutEnabled;
+    NSTimeInterval _timeoutInterval;
+    QredoQUID *_timeoutIdentifier;
+}
 
 - (void)prepareForReuseWithConversationProtocol:(QredoConversationProtocol *)conversationProtocol
                                     configBlock:(dispatch_block_t)configBlock
@@ -59,10 +78,24 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
 - (void)didEnter
 {
+    if (_timeoutEnabled) {
+        
+        QredoQUID *timeoutIdentifier = [QredoQUID QUID];
+        _timeoutIdentifier = timeoutIdentifier;
+        
+        __weak QredoConversationProtocol *protocol = self.conversationProtocol;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_timeoutInterval * NSEC_PER_SEC)),
+                       protocol.protocolQueue, ^
+        {
+            [protocol.currentState didReceiveTimeoutCallbackWithIdentifier:timeoutIdentifier];
+        });
+        
+    }
 }
 
 - (void)willExit
 {
+    _timeoutIdentifier = nil;
 }
 
 
@@ -76,10 +109,29 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 {
 }
 
+- (void)didReceiveTimeoutCallbackWithIdentifier:(QredoQUID *)identifier
+{
+    if ([_timeoutIdentifier isEqual:identifier]) {
+        [self didTimeout];
+    }
+}
+
+#pragma mark Utility methods
+
+- (void)setTimeout:(NSTimeInterval)timeout
+{
+    _timeoutEnabled = YES;
+    _timeoutInterval = timeout;
+}
+
+- (void)didTimeout
+{
+}
+
 @end
 
 
-//------------
+//--------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
 @implementation QredoConversationProtocolCancelableState
@@ -136,9 +188,9 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
 
 
-//======================================
+//==============================================================================================================
 #pragma mark - Protocol Implementation -
-//======================================
+//==============================================================================================================
 
 
 @implementation QredoConversationProtocol
@@ -224,6 +276,9 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 #pragma clang diagnostic ignored "-Wprotocol"
 
 @implementation QredoConversationProtocol(Events)
+@end
+
+@implementation QredoConversationProtocol(PrivateEvents)
 @end
 
 #pragma clang diagnostic pop
