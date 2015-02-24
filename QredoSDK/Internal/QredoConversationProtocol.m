@@ -85,9 +85,9 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
         
         __weak QredoConversationProtocol *protocol = self.conversationProtocol;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_timeoutInterval * NSEC_PER_SEC)),
-                       dispatch_get_main_queue(), ^
+                       protocol.protocolQueue, ^
         {
-            [protocol didReceiveTimeoutCallbackWithIdentifier:timeoutIdentifier];
+            [protocol.currentState didReceiveTimeoutCallbackWithIdentifier:timeoutIdentifier];
         });
         
     }
