@@ -248,6 +248,64 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
     XCTAssertEqual(self.protocol.currentState, self.protocol.didNotTimeoutState);
 }
 
+
+- (void)testTimoutWhenReturningToTheStateWithTimeout
+{
+    __block NSError *timeoutError = nil;
+    
+    __block XCTestExpectation *didNotTimeoutStateEnteredExpectation = [self expectationWithDescription:@"Did not timeout state entered"];
+    [self.protocol.didNotTimeoutState setDidEnterBlock:^{
+        [didNotTimeoutStateEnteredExpectation fulfill];
+    }];
+    
+    [self.protocol.mainTimeoutState setTimeout:4];
+    [self.protocol switchToState:self.protocol.mainTimeoutState withConfigBlock:^{}];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.protocol goToDidNotTimeoutState];
+    });
+    
+    [self waitForExpectationsWithTimeout:3 handler:^(NSError *error) {
+        didNotTimeoutStateEnteredExpectation = nil;
+        timeoutError = error;
+    }];
+    
+    XCTAssertEqual(self.protocol.currentState, self.protocol.didNotTimeoutState);
+    
+    if (timeoutError) {
+        return;
+    }
+    
+    
+    [self.protocol goToMainTimeoutState];
+    
+    __block XCTestExpectation *haveWaitedUntilInitialTimeoutHasFiredExpectation = [self expectationWithDescription:@"Have waited until the initial timout has fired"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [haveWaitedUntilInitialTimeoutHasFiredExpectation fulfill];
+    });
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        haveWaitedUntilInitialTimeoutHasFiredExpectation = nil;
+        timeoutError = error;
+    }];
+
+    XCTAssertEqual(self.protocol.currentState, self.protocol.mainTimeoutState);
+    
+    if (timeoutError) {
+        return;
+    }
+    
+    
+    __block XCTestExpectation *haveWaitedUntilSecondTimeoutHasFiredExpectation = [self expectationWithDescription:@"Have waited until the second timout has fired"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [haveWaitedUntilSecondTimeoutHasFiredExpectation fulfill];
+    });
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
+        haveWaitedUntilSecondTimeoutHasFiredExpectation = nil;
+    }];
+    
+    XCTAssertEqual(self.protocol.currentState, self.protocol.didTimeoutState);
+}
+
 @end
 
 
