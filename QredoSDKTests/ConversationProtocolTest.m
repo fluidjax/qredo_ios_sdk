@@ -31,7 +31,7 @@
 
 @interface ProtocolUnderTestState : QredoConversationProtocolCancelableState<ConversationProtocolTestEvents>
 @property (nonatomic, readonly) ProtocolUnderTest *protocolUnderTest;
-@property (nonatomic, copy) dispatch_block_t didEnterBlock;
+@property (nonatomic, copy) void(^didEnterBlock)();
 @end
 
 
