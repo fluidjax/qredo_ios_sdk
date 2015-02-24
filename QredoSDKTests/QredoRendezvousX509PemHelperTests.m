@@ -633,7 +633,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient2048Pem; // External keys, needs a signing handler
+    NSString *authenticationTag = TestKeyJavaSdkClient2048PemX509; // External keys, needs a signing handler
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     signDataBlock signingHandler = nil; // No signing handler provided
     

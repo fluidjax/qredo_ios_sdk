@@ -148,7 +148,7 @@
     NSError *error = nil;
     
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
@@ -232,7 +232,7 @@
     
     NSError *error = nil;
     
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *prefix1 = @"MyTestRendezVous";
     NSString *initialFullTag1 = [NSString stringWithFormat:@"%@@%@", prefix1, authenticationTag];
     
@@ -384,7 +384,7 @@
     NSError *error = nil;
     
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     // Generate an invalid signature (use incorrect salt length)
@@ -460,7 +460,7 @@
     NSError *error = nil;
     
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
@@ -666,7 +666,7 @@
 - (void)testCreateHelper_Invalid_MissingAtFromStartOfAuthenticationTag
 {
     NSError *error = nil;
-    NSString *initialFullTag = TestKeyJavaSdkClient4096Pem; // No @ prior to authentication tag
+    NSString *initialFullTag = TestKeyJavaSdkClient4096PemX509; // No @ prior to authentication tag
     signDataBlock signingHandler = nil; // Using internally generated keys
     
     id<QredoRendezvousCreateHelper> createHelper
@@ -686,7 +686,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem; // External keys, needs a signing handler
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509; // External keys, needs a signing handler
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     signDataBlock signingHandler = nil; // Using internally generated keys
     
@@ -753,7 +753,7 @@
     NSError *error = nil;
     
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
@@ -811,7 +811,7 @@
     NSError *error = nil;
     
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
@@ -951,7 +951,7 @@
 - (void)testRespondHelper_Invalid_MissingAtFromStartOfAuthenticationTag
 {
     NSError *error = nil;
-    NSString *initialFullTag = TestKeyJavaSdkClient4096Pem; // No @ prior to authentication tag
+    NSString *initialFullTag = TestKeyJavaSdkClient4096PemX509; // No @ prior to authentication tag
     
     id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
@@ -968,7 +968,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     id<QredoRendezvousRespondHelper> respondHelper
@@ -994,7 +994,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     id<QredoRendezvousRespondHelper> respondHelper
@@ -1020,7 +1020,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     id<QredoRendezvousRespondHelper> respondHelper
@@ -1047,7 +1047,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     id<QredoRendezvousRespondHelper> respondHelper
@@ -1074,7 +1074,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     id<QredoRendezvousRespondHelper> respondHelper
@@ -1101,7 +1101,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient4096Pem;
+    NSString *authenticationTag = TestKeyJavaSdkClient4096PemX509;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     id<QredoRendezvousRespondHelper> respondHelper
