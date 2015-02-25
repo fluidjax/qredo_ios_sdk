@@ -7,6 +7,7 @@
 #import "QredoRendezvousHelpers.h"
 #import "CryptoImplV1.h"
 #import "QredoClient.h"
+#import "QredoBase58.h"
 
 @interface QredoRendezvousAnonymousHelperTests : XCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
@@ -85,6 +86,59 @@
     signDataBlock signingHandler = nil; // Must be nil as not used
     
     error = nil;
+    id<QredoRendezvousCreateHelper> createHelper1
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper1);
+    XCTAssertNil(error);
+    XCTAssertEqual(createHelper1.type, QredoRendezvousAuthenticationTypeAnonymous);
+    
+    NSString *createFullTag1 = [createHelper1 tag];
+    XCTAssertNotNil(createFullTag1);
+    XCTAssertTrue(createFullTag1.length > 0);
+    
+    NSData *originalTagData1 = [QredoBase58 decodeData:createFullTag1];
+    XCTAssertNotNil(originalTagData1);
+    XCTAssertEqual(originalTagData1.length, 32);
+    
+    error = nil;
+    id<QredoRendezvousCreateHelper> createHelper2
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper2);
+    XCTAssertNil(error);
+    XCTAssertEqual(createHelper2.type, QredoRendezvousAuthenticationTypeAnonymous);
+    
+    NSString *createFullTag2 = [createHelper2 tag];
+    XCTAssertNotNil(createFullTag2);
+    XCTAssertTrue(createFullTag2.length > 0);
+    
+    NSData *originalTagData2 = [QredoBase58 decodeData:createFullTag2];
+    XCTAssertNotNil(originalTagData2);
+    XCTAssertEqual(originalTagData2.length, 32);
+    
+    // Can't really check for randomness, but can check that get different tags
+    XCTAssertFalse([createFullTag1 isEqualToString:createFullTag2]);
+    XCTAssertFalse([originalTagData1 isEqualToData:originalTagData2]);
+}
+
+- (void)testCreateHelper_Invalid_TagContainsAtSymbol
+{
+    NSError *error = nil;
+    
+    NSString *initialFullTag = @"Anonymous@RendezvousTag"; // Invalid
+    
+    signDataBlock signingHandler = nil; // Must be nil as not used
+    
+    error = nil;
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
@@ -92,15 +146,10 @@
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
-    XCTAssertNotNil(createHelper);
-    XCTAssertNil(error);
-    XCTAssertEqual(createHelper.type, QredoRendezvousAuthenticationTypeAnonymous);
-    
-    NSString *createFullTag = [createHelper tag];
-    XCTAssertNotNil(createFullTag);
-    XCTAssertTrue(createFullTag.length > 0);
-    // TODO: DH - check that it is valid base58 (once that's complete)
-    // TODO: DH - check un-base58 encoding is 32byte long
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorMalformedTag);
 }
 
 - (void)testCreateHelper_Invalid_MissingCrypto
@@ -183,6 +232,25 @@
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
+}
+
+- (void)testRespondHelper_Invalid_TagContainsAtSymbol
+{
+    NSError *error = nil;
+    
+    NSString *initialFullTag = @"Anonymous@RendezvousTag"; // Invalid
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                              error:&error
+       ];
+    XCTAssertNil(respondHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorMalformedTag);
 }
 
 - (void)testRespondHelper_Invalid_MissingCrypto
