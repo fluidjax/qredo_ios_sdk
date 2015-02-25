@@ -19,6 +19,10 @@
     self = [super initWithCrypto:crypto];
     if (self) {
         
+        // TODO: DH - validate anonymous rendezvous tag?
+        
+        // TODO: DH - If tag is null or empty (0 length), then generated a random tag of 32 bytes and base58 encodes it
+        
         if (!fullTag) {
             LogError(@"Full tag is nil.");
             if (error) {
@@ -37,7 +41,15 @@
             return nil;
         }
 
-        _fullTag = fullTag;
+        if (fullTag.length == 0) {
+            // Empty tag, so generate a random tag
+            _fullTag = [crypto getRandomTag];
+            
+        }
+        else {
+            _fullTag = fullTag;
+        }
+        
     }
     return self;
 }

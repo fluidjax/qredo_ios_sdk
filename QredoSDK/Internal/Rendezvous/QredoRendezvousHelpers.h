@@ -4,8 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import "QredoRendezvousHelper.h"
-
-@protocol CryptoImpl;
+#import "CryptoImpl.h"
 
 @interface QredoRendezvousHelpers : NSObject
 

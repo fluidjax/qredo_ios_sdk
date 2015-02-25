@@ -5,8 +5,6 @@
 #import <Foundation/Foundation.h>
 #import "QredoTypes.h"
 
-
-@protocol CryptoImpl;
 @class QredoRendezvousAuthSignature;
 
 
