@@ -6,22 +6,19 @@
 #import "QredoRendezvousHelper_Private.h"
 #import "QredoLogging.h"
 
+@implementation QredoAbstractRendezvousAnonymousHelper
+@end
 
-@interface QredoRendezvousAnonymousHelper ()
+@interface QredoRendezvousAnonymousCreateHelper ()
 @property (nonatomic, copy) NSString *fullTag;
 @end
 
-@implementation QredoRendezvousAnonymousHelper
+@implementation QredoRendezvousAnonymousCreateHelper
 
 - (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
 {
-    // Signing handler is ignored for anonymous rendezvous
     self = [super initWithCrypto:crypto];
     if (self) {
-        
-        // TODO: DH - validate anonymous rendezvous tag?
-        
-        // TODO: DH - If tag is null or empty (0 length), then generated a random tag of 32 bytes and base58 encodes it
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");
@@ -41,16 +38,19 @@
             return nil;
         }
 
+        // When creating a rendezvous, empty tag indicates helper should generate one automatically
         if (fullTag.length == 0) {
             // Empty tag, so generate a random tag
             _fullTag = [crypto getRandomTag];
-            
         }
         else {
+            
+            // TODO: DH - validate full tag (must not look like an authenticated rendezvous?
+
             _fullTag = fullTag;
         }
-        
     }
+    
     return self;
 }
 
@@ -79,6 +79,59 @@
     return nil;
 }
 
+@end
+
+@interface QredoRendezvousAnonymousRespondHelper ()
+@property (nonatomic, copy) NSString *fullTag;
+@end
+
+@implementation QredoRendezvousAnonymousRespondHelper
+
+- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+{
+    self = [super initWithCrypto:crypto];
+    if (self) {
+
+        if (!fullTag) {
+            LogError(@"Full tag is nil.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+
+        // When responding to a rendezvous, can't have an empty tag
+        if (fullTag.length == 0) {
+            LogError(@"Full tag is empty.");
+            if (error) {
+                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
+            }
+            return nil;
+        }
+        
+        // TODO: DH - validate full tag (must not look like an authenticated rendezvous?
+        
+        _fullTag = fullTag;
+    }
+    
+    return self;
+}
+
+- (QredoRendezvousAuthenticationType)type
+{
+    return QredoRendezvousAuthenticationTypeAnonymous;
+}
+
+- (NSString *)tag
+{
+    return self.fullTag;
+}
+
+- (QredoRendezvousAuthSignature *)emptySignature
+{
+    return nil;
+}
+
 - (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
     LogDebug(@"Anonymous Rendezvous - signature is always valid!");
@@ -86,5 +139,7 @@
 }
 
 @end
+
+
 
 

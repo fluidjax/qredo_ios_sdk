@@ -144,6 +144,7 @@
 		DCC22DBF1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DBD1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h */; };
 		DCC22DC01A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DBE1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m */; };
 		DCCB41521A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCB41511A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m */; };
+		DCCEED691A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */; };
 		DCDBA2B81A80B64A00C295D6 /* QredoRendezvousPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = DCDBA2B71A80B64A00C295D6 /* QredoRendezvousPrivate.h */; };
 		DCE378EA1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCE378E81A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h */; };
 		DCE378EB1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE378E91A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m */; };
@@ -351,6 +352,7 @@
 		DCC22DBD1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousRsaPemCommonHelper.h; sourceTree = "<group>"; };
 		DCC22DBE1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousRsaPemCommonHelper.m; sourceTree = "<group>"; };
 		DCCB41511A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousRsaPemCommonHelperTests.m; sourceTree = "<group>"; };
+		DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousAnonymousHelperTests.m; sourceTree = "<group>"; };
 		DCDBA2B71A80B64A00C295D6 /* QredoRendezvousPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoRendezvousPrivate.h; path = QredoSDK/QredoRendezvousPrivate.h; sourceTree = SOURCE_ROOT; };
 		DCE378E81A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousX509PemHelper.h; sourceTree = "<group>"; };
 		DCE378E91A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousX509PemHelper.m; sourceTree = "<group>"; };
@@ -769,6 +771,7 @@
 			isa = PBXGroup;
 			children = (
 				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
+				DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */,
 				78B88F5D1A653E78009E3B01 /* RendezvousEd25519HelperTests.m */,
 				DCC22DB91A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m */,
 				DCC22DBB1A88F6E90047AB18 /* QredoRendezvousRsa4096PemHelperTests.m */,
@@ -1250,6 +1253,7 @@
 				DCC22DBA1A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m in Sources */,
 				7810CC5D1A388BCE00421892 /* KeychainSenderMock.swift in Sources */,
 				0A65740D1A2F3B7200D5502E /* ConversationMQTTTests.m in Sources */,
+				DCCEED691A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m in Sources */,
 				0A6574121A2F3B7200D5502E /* QredoRendezvousCryptoTest.m in Sources */,
 				0A6574161A2F3B7200D5502E /* QredoTestUtils.m in Sources */,
 				0A65741C1A2F3B7200D5502E /* QredoVaultUpdateTests.m in Sources */,

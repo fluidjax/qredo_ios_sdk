@@ -22,7 +22,7 @@
     switch (authenticationType) {
             
         case QredoRendezvousAuthenticationTypeAnonymous:
-            return [[QredoRendezvousAnonymousHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousAnonymousCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeEd25519:
             return [[QredoRendezvousEd25519CreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
@@ -53,7 +53,7 @@
     switch (authenticationType) {
             
         case QredoRendezvousAuthenticationTypeAnonymous:
-            return [[QredoRendezvousAnonymousHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            return [[QredoRendezvousAnonymousRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
             
         case QredoRendezvousAuthenticationTypeEd25519:
             return [[QredoRendezvousEd25519RespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
