@@ -22,6 +22,9 @@ static NSString *kAttestationRelyingPartyChoiceAccepted = @"ACCEPTED";
 static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 
+static const NSTimeInterval kWaitingForPresentationTimeout = 60;
+static const NSTimeInterval kAuthenticateTimeout = 60;
+
 
 //==============================================================================================================
 #pragma mark - Private events -
@@ -383,6 +386,15 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 
 @implementation QredoClaimantAttestationState_WaitingForPresentaions
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self setTimeout:kWaitingForPresentationTimeout];
+    }
+    return self;
+}
+
 - (void)didEnter
 {
     [super didEnter];
@@ -428,6 +440,19 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     }
 }
 
+- (void)didTimeout
+{
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
+                                    withConfigBlock:^
+    {
+        NSError *error = nil;
+        updateQredoClaimantAttestationProtocolError(&error,
+                                                    QredoAttestationErrorCodePresentationTimeout,
+                                                    nil);
+        self.claimantAttestationProtocol.cancelConversationState.error = error;
+    }];
+}
+
 #pragma mark Utility methods
 
 - (QredoPresentation *)presentationFromMessage:(QredoConversationMessage *)message error:(NSError **)error
@@ -464,6 +489,15 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
 #pragma mark -
 
 @implementation QredoClaimantAttestationState_Authenticate
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self setTimeout:kAuthenticateTimeout];
+    }
+    return self;
+}
 
 - (void)prepareForReuse
 {
@@ -520,6 +554,19 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.authenticationResultsReceivedState
                                     withConfigBlock:nil];
     
+}
+
+- (void)didTimeout
+{
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
+                                    withConfigBlock:^
+     {
+         NSError *error = nil;
+         updateQredoClaimantAttestationProtocolError(&error, QredoAttestationErrorCodeAuthenticationTimeout, nil);
+         self.authenticationError = error;
+         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.authenticationResultsReceivedState
+                                         withConfigBlock:nil];
+     }];
 }
 
 #pragma mark Info methods
@@ -757,12 +804,20 @@ static NSString *kAttestationRelyingPartyChoiceRejected = @"REJECTED";
      {
          NSError *actualError = nil;
          if (self.error && error) {
-             // TODO [GR]: Create new error setting `error` as underlying error and `self.error` as previous error,
-             // and update `actualError`.
+             updateQredoClaimantAttestationProtocolError(&actualError,
+                                                         QredoAttestationErrorCodeConversationBetweenRelientPartyAndCalaimantCoudNotBeCanceled,
+                                                         @{
+                                                           NSUnderlyingErrorKey: error,
+                                                           QredoAttestationPreviousErrorKey: self.error,
+                                                           });
          } else if (self.error) {
              actualError = self.error;
          } else if (error) {
-             // TODO [GR]: Create new error with error as underlying error and update `actualError`.
+             updateQredoClaimantAttestationProtocolError(&actualError,
+                                                         QredoAttestationErrorCodeConversationBetweenRelientPartyAndCalaimantCoudNotBeCanceled,
+                                                         @{
+                                                           NSUnderlyingErrorKey: error,
+                                                           });
          }
          self.claimantAttestationProtocol.finishState.error = actualError;
      }];
