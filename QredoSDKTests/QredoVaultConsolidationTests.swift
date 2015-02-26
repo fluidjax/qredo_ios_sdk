@@ -18,10 +18,10 @@ class VaultListener : NSObject, QredoVaultDelegate {
         
         receivedItemMetadata.append(itemMetadata)
         
-        if let timer = fulfillTimer? {
+        if let timer = fulfillTimer {
             timer.invalidate()
         }
-        if let theExpectation = expecation? {
+        if let theExpectation = expecation {
             let timer = NSTimer(timeInterval: 1,
                 target: theExpectation,
                 selector: Selector("fulfill"),
