@@ -6,6 +6,7 @@
 #import "Qredo.h"
 #import "QredoClaimantAttestationProtocol.h"
 #import "QredoAuthenticatoinClaimsProtocol.h"
+#import "QredoAttestationInternal.h"
 
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClientMarshallers.h"
@@ -592,14 +593,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 
 - (void)runNormalFlowWithBobsAccept:(BOOL)bobAccept
 {
-    QredoClaimantAttestationProtocol *protocol
-    = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
-                                                    attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
-                                                       authenticator:nil];
-    
-    protocol.delegate = self.protocolDelegate;
-    protocol.dataSource = self.bobHelper;
-    self.protocol = protocol;
+    [self setupProtocolUsingDefaultSettings];
     
     
     // Starting the protocol and send presentation request
@@ -655,14 +649,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
 
 - (void)runNormalFlowAndMakeBobChoiceEarlyWithChoiceAccept:(BOOL)bobAccept
 {
-    QredoClaimantAttestationProtocol *protocol
-    = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
-                                                    attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
-                                                       authenticator:nil];
-    
-    protocol.delegate = self.protocolDelegate;
-    protocol.dataSource = self.bobHelper;
-    self.protocol = protocol;
+    [self setupProtocolUsingDefaultSettings];
     
     
     // Starting the protocol and send presentation request
@@ -695,7 +682,76 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     }
 }
 
+- (void)testTimeoutInWaitingForPresentations
+{
+    [self setupProtocolUsingDefaultSettings];
+    
+    
+    // Starting the protocol and send presentation request
+    // ---------------------------------------------------
+    
+    [self startTheProtocolAndSendPresentationRequestIncludingAsserts];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+    
+    __block XCTestExpectation *protocolFinishedExpectation = [self expectationWithDescription:@"Protocol did finished with timeout error"];
+    [self.protocolDelegate setDidFinishWithError:^(QredoClaimantAttestationProtocol *p, NSError *e) {
+        [protocolFinishedExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:70 handler:^(NSError *error) {
+        protocolFinishedExpectation = nil;
+    }];
+    
+    XCTAssertEqual(self.protocolDelegate.didFinishWithErrorProtocol, self.protocol);
+    XCTAssertNotNil(self.protocolDelegate.didFinishWithErrorError);
+    XCTAssertEqual(self.protocolDelegate.didFinishWithErrorError.code, QredoAttestationErrorCodePresentationTimeout);
+}
+
+- (void)testTimoutWhileAuthenticating
+{
+    [self setupProtocolUsingDefaultSettings];
+    
+    [self startTheProtocolAndSendPresentationRequestIncludingAsserts];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+    
+    [self receivePresentationAndSendAuthenticaionRequestIncludingAsserts];
+    XCTAssertNil(self.testStepError);
+    if (self.testStepError) {
+        return;
+    }
+    
+    __block XCTestExpectation *authenticationFinishesWithErrorExpectation = [self expectationWithDescription:@"Authentication finishes with error"];
+    [self.protocolDelegate setDidFinishAuthenticationWithError:^(QredoClaimantAttestationProtocol *p, NSError *e) {
+        [authenticationFinishesWithErrorExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:70 handler:^(NSError *error) {
+        authenticationFinishesWithErrorExpectation = nil;
+    }];
+    
+    XCTAssertEqual(self.protocolDelegate.didFinishAuthenticationWithErrorProtocol, self.protocol);
+    XCTAssertNotNil(self.protocolDelegate.didFinishAuthenticationWithErrorError);
+    XCTAssertEqual(self.protocolDelegate.didFinishAuthenticationWithErrorError.code, QredoAttestationErrorCodeAuthenticationTimeout);
+}
+
 #pragma mark Steps
+
+- (void)setupProtocolUsingDefaultSettings
+{
+    QredoClaimantAttestationProtocol *protocol
+    = [[QredoClaimantAttestationProtocol alloc] initWithConversation:self.bobHelper.conversation
+                                                    attestationTypes:[NSSet setWithArray:@[@"picture", @"dob"]]
+                                                       authenticator:nil];
+    
+    protocol.delegate = self.protocolDelegate;
+    protocol.dataSource = self.bobHelper;
+    self.protocol = protocol;
+}
 
 - (void)startTheProtocolAndSendPresentationRequest
 {
