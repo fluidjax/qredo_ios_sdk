@@ -36,7 +36,10 @@ static inline NSString *createRandomEncodedValue() {
         dataBytes[byteIndex] = kAlphabet[rand() % 58];
     }
     
-    return [NSString stringWithCharacters:dataBytes length:dataLength];
+    NSString *encodedValue = [NSString stringWithCharacters:dataBytes length:dataLength];
+    free(dataBytes);
+    
+    return encodedValue;
 }
 
 

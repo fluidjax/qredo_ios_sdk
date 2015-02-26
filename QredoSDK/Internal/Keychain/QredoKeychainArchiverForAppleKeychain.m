@@ -25,12 +25,15 @@ static NSString *kCurrentService = @"CurrentService";
         
         OSStatus deleteSanityCheck = [self deleteQredoKeychainWithIdentifier:identifier error:error];
         if (deleteSanityCheck != noErr) {
-            *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
-                      @{
-                        kUnderlyingErrorSource : @"SecItemDelete",
-                        kUnderlyingErrorCode : @(deleteSanityCheck),
-                        }
-                      ];
+            if (error) {
+                *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved
+                                         userInfo:
+                          @{
+                            kUnderlyingErrorSource : @"SecItemDelete",
+                            kUnderlyingErrorCode : @(deleteSanityCheck),
+                            }
+                          ];
+            }
             return NO;
         }
         return YES;
@@ -44,12 +47,15 @@ static NSString *kCurrentService = @"CurrentService";
         
         OSStatus deleteSanityCheck = [self deleteQredoKeychainWithIdentifier:identifier error:error];
         if (deleteSanityCheck != noErr) {
-            *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
-                      @{
-                        kUnderlyingErrorSource : @"SecItemDelete",
-                        kUnderlyingErrorCode : @(deleteSanityCheck),
-                        }
-                      ];
+            if (error) {
+                *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
+                          @{
+                            kUnderlyingErrorSource : @"SecItemDelete",
+                            kUnderlyingErrorCode : @(deleteSanityCheck),
+                            }
+                          ];
+            }
             return NO;
         }
         

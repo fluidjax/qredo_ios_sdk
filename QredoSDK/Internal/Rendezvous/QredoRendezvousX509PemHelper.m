@@ -35,6 +35,11 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 - (SecKeyRef)getPublicKeyRefFromX509AuthenticationTag:(NSString *)authenticationTag error:(NSError **)error
 {
     NSArray *certificateChainRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:authenticationTag];
+    if (!certificateChainRefs) {
+        LogError(@"Could not get any certificate refs. Tag not valid PEM formatted X.509 cert? Authentication tag: %@", authenticationTag);
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
+        return nil;
+    }
     
     NSArray *trustedRootRefs = [self.cryptoImpl getTrustedRootRefs];
     SecKeyRef publicKeyRef = [QredoCertificateUtils validateCertificateChain:certificateChainRefs
