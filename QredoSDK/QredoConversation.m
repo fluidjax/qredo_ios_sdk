@@ -20,6 +20,7 @@
 #import "QredoClientMarshallers.h"
 #import "QredoLogging.h"
 #import "QredoClient.h"
+#import "QredoConversationMessagePrivate.h"
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
 NSString *const kQredoConversationVaultItemType = @"com.qredo.conversation";
@@ -40,12 +41,8 @@ NSString *const kQredoConversationItemIsMine = @"_mine";
 NSString *const kQredoConversationItemDateSent = @"_sent";
 NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
-
-static NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
-
 static const double kQredoConversationUpdateInterval = 1.0; // seconds - polling period for items (non-multi-response transports)
 static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
-
 
 // TODO: these values should not be in clear memory. Add red herring
 #define SALT_CONVERSATION_ID [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]
@@ -119,86 +116,6 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 }
 @end
 
-@interface QredoConversationMessage ()
-
-// making read/write for private use
-@property QredoConversationHighWatermark *highWatermark;
-
-- (instancetype)initWithMessageLF:(QredoConversationMessageLF*)messageLF incoming:(BOOL)incoming;
-- (QredoConversationMessageLF*)messageLF;
-
-@end
-
-@implementation QredoConversationMessage
-
-- (instancetype)initWithMessageLF:(QredoConversationMessageLF*)messageLF incoming:(BOOL)incoming
-{
-    self = [self initWithValue:messageLF.value
-                      dataType:messageLF.metadata.dataType
-                 summaryValues:[messageLF.metadata.summaryValues dictionaryFromIndexableSet]];
-    if (!self) return nil;
-
-    _messageId = messageLF.metadata.id;
-    _parentId = [messageLF.metadata.parentId anyObject];
-    _incoming = incoming;
-
-    return self;
-}
-
-- (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues
-{
-    self = [super init];
-    if (!self) return nil;
-
-    _dataType = [dataType copy];
-    _value = [value copy];
-    _summaryValues = [summaryValues copy];
-
-    return self;
-}
-
-- (QredoConversationMessageLF*)messageLF
-{
-    NSSet* summaryValuesSet = [self.summaryValues indexableSet];
-
-    QredoConversationMessageMetaDataLF *messageMetadata =
-    [QredoConversationMessageMetaDataLF conversationMessageMetaDataLFWithID:[QredoQUID QUID]
-                                                                   parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
-                                                                   sequence:nil // TODO
-                                                                   dataType:self.dataType
-                                                              summaryValues:summaryValuesSet];
-
-    QredoConversationMessageLF *message = [[QredoConversationMessageLF alloc] initWithMetadata:messageMetadata value:self.value];
-    return message;
-
-}
-
-- (BOOL)isControlMessage
-{
-    return [self.dataType isEqualToString:kQredoConversationMessageTypeControl];
-}
-
-- (QredoConversationControlMessageType)controlMessageType
-{
-    if (![self isControlMessage]) return QredoConversationControlMessageTypeNotControlMessage;
-
-    NSData *qrvValue = [QredoPrimitiveMarshallers marshalObject:[QredoCtrl QRV]
-                                                     marshaller:[QredoClientMarshallers ctrlMarshaller]];
-
-
-    if ([self.value isEqualToData:qrvValue]) return QredoConversationControlMessageTypeJoined;
-
-    NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QredoCtrl QRT]
-                                                     marshaller:[QredoClientMarshallers ctrlMarshaller]];
-
-
-    if ([self.value isEqualToData:qrtValue]) return QredoConversationControlMessageTypeLeft;
-
-    return QredoConversationControlMessageTypeUnknown;
-}
-
-
-@end
 
 @interface QredoConversation ()
 {
@@ -577,7 +494,8 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId
+                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
         completionHandler(error);
     }];
 
@@ -986,7 +904,10 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
              return;
          }
 
-         QredoConversationQueryItemsResult *resultItems = [QredoConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result] maxSequenceValue:result.sequenceValue current:@0];
+         QredoConversationQueryItemsResult *resultItems
+            = [QredoConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
+                                                                      maxSequenceValue:result.sequenceValue
+                                                                               current:@0];
 
          // Subscriptions (or pseudo subscriptions) should not exclude control messages
          [self enumerateBodyWithResult:resultItems
@@ -1269,8 +1190,8 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:metadata value:message.value];
 
-    [self.store putItem:item completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
-        completionHandler(newItemDescriptor, error);
+    [self.store putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+        completionHandler(newItemMetadata.descriptor, error);
     }];
 }
 

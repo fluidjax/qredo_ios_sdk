@@ -89,10 +89,10 @@
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     testExpectation = [self expectationWithDescription:@"Put"];
-    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
          XCTAssertNil(error);
-         item1Descriptor = newItemDescriptor;
+         item1Descriptor = newItemMetadata.descriptor;
          [testExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
@@ -187,10 +187,10 @@
     NSDate *beforeFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:-1];
     
     testExpectation = [self expectationWithDescription:@"First put"];
-    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
          XCTAssertNil(error);
-         item1Descriptor = newItemDescriptor;
+         item1Descriptor = newItemMetadata.descriptor;
          [testExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
@@ -255,10 +255,10 @@
     NSData *item2Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
     QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:fetchedMetadata value:item2Data];
     testExpectation = [self expectationWithDescription:@"Second put"];
-    [vault putItem:item2 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+    [vault putItem:item2 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
          XCTAssertNil(error);
-         item1Descriptor = newItemDescriptor;
+         item1Descriptor = newItemMetadata.descriptor;
          [testExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
@@ -309,10 +309,10 @@
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     
     testExpectation = [self expectationWithDescription:@"put"];
-    [vault putItem:item1 completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
          XCTAssertNil(error);
-         item1Descriptor = newItemDescriptor;
+         item1Descriptor = newItemMetadata.descriptor;
          [testExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {

@@ -28,21 +28,17 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
 - (QredoED25519VerifyKey *)verifyKeyFromAuthenticationTag:(NSString *)authenticationTag error:(NSError **)error
 {
     // Verify Key is the authentication tag, once Base58 decoded
-    NSData *vkData = [QredoBase58 decodeData:authenticationTag];
+    NSData *vkData = [QredoBase58 decodeData:authenticationTag error:error];
     if (!vkData || vkData.length == 0) {
         LogError(@"Base58 decode of authentication tag was nil or 0 length. Authentication Tag: '%@'", authenticationTag);
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMalformedTag, nil);
         return nil;
     }
     
     QredoED25519VerifyKey *vk = [self.cryptoImpl qredoED25519VerifyKeyWithData:vkData error:error];
     if (!vk) {
         LogError(@"Nil Ed25519 verify key returned for authentication tag: '%@'.", authenticationTag);
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
         return nil;
     }
     
@@ -69,9 +65,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
@@ -85,9 +79,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
             // No authentication tag provided, so need to generate own keys and signing handler must be nil
             if (signingHandler) {
                 LogError(@"Provided a signing handler (so external keys to be used), but authentication tag (public key) also provided.");
-                if (error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided, nil);
-                }
+                updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided, nil);
                 return nil;
             }
             
@@ -105,7 +97,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
             if (!_verifyKey) {
                 // Only set the error, if not already set
                 if (error && !*error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
+                    updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
                 }
                 LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'",
                          _authenticatedRendezvousTag.authenticationTag);
@@ -115,9 +107,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
             // Using externally provided keys, so signing handler must not be nil
             if (!signingHandler) {
                 LogError(@"Provided an authentication tag (public key) but signing handler is nil.");
-                if (error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
-                }
+                updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
                 return nil;
             }
             
@@ -146,9 +136,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
 {
     if (!data) {
         LogError(@"Data to sign is nil.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingDataToSign, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingDataToSign, nil);
         return nil;
     }
     
@@ -159,9 +147,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         signature = self.signingHandler(data, self.type);
         if (!signature) {
             LogError(@"Nil signature was returned by signing handler.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
             return nil;
         }
         
@@ -185,7 +171,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         if (!signature) {
             // Only set the error, if not already set
             if (error && !*error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
+                updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
             }
             LogError(@"Nil signature was returned by qredoED25519SignMessage");
             return nil;
@@ -213,9 +199,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
     if (self) {
         if (!fullTag) {
             LogError(@"Full tag is nil.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
@@ -229,9 +213,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
             LogError(@"Invalid authentication tag length: %ld. Minimum tag length for Ed25519 authenticated tag: %ld",
                      fullTag.length,
                      kMinEd25519AuthenticationTagLength);
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }
 
@@ -239,7 +221,7 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         if (!_vk) {
             // Only set the error, if not already set
             if (error && !*error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMalformedTag, nil);
+                updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMalformedTag, nil);
             }
             LogError(@"Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '%@'",
                      _authenticatedRendezvousTag.authenticationTag);
@@ -280,10 +262,6 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
     } other:^{
         signatureData = nil;
     }];
-    
-    if ([signatureData length] < 1) {
-        return NO;
-    }
     
     BOOL signatureIsValid = [self.cryptoImpl qredoED25519VerifySignature:signatureData ofMessage:rendezvousData verifyKey:_vk error:error];
     LogDebug(@"Ed25519 Authenticated Rendezvous signature valid: %@", signatureIsValid ? @"YES" : @"NO");

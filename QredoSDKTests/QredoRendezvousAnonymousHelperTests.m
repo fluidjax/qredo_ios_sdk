@@ -101,8 +101,10 @@
     XCTAssertNotNil(createFullTag1);
     XCTAssertTrue(createFullTag1.length > 0);
     
-    NSData *originalTagData1 = [QredoBase58 decodeData:createFullTag1];
+    error = nil;
+    NSData *originalTagData1 = [QredoBase58 decodeData:createFullTag1 error:&error];
     XCTAssertNotNil(originalTagData1);
+    XCTAssertNil(error);
     XCTAssertEqual(originalTagData1.length, 32);
     
     error = nil;
@@ -121,8 +123,10 @@
     XCTAssertNotNil(createFullTag2);
     XCTAssertTrue(createFullTag2.length > 0);
     
-    NSData *originalTagData2 = [QredoBase58 decodeData:createFullTag2];
+    error = nil;
+    NSData *originalTagData2 = [QredoBase58 decodeData:createFullTag2 error:&error];
     XCTAssertNotNil(originalTagData2);
+    XCTAssertNil(error);
     XCTAssertEqual(originalTagData2.length, 32);
     
     // Can't really check for randomness, but can check that get different tags

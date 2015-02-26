@@ -135,7 +135,7 @@
     XCTAssertNil(error);
 }
 
-- (void)testCreateHelper_SeveralAtCharsInTag {
+- (void)testCreateHelper_Invalid_SeveralAtCharsInTag {
     
     NSError *error = nil;
 
@@ -159,7 +159,7 @@
     XCTAssertEqual(error.code, QredoAuthenticatedRendezvousTagErrorMalformedTag);
 }
 
-- (void)testCreateHelper_ExternalKeysMissingSigningHandler
+- (void)testCreateHelper_Invalid_ExternalKeysMissingSigningHandler
 {
     NSError *error = nil;
     
@@ -332,7 +332,7 @@
     
 }
 
-- (void)testCreateHelper_NilTag
+- (void)testCreateHelper_Invalid_NilTag
 {
     NSError *error = nil;
     
@@ -355,7 +355,7 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
 }
 
-- (void)testCreateHelperMissingCrypto
+- (void)testCreateHelper_Invalid_MissingCrypto
 {
     NSError *error = nil;
     
@@ -375,7 +375,7 @@
     
 }
 
-- (void)testRespondHelperMissingCrypto
+- (void)testRespondHelper_Invalid_MissingCrypto
 {
     NSError *error = nil;
     
@@ -386,7 +386,7 @@
                      error:&error]);
 }
 
-- (void)testRespondHelperMissingTag
+- (void)testRespondHelper_Invalid_MissingTag
 {
     NSError *error = nil;
     
@@ -402,7 +402,7 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
 }
 
-- (void)testRespondHelperSeveralAtCharsInTag {
+- (void)testRespondHelper_Invalid_SeveralAtCharsInTag {
     
     NSError *error = nil;
     
@@ -470,6 +470,29 @@
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
     XCTAssertEqual(error.code, QredoAuthenticatedRendezvousTagErrorMalformedTag);
+}
+
+- (void)testRespondHelper_Invalid_BadCharsInTag
+{
+    NSError *error = nil;
+    
+    // Invalid base58 chars
+    NSString *initialFullTag = @"test@tv+-";
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
+                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                      fullTag:initialFullTag
+                                                      crypto:self.cryptoImpl
+                                                      error:&error];
+    XCTAssertNil(respondHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorMalformedTag);
+
+    // TODO: DH - Original test returned base58 error - but ultimately the error is a malformed tag - maybe nest existing NSError inside a new NSError?
+//    XCTAssertEqualObjects(error.domain, QredoBase58ErrorDomain);
+//    XCTAssertEqual(error.code, QredoBase58ErrorUnrecognizedSymbol);
 }
 
 @end

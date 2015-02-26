@@ -2,9 +2,6 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_QredoVault_h
-#define QredoSDK_QredoVault_h
-
 #import "QredoTypes.h"
 
 /** Represents state of the vault. An opaque class */
@@ -92,7 +89,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 - (void)startListening;
 - (void)stopListening;
 
-- (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
+- (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
 /** Requests meta data of all items from the server and calls `block` for each item. If an error occurs during the request, then `completionHandler` is called with NSError set, otherwise it gets called once enumeration complete. Enumeration starts from `QredoVaultHighWatermarkOrigin`, i.e. returning all items from the vault. If it is necessary to return items from certain point, use `enumerateVaultItemsUsingBlock:failureHandler:since:`
 
@@ -115,5 +112,3 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 /** If for some reason the client application needs to receive all items in the delegate after calling `startListening`, then this method can be called. */
 - (void)resetWatermark;
 @end
-
-#endif

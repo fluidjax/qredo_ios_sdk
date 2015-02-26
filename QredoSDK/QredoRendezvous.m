@@ -49,8 +49,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 @end
 
-
-
 @implementation QredoRendezvousConfiguration
 
 - (instancetype)initWithConversationType:(NSString*)conversationType
@@ -276,7 +274,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
         completionHandler(error);
     }];
 }

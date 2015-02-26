@@ -2,9 +2,6 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_QredoVaultPrivate_h
-#define QredoSDK_QredoVaultPrivate_h
-
 #import "QredoVault.h"
 #import "QredoQUID.h"
 #import "QredoClient.h"
@@ -32,8 +29,6 @@
 
 
 // public method doesn't allow to specify itemId
-- (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID *)itemId completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
+- (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID *)itemId completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
 @end
-
-#endif

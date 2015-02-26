@@ -41,9 +41,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
                                                          rootCertificateRefs:trustedRootRefs];
     if (!publicKeyRef) {
         LogError(@"Authentication tag (certificate chain) did not validate correctly. Authentication tag: %@", authenticationTag);
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
     }
     
     return publicKeyRef;
@@ -69,16 +67,12 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
 
         if (fullTag.length < 1) {
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
@@ -86,9 +80,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         if (!signingHandler)
         {
             LogError(@"No signing handler provided. Mandatory for X.509 authenticated rendezvous as can only use externally generated keys.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
             return nil;
         }
         
@@ -100,9 +92,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
         if ([_authenticatedRendezvousTag.authenticationTag isEqualToString:@""]) {
             LogError(@"Empty authentication tag. X.509 authenticated rendezcous can only use externally generated keys.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagMissing, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagMissing, nil);
             return nil;
         }
         
@@ -138,18 +128,14 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 {
     if (!data) {
         LogError(@"Data to sign is nil.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingDataToSign, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingDataToSign, nil);
         return nil;
     }
     
     NSData *signature = self.signingHandler(data, self.type);
     if (!signature) {
         LogError(@"Nil signature was returned by signing handler.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
         return nil;
     }
     
@@ -161,9 +147,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
     
     if (!signatureValid) {
         LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
         return nil;
     }
     else {
@@ -189,16 +173,12 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
     if (self) {
         if (!fullTag) {
             LogError(@"Full tag is nil.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         if (fullTag.length < 1) {
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
@@ -212,9 +192,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
             LogError(@"Invalid authentication tag length: %ld. Minimum tag length for X509 authenticated tag: %ld",
                      fullTag.length,
                      kMinX509AuthenticationTagLength);
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }
         

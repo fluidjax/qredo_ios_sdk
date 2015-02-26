@@ -95,10 +95,10 @@ class QredoVaultConsolidationTests: XCTestCase {
         
         var firstPutItemDescriptor: QredoVaultItemDescriptor?
         expectation = expectationWithDescription("first put")
-        vault.putItem(item1, completionHandler: { (itemDescriptor, error) -> Void in
+        vault.putItem(item1, completionHandler: { (itemMetadata, error) -> Void in
             XCTAssertNil(error, "must not get an error from first put")
-            XCTAssertNotNil(itemDescriptor, "we must get a descriptor from first put")
-            firstPutItemDescriptor = itemDescriptor
+            XCTAssertNotNil(itemMetadata, "we must get a metadata from first put")
+            firstPutItemDescriptor = itemMetadata.descriptor
             expectation.fulfill()
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
@@ -151,10 +151,10 @@ class QredoVaultConsolidationTests: XCTestCase {
         
         var thirdPutItemDescriptor: QredoVaultItemDescriptor?
         expectation = expectationWithDescription("third put, puting a new item")
-        vault.putItem(item2, completionHandler: { (itemDescriptor, error) -> Void in
+        vault.putItem(item2, completionHandler: { (itemMetadata, error) -> Void in
             XCTAssertNil(error, "must not get an error from first put")
-            XCTAssertNotNil(itemDescriptor, "must get a descriptor from first put")
-            thirdPutItemDescriptor = itemDescriptor
+            XCTAssertNotNil(itemMetadata, "must get a metadata from first put")
+            thirdPutItemDescriptor = itemMetadata.descriptor
             expectation.fulfill()
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)

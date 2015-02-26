@@ -38,17 +38,13 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 {
     if (!authenticationTag) {
         LogError(@"Authentication tag is nil.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagMissing, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagMissing, nil);
         return nil;
     }
     
     if (!publicKeyIdentifier) {
         LogError(@"Public key identifier is nil.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorPublicKeyIdentifierMissing, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorPublicKeyIdentifierMissing, nil);
         return nil;
     }
     
@@ -64,10 +60,8 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     // Note: This only converts from PEM to DER - doesn't validate which DER format it is.
     NSData *publicKeyData = [QredoCertificateUtils convertPemPublicKeyToDer:authenticationTag];
     if (!publicKeyData) {
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-        }
         LogError(@"Nil public key was returned by convertPemPublicKeyToDer. Authentication Tag: '%@'", authenticationTag);
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
         return nil;
     }
     
@@ -80,10 +74,8 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                                      keyIdentifier:publicKeyIdentifier
                                          isPrivate:NO];
     if (!publicKeyRef) {
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-        }
         LogError(@"Could not import Public Key data (must be PKCS#1 'RSAPublicKey' format, not X.509 'SubjectPublicKeyInfo' format). Authentication Tag: '%@'", authenticationTag);
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
         return nil;
     }
     
@@ -115,16 +107,12 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         if (fullTag.length < 1) {
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
@@ -144,9 +132,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
             // No authentication tag provided, so need to generate own keys and signing handler must be nil
             if (signingHandler) {
                 LogError(@"Provided a signing handler (so external keys to be used), but authentication tag (public key) also provided.");
-                if (error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided, nil);
-                }
+                updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided, nil);
                 return nil;
             }
             
@@ -159,9 +145,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                                            persistInAppleKeychain:YES];
             if (!_keyPairRef) {
                 LogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", _publicKeyIdentifier, _privateKeyIdentifier);
-                if (error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorKeyGenerationFailed, nil);
-                }
+                updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorKeyGenerationFailed, nil);
                 return nil;
             }
             
@@ -185,9 +169,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
             // Using externally provided keys, so signing handler must not be nil
             if (!signingHandler) {
                 LogError(@"Provided an authentication tag (public key) but signing handler is nil.");
-                if (error) {
-                    *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
-                }
+                updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
                 return nil;
             }
             
@@ -213,9 +195,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 {
     if (!data) {
         LogError(@"Data to sign is nil.");
-        if (error) {
-            *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingDataToSign, nil);
-        }
+        updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingDataToSign, nil);
         return nil;
     }
     
@@ -230,9 +210,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                                             keyRef:self.keyPairRef.privateKeyRef];
         if (!signature) {
             LogError(@"Nil signature was returned by rsaPssSignMessage.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
             return nil;
         }
     }
@@ -241,9 +219,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         signature = self.signingHandler(data, self.type);
         if (!signature) {
             LogError(@"Nil signature was returned by signing handler.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
             return nil;
         }
         
@@ -255,9 +231,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         
         if (!signatureValid) {
             LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorBadSignature, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
             return nil;
         }
     }
@@ -286,16 +260,12 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     if (self) {
         if (!fullTag) {
             LogError(@"Full tag is nil.");
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         if (fullTag.length < 1) {
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorMissingTag, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
@@ -310,9 +280,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                      fullTag.length,
                      super.keySizeBits,
                      super.minimumAuthenticationTagLength);
-            if (error) {
-                *error = qredoRendezvousHelperError(QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
-            }
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }
         
