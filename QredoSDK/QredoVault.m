@@ -369,6 +369,8 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 @implementation QredoMutableVaultItemMetadata
 
+@dynamic descriptor, dataType, accessLevel, summaryValues;
+
 - (void)setSummaryValue:(id)value forKey:(NSString *)key
 {
     NSMutableDictionary *mutableSummaryValues = [self.summaryValues mutableCopy];

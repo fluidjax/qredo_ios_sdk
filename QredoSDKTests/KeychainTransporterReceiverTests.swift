@@ -34,7 +34,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
     }
 
     func stripURIPrefix(tag: String) -> String {
-        let tagIndex = advance(tag.startIndex, QredoRendezvousURIProtocol.length)
+        let tagIndex = advance(tag.startIndex, QredoRendezvousURIProtocol.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
         return tag.substringFromIndex(tagIndex)
     }
 
