@@ -477,7 +477,7 @@
     NSError *error = nil;
     
     // Invalid base58 chars
-    NSString *initialFullTag = @"test@tv+-";
+    NSString *initialFullTag = @"test@1234567890123456789012345678901234567890tv+-";
     
     error = nil;
     id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
@@ -489,10 +489,6 @@
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMalformedTag);
-
-    // TODO: DH - Original test returned base58 error - but ultimately the error is a malformed tag - maybe nest existing NSError inside a new NSError?
-//    XCTAssertEqualObjects(error.domain, QredoBase58ErrorDomain);
-//    XCTAssertEqual(error.code, QredoBase58ErrorUnrecognizedSymbol);
 }
 
 @end

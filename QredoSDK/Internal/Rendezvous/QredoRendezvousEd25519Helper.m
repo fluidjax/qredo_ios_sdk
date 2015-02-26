@@ -11,8 +11,9 @@
 
 @implementation QredoAbstractRendezvousEd25519Helper
 
-// TODO: DH - confirm the minimum length of Ed25519 authentication tag (i.e base58 encoded key)
-static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
+// Ed25519 verify key is 32 bytes. Having tested base58 encoding of 32 bytes (10m encodings), will be between 42 and 44 bytes
+static const NSUInteger kMinEd25519AuthenticationTagLength = 42;
+static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
 
 - (QredoRendezvousAuthenticationType)type
 {
@@ -30,7 +31,10 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
     // Verify Key is the authentication tag, once Base58 decoded
     NSData *vkData = [QredoBase58 decodeData:authenticationTag error:error];
     if (!vkData || vkData.length == 0) {
-        LogError(@"Base58 decode of authentication tag was nil or 0 length. Authentication Tag: '%@'", authenticationTag);
+        LogError(@"Base58 decode of authentication tag was nil or 0 length. Authentication Tag: '%@'.", authenticationTag);
+        if (error && *error) {
+            LogError(@"Base58 decode returned NSError: %@", *error);
+        }
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMalformedTag, nil);
         return nil;
     }
@@ -210,13 +214,21 @@ static const NSUInteger kMinEd25519AuthenticationTagLength = 1;
         }
 
         if (_authenticatedRendezvousTag.authenticationTag.length < kMinEd25519AuthenticationTagLength) {
-            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for Ed25519 authenticated tag: %ld",
+            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for Ed25519 authentication tag: %ld",
                      fullTag.length,
                      kMinEd25519AuthenticationTagLength);
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }
 
+        if (_authenticatedRendezvousTag.authenticationTag.length > kMaxEd25519AuthenticationTagLength) {
+            LogError(@"Invalid authentication tag length: %ld. Maximum tag length for Ed25519 authentication tag: %ld",
+                     fullTag.length,
+                     kMaxEd25519AuthenticationTagLength);
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
+            return nil;
+        }
+        
         _vk = [self verifyKeyFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag error:error];
         if (!_vk) {
             // Only set the error, if not already set

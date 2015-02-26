@@ -36,9 +36,6 @@
     [super tearDown];
 }
 
-// TODO: DH - see whether can make a common set of tests for RSA Authenticated Rendezvous, with key size/keys defined in child test (like HTTP/MQTT tests are?)
-
-// TODO: DH - this method is used in other test files - move this somewhere common, to prevent duplication?
 - (QredoSecKeyRefPair *)setupKeypairForPublicKeyData:(NSData *)publicKeyData privateKeyData:(NSData *)privateKeyData keySizeBits:(NSInteger)keySizeBits {
     
     // Import a known Public Key and Private Key into Keychain

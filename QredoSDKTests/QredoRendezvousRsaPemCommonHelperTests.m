@@ -27,7 +27,7 @@
 - (void)testAbstractHelper_InitWithCrypto
 {
     id<CryptoImpl> crypto = self.cryptoImpl;
-    QredoRendezvousAuthenticationType type = QredoRendezvousAuthenticationTypeRsa2048Pem;  // TODO: DH - try other values?
+    QredoRendezvousAuthenticationType type = QredoRendezvousAuthenticationTypeRsa2048Pem;
     NSUInteger keySizeBits = 1234;
     NSUInteger minimumAuthenticationTagLength = 5678;
     

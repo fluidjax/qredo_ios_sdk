@@ -522,7 +522,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519NoPrefixTag {
     
     // Authenticated rendezvous must contain @ (and if data present after @, the data must be a valid public key)
-    NSString *randomTag = @"@"; // No prefix, no authenticated tag part (so will generate that part itself), just @
+    NSString *randomTag = @"@"; // No prefix, no authentication tag part (so will generate that part itself), just @
     
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]

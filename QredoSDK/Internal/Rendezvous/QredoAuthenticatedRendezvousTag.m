@@ -46,8 +46,6 @@
     return self;
 }
 
-// TODO: DH - create unit tests for this class
-
 - (BOOL)processFullTag:(NSString *)fullTag error:(NSError **)error
 {
     if (!fullTag) {
@@ -61,8 +59,6 @@
 
     NSString *prefixValue = @"";
     NSString *authenticationTagValue = @"";
-
-    // TODO: DH - confirm this check works in all circumstances (e.g. "@")
 
     // Only 1x '@' is allowed, any more is a malformed tag
     // Note: Authenticated rendezvous must include @, even if no prefix is present. If @ is missing, malformed tag

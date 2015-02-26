@@ -199,8 +199,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         return nil;
     }
     
-    // TODO: DH - Can signature length be used to validate key lengths? Bit late though after creating the helper
-
     NSData *signature = nil;
     
     if (self.keyPairRef) {
@@ -276,7 +274,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         }
         
         if (_authenticatedRendezvousTag.authenticationTag.length < super.minimumAuthenticationTagLength) {
-            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for %ld-bit RSA authenticated tag: %ld",
+            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for %ld-bit RSA authentication tag: %ld",
                      fullTag.length,
                      super.keySizeBits,
                      super.minimumAuthenticationTagLength);
@@ -321,8 +319,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         return NO;
     }
     
-    // TODO: DH - Can signature length be used to validate key lengths? Bit late though after creating the helper
-
     BOOL signatureIsValid = [QredoCrypto rsaPssVerifySignature:signatureData forMessage:rendezvousData saltLength:kRsaAuthenticatedRendezvousSaltLength keyRef:_publicKeyRef];
     
     LogDebug(@"RSA %ld-bit PEM Authenticated Rendezvous signature valid: %@",

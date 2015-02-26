@@ -48,7 +48,7 @@
                                                                                                  durationSeconds:[NSNumber numberWithUnsignedInteger:QredoKeychainTransporterRendezvousDuration]
                                                                                                 maxResponseCount:@1];
     
-    // TODO: DH - specify a signing handler?
+    // No signing handler needed as no authentication type provided above (so anonymous)
     [self.client createRendezvousWithTag:randomTag
                            configuration:configuration
                           signingHandler:nil
