@@ -218,7 +218,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
      }];
 }
 
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
+- (void)conversationCanceledWithMessage:(QredoConversationMessage *)message
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.canceledByClaimantState
                                     withConfigBlock:^
