@@ -885,7 +885,7 @@
 			buildConfigurationList = 0A6573C11A2DE88100D5502E /* Build configuration list for PBXNativeTarget "CryptoTests" */;
 			buildPhases = (
 				F44EE6B232E54EAD1EB532F7 /* Check Pods Manifest.lock */,
-				DCCB414E1A94E5CA00FEFE04 /* ShellScript */,
+				DCCB414E1A94E5CA00FEFE04 /* Run Script (Remove .gcda Profiler Files) */,
 				0A6573B21A2DE88100D5502E /* Sources */,
 				0A6573B31A2DE88100D5502E /* Frameworks */,
 				0A6573B41A2DE88100D5502E /* Resources */,
@@ -1108,13 +1108,14 @@
 			shellPath = /bin/sh;
 			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
 		};
-		DCCB414E1A94E5CA00FEFE04 /* ShellScript */ = {
+		DCCB414E1A94E5CA00FEFE04 /* Run Script (Remove .gcda Profiler Files) */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script (Remove .gcda Profiler Files)";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
