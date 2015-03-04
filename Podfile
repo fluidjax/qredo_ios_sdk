@@ -25,7 +25,12 @@ post_install do |installer_representation|
     puts "Processing post install steps"
     installer_representation.project.targets.each do |target|
         target.build_configurations.each do |config|
-            # Enable logging on Debug, and code coverage measurements
+
+            # Enable treating warnings as errors (for all configurations)
+            puts target.name + ": Treating warnings as errors"
+            config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'YES'
+
+            # For Debug configs, enable logging and code coverage measurements
             if config.name == 'Debug'
                 puts target.name + ": Enabling Qredo logging"
                 definitions = '$(inherited)'
