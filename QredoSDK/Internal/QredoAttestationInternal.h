@@ -6,28 +6,11 @@
 
 
 extern NSString *const QredoAttestationErrorDomain;
-extern NSString *const QredoAttestationPreviousErrorKey;
+extern NSString *const QredoAttestationErrorTechnicalDescriptionKey;
 
 
 typedef NS_ENUM(NSUInteger, QredoAttestationErrorCode) {
     QredoAttestationErrorCodeUnknown = 0,
-    
-    QredoAttestationErrorCodeUnexpectedMessageType,
-    QredoAttestationErrorCodePresentationMessageDoesNotHaveValue,
-    QredoAttestationErrorCodePresentationMessageHasCorruptValue,
-    QredoAttestationErrorCodePresentationTimeout,
-    
-    QredoAttestationErrorCodeAuthenticationFailed,
-    QredoAttestationErrorCodeAuthenticationTimeout,
-    
-    QredoAttestationErrorCodeConversationBetweenRelientPartyAndCalaimantCoudNotBeCanceled,
-    
-    
 };
-
-
-void updateQredoClaimantAttestationProtocolError(NSError **error,
-                                                 QredoAttestationErrorCode errorCode,
-                                                 NSDictionary *userInfo);
 
 

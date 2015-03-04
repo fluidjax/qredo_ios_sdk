@@ -6,14 +6,7 @@
 
 
 NSString *const QredoAttestationErrorDomain = @"QredoAttestationErrorDomain";
-NSString *const QredoAttestationPreviousErrorKey = @"QredoAttestationPreviousErrorKey";
+
+NSString *const QredoAttestationErrorTechnicalDescriptionKey = @"QredoAttestationErrorTechnicalDescriptionKey";
 
 
-void updateQredoClaimantAttestationProtocolError(NSError **error,
-                                                 QredoAttestationErrorCode errorCode,
-                                                 NSDictionary *userInfo)
-{
-    if (error) {
-        *error = [NSError errorWithDomain:QredoAttestationErrorDomain code:errorCode userInfo:userInfo];
-    }
-}
