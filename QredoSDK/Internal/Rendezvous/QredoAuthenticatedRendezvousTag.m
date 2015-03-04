@@ -65,8 +65,8 @@
     NSArray *splitTagParts = [fullTag componentsSeparatedByString:@"@"];
     NSUInteger separatorCount = splitTagParts.count - 1;
     if (separatorCount != 1) {
-        NSString *message = [NSString stringWithFormat:@"Invalid number (%ld) of @ characters present. Require exactly 1. Full tag: '%@'",
-                             separatorCount, fullTag];
+        NSString *message = [NSString stringWithFormat:@"Invalid number (%lu) of @ characters present. Require exactly 1. Full tag: '%@'",
+                             (unsigned long)separatorCount, fullTag];
         LogError(@"%@", message);
         if (error) {
             *error = createError(QredoAuthenticatedRendezvousTagErrorMalformedTag, message);

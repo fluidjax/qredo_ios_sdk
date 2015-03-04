@@ -194,9 +194,9 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         }
         
         if (_authenticatedRendezvousTag.authenticationTag.length < kMinX509AuthenticationTagLength) {
-            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for X509 authentication tag: %ld",
-                     fullTag.length,
-                     kMinX509AuthenticationTagLength);
+            LogError(@"Invalid authentication tag length: %lu. Minimum tag length for X509 authentication tag: %lu",
+                     (unsigned long)fullTag.length,
+                     (unsigned long)kMinX509AuthenticationTagLength);
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }

@@ -214,17 +214,17 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
         }
 
         if (_authenticatedRendezvousTag.authenticationTag.length < kMinEd25519AuthenticationTagLength) {
-            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for Ed25519 authentication tag: %ld",
-                     fullTag.length,
-                     kMinEd25519AuthenticationTagLength);
+            LogError(@"Invalid authentication tag length: %lu. Minimum tag length for Ed25519 authentication tag: %lu",
+                     (unsigned long)fullTag.length,
+                     (unsigned long)kMinEd25519AuthenticationTagLength);
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }
 
         if (_authenticatedRendezvousTag.authenticationTag.length > kMaxEd25519AuthenticationTagLength) {
-            LogError(@"Invalid authentication tag length: %ld. Maximum tag length for Ed25519 authentication tag: %ld",
-                     fullTag.length,
-                     kMaxEd25519AuthenticationTagLength);
+            LogError(@"Invalid authentication tag length: %lu. Maximum tag length for Ed25519 authentication tag: %lu",
+                     (unsigned long)fullTag.length,
+                     (unsigned long)kMaxEd25519AuthenticationTagLength);
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }

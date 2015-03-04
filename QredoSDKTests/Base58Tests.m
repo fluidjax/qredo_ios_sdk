@@ -286,7 +286,11 @@ static inline NSString *createRandomEncodedValue() {
         }
     }
     
-    NSLog(@"Encoded %ld random bytes %ld times. Min length to encode: %ld.  Max length to encode: %ld", lengthOfInputData, kIterations, minEncodedLength, maxEncodedLength);
+    NSLog(@"Encoded %lu random bytes %lu times. Min length to encode: %lu.  Max length to encode: %lu",
+          (unsigned long)lengthOfInputData,
+          (unsigned long)kIterations,
+          (unsigned long)minEncodedLength,
+          (unsigned long)maxEncodedLength);
 }
 
 @end

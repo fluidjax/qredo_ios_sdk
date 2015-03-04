@@ -274,10 +274,10 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         }
         
         if (_authenticatedRendezvousTag.authenticationTag.length < super.minimumAuthenticationTagLength) {
-            LogError(@"Invalid authentication tag length: %ld. Minimum tag length for %ld-bit RSA authentication tag: %ld",
-                     fullTag.length,
-                     super.keySizeBits,
-                     super.minimumAuthenticationTagLength);
+            LogError(@"Invalid authentication tag length: %lu. Minimum tag length for %lu-bit RSA authentication tag: %lu",
+                     (unsigned long)fullTag.length,
+                     (unsigned long)super.keySizeBits,
+                     (unsigned long)super.minimumAuthenticationTagLength);
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }
@@ -321,8 +321,8 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     
     BOOL signatureIsValid = [QredoCrypto rsaPssVerifySignature:signatureData forMessage:rendezvousData saltLength:kRsaAuthenticatedRendezvousSaltLength keyRef:_publicKeyRef];
     
-    LogDebug(@"RSA %ld-bit PEM Authenticated Rendezvous signature valid: %@",
-             self.keySizeBits,
+    LogDebug(@"RSA %lu-bit PEM Authenticated Rendezvous signature valid: %@",
+             (unsigned long)self.keySizeBits,
              signatureIsValid ? @"YES" : @"NO");
     
     return signatureIsValid;
