@@ -29,7 +29,7 @@
            didReciveAuthentications:(QredoAuthenticationResponse *)authentications;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
-           didFinishAuthenticationWithError:(NSError *)error;
+   didFinishAuthenticationWithError:(NSError *)error;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
   didStartSendingRelyingPartyChoice:(BOOL)claimsAccepted;
@@ -63,9 +63,9 @@ typedef void(^QredoClaimantAttestationProtocolAuthenticationCompletionHandler)(Q
 
 - (void)start;
 
-- (void)accept;
-- (void)reject;
-- (void)cancel;
+- (void)acceptWithWrongStateHandler:(void(^)(NSError *error))wrongStateHandler;
+- (void)rejectWithWrongStateHandler:(void(^)(NSError *error))wrongStateHandler;
+- (void)cancelWithWrongStateHandler:(void(^)(NSError *error))wrongStateHandler;
 
 - (void)presentationRequestPublishedWithError:(NSError *)error;
 
