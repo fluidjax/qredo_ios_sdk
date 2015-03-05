@@ -15,6 +15,8 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 
 @protocol QredoAuthenticationProtocolEvents <NSObject>
 
+- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest;
+
 - (void)didSendClaims;
 - (void)didFailToSendClaimsWithError:(NSError *)error;
 
@@ -32,7 +34,6 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 
 //
 @interface QredoAuthenticationState_Start : QredoAuthenticationState
-@property (nonatomic) QredoAuthenticationRequest *authenticationRequest;
 @end
 
 //
@@ -97,6 +98,11 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 - (QredoAuthenticationProtocol *)authenticationProtocol
 {
     return (QredoAuthenticationProtocol *)self.conversationProtocol;
+}
+
+- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
+{
+
 }
 
 - (void)didSendClaims
@@ -185,18 +191,14 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
     return self;
 }
 
-- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
-{
-
-    [self switchToState:self.startState withConfigBlock:^{
-        self.startState.authenticationRequest = authenticationRequest;
-    }];
-}
-
-- (void) cancel {
+- (void)cancel {
     [(QredoAuthenticationState *)self.currentState cancel];
 }
 
+- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
+{
+    [(QredoAuthenticationState *)self.currentState sendAuthenticationRequest:authenticationRequest];
+}
 @end
 
 #pragma clang diagnostic pop
@@ -207,8 +209,12 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 @implementation QredoAuthenticationState_Start
 - (void)didEnter
 {
+}
+
+- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
+{
     [self.conversationProtocol switchToState:self.authenticationProtocol.sendingClaimsState withConfigBlock:^{
-        self.authenticationProtocol.sendingClaimsState.authenticationRequest = self.authenticationRequest;
+        self.authenticationProtocol.sendingClaimsState.authenticationRequest = authenticationRequest;
     }];
 }
 
