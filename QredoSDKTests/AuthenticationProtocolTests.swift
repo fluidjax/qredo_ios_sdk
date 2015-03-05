@@ -48,14 +48,21 @@ class AuthenticationProtocolTests: BaseConversation {
             publishedCancelExpectation.fulfill()
         }
 
+        var receivedClaims = false
         let validatorDelegate = ConversationBlockDelegate()
         validatorDelegate.messageHandler = { (message : QredoConversationMessage) in
             println("Received \(message.dataType)")
 
             if message.dataType == "com.qredo.attestation.authentication.claims" {
+                if (receivedClaims) {
+                    XCTFail("Received claims twice")
+                    return
+                }
+
                 receivedRequestExpectation.fulfill()
 
                 self.creatorConversation.publishMessage(cancelMessage, completionHandler: cancelMessageCompletionHandler)
+                receivedClaims = true
             }
         }
 
@@ -183,7 +190,11 @@ class AuthenticationProtocolTests: BaseConversation {
         authProtocol.delegate = authDelegate
         authProtocol.sendAuthenticationRequest(authRequest)
 
-        self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+        self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { (error) -> Void in
+            println("Timed out")
+            self.creatorConversation.stopListening()
+            self.creatorConversation.delegate = nil
+        })
     }
 
 }

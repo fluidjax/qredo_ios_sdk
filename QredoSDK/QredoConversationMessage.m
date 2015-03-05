@@ -37,15 +37,7 @@ NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
 
 - (instancetype)copyWithZone:(NSZone *)zone
 {
-    QredoConversationMessage *copy = [[QredoConversationMessage allocWithZone:zone] initWithValue:self.value
-                                                                                         dataType:self.dataType
-                                                                                    summaryValues:self.summaryValues];
-
-    copy.highWatermark = self.highWatermark;
-    copy.messageId = self.messageId;
-    copy.parentId = self.parentId;
-
-    return copy;
+    return self; // for immutable objects
 }
 
 - (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues

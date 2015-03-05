@@ -16,6 +16,8 @@
 #import "QredoLogging.h"
 #import "QredoKeychain.h"
 
+#import "QredoUpdateListener.h"
+
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
 
@@ -121,7 +123,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 @end
 
-@interface QredoVault ()
+@interface QredoVault () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>
 {
     QredoClient *_client;
     QredoKeychain *_qredoKeychan;
@@ -135,9 +137,8 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QredoVaultSequenceCache *_vaultSequenceCache;
 
     dispatch_queue_t _queue;
-    dispatch_source_t _timer;
 
-    int scheduled, responded;
+    QredoUpdateListener *_updateListener;
 }
 
 - (void)saveState;
@@ -182,6 +183,11 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
         _sequenceId = [QredoQUID QUID];
         [self saveState];
     }
+
+    _updateListener = [[QredoUpdateListener alloc] init];
+    _updateListener.delegate = self;
+    _updateListener.dataSource = self;
+    _updateListener.pollInterval = kQredoVaultUpdateInterval;
 
     _vault = [QredoInternalVault vaultWithServiceInvoker:_client.serviceInvoker];
     _vaultSequenceCache = [QredoVaultSequenceCache instance];
@@ -489,58 +495,12 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (void)startListening
 {
-    NSAssert(_delegate, @"Delegate should be set before starting listening for the updates");
-    // check that delegate != nil
-
-    @synchronized (self) {
-        if (_timer) return;
-
-        scheduled = 0;
-        responded = 0;
-
-        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _queue);
-        if (_timer)
-        {
-            dispatch_source_set_timer(_timer,
-                                      dispatch_time(DISPATCH_TIME_NOW, kQredoVaultUpdateInterval * NSEC_PER_SEC), // start
-                                      kQredoVaultUpdateInterval * NSEC_PER_SEC, // interval
-                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
-            dispatch_source_set_event_handler(_timer, ^{
-                if (scheduled != responded) {
-                    return;
-                }
-                scheduled++;
-                [self enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
-                    if ([_delegate respondsToSelector:@selector(qredoVault:didReceiveVaultItemMetadata:)]) {
-                        [_delegate qredoVault:self didReceiveVaultItemMetadata:vaultItemMetadata];
-                    }
-                } completionHandler:^(NSError *error) {
-                    // TODO: we might stop the timer based on certain errors, but if it is a temporary connection error, then we just skip it
-
-                    responded++;
-                    if (error && [_delegate respondsToSelector:@selector(qredoVault:didFailWithError:)]) {
-                        [_delegate qredoVault:self didFailWithError:error];
-                    }
-
-                } watermarkHandler:^(QredoVaultHighWatermark *watermark) {
-                    self->_highwatermark = watermark;
-                    [self saveState];
-                } since:self.highWatermark consolidatingResults:NO];
-
-            });
-            dispatch_resume(_timer);
-        }
-    }
+    [_updateListener startListening];
 }
 
 - (void)stopListening
 {
-    @synchronized (self) {
-        if (_timer) {
-            dispatch_source_cancel(_timer);
-            _timer = nil;
-        }
-    }
+    [_updateListener stopListening];
 }
 
 - (void)resetWatermark
@@ -775,6 +735,37 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
         _highwatermark = [QredoVaultHighWatermark watermarkWithSequenceState:[sequenceState stringToQuidDictionary]];
     } else {
         _highwatermark = nil;
+    }
+}
+
+#pragma mark -
+#pragma mark Qredo Update Listener - Data Source
+
+- (BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener
+{
+    return NO;
+}
+
+#pragma mark Qredo Update Listener - Delegate
+
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener pollWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    [self enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        [_updateListener processSingleItem:vaultItemMetadata sequenceValue:vaultItemMetadata.descriptor.sequenceValue];
+    } completionHandler:completionHandler
+                       watermarkHandler:^(QredoVaultHighWatermark *watermark)
+    {
+        self->_highwatermark = watermark;
+        [self saveState];
+    } since:self.highWatermark consolidatingResults:NO];
+}
+
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item
+{
+    QredoVaultItemMetadata *vaultItemMetadata = (QredoVaultItemMetadata *)item;
+
+    if ([_delegate respondsToSelector:@selector(qredoVault:didReceiveVaultItemMetadata:)]) {
+        [_delegate qredoVault:self didReceiveVaultItemMetadata:vaultItemMetadata];
     }
 }
 

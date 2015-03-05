@@ -34,9 +34,7 @@
     self = [super init];
     if (!self) return nil;
 
-
     _dedupeStore = [[NSMutableDictionary alloc] init];
-    LogDebug(@"Created Conversation dedupe dictionary (%p): %@", _dedupeStore, _dedupeStore);
 
     _queue = dispatch_queue_create("com.qredo.conversation.updates", nil);
 
@@ -49,6 +47,8 @@
 
 - (void)startListening
 {
+    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
+
     // If we support multi-response, then use it, otherwise poll
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self])
     {
@@ -107,8 +107,10 @@
                     }
 
                     // Should be able to keep subscribing without any side effects, but try to unsubscribing first
-                    [self unsubscribe];
-                    [self subscribe];
+                    [self unsubscribeWithCompletionHandler:^(NSError *error) {
+                        [self subscribeWithCompletionHandler:nil];
+                    }];
+
                 }
             });
             dispatch_resume(_subscriptionRenewalTimer);
@@ -116,7 +118,7 @@
     }
 
     // Start first subscription
-    [self subscribe];
+    [self subscribeWithCompletionHandler:nil];
 }
 
 - (void)didTerminateSubscriptionWithError:(NSError *)error
@@ -125,11 +127,12 @@
     _subscribedToMessages = NO;
 }
 
-- (void)subscribe
+- (void)subscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
+    if (_subscribedToMessages) return ;
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
-    LogDebug(@"Subscribing to new conversation items/messages.");
+    LogDebug(@"Subscribing to new conversation items/messages. self=%@", self);
 
     _subscribedToMessages = YES;
 
@@ -142,12 +145,16 @@
 
     [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
         _queryAfterSubscribeComplete = YES;
+        if (completionHandler) completionHandler(error);
     }];
 }
 
-- (void)unsubscribe
+- (void)unsubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    [self.dataSource qredoUpdateListener:self unsubscribeWithCompletionHandler:nil];
+    [self.dataSource qredoUpdateListener:self unsubscribeWithCompletionHandler:^(NSError *error) {
+        _subscribedToMessages = NO;
+        if (completionHandler) completionHandler(error);
+    }];
 }
 
 // This method disables subscription (push) for responses to rendezvous
@@ -162,40 +169,35 @@
         }
     }
 
-    [self unsubscribe];
+    [self unsubscribeWithCompletionHandler:nil];
 }
 
-- (void)processSingleItem:(id)item sequenceValue:(id)sequenceValue
+- (BOOL)processSingleItem:(id)item sequenceValue:(id)sequenceValue
 {
     if (_dedupeNecessary) {
         if ([self isDuplicateOrOldItem:item sequenceValue:sequenceValue]) {
-            return;
+            return NO;
         }
     }
 
-    [self.delegate qredoUpdateListener:self processSingleResponse:item];
+    [self.delegate qredoUpdateListener:self processSingleItem:item];
+    return YES;
 }
 
 // This method polls for (new) items in conversation, and creates message from them.
 - (void)startPolling
 {
-    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
     if (!_isPollingActive) {
         return ;
     }
 
-    [self.dataSource qredoUpdateListenerPoll:self
-                           completionHandler:^(id result, NSError *error)
+    [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error)
     {
-        if (result) {
-            [self.delegate qredoUpdateListener:self processSingleResponse:result];
-        }
-
         if (!_isPollingActive) {
             return ;
         }
 
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.pollInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.pollInterval * NSEC_PER_SEC)), _queue, ^{
             [self startPolling];
         });
     }];
@@ -215,7 +217,6 @@
     LogDebug(@"Checking for old/duplicate. Item: %@. SequenceValue: %@.", item, sequenceValue);
 
     LogDebug(@"Conversation dedupe dictionary contains %lu items.", (unsigned long)_dedupeStore.count);
-    LogDebug(@"Conversation dedupe dictionary (%p): %@", _dedupeStore, _dedupeStore);
 
     BOOL itemIsDuplicate = NO;
 

@@ -10,8 +10,10 @@
 
 @required
 - (BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener;
-- (void)qredoUpdateListenerPoll:(QredoUpdateListener *)updateListener
-              completionHandler:(void(^)(id result, NSError *error))completionHandler;
+
+// In an implementation of this method get results from the server and for each result call `[QredoUpdateListener processSingleItem:]`
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
+              pollWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 
 @optional
 
@@ -24,7 +26,9 @@
 
 @protocol QredoUpdateListenerDelegate <NSObject>
 
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleResponse:(id)response;
+// Implementation of this method should usually deliver result to the delegate.
+// The type is the same as `item` in `[QredoUpdateListener processSingleItem:]`
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item;
 
 @end
 
@@ -49,7 +53,8 @@
 - (void)startListening;
 - (void)stopListening;
 
-- (void)processSingleItem:(id)item sequenceValue:(id)sequenceValue;
+// Processing an items includes deduplicaiton of items if it is necessary
+- (BOOL)processSingleItem:(id)item sequenceValue:(id)sequenceValue;
 
 - (void)didTerminateSubscriptionWithError:(NSError *)error;
 

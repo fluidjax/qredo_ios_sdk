@@ -497,6 +497,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 @implementation QredoConversation
 
+- (instancetype)copyWithZone:(NSZone *)zone {
+    return self; // for immutable objects
+}
+
 - (QredoConversationMetadata *)metadata
 {
     return _metadata;
@@ -659,6 +663,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
          if (error) {
              subscriptionTerminatedHandler(error);
              return;
+         }
+
+         if (!result) {
+             return ;
          }
 
          QredoConversationQueryItemsResult *resultItems
@@ -964,8 +972,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     return _client.serviceInvoker.supportsMultiResponse;
 }
 
-- (void)qredoUpdateListenerPoll:(QredoUpdateListener *)updateListener
-              completionHandler:(void (^)(id, NSError *))completionHandler
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
+  pollWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
     void (^block)(QredoConversationMessage *message, BOOL *stop) = ^(QredoConversationMessage *message, BOOL *stop) {
         [self->_updateListener processSingleItem:message sequenceValue:message.highWatermark.sequenceValue];
@@ -976,10 +984,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                              incoming:YES
                excludeControlMessages:NO
                                 since:self.highWatermark
-                    completionHandler:^(NSError *error)
-     {
-         completionHandler(nil, error);
-     }
+                    completionHandler:completionHandler
      highWatermarkHandler:^(QredoConversationHighWatermark *highWatermark) {
          _highWatermark = highWatermark;
      } ];
@@ -1014,9 +1019,9 @@ unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 }
 
 #pragma mark Qredo Update Listener - Delegate
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleResponse:(id)response
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item
 {
-    QredoConversationMessage *message = (QredoConversationMessage *)response;
+    QredoConversationMessage *message = (QredoConversationMessage *)item;
     if ([message isControlMessage]) {
         if ([message controlMessageType] == QredoConversationControlMessageTypeLeft &&
             [_delegate respondsToSelector:@selector(qredoConversationOtherPartyHasLeft:)]) {
