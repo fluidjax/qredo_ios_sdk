@@ -9,11 +9,10 @@
 #import "QredoTestUtils.h"
 #import "QredoRendezvousEd25519Helper.h"
 #import "QredoClient.h"
-
 #import <objc/runtime.h>
 
 static NSString *const kRendezvousTestConversationType = @"test.chat";
-static long long kRendezvousTestMaxResponseCount = 3;
+static long long kRendezvousTestMaxResponseCount = 10;
 static long long kRendezvousTestDurationSeconds = 600;
 
 @interface RendezvousListener : NSObject <QredoRendezvousDelegate>
@@ -27,11 +26,13 @@ static long long kRendezvousTestDurationSeconds = 600;
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
     NSLog(@"Rendezvous listener (%p) notified via qredoRendezvous:didReceiveReponse:  Rendezvous (hashed) Tag: %@. Conversation details: Type:%@, ID:%@, HWM:%@", self, rendezvous.tag, conversation.metadata.type, conversation.metadata.conversationId, conversation.highWatermark);
-    if (!self.expectation) {
+
+    if (self.expectation) {
+        NSLog(@"Rendezvous listener (%p) fulfilling expectation (%p)", self, self.expectation);
+        [self.expectation fulfill];
+    } else {
         NSLog(@"No expectation configured.");
     }
-    NSLog(@"Rendezvous listener (%p) fulfilling expectation (%p)", self, self.expectation);
-    [self.expectation fulfill];
 }
 
 @end
@@ -198,15 +199,16 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
     // Give time for the subscribe/getResponses process to complete before we respond. Avoid any previous responses being included in the respondExpectation
     [NSThread sleepForTimeInterval:2];
-    
+
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
+        NSLog(@"Responded. Error = %@, Conversation = %@", error, conversation);
     }];
 
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:20.0 handler:^(NSError *error) {
         respondExpectation = nil;
         listener.expectation = nil;
     }];
@@ -318,8 +320,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         didFindStoredRendezvous = nil;
     }];
 
-
     XCTAssertNotNil(rendezvousFromEnumeration);
+
+    NSLog(@"Got rendezvous from enumaration %@", rendezvousFromEnumeration);
 
     NSLog(@"Verifying rendezvous from enumeration");
     [self verifyRendezvous:rendezvousFromEnumeration randomTag:randomTag];
@@ -341,9 +344,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         didFetchExpectation = nil;
     }];
 
-
+    NSLog(@"Fetched rendezvous %@", rendezvousFromFetch);
     XCTAssertNotNil(rendezvousFromFetch);
-    
+
     NSLog(@"Verifying rendezvous from fetch");
     [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
 }
@@ -413,7 +416,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // Give time for the subscribe/getResponses process to process - they could internally produce duplicates which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
     [NSThread sleepForTimeInterval:5];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
         respondExpectation = nil;
         listener.expectation = nil;
     }];
