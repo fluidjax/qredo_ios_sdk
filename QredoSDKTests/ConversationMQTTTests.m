@@ -11,9 +11,8 @@
 @implementation ConversationMQTTTests
 
 - (void)setUp {
-    [super setUp];
     self.useMQTT = YES;
-    [self authoriseClient];
+    [super setUp];
 }
 
 - (void)testConversationCreation
@@ -32,8 +31,9 @@
 }
 
 // This test has frequently helped in triggering intermittent bugs
-- (void)testConversationMultiple {
-    
+- (void)testConversationMultiple
+{
+    self.continueAfterFailure = NO;
     for (int i = 0; i < 10; i++)
     {
         NSLog(@"Test %d", i);
