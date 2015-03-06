@@ -67,7 +67,7 @@
 @property (nonatomic, copy) NSString *cancelMessageType;
 
 - (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message;
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error;
+- (void)conversationCanceledWithMessage:(QredoConversationMessage *)message;
 
 #pragma mark Utilities
 

@@ -148,8 +148,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 - (void)didReceiveConversationMessage:(QredoConversationMessage *)message
 {
     if ([message.dataType isEqualToString:self.cancelMessageType]) {
-        // TODO [GR]: Send the correct error in stead of nil.
-        [self didReceiveCancelConversationMessageWithError:nil];
+        [self conversationCanceledWithMessage:message];
     } else {
         [self didReceiveNonCancelConversationMessage:message];
     }
@@ -157,14 +156,14 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
 - (void)otherPartyHasLeftConversation
 {
-    [self didReceiveCancelConversationMessageWithError:nil];
+    [self conversationCanceledWithMessage:nil];
 }
 
 - (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
 {
 }
 
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
+- (void)conversationCanceledWithMessage:(QredoConversationMessage *)message
 {
 }
 

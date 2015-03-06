@@ -706,7 +706,8 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     
     XCTAssertEqual(self.protocolDelegate.didFinishWithErrorProtocol, self.protocol);
     XCTAssertNotNil(self.protocolDelegate.didFinishWithErrorError);
-    XCTAssertEqual(self.protocolDelegate.didFinishWithErrorError.code, QredoAttestationErrorCodePresentationTimeout);
+    XCTAssertEqualObjects(self.protocolDelegate.didFinishWithErrorError.domain, QredoErrorDomain);
+    XCTAssertEqual(self.protocolDelegate.didFinishWithErrorError.code, QredoErrorCodeConversationProtocolTimeout);
 }
 
 - (void)testTimoutWhileAuthenticating
@@ -736,7 +737,8 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     
     XCTAssertEqual(self.protocolDelegate.didFinishAuthenticationWithErrorProtocol, self.protocol);
     XCTAssertNotNil(self.protocolDelegate.didFinishAuthenticationWithErrorError);
-    XCTAssertEqual(self.protocolDelegate.didFinishAuthenticationWithErrorError.code, QredoAttestationErrorCodeAuthenticationTimeout);
+    XCTAssertEqualObjects(self.protocolDelegate.didFinishAuthenticationWithErrorError.domain, QredoErrorDomain);
+    XCTAssertEqual(self.protocolDelegate.didFinishAuthenticationWithErrorError.code, QredoErrorCodeConversationProtocolTimeout);
 }
 
 #pragma mark Steps

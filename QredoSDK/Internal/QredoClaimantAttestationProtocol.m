@@ -186,8 +186,11 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         // TODO [GR]: Set the correct error on the next line.
-         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+         NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:nil];
+         
+         self.claimantAttestationProtocol.cancelConversationState.error = error;
      }];
 }
 
@@ -213,26 +216,27 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         // TODO [GR]: Set the correct error on the next line.
-         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+         NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:nil];
+         
+         self.claimantAttestationProtocol.cancelConversationState.error = error;
      }];
 }
 
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
+- (void)conversationCanceledWithMessage:(QredoConversationMessage *)message
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.canceledByClaimantState
                                     withConfigBlock:^
      {
-         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:@"Cancelled by other side"
-                                                                            forKey:NSLocalizedDescriptionKey];
-         if (error) {
-             [userInfo setValue:error forKey:NSUnderlyingErrorKey];
-         }
-
-         self.claimantAttestationProtocol.canceledByClaimantState.error
-             = [NSError errorWithDomain:QredoErrorDomain
-                                   code:QredoErrorCodeConversationProtocolCancelledByOtherSide
-                               userInfo:userInfo];
+         NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolCancelledByOtherSide
+                                          userInfo:
+                           @{
+                             NSLocalizedDescriptionKey: NSLocalizedString(@"Cancelled by claimant.", @"Localized error description")
+                             }];
+         
+         self.claimantAttestationProtocol.canceledByClaimantState.error = error;
      }];
 }
 
@@ -241,8 +245,11 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         // TODO [GR]: Set the correct error on the next line.
-         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+         NSError *localError = [NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:nil];
+
+         self.claimantAttestationProtocol.cancelConversationState.error = localError;
      }];
 }
 
@@ -252,8 +259,11 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         // TODO [GR]: Set the correct error on the next line.
-         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+         NSError *localError = [NSError errorWithDomain:QredoErrorDomain
+                                                   code:QredoErrorCodeConversationProtocolWrongState
+                                               userInfo:nil];
+         
+         self.claimantAttestationProtocol.cancelConversationState.error = localError;
      }];
 }
 
@@ -262,15 +272,25 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         // TODO [GR]: Set the correct error on the next line.
-         self.claimantAttestationProtocol.cancelConversationState.error = nil;
+         NSError *localError = [NSError errorWithDomain:QredoErrorDomain
+                                                   code:QredoErrorCodeConversationProtocolWrongState
+                                               userInfo:nil];
+         
+         self.claimantAttestationProtocol.cancelConversationState.error = localError;
      }];
 }
 
 - (void)conversationCanceledWithError:(NSError *)error
 {
-    // TODO [GR]: Decide on what is the wright thing to do here.
-    // We probably need to ignore this.
+    [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
+                                    withConfigBlock:^
+     {
+         NSError *localError = [NSError errorWithDomain:QredoErrorDomain
+                                                   code:QredoErrorCodeConversationProtocolWrongState
+                                               userInfo:nil];
+         
+         self.claimantAttestationProtocol.cancelConversationState.error = localError;
+     }];
 }
 
 
@@ -445,10 +465,9 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
     {
-        NSError *error = nil;
-        updateQredoClaimantAttestationProtocolError(&error,
-                                                    QredoAttestationErrorCodePresentationTimeout,
-                                                    nil);
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeConversationProtocolTimeout
+                                         userInfo:nil];
         self.claimantAttestationProtocol.cancelConversationState.error = error;
     }];
 }
@@ -458,12 +477,20 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (QredoPresentation *)presentationFromMessage:(QredoConversationMessage *)message error:(NSError **)error
 {
     if (![message.dataType isEqualToString:kAttestationPresentationMessageType]) {
-        updateQredoClaimantAttestationProtocolError(error, QredoAttestationErrorCodeUnexpectedMessageType, nil);
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnexpectedMessageType
+                                     userInfo:nil];
+        }
         return nil;
     }
     
     if ([message.value length] < 1) {
-        updateQredoClaimantAttestationProtocolError(error, QredoAttestationErrorCodePresentationMessageDoesNotHaveValue, nil);
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolReceivedMalformedData
+                                     userInfo:nil];
+        }
         return nil;
     }
     
@@ -473,7 +500,11 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
                                                      unmarshaller:[QredoClientMarshallers presentationUnmarshaller]];
     }
     @catch (NSException *exception) {
-        updateQredoClaimantAttestationProtocolError(error, QredoAttestationErrorCodePresentationMessageHasCorruptValue, nil);
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolReceivedMalformedData
+                                     userInfo:nil];
+        }
         presentation = nil;
     }
     @finally {
@@ -510,7 +541,25 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (void)didEnter
 {
     [super didEnter];
-    [self sendAuthenticationRequest];
+    
+    NSError *error = nil;
+    if (![self sendAuthenticationRequestWithError:&error]) {
+
+        if (!error) {
+            error = [NSError errorWithDomain:QredoErrorDomain
+                                        code:QredoErrorCodeConversationProtocolUnknown
+                                    userInfo:nil];
+        }
+
+        self.authenticationError = error;
+        
+        [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
+                                        withConfigBlock:^
+        {
+            self.claimantAttestationProtocol.cancelConversationState.error = error;
+        }];
+        
+    };
 }
 
 - (void)willExit
@@ -561,9 +610,11 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         NSError *error = nil;
-         updateQredoClaimantAttestationProtocolError(&error, QredoAttestationErrorCodeAuthenticationTimeout, nil);
+         NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolTimeout
+                                          userInfo:nil];
          self.authenticationError = error;
+         
          [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.authenticationResultsReceivedState
                                          withConfigBlock:nil];
      }];
@@ -578,18 +629,25 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 #pragma mark Utility methods
 
-- (void)sendAuthenticationRequest
+- (BOOL)sendAuthenticationRequestWithError:(NSError **)error
 {
+    BOOL succeeded = NO;
+    
     QredoClaimantAttestationProtocol *protocol = self.claimantAttestationProtocol;
     id<QredoClaimantAttestationProtocolDataSource> dataSource = protocol.dataSource;
     
+    
     if (dataSource) {
+        
+        succeeded = YES;
+        
         NSMutableArray *claimMessages = [[NSMutableArray alloc] init];
         for (QredoAttestation *attestation in self.presentation.attestations) {
             
-            NSData *claimHash = [self calculateHashOfClaim:attestation.claim];
+            NSData *claimHash = [self calculateHashOfClaim:attestation.claim error:error];
             if (!claimHash) {
-                // TODO [GR]: Handle error here.
+                succeeded = NO;
+                break;
             }
             
             QredoClaimMessage *claimMessage = [[QredoClaimMessage alloc] initWithClaimHash:claimHash
@@ -598,34 +656,80 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
             [claimMessages addObject:claimMessage];
         }
         
-        QredoAuthenticationRequest *authenticationRequest
-        = [[QredoAuthenticationRequest alloc] initWithClaimMessages:claimMessages conversationSecret:nil];
+        if (succeeded) {
+
+            QredoAuthenticationRequest *authenticationRequest
+            = [[QredoAuthenticationRequest alloc] initWithClaimMessages:claimMessages conversationSecret:nil];
+            
+            [dataSource claimantAttestationProtocol:protocol
+                                authenticateRequest:authenticationRequest
+                                      authenticator:protocol.authenticator
+                                  completionHandler:^(QredoAuthenticationResponse *response, NSError *error)
+             {
+                 [protocol authenticationFinishedWithResponse:response error:error];
+             }];
+            
+        }
         
-        [dataSource claimantAttestationProtocol:protocol
-                            authenticateRequest:authenticationRequest
-                                  authenticator:protocol.authenticator
-                              completionHandler:^(QredoAuthenticationResponse *response, NSError *error)
-         {
-             [protocol authenticationFinishedWithResponse:response error:error];
-         }];
+    } else {
         
-        return;
+        succeeded = NO;
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
+                                     userInfo:
+                      @{
+                        NSLocalizedDescriptionKey:
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
+                        QredoAttestationErrorTechnicalDescriptionKey:
+                            @"The attestation protocol has no data source.",
+                        }];
+        }
+        
     }
     
-    
-    NSError *error = nil;
-    updateQredoClaimantAttestationProtocolError(&error, QredoAttestationErrorCodeAuthenticationFailed, nil);
-    [protocol authenticationFinishedWithResponse:nil error:error];
+    return succeeded;
 }
 
-- (NSData *)calculateHashOfClaim:(QredoLFClaim *)claim
+- (NSData *)calculateHashOfClaim:(QredoLFClaim *)claim error:(NSError **)error
 {
     if (!claim) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
+                                     userInfo:
+                      @{
+                        NSLocalizedDescriptionKey:
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
+                        QredoAttestationErrorTechnicalDescriptionKey:
+                            @"Trying to calculate the hash of a claim while the claim is nil.",
+                        }];
+        }
         return nil;
     }
-    NSData *claimData = [QredoPrimitiveMarshallers marshalObject:claim
-                                                      marshaller:[QredoClientMarshallers claimMarshaller]];
-    return [QredoCrypto sha256:claimData];
+    
+    NSData *claimHash = nil;
+    @try {
+        NSData *claimData = [QredoPrimitiveMarshallers marshalObject:claim
+                                                          marshaller:[QredoClientMarshallers claimMarshaller]];
+        claimHash = [QredoCrypto sha256:claimData];
+    }
+    @catch (NSException *exception) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
+                                     userInfo:
+                      @{
+                        NSLocalizedDescriptionKey:
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
+                        QredoAttestationErrorTechnicalDescriptionKey:
+                            @"An exeption has been raized while trying to hash a claim.",
+                        }];
+        }
+    }
+    @finally {
+    }
+    return claimHash;
 }
 
 @end
@@ -705,7 +809,6 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
         [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                         withConfigBlock:^
          {
-             // TODO [GR]: Create new error and set `error` as underlying error.
              self.claimantAttestationProtocol.cancelConversationState.error = error;
          }];
     } else {
@@ -802,24 +905,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
                                     withConfigBlock:^
      {
-         NSError *actualError = nil;
-         if (self.error && error) {
-             updateQredoClaimantAttestationProtocolError(&actualError,
-                                                         QredoAttestationErrorCodeConversationBetweenRelientPartyAndCalaimantCoudNotBeCanceled,
-                                                         @{
-                                                           NSUnderlyingErrorKey: error,
-                                                           QredoAttestationPreviousErrorKey: self.error,
-                                                           });
-         } else if (self.error) {
-             actualError = self.error;
-         } else if (error) {
-             updateQredoClaimantAttestationProtocolError(&actualError,
-                                                         QredoAttestationErrorCodeConversationBetweenRelientPartyAndCalaimantCoudNotBeCanceled,
-                                                         @{
-                                                           NSUnderlyingErrorKey: error,
-                                                           });
-         }
-         self.claimantAttestationProtocol.finishState.error = actualError;
+         self.claimantAttestationProtocol.finishState.error = self.error;
      }];
 }
 
@@ -864,8 +950,10 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.finishState
                                     withConfigBlock:^
     {
-        // TODO [GR]: Set the error to "cancelled by Alice".
-        self.claimantAttestationProtocol.finishState.error = nil;
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeConversationProtocolCancelledByOtherSide
+                                         userInfo:nil];
+        self.claimantAttestationProtocol.finishState.error = error;
     }];
 }
 

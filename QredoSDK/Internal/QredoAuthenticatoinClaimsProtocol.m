@@ -129,7 +129,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 
 }
 
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error
+- (void)conversationCanceledWithMessage:(QredoConversationMessage *)message
 {
     dispatch_async(self.authenticationProtocol.queue, ^{
         [self.authenticationProtocol switchToState:self.authenticationProtocol.cancelledByOtherSideState withConfigBlock:nil];
@@ -224,7 +224,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
     [self.authenticationProtocol.conversation stopListening];
 }
 
-- (void)didReceiveCancelConversationMessageWithError:(NSError *)error {
+- (void)conversationCanceledWithMessage:(QredoConversationMessage *)message {
     // do nothing
 }
 
