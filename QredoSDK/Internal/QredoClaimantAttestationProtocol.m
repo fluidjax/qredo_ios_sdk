@@ -465,8 +465,10 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
     {
-        self.claimantAttestationProtocol.cancelConversationState.error
-        = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeConversationProtocolTimeout userInfo:nil];
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeConversationProtocolTimeout
+                                         userInfo:nil];
+        self.claimantAttestationProtocol.cancelConversationState.error = error;
     }];
 }
 
@@ -608,8 +610,10 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         self.authenticationError
-         = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeConversationProtocolTimeout userInfo:nil];
+         NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolTimeout
+                                          userInfo:nil];
+         self.authenticationError = error;
          
          [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.authenticationResultsReceivedState
                                          withConfigBlock:nil];
