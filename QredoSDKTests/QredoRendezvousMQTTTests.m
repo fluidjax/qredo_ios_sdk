@@ -7,9 +7,8 @@
 @implementation QredoRendezvousMQTTTests
 
 - (void)setUp {
-    [super setUp];
     self.useMQTT = YES;
-    [self authoriseClient];
+    [super setUp];
 }
 
 - (void)testCreateRendezvous {

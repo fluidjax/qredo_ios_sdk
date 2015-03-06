@@ -11,9 +11,8 @@
 @implementation ConversationMQTTTests
 
 - (void)setUp {
-    [super setUp];
     self.useMQTT = YES;
-    [self authoriseClient];
+    [super setUp];
 }
 
 - (void)testConversationCreation
