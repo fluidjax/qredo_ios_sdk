@@ -5,7 +5,8 @@
 @property BOOL useMQTT;
 
 - (void)authoriseClient;
-- (void)testCreateRendezvous;
+- (void)testCreateRendezvous_NoSigningHandler;
+- (void)testCreateRendezvous_NilSigningHandler;
 - (void)testCreateAndRespondRendezvous;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519NoPrefixTag;

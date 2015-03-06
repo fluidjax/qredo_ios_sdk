@@ -58,7 +58,10 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 @interface QredoClient (Rendezvous)
 
-/** Creates a rendezvous and automatically stores it in the vault */
+/** Creates a rendezvous and automatically stores it in the vault (no externally generated authenticated rendezvous keys) */
+- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+/** Creates a rendezvous and automatically stores it in the vault (signing handler used for externally generated authenticated rendezvous keys/certs) */
 - (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration signingHandler:(signDataBlock)signingHandler completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 /** Enumerates through the rendezvous that have been stored in the Vault

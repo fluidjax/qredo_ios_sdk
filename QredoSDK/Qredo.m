@@ -275,6 +275,13 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 - (void)createRendezvousWithTag:(NSString *)tag
                   configuration:(QredoRendezvousConfiguration *)configuration
+              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+{
+    [self createRendezvousWithTag:tag configuration:configuration signingHandler:nil completionHandler:completionHandler];
+}
+
+- (void)createRendezvousWithTag:(NSString *)tag
+                  configuration:(QredoRendezvousConfiguration *)configuration
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {

@@ -11,8 +11,12 @@
     [super setUp];
 }
 
-- (void)testCreateRendezvous {
-    [super testCreateRendezvous];
+- (void)testCreateRendezvous_NoSigningHandler {
+    [super testCreateRendezvous_NoSigningHandler];
+}
+
+- (void)testCreateRendezvous_NilSigningHandler {
+    [super testCreateRendezvous_NilSigningHandler];
 }
 
 - (void)testCreateAndRespondRendezvous {
