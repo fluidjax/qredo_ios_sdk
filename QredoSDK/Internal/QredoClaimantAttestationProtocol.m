@@ -544,8 +544,8 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     if (![self sendAuthenticationRequestWithError:&error]) {
 
         if (!error) {
-            error = [NSError errorWithDomain:QredoAttestationErrorDomain
-                                        code:QredoAttestationErrorCodeUnknown
+            error = [NSError errorWithDomain:QredoErrorDomain
+                                        code:QredoErrorCodeConversationProtocolUnknown
                                     userInfo:nil];
         }
 
@@ -671,8 +671,8 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
         
         succeeded = NO;
         if (error) {
-            *error = [NSError errorWithDomain:QredoAttestationErrorDomain
-                                         code:QredoAttestationErrorCodeUnknown
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
@@ -691,8 +691,8 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 {
     if (!claim) {
         if (error) {
-            *error = [NSError errorWithDomain:QredoAttestationErrorDomain
-                                         code:QredoAttestationErrorCodeUnknown
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
@@ -712,8 +712,8 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     }
     @catch (NSException *exception) {
         if (error) {
-            *error = [NSError errorWithDomain:QredoAttestationErrorDomain
-                                         code:QredoAttestationErrorCodeUnknown
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
