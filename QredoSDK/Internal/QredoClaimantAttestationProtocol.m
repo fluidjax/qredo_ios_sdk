@@ -680,7 +680,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
-                            NSLocalizedString(@"Un unkown error has occured.", @"Localized error description"),
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
                         QredoAttestationErrorTechnicalDescriptionKey:
                             @"The attestation protocol has no data source.",
                         }];
@@ -700,7 +700,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
-                            NSLocalizedString(@"Un unkown error has occured.", @"Localized error description"),
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
                         QredoAttestationErrorTechnicalDescriptionKey:
                             @"Trying to calculate the hash claim of a claim while the claim is nil.",
                         }];
@@ -721,7 +721,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
-                            NSLocalizedString(@"Un unkown error has occured.", @"Localized error description"),
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
                         QredoAttestationErrorTechnicalDescriptionKey:
                             @"An exeption has been raized while trying to hash a claim.",
                         }];
