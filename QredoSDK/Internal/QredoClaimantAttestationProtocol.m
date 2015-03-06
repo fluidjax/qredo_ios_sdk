@@ -457,8 +457,10 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
     {
-        self.claimantAttestationProtocol.cancelConversationState.error
-        = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeConversationProtocolTimeout userInfo:nil];
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeConversationProtocolTimeout
+                                         userInfo:nil];
+        self.claimantAttestationProtocol.cancelConversationState.error = error;
     }];
 }
 
@@ -536,8 +538,8 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     if (![self sendAuthenticationRequestWithError:&error]) {
 
         if (!error) {
-            error = [NSError errorWithDomain:QredoAttestationErrorDomain
-                                        code:QredoAttestationErrorCodeUnknown
+            error = [NSError errorWithDomain:QredoErrorDomain
+                                        code:QredoErrorCodeConversationProtocolUnknown
                                     userInfo:nil];
         }
 
@@ -608,8 +610,10 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:^
      {
-         self.authenticationError
-         = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeConversationProtocolTimeout userInfo:nil];
+         NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolTimeout
+                                          userInfo:nil];
+         self.authenticationError = error;
          
          [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.authenticationResultsReceivedState
                                          withConfigBlock:nil];
@@ -671,12 +675,12 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
         
         succeeded = NO;
         if (error) {
-            *error = [NSError errorWithDomain:QredoAttestationErrorDomain
-                                         code:QredoAttestationErrorCodeUnknown
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
-                            NSLocalizedString(@"Un unkown error has occured.", @"Localized error description"),
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
                         QredoAttestationErrorTechnicalDescriptionKey:
                             @"The attestation protocol has no data source.",
                         }];
@@ -691,14 +695,14 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 {
     if (!claim) {
         if (error) {
-            *error = [NSError errorWithDomain:QredoAttestationErrorDomain
-                                         code:QredoAttestationErrorCodeUnknown
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
-                            NSLocalizedString(@"Un unkown error has occured.", @"Localized error description"),
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
                         QredoAttestationErrorTechnicalDescriptionKey:
-                            @"Trying to calculate the hash claim of a claim while the claim is nil.",
+                            @"Trying to calculate the hash of a claim while the claim is nil.",
                         }];
         }
         return nil;
@@ -712,12 +716,12 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     }
     @catch (NSException *exception) {
         if (error) {
-            *error = [NSError errorWithDomain:QredoAttestationErrorDomain
-                                         code:QredoAttestationErrorCodeUnknown
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationProtocolUnknown
                                      userInfo:
                       @{
                         NSLocalizedDescriptionKey:
-                            NSLocalizedString(@"Un unkown error has occured.", @"Localized error description"),
+                            NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
                         QredoAttestationErrorTechnicalDescriptionKey:
                             @"An exeption has been raized while trying to hash a claim.",
                         }];

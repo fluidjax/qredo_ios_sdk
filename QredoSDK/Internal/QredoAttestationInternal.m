@@ -5,8 +5,6 @@
 #import "QredoAttestationInternal.h"
 
 
-NSString *const QredoAttestationErrorDomain = @"QredoAttestationErrorDomain";
-
 NSString *const QredoAttestationErrorTechnicalDescriptionKey = @"QredoAttestationErrorTechnicalDescriptionKey";
 
 
