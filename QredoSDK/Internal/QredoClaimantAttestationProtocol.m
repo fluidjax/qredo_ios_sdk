@@ -702,7 +702,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
                         NSLocalizedDescriptionKey:
                             NSLocalizedString(@"An unknown error has occured.", @"Localized error description"),
                         QredoAttestationErrorTechnicalDescriptionKey:
-                            @"Trying to calculate the hash claim of a claim while the claim is nil.",
+                            @"Trying to calculate the hash of a claim while the claim is nil.",
                         }];
         }
         return nil;
