@@ -54,7 +54,7 @@ static const NSUInteger kRandomTagLength = 32;
                 return nil;
             }
 
-            _fullTag = fullTag;
+            _fullTag = [fullTag copy];
         }
     }
     
@@ -128,7 +128,7 @@ static const NSUInteger kRandomTagLength = 32;
             return nil;
         }
         
-        _fullTag = fullTag;
+        _fullTag = [fullTag copy];
     }
     
     return self;
