@@ -37,7 +37,9 @@
             return [[QredoRendezvousRsa4096PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
-            // TODO: DH - add all other authentication types
+            // TODO: DH - add X.509 Self-signed support
+            LogError(@"Add X.509 Self-signed support!");
+            NSAssert(0, @"Add X.509 Self-signed support");
             return nil;
             
     }
@@ -68,7 +70,9 @@
             return [[QredoRendezvousRsa4096PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
 
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
-            // TODO: DH - add all other authentication types
+            // TODO: DH - add X.509 Self-signed support
+            LogError(@"Add X.509 Self-signed support!");
+            NSAssert(0, @"Add X.509 Self-signed support");
             return nil;
             
     }
@@ -92,8 +96,9 @@
             return kRsaAuthenticatedRendezvousSaltLength;
         
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
-            LogError(@"To be completed!");
-            NSAssert(0, @"To be completed!");
+            // TODO: DH - add X.509 Self-signed support
+            LogError(@"Add X.509 Self-signed support!");
+            NSAssert(0, @"Add X.509 Self-signed support");
             return -1;
     }
 }
