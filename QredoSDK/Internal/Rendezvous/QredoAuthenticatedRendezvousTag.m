@@ -62,7 +62,7 @@
 
     // Only 1x '@' is allowed, any more is a malformed tag
     // Note: Authenticated rendezvous must include @, even if no prefix is present. If @ is missing, malformed tag
-    NSArray *splitTagParts = [fullTag componentsSeparatedByString:@"@"];
+    NSArray *splitTagParts = [[fullTag copy] componentsSeparatedByString:@"@"];
     NSUInteger separatorCount = splitTagParts.count - 1;
     if (separatorCount != 1) {
         NSString *message = [NSString stringWithFormat:@"Invalid number (%lu) of @ characters present. Require exactly 1. Full tag: '%@'",

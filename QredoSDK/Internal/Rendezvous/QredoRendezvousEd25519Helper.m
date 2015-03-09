@@ -30,7 +30,7 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
 {
     // Verify Key is the authentication tag, once Base58 decoded
     NSData *vkData = [QredoBase58 decodeData:authenticationTag error:error];
-    if (!vkData || vkData.length == 0) {
+    if (vkData.length == 0) {
         LogError(@"Base58 decode of authentication tag was nil or 0 length. Authentication Tag: '%@'.", authenticationTag);
         if (error && *error) {
             LogError(@"Base58 decode returned NSError: %@", *error);

@@ -11,8 +11,6 @@
 @implementation QredoAbstractRendezvousAnonymousHelper
 @end
 
-#define RANDOM_TAG_LENGTH 32
-
 @interface QredoRendezvousAnonymousCreateHelper ()
 @property (nonatomic, copy) NSString *fullTag;
 @end
