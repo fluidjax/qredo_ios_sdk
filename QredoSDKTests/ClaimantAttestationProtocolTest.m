@@ -909,10 +909,10 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     }];
     
     if (bobAccept) {
-        [self.protocol acceptWithWrongStateHandler:^(NSError *error) {
+        [self.protocol acceptWithEventCompletionHandler:^(NSError *error) {
         }];
     } else {
-        [self.protocol rejectWithWrongStateHandler:^(NSError *error) {
+        [self.protocol rejectWithEventCompletionHandler:^(NSError *error) {
         }];
     }
     

@@ -63,9 +63,9 @@ typedef void(^QredoClaimantAttestationProtocolAuthenticationCompletionHandler)(Q
 
 - (void)start;
 
-- (void)acceptWithWrongStateHandler:(void(^)(NSError *error))wrongStateHandler;
-- (void)rejectWithWrongStateHandler:(void(^)(NSError *error))wrongStateHandler;
-- (void)cancelWithWrongStateHandler:(void(^)(NSError *error))wrongStateHandler;
+- (void)acceptWithEventCompletionHandler:(void(^)(NSError *error))eventCompletionHandler;
+- (void)rejectWithEventCompletionHandler:(void(^)(NSError *error))eventCompletionHandler;
+- (void)cancelWithEventCompletionHandler:(void(^)(NSError *error))eventCompletionHandler;
 
 - (void)presentationRequestPublishedWithError:(NSError *)error;
 
