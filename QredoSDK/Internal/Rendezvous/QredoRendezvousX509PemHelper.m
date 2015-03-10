@@ -57,8 +57,8 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 @interface QredoRendezvousX509PemCreateHelper ()
 
-@property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
-@property (nonatomic, assign) SecKeyRef publicKeyRef;
+@property (nonatomic) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
+@property (nonatomic) SecKeyRef publicKeyRef;
 @property (nonatomic, copy) signDataBlock signingHandler;
 
 @end
@@ -166,8 +166,8 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 @interface QredoRendezvousX509PemRespondHelper ()
 
-@property (nonatomic, strong) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
-@property (nonatomic, assign) SecKeyRef publicKeyRef;
+@property (nonatomic) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
+@property (nonatomic) SecKeyRef publicKeyRef;
 
 @end
 

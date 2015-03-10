@@ -89,8 +89,8 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 
 @property (nonatomic, copy) NSString *publicKeyIdentifier;
 @property (nonatomic, copy) NSString *privateKeyIdentifier;
-@property (nonatomic, strong) QredoSecKeyRefPair *keyPairRef; // Used for Internally generated keys
-@property (nonatomic, assign) SecKeyRef publicKeyRef; // Used for Externally generated keys
+@property (nonatomic) QredoSecKeyRefPair *keyPairRef; // Used for Internally generated keys
+@property (nonatomic) SecKeyRef publicKeyRef; // Used for Externally generated keys
 @property (nonatomic, copy) signDataBlock signingHandler;
 
 @end
@@ -244,7 +244,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 @interface QredoRendezvousRsaPemRespondHelper ()
 
 @property (nonatomic, copy) NSString *publicKeyIdentifier;
-@property (nonatomic, assign) SecKeyRef publicKeyRef;
+@property (nonatomic) SecKeyRef publicKeyRef;
 
 @end
 

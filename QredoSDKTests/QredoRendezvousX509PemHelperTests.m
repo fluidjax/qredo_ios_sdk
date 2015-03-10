@@ -15,8 +15,8 @@
 
 @interface QredoRendezvousX509PemHelperTests : XCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
-@property (nonatomic, strong) NSArray *rootCertificates;
-@property (nonatomic, assign) SecKeyRef privateKeyRef;
+@property (nonatomic) NSArray *rootCertificates;
+@property (nonatomic) SecKeyRef privateKeyRef;
 @property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
 @end
 
