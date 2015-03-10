@@ -112,6 +112,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         }
         
         if (fullTag.length < 1) {
+            LogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
@@ -263,6 +264,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         }
         
         if (fullTag.length < 1) {
+            LogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }

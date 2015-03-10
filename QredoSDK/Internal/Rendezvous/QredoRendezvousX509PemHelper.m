@@ -77,6 +77,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         }
 
         if (fullTag.length < 1) {
+            LogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
@@ -183,6 +184,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         }
         
         if (fullTag.length < 1) {
+            LogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }

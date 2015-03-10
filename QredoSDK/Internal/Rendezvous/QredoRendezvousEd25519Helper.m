@@ -73,6 +73,12 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
             return nil;
         }
         
+        if (fullTag.length < 1) {
+            LogError(@"Full tag length is 0.");
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
+            return nil;
+        }
+        
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
         if (!_authenticatedRendezvousTag || (error && *error)) {
             LogError(@"Failed to split up full tag successfully.");
@@ -203,6 +209,12 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
     if (self) {
         if (!fullTag) {
             LogError(@"Full tag is nil.");
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
+            return nil;
+        }
+        
+        if (fullTag.length < 1) {
+            LogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
