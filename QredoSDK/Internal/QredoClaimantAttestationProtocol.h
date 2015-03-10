@@ -96,11 +96,6 @@ typedef void(^QredoClaimantAttestationProtocolAuthenticationCompletionHandler)(Q
  */
 - (void)cancelWithEventCompletionHandler:(void(^)(NSError *error))eventCompletionHandler;
 
-- (void)presentationRequestPublishedWithError:(NSError *)error;
-
-- (void)relyingPartyChoiceSentWithError:(NSError *)error;
-
-- (void)conversationCanceledWithError:(NSError *)error;
 
 @end
 

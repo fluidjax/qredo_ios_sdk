@@ -32,8 +32,14 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 @protocol QredoClaimantAttestationProtocolPrivateEvents <NSObject>
 
+- (void)presentationRequestPublishedWithError:(NSError *)error;
+
 - (void)authenticationFinishedWithResponse:(QredoAuthenticationResponse *)authenticationResponse
                                      error:(NSError *)error;
+
+- (void)relyingPartyChoiceSentWithError:(NSError *)error;
+
+- (void)conversationCanceledWithError:(NSError *)error;
 
 @end
 
