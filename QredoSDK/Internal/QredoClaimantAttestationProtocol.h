@@ -63,8 +63,37 @@ typedef void(^QredoClaimantAttestationProtocolAuthenticationCompletionHandler)(Q
 
 - (void)start;
 
+/**
+ Event sent by the user when the claims are accepted.
+ @param eventCompletionHandler  This handler is called after the event is received by the state machine. 
+                                If the current state of the machine is able to accept this event, the hander will
+                                be called with error nil. Otherwise the error will contain a value. Please note
+                                that an error equal to nil does not mean that the event has been processed 
+                                successfully. The success of failure of the processing of the event is relayed back
+                                through the protocol delegate.
+ */
 - (void)acceptWithEventCompletionHandler:(void(^)(NSError *error))eventCompletionHandler;
+
+/**
+ Event sent by the user when the claims are rejected.
+ @param eventCompletionHandler  This handler is called after the event is received by the state machine.
+                                If the current state of the machine is able to accept this event, the hander will
+                                be called with error nil. Otherwise the error will contain a value. Please note
+                                that an error equal to nil does not mean that the event has been processed
+                                successfully. The success of failure of the processing of the event is relayed back
+                                through the protocol delegate.
+ */
 - (void)rejectWithEventCompletionHandler:(void(^)(NSError *error))eventCompletionHandler;
+
+/**
+ Event sent by the user when the attestation process is canceled.
+ @param eventCompletionHandler  This handler is called after the event is received by the state machine.
+                                If the current state of the machine is able to accept this event, the hander will
+                                be called with error nil. Otherwise the error will contain a value. Please note
+                                that an error equal to nil does not mean that the event has been processed
+                                successfully. The success of failure of the processing of the event is relayed back
+                                through the protocol delegate.
+ */
 - (void)cancelWithEventCompletionHandler:(void(^)(NSError *error))eventCompletionHandler;
 
 - (void)presentationRequestPublishedWithError:(NSError *)error;
