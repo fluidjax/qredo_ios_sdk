@@ -32,8 +32,14 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 @protocol QredoClaimantAttestationProtocolPrivateEvents <NSObject>
 
+- (void)presentationRequestPublishedWithError:(NSError *)error;
+
 - (void)authenticationFinishedWithResponse:(QredoAuthenticationResponse *)authenticationResponse
                                      error:(NSError *)error;
+
+- (void)relyingPartyChoiceSentWithError:(NSError *)error;
+
+- (void)conversationCanceledWithError:(NSError *)error;
 
 @end
 
@@ -194,18 +200,29 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
      }];
 }
 
-- (void)accept
+- (void)acceptWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler
 {
-    // TODO [GR]: Send to error state
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't accept at this state"}]);
+    }
 }
 
-- (void)reject
+- (void)rejectWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler
 {
-    // TODO [GR]: Send to error state
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't reject at this state"}]);
+    }
 }
 
-- (void)cancel
+- (void)cancelWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler
 {
+    if (eventCompletionHandler) {
+        eventCompletionHandler(nil);
+    }
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
                                     withConfigBlock:nil];
 }
@@ -347,16 +364,6 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 #pragma mark Events
 
-- (void)accept
-{
-    // TODO [GR]: Send to error state
-}
-
-- (void)reject
-{
-    // TODO [GR]: Send to error state
-}
-
 - (void)presentationRequestPublishedWithError:(NSError *)error
 {
     if (error) {
@@ -423,15 +430,6 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 #pragma mark Events
 
-- (void)accept
-{
-    // TODO [GR]: Send to error state
-}
-
-- (void)reject
-{
-    // TODO [GR]: Send to error state
-}
 
 - (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message
 {
@@ -571,22 +569,30 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 #pragma mark Events
 
-- (void)accept
+- (void)acceptWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.sendRelyingPartyChoiceState
                                     withConfigBlock:^
     {
         self.claimantAttestationProtocol.sendRelyingPartyChoiceState.claimsAccepted = YES;
     }];
+    
+    if (eventCompletionHandler) {
+        eventCompletionHandler(nil);
+    }
 }
 
-- (void)reject
+- (void)rejectWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.sendRelyingPartyChoiceState
                                     withConfigBlock:^
      {
          self.claimantAttestationProtocol.sendRelyingPartyChoiceState.claimsAccepted = NO;
      }];
+    
+    if (eventCompletionHandler) {
+        eventCompletionHandler(nil);
+    }
 }
 
 - (void)authenticationFinishedWithResponse:(QredoAuthenticationResponse *)authenticationResponse
@@ -752,22 +758,30 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 #pragma mark Events
 
-- (void)accept
+- (void)acceptWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler
 {
     [self.conversationProtocol switchToState:self.claimantAttestationProtocol.sendRelyingPartyChoiceState
                              withConfigBlock:^
      {
          self.claimantAttestationProtocol.sendRelyingPartyChoiceState.claimsAccepted = YES;
      }];
+    
+    if (eventCompletionHandler) {
+        eventCompletionHandler(nil);
+    }
 }
 
-- (void)reject
+- (void)rejectWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler
 {
     [self.conversationProtocol switchToState:self.claimantAttestationProtocol.sendRelyingPartyChoiceState
                              withConfigBlock:^
     {
         self.claimantAttestationProtocol.sendRelyingPartyChoiceState.claimsAccepted = NO;
     }];
+    
+    if (eventCompletionHandler) {
+        eventCompletionHandler(nil);
+    }
 }
 
 #pragma mark Info methods
@@ -894,9 +908,30 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
 - (void)otherPartyHasLeftConversation {}
 
-- (void)accept {}
-- (void)reject {}
-- (void)cancel {}
+- (void)acceptWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't accept at this state"}]);
+    }
+}
+
+- (void)rejectWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't reject at this state"}]);
+    }
+}
+
+- (void)cancelWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't cancel at this state"}]);
+    }
+}
+
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
 - (void)relyingPartyChoiceSentWithError:(NSError *)error {}
 
@@ -962,9 +997,30 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
 - (void)otherPartyHasLeftConversation {}
 
-- (void)accept {}
-- (void)reject {}
-- (void)cancel {}
+- (void)acceptWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't accept at this state"}]);
+    }
+}
+
+- (void)rejectWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't reject at this state"}]);
+    }
+}
+
+- (void)cancelWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't cancel at this state"}]);
+    }
+}
+
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
 - (void)relyingPartyChoiceSentWithError:(NSError *)error {}
 - (void)conversationCanceledWithError:(NSError *)error {}
@@ -1006,9 +1062,30 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (void)didReceiveConversationMessage:(QredoConversationMessage *)message {}
 - (void)otherPartyHasLeftConversation {}
 
-- (void)accept {}
-- (void)reject {}
-- (void)cancel {}
+- (void)acceptWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't accept at this state"}]);
+    }
+}
+
+- (void)rejectWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't reject at this state"}]);
+    }
+}
+
+- (void)cancelWithEventCompletionHandler:(void (^)(NSError *))eventCompletionHandler {
+    if (eventCompletionHandler) {
+        eventCompletionHandler([NSError errorWithDomain:QredoErrorDomain
+                                              code:QredoErrorCodeConversationProtocolWrongState
+                                          userInfo:@{NSLocalizedDescriptionKey : @"Can't cancel at this state"}]);
+    }
+}
+
 - (void)presentationRequestPublishedWithError:(NSError *)error {}
 - (void)relyingPartyChoiceSentWithError:(NSError *)error {}
 - (void)conversationCanceledWithError:(NSError *)error {}

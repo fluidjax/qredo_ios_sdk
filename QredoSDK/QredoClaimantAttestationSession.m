@@ -57,8 +57,15 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
         return;
     }
 
-    cancelCompletionHandler = completionHandler;
-    [self.attestationProtocol cancel];
+    [self.attestationProtocol cancelWithEventCompletionHandler:^(NSError *error) {
+        if (!error) {
+            sendResultsCompletionHandler = completionHandler;
+        } else {
+            if (completionHandler) {
+                completionHandler(error);
+            }
+        }
+    }];
 }
 
 - (void)finishAttestationWithResult:(BOOL)result completionHandler:(void(^)(NSError *error))completionHandler
@@ -75,11 +82,20 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
         return;
     }
 
-    sendResultsCompletionHandler = completionHandler;
+    void(^acceptOrRejectEventCompletionHandler)(NSError*) = ^(NSError *error) {
+        if (!error) {
+            sendResultsCompletionHandler = completionHandler;
+        } else {
+            if (completionHandler) {
+                completionHandler(error);
+            }
+        }
+    };
+    
     if (result) {
-        [self.attestationProtocol accept];
+        [self.attestationProtocol acceptWithEventCompletionHandler:acceptOrRejectEventCompletionHandler];
     } else {
-        [self.attestationProtocol reject];
+        [self.attestationProtocol rejectWithEventCompletionHandler:acceptOrRejectEventCompletionHandler];
     }
 }
 
