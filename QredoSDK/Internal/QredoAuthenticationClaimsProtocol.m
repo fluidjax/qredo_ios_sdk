@@ -2,7 +2,7 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#import "QredoAuthenticatoinClaimsProtocol.h"
+#import "QredoAuthenticationClaimsProtocol.h"
 #import "QredoConversation.h"
 #import "QredoErrorCodes.h"
 #import "QredoPrimitiveMarshallers.h"

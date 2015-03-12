@@ -3,7 +3,7 @@
  */
 
 #import "QredoConversationProtocol.h"
-#import "QredoAuthenticatoinClaimsProtocol.h"
+#import "QredoAuthenticationClaimsProtocol.h"
 #import <Foundation/Foundation.h>
 
 @class QredoClaimantAttestationProtocol;

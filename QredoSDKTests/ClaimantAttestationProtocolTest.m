@@ -5,7 +5,7 @@
 
 #import "Qredo.h"
 #import "QredoClaimantAttestationProtocol.h"
-#import "QredoAuthenticatoinClaimsProtocol.h"
+#import "QredoAuthenticationClaimsProtocol.h"
 #import "QredoAttestationInternal.h"
 
 #import "QredoPrimitiveMarshallers.h"
