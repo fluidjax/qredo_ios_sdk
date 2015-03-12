@@ -31,9 +31,18 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     QredoErrorCodeConversatioinInvalidData,
     QredoErrorCodeConversationWrongAuthenticationCode,
     QredoErrorCodeConversationDeleted,
+
+
+    // Conversation protocol errors
+    QredoErrorCodeConversationProtocolUnknown = 5000,
+    QredoErrorCodeConversationProtocolWrongState,
+    QredoErrorCodeConversationProtocolCancelledByOtherSide,
+    QredoErrorCodeConversationProtocolUnexpectedMessageType,
+    QredoErrorCodeConversationProtocolReceivedMalformedData,
+    QredoErrorCodeConversationProtocolTimeout,
     
     // Keychain errors
-    QredoErrorCodeKeychainCouldNotBeFound = 5000,
+    QredoErrorCodeKeychainCouldNotBeFound = 6000,
     QredoErrorCodeKeychainCouldNotBeRetrieved,
     QredoErrorCodeKeychainCouldNotBeSaved,
     QredoErrorCodeKeychainCouldNotBeDelete,

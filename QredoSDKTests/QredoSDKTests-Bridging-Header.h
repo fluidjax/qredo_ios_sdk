@@ -18,3 +18,9 @@
 
 #import "QredoConversationPrivate.h"
 #import "QredoConversationMessagePrivate.h"
+
+#import "QredoAuthenticationClaimsProtocol.h"
+
+#import "QredoPrimitiveMarshallers.h"
+#import "QredoClientMarshallers.h"
+#import "QredoClient.h"

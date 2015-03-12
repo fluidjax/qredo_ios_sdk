@@ -12,7 +12,9 @@ NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
 
 @interface QredoConversationMessage ()
 
+@property QredoQUID *messageId;
 @property QredoConversationHighWatermark *highWatermark;
+@property QredoQUID *parentId;
 
 @end
 
@@ -31,6 +33,11 @@ NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
     _incoming = incoming;
 
     return self;
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+    return self; // for immutable objects
 }
 
 - (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues

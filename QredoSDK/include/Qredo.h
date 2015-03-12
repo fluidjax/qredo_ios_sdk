@@ -2,10 +2,6 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#ifndef QredoSDK_Qredo_h
-#define QredoSDK_Qredo_h
-
-
 #import <Foundation/Foundation.h>
 #import "QredoQUID.h"
 #import "QredoConversation.h"
@@ -13,6 +9,8 @@
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
 #import "QredoErrorCodes.h"
+#import "QredoAttestationRelyingParty.h"
+#import "QredoClaimantAttestationSession.h"
 
 // Revision 1
 // See https://github.com/Qredo/ios-sdk/wiki/SDK-revisions
@@ -84,4 +82,12 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 @end
 
-#endif
+@interface QredoClient (Attestation)
+
+- (void)registerAttestationRelyingPartyWithTypes:(NSArray*)attestationTypes /* dob, photo */
+                               completionHandler:(void(^)(QredoAttestationRelyingParty *relyingParty, NSError *error))completionHandler;
+
+- (void)enumeratateAttestationRelyingPartiesWithBlock:(void(^)(QredoAttestationRelyingParty *relyingParty, BOOL *stop))block
+                                    completionHandler:(void(^)(NSError *error))completionHandler;
+
+@end

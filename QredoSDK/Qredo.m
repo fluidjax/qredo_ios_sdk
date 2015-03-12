@@ -21,6 +21,9 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoManagerAppRootViewController.h"
 
+// TEMP
+#import "QredoConversationProtocol.h"
+
 
 #import <UIKit/UIKit.h>
 

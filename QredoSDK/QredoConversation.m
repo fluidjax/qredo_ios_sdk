@@ -21,6 +21,7 @@
 #import "QredoLogging.h"
 #import "QredoClient.h"
 #import "QredoConversationMessagePrivate.h"
+#import "QredoUpdateListener.h"
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
 NSString *const kQredoConversationVaultItemType = @"com.qredo.conversation";
@@ -41,8 +42,8 @@ NSString *const kQredoConversationItemIsMine = @"_mine";
 NSString *const kQredoConversationItemDateSent = @"_sent";
 NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
-static const double kQredoConversationUpdateInterval = 1.0; // seconds - polling period for items (non-multi-response transports)
-static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
+//static const double kQredoConversationUpdateInterval = 1.0; // seconds - polling period for items (non-multi-response transports)
+//static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 
 // TODO: these values should not be in clear memory. Add red herring
 #define SALT_CONVERSATION_ID [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]
@@ -117,9 +118,8 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 @end
 
 
-@interface QredoConversation ()
+@interface QredoConversation () <QredoUpdateListenerDelegate, QredoUpdateListenerDataSource>
 {
-    QredoClient *_client;
     id<CryptoImpl> _crypto;
     QredoConversationCrypto *_conversationCrypto;
     QredoConversations *_conversationService;
@@ -136,11 +136,6 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     dispatch_queue_t _conversationQueue;
     dispatch_queue_t _enumerationQueue;
 
-    dispatch_queue_t _queue;
-    dispatch_source_t _timer;
-    dispatch_queue_t _subscriptionRenewalQueue;
-    dispatch_source_t _subscriptionRenewalTimer;
-
     BOOL _deleted;
 
     NSSet *_transCap;
@@ -152,13 +147,10 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     QredoConversationHighWatermark *_highestStoredIncomingHWM;
 
-    BOOL _subscribedToMessages;
-    NSMutableDictionary *_dedupeStore; // Key is item, value is sequence number
-    BOOL _dedupeNecessary; // Dedupe only necessary during subscription setup - once subsequent query has completed, dedupe no longer required
-    BOOL _queryAfterSubscribeComplete; // Indicates that the Query after Subscribe has completed, and no more entries to process
-
-    int scheduled, responded; // TODO: use locks for queues
+    QredoUpdateListener *_updateListener;
 }
+
+@property (nonatomic, readwrite) QredoClient *client;
 
 @end
 
@@ -177,7 +169,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     self = [super init];
     if (!self) return nil;
 
-    _client = client;
+    self.client = client;
 
     // TODO: move to a singleton to avoid creation of these stateless objects for every conversation
     // or make all the methods as class methods
@@ -185,20 +177,19 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
 
     _conversationQueue = dispatch_queue_create("com.qredo.conversation", nil);
-    _dedupeStore = [[NSMutableDictionary alloc] init];
-    LogDebug(@"Created Conversation dedupe dictionary (%p): %@", _dedupeStore, _dedupeStore);
 
-    _queue = dispatch_queue_create("com.qredo.conversation.updates", nil);
     _enumerationQueue = dispatch_queue_create("com.qredo.enumeration", nil);
-    _conversationService = [QredoConversations conversationsWithServiceInvoker:_client.serviceInvoker];
+    _conversationService = [QredoConversations conversationsWithServiceInvoker:self.client.serviceInvoker];
 
-
-    _metadata = [[QredoConversationMetadata alloc] init];
+    _metadata = [QredoConversationMetadata new];
     _metadata.rendezvousTag = rendezvousTag;
     _metadata.type = conversationType;
 
     _transCap = transCap;
 
+    _updateListener = [QredoUpdateListener new];
+    _updateListener.dataSource = self;
+    _updateListener.delegate = self;
 
     return self;
 }
@@ -264,7 +255,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
 - (QredoVaultItemDescriptor*)vaultItemDescriptor
 {
-    QredoVault *vault = [_client systemVault];
+    QredoVault *vault = [self.client systemVault];
 
     QredoVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
 
@@ -281,7 +272,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 {
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey rendezvousOwner:rendezvousOwner];
 
-    QredoVault *vault = [_client systemVault];
+    QredoVault *vault = [self.client systemVault];
 
     QredoVaultItemDescriptor *itemDescriptor = [self vaultItemDescriptor];
 
@@ -398,7 +389,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     LogDebug(@"Responding to (hashed) tag: %@", rendezvousTag);
     
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
-    QredoInternalRendezvous *_rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
+    QredoInternalRendezvous *_rendezvous = [QredoInternalRendezvous rendezvousWithServiceInvoker:self.client.serviceInvoker];
 
     QredoAuthenticationCode *authKey = [_rendezvousCrypto authKey:rendezvousTag];
     QredoRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithAuthKey:authKey];
@@ -460,7 +451,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
 - (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    QredoVault *vault = _client.systemVault;
+    QredoVault *vault = self.client.systemVault;
 
     QredoVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
 
@@ -494,8 +485,8 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId
-                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+    [self.client.systemVault strictlyPutNewItem:vaultItem itemId:itemId
+                              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
         completionHandler(error);
     }];
 
@@ -506,6 +497,9 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
 @implementation QredoConversation
 
+- (instancetype)copyWithZone:(NSZone *)zone {
+    return self; // for immutable objects
+}
 
 - (QredoConversationMetadata *)metadata
 {
@@ -601,196 +595,12 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
 - (void)startListening
 {
-    // If we support multi-response, then use it, otherwise poll
-    if (_client.serviceInvoker.supportsMultiResponse)
-    {
-        LogDebug(@"Starting subscription to messages");
-        [self startSubscribing];
-    }
-    else
-    {
-        LogDebug(@"Starting polling for messages");
-        [self startPolling];
-    }
+    [_updateListener startListening];
 }
 
 - (void)stopListening
 {
-    // If we support multi-response, then use it, otherwise poll
-    if (_client.serviceInvoker.supportsMultiResponse)
-    {
-        [self stopSubscribing];
-    }
-    else
-    {
-        [self stopPolling];
-    }
-}
-
-// This method enables subscription (push) for conversation items, and creates new messages from them. Will regularly re-send subsription request as subscriptions can fail silently
-- (void)startSubscribing
-{
-    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
-    
-    if (_subscribedToMessages) {
-        LogDebug(@"Already subscribed to messages, and cannot currently unsubscribe, so ignoring request.");
-        return;
-    }
-    
-    // Setup re-subscribe timer first
-    @synchronized (self) {
-        if (_subscriptionRenewalTimer) return;
-        
-        _subscriptionRenewalTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _subscriptionRenewalQueue);
-        if (_subscriptionRenewalTimer)
-        {
-            dispatch_source_set_timer(_subscriptionRenewalTimer,
-                                      dispatch_time(DISPATCH_TIME_NOW,
-                                                    kQredoConversationRenewSubscriptionInterval * NSEC_PER_SEC), // start
-                                      kQredoConversationRenewSubscriptionInterval * NSEC_PER_SEC, // interval
-                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
-            dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
-                @synchronized (self) {
-                    LogDebug(@"Conversation subscription renewal timer fired");
-                    
-                    if (!_subscriptionRenewalTimer) {
-                        return;
-                    }
-                    
-                    // Should be able to keep subscribing without any side effects, but try to unsubscribing first
-                    [self unsubscribe];
-                    [self subscribe];
-                }
-            });
-            dispatch_resume(_subscriptionRenewalTimer);
-        }
-    }
-    
-    // Start first subscription
-    [self subscribe];
-}
-
-- (void)subscribe
-{
-    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
-    
-    LogDebug(@"Subscribing to new conversation items/messages.");
-    
-    // Subscribe to conversations newer than our highwatermark
-    [self subscribeToMessagesWithBlock:^(QredoConversationMessage *message) {
-        
-        if ([message isControlMessage]) {
-            LogDebug(@"Conversation subscription returned control message: %@", message);
-            
-            if ([message controlMessageType] == QredoConversationControlMessageTypeLeft) {
-                LogDebug(@"Other party has left the conversation.");
-                
-                if ([_delegate respondsToSelector:@selector(qredoConversationOtherPartyHasLeft:)]) {
-                    [_delegate qredoConversationOtherPartyHasLeft:self];
-                }
-            }
-        }
-        else {
-            LogDebug(@"Conversation subscription returned message: %@", message);
-            [_delegate qredoConversation:self didReceiveNewMessage:message];
-        }
-        
-    } subscriptionTerminatedHandler:^(NSError *error) {
-        
-        LogError(@"Conversation subscription terminated with error: %@", error);
-        _subscribedToMessages = NO;
-        
-    } since:self.highWatermark highWatermarkHandler:^(QredoConversationHighWatermark *newWatermark) {
-        
-        LogDebug(@"Conversation subscription returned new HighWatermark: %@", newWatermark);
-        
-        self->_highWatermark = newWatermark;
-    }];
-}
-
-- (void)unsubscribe
-{
-    // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
-    LogDebug(@"NOTE: Cannot currently unsubscribe from Conversation items.  This request is ignored.");
-}
-
-// This method disables subscription (push) for responses to rendezvous
-- (void)stopSubscribing
-{
-    // Need to stop the subsription renewal timer as well
-    @synchronized (self) {
-        if (_subscriptionRenewalTimer) {
-            LogDebug(@"Stoping conversation subscription renewal timer");
-            dispatch_source_cancel(_subscriptionRenewalTimer);
-            _subscriptionRenewalTimer = nil;
-        }
-    }
-    
-    [self unsubscribe];
-}
-
-// This method polls for (new) items in conversation, and creates message from them.
-- (void)startPolling
-{
-    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
-
-    @synchronized (self) {
-        if (_timer) return;
-
-        scheduled = 0;
-        responded = 0;
-
-        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _queue);
-        if (_timer)
-        {
-            dispatch_source_set_timer(_timer,
-                                      dispatch_time(DISPATCH_TIME_NOW, kQredoConversationUpdateInterval * NSEC_PER_SEC), // start
-                                      kQredoConversationUpdateInterval * NSEC_PER_SEC, // interval
-                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
-            dispatch_source_set_event_handler(_timer, ^{
-                if (scheduled != responded) {
-                    return;
-                }
-                scheduled++;
-
-                void (^block)(QredoConversationMessage *message, BOOL *stop) = ^(QredoConversationMessage *message, BOOL *stop) {
-                    if ([message isControlMessage]) {
-                        if ([message controlMessageType] == QredoConversationControlMessageTypeLeft &&
-                            [_delegate respondsToSelector:@selector(qredoConversationOtherPartyHasLeft:)]) {
-                            [_delegate qredoConversationOtherPartyHasLeft:self];
-                        }
-                    } else {
-                        [_delegate qredoConversation:self didReceiveNewMessage:message];
-                    }
-                };
-
-                // Subscriptions (or pseudo subscriptions) should not exclude control messages
-                [self enumerateMessagesUsingBlock:block
-                                         incoming:YES
-                           excludeControlMessages:NO
-                                            since:self.highWatermark
-                                completionHandler:^(NSError *error)
-                {
-                    // TODO: DH - need to deal with any error returned - e.g. may indicate transport has been terminated
-                    responded++;
-                }
-                highWatermarkHandler:^(QredoConversationHighWatermark *highWatermark) {
-                    _highWatermark = highWatermark;
-                } ];
-            });
-            dispatch_resume(_timer);
-        }
-    }
-}
-
-- (void)stopPolling
-{
-    @synchronized (self) {
-        if (_timer) {
-            dispatch_source_cancel(_timer);
-            _timer = nil;
-        }
-    }
+    [_updateListener stopListening];
 }
 
 - (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
@@ -834,62 +644,13 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
     }];
 }
 
-- (BOOL)isDuplicateOrOldItem:(QredoConversationItem *)item sequenceValue:(QredoConversationSequenceValue *)sequenceValue
-{
-    LogDebug(@"Checking for old/duplicate. Item: %@. SequenceValue: %@.", item, sequenceValue);
-    
-    LogDebug(@"Conversation dedupe dictionary contains %lu items.", (unsigned long)_dedupeStore.count);
-    LogDebug(@"Conversation dedupe dictionary (%p): %@", _dedupeStore, _dedupeStore);
-    
-    BOOL itemIsDuplicate = NO;
-    
-    // TODO: DH - Store hashes, rather than actual values if those values are large?
-    
-    // TODO: DH - Confirm whether sequence value for Items are unique to that item - i.e. can just store sequence values for dedupe?
-    // A duplicate item is being taken to be a specific item which has the same sequence value
-    @synchronized(_dedupeStore) {
-        QredoConversationSequenceValue *fetchedSequenceValue = [_dedupeStore objectForKey:item];
-        
-        if (!fetchedSequenceValue) {
-            LogDebug(@"Item was not found in dictionary.");
-        }
-        
-        // TODO: DH - Find out if can improve this check - can conversation sequence values be greater/less than each other - or just non-comparable opaque values?
-        if (fetchedSequenceValue && [sequenceValue isEqualToData:fetchedSequenceValue]) {
-            // Found a duplicate item
-            itemIsDuplicate = YES;
-        }
-        else if (_queryAfterSubscribeComplete) {
-            // We have completed processing the Query after Subscribe, and we have a non-duplicate Item - therefore we have passed the point where dedupe is required, so can empty the dedupe store
-            LogDebug(@"Query completed and have received a non-duplicate item. Passed point where dedupe required - emptying dedupe store and preventing further dedupe.");
-            _dedupeNecessary = NO;
-            [_dedupeStore removeAllObjects];
-        }
-        else {
-            // Not a duplicate, and Query has not completed, so store this response/sequenceValue pair for later to prevent duplication
-            LogDebug(@"Storing item in dedupe store");
-            [_dedupeStore setObject:sequenceValue forKey:item];
-        }
-    }
-    
-    LogDebug(@"Item is duplicate: %@", itemIsDuplicate ? @"YES" : @"NO");
-    return itemIsDuplicate;
-}
-
 // TODO: DH - Reorder parameters to be consistent with enumerate methods? (i.e. move 'since' to 2nd argument as reads better)
 - (void)subscribeToMessagesWithBlock:(void(^)(QredoConversationMessage *message))block
        subscriptionTerminatedHandler:(void (^)(NSError *))subscriptionTerminatedHandler
                                since:(QredoConversationHighWatermark *)sinceWatermark
                 highWatermarkHandler:(void(^)(QredoConversationHighWatermark *newWatermark))highWatermarkHandler
 {
-    _subscribedToMessages = YES;
     
-    /*
-     Dedupe is necessary when setting up, as requires both Subscribe and Query. Both could return the same
-     Response, so need dedupe. Once Query has completed, Subscribe takes over and dedupe no longer required.
-     */
-    _dedupeNecessary = YES;
-    _queryAfterSubscribeComplete = NO;
 
     // Subscription is an inbound only service
     QredoQUID *messageQueue = _inboundQueueId;
@@ -902,6 +663,10 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
          if (error) {
              subscriptionTerminatedHandler(error);
              return;
+         }
+
+         if (!result) {
+             return ;
          }
 
          QredoConversationQueryItemsResult *resultItems
@@ -954,7 +719,7 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
                                      block(message);
                                  }
                      completionHandler:^(NSError *error) {
-                         _queryAfterSubscribeComplete = YES;
+
                      }
                   highWatermarkHandler:highWatermarkHandler];
      }];
@@ -1103,18 +868,6 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
 
     QredoConversationItemWithSequenceValue *conversationItem = [result.items objectAtIndex:conversationItemIndex];
 
-    if (_dedupeNecessary) {
-        // TODO: DH - rename if 'old' is not appropriate for Conversation Items
-        if ([self isDuplicateOrOldItem:conversationItem.item sequenceValue:conversationItem.sequenceValue]) {
-            LogDebug(@"Ignoring duplicate/old conversation item. Item: %@. Sequence Value: %@",
-                     conversationItem.item, conversationItem.sequenceValue);
-
-            continueToNextMessage();
-        }
-    } else {
-        LogDebug(@"No dedupe necessary, conversation subscription setup completed.");
-    }
-
     NSError *decryptionError = nil;
     QredoConversationMessageLF *decryptedMessage = [_conversationCrypto decryptMessage:conversationItem.item
                                                                                bulkKey:bulkKey
@@ -1210,6 +963,73 @@ static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mi
                                         vaultId:conversationVaultID];
 
     return _store;
+}
+
+#pragma mark -
+#pragma mark Qredo Update Listener - Data Source
+- (BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener
+{
+    return _client.serviceInvoker.supportsMultiResponse;
+}
+
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
+  pollWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    void (^block)(QredoConversationMessage *message, BOOL *stop) = ^(QredoConversationMessage *message, BOOL *stop) {
+        [self->_updateListener processSingleItem:message sequenceValue:message.highWatermark.sequenceValue];
+    };
+
+    // Subscriptions (or pseudo subscriptions) should not exclude control messages
+    [self enumerateMessagesUsingBlock:block
+                             incoming:YES
+               excludeControlMessages:NO
+                                since:self.highWatermark
+                    completionHandler:completionHandler
+     highWatermarkHandler:^(QredoConversationHighWatermark *highWatermark) {
+         _highWatermark = highWatermark;
+     } ];
+
+}
+
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
+subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
+
+    LogDebug(@"Subscribing to new conversation items/messages.");
+
+    // Subscribe to conversations newer than our highwatermark
+    [self subscribeToMessagesWithBlock:^(QredoConversationMessage *message) {
+        [_updateListener processSingleItem:message sequenceValue:message.highWatermark.sequenceValue];
+    } subscriptionTerminatedHandler:^(NSError *error) {
+        [_updateListener didTerminateSubscriptionWithError:error];
+    } since:self.highWatermark highWatermarkHandler:^(QredoConversationHighWatermark *newWatermark) {
+        LogDebug(@"Conversation subscription returned new HighWatermark: %@", newWatermark);
+
+        self->_highWatermark = newWatermark;
+    }];
+
+}
+
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
+unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
+    LogDebug(@"NOTE: Cannot currently unsubscribe from Conversation items.  This request is ignored.");
+}
+
+#pragma mark Qredo Update Listener - Delegate
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item
+{
+    QredoConversationMessage *message = (QredoConversationMessage *)item;
+    if ([message isControlMessage]) {
+        if ([message controlMessageType] == QredoConversationControlMessageTypeLeft &&
+            [_delegate respondsToSelector:@selector(qredoConversationOtherPartyHasLeft:)]) {
+            [_delegate qredoConversationOtherPartyHasLeft:self];
+        }
+    } else {
+        [self.delegate qredoConversation:self didReceiveNewMessage:message];
+    }
 }
 
 @end
