@@ -8,7 +8,7 @@ import XCTest
 class KeychainTests: XCTestCase {
 
     func testKeychainSerialization() {
-        let operatorInfo = QredoOperatorInfo(
+        let operatorInfo = QLFOperatorInfo(
             name: "TestOperator",
             serviceUri: "http://test.qredo.com/test",
             accountID: "0123456789",

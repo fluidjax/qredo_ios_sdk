@@ -22,5 +22,4 @@
 #import "QredoAuthenticationClaimsProtocol.h"
 
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoClientMarshallers.h"
 #import "QredoClient.h"

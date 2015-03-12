@@ -99,7 +99,7 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
     }
 }
 
-- (void)authenticateRequest:(QredoAuthenticationRequest *)authenticationRequest
+- (void)authenticateRequest:(QLFAuthenticationRequest *)authenticationRequest
               authenticator:(NSString *)authenticator
                conversation:(QredoConversation *)conversation
 {
@@ -109,9 +109,9 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
 }
 
 - (void)notifyAuthenticationStatus:(QredoAuthenticationStatus)status
-           inAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
+           inAuthenticationRequest:(QLFAuthenticationRequest *)authenticationRequest
 {
-    for (QredoClaimMessage *claimMessage in authenticationRequest.claimMessages) {
+    for (QLFClaimMessage *claimMessage in authenticationRequest.claimMessages) {
         QredoClaim *claim = [self.claimsHashes objectForKey:claimMessage.claimHash];
         if (!claim) {
             NSLog(@"Didn't find matching claim for hash: %@", claimMessage.claimHash);
@@ -131,13 +131,13 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
 }
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-             didRecivePresentations:(QredoPresentation *)presentation
+             didRecivePresentations:(QLFPresentation *)presentation
 {
     NSMutableArray *claims = [NSMutableArray array];
     NSMutableDictionary *hashes = [NSMutableDictionary dictionary];
 
-    for (QredoAttestation *attestation in presentation.attestations) {
-        QredoLFClaim *claimLF = attestation.claim;
+    for (QLFAttestation *attestation in presentation.attestations) {
+        QLFClaim *claimLF = attestation.claim;
 
         QredoClaim *claim = [[QredoClaim alloc] init];
         claim.name      = [claimLF.name anyObject];
@@ -158,9 +158,9 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
 }
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
-           didReciveAuthentications:(QredoAuthenticationResponse *)authentications
+           didReciveAuthentications:(QLFAuthenticationResponse *)authentications
 {
-    for (QredoAuthenticatedClaim *authenticatedClaim in authentications.credentialValidationResults) {
+    for (QLFAuthenticatedClaim *authenticatedClaim in authentications.credentialValidationResults) {
         QredoClaim *claim = [self.claimsHashes objectForKey:authenticatedClaim.claimHash];
         if (!claim) {
             NSLog(@"Didn't find matching claim for hash: %@", authenticatedClaim.claimHash);
@@ -219,7 +219,7 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
 #pragma mark - Claimant Attestation Protocol Data Source
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-                authenticateRequest:(QredoAuthenticationRequest *)authenticationRequest
+                authenticateRequest:(QLFAuthenticationRequest *)authenticationRequest
                       authenticator:(NSString *)authenticator
                   completionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)completionHandler;
 {
@@ -252,7 +252,7 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
     // not used
 }
 
-- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFinishWithResults:(QredoAuthenticationResponse *)results
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFinishWithResults:(QLFAuthenticationResponse *)results
 {
     if (authenticationCompletionHandler) {
         authenticationCompletionHandler(results, nil);

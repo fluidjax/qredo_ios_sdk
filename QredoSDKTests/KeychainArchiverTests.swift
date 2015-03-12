@@ -21,7 +21,7 @@ class KeychainArchiverTests: XCTestCase {
     
     func createKeychainWithVaultId(vaultId: QredoQUID, bulkKeyString: NSString, autenticationKeyString: NSString) -> QredoKeychain {
         
-        let operatorInfo = QredoOperatorInfo(
+        let operatorInfo = QLFOperatorInfo(
             name: "MyOperator",
             serviceUri: "http://example.com/",
             accountID: "1234567890",

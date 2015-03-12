@@ -73,31 +73,29 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 @implementation QredoRendezvousEd25519CreateHelper (QredoRendezvousTests)
 
-- (QredoRendezvousAuthSignature *)QredoRendezvousTests_signatureWithData:(NSData *)data error:(NSError **)error {
+- (QLFRendezvousAuthSignature *)QredoRendezvousTests_signatureWithData:(NSData *)data error:(NSError **)error {
     
-    QredoRendezvousAuthSignature *signature = [self QredoRendezvousTests_signatureWithData:data error:error];
+    QLFRendezvousAuthSignature *signature = [self QredoRendezvousTests_signatureWithData:data error:error];
     
     __block NSData *signatureData = nil;
-    [signature
-     ifX509_PEM:^(NSData *signature) {
-         NSAssert(FALSE, @"Wrong signature type");
-     } X509_PEM_SELFISGNED:^(NSData *signature) {
-         NSAssert(FALSE, @"Wrong signature type");
-     } ED25519:^(NSData *signature) {
-         signatureData = signature;
-     } RSA2048_PEM:^(NSData *signature) {
-         NSAssert(FALSE, @"Wrong signature type");
-     } RSA4096_PEM:^(NSData *signature) {
-         NSAssert(FALSE, @"Wrong signature type");
-     } other:^{
-         NSAssert(FALSE, @"Wrong signature type");
-     }];
+
+    [signature ifRendezvousAuthX509_PEM:^(NSData *signature) {
+        NSAssert(FALSE, @"Wrong signature type");
+    } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
+        NSAssert(FALSE, @"Wrong signature type");
+    } ifRendezvousAuthED25519:^(NSData *signature) {
+        signatureData = signature;
+    } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
+        NSAssert(FALSE, @"Wrong signature type");
+    } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
+        NSAssert(FALSE, @"Wrong signature type");
+    }];
     
     NSMutableData *forgedSignatureData = [signatureData mutableCopy];
     unsigned char *forgedSignatureDataBytes = [forgedSignatureData mutableBytes];
     forgedSignatureDataBytes[0] = ~forgedSignatureDataBytes[0];
     
-    QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
+    QLFRendezvousAuthSignature *forgedSignature = [QLFRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
 
     return forgedSignature;
     

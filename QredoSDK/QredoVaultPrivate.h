@@ -12,7 +12,7 @@
 @class QredoClient, QredoKeychain;
 
 @interface QredoVaultItemDescriptor()<NSCopying>
-@property (readonly) QredoVaultSequenceValue *sequenceValue;
+@property (readonly) QLFVaultSequenceValue sequenceValue;
 @end
 
 

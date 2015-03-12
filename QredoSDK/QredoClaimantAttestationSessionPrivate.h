@@ -5,7 +5,7 @@
 #import "Qredo.h"
 #import "QredoClaimantAttestationSession.h"
 #import "QredoClaimantAttestationProtocol.h"
-#import "QredoAuthenticatoinClaimsProtocol.h"
+#import "QredoAuthenticationClaimsProtocol.h"
 
 @interface QredoClaimantAttestationSession ()
     <QredoClaimantAttestationProtocolDelegate, QredoClaimantAttestationProtocolDataSource,

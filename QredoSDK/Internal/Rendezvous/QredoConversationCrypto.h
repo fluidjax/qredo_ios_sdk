@@ -11,7 +11,7 @@
 
 - (instancetype)initWithCrypto:(id<CryptoImpl>)crypto;
 
-- (NSData *)encryptMessage:(QredoConversationMessageLF *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey;
-- (QredoConversationMessageLF *)decryptMessage:(NSData *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError**)error;
+- (NSData *)encryptMessage:(QLFConversationMessageLF *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey;
+- (QLFConversationMessageLF *)decryptMessage:(NSData *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError**)error;
 
 @end
