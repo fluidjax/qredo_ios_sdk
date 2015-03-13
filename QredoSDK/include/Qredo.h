@@ -58,11 +58,24 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 @interface QredoClient (Rendezvous)
 
-/** Creates a rendezvous and automatically stores it in the vault (no externally generated authenticated rendezvous keys) */
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+/** Creates an anonymous rendezvous and automatically stores it in the vault */
+- (void)createAnonymousRendezvousWithTag:(NSString *)tag
+                           configuration:(QredoRendezvousConfiguration *)configuration
+                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
-/** Creates a rendezvous and automatically stores it in the vault (signing handler used for externally generated authenticated rendezvous keys/certs) */
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration signingHandler:(signDataBlock)signingHandler completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+/** Creates an authenticated rendezvous using internally generated keys and automatically stores it in the vault. Private key part is discarded, so keypair cannot be re-used for another rendezvous. */
+- (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
+                             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                  configuration:(QredoRendezvousConfiguration *)configuration
+                              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+/** Creates an authenticated rendezvous using externally generated keys and automatically stores it in the vault. Externally generated keys can be re-used for other rendezvous. */
+- (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
+                             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                  configuration:(QredoRendezvousConfiguration *)configuration
+                                      publicKey:(NSData *)publicKey
+                                 signingHandler:(signDataBlock)signingHandler
+                              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 /** Enumerates through the rendezvous that have been stored in the Vault
  @discussion assign YES to *stop to break the enumeration */

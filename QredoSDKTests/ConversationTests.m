@@ -103,18 +103,17 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
-    [client createRendezvousWithTag:randomTag
-                      configuration:configuration
-                     signingHandler:nil
-                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                      NSLog(@"Create rendezvous completion handler called.");
-                      XCTAssertNil(error);
-                      XCTAssertNotNil(_rendezvous);
-                      
-                      rendezvous = _rendezvous;
-                      
-                      [createExpectation fulfill];
-                  }];
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                               NSLog(@"Create rendezvous completion handler called.");
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(_rendezvous);
+                               
+                               rendezvous = _rendezvous;
+                               
+                               [createExpectation fulfill];
+                           }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         createExpectation = nil;
@@ -132,18 +131,17 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
     NSLog(@"\nCreating rendezvous");
-    [client createRendezvousWithTag:randomTag
-                      configuration:configuration
-                     signingHandler:nil
-                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                      NSLog(@"\nRendezvous creation completion handler entered");
-                      XCTAssertNil(error);
-                      XCTAssertNotNil(_rendezvous);
-                      
-                      rendezvous = _rendezvous;
-                      
-                      [createExpectation fulfill];
-                  }];
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                               NSLog(@"\nRendezvous creation completion handler entered");
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(_rendezvous);
+                               
+                               rendezvous = _rendezvous;
+                               
+                               [createExpectation fulfill];
+                           }];
     NSLog(@"\nWaiting for creation expectations");
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
@@ -213,18 +211,17 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
 
     NSLog(@"Creating Rendezvous (with client 1)");
-    [client createRendezvousWithTag:randomTag
-                      configuration:configuration
-                     signingHandler:nil
-                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                      NSLog(@"Create rendezvous completion handler called.");
-                      XCTAssertNil(error);
-                      XCTAssertNotNil(_rendezvous);
-
-                      rendezvous = _rendezvous;
-
-                      [createExpectation fulfill];
-                  }];
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                               NSLog(@"Create rendezvous completion handler called.");
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(_rendezvous);
+                               
+                               rendezvous = _rendezvous;
+                               
+                               [createExpectation fulfill];
+                           }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         createExpectation = nil;
@@ -439,18 +436,17 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
-    [client createRendezvousWithTag:randomTag
-                      configuration:configuration
-                     signingHandler:nil
-                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                      NSLog(@"Create rendezvous completion handler called.");
-                      XCTAssertNil(error);
-                      XCTAssertNotNil(_rendezvous);
-                      
-                      rendezvous = _rendezvous;
-                      
-                      [createExpectation fulfill];
-                  }];
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                               NSLog(@"Create rendezvous completion handler called.");
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(_rendezvous);
+                               
+                               rendezvous = _rendezvous;
+                               
+                               [createExpectation fulfill];
+                           }];
     [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
         createExpectation = nil;
     }];
@@ -516,18 +512,17 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
-    [client createRendezvousWithTag:randomTag
-                      configuration:configuration
-                     signingHandler:nil
-                  completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                      NSLog(@"Create rendezvous completion handler called.");
-                      XCTAssertNil(error);
-                      XCTAssertNotNil(_rendezvous);
-                      
-                      rendezvous = _rendezvous;
-                      
-                      [createExpectation fulfill];
-                  }];
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                               NSLog(@"Create rendezvous completion handler called.");
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(_rendezvous);
+                               
+                               rendezvous = _rendezvous;
+                               
+                               [createExpectation fulfill];
+                           }];
     [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
         createExpectation = nil;
     }];

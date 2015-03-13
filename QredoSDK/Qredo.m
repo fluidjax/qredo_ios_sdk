@@ -273,11 +273,71 @@ static NSString *const QredoKeychainPassword = @"Password123";
 #pragma mark -
 #pragma mark Rendezvous
 
-- (void)createRendezvousWithTag:(NSString *)tag
-                  configuration:(QredoRendezvousConfiguration *)configuration
-              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+// TODO: DH - Create unit tests for createAnonymousRendezvousWithTag
+- (void)createAnonymousRendezvousWithTag:(NSString *)tag
+                           configuration:(QredoRendezvousConfiguration *)configuration
+                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
-    [self createRendezvousWithTag:tag configuration:configuration signingHandler:nil completionHandler:completionHandler];
+    // TODO: DH - validate that the configuration provided is an anonymous rendezvous
+
+    // Anonymous Rendezvous are created using the full tag, and signing handler is not used
+    [self createRendezvousWithTag:tag
+                    configuration:configuration
+                   signingHandler:nil
+                completionHandler:completionHandler];
+}
+
+// TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (internal keys)
+- (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
+                             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                  configuration:(QredoRendezvousConfiguration *)configuration
+                              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+{
+    // TODO: DH - validate that the configuration provided is an authenticated rendezvous, and is not X.509 (which must use externally generated keys/certs, so must be the signing handler variant)
+    // TODO: DH - validate inputs (any which aren't validated later)
+    
+    // Authenticated Rendezvous with internally generated keys are created using just the optional prefix.
+    // @ is not part of the prefix and must not appear in prefix (this will be validated later)
+
+    // Nil, or empty prefix is fine. The final tag will have the public key appended, but keypair hasn't been
+    // generated yet, so for now just use @, and add prefix if provided
+    NSString *prefixedTag = @"@";
+    if (prefix) {
+        prefixedTag = [NSString stringWithFormat:@"%@@", prefix];
+    }
+
+    // Authenticated Rendezvous with internally generated keys. Signing handler is not used
+    [self createRendezvousWithTag:prefixedTag
+                    configuration:configuration
+                   signingHandler:nil
+                completionHandler:completionHandler];
+}
+
+// TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (external keys)
+- (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
+                             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                  configuration:(QredoRendezvousConfiguration *)configuration
+                                      publicKey:(NSData *)publicKey
+                                 signingHandler:(signDataBlock)signingHandler
+                              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+{
+    // TODO: DH - validate that the configuration provided is an authenticated rendezvous, and that public key is present
+    // TODO: DH - validate inputs (any which aren't validated later)
+    
+    // Authenticated Rendezvous with externally generated keys are created using optional prefix and mandatory
+    // public key data. @ is not part of the prefix and must not appear in prefix, or public key
+
+    // The full tag is (optional) prefix and (mandatory) public key/cert appended
+    NSString *prefixedTag = @"@";
+    if (prefix) {
+        prefixedTag = [NSString stringWithFormat:@"%@@", prefix];
+    }
+    
+    // Authenticated Rendezvous with externally generated keys. Signing handler is required
+    [self createRendezvousWithTag:prefixedTag
+                    configuration:configuration
+                   signingHandler:signingHandler
+                completionHandler:completionHandler];
 }
 
 - (void)createRendezvousWithTag:(NSString *)tag

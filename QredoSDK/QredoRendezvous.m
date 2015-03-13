@@ -37,7 +37,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     self = [super init];
     if (!self) return nil;
 
-    self.tag = tag;
+    _tag = [tag copy];
     _vaultItemDescriptor = vaultItemDescriptor;
 
     return self;
@@ -71,7 +71,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     self = [super init];
     if (!self) return nil;
     
-    _conversationType = conversationType;
+    _conversationType = [conversationType copy];
     _authenticationType = authenticationType;
     _durationSeconds = durationSeconds;
     _maxResponseCount = maxResponseCount;
@@ -113,7 +113,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 // making the properties read/write for private use
 @property QredoRendezvousConfiguration *configuration;
-@property NSString *tag;
+@property (readwrite, copy) NSString *tag;
 
 - (NSSet *)maybe:(id)object;
 
@@ -163,6 +163,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
 
+    // TODO: DH - validate that the configuration and tag formats match
+    
     NSError *error = nil;
     id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType
                                                                                               fullTag:tag

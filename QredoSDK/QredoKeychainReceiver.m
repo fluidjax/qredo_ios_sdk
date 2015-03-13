@@ -48,22 +48,20 @@
                                                                                                  durationSeconds:[NSNumber numberWithUnsignedInteger:QredoKeychainTransporterRendezvousDuration]
                                                                                                 maxResponseCount:@1];
     
-    // No signing handler needed as no authentication type provided above (so anonymous)
-    [self.client createRendezvousWithTag:randomTag
-                           configuration:configuration
-                          signingHandler:nil
-                       completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-                           @synchronized (self) {
-                               if (cancelled) return ;
-
-                               if (error) {
-                                   [self handleError:error];
-                                   return;
-                               }
-                           }
-                               [self didCreateRendezvous:rendezvous];
-
-                       }];
+    [self.client createAnonymousRendezvousWithTag:randomTag
+                                    configuration:configuration
+                                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                                    @synchronized (self) {
+                                        if (cancelled) return ;
+                                        
+                                        if (error) {
+                                            [self handleError:error];
+                                            return;
+                                        }
+                                    }
+                                    [self didCreateRendezvous:rendezvous];
+                                    
+                                }];
 }
 
 - (void)sendCancellationMessage {

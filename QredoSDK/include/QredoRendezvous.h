@@ -26,8 +26,9 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 /** This class is used for creating rendezvous and for getting information about rendezvous */
 @interface QredoRendezvousConfiguration : NSObject
 /** Reverse domain name service notation. For example, `com.qredo.qatchat` */
-@property NSString *conversationType;
+@property (readonly, copy) NSString *conversationType;
 
+// TODO: DH - remove authentication type from QredoRendezvousConfiguration (move to QredoRendezvousMetadata)
 @property (readonly) QredoRendezvousAuthenticationType authenticationType;
 
 /** if `nil`, then conversation doesn't have a time limit */
@@ -44,6 +45,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 
 - (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap;
 
+// TODO: DH - remove authentication type from [QredoRendezvousConfiguration initWithConversationType:] (moving to QredoRendezvousMetadata)
 - (instancetype)initWithConversationType:(NSString*)conversationType authenticationType:(QredoRendezvousAuthenticationType)authenticationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap;
 
 @end
@@ -53,7 +55,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 // Although, at the moment it has only tag, we might add more information later.
 @interface QredoRendezvousMetadata : NSObject
 
-@property (readonly) NSString *tag;
+@property (readonly, copy) NSString *tag;
 
 @end
 
@@ -66,8 +68,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 @interface QredoRendezvous : NSObject
 /** See `QredoRendezvousConfiguration` */
 @property (readonly) QredoRendezvousConfiguration *configuration;
-@property (readonly) NSString *tag;
-
+@property (readonly, copy) NSString *tag;
 
 /** See `QredoRendezvousDelegate` */
 @property (weak) id<QredoRendezvousDelegate> delegate;

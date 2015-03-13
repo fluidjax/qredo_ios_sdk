@@ -11,9 +11,12 @@
 @interface QredoRendezvousMetadata () {
     QredoVaultItemDescriptor *_vaultItemDescriptor;
 }
+
 @property (readonly) QredoVaultItemDescriptor *vaultItemDescriptor;
-@property (readwrite) NSString *tag;
+@property (readwrite, copy) NSString *tag;
+
 - (instancetype)initWithTag:(NSString*)tag vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+
 @end
 
 @interface QredoRendezvous (Private)
