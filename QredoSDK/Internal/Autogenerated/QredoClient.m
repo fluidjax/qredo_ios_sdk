@@ -424,19 +424,22 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFCredentialValidity class]]) {
-        return [QLFCredentialValidity marshaller];
-    } else if ([self isKindOfClass:[QLFCertificateChainRevoked class]]) {
-        return [QLFCertificateChainRevoked marshaller];
-    } else if ([self isKindOfClass:[QLFCredentialRevoked class]]) {
-        return [QLFCredentialRevoked marshaller];
-    } else if ([self isKindOfClass:[QLFCredentialExpired class]]) {
-        return [QLFCredentialExpired marshaller];
-    } else if ([self isKindOfClass:[QLFCredentialNotValid class]]) {
-        return [QLFCredentialNotValid marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFCredentialValidity class]]) {
+            [QLFCredentialValidity marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFCertificateChainRevoked class]]) {
+            [QLFCertificateChainRevoked marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFCredentialRevoked class]]) {
+            [QLFCredentialRevoked marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFCredentialExpired class]]) {
+            [QLFCredentialExpired marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFCredentialNotValid class]]) {
+            [QLFCredentialNotValid marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -539,9 +542,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'CredentialValidity'
+        
 
-        [reader readEnd];
+        
         return [QLFCredentialValidationResult credentialValidity];
     };
 }
@@ -623,9 +626,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'CertificateChainRevoked'
+        
 
-        [reader readEnd];
+        
         return [QLFCredentialValidationResult certificateChainRevoked];
     };
 }
@@ -707,9 +710,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'CredentialRevoked'
+        
 
-        [reader readEnd];
+        
         return [QLFCredentialValidationResult credentialRevoked];
     };
 }
@@ -791,9 +794,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'CredentialExpired'
+        
 
-        [reader readEnd];
+        
         return [QLFCredentialValidationResult credentialExpired];
     };
 }
@@ -875,9 +878,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'CredentialNotValid'
+        
 
-        [reader readEnd];
+        
         return [QLFCredentialValidationResult credentialNotValid];
     };
 }
@@ -955,13 +958,16 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFQRV class]]) {
-        return [QLFQRV marshaller];
-    } else if ([self isKindOfClass:[QLFQRT class]]) {
-        return [QLFQRT marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFQRV class]]) {
+            [QLFQRV marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFQRT class]]) {
+            [QLFQRT marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -1040,9 +1046,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'QRV'
+        
 
-        [reader readEnd];
+        
         return [QLFCtrl qRV];
     };
 }
@@ -1124,9 +1130,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'QRT'
+        
 
-        [reader readEnd];
+        
         return [QLFCtrl qRT];
     };
 }
@@ -1818,17 +1824,20 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFOperationCreate class]]) {
-        return [QLFOperationCreate marshaller];
-    } else if ([self isKindOfClass:[QLFOperationGet class]]) {
-        return [QLFOperationGet marshaller];
-    } else if ([self isKindOfClass:[QLFOperationList class]]) {
-        return [QLFOperationList marshaller];
-    } else if ([self isKindOfClass:[QLFOperationDelete class]]) {
-        return [QLFOperationDelete marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFOperationCreate class]]) {
+            [QLFOperationCreate marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFOperationGet class]]) {
+            [QLFOperationGet marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFOperationList class]]) {
+            [QLFOperationList marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFOperationDelete class]]) {
+            [QLFOperationDelete marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -1923,9 +1932,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'OperationCreate'
+        
 
-        [reader readEnd];
+        
         return [QLFOperationType operationCreate];
     };
 }
@@ -2007,9 +2016,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'OperationGet'
+        
 
-        [reader readEnd];
+        
         return [QLFOperationType operationGet];
     };
 }
@@ -2091,9 +2100,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'OperationList'
+        
 
-        [reader readEnd];
+        
         return [QLFOperationType operationList];
     };
 }
@@ -2175,9 +2184,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'OperationDelete'
+        
 
-        [reader readEnd];
+        
         return [QLFOperationType operationDelete];
     };
 }
@@ -2374,19 +2383,22 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFRendezvousAuthX509_PEM class]]) {
-        return [QLFRendezvousAuthX509_PEM marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousAuthX509_PEM_SELFSIGNED class]]) {
-        return [QLFRendezvousAuthX509_PEM_SELFSIGNED marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousAuthED25519 class]]) {
-        return [QLFRendezvousAuthED25519 marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousAuthRSA2048_PEM class]]) {
-        return [QLFRendezvousAuthRSA2048_PEM marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousAuthRSA4096_PEM class]]) {
-        return [QLFRendezvousAuthRSA4096_PEM marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFRendezvousAuthX509_PEM class]]) {
+            [QLFRendezvousAuthX509_PEM marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousAuthX509_PEM_SELFSIGNED class]]) {
+            [QLFRendezvousAuthX509_PEM_SELFSIGNED marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousAuthED25519 class]]) {
+            [QLFRendezvousAuthED25519 marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousAuthRSA2048_PEM class]]) {
+            [QLFRendezvousAuthRSA2048_PEM marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousAuthRSA4096_PEM class]]) {
+            [QLFRendezvousAuthRSA4096_PEM marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -2492,11 +2504,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousAuthX509_PEM'
+        
             [reader readFieldStart]; // TODO assert that field name is 'signature'
                 NSData *signature = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signature];
     };
 }
@@ -2582,11 +2594,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousAuthX509_PEM_SELFSIGNED'
+        
             [reader readFieldStart]; // TODO assert that field name is 'signature'
                 NSData *signature = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFRendezvousAuthSignature rendezvousAuthX509_PEM_SELFSIGNEDWithSignature:signature];
     };
 }
@@ -2672,11 +2684,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousAuthED25519'
+        
             [reader readFieldStart]; // TODO assert that field name is 'signature'
                 NSData *signature = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFRendezvousAuthSignature rendezvousAuthED25519WithSignature:signature];
     };
 }
@@ -2762,11 +2774,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousAuthRSA2048_PEM'
+        
             [reader readFieldStart]; // TODO assert that field name is 'signature'
                 NSData *signature = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signature];
     };
 }
@@ -2852,11 +2864,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousAuthRSA4096_PEM'
+        
             [reader readFieldStart]; // TODO assert that field name is 'signature'
                 NSData *signature = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFRendezvousAuthSignature rendezvousAuthRSA4096_PEMWithSignature:signature];
     };
 }
@@ -2935,13 +2947,16 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFRendezvousAnonymous class]]) {
-        return [QLFRendezvousAnonymous marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousTrusted class]]) {
-        return [QLFRendezvousTrusted marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFRendezvousAnonymous class]]) {
+            [QLFRendezvousAnonymous marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousTrusted class]]) {
+            [QLFRendezvousTrusted marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -3020,9 +3035,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousAnonymous'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousAuthType rendezvousAnonymous];
     };
 }
@@ -3107,11 +3122,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousTrusted'
+        
             [reader readFieldStart]; // TODO assert that field name is 'signature'
                 QLFRendezvousAuthSignature *signature = (QLFRendezvousAuthSignature *)[QLFRendezvousAuthSignature unmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFRendezvousAuthType rendezvousTrustedWithSignature:signature];
     };
 }
@@ -3190,13 +3205,16 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFRendezvousCreated class]]) {
-        return [QLFRendezvousCreated marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousAlreadyExists class]]) {
-        return [QLFRendezvousAlreadyExists marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFRendezvousCreated class]]) {
+            [QLFRendezvousCreated marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousAlreadyExists class]]) {
+            [QLFRendezvousAlreadyExists marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -3275,9 +3293,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousCreated'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousCreateResult rendezvousCreated];
     };
 }
@@ -3359,9 +3377,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousAlreadyExists'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousCreateResult rendezvousAlreadyExists];
     };
 }
@@ -3439,13 +3457,16 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFRendezvousDeleteSuccessful class]]) {
-        return [QLFRendezvousDeleteSuccessful marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousDeleteRejected class]]) {
-        return [QLFRendezvousDeleteRejected marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFRendezvousDeleteSuccessful class]]) {
+            [QLFRendezvousDeleteSuccessful marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousDeleteRejected class]]) {
+            [QLFRendezvousDeleteRejected marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -3524,9 +3545,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousDeleteSuccessful'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousDeleteResult rendezvousDeleteSuccessful];
     };
 }
@@ -3608,9 +3629,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousDeleteRejected'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousDeleteResult rendezvousDeleteRejected];
     };
 }
@@ -3695,15 +3716,18 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFRendezvousResponseMaxResponseCountReached class]]) {
-        return [QLFRendezvousResponseMaxResponseCountReached marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousResponseDurationElapsed class]]) {
-        return [QLFRendezvousResponseDurationElapsed marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousResponseInvalid class]]) {
-        return [QLFRendezvousResponseInvalid marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFRendezvousResponseMaxResponseCountReached class]]) {
+            [QLFRendezvousResponseMaxResponseCountReached marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousResponseDurationElapsed class]]) {
+            [QLFRendezvousResponseDurationElapsed marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousResponseInvalid class]]) {
+            [QLFRendezvousResponseInvalid marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -3790,9 +3814,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousResponseMaxResponseCountReached'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousResponseRejectionReason rendezvousResponseMaxResponseCountReached];
     };
 }
@@ -3874,9 +3898,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousResponseDurationElapsed'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousResponseRejectionReason rendezvousResponseDurationElapsed];
     };
 }
@@ -3958,9 +3982,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousResponseInvalid'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousResponseRejectionReason rendezvousResponseInvalid];
     };
 }
@@ -4454,13 +4478,16 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFAccessGranted class]]) {
-        return [QLFAccessGranted marshaller];
-    } else if ([self isKindOfClass:[QLFAccessDenied class]]) {
-        return [QLFAccessDenied marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFAccessGranted class]]) {
+            [QLFAccessGranted marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFAccessDenied class]]) {
+            [QLFAccessDenied marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -4554,7 +4581,7 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'AccessGranted'
+        
             [reader readFieldStart]; // TODO assert that field name is 'remainingSecondsUntilNextTokenIsAvailable'
                 int64_t remainingSecondsUntilNextTokenIsAvailable = (int64_t )[[QredoPrimitiveMarshallers int64Unmarshaller](reader) longLongValue];
             [reader readEnd];
@@ -4567,7 +4594,7 @@
             [reader readFieldStart]; // TODO assert that field name is 'slotNumber'
                 QLFKeySlotNumber slotNumber = (QLFKeySlotNumber )[[QredoPrimitiveMarshallers int32Unmarshaller](reader) longValue];
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFGetAccessTokenResponse accessGrantedWithSignedBlindedToken:signedBlindedToken slotNumber:slotNumber remainingSecondsUntilTokenExpires:remainingSecondsUntilTokenExpires remainingSecondsUntilNextTokenIsAvailable:remainingSecondsUntilNextTokenIsAvailable];
     };
 }
@@ -4665,9 +4692,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'AccessDenied'
+        
 
-        [reader readEnd];
+        
         return [QLFGetAccessTokenResponse accessDenied];
     };
 }
@@ -6642,15 +6669,18 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
-        return [QLFRendezvousResponseRegistered marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
-        return [QLFRendezvousResponseUnknownTag marshaller];
-    } else if ([self isKindOfClass:[QLFRendezvousResponseRejected class]]) {
-        return [QLFRendezvousResponseRejected marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
+            [QLFRendezvousResponseRegistered marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
+            [QLFRendezvousResponseUnknownTag marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousResponseRejected class]]) {
+            [QLFRendezvousResponseRejected marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -6740,11 +6770,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousResponseRegistered'
+        
             [reader readFieldStart]; // TODO assert that field name is 'creationInfo'
                 QLFRendezvousCreationInfo *creationInfo = (QLFRendezvousCreationInfo *)[QLFRendezvousCreationInfo unmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFRendezvousRespondResult rendezvousResponseRegisteredWithCreationInfo:creationInfo];
     };
 }
@@ -6827,9 +6857,9 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousResponseUnknownTag'
+        
 
-        [reader readEnd];
+        
         return [QLFRendezvousRespondResult rendezvousResponseUnknownTag];
     };
 }
@@ -6914,11 +6944,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousResponseRejected'
+        
             [reader readFieldStart]; // TODO assert that field name is 'reason'
                 QLFRendezvousResponseRejectionReason *reason = (QLFRendezvousResponseRejectionReason *)[QLFRendezvousResponseRejectionReason unmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFRendezvousRespondResult rendezvousResponseRejectedWithReason:reason];
     };
 }
@@ -7018,19 +7048,22 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFSBool class]]) {
-        return [QLFSBool marshaller];
-    } else if ([self isKindOfClass:[QLFSInt64 class]]) {
-        return [QLFSInt64 marshaller];
-    } else if ([self isKindOfClass:[QLFSDT class]]) {
-        return [QLFSDT marshaller];
-    } else if ([self isKindOfClass:[QLFSQUID class]]) {
-        return [QLFSQUID marshaller];
-    } else if ([self isKindOfClass:[QLFSString class]]) {
-        return [QLFSString marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFSBool class]]) {
+            [QLFSBool marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFSInt64 class]]) {
+            [QLFSInt64 marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFSDT class]]) {
+            [QLFSDT marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFSQUID class]]) {
+            [QLFSQUID marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFSString class]]) {
+            [QLFSString marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
 }
 
 + (QredoUnmarshaller)unmarshaller
@@ -7136,11 +7169,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'SBool'
+        
             [reader readFieldStart]; // TODO assert that field name is 'v'
                 BOOL v = (BOOL )[[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFSV sBoolWithV:v];
     };
 }
@@ -7226,11 +7259,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'SInt64'
+        
             [reader readFieldStart]; // TODO assert that field name is 'v'
                 int64_t v = (int64_t )[[QredoPrimitiveMarshallers int64Unmarshaller](reader) longLongValue];
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFSV sInt64WithV:v];
     };
 }
@@ -7316,11 +7349,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'SDT'
+        
             [reader readFieldStart]; // TODO assert that field name is 'v'
                 QredoUTCDateTime *v = (QredoUTCDateTime *)[QredoPrimitiveMarshallers utcDateTimeUnmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFSV sDTWithV:v];
     };
 }
@@ -7406,11 +7439,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'SQUID'
+        
             [reader readFieldStart]; // TODO assert that field name is 'v'
                 QredoQUID *v = (QredoQUID *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFSV sQUIDWithV:v];
     };
 }
@@ -7496,11 +7529,11 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'SString'
+        
             [reader readFieldStart]; // TODO assert that field name is 'v'
                 NSString *v = (NSString *)[QredoPrimitiveMarshallers stringUnmarshaller](reader);
             [reader readEnd];
-        [reader readEnd];
+        
         return [QLFSV sStringWithV:v];
     };
 }
