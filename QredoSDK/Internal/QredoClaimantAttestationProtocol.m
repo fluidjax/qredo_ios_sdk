@@ -9,7 +9,6 @@
 #import "QredoCrypto.h"
 #import <QredoClient.h>
 #import <QredoPrimitiveMarshallers.h>
-#import <QredoClientMarshallers.h>
 #import "QredoErrorCodes.h"
 
 
@@ -34,7 +33,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 - (void)presentationRequestPublishedWithError:(NSError *)error;
 
-- (void)authenticationFinishedWithResponse:(QredoAuthenticationResponse *)authenticationResponse
+- (void)authenticationFinishedWithResponse:(QLFAuthenticationResponse *)authenticationResponse
                                      error:(NSError *)error;
 
 - (void)relyingPartyChoiceSentWithError:(NSError *)error;
@@ -79,8 +78,8 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 #pragma mark -
 
 @interface QredoClaimantAttestationState_Authenticate : QredoClaimantAttestationState
-@property (nonatomic) QredoPresentation *presentation;
-@property (nonatomic) QredoAuthenticationResponse *authenticationResponse;
+@property (nonatomic) QLFPresentation *presentation;
+@property (nonatomic) QLFAuthenticationResponse *authenticationResponse;
 @property (nonatomic) NSError *authenticationError;
 @end
 
@@ -270,7 +269,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
      }];
 }
 
-- (void)authenticationFinishedWithResponse:(QredoAuthenticationResponse *)authenticationResponse
+- (void)authenticationFinishedWithResponse:(QLFAuthenticationResponse *)authenticationResponse
                                      error:(NSError *)error
 {
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.cancelConversationState
@@ -386,12 +385,12 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     NSSet *attestationTypes = self.claimantAttestationProtocol.attestationTypes;
     NSString *authenticator = self.claimantAttestationProtocol.authenticator;
     
-    QredoPresentationRequest *presentationRequest
-    = [[QredoPresentationRequest alloc] initWithRequestedAttestationTypes:attestationTypes
+    QLFPresentationRequest *presentationRequest
+    = [[QLFPresentationRequest alloc] initWithRequestedAttestationTypes:attestationTypes
                                                             authenticator:authenticator];
-    NSData *messageValue
-    = [QredoPrimitiveMarshallers marshalObject:presentationRequest
-                                    marshaller:[QredoClientMarshallers presentationRequestMarshaller]];
+
+    NSData *messageValue  = [QredoPrimitiveMarshallers marshalObject:presentationRequest marshaller:[[presentationRequest class] marshaller]];
+
     
     QredoConversationMessage *message
     = [[QredoConversationMessage alloc] initWithValue:messageValue
@@ -435,7 +434,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 {
     NSError *error = nil;
     
-    QredoPresentation *presentation = [self presentationFromMessage:message error:&error];
+    QLFPresentation *presentation = [self presentationFromMessage:message error:&error];
     if (presentation) {
         
         [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
@@ -472,7 +471,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 #pragma mark Utility methods
 
-- (QredoPresentation *)presentationFromMessage:(QredoConversationMessage *)message error:(NSError **)error
+- (QLFPresentation *)presentationFromMessage:(QredoConversationMessage *)message error:(NSError **)error
 {
     if (![message.dataType isEqualToString:kAttestationPresentationMessageType]) {
         if (error) {
@@ -492,10 +491,10 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
         return nil;
     }
     
-    QredoPresentation *presentation = nil;
+    QLFPresentation *presentation = nil;
     @try {
         presentation = [QredoPrimitiveMarshallers unmarshalObject:message.value
-                                                     unmarshaller:[QredoClientMarshallers presentationUnmarshaller]];
+                                                     unmarshaller:[QLFPresentation unmarshaller]];
     }
     @catch (NSException *exception) {
         if (error) {
@@ -595,7 +594,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     }
 }
 
-- (void)authenticationFinishedWithResponse:(QredoAuthenticationResponse *)authenticationResponse
+- (void)authenticationFinishedWithResponse:(QLFAuthenticationResponse *)authenticationResponse
                                      error:(NSError *)error
 {
     self.authenticationResponse = authenticationResponse;
@@ -648,7 +647,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
         succeeded = YES;
         
         NSMutableArray *claimMessages = [[NSMutableArray alloc] init];
-        for (QredoAttestation *attestation in self.presentation.attestations) {
+        for (QLFAttestation *attestation in self.presentation.attestations) {
             
             NSData *claimHash = [self calculateHashOfClaim:attestation.claim error:error];
             if (!claimHash) {
@@ -656,21 +655,22 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
                 break;
             }
             
-            QredoClaimMessage *claimMessage = [[QredoClaimMessage alloc] initWithClaimHash:claimHash
-                                                                                credential:attestation.credential];
+            QLFClaimMessage *claimMessage = [[QLFClaimMessage alloc] initWithClaimHash:claimHash
+                                                                            credential:attestation.credential];
             
             [claimMessages addObject:claimMessage];
         }
         
+
         if (succeeded) {
 
-            QredoAuthenticationRequest *authenticationRequest
-            = [[QredoAuthenticationRequest alloc] initWithClaimMessages:claimMessages conversationSecret:nil];
+            QLFAuthenticationRequest *authenticationRequest
+            = [[QLFAuthenticationRequest alloc] initWithClaimMessages:claimMessages conversationSecret:nil];
             
             [dataSource claimantAttestationProtocol:protocol
                                 authenticateRequest:authenticationRequest
                                       authenticator:protocol.authenticator
-                                  completionHandler:^(QredoAuthenticationResponse *response, NSError *error)
+                                  completionHandler:^(QLFAuthenticationResponse *response, NSError *error)
              {
                  [protocol authenticationFinishedWithResponse:response error:error];
              }];
@@ -691,13 +691,12 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
                             @"The attestation protocol has no data source.",
                         }];
         }
-        
     }
     
     return succeeded;
 }
 
-- (NSData *)calculateHashOfClaim:(QredoLFClaim *)claim error:(NSError **)error
+- (NSData *)calculateHashOfClaim:(QLFClaim *)claim error:(NSError **)error
 {
     if (!claim) {
         if (error) {
@@ -717,7 +716,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
     NSData *claimHash = nil;
     @try {
         NSData *claimData = [QredoPrimitiveMarshallers marshalObject:claim
-                                                          marshaller:[QredoClientMarshallers claimMarshaller]];
+                                                          marshaller:[QLFClaim marshaller]];
         claimHash = [QredoCrypto sha256:claimData];
     }
     @catch (NSException *exception) {
@@ -947,7 +946,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
 
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
-               didFinishWithResults:(QredoAuthenticationResponse *)results {}
+               didFinishWithResults:(QLFAuthenticationResponse *)results {}
 
 #pragma mark Info methods
 
@@ -1026,7 +1025,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (void)conversationCanceledWithError:(NSError *)error {}
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
-               didFinishWithResults:(QredoAuthenticationResponse *)results {}
+               didFinishWithResults:(QLFAuthenticationResponse *)results {}
 
 #pragma mark Info methods
 
@@ -1091,7 +1090,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (void)conversationCanceledWithError:(NSError *)error {}
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error {}
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol
-               didFinishWithResults:(QredoAuthenticationResponse *)results {}
+               didFinishWithResults:(QLFAuthenticationResponse *)results {}
 
 #pragma mark Info methods
 

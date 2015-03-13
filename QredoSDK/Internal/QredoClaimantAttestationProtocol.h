@@ -5,9 +5,10 @@
 #import "QredoConversationProtocol.h"
 #import "QredoAuthenticationClaimsProtocol.h"
 #import <Foundation/Foundation.h>
+#import "QredoClient.h"
 
 @class QredoClaimantAttestationProtocol;
-@class QredoPresentation, QredoAuthenticationResponse;
+
 
 
 
@@ -23,10 +24,10 @@
 - (void)didStartClaimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-             didRecivePresentations:(QredoPresentation *)presentation;
+             didRecivePresentations:(QLFPresentation *)presentation;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
-           didReciveAuthentications:(QredoAuthenticationResponse *)authentications;
+           didReciveAuthentications:(QLFAuthenticationResponse *)authentications;
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)claimantAttestationProtocol
    didFinishAuthenticationWithError:(NSError *)error;
@@ -41,12 +42,12 @@
 
 @end
 
-typedef void(^QredoClaimantAttestationProtocolAuthenticationCompletionHandler)(QredoAuthenticationResponse *response, NSError *error);
+typedef void(^QredoClaimantAttestationProtocolAuthenticationCompletionHandler)(QLFAuthenticationResponse *response, NSError *error);
 
 @protocol QredoClaimantAttestationProtocolDataSource <NSObject>
 
 - (void)claimantAttestationProtocol:(QredoClaimantAttestationProtocol *)protocol
-                authenticateRequest:(QredoAuthenticationRequest *)authenticationRequest
+                authenticateRequest:(QLFAuthenticationRequest *)authenticationRequest
                       authenticator:(NSString *)authenticator
                   completionHandler:(QredoClaimantAttestationProtocolAuthenticationCompletionHandler)completionHandler;
 

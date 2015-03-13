@@ -1,7 +1,6 @@
 #import "QredoVaultCrypto.h"
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"
-#import "QredoClientMarshallers.h"
 
 @implementation QredoVaultCrypto
 
@@ -27,61 +26,60 @@
 // QredoVaultCrypto Interface
 ///////////////////////////////////////////////////////////////////////////////
 
-- (QredoEncryptedVaultItem *)encryptVaultItemLF:(QredoVaultItemLF *)vaultItemLF
-                                     descriptor:(QredoInternalVaultItemDescriptor *)vaultItemDescriptor {
+- (QLFEncryptedVaultItem *)encryptVaultItemLF:(QLFVaultItemLF *)vaultItemLF
+                                   descriptor:(QLFVaultItemDescriptorLF *)vaultItemDescriptor {
 
     // Extract...
-    QredoVaultItemMetaDataLF *vaultItemMetaDataLF = [vaultItemLF metadata];
+    QLFVaultItemMetaDataLF *vaultItemMetaDataLF = [vaultItemLF metadata];
     NSData *vaultItemValue = [vaultItemLF value];
 
     // Encrypt...
-    QredoEncryptedVaultItemMetaData *encryptedVaultItemMetaData =
+    QLFEncryptedVaultItemMetaData *encryptedVaultItemMetaData =
             [self encryptVaultItemMetaData:vaultItemMetaDataLF
                        vaultItemDescriptor:vaultItemDescriptor];
     NSData *encryptedVaultItemValue = vaultItemValue ? [self encryptVaultItemValue:vaultItemValue] : [NSData data];
 
     // Package...
-    return [QredoEncryptedVaultItem encryptedVaultItemWithMeta:encryptedVaultItemMetaData
-                                                encryptedValue:encryptedVaultItemValue];
+    return [QLFEncryptedVaultItem encryptedVaultItemWithMeta:encryptedVaultItemMetaData
+                                              encryptedValue:encryptedVaultItemValue];
 
 }
 
-- (QredoVaultItemLF *)decryptEncryptedVaultItem:(QredoEncryptedVaultItem *)encryptedVaultItem {
+- (QLFVaultItemLF *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem {
 
-    QredoVaultItemMetaDataLF *vaultItemMetaDataLF =
+    QLFVaultItemMetaDataLF *vaultItemMetaDataLF =
             [self decryptEncryptedVaultItemMetaData:[encryptedVaultItem meta]];
     NSData *value = [self decryptData:[encryptedVaultItem encryptedValue] key:_bulkKey];
 
-    return [QredoVaultItemLF vaultItemLFWithMetadata:vaultItemMetaDataLF
-                                               value:value];
+    return [QLFVaultItemLF vaultItemLFWithMetadata:vaultItemMetaDataLF
+                                             value:value];
 
 }
 
-- (QredoVaultItemMetaDataLF *)decryptEncryptedVaultItemMetaData:(QredoEncryptedVaultItemMetaData *)encryptedVaultItemMetaData {
-
+- (QLFVaultItemMetaDataLF *)decryptEncryptedVaultItemMetaData:(QLFEncryptedVaultItemMetaData *)encryptedVaultItemMetaData
+{
     NSData *encryptedHeaders = [encryptedVaultItemMetaData encryptedHeaders];
     NSData *decryptedHeaders = [self decryptData:encryptedHeaders key:_bulkKey];
 
     return [QredoPrimitiveMarshallers unmarshalObject:decryptedHeaders
-                                         unmarshaller:[QredoClientMarshallers vaultItemMetaDataLFUnmarshaller]];
+                                         unmarshaller:[QLFVaultItemMetaDataLF unmarshaller]];
 
 }
 
-- (QredoEncryptedVaultItemMetaData *)encryptVaultItemMetaData:(QredoVaultItemMetaDataLF *)vaultItemMetaDataLF
-                                          vaultItemDescriptor:(QredoInternalVaultItemDescriptor *)vaultItemDescriptor {
+- (QLFEncryptedVaultItemMetaData *)encryptVaultItemMetaData:(QLFVaultItemMetaDataLF *)vaultItemMetaDataLF
+                                        vaultItemDescriptor:(QLFVaultItemDescriptorLF *)vaultItemDescriptor {
 
     NSData *serializedHeaders = [QredoPrimitiveMarshallers marshalObject:vaultItemMetaDataLF
-                                                              marshaller:[QredoClientMarshallers vaultItemMetaDataLFMarshaller]];
+                                                              marshaller:[QLFVaultItemMetaDataLF marshaller]];
     NSData *encryptedHeaders = [self encryptData:serializedHeaders key:_bulkKey];
-    QredoVaultId *vaultId = [vaultItemDescriptor vaultId];
-    QredoVaultSequenceId *sequenceId = [vaultItemDescriptor sequenceId];
+    QLFVaultId *vaultId = [vaultItemDescriptor vaultId];
+    QLFVaultSequenceId *sequenceId = [vaultItemDescriptor sequenceId];
 
-    return [QredoEncryptedVaultItemMetaData encryptedVaultItemMetaDataWithVaultId:vaultId
-                                                                       sequenceId:sequenceId
-                                                                    sequenceValue:[vaultItemDescriptor sequenceValue]
-                                                                           itemId:[vaultItemDescriptor itemId]
-                                                                 encryptedHeaders:encryptedHeaders];
-
+    return [QLFEncryptedVaultItemMetaData encryptedVaultItemMetaDataWithVaultId:vaultId
+                                                                     sequenceId:sequenceId
+                                                                  sequenceValue:[vaultItemDescriptor sequenceValue]
+                                                                         itemId:[vaultItemDescriptor itemId]
+                                                               encryptedHeaders:encryptedHeaders];
 }
 
 - (NSData *)decryptData:(NSData *)encryptedDataWithIv key:(NSData *)key {

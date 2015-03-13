@@ -62,7 +62,7 @@
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QLFRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -107,7 +107,7 @@
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QLFRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -152,7 +152,7 @@
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QLFRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -196,32 +196,31 @@
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QLFRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     __block NSData *signatureData = nil;
-    [signature
-     ifX509_PEM:^(NSData *signature) {
+
+    [signature ifRendezvousAuthX509_PEM:^(NSData *signature) {
          XCTFail();
-     } X509_PEM_SELFISGNED:^(NSData *signature) {
+    } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
          XCTFail();
-     } ED25519:^(NSData *signature) {
+    } ifRendezvousAuthED25519:^(NSData *signature) {
          signatureData = signature;
-     } RSA2048_PEM:^(NSData *signature) {
+    } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
          XCTFail();
-     } RSA4096_PEM:^(NSData *signature) {
+    } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
          XCTFail();
-     } other:^{
-         XCTFail();
-     }];
+    }];
+
     XCTAssertGreaterThan([signatureData length], 0);
     
     NSMutableData *forgedSignatureData = [signatureData mutableCopy];
     unsigned char *forgedSignatureDataBytes = [forgedSignatureData mutableBytes];
     forgedSignatureDataBytes[0] = ~forgedSignatureDataBytes[0];
     
-    QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
+    QLFRendezvousAuthSignature *forgedSignature = [QLFRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
     
     error = nil;
     BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data error:&error];
@@ -263,7 +262,7 @@
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QLFRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -306,33 +305,31 @@
     NSData *data = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
+    QLFRendezvousAuthSignature *signature = [signingHelper signatureWithData:data error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
     
     __block NSData *signatureData = nil;
-    [signature
-     ifX509_PEM:^(NSData *signature) {
+
+    [signature ifRendezvousAuthX509_PEM:^(NSData *signature) {
          XCTFail();
-     } X509_PEM_SELFISGNED:^(NSData *signature) {
+    } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
          XCTFail();
-     } ED25519:^(NSData *signature) {
+    } ifRendezvousAuthED25519:^(NSData *signature) {
          signatureData = signature;
-     } RSA2048_PEM:^(NSData *signature) {
+    } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
          XCTFail();
-     } RSA4096_PEM:^(NSData *signature) {
+    } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
          XCTFail();
-     } other:^{
-         XCTFail();
-     }];
+    }];
     XCTAssertGreaterThan([signatureData length], 0);
     
     NSMutableData *forgedSignatureData = [signatureData mutableCopy];
     unsigned char *forgedSignatureDataBytes = [forgedSignatureData mutableBytes];
     forgedSignatureDataBytes[0] = ~forgedSignatureDataBytes[0];
     
-    QredoRendezvousAuthSignature *forgedSignature = [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
+    QLFRendezvousAuthSignature *forgedSignature = [QLFRendezvousAuthSignature rendezvousAuthED25519WithSignature:forgedSignatureData];
     
     error = nil;
     BOOL result = [verificationHelper isValidSignature:forgedSignature rendezvousData:data error:&error];

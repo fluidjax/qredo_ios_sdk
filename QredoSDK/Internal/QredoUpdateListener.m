@@ -145,7 +145,14 @@
 
     [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
         _queryAfterSubscribeComplete = YES;
-        if (completionHandler) completionHandler(error);
+
+        if (!error) {
+            [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error) {
+                if (completionHandler) completionHandler(error);
+            }];
+         } else {
+             if (completionHandler) completionHandler(error);
+         }
     }];
 }
 
