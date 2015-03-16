@@ -69,11 +69,11 @@ extern NSString *const QredoRendezvousURIProtocol;
                                   configuration:(QredoRendezvousConfiguration *)configuration
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
-/** Creates an authenticated rendezvous using externally generated keys and automatically stores it in the vault. Externally generated keys can be re-used for other rendezvous. */
+/** Creates an authenticated rendezvous using externally generated keys and automatically stores it in the vault. Externally generated keys can be re-used for other rendezvous. Public key is either base58 for Ed25519, or PEM for X.509 and RSA formats */
 - (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
                              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                   configuration:(QredoRendezvousConfiguration *)configuration
-                                      publicKey:(NSData *)publicKey
+                                      publicKey:(NSString *)publicKey
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 

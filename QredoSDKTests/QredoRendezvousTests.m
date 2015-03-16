@@ -8,13 +8,20 @@
 #import "QredoRendezvousTests.h"
 #import "QredoTestUtils.h"
 #import "QredoRendezvousEd25519Helper.h"
+#import "QredoRendezvousHelpers.h"
 #import "QredoClient.h"
+#import "QredoCrypto.h"
+#import "CryptoImplV1.h"
+#import "QredoBase58.h"
+#import "TestCertificates.h"
+#import "QredoCertificateUtils.h"
+#import "QredoLogging.h"
 
 #import <objc/runtime.h>
 
 static NSString *const kRendezvousTestConversationType = @"test.chat";
 static long long kRendezvousTestMaxResponseCount = 3;
-static long long kRendezvousTestDurationSeconds = 600;
+static long long kRendezvousTestDurationSeconds = 120; // 2 minutes
 
 @interface RendezvousListener : NSObject <QredoRendezvousDelegate>
 
@@ -117,12 +124,26 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     QredoClient *client;
 }
 
+@property (nonatomic) id<CryptoImpl> cryptoImpl;
+@property (nonatomic) NSArray *rootCertificates;
+@property (nonatomic) SecKeyRef privateKeyRef;
+@property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
+
 @end
 
 @implementation QredoRendezvousTests
 
 - (void)setUp {
     [super setUp];
+    
+    // Want tests to abort if error occurrs
+    self.continueAfterFailure = NO;
+    
+    self.cryptoImpl = [[CryptoImplV1 alloc] init];
+    
+    // Must remove any existing keys before starting
+    [QredoCrypto deleteAllKeysInAppleKeychain];
+    
     [self authoriseClient];
 }
 
@@ -131,6 +152,76 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     if (client) {
         [client closeSession];
     }
+    // Should remove any existing keys after finishing
+    [QredoCrypto deleteAllKeysInAppleKeychain];
+}
+
+- (QredoSecKeyRefPair *)setupKeypairForPublicKeyData:(NSData *)publicKeyData privateKeyData:(NSData *)privateKeyData keySizeBits:(NSInteger)keySizeBits {
+    
+    // Import a known Public Key and Private Key into Keychain
+    
+    // NOTE: This will fail if the key has already been imported (even with different identifier)
+    NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyImport1";
+    NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyImport1";
+    
+    XCTAssertNotNil(publicKeyData);
+    NSLog(@"Public key (PKCS#1) data (%lu bytes): %@", (unsigned long)publicKeyData.length, [QredoLogging hexRepresentationOfNSData:publicKeyData]);
+    
+    XCTAssertNotNil(privateKeyData);
+    NSLog(@"Private key data (%lu bytes): %@", (unsigned long)privateKeyData.length, [QredoLogging hexRepresentationOfNSData:privateKeyData]);
+    
+    SecKeyRef publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyData
+                                               keyLengthBits:keySizeBits
+                                               keyIdentifier:publicKeyIdentifier
+                                                   isPrivate:NO];
+    XCTAssertTrue((__bridge id)publicKeyRef, @"Public Key import failed.");
+    
+    SecKeyRef privateKeyRef = [QredoCrypto importPkcs1KeyData:privateKeyData
+                                                keyLengthBits:keySizeBits
+                                                keyIdentifier:privateKeyIdentifier
+                                                    isPrivate:YES];
+    XCTAssertTrue((__bridge id)privateKeyRef, @"Private Key import failed.");
+    
+    QredoSecKeyRefPair *keyRefPair = [[QredoSecKeyRefPair alloc] initWithPublicKeyRef:publicKeyRef privateKeyRef:privateKeyRef];
+    
+    return keyRefPair;
+}
+
+- (void)setupTestPublicCertificateAndPrivateKey4096Bit
+{
+    // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to raw private RSA key, and the PEM public certificates
+    
+    // Import some PKCS#12 data and then get the certificate chain refs from the identity.
+    // Use SecCertificateRefs to create a PEM which is then processed (to confirm validity)
+    
+    
+    // 1.) Create identity - Test client 4096 certificate + priv key from Java-SDK, with intermediate cert
+    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient4096WithIntermediatePkcs12Array
+                                        length:sizeof(TestCertJavaSdkClient4096WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    NSString *pkcs12Password = @"password";
+    int expectedNumberOfChainCertificateRefs = 2;
+    
+    
+    
+    NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data
+                                                                                             password:pkcs12Password
+                                                                                  rootCertificateRefs:self.rootCertificates];
+    XCTAssertNotNil(identityDictionary, @"Incorrect identity validation result. Should have returned valid NSDictionary.");
+    
+    SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
+                                                                      kSecImportItemIdentity);
+    XCTAssertNotNil((__bridge id)identityRef, @"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
+    
+    self.privateKeyRef = [QredoCrypto getPrivateKeyRefFromIdentityRef:identityRef];
+    XCTAssertNotNil((__bridge id)self.privateKeyRef);
+    
+    // 2.) Create Certificate Refs from Identity Dictionary and convert to PEM string
+    NSArray *certificateChainRefs = (NSArray *)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
+                                                                    kSecImportItemCertChain);
+    XCTAssertNotNil(certificateChainRefs, @"Incorrect identity validation result dictionary contents. Should contain valid certificate chain array.");
+    XCTAssertEqual(certificateChainRefs.count, expectedNumberOfChainCertificateRefs, @"Incorrect identity validation result dictionary contents. Should contain expected number of certificate chain refs.");
+    self.publicKeyCertificateChainPem = [QredoCertificateUtils convertCertificateRefsToPemCertificate:certificateChainRefs];
+    XCTAssertNotNil(self.publicKeyCertificateChainPem);
 }
 
 - (void)authoriseClient
@@ -153,7 +244,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
 }
 
-- (void)verifyRendezvous:(QredoRendezvous *)rendezvous randomTag:(NSString *)randomTag {
+- (void)verifyRendezvous:(QredoRendezvous *)rendezvous randomTag:(NSString *)randomTag
+{
     
     NSLog(@"Verifying rendezvous");
     
@@ -455,12 +547,15 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //    [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
 //}
 
-- (void)testCreateAndRespondAnonymousRendezvous {
+- (void)testCreateAndRespondAnonymousRendezvous
+{
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
-                                                                                                 durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc]
+       initWithConversationType:kRendezvousTestConversationType
+       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -474,7 +569,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                createdRendezvous = rendezvous;
                                [createExpectation fulfill];
                            }];
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
     
@@ -520,7 +615,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // Give time for the subscribe/getResponses process to process - they could internally produce duplicates which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
     [NSThread sleepForTimeInterval:5];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         respondExpectation = nil;
         listener.expectation = nil;
     }];
@@ -546,7 +641,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    NSLog(@"Creating rendezvous");
+    NSLog(@"Creating authenticated rendezvous (generating internal keys)");
     [client createAuthenticatedRendezvousWithPrefix:prefix
                                  authenticationType:configuration.authenticationType
                                       configuration:configuration
@@ -559,7 +654,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                   }];
     
     // Takes approx 10 seconds to generate RSA 4096 keypair, so ensure timeout is sufficient for all cases
-    [self waitForExpectationsWithTimeout:15.0 handler:^(NSError *error) {
+    // TODO: DH - Seem 15 seconds not long enough for RSA 4096 keygen to complete, trying 30. Still failed once on 30.  Making 2 mins for test!
+    [self waitForExpectationsWithTimeout:120.0 handler:^(NSError *error) {
         createExpectation = nil;
     }];
     
@@ -586,7 +682,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                   
                               }];
     
-    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];
@@ -611,7 +707,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
     [NSThread sleepForTimeInterval:5];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         respondExpectation = nil;
         listener.expectation = nil;
     }];
@@ -621,53 +717,397 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [anotherClient closeSession];
 }
 
+- (void)common_createAndRespondRendezvousForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                                        prefix:(NSString *)prefix
+                                                     publicKey:(NSString *)publicKey
+                                                signingHandler:(signDataBlock)signingHandler
+{
+    XCTAssertNotNil(publicKey);
+    
+    NSString *expectedFullTag = nil;
+    if (prefix) {
+        // Prefix and public key
+        expectedFullTag = [NSString stringWithFormat:@"%@@%@", prefix, publicKey];
+    }
+    else {
+        // No prefix, just public key
+        expectedFullTag = [NSString stringWithFormat:@"@%@", publicKey];
+    }
+    
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc]
+       initWithConversationType:kRendezvousTestConversationType
+       authenticationType:authenticationType
+       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
+       transCap:nil];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    
+    NSLog(@"Creating authenticated rendezvous (external keys)");
+    [client createAuthenticatedRendezvousWithPrefix:prefix
+                                 authenticationType:configuration.authenticationType
+                                      configuration:configuration
+                                          publicKey:publicKey
+                                     signingHandler:signingHandler
+                                  completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                                      
+                                      XCTAssertNil(error);
+                                      XCTAssertNotNil(rendezvous);
+                                      createdRendezvous = rendezvous;
+                                      [createExpectation fulfill];
+                                  }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    XCTAssertNotNil(createdRendezvous);
+    
+    NSString *fullTag = createdRendezvous.tag;
+    XCTAssertNotNil(fullTag);
+    XCTAssertTrue([fullTag isEqualToString:expectedFullTag]);
+    
+    NSLog(@"Verifying rendezvous");
+    
+    __block QredoClient *anotherClient = nil;
+    
+    NSLog(@"Creating 2nd client");
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
+    [QredoClient authorizeWithConversationTypes:nil
+                                 vaultDataTypes:@[@"blob"]
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT
+                                                                               resetData:NO]
+                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                  
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(clientArg);
+                                  anotherClient = clientArg;
+                                  [clientExpectation fulfill];
+                                  
+                              }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
+    
+    // Listening for responses and respond from another client
+    RendezvousListener *listener = [[RendezvousListener alloc] init];
+    NSLog(@"Created rendezvous listener (%p)", self);
+    
+    listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
+    NSLog(@"Listener expectation created: %@", listener.expectation);
+    createdRendezvous.delegate = listener;
+    [createdRendezvous startListening];
+    
+    NSLog(@"Responding to Rendezvous");
+    __block QredoConversation *createdConversation = nil;
+    __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
+    [anotherClient respondWithTag:fullTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        XCTAssertNotNil(conversation);
+        XCTAssertNil(error);
+        createdConversation = conversation;
+        [respondExpectation fulfill];
+    }];
+    
+    // Give time for the subscribe/getResponses process to process - they could internally produce duplicates
+    // which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
+    [NSThread sleepForTimeInterval:5];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        respondExpectation = nil;
+        listener.expectation = nil;
+    }];
+    
+    // Delete the conversation, to allow this test to be run again (external keys, without providing a prefix will result in 'rendezvous already exists' otherwise
+    // Delete any created conversations (to allow rendezvous reuse)
+    XCTAssertNotNil(createdConversation);
+    
+    __block XCTestExpectation *deleteExpectation = [self expectationWithDescription:@"Deleted conversation"];
+    
+    [createdConversation deleteConversationWithCompletionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+        [deleteExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        deleteExpectation = nil;
+    }];
+    
+    [createdRendezvous stopListening];
+    
+    [anotherClient closeSession];
+}
+
+
 // TODO: DH - do other authenticated rendezvous types
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix
 {
     NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeEd25519;
     
-    [self common_createAndRespondRendezvousForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                                                                       prefix:randomPrefix];
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:randomPrefix];
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix {
-    
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix
+{
     NSString *emptyPrefix = @"";
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeEd25519;
     
-    [self common_createAndRespondRendezvousForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                                                                       prefix:emptyPrefix];
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:emptyPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix
+{
+    NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeEd25519;
+    
+    // Generate Ed25519 keypair
+    QredoED25519SigningKey *signingKey = [self.cryptoImpl qredoED25519SigningKey];
+    NSString *publicKey = [QredoBase58 encodeData:signingKey.verifyKey.data];
+    
+    __block NSError *error = nil;
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSData *signature = [self.cryptoImpl qredoED25519SignMessage:data withKey:signingKey error:&error];
+        XCTAssertNotNil(signature);
+        XCTAssertNil(error);
+        return signature;
+    };
+    
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:randomPrefix
+                                                       publicKey:publicKey
+                                                  signingHandler:signingHandler];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix
+{
+    NSString *emptyPrefix = @"";
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeEd25519;
+
+    // Generate Ed25519 keypair
+    QredoED25519SigningKey *signingKey = [self.cryptoImpl qredoED25519SigningKey];
+    NSString *publicKey = [QredoBase58 encodeData:signingKey.verifyKey.data];
+    
+    __block NSError *error = nil;
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSData *signature = [self.cryptoImpl qredoED25519SignMessage:data withKey:signingKey error:&error];
+        XCTAssertNotNil(signature);
+        XCTAssertNil(error);
+        return signature;
+    };
+    
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:emptyPrefix
+                                                       publicKey:publicKey
+                                                  signingHandler:signingHandler];
 }
 
 - (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix
 {
     NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa2048Pem;
     
-    [self common_createAndRespondRendezvousForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
-                                                                       prefix:randomPrefix];
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:randomPrefix];
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix {
-    
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix
+{
     NSString *emptyPrefix = @"";
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa2048Pem;
     
-    [self common_createAndRespondRendezvousForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
-                                                                       prefix:emptyPrefix];
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:emptyPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix
+{
+    NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa2048Pem;
+    
+    // Import a known Public Key and Private Key into Keychain
+    // NOTE: This test will fail if the key has already been imported (even with different identifier)
+    NSInteger keySizeBits = 2048;
+    
+    NSData *publicKeyX509Data = [NSData dataWithBytes:TestPubKeyJavaSdkClient2048X509DerArray
+                                               length:sizeof(TestPubKeyJavaSdkClient2048X509DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(publicKeyX509Data);
+    
+    NSData *publicKeyPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyX509Data];
+    XCTAssertNotNil(publicKeyPkcs1Data);
+    
+    NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient2048Pkcs1DerArray
+                                            length:sizeof(TestPrivKeyJavaSdkClient2048Pkcs1DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(privateKeyData);
+    
+    QredoSecKeyRefPair *keyRefPair = [self setupKeypairForPublicKeyData:publicKeyPkcs1Data
+                                                         privateKeyData:privateKeyData
+                                                            keySizeBits:keySizeBits];
+    XCTAssertNotNil(keyRefPair);
+    
+    NSString *publicKey = TestKeyJavaSdkClient2048PemX509;
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:authenticationType];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:keyRefPair.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:randomPrefix
+                                                       publicKey:publicKey
+                                                  signingHandler:signingHandler];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_EmptyPrefix
+{
+    NSString *emptyPrefix = @"";
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa2048Pem;
+    
+    // Import a known Public Key and Private Key into Keychain
+    // NOTE: This test will fail if the key has already been imported (even with different identifier)
+    NSInteger keySizeBits = 2048;
+    
+    NSData *publicKeyX509Data = [NSData dataWithBytes:TestPubKeyJavaSdkClient2048X509DerArray
+                                               length:sizeof(TestPubKeyJavaSdkClient2048X509DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(publicKeyX509Data);
+    
+    NSData *publicKeyPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyX509Data];
+    XCTAssertNotNil(publicKeyPkcs1Data);
+    
+    NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient2048Pkcs1DerArray
+                                            length:sizeof(TestPrivKeyJavaSdkClient2048Pkcs1DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(privateKeyData);
+    
+    QredoSecKeyRefPair *keyRefPair = [self setupKeypairForPublicKeyData:publicKeyPkcs1Data
+                                                         privateKeyData:privateKeyData
+                                                            keySizeBits:keySizeBits];
+    XCTAssertNotNil(keyRefPair);
+    
+    NSString *publicKey = TestKeyJavaSdkClient2048PemX509;
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:authenticationType];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:keyRefPair.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:emptyPrefix
+                                                       publicKey:publicKey
+                                                  signingHandler:signingHandler];
 }
 
 - (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix
 {
     NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa4096Pem;
     
-    [self common_createAndRespondRendezvousForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
-                                                                       prefix:randomPrefix];
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:randomPrefix];
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix {
-    
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix
+{
     NSString *emptyPrefix = @"";
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa4096Pem;
     
-    [self common_createAndRespondRendezvousForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
-                                                                       prefix:emptyPrefix];
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:emptyPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix
+{
+    NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa4096Pem;
+    
+    // Import a known Public Key and Private Key into Keychain
+    // NOTE: This test will fail if the key has already been imported (even with different identifier)
+    NSInteger keySizeBits = 4096;
+    
+    NSData *publicKeyX509Data = [NSData dataWithBytes:TestPubKeyJavaSdkClient4096X509DerArray
+                                               length:sizeof(TestPubKeyJavaSdkClient4096X509DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(publicKeyX509Data);
+    
+    NSData *publicKeyPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyX509Data];
+    XCTAssertNotNil(publicKeyPkcs1Data);
+    
+    NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient4096Pkcs1DerArray
+                                            length:sizeof(TestPrivKeyJavaSdkClient4096Pkcs1DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(privateKeyData);
+    
+    QredoSecKeyRefPair *keyRefPair = [self setupKeypairForPublicKeyData:publicKeyPkcs1Data
+                                                         privateKeyData:privateKeyData
+                                                            keySizeBits:keySizeBits];
+    XCTAssertNotNil(keyRefPair);
+    
+    NSString *publicKey = TestKeyJavaSdkClient4096PemX509;
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:authenticationType];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:keyRefPair.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:randomPrefix
+                                                       publicKey:publicKey
+                                                  signingHandler:signingHandler];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_EmptyPrefix
+{
+    NSString *emptyPrefix = @"";
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa4096Pem;
+    
+    // Import a known Public Key and Private Key into Keychain
+    // NOTE: This test will fail if the key has already been imported (even with different identifier)
+    NSInteger keySizeBits = 4096;
+    
+    NSData *publicKeyX509Data = [NSData dataWithBytes:TestPubKeyJavaSdkClient4096X509DerArray
+                                               length:sizeof(TestPubKeyJavaSdkClient4096X509DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(publicKeyX509Data);
+    
+    NSData *publicKeyPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyX509Data];
+    XCTAssertNotNil(publicKeyPkcs1Data);
+    
+    NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient4096Pkcs1DerArray
+                                            length:sizeof(TestPrivKeyJavaSdkClient4096Pkcs1DerArray) / sizeof(uint8_t)];
+    XCTAssertNotNil(privateKeyData);
+    
+    QredoSecKeyRefPair *keyRefPair = [self setupKeypairForPublicKeyData:publicKeyPkcs1Data
+                                                         privateKeyData:privateKeyData
+                                                            keySizeBits:keySizeBits];
+    XCTAssertNotNil(keyRefPair);
+    
+    NSString *publicKey = TestKeyJavaSdkClient4096PemX509;
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:authenticationType];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:keyRefPair.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:emptyPrefix
+                                                       publicKey:publicKey
+                                                  signingHandler:signingHandler];
 }
 
 - (void)testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix

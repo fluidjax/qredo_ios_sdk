@@ -317,7 +317,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 - (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
                              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                   configuration:(QredoRendezvousConfiguration *)configuration
-                                      publicKey:(NSData *)publicKey
+                                      publicKey:(NSString *)publicKey
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
@@ -325,16 +325,22 @@ static NSString *const QredoKeychainPassword = @"Password123";
     // TODO: DH - validate inputs (any which aren't validated later)
     
     // Authenticated Rendezvous with externally generated keys are created using optional prefix and mandatory
-    // public key data. @ is not part of the prefix and must not appear in prefix, or public key
+    // public key data. @ is indicator of an authenticated rendebous but is not part of the prefix and must not
+    // appear in prefix, or public key parts
 
     // The full tag is (optional) prefix and (mandatory) public key/cert appended
-    NSString *prefixedTag = @"@";
+    NSString *fullTag = nil;
     if (prefix) {
-        prefixedTag = [NSString stringWithFormat:@"%@@", prefix];
+        // Prefix and public key
+        fullTag = [NSString stringWithFormat:@"%@@%@", prefix, publicKey];
+    }
+    else {
+        // Just public key
+        fullTag = [NSString stringWithFormat:@"@%@", publicKey];
     }
     
     // Authenticated Rendezvous with externally generated keys. Signing handler is required
-    [self createRendezvousWithTag:prefixedTag
+    [self createRendezvousWithTag:fullTag
                     configuration:configuration
                    signingHandler:signingHandler
                 completionHandler:completionHandler];
@@ -345,6 +351,9 @@ static NSString *const QredoKeychainPassword = @"Password123";
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
+    
+    // TODO: DH - validate configurations?
+    
     // although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
     dispatch_async(_rendezvousQueue, ^{
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self];

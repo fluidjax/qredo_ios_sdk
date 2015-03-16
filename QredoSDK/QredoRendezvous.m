@@ -254,6 +254,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                   completionHandler(error);
                               }];
                           } ifAlreadyExists:^{
+                              LogError(@"Rendezvous with tag '%@' (hashed tag: %@) already exists.", _tag, [_hashedTag QUIDString]);
                               completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                                     code:QredoErrorCodeRendezvousAlreadyExists
                                                                 userInfo:@{NSLocalizedDescriptionKey: @"Rendezvous with the specified tag already exists"}]);
@@ -567,8 +568,13 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         }
 
         NSData *subscriptionNonce = result;
-        NSData *subscriptionSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:subscriptionNonce];
+        NSData *subscriptionSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:subscriptionNonce error:&error];
 
+        if (!subscriptionSignature) {
+            subscriptionTerminatedHandler(error);
+            return;
+        }
+        
         [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
                                              challenge:subscriptionNonce
                                              signature:subscriptionSignature
@@ -599,8 +605,13 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
             }
             
             NSData *getResponsesNonce = result;
-            NSData *getResponsesSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:getResponsesNonce];
+            NSData *getResponsesSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:getResponsesNonce error:&error];
             
+            if (!getResponsesSignature) {
+                subscriptionTerminatedHandler(error);
+                return;
+            }
+
             // Now query to get responses made whilst subscription being set up. Will need to dedupe as want to avoid multiple notifications for same response (done in processResponse)
 
             [_rendezvous getResponsesWithHashedTag:_hashedTag
@@ -677,7 +688,12 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         }
 
         NSData *nonce = result;
-        NSData *signature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:nonce];
+        NSData *signature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:nonce error:&error];
+        
+        if (!signature) {
+            completionHandler(error);
+            return;
+        }
 
         [_rendezvous getResponsesWithHashedTag:_hashedTag
                                      challenge:nonce
@@ -768,15 +784,38 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
      }];
 }
 
-+ (NSData *)signatureForHashedTag:(QredoRendezvousHashedTag *)hashedTag nonce:(NSData *)nonce
++ (NSData *)signatureForHashedTag:(QredoRendezvousHashedTag *)hashedTag nonce:(NSData *)nonce error:(NSError **)error
 {
     QredoRendezvousCrypto *crypto = [QredoRendezvousCrypto instance];
     SecKeyRef key = [crypto accessControlPrivateKeyWithTag:[hashedTag QUIDString]];
+    
+    if (!key) {
+        NSString *message = [NSString stringWithFormat:@"Access control private key could not be found for hashed Tag: %@", [hashedTag QUIDString]];
+        LogError(@"%@", message);
+        
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeRendezvousAccessControlKeyMissing
+                                     userInfo:@{NSLocalizedDescriptionKey: message}];
+        }
+        return nil;
+    }
 
     NSMutableData *dataToSign = [NSMutableData dataWithData:[hashedTag data]];
     [dataToSign appendData:nonce];
 
     NSData *signature = [QredoCrypto rsaPssSignMessage:dataToSign saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:key];
+
+    if (!signature) {
+        NSString *message = [NSString stringWithFormat:@"Signature generation failed for hashed Tag: %@", [hashedTag QUIDString]];
+        LogError(@"%@", message);
+        
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeRendezvousAccessControlSignatureGenerationFailed
+                                     userInfo:@{NSLocalizedDescriptionKey: message}];
+        }
+    }
 
     return signature;
 }

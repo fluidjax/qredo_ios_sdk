@@ -334,20 +334,17 @@
 
 - (void)testCreateHelper_Invalid_NilTag
 {
-    NSError *error = nil;
-    
     NSString *initialFullTag = nil;
     
     signDataBlock signingHandler = nil; // Using internally generated keys
     
-    error = nil;
+    NSError *error = nil;
     id<QredoRendezvousCreateHelper> createHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:initialFullTag
-       crypto:self.cryptoImpl
-       signingHandler:signingHandler
-       error:&error
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                     signingHandler:signingHandler
+                                                              error:&error
        ];
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
