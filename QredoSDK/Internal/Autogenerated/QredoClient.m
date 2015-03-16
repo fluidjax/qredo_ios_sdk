@@ -1818,17 +1818,27 @@
 
 + (QredoMarshaller)marshaller
 {
-    if ([self isKindOfClass:[QLFOperationCreate class]]) {
-        return [QLFOperationCreate marshaller];
-    } else if ([self isKindOfClass:[QLFOperationGet class]]) {
-        return [QLFOperationGet marshaller];
-    } else if ([self isKindOfClass:[QLFOperationList class]]) {
-        return [QLFOperationList marshaller];
-    } else if ([self isKindOfClass:[QLFOperationDelete class]]) {
-        return [QLFOperationDelete marshaller];
-    } else {
-        return nil;// TODO throw exception instead
-    }
+    
+    return ^(id element, QredoWireFormatWriter *writer) {
+        
+        QredoMarshaller elementMarsahler = nil;
+        
+        if ([element isKindOfClass:[QLFOperationCreate class]]) {
+            elementMarsahler = [QLFOperationCreate marshaller];
+        } else if ([element isKindOfClass:[QLFOperationGet class]]) {
+            elementMarsahler = [QLFOperationGet marshaller];
+        } else if ([element isKindOfClass:[QLFOperationList class]]) {
+            elementMarsahler = [QLFOperationList marshaller];
+        } else if ([element isKindOfClass:[QLFOperationDelete class]]) {
+            elementMarsahler = [QLFOperationDelete marshaller];
+        } else {
+            elementMarsahler = nil;// TODO throw exception instead
+        }
+        
+        elementMarsahler(element, writer);
+        
+    };
+    
 }
 
 + (QredoUnmarshaller)unmarshaller
