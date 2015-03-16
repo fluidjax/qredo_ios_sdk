@@ -38,11 +38,14 @@
     NSAssert2(key, @"The signing key must be provided in [%@ %@].", NSStringFromClass(self), NSStringFromSelector(_cmd));
     
     NSData *marshalledOperationType = [QredoPrimitiveMarshallers marshalObject:operationType
-                                                                    marshaller:[[operationType class] marshaller]];
+                                                                    marshaller:[[operationType class] marshaller]
+                                                                 includeHeader:NO];
     NSData *marshalledNonce = [QredoPrimitiveMarshallers marshalObject:nonce
-                                                            marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
+                                                            marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
+                                                                 includeHeader:NO];
     NSData *marshalledTimestamp = [QredoPrimitiveMarshallers marshalObject:@(timestamp)
-                                                                marshaller:[QredoPrimitiveMarshallers int64Marshaller]];
+                                                                marshaller:[QredoPrimitiveMarshallers int64Marshaller]
+                                                                 includeHeader:NO];
     
     NSData *signature =  [self signatureWithKey:key
                         marshalledOperationType:marshalledOperationType
