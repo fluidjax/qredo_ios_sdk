@@ -156,6 +156,17 @@ static char ownershipSignature_signatureBytes[] = {
 static int64_t ownershipSignature_timestamp = 1426423058651;
 
 
+
+// =============================================================================================================
+#pragma mark - Utilities -
+// =============================================================================================================
+
+
+#define dataWithBytes(bytes) [NSData dataWithBytes:bytes length:sizeof(bytes)]
+#define quidWithBytes(bytes) [[QredoQUID alloc] initWithQUIDData:[NSData dataWithBytes:bytes length:sizeof(bytes)]]
+
+
+
 // =============================================================================================================
 #pragma mark - Test case -
 // =============================================================================================================
@@ -176,18 +187,21 @@ static int64_t ownershipSignature_timestamp = 1426423058651;
 {
     [super setUp];
     
-    self.key = [self signingKeyWithSigningKeyBytes:privateKeyBytes publicKeyBytes:publicKeyBytes];
+    
+    
+    self.key = [self signingKeyWithSigningKeyData:dataWithBytes(privateKeyBytes)
+                                    publicKeyData:dataWithBytes(publicKeyBytes)];
     
     self.metadata
-    = [QLFEncryptedVaultItemMetaData encryptedVaultItemMetaDataWithVaultId:[self quidWithBytes:vaultIdBytes]
-                                                                sequenceId:[self quidWithBytes:sequenceIdBytes]
+    = [QLFEncryptedVaultItemMetaData encryptedVaultItemMetaDataWithVaultId:quidWithBytes(vaultIdBytes)
+                                                                sequenceId:quidWithBytes(sequenceIdBytes)
                                                              sequenceValue:1
-                                                                    itemId:[self quidWithBytes:itemIdvalBytes]
-                                                          encryptedHeaders:[self dataWithBytes:randBytesForMetaBytes]];
+                                                                    itemId:quidWithBytes(itemIdvalBytes)
+                                                          encryptedHeaders:dataWithBytes(randBytesForMetaBytes)];
     
     self.vaultItem
     = [QLFEncryptedVaultItem encryptedVaultItemWithMeta:self.metadata
-                                         encryptedValue:[self dataWithBytes:randBytesForItemBytes]];
+                                         encryptedValue:dataWithBytes(randBytesForItemBytes)];
 }
 
 - (void)tearDown
@@ -198,22 +212,8 @@ static int64_t ownershipSignature_timestamp = 1426423058651;
 // -------------------------------------------------------------------------------------------------------------
 #pragma mark - Utils
 
-- (NSData *)dataWithBytes:(char*)bytes
+- (QredoED25519SigningKey *)signingKeyWithSigningKeyData:(NSData *)signingKeyData publicKeyData:(NSData *)publicKeyData
 {
-    return [NSData dataWithBytes:bytes length:sizeof(bytes)];
-}
-
-- (QredoQUID *)quidWithBytes:(char*)bytes
-{
-    NSData *data = [self dataWithBytes:bytes];
-    return [[QredoQUID alloc] initWithQUIDData:data];
-}
-
-- (QredoED25519SigningKey *)signingKeyWithSigningKeyBytes:(char *)signingKeyBytes publicKeyBytes:(char *)publicKeyBytes
-{
-    NSData *signingKeyData = [NSData dataWithBytes:signingKeyBytes length:sizeof(signingKeyBytes)];
-    NSData *publicKeyData = [NSData dataWithBytes:publicKeyBytes length:sizeof(publicKeyBytes)];
-    
     QredoED25519VerifyKey *veryfyKey = [[QredoED25519VerifyKey alloc] initWithKeyData:publicKeyData];
     
     return [[QredoED25519SigningKey alloc] initWithSeed:nil
@@ -231,7 +231,7 @@ static int64_t ownershipSignature_timestamp = 1426423058651;
     NSError *error = nil;
     
     QLFOperationType *opeartionType = [QLFOperationType operationCreate];
-    NSData *nonce = [self dataWithBytes:ownershipSignature_nonceBytes];
+    NSData *nonce = dataWithBytes(ownershipSignature_nonceBytes);
     int64_t timestamp = ownershipSignature_timestamp;
     
     QLFOwnershipSignature *ownershipSignature = [QLFOwnershipSignature ownershipSignatureWithKey:self.key
@@ -243,7 +243,7 @@ static int64_t ownershipSignature_timestamp = 1426423058651;
     XCTAssertNotNil(ownershipSignature);
     XCTAssertNil(error);
     
-    NSData *signature = [self dataWithBytes:ownershipSignature_signatureBytes];
+    NSData *signature = dataWithBytes(ownershipSignature_signatureBytes);
     XCTAssertEqualObjects(ownershipSignature.signature, signature);
     
 //    NSData *marshalledOwnershipSignature = [QredoPrimitiveMarshallers marshalObject:ownershipSignature
