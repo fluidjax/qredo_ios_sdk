@@ -144,7 +144,9 @@ static char ownershipSignature_nonceBytes[] = {
     0xd2, 0xd4, 0xb3, 0xc5
 };
 
-static char ownershipSignature_signatureBytes[] = {
+static int64_t ownershipSignature_timestamp = 1426423058651;
+
+static char ownershipSignature_createOp_signatureBytes[] = {
     0x2d, 0x7b, 0xf3, 0xd1, 0x48, 0xba, 0xa3, 0x7a, 0xed, 0x75, 0x91, 0xe4,
     0x55, 0x12, 0x63, 0x17, 0x74, 0x62, 0x88, 0xff, 0x31, 0xac, 0xb8, 0x3b,
     0x9f, 0x0f, 0x74, 0x94, 0x13, 0x7f, 0x44, 0xaa, 0xfb, 0x21, 0xb0, 0x20,
@@ -153,7 +155,11 @@ static char ownershipSignature_signatureBytes[] = {
     0x1f, 0x64, 0xa3, 0x06
 };
 
-static int64_t ownershipSignature_timestamp = 1426423058651;
+static char ownershipSignature_deleteOp_signatureBytes[] = {
+};
+
+static char ownershipSignature_listOp_signatureBytes[] = {
+};
 
 
 
@@ -173,9 +179,17 @@ static int64_t ownershipSignature_timestamp = 1426423058651;
 
 
 @interface OwnershipSignatureTests : XCTestCase
+
 @property (nonatomic) QredoED25519SigningKey *key;
-@property (nonatomic) QLFEncryptedVaultItemMetaData *metadata;
-@property (nonatomic) QLFEncryptedVaultItem *vaultItem;
+
+@property (nonatomic) NSData *nonce;
+@property (nonatomic) int64_t timestamp;
+
+@property (nonatomic) NSData *expectedSignature;
+
+@property (nonatomic) QLFOwnershipSignature *ownershipSignatureUnderTest;
+@property (nonatomic) NSError *error;
+
 @end
 
 @implementation OwnershipSignatureTests
@@ -187,30 +201,93 @@ static int64_t ownershipSignature_timestamp = 1426423058651;
 {
     [super setUp];
     
-    
-    
     self.key = [self signingKeyWithSigningKeyData:dataWithBytes(privateKeyBytes)
                                     publicKeyData:dataWithBytes(publicKeyBytes)];
     
-    self.metadata
+    
+    self.nonce = dataWithBytes(ownershipSignature_nonceBytes);
+    self.timestamp = ownershipSignature_timestamp;
+    
+    self.ownershipSignatureUnderTest = nil;
+    self.error = nil;
+}
+
+- (void)tearDown
+{
+    self.ownershipSignatureUnderTest = nil;
+    self.error = nil;
+    [super tearDown];
+}
+
+// -------------------------------------------------------------------------------------------------------------
+#pragma mark - Tests
+
+- (void)testCreateOperation
+{
+    QLFOperationType *operationType = [QLFOperationType operationCreate];
+    
+    QLFEncryptedVaultItemMetaData *metadata
     = [QLFEncryptedVaultItemMetaData encryptedVaultItemMetaDataWithVaultId:quidWithBytes(vaultIdBytes)
                                                                 sequenceId:quidWithBytes(sequenceIdBytes)
                                                              sequenceValue:1
                                                                     itemId:quidWithBytes(itemIdvalBytes)
                                                           encryptedHeaders:dataWithBytes(randBytesForMetaBytes)];
     
-    self.vaultItem
-    = [QLFEncryptedVaultItem encryptedVaultItemWithMeta:self.metadata
+    QLFEncryptedVaultItem *vaultItem
+    = [QLFEncryptedVaultItem encryptedVaultItemWithMeta:metadata
                                          encryptedValue:dataWithBytes(randBytesForItemBytes)];
+
+    NSData *expectedSignature = dataWithBytes(ownershipSignature_createOp_signatureBytes);
+    [self assertOwnershipSignatureWithOperationType:operationType data:vaultItem exectedSiganture:expectedSignature];
 }
 
-- (void)tearDown
+- (void)testDeleteOperation
 {
-    [super tearDown];
+    QLFOperationType *operationType = [QLFOperationType operationDelete];
+    NSData *expectedSignature = dataWithBytes(ownershipSignature_deleteOp_signatureBytes);
+
+//    [self assertOwnershipSignatureWithOperationType:operationType data:<#data#> exectedSiganture:expectedSignature];
 }
+
+- (void)testListOperation
+{
+    QLFOperationType *operationType = [QLFOperationType operationList];
+    NSData *expectedSignature = dataWithBytes(ownershipSignature_listOp_signatureBytes);
+//    [self assertOwnershipSignatureWithOperationType:operationType data:<#data#> exectedSiganture:expectedSignature];
+}
+
 
 // -------------------------------------------------------------------------------------------------------------
 #pragma mark - Utils
+
+- (void)createOwnershipSignatureWithOperationType:(QLFOperationType *)operationType data:(id<QredoMarshallable>)data
+{
+    NSError *error = nil;
+    self.ownershipSignatureUnderTest = [QLFOwnershipSignature ownershipSignatureWithKey:self.key
+                                                                          operationType:operationType
+                                                                                   data:data
+                                                                                  nonce:self.nonce
+                                                                              timestamp:self.timestamp
+                                                                                  error:&error];
+    self.error = error;
+}
+
+- (void)assertOwnershipSignatureWithOperationType:(QLFOperationType *)operationType
+                                             data:(id<QredoMarshallable>)data
+                                 exectedSiganture:(NSData *)expectedSiganture
+{
+    [self createOwnershipSignatureWithOperationType:operationType data:data];
+    
+    XCTAssertNotNil(self.ownershipSignatureUnderTest.signature);
+    XCTAssertNil(self.error);
+    
+    XCTAssertEqualObjects(operationType, self.ownershipSignatureUnderTest.op);
+    XCTAssertEqualObjects(self.nonce, self.ownershipSignatureUnderTest.nonce);
+    XCTAssertEqual(self.timestamp, self.ownershipSignatureUnderTest.timestamp);
+    
+    XCTAssertEqualObjects(expectedSiganture, self.ownershipSignatureUnderTest.signature);
+    
+}
 
 - (QredoED25519SigningKey *)signingKeyWithSigningKeyData:(NSData *)signingKeyData publicKeyData:(NSData *)publicKeyData
 {
@@ -221,37 +298,6 @@ static int64_t ownershipSignature_timestamp = 1426423058651;
                                               verifyKey:veryfyKey];
 }
 
-
-// -------------------------------------------------------------------------------------------------------------
-#pragma mark - Tests
-
-- (void)testCreateOperation
-{
-    
-    NSError *error = nil;
-    
-    QLFOperationType *opeartionType = [QLFOperationType operationCreate];
-    NSData *nonce = dataWithBytes(ownershipSignature_nonceBytes);
-    int64_t timestamp = ownershipSignature_timestamp;
-    
-    QLFOwnershipSignature *ownershipSignature = [QLFOwnershipSignature ownershipSignatureWithKey:self.key
-                                                                                   operationType:opeartionType
-                                                                                            data:self.vaultItem
-                                                                                           nonce:nonce
-                                                                                       timestamp:timestamp
-                                                                                           error:&error];
-    XCTAssertNotNil(ownershipSignature);
-    XCTAssertNil(error);
-    
-    NSData *signature = dataWithBytes(ownershipSignature_signatureBytes);
-    XCTAssertEqualObjects(ownershipSignature.signature, signature);
-    
-//    NSData *marshalledOwnershipSignature = [QredoPrimitiveMarshallers marshalObject:ownershipSignature
-//                                                                         marshaller:[[ownershipSignature class] marshaller]];
-//    NSData *marshalledOwnershipSignatureTestData = [NSData dataWithBytes:createOpTest_marshalledObjecr
-//                                                                  length:sizeof(createOpTest_marshalledObjecr)];
-//    XCTAssertEqualObjects(marshalledOwnershipSignature, marshalledOwnershipSignatureTestData);
-}
 
 @end
 
