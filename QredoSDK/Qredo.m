@@ -282,6 +282,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
     // Anonymous Rendezvous are created using the full tag, and signing handler is not used
     [self createRendezvousWithTag:tag
+               authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                     configuration:configuration
                    signingHandler:nil
                 completionHandler:completionHandler];
@@ -308,6 +309,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
     // Authenticated Rendezvous with internally generated keys. Signing handler is not used
     [self createRendezvousWithTag:prefixedTag
+               authenticationType:authenticationType
                     configuration:configuration
                    signingHandler:nil
                 completionHandler:completionHandler];
@@ -341,12 +343,14 @@ static NSString *const QredoKeychainPassword = @"Password123";
     
     // Authenticated Rendezvous with externally generated keys. Signing handler is required
     [self createRendezvousWithTag:fullTag
+               authenticationType:authenticationType
                     configuration:configuration
                    signingHandler:signingHandler
                 completionHandler:completionHandler];
 }
 
 - (void)createRendezvousWithTag:(NSString *)tag
+             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
@@ -357,7 +361,11 @@ static NSString *const QredoKeychainPassword = @"Password123";
     // although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
     dispatch_async(_rendezvousQueue, ^{
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self];
-        [rendezvous createRendezvousWithTag:tag configuration:configuration signingHandler:signingHandler completionHandler:^(NSError *error) {
+        [rendezvous createRendezvousWithTag:tag
+                         authenticationType:authenticationType
+                              configuration:configuration
+                             signingHandler:signingHandler
+                          completionHandler:^(NSError *error) {
             if (error) {
                 completionHandler(nil, error);
             } else {
@@ -429,8 +437,12 @@ static NSString *const QredoKeychainPassword = @"Password123";
         if ([vaultItemMetadata.dataType isEqualToString:kQredoRendezvousVaultItemType]) {
 
             NSString *tag = [vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelTag];
+            QredoRendezvousAuthenticationType authenticationType = [[vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemAuthenticationTypeTag] intValue];
+
             QredoRendezvousMetadata *metadata
-            = [[QredoRendezvousMetadata alloc] initWithTag:tag vaultItemDescriptor:vaultItemMetadata.descriptor];
+            = [[QredoRendezvousMetadata alloc] initWithTag:tag
+                                        authenticationType:authenticationType
+                                       vaultItemDescriptor:vaultItemMetadata.descriptor];
 
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
             block(metadata, &stopObjectEnumeration);
@@ -503,6 +515,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
+            // TODO: DH - populate metadata.rendezvousMetadata (and set the authentication type)
             metadata.conversationId = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelId];
             metadata.amRendezvousOwner = [[vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelAmOwner] boolValue];
             metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];

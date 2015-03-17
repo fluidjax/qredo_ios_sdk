@@ -28,16 +28,21 @@ static const double kQredoRendezvousUpdateInterval = 1.0; // seconds - polling p
 static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
+NSString *const kQredoRendezvousVaultItemAuthenticationTypeTag = @"authenticationType";
 
 static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 @implementation QredoRendezvousMetadata
 
-- (instancetype)initWithTag:(NSString*)tag vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
+- (instancetype)initWithTag:(NSString*)tag
+         authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+        vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor
+{
     self = [super init];
     if (!self) return nil;
 
     _tag = [tag copy];
+    _authenticationType = authenticationType;
     _vaultItemDescriptor = vaultItemDescriptor;
 
     return self;
@@ -63,16 +68,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
 {
-    return [self initWithConversationType:conversationType authenticationType:QredoRendezvousAuthenticationTypeAnonymous durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:transCap];
-}
-
-- (instancetype)initWithConversationType:(NSString*)conversationType authenticationType:(QredoRendezvousAuthenticationType)authenticationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
-{
     self = [super init];
     if (!self) return nil;
     
     _conversationType = [conversationType copy];
-    _authenticationType = authenticationType;
     _durationSeconds = durationSeconds;
     _maxResponseCount = maxResponseCount;
     _transCap = transCap;
@@ -115,6 +114,9 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 @property QredoRendezvousConfiguration *configuration;
 @property (readwrite, copy) NSString *tag;
 
+// TODO: DH - confirm still need authenticationType property on Rendezvous once refactoring complete
+@property (readwrite) QredoRendezvousAuthenticationType authenticationType;
+
 - (NSSet *)maybe:(id)object;
 
 @end
@@ -152,7 +154,11 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return self;
 }
 
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration signingHandler:(signDataBlock)signingHandler completionHandler:(void(^)(NSError *error))completionHandler
+- (void)createRendezvousWithTag:(NSString *)tag
+             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                  configuration:(QredoRendezvousConfiguration *)configuration
+                 signingHandler:(signDataBlock)signingHandler
+              completionHandler:(void(^)(NSError *error))completionHandler
 {
     LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
     
@@ -166,7 +172,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     // TODO: DH - validate that the configuration and tag formats match
     
     NSError *error = nil;
-    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:authenticationType
                                                                                               fullTag:tag
                                                                                        signingHandler:signingHandler
                                                                                                 error:&error];
@@ -273,7 +279,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
                                                                                  accessLevel:0
-                                                                               summaryValues:@{kQredoRendezvousVaultItemLabelTag: _tag}];
+                                                                               summaryValues:@{kQredoRendezvousVaultItemLabelTag: _tag,
+                                                                                               kQredoRendezvousVaultItemAuthenticationTypeTag: [NSNumber numberWithInt:self.authenticationType]}];
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
@@ -849,7 +856,9 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     QredoVaultItemId *itemId = [vault itemIdWithName:_tag type:kQredoRendezvousVaultItemType];
     QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:itemId];
 
-    return [[QredoRendezvousMetadata alloc] initWithTag:self.tag vaultItemDescriptor:descriptor];
+    return [[QredoRendezvousMetadata alloc] initWithTag:self.tag
+                                     authenticationType:self.authenticationType
+                                    vaultItemDescriptor:descriptor];
 }
 
 @end

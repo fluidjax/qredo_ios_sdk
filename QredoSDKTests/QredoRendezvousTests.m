@@ -633,7 +633,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
-       authenticationType:authenticationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
        maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
        transCap:nil];
@@ -643,7 +642,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     NSLog(@"Creating authenticated rendezvous (generating internal keys)");
     [client createAuthenticatedRendezvousWithPrefix:prefix
-                                 authenticationType:configuration.authenticationType
+                                 authenticationType:authenticationType
                                       configuration:configuration
                                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                       
@@ -737,7 +736,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
-       authenticationType:authenticationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
        maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
        transCap:nil];
@@ -747,7 +745,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     NSLog(@"Creating authenticated rendezvous (external keys)");
     [client createAuthenticatedRendezvousWithPrefix:prefix
-                                 authenticationType:configuration.authenticationType
+                                 authenticationType:authenticationType
                                       configuration:configuration
                                           publicKey:publicKey
                                      signingHandler:signingHandler
@@ -1113,12 +1111,13 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 - (void)testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix
 {
     NSString *nilPrefix = nil; // Invalid, nil prefix
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeEd25519;
+
     NSString *expectedGeneratedPrefix = @""; // Nil prefix becomes empty prefix
     
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
-       authenticationType:QredoRendezvousAuthenticationTypeEd25519
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
        maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
        transCap:nil];
@@ -1128,7 +1127,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     NSLog(@"Creating rendezvous");
     [client createAuthenticatedRendezvousWithPrefix:nilPrefix
-                                 authenticationType:configuration.authenticationType
+                                 authenticationType:authenticationType
                                       configuration:configuration
                                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                       
@@ -1156,11 +1155,11 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature
 {
     NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeEd25519;
     
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
-       authenticationType:QredoRendezvousAuthenticationTypeEd25519
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
        maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
        transCap:nil];
@@ -1172,7 +1171,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     NSLog(@"Creating rendezvous");
     [client createAuthenticatedRendezvousWithPrefix:randomPrefix
-                                 authenticationType:configuration.authenticationType
+                                 authenticationType:authenticationType
                                       configuration:configuration
                                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                       

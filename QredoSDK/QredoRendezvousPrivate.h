@@ -13,9 +13,12 @@
 }
 
 @property (readonly) QredoVaultItemDescriptor *vaultItemDescriptor;
+@property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 @property (readwrite, copy) NSString *tag;
 
-- (instancetype)initWithTag:(NSString*)tag vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+- (instancetype)initWithTag:(NSString*)tag
+         authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+        vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
 @end
 
@@ -23,10 +26,16 @@
 
 @property (readwrite) QredoRendezvousConfiguration *configuration;
 @property (readwrite) NSString *tag;
+// TODO: DH - confirm still need authenticationType property on Rendezvous once refactoring complete
+@property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 
 - (instancetype)initWithClient:(QredoClient *)client;
 - (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QredoRendezvousDescriptor*)descriptor;
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration signingHandler:(signDataBlock)signingHandler completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)createRendezvousWithTag:(NSString *)tag
+             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                  configuration:(QredoRendezvousConfiguration *)configuration
+                 signingHandler:(signDataBlock)signingHandler
+              completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
 

@@ -9,6 +9,7 @@ extern const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin;
 extern NSString *const kQredoRendezvousVaultItemType;
 
 extern NSString *const kQredoRendezvousVaultItemLabelTag;
+extern NSString *const kQredoRendezvousVaultItemAuthenticationTypeTag;
 
 
 @class QredoRendezvous;
@@ -28,9 +29,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 /** Reverse domain name service notation. For example, `com.qredo.qatchat` */
 @property (readonly, copy) NSString *conversationType;
 
-// TODO: DH - remove authentication type from QredoRendezvousConfiguration (move to QredoRendezvousMetadata)
-@property (readonly) QredoRendezvousAuthenticationType authenticationType;
-
 /** if `nil`, then conversation doesn't have a time limit */
 @property (readonly) NSNumber *durationSeconds;
 /** if `nil`, then conversation doesn't have a limit for the number of responders */
@@ -45,9 +43,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 
 - (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap;
 
-// TODO: DH - remove authentication type from [QredoRendezvousConfiguration initWithConversationType:] (moving to QredoRendezvousMetadata)
-- (instancetype)initWithConversationType:(NSString*)conversationType authenticationType:(QredoRendezvousAuthenticationType)authenticationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap;
-
 @end
 
 
@@ -56,6 +51,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 @interface QredoRendezvousMetadata : NSObject
 
 @property (readonly, copy) NSString *tag;
+@property (readonly) QredoRendezvousAuthenticationType authenticationType;
 
 @end
 
@@ -69,6 +65,8 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 /** See `QredoRendezvousConfiguration` */
 @property (readonly) QredoRendezvousConfiguration *configuration;
 @property (readonly, copy) NSString *tag;
+// TODO: DH - confirm still need authenticationType property on Rendezvous once refactoring complete
+@property (readonly) QredoRendezvousAuthenticationType authenticationType;
 
 /** See `QredoRendezvousDelegate` */
 @property (weak) id<QredoRendezvousDelegate> delegate;
