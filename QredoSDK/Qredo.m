@@ -437,7 +437,8 @@ static NSString *const QredoKeychainPassword = @"Password123";
         if ([vaultItemMetadata.dataType isEqualToString:kQredoRendezvousVaultItemType]) {
 
             NSString *tag = [vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelTag];
-            QredoRendezvousAuthenticationType authenticationType = [[vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemAuthenticationTypeTag] intValue];
+            QredoRendezvousAuthenticationType authenticationType
+            = [[vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
 
             QredoRendezvousMetadata *metadata
             = [[QredoRendezvousMetadata alloc] initWithTag:tag
@@ -515,7 +516,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
-            // TODO: DH - populate metadata.rendezvousMetadata (and set the authentication type)
+            // TODO: DH - populate metadata.rendezvousMetadata
             metadata.conversationId = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelId];
             metadata.amRendezvousOwner = [[vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelAmOwner] boolValue];
             metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];

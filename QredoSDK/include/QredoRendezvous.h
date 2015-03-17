@@ -9,7 +9,7 @@ extern const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin;
 extern NSString *const kQredoRendezvousVaultItemType;
 
 extern NSString *const kQredoRendezvousVaultItemLabelTag;
-extern NSString *const kQredoRendezvousVaultItemAuthenticationTypeTag;
+extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 
 @class QredoRendezvous;

@@ -28,7 +28,7 @@ static const double kQredoRendezvousUpdateInterval = 1.0; // seconds - polling p
 static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
-NSString *const kQredoRendezvousVaultItemAuthenticationTypeTag = @"authenticationType";
+NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticationType";
 
 static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
@@ -274,19 +274,26 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
     QredoVaultItemId *itemId = [vault itemIdWithName:_tag type:kQredoRendezvousVaultItemType];
 
-    NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:_descriptor
-                                                                 marshaller:[QredoClientMarshallers rendezvousDescriptorMarshaller]];
+    NSData *serializedDescriptor
+    = [QredoPrimitiveMarshallers marshalObject:_descriptor
+                                    marshaller:[QredoClientMarshallers rendezvousDescriptorMarshaller]];
 
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
-                                                                                 accessLevel:0
-                                                                               summaryValues:@{kQredoRendezvousVaultItemLabelTag: _tag,
-                                                                                               kQredoRendezvousVaultItemAuthenticationTypeTag: [NSNumber numberWithInt:self.authenticationType]}];
+    QredoVaultItemMetadata *metadata
+    = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
+                                                accessLevel:0
+                                              summaryValues:@{
+                                                              kQredoRendezvousVaultItemLabelTag: _tag,
+                                                              kQredoRendezvousVaultItemLabelAuthenticationType:
+                                                                  [NSNumber numberWithInt:self.authenticationType]
+                                                              }];
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-        completionHandler(error);
-    }];
+    [_client.systemVault strictlyPutNewItem:vaultItem
+                                     itemId:itemId
+                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+                              completionHandler(error);
+                          }];
 }
 
 @end
