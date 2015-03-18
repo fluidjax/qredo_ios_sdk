@@ -9,6 +9,8 @@
 #import "QredoCrypto.h"
 #import "QredoErrorCodes.h"
 
+static const int PSS_SALT_LENGTH_IN_BYTES = 32;
+
 @implementation QredoED25519Singer
 {
     QredoED25519SigningKey *_signingKey;
@@ -53,7 +55,7 @@
 - (NSData *)signData:(NSData *)data error:(NSError **)error
 {
     @try {
-        return [QredoCrypto rsaPssSignMessage:data saltLength:32 keyRef:_keyRef];
+        return [QredoCrypto rsaPssSignMessage:data saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:_keyRef];
     }
     @catch (NSException *exception) {
         if (error) {
