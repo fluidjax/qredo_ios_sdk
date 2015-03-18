@@ -19,7 +19,9 @@
 {
     NSAssert2(data, @"Data must be provided in [%@ %@].", NSStringFromClass(self), NSStringFromSelector(_cmd));
     
-    NSData *marshalledData = [QredoPrimitiveMarshallers marshalObject:data marshaller:[[data class] marshaller]];
+    NSData *marshalledData = [QredoPrimitiveMarshallers marshalObject:data
+                                                           marshaller:[[data class] marshaller]
+                                                        includeHeader:NO];
     return [self ownershipSignatureWithKey:key
                              operationType:operationType
                             marshalledData:marshalledData

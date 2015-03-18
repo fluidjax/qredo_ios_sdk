@@ -18,6 +18,12 @@
 
 #import "QredoUpdateListener.h"
 
+#import "QLFOwnershipSignature+FactoryMethods.h"
+#import "QredoED25519SigningKey.h"
+#import "QredoED25519VerifyKey.h"
+#import "NSData+QredoRandomData.h"
+
+
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
 
@@ -137,6 +143,8 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QredoVaultCrypto *_vaultCrypto;
     QredoVaultSequenceCache *_vaultSequenceCache;
 
+    QredoED25519SigningKey *_signingKey;
+
     dispatch_queue_t _queue;
 
     QredoUpdateListener *_updateListener;
@@ -175,6 +183,8 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     _qredoKeychan = qredoKeychan;
     _vaultId = vaultId;
     _highwatermark = QredoVaultHighWatermarkOrigin;
+
+    _signingKey = qredoKeychan.vaultSigningKey;
 
     _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
 
@@ -241,8 +251,26 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QLFEncryptedVaultItem *encryptedVaultItem = [_vaultCrypto encryptVaultItemLF:vaultItemLF
                                                                       descriptor:vaultItemDescriptor];
 
+
+    NSError *error = nil;
+
+    int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
+
+    QLFOwnershipSignature *ownershipSignature
+    = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
+                                         operationType:[QLFOperationType operationCreate]
+                                                  data:encryptedVaultItem
+                                                 nonce:[NSData dataWithRandomBytesOfLength:16]
+                                             timestamp:timestamp
+                                                 error:&error];
+
+    if (error) {
+        completionHandler(nil, error);
+        return;
+    }
+    
     [_vault putItemWithItem:encryptedVaultItem
-                  signature:nil // TODO: ownership
+                  signature:ownershipSignature
           completionHandler:^void(BOOL result, NSError *error)
      {
          if (result && !error) {
