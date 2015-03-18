@@ -255,7 +255,6 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSError *error = nil;
 
     int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
-
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
                                          operationType:[QLFOperationType operationCreate]
@@ -436,11 +435,30 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QLFVaultSequenceId   *sequenceId    = itemDescriptor.sequenceId;
     QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
 
+    NSError *error = nil;
+
+    int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
+
+    QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:sequenceValue];
+
+    QLFOwnershipSignature *ownershipSignature
+    = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
+                                         operationType:[QLFOperationType operationGet]
+                                                  data:sequenceState
+                                                 nonce:[NSData dataWithRandomBytesOfLength:16]
+                                             timestamp:timestamp
+                                                 error:&error];
+
+    if (error) {
+        completionHandler(nil, error);
+        return;
+    }
+
     [_vault getItemWithVaultId:_vaultId
                     sequenceId:sequenceId
                  sequenceValue:[NSSet setWithObjects:@(sequenceValue), nil]
                         itemId:itemDescriptor.itemId
-                     signature:nil // TODO: ownership
+                     signature:ownershipSignature
              completionHandler:^(NSSet *result, NSError *error)
     {
          if (!error && [result count]) {
@@ -483,11 +501,31 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QLFVaultSequenceId *sequenceId = itemDescriptor.sequenceId;
     QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
 
+    NSError *error = nil;
+
+    int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
+
+    QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:sequenceValue];
+
+    QLFOwnershipSignature *ownershipSignature
+    = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
+                                         operationType:[QLFOperationType operationGet]
+                                                  data:sequenceState
+                                                 nonce:[NSData dataWithRandomBytesOfLength:16]
+                                             timestamp:timestamp
+                                                 error:&error];
+
+    if (error) {
+        completionHandler(nil, error);
+        return;
+    }
+
+
     [_vault getItemMetaDataWithVaultId:_vaultId
                             sequenceId:sequenceId
                          sequenceValue:(sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : nil)
                                 itemId:itemDescriptor.itemId
-                             signature:nil // TOOD: ownership
+                             signature:ownershipSignature
                      completionHandler:^(NSSet *result, NSError *error)
      {
          if (!error && result.count) {
@@ -588,10 +626,32 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     }
     LogDebug(@"Watermark: %@", sinceWatermark.sequenceState);
 
+
+    NSError *error = nil;
+
+    int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
+
+
+    QredoMarshaller dataMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QLFVaultSequenceState marshaller]];
+    NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:sequenceStates marshaller:dataMarshaller includeHeader:NO];
+
+    QLFOwnershipSignature *ownershipSignature
+    = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
+                                         operationType:[QLFOperationType operationList]
+                                        marshalledData:payloadData
+                                                 nonce:[NSData dataWithRandomBytesOfLength:16]
+                                             timestamp:timestamp
+                                                 error:&error];
+
+    if (error) {
+        completionHandler(error);
+        return;
+    }
+
     // Sync sequence IDs...
     [_vault queryItemMetaDataWithVaultId:_vaultId
                           sequenceStates:sequenceStates
-                               signature:nil // TODO: ownership signature
+                               signature:ownershipSignature
                        completionHandler:^void(QLFVaultItemMetaDataResults *vaultItemMetaDataResults, NSError *error)
     {
         if (error) {
