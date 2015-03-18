@@ -8,6 +8,7 @@
 #import "QredoED25519VerifyKey.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClient.h"
+#import "QredoSigner.h"
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
@@ -263,12 +264,12 @@ static char ownershipSignature_listOp_signatureBytes[] = {
 - (void)createOwnershipSignatureWithOperationType:(QLFOperationType *)operationType data:(id<QredoMarshallable>)data
 {
     NSError *error = nil;
-    self.ownershipSignatureUnderTest = [QLFOwnershipSignature ownershipSignatureWithKey:self.key
-                                                                          operationType:operationType
-                                                                                   data:data
-                                                                                  nonce:self.nonce
-                                                                              timestamp:self.timestamp
-                                                                                  error:&error];
+    self.ownershipSignatureUnderTest = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:self.key]
+                                                                             operationType:operationType
+                                                                                      data:data
+                                                                                     nonce:self.nonce
+                                                                                 timestamp:self.timestamp
+                                                                                     error:&error];
     self.error = error;
 }
 

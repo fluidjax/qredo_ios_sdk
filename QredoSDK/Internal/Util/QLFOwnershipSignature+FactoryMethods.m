@@ -6,104 +6,113 @@
 #import "QredoED25519SigningKey.h"
 #import "CryptoImplV1.h"
 #import "NSData+QredoRandomData.h"
+#import "QredoSigner.h"
 
 
 @implementation QLFOwnershipSignature (FactoryMethods)
 
-+ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
-                            operationType:(QLFOperationType *)operationType
-                           marshalledData:(NSData *)marshalledData
-                                    error:(NSError **)error
-{
-    return [self ownershipSignatureWithKey:key operationType:operationType
-                            marshalledData:marshalledData
-                                     nonce:[NSData dataWithRandomBytesOfLength:16]
-                                 timestamp:[[NSDate date] timeIntervalSince1970] * 1000ULL
-                                     error:error];
++ (int64_t)timestamp {
+    return [[NSDate date] timeIntervalSince1970] * 1000LL;
 }
 
 
-+ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
-                            operationType:(QLFOperationType *)operationType
-                                     data:(id<QredoMarshallable>)data
-                                    error:(NSError **)error
+
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
+                               operationType:(QLFOperationType *)operationType
+                              marshalledData:(NSData *)marshalledData
+                                       error:(NSError **)error
 {
-    return [self ownershipSignatureWithKey:key operationType:operationType
-                                      data:data
-                                     nonce:[NSData dataWithRandomBytesOfLength:16]
-                                 timestamp:[[NSDate date] timeIntervalSince1970] * 1000ULL
-                                     error:error];
+    return [self ownershipSignatureWithSigner:signer
+                                operationType:operationType
+                               marshalledData:marshalledData
+                                        nonce:[NSData dataWithRandomBytesOfLength:16]
+                                    timestamp:[self timestamp]
+                                        error:error];
 }
 
 
-+ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
-                            operationType:(QLFOperationType *)operationType
-                                     data:(id<QredoMarshallable>)data
-                                    nonce:(QLFNonce *)nonce
-                                timestamp:(QLFTimestamp)timestamp
-                                    error:(NSError **)error
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
+                               operationType:(QLFOperationType *)operationType
+                                        data:(id<QredoMarshallable>)data
+                                       error:(NSError **)error
+{
+    return [self ownershipSignatureWithSigner:signer
+                                operationType:operationType
+                                         data:data
+                                        nonce:[NSData dataWithRandomBytesOfLength:16]
+                                    timestamp:[self timestamp]
+                                        error:error];
+}
+
+
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
+                               operationType:(QLFOperationType *)operationType
+                                        data:(id<QredoMarshallable>)data
+                                       nonce:(QLFNonce *)nonce
+                                   timestamp:(QLFTimestamp)timestamp
+                                       error:(NSError **)error
 {
     NSAssert2(data, @"Data must be provided in [%@ %@].", NSStringFromClass(self), NSStringFromSelector(_cmd));
-    
+
     NSData *marshalledData = [QredoPrimitiveMarshallers marshalObject:data
                                                            marshaller:[[data class] marshaller]
                                                         includeHeader:NO];
-    return [self ownershipSignatureWithKey:key
-                             operationType:operationType
-                            marshalledData:marshalledData
-                                     nonce:nonce
-                                 timestamp:timestamp
-                                     error:error];
+    return [self ownershipSignatureWithSigner:signer
+                                operationType:operationType
+                               marshalledData:marshalledData
+                                        nonce:nonce
+                                    timestamp:timestamp
+                                        error:error];
 }
 
-+ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
-                            operationType:(QLFOperationType *)operationType
-                           marshalledData:(NSData *)marshalledData
-                                    nonce:(QLFNonce *)nonce
-                                timestamp:(QLFTimestamp)timestamp
-                                    error:(NSError **)error
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
+                               operationType:(QLFOperationType *)operationType
+                              marshalledData:(NSData *)marshalledData
+                                       nonce:(QLFNonce *)nonce
+                                   timestamp:(QLFTimestamp)timestamp
+                                       error:(NSError **)error
 {
-    NSAssert2(key, @"The signing key must be provided in [%@ %@].", NSStringFromClass(self), NSStringFromSelector(_cmd));
-    
+    NSAssert2(signer, @"The signer be provided in [%@ %@].", NSStringFromClass(self), NSStringFromSelector(_cmd));
+
     NSData *marshalledOperationType = [QredoPrimitiveMarshallers marshalObject:operationType
                                                                     marshaller:[[operationType class] marshaller]
                                                                  includeHeader:NO];
     NSData *marshalledNonce = [QredoPrimitiveMarshallers marshalObject:nonce
                                                             marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
-                                                                 includeHeader:NO];
+                                                         includeHeader:NO];
     NSData *marshalledTimestamp = [QredoPrimitiveMarshallers marshalObject:@(timestamp)
                                                                 marshaller:[QredoPrimitiveMarshallers int64Marshaller]
-                                                                 includeHeader:NO];
-    
-    NSData *signature =  [self signatureWithKey:key
-                        marshalledOperationType:marshalledOperationType
-                                 marshalledData:marshalledData
-                                marshalledNonce:marshalledNonce
-                            marshalledTimestamp:marshalledTimestamp
-                                          error:error];
-    
+                                                             includeHeader:NO];
+
+    NSData *signature =  [self signatureWithSigner:signer
+                           marshalledOperationType:marshalledOperationType
+                                    marshalledData:marshalledData
+                                   marshalledNonce:marshalledNonce
+                               marshalledTimestamp:marshalledTimestamp
+                                             error:error];
+
     if (!signature) {
         return nil;
     }
-    
+
     return [self ownershipSignatureWithOp:operationType nonce:nonce timestamp:timestamp signature:signature];
 }
 
-+ (NSData *)signatureWithKey:(QredoED25519SigningKey *)key
-     marshalledOperationType:(NSData *)marshalledOperationType
-              marshalledData:(NSData *)marshalledData
-             marshalledNonce:(NSData *)marshalledNonce
-         marshalledTimestamp:(NSData *)marshalledTimestamp
-                       error:(NSError **)error
++ (NSData *)signatureWithSigner:(id<QredoSigner>)signer
+        marshalledOperationType:(NSData *)marshalledOperationType
+                 marshalledData:(NSData *)marshalledData
+                marshalledNonce:(NSData *)marshalledNonce
+            marshalledTimestamp:(NSData *)marshalledTimestamp
+                          error:(NSError **)error
 {
-    
+
     NSMutableData *dataBuffer = [[NSMutableData alloc] init];
     [dataBuffer appendData:marshalledOperationType];
     [dataBuffer appendData:marshalledData];
     [dataBuffer appendData:marshalledNonce];
     [dataBuffer appendData:marshalledTimestamp];
-    
-    NSData *signature = [[CryptoImplV1 sharedInstance] qredoED25519SignMessage:dataBuffer withKey:key error:error];
+
+    NSData *signature = [signer signData:dataBuffer error:error];
     
     return signature;
 }

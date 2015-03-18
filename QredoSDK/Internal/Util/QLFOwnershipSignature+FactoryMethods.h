@@ -7,31 +7,30 @@
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 
-
-@class QredoED25519SigningKey;
+@protocol QredoSigner;
 
 @interface QLFOwnershipSignature (FactoryMethods)
 
-+ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                             operationType:(QLFOperationType *)operationType
                            marshalledData:(NSData *)marshalledData
                                     error:(NSError **)error;
 
 
-+ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                             operationType:(QLFOperationType *)operationType
                                      data:(id<QredoMarshallable>)data
                                     error:(NSError **)error;
 
 
-+ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                             operationType:(QLFOperationType *)operationType
                                      data:(id<QredoMarshallable>)data
                                     nonce:(QLFNonce *)nonce
                                 timestamp:(QLFTimestamp)timestamp
                                     error:(NSError **)error;
 
-+ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                             operationType:(QLFOperationType *)operationType
                            marshalledData:(NSData *)marshalledData
                                     nonce:(QLFNonce *)nonce

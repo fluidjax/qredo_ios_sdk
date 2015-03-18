@@ -21,6 +21,7 @@
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoED25519SigningKey.h"
 #import "QredoED25519VerifyKey.h"
+#import "QredoSigner.h"
 
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
@@ -254,10 +255,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSError *error = nil;
 
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
-                                         operationType:[QLFOperationType operationCreate]
-                                                  data:encryptedVaultItem
-                                                 error:&error];
+    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+                                            operationType:[QLFOperationType operationCreate]
+                                                     data:encryptedVaultItem
+                                                    error:&error];
 
     if (error) {
         completionHandler(nil, error);
@@ -436,10 +437,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:sequenceValue];
 
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
-                                         operationType:[QLFOperationType operationGet]
-                                                  data:sequenceState
-                                                 error:&error];
+    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+                                            operationType:[QLFOperationType operationGet]
+                                                     data:sequenceState
+                                                    error:&error];
 
     if (error) {
         completionHandler(nil, error);
@@ -498,10 +499,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:sequenceValue];
 
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
-                                         operationType:[QLFOperationType operationGet]
-                                                  data:sequenceState
-                                                 error:&error];
+    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+                                            operationType:[QLFOperationType operationGet]
+                                                     data:sequenceState
+                                                    error:&error];
 
     if (error) {
         completionHandler(nil, error);
@@ -621,10 +622,10 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:sequenceStates marshaller:dataMarshaller includeHeader:NO];
 
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
-                                         operationType:[QLFOperationType operationList]
-                                        marshalledData:payloadData
-                                                 error:&error];
+    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+                                            operationType:[QLFOperationType operationList]
+                                           marshalledData:payloadData
+                                                    error:&error];
 
     if (error) {
         completionHandler(error);
