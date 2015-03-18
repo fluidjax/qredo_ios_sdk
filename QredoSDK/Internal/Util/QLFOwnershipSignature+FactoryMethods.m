@@ -5,10 +5,36 @@
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoED25519SigningKey.h"
 #import "CryptoImplV1.h"
-
+#import "NSData+QredoRandomData.h"
 
 
 @implementation QLFOwnershipSignature (FactoryMethods)
+
++ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
+                            operationType:(QLFOperationType *)operationType
+                           marshalledData:(NSData *)marshalledData
+                                    error:(NSError **)error
+{
+    return [self ownershipSignatureWithKey:key operationType:operationType
+                            marshalledData:marshalledData
+                                     nonce:[NSData dataWithRandomBytesOfLength:16]
+                                 timestamp:[[NSDate date] timeIntervalSince1970] * 1000ULL
+                                     error:error];
+}
+
+
++ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
+                            operationType:(QLFOperationType *)operationType
+                                     data:(id<QredoMarshallable>)data
+                                    error:(NSError **)error
+{
+    return [self ownershipSignatureWithKey:key operationType:operationType
+                                      data:data
+                                     nonce:[NSData dataWithRandomBytesOfLength:16]
+                                 timestamp:[[NSDate date] timeIntervalSince1970] * 1000ULL
+                                     error:error];
+}
+
 
 + (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
                             operationType:(QLFOperationType *)operationType

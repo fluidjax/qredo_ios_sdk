@@ -21,7 +21,6 @@
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoED25519SigningKey.h"
 #import "QredoED25519VerifyKey.h"
-#import "NSData+QredoRandomData.h"
 
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
@@ -254,13 +253,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     NSError *error = nil;
 
-    int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
                                          operationType:[QLFOperationType operationCreate]
                                                   data:encryptedVaultItem
-                                                 nonce:[NSData dataWithRandomBytesOfLength:16]
-                                             timestamp:timestamp
                                                  error:&error];
 
     if (error) {
@@ -437,16 +433,12 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     NSError *error = nil;
 
-    int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
-
     QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:sequenceValue];
 
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
                                          operationType:[QLFOperationType operationGet]
                                                   data:sequenceState
-                                                 nonce:[NSData dataWithRandomBytesOfLength:16]
-                                             timestamp:timestamp
                                                  error:&error];
 
     if (error) {
@@ -503,16 +495,12 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     NSError *error = nil;
 
-    int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
-
     QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:sequenceValue];
 
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
                                          operationType:[QLFOperationType operationGet]
                                                   data:sequenceState
-                                                 nonce:[NSData dataWithRandomBytesOfLength:16]
-                                             timestamp:timestamp
                                                  error:&error];
 
     if (error) {
@@ -629,9 +617,6 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 
     NSError *error = nil;
 
-    int64_t timestamp = [[NSDate date] timeIntervalSince1970] * 1000ULL;
-
-
     QredoMarshaller dataMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QLFVaultSequenceState marshaller]];
     NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:sequenceStates marshaller:dataMarshaller includeHeader:NO];
 
@@ -639,8 +624,6 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     = [QLFOwnershipSignature ownershipSignatureWithKey:_signingKey
                                          operationType:[QLFOperationType operationList]
                                         marshalledData:payloadData
-                                                 nonce:[NSData dataWithRandomBytesOfLength:16]
-                                             timestamp:timestamp
                                                  error:&error];
 
     if (error) {

@@ -14,6 +14,18 @@
 
 + (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
                             operationType:(QLFOperationType *)operationType
+                           marshalledData:(NSData *)marshalledData
+                                    error:(NSError **)error;
+
+
++ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
+                            operationType:(QLFOperationType *)operationType
+                                     data:(id<QredoMarshallable>)data
+                                    error:(NSError **)error;
+
+
++ (instancetype)ownershipSignatureWithKey:(QredoED25519SigningKey *)key
+                            operationType:(QLFOperationType *)operationType
                                      data:(id<QredoMarshallable>)data
                                     nonce:(QLFNonce *)nonce
                                 timestamp:(QLFTimestamp)timestamp
