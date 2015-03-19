@@ -216,14 +216,14 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
     // Create the Rendezvous.
     QLFRendezvousCreationInfo *_creationInfo =
     [QLFRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:_hashedTag
-                                                  authenticationType:authType
-                                                    conversationType:configuration.conversationType
-                                                     durationSeconds:maybeDurationSeconds
-                                                    maxResponseCount:maybeMaxResponseCount
-                                                            transCap:maybeTransCap
-                                                  requesterPublicKey:requesterPublicKeyBytes
-                                              ownershipPublicKey:accessControlPublicKeyBytes
-                                                  authenticationCode:authenticationCode];
+                                                authenticationType:authType
+                                                  conversationType:configuration.conversationType
+                                                   durationSeconds:maybeDurationSeconds
+                                                  maxResponseCount:maybeMaxResponseCount
+                                                          transCap:maybeTransCap
+                                                requesterPublicKey:requesterPublicKeyBytes
+                                                ownershipPublicKey:accessControlPublicKeyBytes
+                                                authenticationCode:authenticationCode];
     _descriptor =
     [QLFRendezvousDescriptor rendezvousDescriptorWithTag:_tag
                                                hashedTag:_hashedTag

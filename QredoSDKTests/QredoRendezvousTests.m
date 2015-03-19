@@ -240,6 +240,48 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     rendezvous.delegate = nil;
 }
 
+- (void)testCreateRendezvousAndGetResponses
+{
+    self.continueAfterFailure = NO;
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
+                                                                                                 durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
+
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    NSLog(@"Creating rendezvous");
+    [client createRendezvousWithTag:randomTag
+                      configuration:configuration
+                  completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                      XCTAssertNil(error);
+                      XCTAssertNotNil(rendezvous);
+                      createdRendezvous = rendezvous;
+                      [createExpectation fulfill];
+                  }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+
+
+    __block XCTestExpectation *enumerationExpectation = [self expectationWithDescription:@"enumerate responses"];
+
+    [createdRendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
+
+    } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+        [enumerationExpectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
+        enumerationExpectation = nil;
+    }];
+
+
+
+}
+
 - (void)testCreateRendezvous {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
@@ -695,7 +737,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [createdRendezvous stopListening];
     
     [anotherClient closeSession];
-    
 }
 
 @end
