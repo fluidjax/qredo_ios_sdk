@@ -8,6 +8,7 @@
 #import "QredoClient.h"
 
 @protocol QredoSigner;
+@class QredoVaultItemDescriptor;
 
 @interface QLFOwnershipSignature (FactoryMethods)
 
@@ -16,12 +17,10 @@
                            marshalledData:(NSData *)marshalledData
                                     error:(NSError **)error;
 
-
 + (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                             operationType:(QLFOperationType *)operationType
                                      data:(id<QredoMarshallable>)data
                                     error:(NSError **)error;
-
 
 + (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                             operationType:(QLFOperationType *)operationType
@@ -36,6 +35,12 @@
                                     nonce:(QLFNonce *)nonce
                                 timestamp:(QLFTimestamp)timestamp
                                     error:(NSError **)error;
+
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
+                               operationType:(QLFOperationType *)operationType
+                         vaultItemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                     vaultItemSequenceValues:(NSSet *)sequenceValues
+                                       error:(NSError **)error;
 
 @end
 
