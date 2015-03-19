@@ -436,23 +436,11 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     NSSet *sequenceValues = [NSSet setWithObject:@(sequenceValue)];
     
-    NSData *marshalledData = nil;
-    NSMutableData *payloadData = [NSMutableData data];
-    
-    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.sequenceId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
-    [payloadData appendData:marshalledData];
-    
-    QredoMarshaller setMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]];
-    marshalledData = [QredoPrimitiveMarshallers marshalObject:sequenceValues marshaller:setMarshaller includeHeader:NO];
-    [payloadData appendData:marshalledData];
-
-    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.itemId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
-    [payloadData appendData:marshalledData];
-    
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
                                             operationType:[QLFOperationType operationGet]
-                                                     marshalledData:payloadData
+                                      vaultItemDescriptor:itemDescriptor
+                                  vaultItemSequenceValues:sequenceValues
                                                     error:&error];
     if (error) {
         completionHandler(nil, error);
@@ -510,25 +498,12 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     NSSet *sequenceValues = sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : [NSSet set];
     
-    NSData *marshalledData = nil;
-    NSMutableData *payloadData = [NSMutableData data];
-    
-    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.sequenceId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
-    [payloadData appendData:marshalledData];
-    
-    QredoMarshaller setMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]];
-    marshalledData = [QredoPrimitiveMarshallers marshalObject:sequenceValues marshaller:setMarshaller includeHeader:NO];
-    [payloadData appendData:marshalledData];
-    
-    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.itemId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
-    [payloadData appendData:marshalledData];
-    
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
                                             operationType:[QLFOperationType operationGet]
-                                           marshalledData:payloadData
+                                      vaultItemDescriptor:itemDescriptor
+                                  vaultItemSequenceValues:sequenceValues
                                                     error:&error];
-
     if (error) {
         completionHandler(nil, error);
         return;

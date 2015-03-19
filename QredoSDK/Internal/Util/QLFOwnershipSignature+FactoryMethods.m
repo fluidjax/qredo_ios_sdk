@@ -7,6 +7,7 @@
 #import "CryptoImplV1.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoSigner.h"
+#import "QredoVault.h"
 
 
 @implementation QLFOwnershipSignature (FactoryMethods)
@@ -96,6 +97,31 @@
     }
 
     return [self ownershipSignatureWithOp:operationType nonce:nonce timestamp:timestamp signature:signature];
+}
+
++ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
+                               operationType:(QLFOperationType *)operationType
+                         vaultItemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                     vaultItemSequenceValues:(NSSet *)sequenceValues
+                                       error:(NSError **)error
+{
+    NSData *marshalledData = nil;
+    NSMutableData *payloadData = [NSMutableData data];
+    
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.sequenceId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
+    QredoMarshaller setMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]];
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:sequenceValues marshaller:setMarshaller includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.itemId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
+    return [self ownershipSignatureWithSigner:signer
+                                operationType:[QLFOperationType operationGet]
+                               marshalledData:payloadData
+                                        error:error];
 }
 
 + (NSData *)signatureWithSigner:(id<QredoSigner>)signer
