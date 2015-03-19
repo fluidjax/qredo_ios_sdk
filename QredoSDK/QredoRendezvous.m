@@ -242,6 +242,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     [QredoRendezvousDescriptor rendezvousDescriptorWithTag:_tag
                                                  hashedTag:_hashedTag
                                           conversationType:configuration.conversationType
+                                        authenticationType:authType
                                            durationSeconds:maybeDurationSeconds
                                           maxResponseCount:maybeMaxResponseCount
                                                   transCap:maybeTransCap
