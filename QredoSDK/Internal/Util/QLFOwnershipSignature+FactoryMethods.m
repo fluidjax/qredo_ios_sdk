@@ -108,7 +108,9 @@
 
     NSMutableData *dataBuffer = [[NSMutableData alloc] init];
     [dataBuffer appendData:marshalledOperationType];
-    [dataBuffer appendData:marshalledData];
+    if (marshalledData) {
+        [dataBuffer appendData:marshalledData];
+    }
     [dataBuffer appendData:marshalledNonce];
     [dataBuffer appendData:marshalledTimestamp];
 

@@ -95,6 +95,8 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
     QLFRendezvousHashedTag *_hashedTag;
     QLFRendezvousDescriptor *_descriptor;
 
+    QLFRendezvousAuthType *_lfAuthType;
+
     SecKeyRef _ownershipPrivateKey;
 
     NSString *_tag;
@@ -140,6 +142,7 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
     self = [self initWithClient:client];
     _descriptor = descriptor;
 
+    _lfAuthType = _descriptor.authenticationType;
     _tag = _descriptor.tag;
     _hashedTag = _descriptor.hashedTag;
     _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:descriptor.requesterKeyPair.privKey.bytes];
@@ -201,7 +204,7 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
 
     QLFRendezvousAuthType *authType = nil;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
-        authType= [QLFRendezvousAuthType rendezvousAnonymous];
+        authType = [QLFRendezvousAuthType rendezvousAnonymous];
     } else {
         QLFRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode error:&error];
         if (!authSignature) {
@@ -212,6 +215,8 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
         }
         authType = [QLFRendezvousAuthType rendezvousTrustedWithSignature:authSignature];
     }
+
+    _lfAuthType = authType;
     
     // Create the Rendezvous.
     QLFRendezvousCreationInfo *_creationInfo =
@@ -458,6 +463,7 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
                                 completionHandler:(void(^)(QredoConversation *conversation, NSError *error))completionHandler
 {
     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
+                                                             authenticationType:_lfAuthType
                                                                   rendezvousTag:_tag
                                                                 converationType:_configuration.conversationType
                                                                        transCap:_configuration.transCap];
