@@ -204,7 +204,7 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 maxResponseCount:@1];
 
     __block QredoRendezvous *rendezvous = nil;
 
@@ -284,7 +284,9 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 
     __block XCTestExpectation *didPublishMessageExpectation = [self expectationWithDescription:@"published a message before listener started"];
 
-    QredoConversationMessage *newMessage = [[QredoConversationMessage alloc] initWithValue:[kMessageTestValue dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
+    QredoConversationMessage *newMessage = [[QredoConversationMessage alloc] initWithValue:[kMessageTestValue dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                  dataType:kMessageType
+                                                                             summaryValues:nil];
 
     NSLog(@"Publishing message (before setting up listener)");
     [responderConversation publishMessage:newMessage
