@@ -72,11 +72,6 @@
     [super testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix];
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_EmptyPrefix
-{
-    [super testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_EmptyPrefix];
-}
-
 - (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix
 {
     [super testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix];
@@ -90,11 +85,6 @@
 - (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix
 {
     [super testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix];
-}
-
-- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_EmptyPrefix
-{
-    [super testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_EmptyPrefix];
 }
 
 - (void)testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix

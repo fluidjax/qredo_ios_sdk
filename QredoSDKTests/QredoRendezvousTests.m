@@ -967,47 +967,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                                   signingHandler:signingHandler];
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_EmptyPrefix
-{
-    NSString *emptyPrefix = @"";
-    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa2048Pem;
-    
-    // Import a known Public Key and Private Key into Keychain
-    // NOTE: This test will fail if the key has already been imported (even with different identifier)
-    NSInteger keySizeBits = 2048;
-    
-    NSData *publicKeyX509Data = [NSData dataWithBytes:TestPubKeyJavaSdkClient2048X509DerArray
-                                               length:sizeof(TestPubKeyJavaSdkClient2048X509DerArray) / sizeof(uint8_t)];
-    XCTAssertNotNil(publicKeyX509Data);
-    
-    NSData *publicKeyPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyX509Data];
-    XCTAssertNotNil(publicKeyPkcs1Data);
-    
-    NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient2048Pkcs1DerArray
-                                            length:sizeof(TestPrivKeyJavaSdkClient2048Pkcs1DerArray) / sizeof(uint8_t)];
-    XCTAssertNotNil(privateKeyData);
-    
-    QredoSecKeyRefPair *keyRefPair = [self setupKeypairForPublicKeyData:publicKeyPkcs1Data
-                                                         privateKeyData:privateKeyData
-                                                            keySizeBits:keySizeBits];
-    XCTAssertNotNil(keyRefPair);
-    
-    NSString *publicKey = TestKeyJavaSdkClient2048PemX509;
-    
-    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
-        XCTAssertNotNil(data);
-        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:authenticationType];
-        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:keyRefPair.privateKeyRef];
-        XCTAssertNotNil(signature);
-        return signature;
-    };
-    
-    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
-                                                          prefix:emptyPrefix
-                                                       publicKey:publicKey
-                                                  signingHandler:signingHandler];
-}
-
 - (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix
 {
     NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
@@ -1063,47 +1022,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
                                                           prefix:randomPrefix
-                                                       publicKey:publicKey
-                                                  signingHandler:signingHandler];
-}
-
-- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_EmptyPrefix
-{
-    NSString *emptyPrefix = @"";
-    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeRsa4096Pem;
-    
-    // Import a known Public Key and Private Key into Keychain
-    // NOTE: This test will fail if the key has already been imported (even with different identifier)
-    NSInteger keySizeBits = 4096;
-    
-    NSData *publicKeyX509Data = [NSData dataWithBytes:TestPubKeyJavaSdkClient4096X509DerArray
-                                               length:sizeof(TestPubKeyJavaSdkClient4096X509DerArray) / sizeof(uint8_t)];
-    XCTAssertNotNil(publicKeyX509Data);
-    
-    NSData *publicKeyPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyX509Data];
-    XCTAssertNotNil(publicKeyPkcs1Data);
-    
-    NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient4096Pkcs1DerArray
-                                            length:sizeof(TestPrivKeyJavaSdkClient4096Pkcs1DerArray) / sizeof(uint8_t)];
-    XCTAssertNotNil(privateKeyData);
-    
-    QredoSecKeyRefPair *keyRefPair = [self setupKeypairForPublicKeyData:publicKeyPkcs1Data
-                                                         privateKeyData:privateKeyData
-                                                            keySizeBits:keySizeBits];
-    XCTAssertNotNil(keyRefPair);
-    
-    NSString *publicKey = TestKeyJavaSdkClient4096PemX509;
-    
-    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
-        XCTAssertNotNil(data);
-        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:authenticationType];
-        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:keyRefPair.privateKeyRef];
-        XCTAssertNotNil(signature);
-        return signature;
-    };
-    
-    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
-                                                          prefix:emptyPrefix
                                                        publicKey:publicKey
                                                   signingHandler:signingHandler];
 }
