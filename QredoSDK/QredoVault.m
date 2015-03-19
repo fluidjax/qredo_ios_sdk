@@ -434,14 +434,26 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     NSError *error = nil;
 
-    QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:sequenceValue];
+    NSSet *sequenceValues = [NSSet setWithObject:@(sequenceValue)];
+    
+    NSData *marshalledData = nil;
+    NSMutableData *payloadData = [NSMutableData data];
+    
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.sequenceId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
+    QredoMarshaller setMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]];
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:sequenceValues marshaller:setMarshaller includeHeader:NO];
+    [payloadData appendData:marshalledData];
 
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.itemId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
                                             operationType:[QLFOperationType operationGet]
-                                                     data:sequenceState
+                                                     marshalledData:payloadData
                                                     error:&error];
-
     if (error) {
         completionHandler(nil, error);
         return;
@@ -496,12 +508,25 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     NSError *error = nil;
 
-    QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:sequenceValue];
-
+    NSSet *sequenceValues = sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : [NSSet set];
+    
+    NSData *marshalledData = nil;
+    NSMutableData *payloadData = [NSMutableData data];
+    
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.sequenceId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
+    QredoMarshaller setMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]];
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:sequenceValues marshaller:setMarshaller includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:itemDescriptor.itemId marshaller:[QredoPrimitiveMarshallers quidMarshaller] includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
                                             operationType:[QLFOperationType operationGet]
-                                                     data:sequenceState
+                                           marshalledData:payloadData
                                                     error:&error];
 
     if (error) {
@@ -512,7 +537,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     [_vault getItemMetaDataWithVaultId:_vaultId
                             sequenceId:sequenceId
-                         sequenceValue:(sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : nil)
+                         sequenceValue:sequenceValues
                                 itemId:itemDescriptor.itemId
                              signature:ownershipSignature
                      completionHandler:^(NSSet *result, NSError *error)
