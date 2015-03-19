@@ -515,7 +515,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
         completionHandler(error);
     }];
-
 }
 
 @end
@@ -620,6 +619,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                 isMine:YES
      completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
     {
+        if (error) {
+            completionHandler(nil, error);
+            return ;
+        }
         [summaryValues setObject:newItemDescriptor.sequenceId forKey:kQredoConversationSequenceId];
         [summaryValues setObject:@(newItemDescriptor.sequenceValue) forKey:kQredoConversationSequenceValue]; // TODO: will not work with int64
 
