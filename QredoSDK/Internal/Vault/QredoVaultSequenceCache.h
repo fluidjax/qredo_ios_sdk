@@ -6,12 +6,12 @@
 + (instancetype)instance;
 
 - (void)clear;
-- (QredoVaultSequenceValue *)nextSequenceValue;
-- (void)saveSequenceValue:(NSNumber *)sequenceValue;
-- (QredoVaultSequenceId *)sequenceIdForItem:(QredoVaultItemId *)itemId;
-- (QredoVaultSequenceValue *)sequenceValueForItem:(QredoVaultItemId *)itemId;
-- (void)setItemSequence:(QredoVaultItemId *)itemId
-             sequenceId:(QredoVaultSequenceId *)sequenceId
-          sequenceValue:(QredoVaultSequenceValue *)sequenceValue;
+- (QLFVaultSequenceValue)nextSequenceValue;
+- (void)saveSequenceValue:(QLFVaultSequenceValue)sequenceValue;
+- (QLFVaultSequenceId *)sequenceIdForItem:(QLFVaultItemId *)itemId;
+- (QLFVaultSequenceValue)sequenceValueForItem:(QLFVaultItemId *)itemId;
+- (void)setItemSequence:(QLFVaultItemId *)itemId
+             sequenceId:(QLFVaultSequenceId *)sequenceId
+          sequenceValue:(QLFVaultSequenceValue)sequenceValue;
 
 @end

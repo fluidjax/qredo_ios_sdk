@@ -6,7 +6,6 @@
 #import "QredoConversation.h"
 #import "QredoErrorCodes.h"
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoClientMarshallers.h"
 #import "QredoClient.h"
 
 static NSString *const kAttestationCancelMessageType = @"com.qredo.attestation.cancel";
@@ -15,7 +14,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 
 @protocol QredoAuthenticationProtocolEvents <NSObject>
 
-- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest;
+- (void)sendAuthenticationRequest:(QLFAuthenticationRequest *)authenticationRequest;
 
 - (void)didSendClaims;
 - (void)didFailToSendClaimsWithError:(NSError *)error;
@@ -47,7 +46,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 // Sending claims for authentication
 // Enter: publishMessage(com.qredo.attestation.authentication(credentials))
 @interface QredoAuthenticationState_SendingClaims : QredoAuthenticationState
-@property (nonatomic) QredoAuthenticationRequest *authenticationRequest;
+@property (nonatomic) QLFAuthenticationRequest *authenticationRequest;
 @end
 // Waiting for authentication result
 @interface QredoAuthenticationState_WaitingForResult : QredoAuthenticationState
@@ -100,7 +99,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
     return (QredoAuthenticationProtocol *)self.conversationProtocol;
 }
 
-- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
+- (void)sendAuthenticationRequest:(QLFAuthenticationRequest *)authenticationRequest
 {
 
 }
@@ -195,7 +194,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
     [(QredoAuthenticationState *)self.currentState cancel];
 }
 
-- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
+- (void)sendAuthenticationRequest:(QLFAuthenticationRequest *)authenticationRequest
 {
     [(QredoAuthenticationState *)self.currentState sendAuthenticationRequest:authenticationRequest];
 }
@@ -211,7 +210,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 {
 }
 
-- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest
+- (void)sendAuthenticationRequest:(QLFAuthenticationRequest *)authenticationRequest
 {
     [self.conversationProtocol switchToState:self.authenticationProtocol.sendingClaimsState withConfigBlock:^{
         self.authenticationProtocol.sendingClaimsState.authenticationRequest = authenticationRequest;
@@ -259,7 +258,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 - (void)didEnter
 {
     NSData *serializedCredentials = [QredoPrimitiveMarshallers marshalObject:self.authenticationRequest
-                                                                  marshaller:[QredoClientMarshallers authenticationRequestMarshaller]];
+                                                                  marshaller:[QLFAuthenticationRequest marshaller]];
 
     QredoConversationMessage *claimsMessage = [[QredoConversationMessage alloc] initWithValue:serializedCredentials
                                                                                      dataType:kAttestationValidationRequestMessageType
@@ -327,8 +326,8 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 {
     if ([message.dataType isEqualToString: kAttestationValidationResultMessageType]) {
         @try {
-            QredoAuthenticationResponse * results = [QredoPrimitiveMarshallers unmarshalObject:message.value
-                                                                                  unmarshaller:[QredoClientMarshallers authenticationResponseUnmarshaller]];
+            QLFAuthenticationResponse * results = [QredoPrimitiveMarshallers unmarshalObject:message.value
+                                                                                  unmarshaller:[QLFAuthenticationResponse unmarshaller]];
 
 
             dispatch_async(self.authenticationProtocol.queue, ^{

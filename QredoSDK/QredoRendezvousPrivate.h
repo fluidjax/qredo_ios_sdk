@@ -22,7 +22,7 @@
 @property (readwrite) NSString *tag;
 
 - (instancetype)initWithClient:(QredoClient *)client;
-- (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QredoRendezvousDescriptor*)descriptor;
+- (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFRendezvousDescriptor*)descriptor;
 - (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end

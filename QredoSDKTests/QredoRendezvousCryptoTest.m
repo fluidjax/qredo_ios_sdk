@@ -35,13 +35,13 @@
         0xcf, 0xd9, 0x22, 0x07, 0xe2, 0x7d, 0x08, 0x83
     };
 
-    QredoRendezvousHashedTag *expectedHashedTag = [[QredoQUID alloc] initWithQUIDBytes:hashedTagBytes];
-    QredoAuthenticationCode *expectedAuthCode = [NSData dataWithBytes:authKeyBytes length:sizeof(authKeyBytes)];
+    QLFRendezvousHashedTag *expectedHashedTag = [[QredoQUID alloc] initWithQUIDBytes:hashedTagBytes];
+    QLFAuthenticationCode *expectedAuthCode = [NSData dataWithBytes:authKeyBytes length:sizeof(authKeyBytes)];
 
     QredoRendezvousCrypto *crypto = [[QredoRendezvousCrypto alloc] init];
 
 
-    QredoRendezvousHashedTag *hashedTagFromExpectedAuthKey = [crypto hashedTagWithAuthKey:expectedAuthCode];
+    QLFRendezvousHashedTag *hashedTagFromExpectedAuthKey = [crypto hashedTagWithAuthKey:expectedAuthCode];
     XCTAssertEqualObjects(hashedTagFromExpectedAuthKey, expectedHashedTag);
 
 
@@ -64,13 +64,13 @@
 
     XCTAssertTrue([derivedKey isEqualToData:expectedAuthCode]);
 
-    QredoAuthenticationCode *authKey = [crypto authKey:tag];
+    QLFAuthenticationCode *authKey = [crypto authKey:tag];
 
     XCTAssertTrue([authKey isEqualToData:expectedAuthCode]);
 
-    QredoRendezvousHashedTag *hashedTag = [crypto hashedTag:tag];
+    QLFRendezvousHashedTag *hashedTag = [crypto hashedTag:tag];
 
-    QredoRendezvousHashedTag *hashedTagFromAuthKey = [crypto hashedTagWithAuthKey:authKey];
+    QLFRendezvousHashedTag *hashedTagFromAuthKey = [crypto hashedTagWithAuthKey:authKey];
 
 
     XCTAssertEqualObjects(hashedTag, hashedTagFromAuthKey);
@@ -85,7 +85,7 @@
 
     id<CryptoImpl> _crypto = [CryptoImplV1 new];
     QredoRendezvousCrypto *crypto = [[QredoRendezvousCrypto alloc] init];
-    QredoAuthenticationCode *authKey = [crypto authKey:tag];
+    QLFAuthenticationCode *authKey = [crypto authKey:tag];
 
     NSData *authCode = [_crypto getAuthCodeWithKey:authKey
                                               data:sampleData];
@@ -157,7 +157,7 @@
 
     id<CryptoImpl> _crypto = [CryptoImplV1 new];
     QredoRendezvousCrypto *crypto = [[QredoRendezvousCrypto alloc] init];
-    QredoAuthenticationCode *authKey = [crypto authKey:tag];
+    QLFAuthenticationCode *authKey = [crypto authKey:tag];
 
     NSData *authCode = [_crypto getAuthCodeWithKey:authKey
                                               data:sampleData];

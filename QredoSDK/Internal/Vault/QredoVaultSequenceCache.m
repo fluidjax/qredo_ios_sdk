@@ -4,7 +4,7 @@
 @implementation QredoVaultSequenceCache {
     NSMutableDictionary *_itemSequenceIds;
     NSMutableDictionary *_itemSequenceValues;
-    QredoVaultSequenceValue *_sequenceValue;
+    QLFVaultSequenceValue _sequenceValue;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,35 +40,35 @@
     [_itemSequenceValues removeAllObjects];
 }
 
-- (QredoVaultSequenceValue *)nextSequenceValue {
+- (QLFVaultSequenceValue)nextSequenceValue {
     @synchronized(self) {
-        _sequenceValue = @([_sequenceValue unsignedIntValue] + 1);
+        _sequenceValue = _sequenceValue + 1;
         [self saveSequenceValue:_sequenceValue];
         return _sequenceValue;
     }
 }
 
-- (void)saveSequenceValue:(NSNumber *)sequenceValue {
+- (void)saveSequenceValue:(QLFVaultSequenceValue)sequenceValue {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-    [userDefaults setObject:_sequenceValue forKey:@"QredoVaultSequenceValue"];
+    [userDefaults setObject:@(_sequenceValue) forKey:@"QLFVaultSequenceValue"];
 }
 
-- (QredoVaultSequenceId *)sequenceIdForItem:(QredoVaultItemId *)itemId {
+- (QLFVaultSequenceId *)sequenceIdForItem:(QLFVaultItemId *)itemId {
     NSString *quidString = _itemSequenceIds[[itemId QUIDString]];
     if (!quidString) return nil;
     return [[QredoQUID alloc] initWithQUIDString:quidString];
 }
 
-- (QredoVaultSequenceValue *)sequenceValueForItem:(QredoVaultItemId *)itemId {
-    return _itemSequenceValues[[itemId QUIDString]];
+- (QLFVaultSequenceValue)sequenceValueForItem:(QLFVaultItemId *)itemId {
+    return [_itemSequenceValues[[itemId QUIDString]] longLongValue];
 }
 
-- (void)setItemSequence:(QredoVaultItemId *)itemId
-             sequenceId:(QredoVaultSequenceId *)sequenceId
-          sequenceValue:(QredoVaultSequenceValue *)sequenceValue {
+- (void)setItemSequence:(QLFVaultItemId *)itemId
+             sequenceId:(QLFVaultSequenceId *)sequenceId
+          sequenceValue:(QLFVaultSequenceValue)sequenceValue {
     _itemSequenceIds[[itemId QUIDString]]    = [sequenceId QUIDString];
-    _itemSequenceValues[[itemId QUIDString]] = sequenceValue;
+    _itemSequenceValues[[itemId QUIDString]] = @(sequenceValue);
     [self saveItemSequenceIds];
     [self saveItemSequenceValues];
 }
@@ -77,14 +77,14 @@
 // Storage Helpers
 ///////////////////////////////////////////////////////////////////////////////
 
-- (NSNumber *)loadSequenceValue {
+- (QLFVaultSequenceValue)loadSequenceValue {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
-    NSNumber *maybeSequenceValue = [userDefaults objectForKey:@"QredoVaultSequenceValue"];
+    NSNumber *maybeSequenceValue = [userDefaults objectForKey:@"QLFVaultSequenceValue"];
     if (maybeSequenceValue == nil) {
-        return @1;
+        return 1;
     } else {
-        return maybeSequenceValue;
+        return [maybeSequenceValue longLongValue];
     }
 }
 
@@ -122,7 +122,7 @@
     [userDefaults setObject:_itemSequenceValues forKey:@"QredoVaultItemSequenceValues"];
 }
 
-- (NSNumber *)sequenceValue {
+- (QLFVaultSequenceValue)sequenceValue {
     return _sequenceValue;
 }
 

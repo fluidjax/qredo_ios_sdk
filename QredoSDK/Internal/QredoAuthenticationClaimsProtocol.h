@@ -11,7 +11,7 @@
 
 - (void)qredoAuthenticationProtocolDidSendClaims:(QredoAuthenticationProtocol *)protocol;;
 - (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFailWithError:(NSError *)error;
-- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFinishWithResults:(QredoAuthenticationResponse *)results;
+- (void)qredoAuthenticationProtocol:(QredoAuthenticationProtocol *)protocol didFinishWithResults:(QLFAuthenticationResponse *)results;
 
 @end
 
@@ -19,7 +19,7 @@
 @interface QredoAuthenticationProtocol : QredoConversationProtocol
 @property id<QredoAuthenticationProtocolDelegate> delegate;
 
-- (void)sendAuthenticationRequest:(QredoAuthenticationRequest *)authenticationRequest;
+- (void)sendAuthenticationRequest:(QLFAuthenticationRequest *)authenticationRequest;
 - (void)cancel;
 
 @end

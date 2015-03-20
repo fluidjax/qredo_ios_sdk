@@ -17,12 +17,12 @@ NS_ENUM(NSInteger, QredoCredentialType) {
 
 @interface QredoKeychain : NSObject
 
-@property QredoOperatorInfo *operatorInfo;
+@property QLFOperatorInfo *operatorInfo;
 
-- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo;
+- (instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo;
 
 // used in tests only
-- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo vaultId:(QredoQUID*)vaultId authenticationKey:(NSData*)authenticationKey bulkKey:(NSData*)bulkKey;
+- (instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo vaultId:(QredoQUID*)vaultId authenticationKey:(NSData*)authenticationKey bulkKey:(NSData*)bulkKey;
 - (instancetype)initWithData:(NSData *)serializedData;
 
 - (NSData *)data;
@@ -32,5 +32,5 @@ NS_ENUM(NSInteger, QredoCredentialType) {
 - (void)setVaultId:(QredoQUID*)newVaultId; // TODO: temporary!
 - (QredoQUID *)vaultId;
 
-- (QredoVaultKeyPair *)vaultKeys;
+- (QLFVaultKeyPair *)vaultKeys;
 @end

@@ -38,7 +38,7 @@ class AuthenticationManualTest: XCTestCase {
         XCTAssertNotNil(conversation, "failed to respond")
 
 
-        let credential1 = QredoCredential(
+        let credential1 = QLFCredential(
             serialNumber: "123",
             claimant: "Alice".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true),
             hashedClaim: QredoQUID().data(),
@@ -48,10 +48,10 @@ class AuthenticationManualTest: XCTestCase {
             attesterInfo: "VISA",
             signature: "signature".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true))
 
-        let claimMessage1 = QredoClaimMessage(claimHash: QredoQUID().data(), credential: credential1)
+        let claimMessage1 = QLFClaimMessage(claimHash: QredoQUID().data(), credential: credential1)
 
 
-        let authRequest = QredoAuthenticationRequest(
+        let authRequest = QLFAuthenticationRequest(
             claimMessages: [claimMessage1],
             conversationSecret: "secret".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true))
 

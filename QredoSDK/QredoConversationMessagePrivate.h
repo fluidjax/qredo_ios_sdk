@@ -3,6 +3,7 @@
  */
 
 #import "QredoConversationMessage.h"
+#import "QredoClient.h"
 
 typedef NS_ENUM(NSInteger, QredoConversationControlMessageType) {
     QredoConversationControlMessageTypeNotControlMessage = -2,
@@ -16,7 +17,7 @@ extern NSString *const kQredoConversationMessageTypeControl;
 
 @interface QredoConversationMessage (Private)
 
-- (instancetype)initWithMessageLF:(QredoConversationMessageLF*)messageLF incoming:(BOOL)incoming;
+- (instancetype)initWithMessageLF:(QLFConversationMessageLF*)messageLF incoming:(BOOL)incoming;
 // making read/write for private use
 @property QredoConversationHighWatermark *highWatermark;
 
@@ -24,6 +25,6 @@ extern NSString *const kQredoConversationMessageTypeControl;
 - (BOOL)isControlMessage;
 - (QredoConversationControlMessageType)controlMessageType;
 
-- (QredoConversationMessageLF*)messageLF;
+- (QLFConversationMessageLF*)messageLF;
 
 @end

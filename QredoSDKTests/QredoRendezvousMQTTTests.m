@@ -20,8 +20,9 @@
 }
 
 // This test has frequently helped in triggering intermittent bugs
-- (void)testCreateRendezvousMultiple {
-    
+- (void)testCreateRendezvousMultiple
+{
+    self.continueAfterFailure = NO;
     for (int i = 0; i < 10; i++)
     {
         NSLog(@"Test %d", i);

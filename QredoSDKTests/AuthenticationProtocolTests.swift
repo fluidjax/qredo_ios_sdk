@@ -14,8 +14,8 @@ class AuthenticationProtocolTests: BaseConversation {
     }
 
     func testFullCycle() {
-        let responseLF = QredoAuthenticationResponse(credentialValidationResults: [], sameIdentity: true, authenticatorCertChain: NSData(), signature: NSData())
-        let response = QredoPrimitiveMarshallers.marshalObject(responseLF, marshaller: QredoClientMarshallers.authenticationResponseMarshaller())
+        let responseLF = QLFAuthenticationResponse(credentialValidationResults: [], sameIdentity: true, authenticatorCertChain: NSData(), signature: NSData())
+        let response = QredoPrimitiveMarshallers.marshalObject(responseLF, marshaller: QLFAuthenticationResponse.marshaller())
         let responseMessage = QredoConversationMessage(value: response, dataType: "com.qredo.attestation.authentication.result", summaryValues: nil)
 
         sendRequest(responseMessage, expectErrorCode: nil)
@@ -30,8 +30,8 @@ class AuthenticationProtocolTests: BaseConversation {
     }
 
     func testWrong() {
-        let responseLF = QredoAuthenticationResponse(credentialValidationResults: [], sameIdentity: true, authenticatorCertChain: NSData(), signature: NSData())
-        let response = QredoPrimitiveMarshallers.marshalObject(responseLF, marshaller: QredoClientMarshallers.authenticationResponseMarshaller())
+        let responseLF = QLFAuthenticationResponse(credentialValidationResults: [], sameIdentity: true, authenticatorCertChain: NSData(), signature: NSData())
+        let response = QredoPrimitiveMarshallers.marshalObject(responseLF, marshaller: QLFAuthenticationResponse.marshaller())
         let responseMessage = QredoConversationMessage(value: response, dataType: "com.qredo.attestation.authentication.result.wrong", summaryValues: nil)
 
         sendRequest(responseMessage, expectErrorCode: QredoErrorCode.ConversationProtocolUnexpectedMessageType)
@@ -136,7 +136,7 @@ class AuthenticationProtocolTests: BaseConversation {
     func sendRequest(expectErrorCode: QredoErrorCode?, validatorDelegate : QredoConversationDelegate) {
         let authProtocol = QredoAuthenticationProtocol(conversation: responderConversation)
 
-        let credential1 = QredoCredential(
+        let credential1 = QLFCredential(
             serialNumber: "123",
             claimant: "Alice".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true),
             hashedClaim: QredoQUID().data(),
@@ -146,10 +146,10 @@ class AuthenticationProtocolTests: BaseConversation {
             attesterInfo: "VISA",
             signature: "signature".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true))
 
-        let claimMessage = QredoClaimMessage(claimHash: QredoQUID().data(), credential: credential1)
+        let claimMessage = QLFClaimMessage(claimHash: QredoQUID().data(), credential: credential1)
 
 
-        let authRequest = QredoAuthenticationRequest(
+        let authRequest = QLFAuthenticationRequest(
             claimMessages: [claimMessage],
             conversationSecret: "secret".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true))
 
