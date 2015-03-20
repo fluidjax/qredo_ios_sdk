@@ -388,6 +388,8 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
     }];
 
     XCTAssertNotNil(conversatoinFromVault);
+    XCTAssert([conversatoinFromVault.metadata.rendezvousTag isEqualToString:randomTag], @"Rendezvous tag should be the same");
+    XCTAssert([conversatoinFromVault.metadata.type isEqualToString:configuration.conversationType], @"Conversation type should be the same");
 
     // Making sure that we can use the fetched conversation
     __block XCTestExpectation *didPublishAnotherMessage = [self expectationWithDescription:@"did publish another message"];
@@ -507,7 +509,9 @@ static NSString *const kMessageTestValue2 = @"another hello, world";
 {    
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat"
+                                                                                                 durationSeconds:@600
+                                                                                                maxResponseCount:@1];
     
     __block QredoRendezvous *rendezvous = nil;
     

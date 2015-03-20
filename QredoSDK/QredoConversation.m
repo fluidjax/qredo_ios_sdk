@@ -216,6 +216,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata = [[QredoConversationMetadata alloc] init];
     _metadata.conversationId = descriptor.conversationId;
     _metadata.amRendezvousOwner = descriptor.amRendezvousOwner;
+    _metadata.rendezvousTag = descriptor.rendezvousTag;
+    _metadata.type = descriptor.conversationType;
 
     _yourPublicKey = [[QredoDhPublicKey alloc] initWithData:[descriptor.yourPublicKey bytes]];
     _myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:[descriptor.myKey.privKey bytes]];
@@ -701,7 +703,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_inboundSigningKey]
                                             operationType:[QLFOperationType operationList]
-                                                     marshalledData:nil
+                                           marshalledData:nil
                                                     error:&error];
 
     if (error) {

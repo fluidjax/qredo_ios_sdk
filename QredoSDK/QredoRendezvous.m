@@ -526,7 +526,8 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
     // Subscribe to conversations newer than our highwatermark
 
     NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:_hashedTag
-                                                        marshaller:[QredoPrimitiveMarshallers quidMarshaller]];
+                                                        marshaller:[QredoPrimitiveMarshallers quidMarshaller]
+                                                     includeHeader:NO];
     NSError *error = nil;
 
     QLFOwnershipSignature *ownershipSignature
