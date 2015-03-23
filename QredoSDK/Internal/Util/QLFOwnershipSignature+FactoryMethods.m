@@ -125,6 +125,22 @@
                                         error:error];
 }
 
++ (instancetype)ownershipSignatureForListVaultItemsWithSigner:(id<QredoSigner>)signer
+                                               sequenceStates:(NSSet *)sequenceStates
+                                                        error:(NSError **)error
+{
+    QredoMarshaller dataMarshaller
+    = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QLFVaultSequenceState marshaller]];
+    NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:sequenceStates
+                                                        marshaller:dataMarshaller includeHeader:NO];
+    
+    return [self ownershipSignatureWithSigner:signer
+                                operationType:[QLFOperationType operationList]
+                               marshalledData:payloadData
+                                        error:error];
+}
+
+
 + (NSData *)signatureWithSigner:(id<QredoSigner>)signer
         marshalledOperationType:(NSData *)marshalledOperationType
                  marshalledData:(NSData *)marshalledData

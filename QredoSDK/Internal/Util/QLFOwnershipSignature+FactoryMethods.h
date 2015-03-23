@@ -27,6 +27,10 @@
                                     vaultItemSequenceValues:(NSSet *)sequenceValues
                                                       error:(NSError **)error;
 
++ (instancetype)ownershipSignatureForListVaultItemsWithSigner:(id<QredoSigner>)signer
+                                               sequenceStates:(NSSet *)sequenceStates
+                                                        error:(NSError **)error;
+
 @end
 
 

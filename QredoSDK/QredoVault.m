@@ -615,15 +615,11 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 
 
     NSError *error = nil;
-
-    QredoMarshaller dataMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QLFVaultSequenceState marshaller]];
-    NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:sequenceStates marshaller:dataMarshaller includeHeader:NO];
-
+    
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
-                                            operationType:[QLFOperationType operationList]
-                                           marshalledData:payloadData
-                                                    error:&error];
+    = [QLFOwnershipSignature ownershipSignatureForListVaultItemsWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+                                                            sequenceStates:sequenceStates
+                                                                     error:&error];
 
     if (error) {
         completionHandler(error);
