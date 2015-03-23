@@ -168,6 +168,12 @@ static char ownershipSignature_getOp_signatureBytes[] = {
 };
 
 static char ownershipSignature_listOp_signatureBytes[] = {
+    0xd8, 0x6c, 0xcc, 0xe5, 0x0c, 0x5f, 0x0b, 0x86, 0x8d, 0xc0, 0x73, 0x36,
+    0xae, 0xe3, 0x42, 0x9a, 0x29, 0xcb, 0xe6, 0x53, 0xee, 0x8a, 0xb6, 0x7f,
+    0x91, 0x85, 0x4e, 0xa1, 0x5d, 0xde, 0x30, 0x44, 0xe0, 0xc6, 0x72, 0xe2,
+    0xcb, 0xe9, 0xf3, 0xca, 0xf9, 0x9e, 0x88, 0x8d, 0x88, 0x6d, 0x4a, 0xfa,
+    0x81, 0x27, 0x33, 0x0b, 0x77, 0x97, 0xf4, 0x43, 0x8c, 0x96, 0xda, 0x9f,
+    0x9e, 0xfc, 0x3d, 0x0d
 };
 
 static char ownershipSignature_deleteOp_signatureBytes[] = {
@@ -303,7 +309,19 @@ static char ownershipSignature_deleteOp_signatureBytes[] = {
 - (void)testListOperation
 {
     QLFOperationType *operationType = [QLFOperationType operationList];
+    NSSet *sequenceStates
+    = [NSSet setWithObject:[QLFVaultSequenceState vaultSequenceStateWithSequenceId:quidWithBytes(sequenceIdBytes)
+                                                                     sequenceValue:0]];
+    
     NSData *expectedSignature = dataWithBytes(ownershipSignature_listOp_signatureBytes);
+    [self assertOwnershipSignatureWithOperationType:operationType
+                                   exectedSiganture:expectedSignature
+                     ownershipSignatureCrationBlock:^QLFOwnershipSignature *(NSError *__autoreleasing *error)
+    {
+        return [QLFTestableOwnershipSignature ownershipSignatureForListVaultItemsWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:self.key]
+                                                                             sequenceStates:sequenceStates
+                                                                                      error:error];
+    }];
 }
 
 - (void)testDeleteOperation
