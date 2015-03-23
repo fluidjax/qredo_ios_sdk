@@ -22,25 +22,10 @@
                                      data:(id<QredoMarshallable>)data
                                     error:(NSError **)error;
 
-+ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
-                            operationType:(QLFOperationType *)operationType
-                                     data:(id<QredoMarshallable>)data
-                                    nonce:(QLFNonce *)nonce
-                                timestamp:(QLFTimestamp)timestamp
-                                    error:(NSError **)error;
-
-+ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
-                            operationType:(QLFOperationType *)operationType
-                           marshalledData:(NSData *)marshalledData
-                                    nonce:(QLFNonce *)nonce
-                                timestamp:(QLFTimestamp)timestamp
-                                    error:(NSError **)error;
-
-+ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
-                               operationType:(QLFOperationType *)operationType
-                         vaultItemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-                     vaultItemSequenceValues:(NSSet *)sequenceValues
-                                       error:(NSError **)error;
++ (instancetype)ownershipSignatureForGetVaultItemWithSigner:(id<QredoSigner>)signer
+                                        vaultItemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                                    vaultItemSequenceValues:(NSSet *)sequenceValues
+                                                      error:(NSError **)error;
 
 @end
 

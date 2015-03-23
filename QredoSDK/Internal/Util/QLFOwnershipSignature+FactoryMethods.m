@@ -16,7 +16,9 @@
     return [[NSDate date] timeIntervalSince1970] * 1000LL;
 }
 
-
++ (QLFNonce *)nonce {
+    return [NSData dataWithRandomBytesOfLength:16];
+}
 
 + (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                                operationType:(QLFOperationType *)operationType
@@ -26,7 +28,7 @@
     return [self ownershipSignatureWithSigner:signer
                                 operationType:operationType
                                marshalledData:marshalledData
-                                        nonce:[NSData dataWithRandomBytesOfLength:16]
+                                        nonce:[self nonce]
                                     timestamp:[self timestamp]
                                         error:error];
 }
@@ -40,7 +42,7 @@
     return [self ownershipSignatureWithSigner:signer
                                 operationType:operationType
                                          data:data
-                                        nonce:[NSData dataWithRandomBytesOfLength:16]
+                                        nonce:[self nonce]
                                     timestamp:[self timestamp]
                                         error:error];
 }
@@ -99,11 +101,10 @@
     return [self ownershipSignatureWithOp:operationType nonce:nonce timestamp:timestamp signature:signature];
 }
 
-+ (instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
-                               operationType:(QLFOperationType *)operationType
-                         vaultItemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-                     vaultItemSequenceValues:(NSSet *)sequenceValues
-                                       error:(NSError **)error
++ (instancetype)ownershipSignatureForGetVaultItemWithSigner:(id<QredoSigner>)signer
+                                        vaultItemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                                    vaultItemSequenceValues:(NSSet *)sequenceValues
+                                                      error:(NSError **)error
 {
     NSData *marshalledData = nil;
     NSMutableData *payloadData = [NSMutableData data];

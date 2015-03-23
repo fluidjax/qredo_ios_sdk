@@ -437,11 +437,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSSet *sequenceValues = [NSSet setWithObject:@(sequenceValue)];
     
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
-                                            operationType:[QLFOperationType operationGet]
-                                      vaultItemDescriptor:itemDescriptor
-                                  vaultItemSequenceValues:sequenceValues
-                                                    error:&error];
+    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+                                                     vaultItemDescriptor:itemDescriptor
+                                                 vaultItemSequenceValues:sequenceValues
+                                                                   error:&error];
     if (error) {
         completionHandler(nil, error);
         return;
@@ -499,11 +498,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSSet *sequenceValues = sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : [NSSet set];
     
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
-                                            operationType:[QLFOperationType operationGet]
-                                      vaultItemDescriptor:itemDescriptor
-                                  vaultItemSequenceValues:sequenceValues
-                                                    error:&error];
+    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+                                                     vaultItemDescriptor:itemDescriptor
+                                                 vaultItemSequenceValues:sequenceValues
+                                                                   error:&error];
     if (error) {
         completionHandler(nil, error);
         return;
