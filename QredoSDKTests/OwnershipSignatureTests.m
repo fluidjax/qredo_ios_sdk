@@ -12,6 +12,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
+#import "CryptoImplV1.h"
 
 
 // =============================================================================================================
@@ -202,9 +203,8 @@ static char ownershipSignature_listOp_signatureBytes[] = {
 {
     [super setUp];
     
-    self.key = [self signingKeyWithSigningKeyData:dataWithBytes(privateKeyBytes)
-                                    publicKeyData:dataWithBytes(publicKeyBytes)];
-    
+    self.key = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:dataWithBytes(privateKeyBytes)];
+    NSAssert([self.key.verifyKey.data isEqual:dataWithBytes(publicKeyBytes)], @"The created key is malformed.");
     
     self.nonce = dataWithBytes(ownershipSignature_nonceBytes);
     self.timestamp = ownershipSignature_timestamp;
