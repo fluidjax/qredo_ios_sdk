@@ -157,11 +157,12 @@ static char ownershipSignature_createOp_signatureBytes[] = {
     0x1f, 0x64, 0xa3, 0x06
 };
 
+static char ownershipSignature_listOp_signatureBytes[] = {
+};
+
 static char ownershipSignature_deleteOp_signatureBytes[] = {
 };
 
-static char ownershipSignature_listOp_signatureBytes[] = {
-};
 
 
 
@@ -242,19 +243,19 @@ static char ownershipSignature_listOp_signatureBytes[] = {
     [self assertOwnershipSignatureWithOperationType:operationType data:vaultItem exectedSiganture:expectedSignature];
 }
 
-- (void)testDeleteOperation
-{
-    QLFOperationType *operationType = [QLFOperationType operationDelete];
-    NSData *expectedSignature = dataWithBytes(ownershipSignature_deleteOp_signatureBytes);
-
-//    [self assertOwnershipSignatureWithOperationType:operationType data:<#data#> exectedSiganture:expectedSignature];
-}
-
 - (void)testListOperation
 {
     QLFOperationType *operationType = [QLFOperationType operationList];
     NSData *expectedSignature = dataWithBytes(ownershipSignature_listOp_signatureBytes);
 //    [self assertOwnershipSignatureWithOperationType:operationType data:<#data#> exectedSiganture:expectedSignature];
+}
+
+- (void)testDeleteOperation
+{
+    QLFOperationType *operationType = [QLFOperationType operationDelete];
+    NSData *expectedSignature = dataWithBytes(ownershipSignature_deleteOp_signatureBytes);
+    
+    //    [self assertOwnershipSignatureWithOperationType:operationType data:<#data#> exectedSiganture:expectedSignature];
 }
 
 
