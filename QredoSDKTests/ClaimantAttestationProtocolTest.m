@@ -406,10 +406,10 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
         = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"com.qredo.attesation.relyingparty"
                                                          durationSeconds:@(600)
                                                         maxResponseCount:@(1)];
-        
-        [qredoClient createRendezvousWithTag:tag
-                               configuration:configuration
-                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
+
+        [qredoClient createAnonymousRendezvousWithTag:tag
+                                        configuration:configuration
+                                    completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
          {
              self.rendezvous = rendezvous;
              rendezvous.delegate = self;

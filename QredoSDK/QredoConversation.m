@@ -412,7 +412,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
             QLFRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
 
-            // TODO [GR]: Take a view whether we need to show this error to the client code.
+            // TODO: [GR]: Take a view whether we need to show this error to the client code.
             
             if ([_rendezvousCrypto validateCreationInfo:creationInfo tag:rendezvousTag error:nil]) {
                 
@@ -777,8 +777,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     [_conversationService queryItemsWithQueueId:messageQueue
                                           after:sinceWatermark?[NSSet setWithObject:sinceWatermark.sequenceValue]:nil
-                                      fetchSize:[NSSet setWithObject:@100000] // TODO check what the logic should be
-//                                      signature:nil // TODO: ownership
+                                      fetchSize:[NSSet setWithObject:@100000] // TODO: check what the logic should be
                               completionHandler:^(QLFConversationQueryItemsResult *result, NSError *error)
      {
          if (error) {

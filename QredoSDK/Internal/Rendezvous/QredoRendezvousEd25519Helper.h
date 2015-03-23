@@ -4,7 +4,6 @@
 
 #import "QredoRendezvousHelper_Private.h"
 
-
 @interface QredoAbstractRendezvousEd25519Helper : QredoAbstractRendezvousHelper
 @end
 

@@ -275,14 +275,99 @@ static NSString *const QredoKeychainPassword = @"Password123";
 #pragma mark -
 #pragma mark Rendezvous
 
+// TODO: DH - Create unit tests for createAnonymousRendezvousWithTag
+- (void)createAnonymousRendezvousWithTag:(NSString *)tag
+                           configuration:(QredoRendezvousConfiguration *)configuration
+                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+{
+    // TODO: DH - validate that the configuration provided is an anonymous rendezvous
+
+    // Anonymous Rendezvous are created using the full tag, and signing handler is not used
+    [self createRendezvousWithTag:tag
+               authenticationType:QredoRendezvousAuthenticationTypeAnonymous
+                    configuration:configuration
+                   signingHandler:nil
+                completionHandler:completionHandler];
+}
+
+// TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (internal keys)
+- (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
+                             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                  configuration:(QredoRendezvousConfiguration *)configuration
+                              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+{
+    // TODO: DH - validate that the configuration provided is an authenticated rendezvous, and is not X.509 (which must use externally generated keys/certs, so must be the signing handler variant)
+    // TODO: DH - validate inputs (any which aren't validated later)
+    
+    // Authenticated Rendezvous with internally generated keys are created using just the optional prefix.
+    // @ is not part of the prefix and must not appear in prefix (this will be validated later)
+
+    // Nil, or empty prefix is fine. The final tag will have the public key appended, but keypair hasn't been
+    // generated yet, so for now just use @, and add prefix if provided
+    NSString *prefixedTag = @"@";
+    if (prefix) {
+        prefixedTag = [NSString stringWithFormat:@"%@@", prefix];
+    }
+
+    // Authenticated Rendezvous with internally generated keys. Signing handler is not used
+    [self createRendezvousWithTag:prefixedTag
+               authenticationType:authenticationType
+                    configuration:configuration
+                   signingHandler:nil
+                completionHandler:completionHandler];
+}
+
+// TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (external keys)
+- (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
+                             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                  configuration:(QredoRendezvousConfiguration *)configuration
+                                      publicKey:(NSString *)publicKey
+                                 signingHandler:(signDataBlock)signingHandler
+                              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+{
+    // TODO: DH - validate that the configuration provided is an authenticated rendezvous, and that public key is present
+    // TODO: DH - validate inputs (any which aren't validated later)
+    
+    // Authenticated Rendezvous with externally generated keys are created using optional prefix and mandatory
+    // public key data. @ is indicator of an authenticated rendebous but is not part of the prefix and must not
+    // appear in prefix, or public key parts
+
+    // The full tag is (optional) prefix and (mandatory) public key/cert appended
+    NSString *fullTag = nil;
+    if (prefix) {
+        // Prefix and public key
+        fullTag = [NSString stringWithFormat:@"%@@%@", prefix, publicKey];
+    }
+    else {
+        // Just public key
+        fullTag = [NSString stringWithFormat:@"@%@", publicKey];
+    }
+    
+    // Authenticated Rendezvous with externally generated keys. Signing handler is required
+    [self createRendezvousWithTag:fullTag
+               authenticationType:authenticationType
+                    configuration:configuration
+                   signingHandler:signingHandler
+                completionHandler:completionHandler];
+}
+
 - (void)createRendezvousWithTag:(NSString *)tag
+             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
+                 signingHandler:(signDataBlock)signingHandler
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
+    
+    // TODO: DH - validate configurations?
+    
     // although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
     dispatch_async(_rendezvousQueue, ^{
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self];
-        [rendezvous createRendezvousWithTag:tag configuration:configuration completionHandler:^(NSError *error) {
+        [rendezvous createRendezvousWithTag:tag
+                         authenticationType:authenticationType
+                              configuration:configuration
+                             signingHandler:signingHandler
+                          completionHandler:^(NSError *error) {
             if (error) {
                 completionHandler(nil, error);
             } else {
@@ -354,8 +439,13 @@ static NSString *const QredoKeychainPassword = @"Password123";
         if ([vaultItemMetadata.dataType isEqualToString:kQredoRendezvousVaultItemType]) {
 
             NSString *tag = [vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelTag];
+            QredoRendezvousAuthenticationType authenticationType
+            = [[vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
+
             QredoRendezvousMetadata *metadata
-            = [[QredoRendezvousMetadata alloc] initWithTag:tag vaultItemDescriptor:vaultItemMetadata.descriptor];
+            = [[QredoRendezvousMetadata alloc] initWithTag:tag
+                                        authenticationType:authenticationType
+                                       vaultItemDescriptor:vaultItemMetadata.descriptor];
 
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
             block(metadata, &stopObjectEnumeration);
@@ -430,6 +520,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
+            // TODO: DH - populate metadata.rendezvousMetadata
             metadata.conversationId = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelId];
             metadata.amRendezvousOwner = [[vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelAmOwner] boolValue];
             metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];

@@ -1,10 +1,6 @@
-//
-//  Dictionary+Contains.swift
-//  QredoSDK_nopods
-//
-//  Created by Dmitry Matyukhin on 20/11/2014.
-//
-//
+/*
+*  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+*/
 
 import Foundation
 
@@ -12,7 +8,7 @@ import Foundation
 extension Dictionary {
     func contains<K, V where V : Equatable>(subdictionary:[K:V]) -> Bool {
         for (key, value) in subdictionary {
-            let selfValue : Value? = self[key as Key]
+            let selfValue : Value? = self[key as! Key]
 
             if let actualValue = selfValue {
                 let subValue = subdictionary[key]!
@@ -21,7 +17,7 @@ extension Dictionary {
                     return false
                 }
 
-                if actualValue as V != subValue {
+                if actualValue as! V != subValue {
                     return false
                 }
             } else {
