@@ -5,7 +5,6 @@
 #import <Foundation/Foundation.h>
 #import "QredoTypes.h"
 
-
 @protocol CryptoImpl;
 @class QLFRendezvousAuthSignature;
 
@@ -14,12 +13,19 @@ static NSString *const QredoRendezvousHelperErrorDomain = @"QredoRendezvousHelpe
 
 typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
     
+    // TODO: DH - Remove unused error values
     QredoRendezvousHelperErrorUnknown = 0,
     QredoRendezvousHelperErrorMissingTag,
-    QredoRendezvousHelperErrorWrongSignatureType,
-    
+    QredoRendezvousHelperErrorMalformedTag,
+    QredoRendezvousHelperErrorAuthenticationTagMissing,
+    QredoRendezvousHelperErrorAuthenticationTagInvalid,
+    QredoRendezvousHelperErrorPublicKeyIdentifierMissing,
+    QredoRendezvousHelperErrorKeyGenerationFailed,
+    QredoRendezvousHelperErrorMissingDataToSign,
+    QredoRendezvousHelperErrorBadSignature,
+    QredoRendezvousHelperErrorSignatureHandlerMissing,
+    QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided,
 };
-
 
 /**
  * A helper for constructing rendezvous and validating authenticated rendezvous.

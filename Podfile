@@ -21,3 +21,40 @@ end
 target 'QredoSDKTests' do
 end
 
+post_install do |installer_representation|
+    puts "Processing post install steps"
+    installer_representation.project.targets.each do |target|
+        target.build_configurations.each do |config|
+
+            # Enable treating warnings as errors (for all configurations)
+            puts target.name + ": Treating warnings as errors"
+            config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'YES'
+
+            # For Debug configs, enable logging and code coverage measurements
+            if config.name == 'Debug'
+                puts target.name + ": Enabling Qredo logging"
+                definitions = '$(inherited)'
+                definitions += ' QREDO_LOG_ERROR'
+                definitions += ' QREDO_LOG_DEBUG'
+                definitions += ' QREDO_LOG_INFO'
+                definitions += ' QREDO_LOG_TRACE'
+                puts target.name + ": Enabling code coverage"
+                config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = definitions
+                config.build_settings['GCC_GENERATE_TEST_COVERAGE_FILES'] = 'YES'
+                config.build_settings['GCC_INSTRUMENT_PROGRAM_FLOW_ARCS'] = 'YES'
+            end
+        end
+
+        puts target.name + ": Adding clean profiler files shell script phase to target "
+        newPhase = target.new_shell_script_build_phase("Run Script (Remove .gcda Profiler Files)");
+        newPhase.shell_script = %q{echo "Cleaning Profiler Information"
+cd "${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}"
+# Delete *.gcda files in the current target
+rm -f *.gcda}
+        
+        # Move the new build phase to position 0 (must occur early on in the build)
+        target.build_phases.move(newPhase, 0)
+    end
+    puts "Completed post install"
+end
+

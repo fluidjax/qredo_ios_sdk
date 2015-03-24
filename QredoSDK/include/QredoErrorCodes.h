@@ -24,11 +24,13 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     QredoErrorCodeRendezvousAlreadyExists,
     QredoErrorCodeRendezvousUnknownResponse,
     QredoErrorCodeRendezvousWrongAuthenticationCode,
+    QredoErrorCodeRendezvousAccessControlKeyMissing,
+    QredoErrorCodeRendezvousAccessControlSignatureGenerationFailed,
 
     // Conversation errors
     QredoErrorCodeConversationUnknown = 4000,
     QredoErrorCodeConversationNotFound,
-    QredoErrorCodeConversatioinInvalidData,
+    QredoErrorCodeConversationInvalidData,
     QredoErrorCodeConversationWrongAuthenticationCode,
     QredoErrorCodeConversationDeleted,
 

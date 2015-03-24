@@ -156,7 +156,28 @@
 		78F868DB1A5F1A37009CAFFE /* QredoBase58.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F868D91A5F1A37009CAFFE /* QredoBase58.m */; };
 		840D86AE4E7AF880C6473A37 /* libPods-QredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7AE6692B1DA0D298F3A8A2 /* libPods-QredoSDK.a */; };
 		BAF7995EAF867BF94BC03324 /* libPods-LinguaFrancaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */; };
+		DC0EAA041A8A46B50059BA4C /* QredoSecKeyRefPairTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0EAA031A8A46B50059BA4C /* QredoSecKeyRefPairTests.m */; };
+		DC1B55161A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC1B55151A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m */; };
 		DC3A0FF41A6D313D003B4A73 /* QredoServiceInvokerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3A0FF31A6D313D003B4A73 /* QredoServiceInvokerTests.m */; };
+		DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */; };
+		DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */; };
+		DCC22DAE1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAD1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m */; };
+		DCC22DB01A88BC840047AB18 /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB505E1A65488500EE22FB /* TestCertificates.m */; };
+		DCC22DB31A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DB11A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.h */; };
+		DCC22DB41A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DB21A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.m */; };
+		DCC22DB71A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DB51A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.h */; };
+		DCC22DB81A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DB61A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.m */; };
+		DCC22DBA1A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DB91A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m */; };
+		DCC22DBC1A88F6E90047AB18 /* QredoRendezvousRsa4096PemHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DBB1A88F6E90047AB18 /* QredoRendezvousRsa4096PemHelperTests.m */; };
+		DCC22DBF1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DBD1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h */; };
+		DCC22DC01A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DBE1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m */; };
+		DCCB41521A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCB41511A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m */; };
+		DCCEED691A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */; };
+		DCDBA2B81A80B64A00C295D6 /* QredoRendezvousPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = DCDBA2B71A80B64A00C295D6 /* QredoRendezvousPrivate.h */; };
+		DCE378EA1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCE378E81A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h */; };
+		DCE378EB1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE378E91A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m */; };
+		DCEB505C1A601DE700EE22FB /* QredoCertificateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB505B1A601DE700EE22FB /* QredoCertificateUtilsTests.m */; };
+		DCEB505F1A65488500EE22FB /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB505E1A65488500EE22FB /* TestCertificates.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -376,7 +397,28 @@
 		BF3DA7D8DDBFBA6C2BF7FAA2 /* Pods-QredoSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LinguaFrancaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C87E16460AC916F97E987172 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC0EAA031A8A46B50059BA4C /* QredoSecKeyRefPairTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoSecKeyRefPairTests.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/QredoSecKeyRefPairTests.m"; sourceTree = "<group>"; };
+		DC1B55151A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousX509PemHelperTests.m; sourceTree = "<group>"; };
 		DC3A0FF31A6D313D003B4A73 /* QredoServiceInvokerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoServiceInvokerTests.m; path = "../../LinguaFranca/objc-wire-format/LinguaFrancaTests/QredoServiceInvokerTests.m"; sourceTree = "<group>"; };
+		DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoAuthenticatedRendezvousTag.h; sourceTree = "<group>"; };
+		DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoAuthenticatedRendezvousTag.m; sourceTree = "<group>"; };
+		DCC22DAD1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoAuthenticatedRendezvousTagTests.m; sourceTree = "<group>"; };
+		DCC22DB11A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousRsa2048PemHelper.h; sourceTree = "<group>"; };
+		DCC22DB21A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousRsa2048PemHelper.m; sourceTree = "<group>"; };
+		DCC22DB51A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousRsa4096PemHelper.h; sourceTree = "<group>"; };
+		DCC22DB61A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousRsa4096PemHelper.m; sourceTree = "<group>"; };
+		DCC22DB91A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousRsa2048PemHelperTests.m; sourceTree = "<group>"; };
+		DCC22DBB1A88F6E90047AB18 /* QredoRendezvousRsa4096PemHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = QredoRendezvousRsa4096PemHelperTests.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		DCC22DBD1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousRsaPemCommonHelper.h; sourceTree = "<group>"; };
+		DCC22DBE1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousRsaPemCommonHelper.m; sourceTree = "<group>"; };
+		DCCB41511A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousRsaPemCommonHelperTests.m; sourceTree = "<group>"; };
+		DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousAnonymousHelperTests.m; sourceTree = "<group>"; };
+		DCDBA2B71A80B64A00C295D6 /* QredoRendezvousPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoRendezvousPrivate.h; path = QredoSDK/QredoRendezvousPrivate.h; sourceTree = SOURCE_ROOT; };
+		DCE378E81A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousX509PemHelper.h; sourceTree = "<group>"; };
+		DCE378E91A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousX509PemHelper.m; sourceTree = "<group>"; };
+		DCEB505B1A601DE700EE22FB /* QredoCertificateUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = QredoCertificateUtilsTests.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/QredoCertificateUtilsTests.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		DCEB505D1A65488500EE22FB /* TestCertificates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = TestCertificates.h; path = "../../LinguaFranca/objc-wire-format/CryptoTests/TestCertificates.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		DCEB505E1A65488500EE22FB /* TestCertificates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TestCertificates.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/TestCertificates.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		FEDCDD7CF0D6354FC4675585 /* Pods-CryptoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CryptoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CryptoTests/Pods-CryptoTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -475,6 +517,7 @@
 				0A9DDDFC19ED374500B4248C /* QredoVaultPrivate.h */,
 				0A9DDDFD19ED3A1500B4248C /* QredoVault.m */,
 				0A85E6E619FAA95200775115 /* QredoRendezvous.m */,
+				DCDBA2B71A80B64A00C295D6 /* QredoRendezvousPrivate.h */,
 				0A8F5C5419FE911B0068C8D8 /* QredoConversationPrivate.h */,
 				0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */,
 				0A68F7561A77BF9F0045D21D /* QredoConversationMessagePrivate.h */,
@@ -502,6 +545,7 @@
 		0A16F8CC19C358B400639779 /* QredoSDKTests */ = {
 			isa = PBXGroup;
 			children = (
+				DC1B55131A81244400D2F8B1 /* Internal */,
 				0A65741E1A2F3C8800D5502E /* Categories */,
 				0A16F8CD19C358B400639779 /* Supporting Files */,
 				0AE3E5C91A361D2900EF192A /* KeychainTransporter */,
@@ -511,7 +555,6 @@
 				0A6573F51A2F3B7200D5502E /* ConversationTests.h */,
 				0A6573F61A2F3B7200D5502E /* ConversationTests.m */,
 				0A6573F81A2F3B7200D5502E /* HighwatermarksTests.m */,
-				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
 				0A6573FC1A2F3B7200D5502E /* QredoRendezvousMQTTTests.m */,
 				0A6573FD1A2F3B7200D5502E /* QredoRendezvousTests.h */,
 				0A6573FE1A2F3B7200D5502E /* QredoRendezvousTests.m */,
@@ -530,7 +573,6 @@
 				0A10352D1A38AEF7002479D9 /* KeychainTests.swift */,
 				786A473C1A40D9E60086A69B /* KeychainArchiverTests.swift */,
 				0A19C0221A6EA0A4004B5783 /* BaseConversation.swift */,
-				78B88F5D1A653E78009E3B01 /* RendezvousEd25519HelperTests.m */,
 				78BD42FB1A65763500FC015B /* Base58Tests.m */,
 				0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */,
 				0A19C0201A6E9F81004B5783 /* ConversationMessageStoreTests.swift */,
@@ -570,6 +612,16 @@
 				786DF4E41A5D76E4000B4164 /* QredoRendezvousAnonymousHelper.m */,
 				786DF4E71A5D76FB000B4164 /* QredoRendezvousEd25519Helper.h */,
 				786DF4E81A5D76FB000B4164 /* QredoRendezvousEd25519Helper.m */,
+				DCC22DB11A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.h */,
+				DCC22DB21A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.m */,
+				DCC22DB51A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.h */,
+				DCC22DB61A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.m */,
+				DCC22DBD1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h */,
+				DCC22DBE1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m */,
+				DCE378E81A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h */,
+				DCE378E91A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m */,
+				DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */,
+				DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */,
 			);
 			path = Rendezvous;
 			sourceTree = "<group>";
@@ -578,6 +630,7 @@
 			isa = PBXGroup;
 			children = (
 				0A6573C21A2DEA1100D5502E /* CryptoImplV1Tests.m */,
+				DCEB505B1A601DE700EE22FB /* QredoCertificateUtilsTests.m */,
 				0A6573C31A2DEA1100D5502E /* QredoCryptoTests.m */,
 				0A6573C41A2DEA1100D5502E /* QredoDhPrivateKeyTests.m */,
 				0A6573C51A2DEA1100D5502E /* QredoDhPublicKeyTests.m */,
@@ -588,6 +641,9 @@
 				0A6573CA1A2DEA1100D5502E /* QredoRsaBlindSignatureTests.m */,
 				0A6573CB1A2DEA1100D5502E /* QredoRsaPrivateKeyTests.m */,
 				0A6573CC1A2DEA1100D5502E /* QredoRsaPublicKeyTests.m */,
+				DC0EAA031A8A46B50059BA4C /* QredoSecKeyRefPairTests.m */,
+				DCEB505D1A65488500EE22FB /* TestCertificates.h */,
+				DCEB505E1A65488500EE22FB /* TestCertificates.m */,
 				0A6573B81A2DE88100D5502E /* Supporting Files */,
 			);
 			path = CryptoTests;
@@ -811,6 +867,29 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		DC1B55131A81244400D2F8B1 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				DC1B55141A81245100D2F8B1 /* Rendezvous */,
+			);
+			name = Internal;
+			sourceTree = "<group>";
+		};
+		DC1B55141A81245100D2F8B1 /* Rendezvous */ = {
+			isa = PBXGroup;
+			children = (
+				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
+				DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */,
+				78B88F5D1A653E78009E3B01 /* RendezvousEd25519HelperTests.m */,
+				DCC22DB91A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m */,
+				DCC22DBB1A88F6E90047AB18 /* QredoRendezvousRsa4096PemHelperTests.m */,
+				DCCB41511A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m */,
+				DC1B55151A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m */,
+				DCC22DAD1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m */,
+			);
+			name = Rendezvous;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -819,6 +898,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0AD2595B1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h in Headers */,
+				DCC22DBF1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h in Headers */,
 				0AADB0811A15848C00CFD014 /* Qredo.h in Headers */,
 				786DF4E11A5D5358000B4164 /* QredoRendezvousHelper.h in Headers */,
 				78E5E1B21A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.h in Headers */,
@@ -837,8 +917,12 @@
 				0AAB397A1AB1E0C000460797 /* NSDictionary+IndexableSet.h in Headers */,
 				78A2F1ED1A431F6C00974EFB /* QredoManagerAppRootViewController.h in Headers */,
 				78F0503B1A8B6E150043472E /* QredoAttestationInternal.h in Headers */,
+				DCC22DB31A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.h in Headers */,
+				DCDBA2B81A80B64A00C295D6 /* QredoRendezvousPrivate.h in Headers */,
 				0AADB0841A15848C00CFD014 /* QredoRendezvous.h in Headers */,
 				0AD2595F1A2F7CD800FC8942 /* QredoKeychainSenderQR.h in Headers */,
+				DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */,
+				DCC22DB71A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.h in Headers */,
 				78A2F2061A4455DA00974EFB /* UIButton+Qredo.h in Headers */,
 				0A27BEB61A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h in Headers */,
 				78A2F1F51A4320AF00974EFB /* QredoMainViewController.h in Headers */,
@@ -854,6 +938,7 @@
 				0AADB0851A15848C00CFD014 /* QredoConversation.h in Headers */,
 				0A64FFAC1A83F431004F8BFA /* QredoAuthenticationClaimsProtocol.h in Headers */,
 				78A2F2021A444A8E00974EFB /* UIColor+Qredo.h in Headers */,
+				DCE378EA1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h in Headers */,
 				0AD9A1991A2773C800E300BC /* QredoErrorCodes.h in Headers */,
 				0AAB39751AB1DA8D00460797 /* QredoClient.h in Headers */,
 				0AD2596B1A2F943800FC8942 /* QredoKeychainSender.h in Headers */,
@@ -869,6 +954,7 @@
 			buildConfigurationList = 0A16F8CF19C358B400639779 /* Build configuration list for PBXNativeTarget "QredoSDK" */;
 			buildPhases = (
 				A4D230993ACB1C91984416F9 /* Check Pods Manifest.lock */,
+				DCCB414C1A94E57D00FEFE04 /* ShellScript */,
 				0A16F8BC19C358B400639779 /* Sources */,
 				0A16F8BD19C358B400639779 /* Frameworks */,
 				0A16F8BE19C358B400639779 /* CopyFiles */,
@@ -888,6 +974,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A16F8D219C358B400639779 /* Build configuration list for PBXNativeTarget "QredoSDKTests" */;
 			buildPhases = (
+				DCCB414D1A94E5BE00FEFE04 /* ShellScript */,
 				0A16F8C719C358B400639779 /* Sources */,
 				0A16F8C819C358B400639779 /* Frameworks */,
 				0A16F8C919C358B400639779 /* Resources */,
@@ -906,6 +993,7 @@
 			buildConfigurationList = 0A6573C11A2DE88100D5502E /* Build configuration list for PBXNativeTarget "CryptoTests" */;
 			buildPhases = (
 				F44EE6B232E54EAD1EB532F7 /* Check Pods Manifest.lock */,
+				DCCB414E1A94E5CA00FEFE04 /* Run Script (Remove .gcda Profiler Files) */,
 				0A6573B21A2DE88100D5502E /* Sources */,
 				0A6573B31A2DE88100D5502E /* Frameworks */,
 				0A6573B41A2DE88100D5502E /* Resources */,
@@ -926,6 +1014,7 @@
 			buildConfigurationList = 0A6573E41A2DEBA300D5502E /* Build configuration list for PBXNativeTarget "LinguaFrancaTests" */;
 			buildPhases = (
 				195D91B54897DC81CC9DD289 /* Check Pods Manifest.lock */,
+				DCCB414F1A94E5D900FEFE04 /* ShellScript */,
 				0A6573DA1A2DEBA300D5502E /* Sources */,
 				0A6573DB1A2DEBA300D5502E /* Frameworks */,
 				0A6573DC1A2DEBA300D5502E /* Resources */,
@@ -944,6 +1033,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0AD259911A2F98F300FC8942 /* Build configuration list for PBXNativeTarget "KeychainTransporterTestUI" */;
 			buildPhases = (
+				DCCB41501A94E5EC00FEFE04 /* ShellScript */,
 				0AD259711A2F98F300FC8942 /* Sources */,
 				0AD259721A2F98F300FC8942 /* Frameworks */,
 				0AD259731A2F98F300FC8942 /* Resources */,
@@ -1100,6 +1190,72 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CryptoTests/Pods-CryptoTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DCCB414C1A94E57D00FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
+		DCCB414D1A94E5BE00FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
+		DCCB414E1A94E5CA00FEFE04 /* Run Script (Remove .gcda Profiler Files) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (Remove .gcda Profiler Files)";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
+		DCCB414F1A94E5D900FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
+		DCCB41501A94E5EC00FEFE04 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"Cleaning Profiler Information\"\ncd \"${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}\"\n# Delete *.gcda files in the current target\nrm -f *.gcda";
+		};
 		DF3B137B78C6BFD1A7DF97BC /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1149,9 +1305,11 @@
 				0A16F8DE19C3591700639779 /* QredoVaultCrypto.m in Sources */,
 				786DF4E21A5D5358000B4164 /* QredoRendezvousHelper.m in Sources */,
 				0A519B651A9E483100182499 /* QredoUpdateListener.m in Sources */,
+				DCC22DC01A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m in Sources */,
 				786DF4EF1A5D80C0000B4164 /* QredoRendezvousHelpers.m in Sources */,
 				78A2F1F21A431F8900974EFB /* QredoWelcomeViewController.m in Sources */,
 				786DF4E61A5D76E4000B4164 /* QredoRendezvousAnonymousHelper.m in Sources */,
+				DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */,
 				0AD259681A2F93F800FC8942 /* QredoKeychainReceiver.m in Sources */,
 				0AD259701A2F947700FC8942 /* QredoDeviceInfo.m in Sources */,
 				786DF4EA1A5D76FB000B4164 /* QredoRendezvousEd25519Helper.m in Sources */,
@@ -1166,16 +1324,19 @@
 				0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */,
 				0AD259601A2F7CD800FC8942 /* QredoKeychainSenderQR.m in Sources */,
 				78E5E1B31A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.m in Sources */,
+				DCE378EB1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m in Sources */,
 				78E5E1AB1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m in Sources */,
 				78F868DB1A5F1A37009CAFFE /* QredoBase58.m in Sources */,
 				0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */,
 				78AB8C731A8156DC00A3CCA7 /* QredoClaimantAttestationSession.m in Sources */,
 				0AD2596C1A2F943800FC8942 /* QredoKeychainSender.m in Sources */,
 				0AE25AE61AB90B0200C10F02 /* QredoSigner.m in Sources */,
+				DCC22DB81A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.m in Sources */,
 				781D137F1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m in Sources */,
 				0A10352C1A389DFD002479D9 /* QredoKeychain.m in Sources */,
 				0A16F8DA19C3590700639779 /* QredoVaultSequenceCache.m in Sources */,
 				78F0503C1A8B6E150043472E /* QredoAttestationInternal.m in Sources */,
+				DCC22DB41A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.m in Sources */,
 				78A2F2071A4455DA00974EFB /* UIButton+Qredo.m in Sources */,
 				0AA03C8919E2E6CF00F2CF43 /* Qredo.m in Sources */,
 				0A16F99019C6F62200639779 /* QredoRendezvousCrypto.m in Sources */,
@@ -1210,19 +1371,26 @@
 				0A6574101A2F3B7200D5502E /* HighwatermarksTests.m in Sources */,
 				78BD42FC1A65763500FC015B /* Base58Tests.m in Sources */,
 				7889976F1A9CDD1600D563FA /* ConversationProtocolTest.m in Sources */,
+				DCCB41521A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m in Sources */,
+				DCC22DAE1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m in Sources */,
 				0A65740E1A2F3B7200D5502E /* ConversationTests.m in Sources */,
 				0A19C0211A6E9F81004B5783 /* ConversationMessageStoreTests.swift in Sources */,
 				0AEE5C5E1A5C13B10018BE19 /* ControlMessagesTests.swift in Sources */,
 				0A65741A1A2F3B7200D5502E /* QredoVaultTests.m in Sources */,
+				DCC22DB01A88BC840047AB18 /* TestCertificates.m in Sources */,
+				DCC22DBC1A88F6E90047AB18 /* QredoRendezvousRsa4096PemHelperTests.m in Sources */,
 				0ABF4D971A5D84F20096BF19 /* ConversationBlockDelegate.swift in Sources */,
 				7810CC5C1A388BCE00421892 /* KeychainTransporterTests.swift in Sources */,
 				0A6574141A2F3B7200D5502E /* QredoRendezvousTests.m in Sources */,
 				0A65740F1A2F3B7200D5502E /* Dictionary+Contains.swift in Sources */,
+				DC1B55161A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m in Sources */,
 				0A65741D1A2F3B7200D5502E /* RendezvousListenerTests.m in Sources */,
 				0A38C5F81A8CDAE700C458A7 /* AuthenticationManualTest.swift in Sources */,
 				7810CC5E1A388BCE00421892 /* KeychainReceiverMock.swift in Sources */,
+				DCC22DBA1A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m in Sources */,
 				7810CC5D1A388BCE00421892 /* KeychainSenderMock.swift in Sources */,
 				0A65740D1A2F3B7200D5502E /* ConversationMQTTTests.m in Sources */,
+				DCCEED691A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m in Sources */,
 				0A6574121A2F3B7200D5502E /* QredoRendezvousCryptoTest.m in Sources */,
 				0A6574161A2F3B7200D5502E /* QredoTestUtils.m in Sources */,
 				0A65741C1A2F3B7200D5502E /* QredoVaultUpdateTests.m in Sources */,
@@ -1242,8 +1410,11 @@
 				0A6573CE1A2DEA1100D5502E /* CryptoImplV1Tests.m in Sources */,
 				0A6573D31A2DEA1100D5502E /* QredoKeyPairTests.m in Sources */,
 				0A6573D51A2DEA1100D5502E /* QredoPSSTests.m in Sources */,
+				DCEB505C1A601DE700EE22FB /* QredoCertificateUtilsTests.m in Sources */,
 				0A6573D61A2DEA1100D5502E /* QredoRsaBlindSignatureTests.m in Sources */,
+				DCEB505F1A65488500EE22FB /* TestCertificates.m in Sources */,
 				0A6573D41A2DEA1100D5502E /* QredoKeyTests.m in Sources */,
+				DC0EAA041A8A46B50059BA4C /* QredoSecKeyRefPairTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1308,12 +1479,15 @@
 		0A16F88B19C3566B00639779 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
+				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					QREDO_LOG_ERROR,
 					QREDO_LOG_INFO,
 					QREDO_LOG_DEBUG,
 					QREDO_LOG_TRACE,
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				ONLY_ACTIVE_ARCH = YES;
 			};
 			name = Debug;
@@ -1321,6 +1495,7 @@
 		0A16F88C19C3566B00639779 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Release;
 		};
@@ -1352,7 +1527,6 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -1390,7 +1564,6 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

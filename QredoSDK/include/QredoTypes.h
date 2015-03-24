@@ -19,4 +19,6 @@ typedef NS_ENUM(NSUInteger, QredoRendezvousAuthenticationType) {
     QredoRendezvousAuthenticationTypeRsa4096Pem
 };
 
+typedef NSData * (^signDataBlock)(NSData *data, QredoRendezvousAuthenticationType authenticationType);
+
 #endif

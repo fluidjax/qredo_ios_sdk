@@ -176,8 +176,8 @@ static char ownershipSignature_listOp_signatureBytes[] = {
     0x9e, 0xfc, 0x3d, 0x0d
 };
 
-static char ownershipSignature_deleteOp_signatureBytes[] = {
-};
+//static char ownershipSignature_deleteOp_signatureBytes[] = {
+//};
 
 
 
@@ -326,8 +326,8 @@ static char ownershipSignature_deleteOp_signatureBytes[] = {
 
 - (void)testDeleteOperation
 {
-    QLFOperationType *operationType = [QLFOperationType operationDelete];
-    NSData *expectedSignature = dataWithBytes(ownershipSignature_deleteOp_signatureBytes);
+//    QLFOperationType *operationType = [QLFOperationType operationDelete];
+//    NSData *expectedSignature = dataWithBytes(ownershipSignature_deleteOp_signatureBytes);
 }
 
 

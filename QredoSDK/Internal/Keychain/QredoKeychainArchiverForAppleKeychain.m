@@ -5,6 +5,8 @@
 #import "QredoKeychainArchiverForAppleKeychain.h"
 #import "QredoKeychain.h"
 #import "QredoErrorCodes.h"
+#import "QredoLogging.h"
+#import "QredoCrypto.h"
 
 static NSString *kUnderlyingErrorSource = @"Underlying error source";
 static NSString *kUnderlyingErrorCode = @"Underlying error code";
@@ -24,12 +26,15 @@ static NSString *kCurrentService = @"CurrentService";
         
         OSStatus deleteSanityCheck = [self deleteQredoKeychainWithIdentifier:identifier error:error];
         if (deleteSanityCheck != noErr) {
-            *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
-                      @{
-                        kUnderlyingErrorSource : @"SecItemDelete",
-                        kUnderlyingErrorCode : @(deleteSanityCheck),
-                        }
-                      ];
+            if (error) {
+                *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved
+                                         userInfo:
+                          @{
+                            kUnderlyingErrorSource : @"SecItemDelete",
+                            kUnderlyingErrorCode : @(deleteSanityCheck),
+                            }
+                          ];
+            }
             return NO;
         }
         return YES;
@@ -43,12 +48,15 @@ static NSString *kCurrentService = @"CurrentService";
         
         OSStatus deleteSanityCheck = [self deleteQredoKeychainWithIdentifier:identifier error:error];
         if (deleteSanityCheck != noErr) {
-            *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
-                      @{
-                        kUnderlyingErrorSource : @"SecItemDelete",
-                        kUnderlyingErrorCode : @(deleteSanityCheck),
-                        }
-                      ];
+            if (error) {
+                *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
+                          @{
+                            kUnderlyingErrorSource : @"SecItemDelete",
+                            kUnderlyingErrorCode : @(deleteSanityCheck),
+                            }
+                          ];
+            }
             return NO;
         }
         
@@ -56,7 +64,7 @@ static NSString *kCurrentService = @"CurrentService";
         if (error) {
             *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeSaved userInfo:
                       @{
-                        kUnderlyingErrorSource : @"SecItemCopyMatching",
+                        kUnderlyingErrorSource : @"fixedSecItemCopyMatching",
                         kUnderlyingErrorCode : @(querySanityCheck),
                         }
                       ];
@@ -100,13 +108,15 @@ static NSString *kCurrentService = @"CurrentService";
     [queryDictionary setObject:@YES forKey:(__bridge id<NSCopying>)(kSecReturnAttributes)];
     [queryDictionary setObject:@YES forKey:(__bridge id<NSCopying>)(kSecReturnData)];
     
+    LogDebug(@"loadQredoKeychainWithIdentifier is calling fixedSecItemCopyMatching for identifier: '%@'", identifier);
+
     CFDictionaryRef result = nil;
-    OSStatus sanityCheck = SecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary), (CFTypeRef *)&result);
+    OSStatus sanityCheck = fixedSecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary), (CFTypeRef *)&result);
     
     if (sanityCheck == errSecItemNotFound) {
         *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeFound userInfo:
                   @{
-                    kUnderlyingErrorSource : @"SecItemCopyMatching",
+                    kUnderlyingErrorSource : @"fixedSecItemCopyMatching",
                     kUnderlyingErrorCode : @(sanityCheck),
                     }
                   ];
@@ -114,7 +124,7 @@ static NSString *kCurrentService = @"CurrentService";
     } else if (sanityCheck != noErr) {
         *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:
                   @{
-                    kUnderlyingErrorSource : @"SecItemCopyMatching",
+                    kUnderlyingErrorSource : @"fixedSecItemCopyMatching",
                     kUnderlyingErrorCode : @(sanityCheck),
                     }
                   ];
@@ -126,7 +136,7 @@ static NSString *kCurrentService = @"CurrentService";
     if (!keychainData) {
         *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:
                   @{
-                    kUnderlyingErrorSource : @"SecItemCopyMatching",
+                    kUnderlyingErrorSource : @"fixedSecItemCopyMatching",
                     kUnderlyingErrorCode : @(sanityCheck),
                     }
                   ];
@@ -185,6 +195,8 @@ static NSString *kCurrentService = @"CurrentService";
 
 - (OSStatus)hasQredoKeychainWithIdentifier:(NSString *)identifier {
     
+    LogDebug(@"hasQredoKeychainWithIdentifier is calling fixedSecItemCopyMatching for identifier: '%@'", identifier);
+
     NSMutableDictionary *queryDictionary = [[NSMutableDictionary alloc] init];
     [queryDictionary setObject: (__bridge id)kSecClassGenericPassword forKey: (__bridge id<NSCopying>)kSecClass];
     [queryDictionary setObject:kCurrentService forKey:(__bridge id<NSCopying>)kSecAttrService];
@@ -192,7 +204,7 @@ static NSString *kCurrentService = @"CurrentService";
     [queryDictionary setObject:@YES forKey:(__bridge id<NSCopying>)(kSecReturnAttributes)];
     
     CFDictionaryRef result = nil;
-    return SecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary), (CFTypeRef *)&result);
+    return fixedSecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary), (CFTypeRef *)&result);
 }
 
 

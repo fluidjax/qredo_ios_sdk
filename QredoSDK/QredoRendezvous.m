@@ -31,14 +31,19 @@ static const double kQredoRendezvousUpdateInterval = 1.0; // seconds - polling p
 static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
+NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticationType";
 
 @implementation QredoRendezvousMetadata
 
-- (instancetype)initWithTag:(NSString*)tag vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
+- (instancetype)initWithTag:(NSString*)tag
+         authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+        vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor
+{
     self = [super init];
     if (!self) return nil;
 
-    self.tag = tag;
+    _tag = [tag copy];
+    _authenticationType = authenticationType;
     _vaultItemDescriptor = vaultItemDescriptor;
 
     return self;
@@ -64,16 +69,10 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
 
 - (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
 {
-    return [self initWithConversationType:conversationType authenticationType:QredoRendezvousAuthenticationTypeAnonymous durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:transCap];
-}
-
-- (instancetype)initWithConversationType:(NSString*)conversationType authenticationType:(QredoRendezvousAuthenticationType)authenticationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
-{
     self = [super init];
     if (!self) return nil;
     
-    _conversationType = conversationType;
-    _authenticationType = authenticationType;
+    _conversationType = [conversationType copy];
     _durationSeconds = durationSeconds;
     _maxResponseCount = maxResponseCount;
     _transCap = transCap;
@@ -108,7 +107,8 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
 
 // making the properties read/write for private use
 @property QredoRendezvousConfiguration *configuration;
-@property NSString *tag;
+@property (readwrite, copy) NSString *tag;
+@property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 
 - (NSSet *)maybe:(id)object;
 
@@ -151,9 +151,16 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
     return self;
 }
 
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void(^)(NSError *error))completionHandler
+- (void)createRendezvousWithTag:(NSString *)tag
+             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                  configuration:(QredoRendezvousConfiguration *)configuration
+                 signingHandler:(signDataBlock)signingHandler
+              completionHandler:(void(^)(NSError *error))completionHandler
 {
     LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
+    
+    // TODO: DH - write tests 
+    // TODO: DH - validate that the configuration and tag formats match
     
     self.configuration = configuration;
     QredoRendezvousCrypto *_crypto = [QredoRendezvousCrypto instance];
@@ -162,10 +169,14 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
 
+    
     NSError *error = nil;
-    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag error:&error];
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:authenticationType
+                                                                                              fullTag:tag
+                                                                                       signingHandler:signingHandler
+                                                                                                error:&error];
     if (!rendezvousHelper) {
-        // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+        // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
         // be to much information.
         completionHandler(error);
         return;
@@ -208,7 +219,7 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
     } else {
         QLFRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode error:&error];
         if (!authSignature) {
-            // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+            // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
             // be to much information.
             completionHandler(error);
             return;
@@ -268,15 +279,22 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:_descriptor
                                                                  marshaller:[QLFRendezvousDescriptor marshaller]];
 
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
-                                                                                 accessLevel:0
-                                                                               summaryValues:@{kQredoRendezvousVaultItemLabelTag: _tag}];
+    QredoVaultItemMetadata *metadata
+    = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
+                                                accessLevel:0
+                                              summaryValues:@{
+                                                              kQredoRendezvousVaultItemLabelTag: self.tag,
+                                                              kQredoRendezvousVaultItemLabelAuthenticationType:
+                                                                  [NSNumber numberWithInt:self.authenticationType]
+                                                              }];
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-        completionHandler(error);
-    }];
+    [_client.systemVault strictlyPutNewItem:vaultItem
+                                     itemId:itemId
+                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+                              completionHandler(error);
+                          }];
 }
 
 @end
@@ -489,7 +507,9 @@ NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
     QLFVaultItemId *itemId = [vault itemIdWithName:_tag type:kQredoRendezvousVaultItemType];
     QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:itemId];
 
-    return [[QredoRendezvousMetadata alloc] initWithTag:self.tag vaultItemDescriptor:descriptor];
+    return [[QredoRendezvousMetadata alloc] initWithTag:self.tag
+                                     authenticationType:self.authenticationType
+                                    vaultItemDescriptor:descriptor];
 }
 
 #pragma mark -

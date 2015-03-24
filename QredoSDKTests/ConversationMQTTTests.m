@@ -34,10 +34,11 @@
 - (void)testConversationMultiple
 {
     self.continueAfterFailure = NO;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 20; i++)
     {
-        NSLog(@"Test %d", i);
+        NSLog(@"\n\n\n\n******** Start Test %d ********\n", i);
         [super testConversation];
+        NSLog(@"\n******** End Test %d ********\n\n\n\n", i);
     }
 }
 

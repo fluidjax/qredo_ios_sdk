@@ -436,7 +436,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
             QLFRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
 
-            // TODO [GR]: Take a view whether we need to show this error to the client code.
+            // TODO: [GR]: Take a view whether we need to show this error to the client code.
             
             if ([_rendezvousCrypto validateCreationInfo:creationInfo tag:rendezvousTag error:nil]) {
                 
@@ -851,7 +851,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
              return;
          }
 
-         LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
+         LogDebug(@"Enumeration query returned %lu conversation items(s)", (unsigned long)result.items.count);
 
          // There are a few complications when asynchronosity is added
          // 1. We need to wait until the messages is stored before returning it to the user,

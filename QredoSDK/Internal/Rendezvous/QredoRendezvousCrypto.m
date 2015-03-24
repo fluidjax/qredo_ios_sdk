@@ -127,10 +127,11 @@
     
     LogDebug(@"Attempting to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
 
-    BOOL success = [QredoCrypto generateRsaKeyPairOfLength:2048
-                                       publicKeyIdentifier:publicKeyId
-                                      privateKeyIdentifier:privateKeyId persistInAppleKeychain:YES];
-    if (!success) {
+    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:2048
+                                                         publicKeyIdentifier:publicKeyId
+                                                        privateKeyIdentifier:privateKeyId
+                                                      persistInAppleKeychain:YES];
+    if (!keyPairRef) {
         // TODO: What should happen if keypair generation failed? More than just log it
         LogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
     }
@@ -216,9 +217,9 @@
     return isValidAuthCode && isValidSignature;
 }
 
-- (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType prefix:(NSString *)tag error:(NSError **)error
+- (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType fullTag:(NSString *)tag signingHandler:(signDataBlock)signingHandler error:(NSError **)error
 {
-    return [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:authenticationType prefix:tag crypto:_crypto error:error];
+    return [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:authenticationType fullTag:tag crypto:_crypto signingHandler:signingHandler error:error];
 }
 
 - (id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthType:(QLFRendezvousAuthType *)authType fullTag:(NSString *)tag error:(NSError **)error

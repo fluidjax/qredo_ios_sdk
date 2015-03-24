@@ -7,7 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-
+#import "NSData+QredoRandomData.h"
 
 
 static inline NSData *createRandomData() {
@@ -36,7 +36,10 @@ static inline NSString *createRandomEncodedValue() {
         dataBytes[byteIndex] = kAlphabet[rand() % 58];
     }
     
-    return [NSString stringWithCharacters:dataBytes length:dataLength];
+    NSString *encodedValue = [NSString stringWithCharacters:dataBytes length:dataLength];
+    free(dataBytes);
+    
+    return encodedValue;
 }
 
 
@@ -137,6 +140,7 @@ static inline NSString *createRandomEncodedValue() {
         
         NSData *dataToEncode = createRandomData();
         NSString *encodedValue = [QredoBase58 encodeData:dataToEncode];
+        
         error = nil;
         NSData *decodedData = [QredoBase58 decodeData:encodedValue error:&error];
         XCTAssertNotNil(decodedData);
@@ -148,7 +152,7 @@ static inline NSString *createRandomEncodedValue() {
         }
         
         if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests testRandomEquality] iterations: %@k", @(i/1000));
+            NSLog(@"[Base58Tests EncodingAndDecodingRandomEquality] iterations: %@k", @(i/1000));
         }
         
     }
@@ -177,7 +181,7 @@ static inline NSString *createRandomEncodedValue() {
         }
         
         if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests testRandomEquality] iterations: %@k", @(i/1000));
+            NSLog(@"[Base58Tests DecodingAndEncodingRandomEquality] iterations: %@k", @(i/1000));
         }
         
     }
@@ -206,7 +210,7 @@ static inline NSString *createRandomEncodedValue() {
         }
         
         if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests testRandomEquality] iterations: %@k", @(i/1000));
+            NSLog(@"[Base58Tests EncodingRandomInequality] iterations: %@k", @(i/1000));
         }
         
     }
@@ -243,10 +247,50 @@ static inline NSString *createRandomEncodedValue() {
         }
         
         if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests testRandomEquality] iterations: %@k", @(i/1000));
+            NSLog(@"[Base58Tests DecodingRandomInequality] iterations: %@k", @(i/1000));
         }
         
     }
+}
+
+- (void)test_0090_EncodingExpansionTest
+{
+    NSUInteger kIterations = 100000;
+    
+    // Confirm lengths of data that base58 encoding 32 bytes of random data produces (10m iterations showed 42 to 44 bytes)
+    const NSUInteger lengthOfInputData = 32;
+    const NSUInteger expectedMinLengthOfEncodedString = 42;
+    const NSUInteger expectedMaxLengthOfEncodedString = 44;
+    
+    NSUInteger minEncodedLength = NSUIntegerMax;
+    NSUInteger maxEncodedLength = 0;
+    
+    for (int i = 1; i <= kIterations; i++) {
+        
+        NSData *dataToEncode = [NSData dataWithRandomBytesOfLength:lengthOfInputData];
+        NSString *encodedString = [QredoBase58 encodeData:dataToEncode];
+        
+        if (encodedString.length < minEncodedLength) {
+            minEncodedLength = encodedString.length;
+        }
+        
+        if (encodedString.length > maxEncodedLength) {
+            maxEncodedLength = encodedString.length;
+        }
+        
+        XCTAssertTrue(encodedString.length <= expectedMaxLengthOfEncodedString);
+        XCTAssertTrue(encodedString.length >= expectedMinLengthOfEncodedString);
+
+        if ((i % 10000) == 0) {
+            NSLog(@"[Base58Tests EncodingExpansionTest] iterations: %@k", @(i/1000));
+        }
+    }
+    
+    NSLog(@"Encoded %lu random bytes %lu times. Min length to encode: %lu.  Max length to encode: %lu",
+          (unsigned long)lengthOfInputData,
+          (unsigned long)kIterations,
+          (unsigned long)minEncodedLength,
+          (unsigned long)maxEncodedLength);
 }
 
 @end
