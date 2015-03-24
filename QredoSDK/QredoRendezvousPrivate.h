@@ -29,7 +29,7 @@
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 
 - (instancetype)initWithClient:(QredoClient *)client;
-- (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QredoRendezvousDescriptor*)descriptor;
+- (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFRendezvousDescriptor*)descriptor;
 - (void)createRendezvousWithTag:(NSString *)tag
              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration

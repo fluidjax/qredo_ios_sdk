@@ -10,9 +10,9 @@
 
 - (instancetype)initWithBulkKey:(NSData *)bulkKey authenticationKey:(NSData *)authenticationKey;
 
-- (QredoEncryptedVaultItem *)encryptVaultItemLF:(QredoVaultItemLF *)vaultItemLF
-                                     descriptor:(QredoInternalVaultItemDescriptor *)vaultItemDescriptor;
-- (QredoVaultItemLF *)decryptEncryptedVaultItem:(QredoEncryptedVaultItem *)encryptedVaultItem;
-- (QredoVaultItemMetaDataLF *)decryptEncryptedVaultItemMetaData:(QredoEncryptedVaultItemMetaData *)encryptedVaultItemMetaData;
+- (QLFEncryptedVaultItem *)encryptVaultItemLF:(QLFVaultItemLF *)vaultItemLF
+                                   descriptor:(QLFVaultItemDescriptorLF *)vaultItemDescriptor;
+- (QLFVaultItemLF *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem;
+- (QLFVaultItemMetaDataLF *)decryptEncryptedVaultItemMetaData:(QLFEncryptedVaultItemMetaData *)encryptedVaultItemMetaData;
 
 @end

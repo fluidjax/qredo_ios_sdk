@@ -67,7 +67,7 @@
     NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNil(signature); // Anonymous rendezvous do not return signatures
     XCTAssertNil(error);
     

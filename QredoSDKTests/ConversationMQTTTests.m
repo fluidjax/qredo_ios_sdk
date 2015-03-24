@@ -31,8 +31,9 @@
 }
 
 // This test has frequently helped in triggering intermittent bugs
-- (void)testConversationMultiple {
-    
+- (void)testConversationMultiple
+{
+    self.continueAfterFailure = NO;
     for (int i = 0; i < 20; i++)
     {
         NSLog(@"\n\n\n\n******** Start Test %d ********\n", i);

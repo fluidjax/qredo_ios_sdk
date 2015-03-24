@@ -74,12 +74,12 @@ static const NSUInteger kRandomTagLength = 32;
     return self.fullTag;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     return nil;
 }
 
-- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
+- (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
     return nil;
 }
@@ -142,12 +142,12 @@ static const NSUInteger kRandomTagLength = 32;
     return self.fullTag;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     return nil;
 }
 
-- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
+- (BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
     LogDebug(@"Anonymous Rendezvous - signature is always valid!");
     return YES;

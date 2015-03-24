@@ -10,32 +10,32 @@
 
 + (QredoRendezvousCrypto *)instance;
 
-- (QredoAuthenticationCode *)authenticationCodeWithHashedTag:(QredoRendezvousHashedTag *)hashedTag
+- (QLFAuthenticationCode *)authenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
                                             conversationType:(NSString *)conversationType
                                              durationSeconds:(NSSet *)durationSeconds
                                             maxResponseCount:(NSSet *)maxResponseCount
                                                     transCap:(NSSet *)transCap
-                                          requesterPublicKey:(QredoRequesterPublicKey *)requesterPublicKey
-                                      accessControlPublicKey:(QredoAccessControlPublicKey *)accessControlPublicKey
-                                           authenticationKey:(QredoAuthenticationCode *)authenticationKey
+                                          requesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey
+                                      accessControlPublicKey:(QLFAccessControlPublicKey *)accessControlPublicKey
+                                           authenticationKey:(QLFAuthenticationCode *)authenticationKey
                                             rendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper;
 
-- (QredoRendezvousHashedTag *)hashedTag:(NSString *)tag;
-- (QredoRendezvousHashedTag *)hashedTagWithAuthKey:(QredoAuthenticationCode *)authKey;
-- (QredoAuthenticationCode *)authKey:(NSString *)tag;
-- (QredoKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId;
-- (QredoKeyPairLF *)newRequesterKeyPair;
+- (QLFRendezvousHashedTag *)hashedTag:(NSString *)tag;
+- (QLFRendezvousHashedTag *)hashedTagWithAuthKey:(QLFAuthenticationCode *)authKey;
+- (QLFAuthenticationCode *)authKey:(NSString *)tag;
+- (QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId;
+- (QLFKeyPairLF *)newRequesterKeyPair;
 - (QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
 
 - (SecKeyRef)accessControlPublicKeyWithTag:(NSString*)tag;
 - (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag;
 
 - (NSData *)signChallenge:(NSData*)challenge
-                  hashtag:(QredoRendezvousHashedTag*)hashtag
-                    nonce:(QredoNonce*)nonce
+                  hashtag:(QLFRendezvousHashedTag*)hashtag
+                    nonce:(QLFNonce*)nonce
                privateKey:(QredoPrivateKey*)privateKey;
 
-- (BOOL)validateCreationInfo:(QredoRendezvousCreationInfo *)creationInfo
+- (BOOL)validateCreationInfo:(QLFRendezvousCreationInfo *)creationInfo
                          tag:(NSString *)tag
                        error:(NSError **)error;
 

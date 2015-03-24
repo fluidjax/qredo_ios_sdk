@@ -3,7 +3,6 @@
  */
 
 #import "QredoKeychain.h"
-#import "QredoClientMarshallers.h"
 #import "CryptoImplV1.h"
 #import "QredoCrypto.h"
 #import "QredoErrorCodes.h"
@@ -63,7 +62,7 @@ static uint8_t zeroBytes32[32] = {0};
     _crypto = [CryptoImplV1 new];
 }
 
-- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo {
+- (instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo {
     self = [super init];
     if (self) {
         [self initialize];
@@ -73,7 +72,7 @@ static uint8_t zeroBytes32[32] = {0};
     return self;
 }
 
-- (instancetype)initWithOperatorInfo:(QredoOperatorInfo *)operatorInfo vaultId:(QredoQUID*)vaultId authenticationKey:(NSData*)authenticationKey bulkKey:(NSData*)bulkKey
+- (instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo vaultId:(QredoQUID*)vaultId authenticationKey:(NSData*)authenticationKey bulkKey:(NSData*)bulkKey
 {
     self = [super init];
     if (self) {
@@ -95,13 +94,13 @@ static uint8_t zeroBytes32[32] = {0};
 
     _isInitialized = YES;
 
-    QredoLFKeychain *keychain = [QredoPrimitiveMarshallers unmarshalObject:serializedData unmarshaller:[QredoClientMarshallers keychainUnmarshaller]];
+    QLFKeychain *keychain = [QredoPrimitiveMarshallers unmarshalObject:serializedData unmarshaller:[QLFKeychain unmarshaller]];
 
     _operatorInfo = keychain.operatorInfo;
 
     _vaultId = keychain.vaultInfo.vaultID;
 
-    QredoVaultKeyStore *keystore = (QredoVaultKeyStore*)[keychain.vaultInfo.keyStore anyObject];
+    QLFVaultKeyStore *keystore = (QLFVaultKeyStore*)[keychain.vaultInfo.keyStore anyObject];
     NSData *encryptedVaultKeys = keystore.encryptedVaultKeys;
 
     NSLog(@"%@", encryptedVaultKeys);
@@ -110,14 +109,17 @@ static uint8_t zeroBytes32[32] = {0};
     uint8_t zeroBytes32[32] = {0};
     NSData *noCredential = [NSData dataWithBytes:zeroBytes32 length:32];
 
-    QredoVaultKeyPair *keys = [self keysFromCredential:noCredential salt:SALT_KEYSTORE_KEYS];
+    QLFVaultKeyPair *keys = [self keysFromCredential:noCredential salt:SALT_KEYSTORE_KEYS];
 
     NSError *error = nil;
-    QredoAccessLevelVaultKeys *vaultKeys = [self unmarshalData:encryptedVaultKeys unmarshaller:[QredoClientMarshallers accessLevelVaultKeysUnmarshaller] keys:keys error:&error];
+    QLFAccessLevelVaultKeys *vaultKeys = [self unmarshalData:encryptedVaultKeys
+                                                unmarshaller:[QLFAccessLevelVaultKeys unmarshaller]
+                                                        keys:keys
+                                                       error:&error];
 
     _encryptedRecoveryInfo = keychain.encryptedRecoveryInfo.encryptedMasterKey;
 
-    QredoVaultKeyPair *defaultKeys = [vaultKeys.vaultKeys objectAtIndex:0];
+    QLFVaultKeyPair *defaultKeys = [vaultKeys.vaultKeys objectAtIndex:0];
 
     _bulkKey = defaultKeys.encryptionKey;
     _authKey = defaultKeys.authenticationKey;
@@ -137,7 +139,7 @@ static uint8_t zeroBytes32[32] = {0};
     return resultData;
 }
 
-- (QredoVaultKeyPair *)derrivedKeysWithPassword:(NSData *)password initSalt:(NSData*)initSalt encSalt:(NSData *)encSalt authSalt:(NSData*)authSalt {
+- (QLFVaultKeyPair *)derrivedKeysWithPassword:(NSData *)password initSalt:(NSData*)initSalt encSalt:(NSData *)encSalt authSalt:(NSData*)authSalt {
     NSData *initialDerivation = [QredoCrypto pbkdf2Sha256WithSalt:initSalt
                                             bypassSaltLengthCheck:YES
                                                      passwordData:password
@@ -155,14 +157,14 @@ static uint8_t zeroBytes32[32] = {0};
                                                      passwordData:initialDerivation
                                            requiredKeyLengthBytes:32
                                                        iterations:1];
-    return [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:encryptionKey authenticationKey:authenticationKey];
+    return [QLFVaultKeyPair vaultKeyPairWithEncryptionKey:encryptionKey authenticationKey:authenticationKey];
 }
 
-- (QredoVaultKeyPair *)keysFromCredential:(NSData *)credential salt:(NSData *)salt {
+- (QLFVaultKeyPair *)keysFromCredential:(NSData *)credential salt:(NSData *)salt {
     return [self derrivedKeysWithPassword:credential initSalt:salt encSalt:SALT_DERIVE_CREDENTIAL_ENCRYPTION authSalt:SALT_DERIVE_CREDENTIAL_AUTHENTICATION];
 }
 
-- (NSData *)marshalObject:(id)object marshaller:(QredoMarshaller)marshaller keys:(QredoVaultKeyPair*)keys
+- (NSData *)marshalObject:(id)object marshaller:(QredoMarshaller)marshaller keys:(QLFVaultKeyPair*)keys
 {
     NSData *clearData = [QredoPrimitiveMarshallers marshalObject:object marshaller:marshaller];
 
@@ -182,7 +184,7 @@ static uint8_t zeroBytes32[32] = {0};
     return result;
 }
 
-- (id)unmarshalData:(NSData *)encryptedDataWithAuthCode unmarshaller:(QredoUnmarshaller)unmarshaller keys:(QredoVaultKeyPair *)keys error:(NSError **)error
+- (id)unmarshalData:(NSData *)encryptedDataWithAuthCode unmarshaller:(QredoUnmarshaller)unmarshaller keys:(QLFVaultKeyPair *)keys error:(NSError **)error
 {
     BOOL verified = [_crypto verifyAuthCodeWithKey:keys.authenticationKey data:encryptedDataWithAuthCode];
 
@@ -208,9 +210,9 @@ static uint8_t zeroBytes32[32] = {0};
     return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData unmarshaller:unmarshaller];
 }
 
-- (QredoVaultKeyPair *)vaultKeys
+- (QLFVaultKeyPair *)vaultKeys
 {
-    return [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:_bulkKey authenticationKey:_authKey];
+    return [QLFVaultKeyPair vaultKeyPairWithEncryptionKey:_bulkKey authenticationKey:_authKey];
 }
 
 - (NSData *)data
@@ -222,42 +224,42 @@ static uint8_t zeroBytes32[32] = {0};
 
     NSData *noCredential = [NSData dataWithBytes:zeroBytes32 length:32];
 
-    QredoVaultKeyPair *vaultKeyPair = [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:_bulkKey authenticationKey:_authKey];
+    QLFVaultKeyPair *vaultKeyPair = [QLFVaultKeyPair vaultKeyPairWithEncryptionKey:_bulkKey authenticationKey:_authKey];
 
-    QredoVaultKeyPair *zeroKeyPair = [QredoVaultKeyPair vaultKeyPairWithEncryptionKey:zeroData32 authenticationKey:zeroData32];
+    QLFVaultKeyPair *zeroKeyPair = [QLFVaultKeyPair vaultKeyPairWithEncryptionKey:zeroData32 authenticationKey:zeroData32];
 
-    QredoAccessLevelVaultKeys *accessLevelVaultKeys = [QredoAccessLevelVaultKeys accessLevelVaultKeysWithMaxAccessLevel:@0
+    QLFAccessLevelVaultKeys *accessLevelVaultKeys = [QLFAccessLevelVaultKeys accessLevelVaultKeysWithMaxAccessLevel:0
                                                                                                               vaultKeys:@[vaultKeyPair,
                                                                                                                           zeroKeyPair,
                                                                                                                           zeroKeyPair,
                                                                                                                           zeroKeyPair,
                                                                                                                           zeroKeyPair]];
 
-    QredoVaultKeyPair *keystoreKeys = [self keysFromCredential:noCredential salt:SALT_KEYSTORE_KEYS];
+    QLFVaultKeyPair *keystoreKeys = [self keysFromCredential:noCredential salt:SALT_KEYSTORE_KEYS];
 
 
-    NSData *encryptedVaultKeys = [self marshalObject:accessLevelVaultKeys marshaller:[QredoClientMarshallers accessLevelVaultKeysMarshaller] keys:keystoreKeys];
+    NSData *encryptedVaultKeys = [self marshalObject:accessLevelVaultKeys marshaller:[QLFAccessLevelVaultKeys marshaller] keys:keystoreKeys];
 
-    QredoVaultKeyStore *vaultKeyStore = [QredoVaultKeyStore vaultKeyStoreWithAccessLevel:@0
-                                                                          credentialType:[NSNumber numberWithInt:QredoCredentialTypeNoCredential]
-                                                                      encryptedVaultKeys:encryptedVaultKeys];
+    QLFVaultKeyStore *vaultKeyStore = [QLFVaultKeyStore vaultKeyStoreWithAccessLevel:0
+                                                                      credentialType:QredoCredentialTypeNoCredential
+                                                                  encryptedVaultKeys:encryptedVaultKeys];
 
-    QredoVaultInfoType *vaultInfoType = [QredoVaultInfoType vaultInfoTypeWithVaultID:_vaultId
-                                                                            keyStore:[NSSet setWithObject:vaultKeyStore]];
+    QLFVaultInfoType *vaultInfoType = [QLFVaultInfoType vaultInfoTypeWithVaultID:_vaultId
+                                                                        keyStore:[NSSet setWithObject:vaultKeyStore]];
 
 
     NSData *encryptedRecoveryData = _encryptedRecoveryInfo;
 
-    QredoEncryptedRecoveryInfoType *encryptedRecoveryInfo =
-        [QredoEncryptedRecoveryInfoType encryptedRecoveryInfoTypeWithCredentialType:@0
-                                                                 encryptedMasterKey:encryptedRecoveryData];
+    QLFEncryptedRecoveryInfoType *encryptedRecoveryInfo =
+    [QLFEncryptedRecoveryInfoType encryptedRecoveryInfoTypeWithCredentialType:0
+                                                           encryptedMasterKey:encryptedRecoveryData];
 
-    QredoLFKeychain *keychain = [QredoLFKeychain keychainWithCredentialType:[NSNumber numberWithInt:QredoCredentialTypeNoCredential]
-                                                               operatorInfo:_operatorInfo
-                                                                  vaultInfo:vaultInfoType
-                                                      encryptedRecoveryInfo:encryptedRecoveryInfo];
+    QLFKeychain *keychain = [QLFKeychain keychainWithCredentialType:QredoCredentialTypeNoCredential
+                                                       operatorInfo:_operatorInfo
+                                                          vaultInfo:vaultInfoType
+                                              encryptedRecoveryInfo:encryptedRecoveryInfo];
 
-    NSData *keychainData = [QredoPrimitiveMarshallers marshalObject:keychain marshaller:[QredoClientMarshallers keychainMarshaller]];
+    NSData *keychainData = [QredoPrimitiveMarshallers marshalObject:keychain marshaller:[QLFKeychain marshaller]];
 
     return keychainData;
 }
@@ -273,15 +275,15 @@ static uint8_t zeroBytes32[32] = {0};
 
     NSData *masterKey = [NSData dataWithRandomBytesOfLength:32];
     NSData *noCredential = [NSData dataWithBytes:zeroBytes32 length:32];
-    QredoVaultKeyPair *recoveryInfoKeys = [self keysFromCredential:noCredential salt:SALT_RECOVERY_INFO];
-    QredoRecoveryInfoType *recoveryInfo = [QredoRecoveryInfoType recoveryInfoTypeWithCredentialType:[NSNumber numberWithInteger:QredoCredentialTypeRandomBytes]
-                                                                                          masterKey:masterKey];
+    QLFVaultKeyPair *recoveryInfoKeys = [self keysFromCredential:noCredential salt:SALT_RECOVERY_INFO];
+    QLFRecoveryInfoType *recoveryInfo = [QLFRecoveryInfoType recoveryInfoTypeWithCredentialType:QredoCredentialTypeRandomBytes
+                                                                                      masterKey:masterKey];
 
     _encryptedRecoveryInfo = [self marshalObject:recoveryInfo
-                                      marshaller:[QredoClientMarshallers recoveryInfoTypeMarshaller] keys:recoveryInfoKeys];
+                                      marshaller:[QLFRecoveryInfoType marshaller] keys:recoveryInfoKeys];
 
 
-    QredoVaultKeyPair *keys = [self derrivedKeysWithPassword:masterKey initSalt:SALT_DERIVE_VAULT_KEYS encSalt:SALT_DERIVE_VAULT_ENCRYPTION_0 authSalt:SALT_DERIVE_VAULT_AUTHENTICATION_0];
+    QLFVaultKeyPair *keys = [self derrivedKeysWithPassword:masterKey initSalt:SALT_DERIVE_VAULT_KEYS encSalt:SALT_DERIVE_VAULT_ENCRYPTION_0 authSalt:SALT_DERIVE_VAULT_AUTHENTICATION_0];
     _bulkKey = keys.encryptionKey;
     _authKey = keys.authenticationKey;
 }

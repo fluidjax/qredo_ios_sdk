@@ -110,7 +110,7 @@
     NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -189,7 +189,7 @@
     NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature);
     XCTAssertNil(error);
     
@@ -305,7 +305,7 @@
     NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature1 = [createHelper1 signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature1 = [createHelper1 signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature1);
     XCTAssertNil(error);
     
@@ -325,7 +325,7 @@
     XCTAssertNil(error);
     
     error = nil;
-    QredoRendezvousAuthSignature *signature2 = [createHelper2 signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature2 = [createHelper2 signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature2);
     XCTAssertNil(error);
     
@@ -345,7 +345,7 @@
     XCTAssertNil(error);
     
     error = nil;
-    QredoRendezvousAuthSignature *signature3 = [createHelper2 signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature3 = [createHelper2 signatureWithData:dataToSign error:&error];
     XCTAssertNotNil(signature3);
     XCTAssertNil(error);
     
@@ -425,7 +425,7 @@
     NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNil(signature);
     XCTAssertNotNil(error);
 }
@@ -492,41 +492,37 @@
     XCTAssertNil(error);
     
     // Get the empty signature from create helper
-    QredoRendezvousAuthSignature *createHelperEmptySignature = [createHelper emptySignature];
+    QLFRendezvousAuthSignature *createHelperEmptySignature = [createHelper emptySignature];
     XCTAssertNotNil(createHelperEmptySignature);
     __block NSData *signatureData = nil;
-    [createHelperEmptySignature ifX509_PEM:^(NSData *signature) {
+    [createHelperEmptySignature ifRendezvousAuthX509_PEM:^(NSData *signature) {
         XCTFail(@"Wrong signature type");
-    } X509_PEM_SELFISGNED:^(NSData *signature) {
+    } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
         XCTFail(@"Wrong signature type");
-    } ED25519:^(NSData *signature) {
+    } ifRendezvousAuthED25519:^(NSData *signature) {
         XCTFail(@"Wrong signature type");
-    } RSA2048_PEM:^(NSData *signature) {
+    } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
         signatureData = signature;
-    } RSA4096_PEM:^(NSData *signature) {
-        XCTFail(@"Wrong signature type");
-    } other:^{
+    } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
         XCTFail(@"Wrong signature type");
     }];
-    
+
     XCTAssertNotNil(signatureData);
     XCTAssertEqual(signatureData.length, expectedEmptySignatureLength);
     
     // Get the empty signature from respond helper
-    QredoRendezvousAuthSignature *respondHelperEmptySignature = [respondHelper emptySignature];
+    QLFRendezvousAuthSignature *respondHelperEmptySignature = [respondHelper emptySignature];
     XCTAssertNotNil(respondHelperEmptySignature);
     signatureData = nil;
-    [respondHelperEmptySignature ifX509_PEM:^(NSData *signature) {
+    [respondHelperEmptySignature ifRendezvousAuthX509_PEM:^(NSData *signature) {
         XCTFail(@"Wrong signature type");
-    } X509_PEM_SELFISGNED:^(NSData *signature) {
+    } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
         XCTFail(@"Wrong signature type");
-    } ED25519:^(NSData *signature) {
+    } ifRendezvousAuthED25519:^(NSData *signature) {
         XCTFail(@"Wrong signature type");
-    } RSA2048_PEM:^(NSData *signature) {
+    } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
         signatureData = signature;
-    } RSA4096_PEM:^(NSData *signature) {
-        XCTFail(@"Wrong signature type");
-    } other:^{
+    } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
         XCTFail(@"Wrong signature type");
     }];
     
@@ -775,7 +771,7 @@
     NSData *dataToSign = nil;
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNil(signature);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
@@ -832,7 +828,7 @@
     NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
-    QredoRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
     XCTAssertNil(signature);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
@@ -976,7 +972,7 @@
     XCTAssertNil(error);
     
     NSData *rendezvousData = [@"dummy data" dataUsingEncoding:NSUTF8StringEncoding];
-    QredoRendezvousAuthSignature *signature = nil;
+    QLFRendezvousAuthSignature *signature = nil;
     BOOL expectedValidity = NO;
     
     error = nil;
@@ -1002,7 +998,7 @@
     XCTAssertNil(error);
     
     NSData *rendezvousData = [@"dummy data" dataUsingEncoding:NSUTF8StringEncoding];
-    QredoRendezvousAuthSignature *signature = [respondHelper emptySignature];
+    QLFRendezvousAuthSignature *signature = [respondHelper emptySignature];
     BOOL expectedValidity = NO;
     
     error = nil;
@@ -1029,7 +1025,7 @@
     
     NSData *rendezvousData = [@"dummy data" dataUsingEncoding:NSUTF8StringEncoding];
     NSData *signatureData = [[NSData alloc] init];
-    QredoRendezvousAuthSignature *signature = [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
+    QLFRendezvousAuthSignature *signature = [QLFRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
     BOOL expectedValidity = NO;
     
     error = nil;
@@ -1056,7 +1052,7 @@
     
     NSData *rendezvousData = [@"dummy data" dataUsingEncoding:NSUTF8StringEncoding];
     NSData *signatureData = nil;
-    QredoRendezvousAuthSignature *signature = [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
+    QLFRendezvousAuthSignature *signature = [QLFRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
     BOOL expectedValidity = NO;
     
     error = nil;
@@ -1083,7 +1079,7 @@
     
     NSData *rendezvousData = [@"dummy data" dataUsingEncoding:NSUTF8StringEncoding];
     NSData *signatureData = [[NSData alloc] init];
-    QredoRendezvousAuthSignature *signature = [QredoRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signatureData];
+    QLFRendezvousAuthSignature *signature = [QLFRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signatureData];
     BOOL expectedValidity = NO;
     
     error = nil;
@@ -1109,7 +1105,7 @@
     XCTAssertNil(error);
     
     NSData *rendezvousData = nil;
-    QredoRendezvousAuthSignature *signature = [respondHelper emptySignature];
+    QLFRendezvousAuthSignature *signature = [respondHelper emptySignature];
     BOOL expectedValidity = NO;
     
     error = nil;

@@ -11,19 +11,21 @@
 
 @implementation QredoAbstractRendezvousEd25519Helper
 
+
 // Ed25519 verify key is 32 bytes. Having tested base58 encoding of 32 bytes (10m encodings), will be between 42 and 44 bytes
 static const NSUInteger kMinEd25519AuthenticationTagLength = 42;
 static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
+
 
 - (QredoRendezvousAuthenticationType)type
 {
     return QredoRendezvousAuthenticationTypeEd25519;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     NSData *emptySignatureData = [self.cryptoImpl qredoED25519EmptySignature];
-    return [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:emptySignatureData];
+    return [QLFRendezvousAuthSignature rendezvousAuthED25519WithSignature:emptySignatureData];
 }
 
 - (QredoED25519VerifyKey *)verifyKeyFromAuthenticationTag:(NSString *)authenticationTag error:(NSError **)error
@@ -137,19 +139,19 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
     return self.authenticatedRendezvousTag.fullTag;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     return [super emptySignature];
 }
 
-- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
+- (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
     if (!data) {
         LogError(@"Data to sign is nil.");
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingDataToSign, nil);
         return nil;
     }
-    
+
     NSData *signature = nil;
     
     if (!self.signingKey) {
@@ -172,7 +174,7 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
             return nil;
         }
         else {
-            return [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:signature];
+            return [QLFRendezvousAuthSignature rendezvousAuthED25519WithSignature:signature];
         }
     }
     else {
@@ -188,7 +190,7 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
         }
     }
     
-    return [QredoRendezvousAuthSignature rendezvousAuthED25519WithSignature:signature];
+    return [QLFRendezvousAuthSignature rendezvousAuthED25519WithSignature:signature];
 }
 
 @end
@@ -265,25 +267,23 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
     return self.authenticatedRendezvousTag.authenticationTag;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     return [super emptySignature];
 }
 
-- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
+- (BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
     __block NSData *signatureData = nil;
-    [signature ifX509_PEM:^(NSData *signature) {
+    [signature ifRendezvousAuthX509_PEM:^(NSData *signature) {
         signatureData = nil;
-    } X509_PEM_SELFISGNED:^(NSData *signature) {
+    } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
         signatureData = nil;
-    } ED25519:^(NSData *signature) {
+    } ifRendezvousAuthED25519:^(NSData *signature) {
         signatureData = signature;
-    } RSA2048_PEM:^(NSData *signature) {
+    } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
         signatureData = nil;
-    } RSA4096_PEM:^(NSData *signature) {
-        signatureData = nil;
-    } other:^{
+    } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
         signatureData = nil;
     }];
     

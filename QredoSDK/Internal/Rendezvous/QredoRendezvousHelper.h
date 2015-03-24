@@ -5,7 +5,8 @@
 #import <Foundation/Foundation.h>
 #import "QredoTypes.h"
 
-@class QredoRendezvousAuthSignature;
+@protocol CryptoImpl;
+@class QLFRendezvousAuthSignature;
 
 
 static NSString *const QredoRendezvousHelperErrorDomain = @"QredoRendezvousHelperErrorDomain";
@@ -57,7 +58,7 @@ typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
  *
  * @return The signature type for the rendezvous (with no signature present yet).
  */
-- (QredoRendezvousAuthSignature *)emptySignature;
+- (QLFRendezvousAuthSignature *)emptySignature;
 
 
 @end
@@ -74,7 +75,7 @@ typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
  *              not want the error information.
  * @return The signature type for the rendezvous with a signature.
  */
-- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error;
+- (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error;
 
 
 @end
@@ -92,7 +93,7 @@ typedef NS_ENUM(NSUInteger, QredoRendezvousHelperError) {
  *                          parameter if you do not want the error information.
  * @return True if the signature is valid, false otherwise.
  */
-- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error;
+- (BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error;
 
 @end
 

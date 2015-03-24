@@ -10,7 +10,6 @@
 #import "QredoConversationPrivate.h"
 
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoClientMarshallers.h"
 #import "QredoServiceInvoker.h"
 #import "QredoLogging.h"
 
@@ -20,6 +19,9 @@
 #import "QredoKeychainReceiver.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoManagerAppRootViewController.h"
+
+// TEMP
+#import "QredoConversationProtocol.h"
 
 
 #import <UIKit/UIKit.h>
@@ -406,9 +408,9 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 - (QredoRendezvous*)rendezvousFromVaultItem:(QredoVaultItem*)vaultItem error:(NSError**)error {
     @try {
-        QredoRendezvousDescriptor *descriptor
+        QLFRendezvousDescriptor *descriptor
         = [QredoPrimitiveMarshallers unmarshalObject:vaultItem.value
-                                        unmarshaller:[QredoClientMarshallers rendezvousDescriptorUnmarshaller]];
+                                        unmarshaller:[QLFRendezvousDescriptor unmarshaller]];
 
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self fromLFDescriptor:descriptor];
         rendezvous.configuration
@@ -433,9 +435,9 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 - (QredoConversation*)conversationFromVaultItem:(QredoVaultItem*)vaultItem error:(NSError**)error {
     @try {
-        QredoConversationDescriptor *descriptor
+        QLFConversationDescriptor *descriptor
         = [QredoPrimitiveMarshallers unmarshalObject:vaultItem.value
-                                        unmarshaller:[QredoClientMarshallers conversationDescriptorUnmarshaller]];
+                                        unmarshaller:[QLFConversationDescriptor unmarshaller]];
 
         QredoConversation *conversation = [[QredoConversation alloc] initWithClient:self fromLFDescriptor:descriptor];
 
@@ -525,6 +527,8 @@ static NSString *const QredoKeychainPassword = @"Password123";
 - (void)respondWithTag:(NSString *)tag
      completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler
 {
+    NSAssert(completionHandler, @"completionHandler should not be nil");
+
     dispatch_async(_rendezvousQueue, ^{
         QredoConversation *conversation = [[QredoConversation alloc] initWithClient:self];
         [conversation respondToRendezvousWithTag:tag completionHandler:^(NSError *error) {
@@ -565,7 +569,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 {
     QredoVault *vault = [self systemVault];
 
-    QredoVaultId *vaultItemId = [vault itemIdWithQUID:conversationId type:kQredoConversationVaultItemType];
+    QLFVaultId *vaultItemId = [vault itemIdWithQUID:conversationId type:kQredoConversationVaultItemType];
     QredoVaultItemDescriptor *vaultItemDescriptor
     = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:vaultItemId];
     [vault getItemWithDescriptor:vaultItemDescriptor
@@ -660,8 +664,8 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 - (QredoKeychain *)createDefaultKeychain
 {
-    QredoOperatorInfo *operatorInfo
-    = [QredoOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
+    QLFOperatorInfo *operatorInfo
+    = [QLFOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
                                    serviceUri:self.serviceURL.absoluteString
                                     accountID:QredoKeychainOperatorAccountId
                          currentServiceAccess:[NSSet set]

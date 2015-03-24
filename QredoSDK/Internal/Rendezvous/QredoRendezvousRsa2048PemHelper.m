@@ -49,13 +49,13 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
     return super.authenticatedRendezvousTag.fullTag;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     NSData *emptySignatureData = [super emptySignatureData];
-    return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:emptySignatureData];
+    return [QLFRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:emptySignatureData];
 }
 
-- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
+- (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
     NSData *signatureData = [super signatureForData:data error:error];
     
@@ -64,7 +64,7 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
         return nil;
     }
     
-    return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
+    return [QLFRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signatureData];
 }
 
 @end
@@ -90,24 +90,24 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
     return super.authenticatedRendezvousTag.fullTag;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     NSData *emptySignatureData = [super emptySignatureData];
-    return [QredoRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:emptySignatureData];
+    return [QLFRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:emptySignatureData];
 }
 
-- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
+- (BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
     __block NSData *signatureData = nil;
-    [signature ifX509_PEM:^(NSData *signature) {
-    } X509_PEM_SELFISGNED:^(NSData *signature) {
-    } ED25519:^(NSData *signature) {
-    } RSA2048_PEM:^(NSData *signature) {
+
+    [signature ifRendezvousAuthX509_PEM:^(NSData *signature) {
+    } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
+    } ifRendezvousAuthED25519:^(NSData *signature) {
+    } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
         signatureData = signature;
-    } RSA4096_PEM:^(NSData *signature) {
-    } other:^{
+    } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
     }];
-    
+
     BOOL signatureIsValid = [super isSignatureDataValid:signatureData rendezvousData:rendezvousData];
     
     return signatureIsValid;

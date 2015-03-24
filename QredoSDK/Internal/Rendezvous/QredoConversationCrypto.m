@@ -5,7 +5,6 @@
 #import "QredoConversationCrypto.h"
 #import "QredoClient.h"
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoClientMarshallers.h"
 #import "QredoErrorCodes.h"
 
 #import <CommonCrypto/CommonCrypto.h>
@@ -31,13 +30,13 @@
     return self;
 }
 
-- (NSData *)encryptMessage:(QredoConversationMessageLF *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey
+- (NSData *)encryptMessage:(QLFConversationMessageLF *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey
 {
     NSMutableData* result = [NSMutableData data];
     
     NSData *serializedMessage =
         [QredoPrimitiveMarshallers marshalObject:message
-                                      marshaller:[QredoClientMarshallers conversationMessageMarshaller]];
+                                      marshaller:[QLFConversationMessageLF marshaller]];
 
     
     NSData *encryptedMessage = [_crypto encryptWithKey:bulkKey data:serializedMessage];
@@ -54,7 +53,7 @@
     return [result copy]; // return non-mutable copy
 }
 
-- (QredoConversationMessageLF *)decryptMessage:(NSData *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError**)error
+- (QLFConversationMessageLF *)decryptMessage:(NSData *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError**)error
 {
     // verify auth code
     
@@ -79,7 +78,7 @@
     NSData *decryptedMessageData = [_crypto decryptWithKey:bulkKey data:deserializedEncryptedData];
 
     
-    return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData unmarshaller:[QredoClientMarshallers conversationMessageUnmarshaller]];
+    return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData unmarshaller:[QLFConversationMessageLF unmarshaller]];
 }
 
 @end

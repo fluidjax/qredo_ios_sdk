@@ -25,11 +25,11 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
     return QredoRendezvousAuthenticationTypeX509Pem;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     // Empty Signature is just a placeholder of the correct size for a real signature.
     NSData *emptySignatureData = [NSMutableData dataWithLength:kX509AuthenticatedRendezvousEmptySignatureLength];
-    return [QredoRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:emptySignatureData];
+    return [QLFRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:emptySignatureData];
 }
 
 - (SecKeyRef)getPublicKeyRefFromX509AuthenticationTag:(NSString *)authenticationTag error:(NSError **)error
@@ -125,12 +125,12 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
     return self.authenticatedRendezvousTag.fullTag;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     return [super emptySignature];
 }
 
-- (QredoRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
+- (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
     if (!data) {
         LogError(@"Data to sign is nil.");
@@ -157,7 +157,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         return nil;
     }
     else {
-        return [QredoRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signature];
+        return [QLFRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signature];
     }
 }
 
@@ -222,21 +222,21 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
     return self.authenticatedRendezvousTag.fullTag;
 }
 
-- (QredoRendezvousAuthSignature *)emptySignature
+- (QLFRendezvousAuthSignature *)emptySignature
 {
     return [super emptySignature];
 }
 
-- (BOOL)isValidSignature:(QredoRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
+- (BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
     __block NSData *signatureData = nil;
-    [signature ifX509_PEM:^(NSData *signature) {
+
+    [signature ifRendezvousAuthX509_PEM:^(NSData *signature) {
         signatureData = signature;
-    } X509_PEM_SELFISGNED:^(NSData *signature) {
-    } ED25519:^(NSData *signature) {
-    } RSA2048_PEM:^(NSData *signature) {
-    } RSA4096_PEM:^(NSData *signature) {
-    } other:^{
+    } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
+    } ifRendezvousAuthED25519:^(NSData *signature) {
+    } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
+    } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
     }];
     
     if (!signatureData) {
