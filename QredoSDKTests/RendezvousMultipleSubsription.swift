@@ -65,7 +65,7 @@ class RendezvousMultipleSubsription: XCTestCase {
         let rendezvousTag = QredoQUID().QUIDString()
 
         var createRendezvousExpectation : XCTestExpectation? = expectationWithDescription("create a rendezvous")
-        clients.firstClient.createRendezvousWithTag(rendezvousTag,
+        clients.firstClient.createAnonymousRendezvousWithTag(rendezvousTag,
             configuration: QredoRendezvousConfiguration(conversationType: "test~")) { (rendezvous, error) -> Void in
                 XCTAssertNil(error, "failed to register a rendezvous")
                 XCTAssertNotNil(rendezvous, "rendezvous should not be nil")

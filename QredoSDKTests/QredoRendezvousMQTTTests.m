@@ -11,12 +11,20 @@
     [super setUp];
 }
 
-- (void)testCreateRendezvous {
-    [super testCreateRendezvous];
+// TODO: DH - restore modified tests
+- (void)testCreateRendezvous_NoSigningHandler {
+//    [super testCreateRendezvous_NoSigningHandler];
+    XCTFail(@"Restore modified tests");
 }
 
-- (void)testCreateAndRespondRendezvous {
-    [super testCreateAndRespondRendezvous];
+// TODO: DH - restore modified tests
+- (void)testCreateRendezvous_NilSigningHandler {
+//    [super testCreateRendezvous_NilSigningHandler];
+    XCTFail(@"Restore modified tests");
+}
+
+- (void)testCreateAndRespondAnonymousRendezvous {
+    [super testCreateAndRespondAnonymousRendezvous];
 }
 
 // This test has frequently helped in triggering intermittent bugs
@@ -26,20 +34,68 @@
     for (int i = 0; i < 10; i++)
     {
         NSLog(@"Test %d", i);
-        [super testCreateAndRespondRendezvous];
+        [super testCreateAndRespondAnonymousRendezvous];
     }
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousED25519 {
-    [super testCreateAndRespondAuthenticatedRendezvousED25519];
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix];
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousED25519NoTag {
-    [super testCreateAndRespondAuthenticatedRendezvousED25519NoTag];
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix];
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousED25519ForgedSignature {
-    [super testCreateAndRespondAuthenticatedRendezvousED25519ForgedSignature];
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix];
+}
+
+- (void)testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix
+{
+    [super testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature
+{
+    [super testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature];
 }
 
 @end

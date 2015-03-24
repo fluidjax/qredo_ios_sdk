@@ -4,7 +4,11 @@
 
 #import "QredoRendezvousHelper_Private.h"
 
-@interface QredoRendezvousAnonymousHelper
-: QredoAbstractRendezvousHelper<QredoRendezvousCreatePrivateHelper, QredoRendezvousRespondPrivateHelper>
+@interface QredoAbstractRendezvousAnonymousHelper : QredoAbstractRendezvousHelper
+@end
 
+@interface QredoRendezvousAnonymousCreateHelper : QredoAbstractRendezvousAnonymousHelper<QredoRendezvousCreatePrivateHelper>
+@end
+
+@interface QredoRendezvousAnonymousRespondHelper : QredoAbstractRendezvousAnonymousHelper<QredoRendezvousRespondPrivateHelper>
 @end

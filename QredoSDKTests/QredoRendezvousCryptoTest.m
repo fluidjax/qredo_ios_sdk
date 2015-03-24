@@ -1,10 +1,6 @@
-//
-//  QredoRendezvousCryptoTest.m
-//  QredoSDK
-//
-//  Created by Dmitry Matyukhin on 02/10/2014.
-//
-//
+/*
+ *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>

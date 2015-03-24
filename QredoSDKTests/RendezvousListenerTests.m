@@ -71,7 +71,7 @@
 
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
 
-    [client createRendezvousWithTag:randomTag
+    [client createAnonymousRendezvousWithTag:randomTag
                       configuration:configuration
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                       XCTAssertNil(error);

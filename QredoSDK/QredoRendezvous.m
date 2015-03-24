@@ -28,16 +28,21 @@ static const double kQredoRendezvousUpdateInterval = 1.0; // seconds - polling p
 static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
+NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticationType";
 
 static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 @implementation QredoRendezvousMetadata
 
-- (instancetype)initWithTag:(NSString*)tag vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
+- (instancetype)initWithTag:(NSString*)tag
+         authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+        vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor
+{
     self = [super init];
     if (!self) return nil;
 
-    self.tag = tag;
+    _tag = [tag copy];
+    _authenticationType = authenticationType;
     _vaultItemDescriptor = vaultItemDescriptor;
 
     return self;
@@ -63,16 +68,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 - (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
 {
-    return [self initWithConversationType:conversationType authenticationType:QredoRendezvousAuthenticationTypeAnonymous durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:transCap];
-}
-
-- (instancetype)initWithConversationType:(NSString*)conversationType authenticationType:(QredoRendezvousAuthenticationType)authenticationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
-{
     self = [super init];
     if (!self) return nil;
     
-    _conversationType = conversationType;
-    _authenticationType = authenticationType;
+    _conversationType = [conversationType copy];
     _durationSeconds = durationSeconds;
     _maxResponseCount = maxResponseCount;
     _transCap = transCap;
@@ -103,7 +102,8 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 // making the properties read/write for private use
 @property QredoRendezvousConfiguration *configuration;
-@property NSString *tag;
+@property (readwrite, copy) NSString *tag;
+@property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 
 - (NSSet *)maybe:(id)object;
 
@@ -144,9 +144,16 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return self;
 }
 
-- (void)createRendezvousWithTag:(NSString *)tag configuration:(QredoRendezvousConfiguration *)configuration completionHandler:(void(^)(NSError *error))completionHandler
+- (void)createRendezvousWithTag:(NSString *)tag
+             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                  configuration:(QredoRendezvousConfiguration *)configuration
+                 signingHandler:(signDataBlock)signingHandler
+              completionHandler:(void(^)(NSError *error))completionHandler
 {
     LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
+    
+    // TODO: DH - write tests 
+    // TODO: DH - validate that the configuration and tag formats match
     
     self.configuration = configuration;
     QredoRendezvousCrypto *_crypto = [QredoRendezvousCrypto instance];
@@ -155,10 +162,14 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
 
+    
     NSError *error = nil;
-    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:self.configuration.authenticationType prefix:tag error:&error];
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:authenticationType
+                                                                                              fullTag:tag
+                                                                                       signingHandler:signingHandler
+                                                                                                error:&error];
     if (!rendezvousHelper) {
-        // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+        // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
         // be to much information.
         completionHandler(error);
         return;
@@ -197,9 +208,10 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
         authType= [QLFRendezvousAuthType rendezvousAnonymous];
     } else {
-        QLFRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode error:&error];
+        QLFRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode
+                                                                                    error:&error];
         if (!authSignature) {
-            // TODO [GR]: Filter what errors we pass to the user. What we are currently passing may
+            // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
             // be to much information.
             completionHandler(error);
             return;
@@ -220,14 +232,14 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                                   authenticationCode:authenticationCode];
     _descriptor =
     [QLFRendezvousDescriptor rendezvousDescriptorWithTag:_tag
-                                               hashedTag:_hashedTag
-                                        conversationType:configuration.conversationType
-                                      authenticationType:authType
-                                         durationSeconds:maybeDurationSeconds
-                                        maxResponseCount:maybeMaxResponseCount
-                                                transCap:maybeTransCap
-                                        requesterKeyPair:requesterKeyPair
-                                    accessControlKeyPair:accessControlKeyPair];
+                                                 hashedTag:_hashedTag
+                                          conversationType:configuration.conversationType
+                                        authenticationType:authType
+                                           durationSeconds:maybeDurationSeconds
+                                          maxResponseCount:maybeMaxResponseCount
+                                                  transCap:maybeTransCap
+                                          requesterKeyPair:requesterKeyPair
+                                      accessControlKeyPair:accessControlKeyPair];
 
     [_rendezvous createWithCreationInfo:_creationInfo
                       completionHandler:^(QLFRendezvousCreateResult *result, NSError *error) {
@@ -241,6 +253,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
                                   completionHandler(error);
                               }];
                           } ifRendezvousAlreadyExists:^{
+                              LogError(@"Rendezvous with tag '%@' (hashed tag: %@) already exists.", _tag, [_hashedTag QUIDString]);
                               completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                                     code:QredoErrorCodeRendezvousAlreadyExists
                                                                 userInfo:@{NSLocalizedDescriptionKey: @"Rendezvous with the specified tag already exists"}]);
@@ -257,15 +270,22 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:_descriptor
                                                                  marshaller:[QLFRendezvousDescriptor marshaller]];
 
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
-                                                                                 accessLevel:0
-                                                                               summaryValues:@{kQredoRendezvousVaultItemLabelTag: _tag}];
+    QredoVaultItemMetadata *metadata
+    = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
+                                                accessLevel:0
+                                              summaryValues:@{
+                                                              kQredoRendezvousVaultItemLabelTag: self.tag,
+                                                              kQredoRendezvousVaultItemLabelAuthenticationType:
+                                                                  [NSNumber numberWithInt:self.authenticationType]
+                                                              }];
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [_client.systemVault strictlyPutNewItem:vaultItem itemId:itemId completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-        completionHandler(error);
-    }];
+    [_client.systemVault strictlyPutNewItem:vaultItem
+                                     itemId:itemId
+                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+                              completionHandler(error);
+                          }];
 }
 
 @end
@@ -347,7 +367,12 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         }
 
         NSData *nonce = result;
-        NSData *signature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:nonce];
+        NSData *signature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:nonce error:&error];
+        
+        if (!signature) {
+            completionHandler(error);
+            return;
+        }
 
         [_rendezvous getResponsesWithHashedTag:_hashedTag
                                      challenge:nonce
@@ -438,15 +463,38 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 }
 
-+ (NSData *)signatureForHashedTag:(QLFRendezvousHashedTag *)hashedTag nonce:(NSData *)nonce
++ (NSData *)signatureForHashedTag:(QLFRendezvousHashedTag *)hashedTag nonce:(NSData *)nonce error:(NSError **)error
 {
     QredoRendezvousCrypto *crypto = [QredoRendezvousCrypto instance];
     SecKeyRef key = [crypto accessControlPrivateKeyWithTag:[hashedTag QUIDString]];
+    
+    if (!key) {
+        NSString *message = [NSString stringWithFormat:@"Access control private key could not be found for hashed Tag: %@", [hashedTag QUIDString]];
+        LogError(@"%@", message);
+        
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeRendezvousAccessControlKeyMissing
+                                     userInfo:@{NSLocalizedDescriptionKey: message}];
+        }
+        return nil;
+    }
 
     NSMutableData *dataToSign = [NSMutableData dataWithData:[hashedTag data]];
     [dataToSign appendData:nonce];
 
     NSData *signature = [QredoCrypto rsaPssSignMessage:dataToSign saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:key];
+
+    if (!signature) {
+        NSString *message = [NSString stringWithFormat:@"Signature generation failed for hashed Tag: %@", [hashedTag QUIDString]];
+        LogError(@"%@", message);
+        
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeRendezvousAccessControlSignatureGenerationFailed
+                                     userInfo:@{NSLocalizedDescriptionKey: message}];
+        }
+    }
 
     return signature;
 }
@@ -480,7 +528,9 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     QLFVaultItemId *itemId = [vault itemIdWithName:_tag type:kQredoRendezvousVaultItemType];
     QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:itemId];
 
-    return [[QredoRendezvousMetadata alloc] initWithTag:self.tag vaultItemDescriptor:descriptor];
+    return [[QredoRendezvousMetadata alloc] initWithTag:self.tag
+                                     authenticationType:self.authenticationType
+                                    vaultItemDescriptor:descriptor];
 }
 
 #pragma mark -
@@ -516,50 +566,53 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
     // TODO: DH - look at blocks holding strong reference to self, and whether that's causing
     // Subscribe to conversations newer than our highwatermark
 
-    // TODO: ownership
+    [_rendezvous getChallengeWithHashedTag:_hashedTag completionHandler:^(NSData *result, NSError *error) {
+        if (error) {
+            completionHandler(error);
+            return ;
+        }
 
-//    [_rendezvous getChallengeWithHashedTag:_hashedTag completionHandler:^(NSData *result, NSError *error) {
-//        if (error) {
-//            completionHandler(error);
-//            return ;
-//        }
-//
-//        NSData *subscriptionNonce = result;
-//        NSData *subscriptionSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:subscriptionNonce];
-//
-//        _subscriptionCorrelationId = [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
-//                                             challenge:subscriptionNonce
-//                                             signature:subscriptionSignature
-//                                         resultHandler:^(QLFRendezvousResponseWithSequenceValue *result)
-//         {
-//             LogDebug(@"Rendezvous subscription result handler called. Correlation id = %@", _subscriptionCorrelationId);
-//
-//             [self createConversationAndStoreKeysForResponse:result.response
-//                                           completionHandler:^(QredoConversation *conversation, NSError *creationError)
-//              {
-//                  if (creationError) {
-//                      completionHandler(error);
-//                      return;
-//                  }
-//
-//
-//                  LogDebug(@"Rendezvous subscription returned conversation: %@, self=%@, updateListener=%@", conversation, self, _updateListener);
-//
-//                  [_updateListener processSingleItem:conversation sequenceValue:result.sequenceValue];
-//
-//              }];
-//
-//             LogDebug(@"Rendezvous subscription returned new HighWatermark: %llu", result.sequenceValue.longLongValue);
-//             self->_highWatermark = result.sequenceValue.longLongValue;
-//         } completionHandler:^(NSError *error) {
-//             completionHandler(error);
-//             if (error) {
-//                 [_updateListener didTerminateSubscriptionWithError:error];
-//             }
-//         }
-//         ];
-//        LogDebug(@"SUBSCRIBE correlation id=%@", _subscriptionCorrelationId);
-//    }];
+        NSData *subscriptionNonce = result;
+        NSData *subscriptionSignature = [QredoRendezvous signatureForHashedTag:_hashedTag nonce:subscriptionNonce error:&error];
+
+        if (!subscriptionSignature) {
+            [updateListener didTerminateSubscriptionWithError:error];
+            return;
+        }
+
+        [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
+                                             challenge:subscriptionNonce
+                                             signature:subscriptionSignature
+                                     completionHandler:^(QLFRendezvousResponseWithSequenceValue *result, NSError *error)
+         {
+
+             if (error) {
+                 completionHandler(error);
+                 [_updateListener didTerminateSubscriptionWithError:error];
+                 return ;
+             }
+             LogDebug(@"Rendezvous subscription result handler called. Correlation id = %@", _subscriptionCorrelationId);
+
+             [self createConversationAndStoreKeysForResponse:result.response
+                                           completionHandler:^(QredoConversation *conversation, NSError *creationError)
+              {
+                  if (creationError) {
+                      completionHandler(error);
+                      return;
+                  }
+
+
+                  LogDebug(@"Rendezvous subscription returned conversation: %@, self=%@, updateListener=%@", conversation, self, _updateListener);
+
+                  [_updateListener processSingleItem:conversation sequenceValue:@(result.sequenceValue)];
+
+              }];
+
+             LogDebug(@"Rendezvous subscription returned new HighWatermark: %llu", result.sequenceValue);
+             self->_highWatermark = result.sequenceValue;
+         }];
+        LogDebug(@"SUBSCRIBE correlation id=%@", _subscriptionCorrelationId);
+    }];
 }
 
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener

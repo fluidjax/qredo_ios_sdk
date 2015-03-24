@@ -412,7 +412,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
             QLFRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
 
-            // TODO [GR]: Take a view whether we need to show this error to the client code.
+            // TODO: [GR]: Take a view whether we need to show this error to the client code.
             
             if ([_rendezvousCrypto validateCreationInfo:creationInfo tag:rendezvousTag error:nil]) {
                 
@@ -711,7 +711,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
              return;
          }
 
-         LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
+         LogDebug(@"Query since HWM returned %lu conversation items(s)", (unsigned long)result.items.count);
 
          [self enumerateBodyWithResult:result
                  conversationItemIndex:0
@@ -777,8 +777,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     [_conversationService queryItemsWithQueueId:messageQueue
                                           after:sinceWatermark?[NSSet setWithObject:sinceWatermark.sequenceValue]:nil
-                                      fetchSize:[NSSet setWithObject:@100000] // TODO check what the logic should be
-//                                      signature:nil // TODO: ownership
+                                      fetchSize:[NSSet setWithObject:@100000] // TODO: check what the logic should be
                               completionHandler:^(QLFConversationQueryItemsResult *result, NSError *error)
      {
          if (error) {
@@ -793,7 +792,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
              return;
          }
 
-         LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
+         LogDebug(@"Enumeration query returned %lu conversation items(s)", (unsigned long)result.items.count);
 
          // There are a few complications when asynchronosity is added
          // 1. We need to wait until the messages is stored before returning it to the user,

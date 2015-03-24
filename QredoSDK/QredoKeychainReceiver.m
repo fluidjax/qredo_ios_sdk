@@ -47,19 +47,21 @@
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:QredoKeychainTransporterConversationType
                                                                                                  durationSeconds:[NSNumber numberWithUnsignedInteger:QredoKeychainTransporterRendezvousDuration]
                                                                                                 maxResponseCount:@1];
-    [self.client createRendezvousWithTag:randomTag configuration:configuration
-                       completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-                           @synchronized (self) {
-                               if (cancelled) return ;
-
-                               if (error) {
-                                   [self handleError:error];
-                                   return;
-                               }
-                           }
-                               [self didCreateRendezvous:rendezvous];
-
-                       }];
+    
+    [self.client createAnonymousRendezvousWithTag:randomTag
+                                    configuration:configuration
+                                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                                    @synchronized (self) {
+                                        if (cancelled) return ;
+                                        
+                                        if (error) {
+                                            [self handleError:error];
+                                            return;
+                                        }
+                                    }
+                                    [self didCreateRendezvous:rendezvous];
+                                    
+                                }];
 }
 
 - (void)sendCancellationMessage {
