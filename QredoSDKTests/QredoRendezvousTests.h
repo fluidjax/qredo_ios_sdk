@@ -6,6 +6,7 @@
 
 - (void)authoriseClient;
 - (void)testCreateRendezvous;
+- (void)testCreateRendezvousAndGetResponses;
 - (void)testCreateAndRespondRendezvous;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519NoTag;

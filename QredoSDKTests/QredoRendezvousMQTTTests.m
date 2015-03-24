@@ -15,6 +15,11 @@
     [super testCreateRendezvous];
 }
 
+- (void)testCreateRendezvousAndGetResponses
+{
+    [super testCreateRendezvousAndGetResponses];
+}
+
 - (void)testCreateAndRespondRendezvous {
     [super testCreateAndRespondRendezvous];
 }

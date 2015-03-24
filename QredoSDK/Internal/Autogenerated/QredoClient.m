@@ -8696,10 +8696,10 @@
 
 
 
-+ (QLFVaultInfoType *)vaultInfoTypeWithVaultID:(QLFVaultId *)vaultID keyStore:(NSSet *)keyStore
++ (QLFVaultInfoType *)vaultInfoTypeWithVaultID:(QLFVaultId *)vaultID ownershipPrivateKey:(QLFVaultOwnershipPrivateKey *)ownershipPrivateKey keyStore:(NSSet *)keyStore
 {
 
-    return [[QLFVaultInfoType alloc] initWithVaultID:vaultID keyStore:keyStore];
+    return [[QLFVaultInfoType alloc] initWithVaultID:vaultID ownershipPrivateKey:ownershipPrivateKey keyStore:keyStore];
        
 }
 
@@ -8710,6 +8710,10 @@
         [writer writeConstructorStartWithObjectName:@"VaultInfoType"];
             [writer writeFieldStartWithFieldName:@"keyStore"];
                 [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QLFVaultKeyStore marshaller]]([e keyStore], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"ownershipPrivateKey"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e ownershipPrivateKey], writer);
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"vaultID"];
@@ -8727,20 +8731,24 @@
             [reader readFieldStart]; // TODO assert that field name is 'keyStore'
                 NSSet *keyStore = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QLFVaultKeyStore unmarshaller]](reader);
             [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'ownershipPrivateKey'
+                QLFVaultOwnershipPrivateKey *ownershipPrivateKey = (QLFVaultOwnershipPrivateKey *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'vaultID'
                 QLFVaultId *vaultID = (QLFVaultId *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
             [reader readEnd];
         [reader readEnd];
-        return [QLFVaultInfoType vaultInfoTypeWithVaultID:vaultID keyStore:keyStore];
+        return [QLFVaultInfoType vaultInfoTypeWithVaultID:vaultID ownershipPrivateKey:ownershipPrivateKey keyStore:keyStore];
     };
 }
 
-- (instancetype)initWithVaultID:(QLFVaultId *)vaultID keyStore:(NSSet *)keyStore
+- (instancetype)initWithVaultID:(QLFVaultId *)vaultID ownershipPrivateKey:(QLFVaultOwnershipPrivateKey *)ownershipPrivateKey keyStore:(NSSet *)keyStore
 {
 
     self = [super init];
     if (self) {
         _vaultID = vaultID;
+        _ownershipPrivateKey = ownershipPrivateKey;
         _keyStore = keyStore;
     }
     return self;
@@ -8751,6 +8759,7 @@
 {
 
     QREDO_COMPARE_OBJECT(vaultID);
+    QREDO_COMPARE_OBJECT(ownershipPrivateKey);
     QREDO_COMPARE_OBJECT(keyStore);
     return NSOrderedSame;
        
@@ -8772,6 +8781,8 @@
         return NO;
     if (_vaultID != other.vaultID && ![_vaultID isEqual:other.vaultID])
         return NO;
+    if (_ownershipPrivateKey != other.ownershipPrivateKey && ![_ownershipPrivateKey isEqual:other.ownershipPrivateKey])
+        return NO;
     if (_keyStore != other.keyStore && ![_keyStore isEqual:other.keyStore])
         return NO;
     return YES;
@@ -8783,6 +8794,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_vaultID hash];
+    hash = hash * 31u + [_ownershipPrivateKey hash];
     hash = hash * 31u + [_keyStore hash];
     return hash;
        

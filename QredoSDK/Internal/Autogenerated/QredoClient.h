@@ -32,6 +32,7 @@
 #define QLFTransCap NSData
 #define QLFVaultId QredoQUID
 #define QLFVaultItemId QredoQUID
+#define QLFVaultOwnershipPrivateKey NSData
 #define QLFVaultSequenceId QredoQUID
 #define QLFVaultSequenceValue int64_t
 
@@ -1810,15 +1811,16 @@
 @interface QLFVaultInfoType : NSObject<QredoMarshallable>
 
 @property (readonly) QLFVaultId *vaultID;
+@property (readonly) QLFVaultOwnershipPrivateKey *ownershipPrivateKey;
 @property (readonly) NSSet *keyStore;
 
-+ (QLFVaultInfoType *)vaultInfoTypeWithVaultID:(QLFVaultId *)vaultID keyStore:(NSSet *)keyStore;
++ (QLFVaultInfoType *)vaultInfoTypeWithVaultID:(QLFVaultId *)vaultID ownershipPrivateKey:(QLFVaultOwnershipPrivateKey *)ownershipPrivateKey keyStore:(NSSet *)keyStore;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithVaultID:(QLFVaultId *)vaultID keyStore:(NSSet *)keyStore;
+- (instancetype)initWithVaultID:(QLFVaultId *)vaultID ownershipPrivateKey:(QLFVaultOwnershipPrivateKey *)ownershipPrivateKey keyStore:(NSSet *)keyStore;
 - (NSComparisonResult)compare:(QLFVaultInfoType *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToVaultInfoType:(QLFVaultInfoType *)other;
