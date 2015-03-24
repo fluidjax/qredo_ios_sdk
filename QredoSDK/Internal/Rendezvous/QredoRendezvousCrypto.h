@@ -11,18 +11,9 @@
 + (QredoRendezvousCrypto *)instance;
 
 - (QLFAuthenticationCode *)authenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                            conversationType:(NSString *)conversationType
-                                             durationSeconds:(NSSet *)durationSeconds
-                                            maxResponseCount:(NSSet *)maxResponseCount
-                                                    transCap:(NSSet *)transCap
-                                          requesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey
-                                      accessControlPublicKey:(QLFRendezvousOwnershipPublicKey *)accessControlPublicKey
-                                           authenticationKey:(QLFAuthenticationCode *)authenticationKey
-                                            rendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper;
+                                         authenticationKey:(NSData *)authenticationKey
+                                    encryptedResponderData:(NSData *)encryptedResponderData;
 
-- (QLFRendezvousHashedTag *)hashedTag:(NSString *)tag;
-- (QLFRendezvousHashedTag *)hashedTagWithAuthKey:(QLFAuthenticationCode *)authKey;
-- (QLFAuthenticationCode *)authKey:(NSString *)tag;
 - (QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId;
 - (QLFKeyPairLF *)newRequesterKeyPair;
 - (QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
@@ -43,6 +34,11 @@
                                                                  fullTag:(NSString *)fullTag
                                                           signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;
+
+- (NSData *)masterKeyWithTag:(NSString *)tag;
+- (QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey;
+- (NSData *)encryptionKeyWithMasterKey:(NSData *)masterKey;
+- (NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey;
 
 
 @end

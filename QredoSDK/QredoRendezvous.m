@@ -24,6 +24,7 @@
 
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoSigner.h"
+#import "NSData+QredoRandomData.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
@@ -184,8 +185,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _tag = [rendezvousHelper tag];
 
     // Hash the tag.
-    QLFAuthenticationCode *authKey = [_crypto authKey:_tag];
-    _hashedTag  = [_crypto hashedTagWithAuthKey:authKey];
+    NSData *masterKey = [_crypto masterKeyWithTag:tag];
+    QLFAuthenticationCode *authKey = [_crypto authenticationKeyWithMasterKey:masterKey];
+    _hashedTag  = [_crypto hashedTagWithMasterKey:masterKey];
+    NSData *responderInfoEncKey = [_crypto encryptionKeyWithMasterKey:masterKey];
 
     LogDebug(@"Hashed tag: %@", _hashedTag);
 
@@ -199,19 +202,26 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
     NSData *accessControlPublicKeyBytes  = [[accessControlKeyPair pubKey] bytes];
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];
-    
-    
+
+    QLFRendezvousResponderInfo *responderInfo
+    = [QLFRendezvousResponderInfo rendezvousResponderInfoWithRequesterPublicKey:requesterPublicKeyBytes
+                                                               conversationType:configuration.conversationType
+                                                                       transCap:maybeTransCap];
+
+    NSData *iv = [NSData dataWithRandomBytesOfLength:16];
+    NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo];
+
+    NSData *encryptedResponderInfo = [QredoCrypto encryptData:serializedResponderInfo
+                                                   withAesKey:responderInfoEncKey
+                                                           iv:iv];
+    NSMutableData *encryptedResponderInfoWithIV = [NSMutableData dataWithData:iv];
+    [encryptedResponderInfoWithIV appendData:encryptedResponderInfo];
+
     // Generate the authentication code.
     QLFAuthenticationCode *authenticationCode
     = [_crypto authenticationCodeWithHashedTag:_hashedTag
-                              conversationType:configuration.conversationType
-                               durationSeconds:maybeDurationSeconds
-                              maxResponseCount:maybeMaxResponseCount
-                                      transCap:maybeTransCap
-                            requesterPublicKey:requesterPublicKeyBytes
-                        accessControlPublicKey:accessControlPublicKeyBytes
                              authenticationKey:authKey
-                              rendezvousHelper:rendezvousHelper];
+                        encryptedResponderData:encryptedResponderInfoWithIV];
 
     QLFRendezvousAuthType *authType = nil;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
@@ -233,13 +243,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFRendezvousCreationInfo *_creationInfo =
     [QLFRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:_hashedTag
                                                 authenticationType:authType
-                                                  conversationType:configuration.conversationType
                                                    durationSeconds:maybeDurationSeconds
                                                   maxResponseCount:maybeMaxResponseCount
-                                                          transCap:maybeTransCap
-                                                requesterPublicKey:requesterPublicKeyBytes
                                                 ownershipPublicKey:accessControlPublicKeyBytes
+                                            encryptedResponderInfo:encryptedResponderInfoWithIV
                                                 authenticationCode:authenticationCode];
+
     _descriptor =
     [QLFRendezvousDescriptor rendezvousDescriptorWithTag:_tag
                                                hashedTag:_hashedTag

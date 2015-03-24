@@ -22,4 +22,6 @@ typedef NS_ENUM(NSUInteger, QredoAuthenticatedRendezvousTagError) {
 @property (nonatomic, readonly, copy) NSString *prefix;
 @property (nonatomic, readonly, copy) NSString *authenticationTag;
 
++ (BOOL)isAuthenticatedTag:(NSString *)tag;
+
 @end
