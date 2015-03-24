@@ -30,7 +30,7 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     // Conversation errors
     QredoErrorCodeConversationUnknown = 4000,
     QredoErrorCodeConversationNotFound,
-    QredoErrorCodeConversatioinInvalidData,
+    QredoErrorCodeConversationInvalidData,
     QredoErrorCodeConversationWrongAuthenticationCode,
     QredoErrorCodeConversationDeleted,
 

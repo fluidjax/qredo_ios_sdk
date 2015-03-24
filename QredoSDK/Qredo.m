@@ -448,10 +448,10 @@ static NSString *const QredoKeychainPassword = @"Password123";
     @catch (NSException *e) {
         if (error) {
             *error = [NSError errorWithDomain:QredoErrorDomain
-                                         code:QredoErrorCodeConversatioinInvalidData
+                                         code:QredoErrorCodeConversationInvalidData
                                      userInfo:
                       @{
-                        NSLocalizedDescriptionKey:@"Failed to extract rendezvous from the vault item",
+                        NSLocalizedDescriptionKey:@"Failed to extract conversation from the vault item",
                         NSUnderlyingErrorKey: e
                         }];
         }
