@@ -711,7 +711,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
              return;
          }
 
-         LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
+         LogDebug(@"Query since HWM returned %lu conversation items(s)", (unsigned long)result.items.count);
 
          [self enumerateBodyWithResult:result
                  conversationItemIndex:0
@@ -792,7 +792,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
              return;
          }
 
-         LogDebug(@"Enumerating %lu conversation items(s)", (unsigned long)result.items.count);
+         LogDebug(@"Enumeration query returned %lu conversation items(s)", (unsigned long)result.items.count);
 
          // There are a few complications when asynchronosity is added
          // 1. We need to wait until the messages is stored before returning it to the user,
