@@ -65,7 +65,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 /** See `QredoRendezvousConfiguration` */
 @property (readonly) QredoRendezvousConfiguration *configuration;
 @property (readonly, copy) NSString *tag;
-// TODO: DH - confirm still need authenticationType property on Rendezvous once refactoring complete
 @property (readonly) QredoRendezvousAuthenticationType authenticationType;
 
 /** See `QredoRendezvousDelegate` */

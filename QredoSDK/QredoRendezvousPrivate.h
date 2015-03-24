@@ -26,7 +26,6 @@
 
 @property (readwrite) QredoRendezvousConfiguration *configuration;
 @property (readwrite) NSString *tag;
-// TODO: DH - confirm still need authenticationType property on Rendezvous once refactoring complete
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 
 - (instancetype)initWithClient:(QredoClient *)client;

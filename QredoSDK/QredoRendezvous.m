@@ -113,8 +113,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 // making the properties read/write for private use
 @property QredoRendezvousConfiguration *configuration;
 @property (readwrite, copy) NSString *tag;
-
-// TODO: DH - confirm still need authenticationType property on Rendezvous once refactoring complete
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 
 - (NSSet *)maybe:(id)object;
@@ -162,6 +160,9 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 {
     LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
     
+    // TODO: DH - write tests 
+    // TODO: DH - validate that the configuration and tag formats match
+    
     self.configuration = configuration;
     QredoRendezvousCrypto *_crypto = [QredoRendezvousCrypto instance];
     // Box up optional values.
@@ -169,7 +170,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
 
-    // TODO: DH - validate that the configuration and tag formats match
     
     NSError *error = nil;
     id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:authenticationType
@@ -283,7 +283,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
                                                 accessLevel:0
                                               summaryValues:@{
-                                                              kQredoRendezvousVaultItemLabelTag: _tag,
+                                                              kQredoRendezvousVaultItemLabelTag: self.tag,
                                                               kQredoRendezvousVaultItemLabelAuthenticationType:
                                                                   [NSNumber numberWithInt:self.authenticationType]
                                                               }];

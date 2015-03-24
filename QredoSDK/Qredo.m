@@ -278,8 +278,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
                            configuration:(QredoRendezvousConfiguration *)configuration
                        completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
-    // TODO: DH - validate that the configuration provided is an anonymous rendezvous
-
     // Anonymous Rendezvous are created using the full tag, and signing handler is not used
     [self createRendezvousWithTag:tag
                authenticationType:QredoRendezvousAuthenticationTypeAnonymous
@@ -289,14 +287,33 @@ static NSString *const QredoKeychainPassword = @"Password123";
 }
 
 // TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (internal keys)
+// TODO: DH - create unit tests which provide incorrect authentication types
 - (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
                              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                   configuration:(QredoRendezvousConfiguration *)configuration
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
-    // TODO: DH - validate that the configuration provided is an authenticated rendezvous, and is not X.509 (which must use externally generated keys/certs, so must be the signing handler variant)
-    // TODO: DH - validate inputs (any which aren't validated later)
-    
+    if (authenticationType == QredoRendezvousAuthenticationTypeAnonymous) {
+        // Not an authenticated rendezvous, so shouldn't be using this method
+        NSString *message = @"'Anonymous' is invalid, use the method dedicated to anonymous rendezvous.";
+        LogError(@"%@", message);
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeRendezvousInvalidData
+                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
+        completionHandler(nil, error);
+        return;
+    } else if (authenticationType == QredoRendezvousAuthenticationTypeX509Pem ||
+               authenticationType == QredoRendezvousAuthenticationTypeX509PemSelfsigned) {
+        // X.509 authenticated rendezvous MUST use externally generated certificates, so MUST use method with signingHandler
+        NSString *message = @"'X.509' is invalid, use the method dedicated to externally generated keys/certs which has a signing handler.";
+        LogError(@"%@", message);
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeRendezvousInvalidData
+                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
+        completionHandler(nil, error);
+        return;
+    }
+
     // Authenticated Rendezvous with internally generated keys are created using just the optional prefix.
     // @ is not part of the prefix and must not appear in prefix (this will be validated later)
 
@@ -316,6 +333,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 }
 
 // TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (external keys)
+// TODO: DH - create unit test with nil signing handler and confirm detected deeper down stack
 - (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
                              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                   configuration:(QredoRendezvousConfiguration *)configuration
@@ -323,6 +341,17 @@ static NSString *const QredoKeychainPassword = @"Password123";
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
+    if (authenticationType == QredoRendezvousAuthenticationTypeAnonymous) {
+        // Not an authenticated rendezvous, so shouldn't be using this method
+        NSString *message = @"'Anonymous' is invalid, use the method dedicated to anonymous rendezvous.";
+        LogError(@"%@", message);
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeRendezvousInvalidData
+                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
+        completionHandler(nil, error);
+        return;
+    }
+    
     // TODO: DH - validate that the configuration provided is an authenticated rendezvous, and that public key is present
     // TODO: DH - validate inputs (any which aren't validated later)
     

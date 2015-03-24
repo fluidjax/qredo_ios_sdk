@@ -841,7 +841,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 
-// TODO: DH - do other authenticated rendezvous types
+// TODO: DH - do other authenticated rendezvous types (X.509?)
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix
 {
     NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
