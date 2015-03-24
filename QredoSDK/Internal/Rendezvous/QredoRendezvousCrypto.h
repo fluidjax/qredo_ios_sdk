@@ -32,6 +32,9 @@
                     nonce:(QLFNonce*)nonce
                privateKey:(QredoPrivateKey*)privateKey;
 
+- (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
+                   encryptionKey:(NSData *)encryptionKey;
+
 - (QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
                                                encryptionKey:(NSData *)encryptionKey
                                                        error:(NSError **)error;

@@ -208,20 +208,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                conversationType:configuration.conversationType
                                                                        transCap:maybeTransCap];
 
-    NSData *iv = [NSData dataWithRandomBytesOfLength:16];
-    NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo];
-
-    NSData *encryptedResponderInfo = [QredoCrypto encryptData:serializedResponderInfo
-                                                   withAesKey:responderInfoEncKey
-                                                           iv:iv];
-    NSMutableData *encryptedResponderInfoWithIV = [NSMutableData dataWithData:iv];
-    [encryptedResponderInfoWithIV appendData:encryptedResponderInfo];
+    NSData *encryptedResponderInfo = [_crypto encryptResponderInfo:responderInfo
+                                                     encryptionKey:responderInfoEncKey];
 
     // Generate the authentication code.
     QLFAuthenticationCode *authenticationCode
     = [_crypto authenticationCodeWithHashedTag:_hashedTag
                              authenticationKey:authKey
-                        encryptedResponderData:encryptedResponderInfoWithIV];
+                        encryptedResponderData:encryptedResponderInfo];
 
     QLFRendezvousAuthType *authType = nil;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
@@ -246,7 +240,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                    durationSeconds:maybeDurationSeconds
                                                   maxResponseCount:maybeMaxResponseCount
                                                 ownershipPublicKey:accessControlPublicKeyBytes
-                                            encryptedResponderInfo:encryptedResponderInfoWithIV
+                                            encryptedResponderInfo:encryptedResponderInfo
                                                 authenticationCode:authenticationCode];
 
     _descriptor =

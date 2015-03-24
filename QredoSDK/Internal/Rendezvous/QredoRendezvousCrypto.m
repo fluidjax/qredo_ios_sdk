@@ -319,4 +319,20 @@ static const int QredoRendezvousMasterKeyLength = 32;
     }
 }
 
+- (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
+                   encryptionKey:(NSData *)encryptionKey
+{
+    NSData *iv = [NSData dataWithRandomBytesOfLength:16];
+    NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo];
+
+    NSData *encryptedResponderInfo = [QredoCrypto encryptData:serializedResponderInfo
+                                                   withAesKey:encryptionKey
+                                                           iv:iv];
+
+    NSMutableData *encryptedResponderInfoWithIV = [NSMutableData dataWithData:iv];
+    [encryptedResponderInfoWithIV appendData:encryptedResponderInfo];
+    
+    return [encryptedResponderInfoWithIV copy];
+}
+
 @end
