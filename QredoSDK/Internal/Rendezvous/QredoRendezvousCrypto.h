@@ -14,6 +14,12 @@
                                          authenticationKey:(NSData *)authenticationKey
                                     encryptedResponderData:(NSData *)encryptedResponderData;
 
+
+- (QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                                  authenticationKey:(NSData *)authenticationKey
+                                                 responderPublicKey:(NSData *)responderPublicKey;
+
+
 - (QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId;
 - (QLFKeyPairLF *)newRequesterKeyPair;
 - (QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
@@ -26,9 +32,15 @@
                     nonce:(QLFNonce*)nonce
                privateKey:(QredoPrivateKey*)privateKey;
 
-- (BOOL)validateCreationInfo:(QLFRendezvousCreationInfo *)creationInfo
-                         tag:(NSString *)tag
-                       error:(NSError **)error;
+- (QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
+                                               encryptionKey:(NSData *)encryptionKey
+                                                       error:(NSError **)error;
+
+- (BOOL)validateResponseRegistered:(QLFRendezvousResponseRegistered *)response
+                 authenticationKey:(NSData *)authenticationKey
+                               tag:(NSString *)tag
+                         hashedTag:(QLFRendezvousHashedTag *)hashedTag
+                             error:(NSError **)error;
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)fullTag

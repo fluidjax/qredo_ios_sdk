@@ -10,6 +10,7 @@
 #import "QredoRendezvousHelpers.h"
 #import "QredoLogging.h"
 #import "QredoAuthenticatedRendezvousTag.h"
+#import "QredoErrorCodes.h"
 
 
 #define QREDO_RENDEZVOUS_AUTH_KEY [@"Authenticate" dataUsingEncoding:NSUTF8StringEncoding]
@@ -53,6 +54,16 @@ static const int QredoRendezvousMasterKeyLength = 32;
 {
     NSMutableData *payload = [NSMutableData dataWithData:[hashedTag data]];
     [payload appendData:encryptedResponderData];
+
+    return [_crypto getAuthCodeWithKey:authenticationKey data:payload];
+}
+
+- (QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                                  authenticationKey:(NSData *)authenticationKey
+                                                 responderPublicKey:(NSData *)responderPublicKey
+{
+    NSMutableData *payload = [NSMutableData dataWithData:[hashedTag data]];
+    [payload appendData:responderPublicKey];
 
     return [_crypto getAuthCodeWithKey:authenticationKey data:payload];
 }
@@ -142,35 +153,39 @@ static const int QredoRendezvousMasterKeyLength = 32;
 }
 
 
-- (BOOL)validateCreationInfo:(QLFRendezvousCreationInfo *)creationInfo tag:(NSString *)tag error:(NSError **)error
+- (BOOL)validateResponseRegistered:(QLFRendezvousResponseRegistered *)response
+                 authenticationKey:(NSData *)authenticationKey
+                               tag:(NSString *)tag
+                         hashedTag:(QLFRendezvousHashedTag *)hashedTag
+                             error:(NSError **)error
 {
-    QLFRendezvousAuthType *authType = creationInfo.authenticationType;
-    id<QredoRendezvousRespondHelper> rendezvousHelper = [self rendezvousHelperForAuthType:authType fullTag:tag error:error];
+    QLFRendezvousAuthType *authenticationType = response.authenticationType;
+    QLFAuthenticationCode *authenticationCode = response.authenticationCode;
+    NSData *encryptedResponderData = response.encryptedResponderInfo;
     
-    NSData *authKey = [self authKey:tag];
-    
-    NSData *authCode
-    = [self authenticationCodeWithHashedTag:creationInfo.hashedTag
-                           conversationType:creationInfo.conversationType
-                            durationSeconds:creationInfo.durationSeconds
-                           maxResponseCount:creationInfo.maxResponseCount
-                                   transCap:creationInfo.transCap
-                         requesterPublicKey:creationInfo.requesterPublicKey
-                     accessControlPublicKey:creationInfo.ownershipPublicKey
-                          authenticationKey:authKey
-                           rendezvousHelper:rendezvousHelper];
-    
-    BOOL isValidAuthCode = [QredoCrypto equalsConstantTime:authCode right:creationInfo.authenticationCode];
+    id<QredoRendezvousRespondHelper> rendezvousHelper = [self rendezvousHelperForAuthType:authenticationType
+                                                                                  fullTag:tag
+                                                                                    error:error];
+
+    NSData *calculatedAuthenticationCode
+    = [self authenticationCodeWithHashedTag:hashedTag
+                          authenticationKey:authenticationKey
+                     encryptedResponderData:encryptedResponderData];
+
+    BOOL isValidAuthCode = [QredoCrypto equalsConstantTime:calculatedAuthenticationCode
+                                                     right:authenticationCode];
     
     __block BOOL isValidSignature = NO;
-    [authType ifRendezvousAnonymous:^{
+    [authenticationType ifRendezvousAnonymous:^{
         isValidSignature = YES;
     } ifRendezvousTrusted:^(QLFRendezvousAuthSignature *signature) {
         if (rendezvousHelper == nil) {
             isValidSignature = NO;
         } else {
-            NSData *rendezvousData = creationInfo.authenticationCode;
-            isValidSignature = [rendezvousHelper isValidSignature:signature rendezvousData:rendezvousData error:error];
+            NSData *rendezvousData = authenticationCode;
+            isValidSignature = [rendezvousHelper isValidSignature:signature
+                                                   rendezvousData:rendezvousData
+                                                            error:error];
         }
     }];
 
@@ -253,5 +268,55 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return [QredoCrypto hkdfExtractSha256WithSalt:QREDO_RENDEZVOUS_AUTH_SALT initialKeyMaterial:masterKey];
 }
 
+- (QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
+                                               encryptionKey:(NSData *)encryptionKey
+                                                       error:(NSError **)error
+{
+    const int ivLength = 16;
+    if (encryptedResponderData.length < ivLength) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeRendezvousInvalidData
+                                     userInfo:@{
+                                                NSLocalizedDescriptionKey: @"Invalid responder data"
+                                                }];
+            return nil;
+        }
+    }
+    NSData *iv = [NSData dataWithBytes:encryptedResponderData.bytes length:ivLength];
+    NSData *encryptedData = [NSData dataWithBytes:(encryptedResponderData.bytes + ivLength)
+                                           length:encryptedResponderData.length - ivLength];
+
+    NSData *decryptedData = [QredoCrypto decryptData:encryptedData withAesKey:encryptionKey iv:iv];
+
+    if (!decryptedData) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeRendezvousInvalidData
+                                     userInfo:@{
+                                                NSLocalizedDescriptionKey: @"Failed to decrypt responder info"
+                                                }];
+        }
+        return nil;
+    }
+
+    @try {
+        QLFRendezvousResponderInfo *responderInfo =
+        [QredoPrimitiveMarshallers unmarshalObject:decryptedData
+                                      unmarshaller:[QLFRendezvousResponderInfo unmarshaller]];
+        return responderInfo;
+    }
+    @catch (NSException *exception) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeRendezvousInvalidData
+                                     userInfo:@{
+                                                NSLocalizedDescriptionKey: @"Failed to unmarshal decrypted data"
+                                                }];
+        }
+
+        return nil;
+    }
+}
 
 @end
