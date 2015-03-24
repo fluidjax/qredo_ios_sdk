@@ -3689,6 +3689,164 @@
 
 @end
 
+@implementation QLFRendezvousCreationInfo
+
+
+
++ (QLFRendezvousCreationInfo *)rendezvousCreationInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag authenticationType:(QLFRendezvousAuthType *)authenticationType durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode
+{
+
+    return [[QLFRendezvousCreationInfo alloc] initWithHashedTag:hashedTag authenticationType:authenticationType durationSeconds:durationSeconds maxResponseCount:maxResponseCount ownershipPublicKey:ownershipPublicKey encryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFRendezvousCreationInfo *e = (QLFRendezvousCreationInfo *)element;
+        [writer writeConstructorStartWithObjectName:@"RendezvousCreationInfo"];
+            [writer writeFieldStartWithFieldName:@"authenticationCode"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e authenticationCode], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"authenticationType"];
+                [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"durationSeconds"];
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e durationSeconds], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"encryptedResponderInfo"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e encryptedResponderInfo], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"hashedTag"];
+                [QredoPrimitiveMarshallers quidMarshaller]([e hashedTag], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"maxResponseCount"];
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e maxResponseCount], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"ownershipPublicKey"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e ownershipPublicKey], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousCreationInfo'
+            [reader readFieldStart]; // TODO assert that field name is 'authenticationCode'
+                QLFAuthenticationCode *authenticationCode = (QLFAuthenticationCode *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
+                QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'durationSeconds'
+                NSSet *durationSeconds = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'encryptedResponderInfo'
+                QLFEncryptedResponderInfo *encryptedResponderInfo = (QLFEncryptedResponderInfo *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'hashedTag'
+                QLFRendezvousHashedTag *hashedTag = (QLFRendezvousHashedTag *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'maxResponseCount'
+                NSSet *maxResponseCount = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'ownershipPublicKey'
+                QLFRendezvousOwnershipPublicKey *ownershipPublicKey = (QLFRendezvousOwnershipPublicKey *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+        [reader readEnd];
+        return [QLFRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:hashedTag authenticationType:authenticationType durationSeconds:durationSeconds maxResponseCount:maxResponseCount ownershipPublicKey:ownershipPublicKey encryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode];
+    };
+}
+
+- (instancetype)initWithHashedTag:(QLFRendezvousHashedTag *)hashedTag authenticationType:(QLFRendezvousAuthType *)authenticationType durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode
+{
+
+    self = [super init];
+    if (self) {
+        _hashedTag = hashedTag;
+        _authenticationType = authenticationType;
+        _durationSeconds = durationSeconds;
+        _maxResponseCount = maxResponseCount;
+        _ownershipPublicKey = ownershipPublicKey;
+        _encryptedResponderInfo = encryptedResponderInfo;
+        _authenticationCode = authenticationCode;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFRendezvousCreationInfo *)other
+{
+
+    QREDO_COMPARE_OBJECT(hashedTag);
+    QREDO_COMPARE_OBJECT(authenticationType);
+    QREDO_COMPARE_OBJECT(durationSeconds);
+    QREDO_COMPARE_OBJECT(maxResponseCount);
+    QREDO_COMPARE_OBJECT(ownershipPublicKey);
+    QREDO_COMPARE_OBJECT(encryptedResponderInfo);
+    QREDO_COMPARE_OBJECT(authenticationCode);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToRendezvousCreationInfo:other];
+       
+}
+
+- (BOOL)isEqualToRendezvousCreationInfo:(QLFRendezvousCreationInfo *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_hashedTag != other.hashedTag && ![_hashedTag isEqual:other.hashedTag])
+        return NO;
+    if (_authenticationType != other.authenticationType && ![_authenticationType isEqual:other.authenticationType])
+        return NO;
+    if (_durationSeconds != other.durationSeconds && ![_durationSeconds isEqual:other.durationSeconds])
+        return NO;
+    if (_maxResponseCount != other.maxResponseCount && ![_maxResponseCount isEqual:other.maxResponseCount])
+        return NO;
+    if (_ownershipPublicKey != other.ownershipPublicKey && ![_ownershipPublicKey isEqual:other.ownershipPublicKey])
+        return NO;
+    if (_encryptedResponderInfo != other.encryptedResponderInfo && ![_encryptedResponderInfo isEqual:other.encryptedResponderInfo])
+        return NO;
+    if (_authenticationCode != other.authenticationCode && ![_authenticationCode isEqual:other.authenticationCode])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + [_hashedTag hash];
+    hash = hash * 31u + [_authenticationType hash];
+    hash = hash * 31u + [_durationSeconds hash];
+    hash = hash * 31u + [_maxResponseCount hash];
+    hash = hash * 31u + [_ownershipPublicKey hash];
+    hash = hash * 31u + [_encryptedResponderInfo hash];
+    hash = hash * 31u + [_authenticationCode hash];
+    return hash;
+       
+}
+
+@end
+
 @implementation QLFRendezvousResponseRejectionReason
 
 
@@ -4036,6 +4194,395 @@
 
     NSUInteger hash = 0;
     
+    return hash;
+       
+}
+
+@end
+
+@implementation QLFRendezvousRespondResult
+
+
+
++ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType
+{
+
+    return [[QLFRendezvousResponseRegistered alloc] initWithEncryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode authenticationType:authenticationType];
+       
+}
+
++ (QLFRendezvousRespondResult *)rendezvousResponseUnknownTag
+{
+
+    return [[QLFRendezvousResponseUnknownTag alloc] init];
+       
+}
+
++ (QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason
+{
+
+    return [[QLFRendezvousResponseRejected alloc] initWithReason:reason];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
+            [QLFRendezvousResponseRegistered marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
+            [QLFRendezvousResponseUnknownTag marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFRendezvousResponseRejected class]]) {
+            [QLFRendezvousResponseRejected marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        NSString *constructorSymbol = [reader readConstructorStart];
+        if ([constructorSymbol isEqualToString:@"RendezvousResponseRegistered"]) {
+            QLFRendezvousRespondResult *_temp = [QLFRendezvousResponseRegistered unmarshaller](reader);
+            [reader readEnd];
+            return _temp;
+        }
+
+        if ([constructorSymbol isEqualToString:@"RendezvousResponseUnknownTag"]) {
+            QLFRendezvousRespondResult *_temp = [QLFRendezvousResponseUnknownTag unmarshaller](reader);
+            [reader readEnd];
+            return _temp;
+        }
+
+        if ([constructorSymbol isEqualToString:@"RendezvousResponseRejected"]) {
+            QLFRendezvousRespondResult *_temp = [QLFRendezvousResponseRejected unmarshaller](reader);
+            [reader readEnd];
+            return _temp;
+        }
+
+       return nil;// TODO throw exception instead?
+    };
+
+}
+
+- (void)ifRendezvousResponseRegistered:(void (^)(QLFEncryptedResponderInfo *, QLFAuthenticationCode *, QLFRendezvousAuthType *))ifRendezvousResponseRegisteredBlock ifRendezvousResponseUnknownTag:(void (^)())ifRendezvousResponseUnknownTagBlock ifRendezvousResponseRejected:(void (^)(QLFRendezvousResponseRejectionReason *))ifRendezvousResponseRejectedBlock
+{
+    if ([self isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
+        ifRendezvousResponseRegisteredBlock([((QLFRendezvousResponseRegistered *) self) encryptedResponderInfo], [((QLFRendezvousResponseRegistered *) self) authenticationCode], [((QLFRendezvousResponseRegistered *) self) authenticationType]);
+    } else if ([self isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
+        ifRendezvousResponseUnknownTagBlock();
+    } else if ([self isKindOfClass:[QLFRendezvousResponseRejected class]]) {
+        ifRendezvousResponseRejectedBlock([((QLFRendezvousResponseRejected *) self) reason]);
+    }
+}
+
+- (NSComparisonResult)compare:(QLFRendezvousRespondResult *)other
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
+}
+
+- (BOOL)isEqualToRendezvousRespondResult:(QLFRendezvousRespondResult *)other
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
+}
+
+- (NSUInteger)hash
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
+}
+
+@end
+
+@implementation QLFRendezvousResponseRegistered
+
+
+
++ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType
+{
+
+    return [[QLFRendezvousResponseRegistered alloc] initWithEncryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode authenticationType:authenticationType];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFRendezvousResponseRegistered *e = (QLFRendezvousResponseRegistered *)element;
+        [writer writeConstructorStartWithObjectName:@"RendezvousResponseRegistered"];
+            [writer writeFieldStartWithFieldName:@"authenticationCode"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e authenticationCode], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"authenticationType"];
+                [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"encryptedResponderInfo"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e encryptedResponderInfo], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        
+            [reader readFieldStart]; // TODO assert that field name is 'authenticationCode'
+                QLFAuthenticationCode *authenticationCode = (QLFAuthenticationCode *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
+                QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'encryptedResponderInfo'
+                QLFEncryptedResponderInfo *encryptedResponderInfo = (QLFEncryptedResponderInfo *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+        
+        return [QLFRendezvousRespondResult rendezvousResponseRegisteredWithEncryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode authenticationType:authenticationType];
+    };
+}
+
+- (instancetype)initWithEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType
+{
+
+    self = [super init];
+    if (self) {
+        _encryptedResponderInfo = encryptedResponderInfo;
+        _authenticationCode = authenticationCode;
+        _authenticationType = authenticationType;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFRendezvousResponseRegistered *)other
+{
+    if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
+        // N.B. impose an ordering among subtypes of RendezvousRespondResult
+        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
+    }
+
+    QREDO_COMPARE_OBJECT(encryptedResponderInfo);
+    QREDO_COMPARE_OBJECT(authenticationCode);
+    QREDO_COMPARE_OBJECT(authenticationType);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToRendezvousResponseRegistered:other];
+       
+}
+
+- (BOOL)isEqualToRendezvousResponseRegistered:(QLFRendezvousResponseRegistered *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_encryptedResponderInfo != other.encryptedResponderInfo && ![_encryptedResponderInfo isEqual:other.encryptedResponderInfo])
+        return NO;
+    if (_authenticationCode != other.authenticationCode && ![_authenticationCode isEqual:other.authenticationCode])
+        return NO;
+    if (_authenticationType != other.authenticationType && ![_authenticationType isEqual:other.authenticationType])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + [_encryptedResponderInfo hash];
+    hash = hash * 31u + [_authenticationCode hash];
+    hash = hash * 31u + [_authenticationType hash];
+    return hash;
+       
+}
+
+@end
+
+@implementation QLFRendezvousResponseUnknownTag
+
+
+
++ (QLFRendezvousRespondResult *)rendezvousResponseUnknownTag
+{
+
+    return [[QLFRendezvousResponseUnknownTag alloc] init];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFRendezvousResponseUnknownTag *e = (QLFRendezvousResponseUnknownTag *)element;
+        [writer writeConstructorStartWithObjectName:@"RendezvousResponseUnknownTag"];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        
+
+        
+        return [QLFRendezvousRespondResult rendezvousResponseUnknownTag];
+    };
+}
+
+- (instancetype)init
+{
+
+    self = [super init];
+    if (self) {
+        
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFRendezvousResponseUnknownTag *)other
+{
+    if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
+        // N.B. impose an ordering among subtypes of RendezvousRespondResult
+        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
+    }
+
+    
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToRendezvousResponseUnknownTag:other];
+       
+}
+
+- (BOOL)isEqualToRendezvousResponseUnknownTag:(QLFRendezvousResponseUnknownTag *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    
+    return hash;
+       
+}
+
+@end
+
+@implementation QLFRendezvousResponseRejected
+
+
+
++ (QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason
+{
+
+    return [[QLFRendezvousResponseRejected alloc] initWithReason:reason];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFRendezvousResponseRejected *e = (QLFRendezvousResponseRejected *)element;
+        [writer writeConstructorStartWithObjectName:@"RendezvousResponseRejected"];
+            [writer writeFieldStartWithFieldName:@"reason"];
+                [QLFRendezvousResponseRejectionReason marshaller]([e reason], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        
+            [reader readFieldStart]; // TODO assert that field name is 'reason'
+                QLFRendezvousResponseRejectionReason *reason = (QLFRendezvousResponseRejectionReason *)[QLFRendezvousResponseRejectionReason unmarshaller](reader);
+            [reader readEnd];
+        
+        return [QLFRendezvousRespondResult rendezvousResponseRejectedWithReason:reason];
+    };
+}
+
+- (instancetype)initWithReason:(QLFRendezvousResponseRejectionReason *)reason
+{
+
+    self = [super init];
+    if (self) {
+        _reason = reason;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFRendezvousResponseRejected *)other
+{
+    if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseRejected class]]) {
+        // N.B. impose an ordering among subtypes of RendezvousRespondResult
+        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
+    }
+
+    QREDO_COMPARE_OBJECT(reason);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToRendezvousResponseRejected:other];
+       
+}
+
+- (BOOL)isEqualToRendezvousResponseRejected:(QLFRendezvousResponseRejected *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_reason != other.reason && ![_reason isEqual:other.reason])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + [_reason hash];
     return hash;
        
 }
@@ -6278,188 +6825,6 @@
 
 @end
 
-@implementation QLFRendezvousCreationInfo
-
-
-
-+ (QLFRendezvousCreationInfo *)rendezvousCreationInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag authenticationType:(QLFRendezvousAuthType *)authenticationType conversationType:(NSString *)conversationType durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount transCap:(NSSet *)transCap requesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey authenticationCode:(QLFAuthenticationCode *)authenticationCode
-{
-
-    return [[QLFRendezvousCreationInfo alloc] initWithHashedTag:hashedTag authenticationType:authenticationType conversationType:conversationType durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:transCap requesterPublicKey:requesterPublicKey ownershipPublicKey:ownershipPublicKey authenticationCode:authenticationCode];
-       
-}
-
-+ (QredoMarshaller)marshaller
-{
-    return ^(id element, QredoWireFormatWriter *writer) {
-        QLFRendezvousCreationInfo *e = (QLFRendezvousCreationInfo *)element;
-        [writer writeConstructorStartWithObjectName:@"RendezvousCreationInfo"];
-            [writer writeFieldStartWithFieldName:@"authenticationCode"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e authenticationCode], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"authenticationType"];
-                [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"conversationType"];
-                [QredoPrimitiveMarshallers stringMarshaller]([e conversationType], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"durationSeconds"];
-                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e durationSeconds], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"hashedTag"];
-                [QredoPrimitiveMarshallers quidMarshaller]([e hashedTag], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"maxResponseCount"];
-                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e maxResponseCount], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"ownershipPublicKey"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e ownershipPublicKey], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"requesterPublicKey"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e requesterPublicKey], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"transCap"];
-                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]]([e transCap], writer);
-            [writer writeEnd];
-
-        [writer writeEnd];
-    };
-}
-
-+ (QredoUnmarshaller)unmarshaller
-{
-    return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousCreationInfo'
-            [reader readFieldStart]; // TODO assert that field name is 'authenticationCode'
-                QLFAuthenticationCode *authenticationCode = (QLFAuthenticationCode *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
-                QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'conversationType'
-                NSString *conversationType = (NSString *)[QredoPrimitiveMarshallers stringUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'durationSeconds'
-                NSSet *durationSeconds = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'hashedTag'
-                QLFRendezvousHashedTag *hashedTag = (QLFRendezvousHashedTag *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'maxResponseCount'
-                NSSet *maxResponseCount = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'ownershipPublicKey'
-                QLFRendezvousOwnershipPublicKey *ownershipPublicKey = (QLFRendezvousOwnershipPublicKey *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'requesterPublicKey'
-                QLFRequesterPublicKey *requesterPublicKey = (QLFRequesterPublicKey *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'transCap'
-                NSSet *transCap = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]](reader);
-            [reader readEnd];
-        [reader readEnd];
-        return [QLFRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:hashedTag authenticationType:authenticationType conversationType:conversationType durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:transCap requesterPublicKey:requesterPublicKey ownershipPublicKey:ownershipPublicKey authenticationCode:authenticationCode];
-    };
-}
-
-- (instancetype)initWithHashedTag:(QLFRendezvousHashedTag *)hashedTag authenticationType:(QLFRendezvousAuthType *)authenticationType conversationType:(NSString *)conversationType durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount transCap:(NSSet *)transCap requesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey authenticationCode:(QLFAuthenticationCode *)authenticationCode
-{
-
-    self = [super init];
-    if (self) {
-        _hashedTag = hashedTag;
-        _authenticationType = authenticationType;
-        _conversationType = conversationType;
-        _durationSeconds = durationSeconds;
-        _maxResponseCount = maxResponseCount;
-        _transCap = transCap;
-        _requesterPublicKey = requesterPublicKey;
-        _ownershipPublicKey = ownershipPublicKey;
-        _authenticationCode = authenticationCode;
-    }
-    return self;
-       
-}
-
-- (NSComparisonResult)compare:(QLFRendezvousCreationInfo *)other
-{
-
-    QREDO_COMPARE_OBJECT(hashedTag);
-    QREDO_COMPARE_OBJECT(authenticationType);
-    QREDO_COMPARE_OBJECT(conversationType);
-    QREDO_COMPARE_OBJECT(durationSeconds);
-    QREDO_COMPARE_OBJECT(maxResponseCount);
-    QREDO_COMPARE_OBJECT(transCap);
-    QREDO_COMPARE_OBJECT(requesterPublicKey);
-    QREDO_COMPARE_OBJECT(ownershipPublicKey);
-    QREDO_COMPARE_OBJECT(authenticationCode);
-    return NSOrderedSame;
-       
-}
-
-- (BOOL)isEqualTo:(id)other
-{
-
-    return [self isEqualToRendezvousCreationInfo:other];
-       
-}
-
-- (BOOL)isEqualToRendezvousCreationInfo:(QLFRendezvousCreationInfo *)other
-{
-
-    if (other == self)
-        return YES;
-    if (!other || ![other.class isEqual:self.class])
-        return NO;
-    if (_hashedTag != other.hashedTag && ![_hashedTag isEqual:other.hashedTag])
-        return NO;
-    if (_authenticationType != other.authenticationType && ![_authenticationType isEqual:other.authenticationType])
-        return NO;
-    if (_conversationType != other.conversationType && ![_conversationType isEqual:other.conversationType])
-        return NO;
-    if (_durationSeconds != other.durationSeconds && ![_durationSeconds isEqual:other.durationSeconds])
-        return NO;
-    if (_maxResponseCount != other.maxResponseCount && ![_maxResponseCount isEqual:other.maxResponseCount])
-        return NO;
-    if (_transCap != other.transCap && ![_transCap isEqual:other.transCap])
-        return NO;
-    if (_requesterPublicKey != other.requesterPublicKey && ![_requesterPublicKey isEqual:other.requesterPublicKey])
-        return NO;
-    if (_ownershipPublicKey != other.ownershipPublicKey && ![_ownershipPublicKey isEqual:other.ownershipPublicKey])
-        return NO;
-    if (_authenticationCode != other.authenticationCode && ![_authenticationCode isEqual:other.authenticationCode])
-        return NO;
-    return YES;
-       
-}
-
-- (NSUInteger)hash
-{
-
-    NSUInteger hash = 0;
-    hash = hash * 31u + [_hashedTag hash];
-    hash = hash * 31u + [_authenticationType hash];
-    hash = hash * 31u + [_conversationType hash];
-    hash = hash * 31u + [_durationSeconds hash];
-    hash = hash * 31u + [_maxResponseCount hash];
-    hash = hash * 31u + [_transCap hash];
-    hash = hash * 31u + [_requesterPublicKey hash];
-    hash = hash * 31u + [_ownershipPublicKey hash];
-    hash = hash * 31u + [_authenticationCode hash];
-    return hash;
-       
-}
-
-@end
-
 @implementation QLFRendezvousDescriptor
 
 
@@ -6642,125 +7007,32 @@
 
 @end
 
-@implementation QLFRendezvousRespondResult
+@implementation QLFRendezvousResponderInfo
 
 
 
-+ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithCreationInfo:(QLFRendezvousCreationInfo *)creationInfo
++ (QLFRendezvousResponderInfo *)rendezvousResponderInfoWithRequesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey conversationType:(NSString *)conversationType transCap:(NSSet *)transCap
 {
 
-    return [[QLFRendezvousResponseRegistered alloc] initWithCreationInfo:creationInfo];
-       
-}
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseUnknownTag
-{
-
-    return [[QLFRendezvousResponseUnknownTag alloc] init];
-       
-}
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason
-{
-
-    return [[QLFRendezvousResponseRejected alloc] initWithReason:reason];
+    return [[QLFRendezvousResponderInfo alloc] initWithRequesterPublicKey:requesterPublicKey conversationType:conversationType transCap:transCap];
        
 }
 
 + (QredoMarshaller)marshaller
 {
     return ^(id element, QredoWireFormatWriter *writer) {
-        if ([element isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
-            [QLFRendezvousResponseRegistered marshaller](element, writer);
-        } else if ([element isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
-            [QLFRendezvousResponseUnknownTag marshaller](element, writer);
-        } else if ([element isKindOfClass:[QLFRendezvousResponseRejected class]]) {
-            [QLFRendezvousResponseRejected marshaller](element, writer);
-        } else {
-            // TODO throw exception instead
-        }
-    };
-         
-}
+        QLFRendezvousResponderInfo *e = (QLFRendezvousResponderInfo *)element;
+        [writer writeConstructorStartWithObjectName:@"RendezvousResponderInfo"];
+            [writer writeFieldStartWithFieldName:@"conversationType"];
+                [QredoPrimitiveMarshallers stringMarshaller]([e conversationType], writer);
+            [writer writeEnd];
 
-+ (QredoUnmarshaller)unmarshaller
-{
-    return ^id(QredoWireFormatReader *reader) {
-        NSString *constructorSymbol = [reader readConstructorStart];
-        if ([constructorSymbol isEqualToString:@"RendezvousResponseRegistered"]) {
-            QLFRendezvousRespondResult *_temp = [QLFRendezvousResponseRegistered unmarshaller](reader);
-            [reader readEnd];
-            return _temp;
-        }
+            [writer writeFieldStartWithFieldName:@"requesterPublicKey"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e requesterPublicKey], writer);
+            [writer writeEnd];
 
-        if ([constructorSymbol isEqualToString:@"RendezvousResponseUnknownTag"]) {
-            QLFRendezvousRespondResult *_temp = [QLFRendezvousResponseUnknownTag unmarshaller](reader);
-            [reader readEnd];
-            return _temp;
-        }
-
-        if ([constructorSymbol isEqualToString:@"RendezvousResponseRejected"]) {
-            QLFRendezvousRespondResult *_temp = [QLFRendezvousResponseRejected unmarshaller](reader);
-            [reader readEnd];
-            return _temp;
-        }
-
-       return nil;// TODO throw exception instead?
-    };
-
-}
-
-- (void)ifRendezvousResponseRegistered:(void (^)(QLFRendezvousCreationInfo *))ifRendezvousResponseRegisteredBlock ifRendezvousResponseUnknownTag:(void (^)())ifRendezvousResponseUnknownTagBlock ifRendezvousResponseRejected:(void (^)(QLFRendezvousResponseRejectionReason *))ifRendezvousResponseRejectedBlock
-{
-    if ([self isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
-        ifRendezvousResponseRegisteredBlock([((QLFRendezvousResponseRegistered *) self) creationInfo]);
-    } else if ([self isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
-        ifRendezvousResponseUnknownTagBlock();
-    } else if ([self isKindOfClass:[QLFRendezvousResponseRejected class]]) {
-        ifRendezvousResponseRejectedBlock([((QLFRendezvousResponseRejected *) self) reason]);
-    }
-}
-
-- (NSComparisonResult)compare:(QLFRendezvousRespondResult *)other
-{
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
-}
-
-- (BOOL)isEqualTo:(id)other
-{
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
-}
-
-- (BOOL)isEqualToRendezvousRespondResult:(QLFRendezvousRespondResult *)other
-{
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
-}
-
-- (NSUInteger)hash
-{
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
-}
-
-@end
-
-@implementation QLFRendezvousResponseRegistered
-
-
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithCreationInfo:(QLFRendezvousCreationInfo *)creationInfo
-{
-
-    return [[QLFRendezvousResponseRegistered alloc] initWithCreationInfo:creationInfo];
-       
-}
-
-+ (QredoMarshaller)marshaller
-{
-    return ^(id element, QredoWireFormatWriter *writer) {
-        QLFRendezvousResponseRegistered *e = (QLFRendezvousResponseRegistered *)element;
-        [writer writeConstructorStartWithObjectName:@"RendezvousResponseRegistered"];
-            [writer writeFieldStartWithFieldName:@"creationInfo"];
-                [QLFRendezvousCreationInfo marshaller]([e creationInfo], writer);
+            [writer writeFieldStartWithFieldName:@"transCap"];
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]]([e transCap], writer);
             [writer writeEnd];
 
         [writer writeEnd];
@@ -6770,208 +7042,40 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        
-            [reader readFieldStart]; // TODO assert that field name is 'creationInfo'
-                QLFRendezvousCreationInfo *creationInfo = (QLFRendezvousCreationInfo *)[QLFRendezvousCreationInfo unmarshaller](reader);
+        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousResponderInfo'
+            [reader readFieldStart]; // TODO assert that field name is 'conversationType'
+                NSString *conversationType = (NSString *)[QredoPrimitiveMarshallers stringUnmarshaller](reader);
             [reader readEnd];
-        
-        return [QLFRendezvousRespondResult rendezvousResponseRegisteredWithCreationInfo:creationInfo];
-    };
-}
-
-- (instancetype)initWithCreationInfo:(QLFRendezvousCreationInfo *)creationInfo
-{
-
-    self = [super init];
-    if (self) {
-        _creationInfo = creationInfo;
-    }
-    return self;
-       
-}
-
-- (NSComparisonResult)compare:(QLFRendezvousResponseRegistered *)other
-{
-    if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
-        // N.B. impose an ordering among subtypes of RendezvousRespondResult
-        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
-    }
-
-    QREDO_COMPARE_OBJECT(creationInfo);
-    return NSOrderedSame;
-       
-}
-
-- (BOOL)isEqualTo:(id)other
-{
-
-    return [self isEqualToRendezvousResponseRegistered:other];
-       
-}
-
-- (BOOL)isEqualToRendezvousResponseRegistered:(QLFRendezvousResponseRegistered *)other
-{
-
-    if (other == self)
-        return YES;
-    if (!other || ![other.class isEqual:self.class])
-        return NO;
-    if (_creationInfo != other.creationInfo && ![_creationInfo isEqual:other.creationInfo])
-        return NO;
-    return YES;
-       
-}
-
-- (NSUInteger)hash
-{
-
-    NSUInteger hash = 0;
-    hash = hash * 31u + [_creationInfo hash];
-    return hash;
-       
-}
-
-@end
-
-@implementation QLFRendezvousResponseUnknownTag
-
-
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseUnknownTag
-{
-
-    return [[QLFRendezvousResponseUnknownTag alloc] init];
-       
-}
-
-+ (QredoMarshaller)marshaller
-{
-    return ^(id element, QredoWireFormatWriter *writer) {
-        QLFRendezvousResponseUnknownTag *e = (QLFRendezvousResponseUnknownTag *)element;
-        [writer writeConstructorStartWithObjectName:@"RendezvousResponseUnknownTag"];
-
-        [writer writeEnd];
-    };
-}
-
-+ (QredoUnmarshaller)unmarshaller
-{
-    return ^id(QredoWireFormatReader *reader) {
-        
-
-        
-        return [QLFRendezvousRespondResult rendezvousResponseUnknownTag];
-    };
-}
-
-- (instancetype)init
-{
-
-    self = [super init];
-    if (self) {
-        
-    }
-    return self;
-       
-}
-
-- (NSComparisonResult)compare:(QLFRendezvousResponseUnknownTag *)other
-{
-    if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
-        // N.B. impose an ordering among subtypes of RendezvousRespondResult
-        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
-    }
-
-    
-    return NSOrderedSame;
-       
-}
-
-- (BOOL)isEqualTo:(id)other
-{
-
-    return [self isEqualToRendezvousResponseUnknownTag:other];
-       
-}
-
-- (BOOL)isEqualToRendezvousResponseUnknownTag:(QLFRendezvousResponseUnknownTag *)other
-{
-
-    if (other == self)
-        return YES;
-    if (!other || ![other.class isEqual:self.class])
-        return NO;
-    
-    return YES;
-       
-}
-
-- (NSUInteger)hash
-{
-
-    NSUInteger hash = 0;
-    
-    return hash;
-       
-}
-
-@end
-
-@implementation QLFRendezvousResponseRejected
-
-
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason
-{
-
-    return [[QLFRendezvousResponseRejected alloc] initWithReason:reason];
-       
-}
-
-+ (QredoMarshaller)marshaller
-{
-    return ^(id element, QredoWireFormatWriter *writer) {
-        QLFRendezvousResponseRejected *e = (QLFRendezvousResponseRejected *)element;
-        [writer writeConstructorStartWithObjectName:@"RendezvousResponseRejected"];
-            [writer writeFieldStartWithFieldName:@"reason"];
-                [QLFRendezvousResponseRejectionReason marshaller]([e reason], writer);
-            [writer writeEnd];
-
-        [writer writeEnd];
-    };
-}
-
-+ (QredoUnmarshaller)unmarshaller
-{
-    return ^id(QredoWireFormatReader *reader) {
-        
-            [reader readFieldStart]; // TODO assert that field name is 'reason'
-                QLFRendezvousResponseRejectionReason *reason = (QLFRendezvousResponseRejectionReason *)[QLFRendezvousResponseRejectionReason unmarshaller](reader);
+            [reader readFieldStart]; // TODO assert that field name is 'requesterPublicKey'
+                QLFRequesterPublicKey *requesterPublicKey = (QLFRequesterPublicKey *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
-        
-        return [QLFRendezvousRespondResult rendezvousResponseRejectedWithReason:reason];
+            [reader readFieldStart]; // TODO assert that field name is 'transCap'
+                NSSet *transCap = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]](reader);
+            [reader readEnd];
+        [reader readEnd];
+        return [QLFRendezvousResponderInfo rendezvousResponderInfoWithRequesterPublicKey:requesterPublicKey conversationType:conversationType transCap:transCap];
     };
 }
 
-- (instancetype)initWithReason:(QLFRendezvousResponseRejectionReason *)reason
+- (instancetype)initWithRequesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey conversationType:(NSString *)conversationType transCap:(NSSet *)transCap
 {
 
     self = [super init];
     if (self) {
-        _reason = reason;
+        _requesterPublicKey = requesterPublicKey;
+        _conversationType = conversationType;
+        _transCap = transCap;
     }
     return self;
        
 }
 
-- (NSComparisonResult)compare:(QLFRendezvousResponseRejected *)other
+- (NSComparisonResult)compare:(QLFRendezvousResponderInfo *)other
 {
-    if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseRejected class]]) {
-        // N.B. impose an ordering among subtypes of RendezvousRespondResult
-        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
-    }
 
-    QREDO_COMPARE_OBJECT(reason);
+    QREDO_COMPARE_OBJECT(requesterPublicKey);
+    QREDO_COMPARE_OBJECT(conversationType);
+    QREDO_COMPARE_OBJECT(transCap);
     return NSOrderedSame;
        
 }
@@ -6979,18 +7083,22 @@
 - (BOOL)isEqualTo:(id)other
 {
 
-    return [self isEqualToRendezvousResponseRejected:other];
+    return [self isEqualToRendezvousResponderInfo:other];
        
 }
 
-- (BOOL)isEqualToRendezvousResponseRejected:(QLFRendezvousResponseRejected *)other
+- (BOOL)isEqualToRendezvousResponderInfo:(QLFRendezvousResponderInfo *)other
 {
 
     if (other == self)
         return YES;
     if (!other || ![other.class isEqual:self.class])
         return NO;
-    if (_reason != other.reason && ![_reason isEqual:other.reason])
+    if (_requesterPublicKey != other.requesterPublicKey && ![_requesterPublicKey isEqual:other.requesterPublicKey])
+        return NO;
+    if (_conversationType != other.conversationType && ![_conversationType isEqual:other.conversationType])
+        return NO;
+    if (_transCap != other.transCap && ![_transCap isEqual:other.transCap])
         return NO;
     return YES;
        
@@ -7000,7 +7108,9 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + [_reason hash];
+    hash = hash * 31u + [_requesterPublicKey hash];
+    hash = hash * 31u + [_conversationType hash];
+    hash = hash * 31u + [_transCap hash];
     return hash;
        
 }
