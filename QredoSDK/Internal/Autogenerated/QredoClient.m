@@ -3185,6 +3185,116 @@
 
 @end
 
+@implementation QLFEncryptedResponderInfo
+
+
+
++ (QLFEncryptedResponderInfo *)encryptedResponderInfoWithValue:(NSData *)value authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType
+{
+
+    return [[QLFEncryptedResponderInfo alloc] initWithValue:value authenticationCode:authenticationCode authenticationType:authenticationType];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFEncryptedResponderInfo *e = (QLFEncryptedResponderInfo *)element;
+        [writer writeConstructorStartWithObjectName:@"EncryptedResponderInfo"];
+            [writer writeFieldStartWithFieldName:@"authenticationCode"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e authenticationCode], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"authenticationType"];
+                [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"value"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e value], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        [reader readConstructorStart];// TODO assert that constructor name is 'EncryptedResponderInfo'
+            [reader readFieldStart]; // TODO assert that field name is 'authenticationCode'
+                QLFAuthenticationCode *authenticationCode = (QLFAuthenticationCode *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
+                QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'value'
+                NSData *value = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+        [reader readEnd];
+        return [QLFEncryptedResponderInfo encryptedResponderInfoWithValue:value authenticationCode:authenticationCode authenticationType:authenticationType];
+    };
+}
+
+- (instancetype)initWithValue:(NSData *)value authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType
+{
+
+    self = [super init];
+    if (self) {
+        _value = value;
+        _authenticationCode = authenticationCode;
+        _authenticationType = authenticationType;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFEncryptedResponderInfo *)other
+{
+
+    QREDO_COMPARE_OBJECT(value);
+    QREDO_COMPARE_OBJECT(authenticationCode);
+    QREDO_COMPARE_OBJECT(authenticationType);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToEncryptedResponderInfo:other];
+       
+}
+
+- (BOOL)isEqualToEncryptedResponderInfo:(QLFEncryptedResponderInfo *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_value != other.value && ![_value isEqual:other.value])
+        return NO;
+    if (_authenticationCode != other.authenticationCode && ![_authenticationCode isEqual:other.authenticationCode])
+        return NO;
+    if (_authenticationType != other.authenticationType && ![_authenticationType isEqual:other.authenticationType])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + [_value hash];
+    hash = hash * 31u + [_authenticationCode hash];
+    hash = hash * 31u + [_authenticationType hash];
+    return hash;
+       
+}
+
+@end
+
 @implementation QLFRendezvousCreateResult
 
 
@@ -3693,10 +3803,10 @@
 
 
 
-+ (QLFRendezvousCreationInfo *)rendezvousCreationInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag authenticationType:(QLFRendezvousAuthType *)authenticationType durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode
++ (QLFRendezvousCreationInfo *)rendezvousCreationInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
 {
 
-    return [[QLFRendezvousCreationInfo alloc] initWithHashedTag:hashedTag authenticationType:authenticationType durationSeconds:durationSeconds maxResponseCount:maxResponseCount ownershipPublicKey:ownershipPublicKey encryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode];
+    return [[QLFRendezvousCreationInfo alloc] initWithHashedTag:hashedTag durationSeconds:durationSeconds maxResponseCount:maxResponseCount ownershipPublicKey:ownershipPublicKey encryptedResponderInfo:encryptedResponderInfo];
        
 }
 
@@ -3705,20 +3815,12 @@
     return ^(id element, QredoWireFormatWriter *writer) {
         QLFRendezvousCreationInfo *e = (QLFRendezvousCreationInfo *)element;
         [writer writeConstructorStartWithObjectName:@"RendezvousCreationInfo"];
-            [writer writeFieldStartWithFieldName:@"authenticationCode"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e authenticationCode], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"authenticationType"];
-                [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
-            [writer writeEnd];
-
             [writer writeFieldStartWithFieldName:@"durationSeconds"];
                 [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e durationSeconds], writer);
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"encryptedResponderInfo"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e encryptedResponderInfo], writer);
+                [QLFEncryptedResponderInfo marshaller]([e encryptedResponderInfo], writer);
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"hashedTag"];
@@ -3741,17 +3843,11 @@
 {
     return ^id(QredoWireFormatReader *reader) {
         [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousCreationInfo'
-            [reader readFieldStart]; // TODO assert that field name is 'authenticationCode'
-                QLFAuthenticationCode *authenticationCode = (QLFAuthenticationCode *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
-                QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
-            [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'durationSeconds'
                 NSSet *durationSeconds = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'encryptedResponderInfo'
-                QLFEncryptedResponderInfo *encryptedResponderInfo = (QLFEncryptedResponderInfo *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+                QLFEncryptedResponderInfo *encryptedResponderInfo = (QLFEncryptedResponderInfo *)[QLFEncryptedResponderInfo unmarshaller](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'hashedTag'
                 QLFRendezvousHashedTag *hashedTag = (QLFRendezvousHashedTag *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
@@ -3763,22 +3859,20 @@
                 QLFRendezvousOwnershipPublicKey *ownershipPublicKey = (QLFRendezvousOwnershipPublicKey *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
         [reader readEnd];
-        return [QLFRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:hashedTag authenticationType:authenticationType durationSeconds:durationSeconds maxResponseCount:maxResponseCount ownershipPublicKey:ownershipPublicKey encryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode];
+        return [QLFRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:hashedTag durationSeconds:durationSeconds maxResponseCount:maxResponseCount ownershipPublicKey:ownershipPublicKey encryptedResponderInfo:encryptedResponderInfo];
     };
 }
 
-- (instancetype)initWithHashedTag:(QLFRendezvousHashedTag *)hashedTag authenticationType:(QLFRendezvousAuthType *)authenticationType durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode
+- (instancetype)initWithHashedTag:(QLFRendezvousHashedTag *)hashedTag durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
 {
 
     self = [super init];
     if (self) {
         _hashedTag = hashedTag;
-        _authenticationType = authenticationType;
         _durationSeconds = durationSeconds;
         _maxResponseCount = maxResponseCount;
         _ownershipPublicKey = ownershipPublicKey;
         _encryptedResponderInfo = encryptedResponderInfo;
-        _authenticationCode = authenticationCode;
     }
     return self;
        
@@ -3788,12 +3882,10 @@
 {
 
     QREDO_COMPARE_OBJECT(hashedTag);
-    QREDO_COMPARE_OBJECT(authenticationType);
     QREDO_COMPARE_OBJECT(durationSeconds);
     QREDO_COMPARE_OBJECT(maxResponseCount);
     QREDO_COMPARE_OBJECT(ownershipPublicKey);
     QREDO_COMPARE_OBJECT(encryptedResponderInfo);
-    QREDO_COMPARE_OBJECT(authenticationCode);
     return NSOrderedSame;
        
 }
@@ -3814,8 +3906,6 @@
         return NO;
     if (_hashedTag != other.hashedTag && ![_hashedTag isEqual:other.hashedTag])
         return NO;
-    if (_authenticationType != other.authenticationType && ![_authenticationType isEqual:other.authenticationType])
-        return NO;
     if (_durationSeconds != other.durationSeconds && ![_durationSeconds isEqual:other.durationSeconds])
         return NO;
     if (_maxResponseCount != other.maxResponseCount && ![_maxResponseCount isEqual:other.maxResponseCount])
@@ -3823,8 +3913,6 @@
     if (_ownershipPublicKey != other.ownershipPublicKey && ![_ownershipPublicKey isEqual:other.ownershipPublicKey])
         return NO;
     if (_encryptedResponderInfo != other.encryptedResponderInfo && ![_encryptedResponderInfo isEqual:other.encryptedResponderInfo])
-        return NO;
-    if (_authenticationCode != other.authenticationCode && ![_authenticationCode isEqual:other.authenticationCode])
         return NO;
     return YES;
        
@@ -3835,12 +3923,10 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_hashedTag hash];
-    hash = hash * 31u + [_authenticationType hash];
     hash = hash * 31u + [_durationSeconds hash];
     hash = hash * 31u + [_maxResponseCount hash];
     hash = hash * 31u + [_ownershipPublicKey hash];
     hash = hash * 31u + [_encryptedResponderInfo hash];
-    hash = hash * 31u + [_authenticationCode hash];
     return hash;
        
 }
@@ -4204,10 +4290,10 @@
 
 
 
-+ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType
++ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithInfo:(QLFEncryptedResponderInfo *)info
 {
 
-    return [[QLFRendezvousResponseRegistered alloc] initWithEncryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode authenticationType:authenticationType];
+    return [[QLFRendezvousResponseRegistered alloc] initWithInfo:info];
        
 }
 
@@ -4268,10 +4354,10 @@
 
 }
 
-- (void)ifRendezvousResponseRegistered:(void (^)(QLFEncryptedResponderInfo *, QLFAuthenticationCode *, QLFRendezvousAuthType *))ifRendezvousResponseRegisteredBlock ifRendezvousResponseUnknownTag:(void (^)())ifRendezvousResponseUnknownTagBlock ifRendezvousResponseRejected:(void (^)(QLFRendezvousResponseRejectionReason *))ifRendezvousResponseRejectedBlock
+- (void)ifRendezvousResponseRegistered:(void (^)(QLFEncryptedResponderInfo *))ifRendezvousResponseRegisteredBlock ifRendezvousResponseUnknownTag:(void (^)())ifRendezvousResponseUnknownTagBlock ifRendezvousResponseRejected:(void (^)(QLFRendezvousResponseRejectionReason *))ifRendezvousResponseRejectedBlock
 {
     if ([self isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
-        ifRendezvousResponseRegisteredBlock([((QLFRendezvousResponseRegistered *) self) encryptedResponderInfo], [((QLFRendezvousResponseRegistered *) self) authenticationCode], [((QLFRendezvousResponseRegistered *) self) authenticationType]);
+        ifRendezvousResponseRegisteredBlock([((QLFRendezvousResponseRegistered *) self) info]);
     } else if ([self isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
         ifRendezvousResponseUnknownTagBlock();
     } else if ([self isKindOfClass:[QLFRendezvousResponseRejected class]]) {
@@ -4305,10 +4391,10 @@
 
 
 
-+ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType
++ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithInfo:(QLFEncryptedResponderInfo *)info
 {
 
-    return [[QLFRendezvousResponseRegistered alloc] initWithEncryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode authenticationType:authenticationType];
+    return [[QLFRendezvousResponseRegistered alloc] initWithInfo:info];
        
 }
 
@@ -4317,16 +4403,8 @@
     return ^(id element, QredoWireFormatWriter *writer) {
         QLFRendezvousResponseRegistered *e = (QLFRendezvousResponseRegistered *)element;
         [writer writeConstructorStartWithObjectName:@"RendezvousResponseRegistered"];
-            [writer writeFieldStartWithFieldName:@"authenticationCode"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e authenticationCode], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"authenticationType"];
-                [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"encryptedResponderInfo"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e encryptedResponderInfo], writer);
+            [writer writeFieldStartWithFieldName:@"info"];
+                [QLFEncryptedResponderInfo marshaller]([e info], writer);
             [writer writeEnd];
 
         [writer writeEnd];
@@ -4337,28 +4415,20 @@
 {
     return ^id(QredoWireFormatReader *reader) {
         
-            [reader readFieldStart]; // TODO assert that field name is 'authenticationCode'
-                QLFAuthenticationCode *authenticationCode = (QLFAuthenticationCode *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
-                QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'encryptedResponderInfo'
-                QLFEncryptedResponderInfo *encryptedResponderInfo = (QLFEncryptedResponderInfo *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readFieldStart]; // TODO assert that field name is 'info'
+                QLFEncryptedResponderInfo *info = (QLFEncryptedResponderInfo *)[QLFEncryptedResponderInfo unmarshaller](reader);
             [reader readEnd];
         
-        return [QLFRendezvousRespondResult rendezvousResponseRegisteredWithEncryptedResponderInfo:encryptedResponderInfo authenticationCode:authenticationCode authenticationType:authenticationType];
+        return [QLFRendezvousRespondResult rendezvousResponseRegisteredWithInfo:info];
     };
 }
 
-- (instancetype)initWithEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType
+- (instancetype)initWithInfo:(QLFEncryptedResponderInfo *)info
 {
 
     self = [super init];
     if (self) {
-        _encryptedResponderInfo = encryptedResponderInfo;
-        _authenticationCode = authenticationCode;
-        _authenticationType = authenticationType;
+        _info = info;
     }
     return self;
        
@@ -4371,9 +4441,7 @@
         return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
     }
 
-    QREDO_COMPARE_OBJECT(encryptedResponderInfo);
-    QREDO_COMPARE_OBJECT(authenticationCode);
-    QREDO_COMPARE_OBJECT(authenticationType);
+    QREDO_COMPARE_OBJECT(info);
     return NSOrderedSame;
        
 }
@@ -4392,11 +4460,7 @@
         return YES;
     if (!other || ![other.class isEqual:self.class])
         return NO;
-    if (_encryptedResponderInfo != other.encryptedResponderInfo && ![_encryptedResponderInfo isEqual:other.encryptedResponderInfo])
-        return NO;
-    if (_authenticationCode != other.authenticationCode && ![_authenticationCode isEqual:other.authenticationCode])
-        return NO;
-    if (_authenticationType != other.authenticationType && ![_authenticationType isEqual:other.authenticationType])
+    if (_info != other.info && ![_info isEqual:other.info])
         return NO;
     return YES;
        
@@ -4406,9 +4470,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + [_encryptedResponderInfo hash];
-    hash = hash * 31u + [_authenticationCode hash];
-    hash = hash * 31u + [_authenticationType hash];
+    hash = hash * 31u + [_info hash];
     return hash;
        
 }
