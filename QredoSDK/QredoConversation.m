@@ -53,6 +53,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 #define SALT_CONVERSATION_A_AUTHKEY [@"ConversationAuthenticationKeyA" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_CONVERSATION_B_BULKKEY [@"ConversationBulkEncryptionKeyB" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_CONVERSATION_B_AUTHKEY [@"ConversationAuthenticationKeyB" dataUsingEncoding:NSUTF8StringEncoding]
+#define SALT_REQUESTER_INBOUND_QUEUE [@"eeK3hieyengahp3A" dataUsingEncoding:NSUTF8StringEncoding]
+#define SALT_RESPONDER_INBOUND_QUEUE [@"Wo6ahjata4tae5ij" dataUsingEncoding:NSUTF8StringEncoding]
 
 @interface QredoConversationMetadata ()
 @property (readwrite) NSString *type;
@@ -331,80 +333,63 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _myPrivateKey = privateKey;
     _yourPublicKey = publicKey;
 
+
+    NSData *requesterInboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_BULKKEY
+                                                                 myPrivateKey:privateKey
+                                                                yourPublicKey:publicKey];
+
+    NSData *requesterInboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_AUTHKEY
+                                                                 myPrivateKey:privateKey
+                                                                yourPublicKey:publicKey];
+
+    NSData *responderInboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_BULKKEY
+                                                                 myPrivateKey:privateKey
+                                                                yourPublicKey:publicKey];
+
+    NSData *responderInboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_AUTHKEY
+                                                                 myPrivateKey:privateKey
+                                                                yourPublicKey:publicKey];
+
+    NSData *requesterInboundQueueKeyPairSalt = [_crypto getDiffieHellmanSecretWithSalt:SALT_REQUESTER_INBOUND_QUEUE
+                                                                          myPrivateKey:privateKey
+                                                                         yourPublicKey:publicKey];
+
+    NSData *responderInboundQueueKeyPairSalt = [_crypto getDiffieHellmanSecretWithSalt:SALT_RESPONDER_INBOUND_QUEUE
+                                                                          myPrivateKey:privateKey
+                                                                         yourPublicKey:publicKey];
+
+    QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
+    QredoED25519SigningKey *responderInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueKeyPairSalt];
+
+    QredoQUID *requesterInboundQueueId = [[QredoQUID alloc] initWithQUIDData:requesterInboundQueueSigningKey.verifyKey.data];
+    QredoQUID *responderInboundQueueId = [[QredoQUID alloc] initWithQUIDData:responderInboundQueueSigningKey.verifyKey.data];
+
     if (rendezvousOwner) {
-        _inboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_BULKKEY
-                                                    myPrivateKey:privateKey
-                                                   yourPublicKey:publicKey];
+        _inboundBulkKey = requesterInboundBulkKey;
+        _inboundAuthKey = requesterInboundAuthKey;
+        _inboundQueueId = requesterInboundQueueId;
+        _inboundSigningKey = requesterInboundQueueSigningKey;
 
-        _inboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_AUTHKEY
-                                                    myPrivateKey:privateKey
-                                                   yourPublicKey:publicKey];
-
-        _outboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_BULKKEY
-                                                     myPrivateKey:privateKey
-                                                    yourPublicKey:publicKey];
-
-        _outboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_AUTHKEY
-                                                     myPrivateKey:privateKey
-                                                    yourPublicKey:publicKey];
-
+        _outboundBulkKey = responderInboundBulkKey;
+        _outboundAuthKey = responderInboundAuthKey;
+        _outboundQueueId = responderInboundQueueId;
+        _outboundSigningKey = responderInboundQueueSigningKey;
     } else {
-        _inboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_BULKKEY
-                                                    myPrivateKey:privateKey
-                                                   yourPublicKey:publicKey];
+        _inboundBulkKey = responderInboundBulkKey;
+        _inboundAuthKey = responderInboundAuthKey;
+        _inboundQueueId = responderInboundQueueId;
+        _inboundSigningKey = responderInboundQueueSigningKey;
 
-        _inboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_AUTHKEY
-                                                    myPrivateKey:privateKey
-                                                   yourPublicKey:publicKey];
-
-        _outboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_BULKKEY
-                                                     myPrivateKey:privateKey
-                                                    yourPublicKey:publicKey];
-
-        _outboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_AUTHKEY
-                                                     myPrivateKey:privateKey
-                                                    yourPublicKey:publicKey];
+        _outboundBulkKey = requesterInboundBulkKey;
+        _outboundAuthKey = requesterInboundAuthKey;
+        _outboundQueueId = requesterInboundQueueId;
+        _outboundSigningKey = requesterInboundQueueSigningKey;
     }
 
     NSData *conversationIdData = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_ID
-                                                           myPrivateKey:privateKey
-                                                          yourPublicKey:publicKey];
+                                                            myPrivateKey:privateKey
+                                                           yourPublicKey:publicKey];
     _metadata.conversationId = [[QredoQUID alloc] initWithQUIDData:conversationIdData];
-    
-
-    NSMutableData *queueA = [NSMutableData data];
-    [queueA appendBytes:_metadata.conversationId.bytes
-                 length:_metadata.conversationId.bytesCount];
-
-    NSMutableData *queueB = [NSMutableData data];
-    uint8_t flippedByte = _metadata.conversationId.bytes[0] ^ 1;
-    [queueB appendBytes:&flippedByte
-                 length:1];
-
-    [queueB appendBytes:_metadata.conversationId.bytes + 1
-                 length:_metadata.conversationId.bytesCount - 1];
-
-    QredoED25519SigningKey *queueASigningKey = [_crypto qredoED25519SigningKeyWithSeed:queueA];
-    QredoED25519SigningKey *queueBSigningKey = [_crypto qredoED25519SigningKeyWithSeed:queueB];
-    QredoQUID *queueAQUID = [[QredoQUID alloc] initWithQUIDData:queueASigningKey.verifyKey.data];
-    QredoQUID *queueBQUID = [[QredoQUID alloc] initWithQUIDData:queueBSigningKey.verifyKey.data];
-
-    if (rendezvousOwner) {
-        // Inbound is to me (Alice)
-        _inboundQueueId = queueAQUID;
-        _outboundQueueId = queueBQUID;
-
-        _inboundSigningKey = queueASigningKey;
-        _outboundSigningKey = queueBSigningKey;
-    } else {
-        // Inbound is to me (Bob)
-        _inboundQueueId = queueBQUID;
-        _outboundQueueId = queueAQUID;
-
-        _inboundSigningKey = queueBSigningKey;
-        _outboundSigningKey = queueASigningKey;
-    }
-
 }
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void(^)(NSError *error))completionHandler
