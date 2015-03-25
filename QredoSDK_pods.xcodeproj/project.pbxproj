@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A0693BB1AC3253700E3ECD4 /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
 		0A10352B1A389DFD002479D9 /* QredoKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A1035291A389DFD002479D9 /* QredoKeychain.h */; };
 		0A10352C1A389DFD002479D9 /* QredoKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A10352A1A389DFD002479D9 /* QredoKeychain.m */; };
 		0A16F8DA19C3590700639779 /* QredoVaultSequenceCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A16F89319C3567E00639779 /* QredoVaultSequenceCache.m */; };
@@ -210,6 +211,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0A0693B91AC3253700E3ECD4 /* NSData+ParseHex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ParseHex.h"; sourceTree = "<group>"; };
+		0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ParseHex.m"; sourceTree = "<group>"; };
 		0A1035291A389DFD002479D9 /* QredoKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychain.h; sourceTree = "<group>"; };
 		0A10352A1A389DFD002479D9 /* QredoKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychain.m; sourceTree = "<group>"; };
 		0A10352D1A38AEF7002479D9 /* KeychainTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
@@ -687,6 +690,8 @@
 				0A6573F71A2F3B7200D5502E /* Dictionary+Contains.swift */,
 				0A6573F91A2F3B7200D5502E /* NSDictionary+Contains.h */,
 				0A6573FA1A2F3B7200D5502E /* NSDictionary+Contains.m */,
+				0A0693B91AC3253700E3ECD4 /* NSData+ParseHex.h */,
+				0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1377,6 +1382,7 @@
 				0A19C0211A6E9F81004B5783 /* ConversationMessageStoreTests.swift in Sources */,
 				0AEE5C5E1A5C13B10018BE19 /* ControlMessagesTests.swift in Sources */,
 				0A65741A1A2F3B7200D5502E /* QredoVaultTests.m in Sources */,
+				0A0693BB1AC3253700E3ECD4 /* NSData+ParseHex.m in Sources */,
 				DCC22DB01A88BC840047AB18 /* TestCertificates.m in Sources */,
 				DCC22DBC1A88F6E90047AB18 /* QredoRendezvousRsa4096PemHelperTests.m in Sources */,
 				0ABF4D971A5D84F20096BF19 /* ConversationBlockDelegate.swift in Sources */,

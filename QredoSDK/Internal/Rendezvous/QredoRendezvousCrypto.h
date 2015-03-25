@@ -35,6 +35,10 @@
 - (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                    encryptionKey:(NSData *)encryptionKey;
 
+- (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
+                   encryptionKey:(NSData *)encryptionKey
+                              iv:(NSData *)iv;
+
 - (QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
                                                encryptionKey:(NSData *)encryptionKey
                                                        error:(NSError **)error;

@@ -323,6 +323,14 @@ static const int QredoRendezvousMasterKeyLength = 32;
                    encryptionKey:(NSData *)encryptionKey
 {
     NSData *iv = [NSData dataWithRandomBytesOfLength:16];
+    return [self encryptResponderInfo:responderInfo encryptionKey:encryptionKey iv:iv];
+}
+
+- (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
+                   encryptionKey:(NSData *)encryptionKey
+                              iv:(NSData *)iv
+{
+
     NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo];
 
     NSData *encryptedResponderInfo = [QredoCrypto encryptData:serializedResponderInfo
