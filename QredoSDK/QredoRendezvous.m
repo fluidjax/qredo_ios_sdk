@@ -208,14 +208,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                conversationType:configuration.conversationType
                                                                        transCap:maybeTransCap];
 
-    NSData *encryptedResponderInfo = [_crypto encryptResponderInfo:responderInfo
+    NSData *encryptedResponderData = [_crypto encryptResponderInfo:responderInfo
                                                      encryptionKey:responderInfoEncKey];
 
     // Generate the authentication code.
     QLFAuthenticationCode *authenticationCode
     = [_crypto authenticationCodeWithHashedTag:_hashedTag
                              authenticationKey:authKey
-                        encryptedResponderData:encryptedResponderInfo];
+                        encryptedResponderData:encryptedResponderData];
 
     QLFRendezvousAuthType *authType = nil;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
@@ -234,14 +234,17 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _lfAuthType = authType;
     
     // Create the Rendezvous.
+    QLFEncryptedResponderInfo *encryptedResponderInfo
+    = [QLFEncryptedResponderInfo encryptedResponderInfoWithValue:encryptedResponderData
+                                              authenticationCode:authenticationCode
+                                              authenticationType:authType];
+
     QLFRendezvousCreationInfo *_creationInfo =
     [QLFRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:_hashedTag
-                                                authenticationType:authType
                                                    durationSeconds:maybeDurationSeconds
                                                   maxResponseCount:maybeMaxResponseCount
                                                 ownershipPublicKey:accessControlPublicKeyBytes
-                                            encryptedResponderInfo:encryptedResponderInfo
-                                                authenticationCode:authenticationCode];
+                                            encryptedResponderInfo:encryptedResponderInfo];
 
     _descriptor =
     [QLFRendezvousDescriptor rendezvousDescriptorWithTag:_tag

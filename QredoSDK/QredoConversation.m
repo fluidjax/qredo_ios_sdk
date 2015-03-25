@@ -442,30 +442,30 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         if ([result isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
             QLFRendezvousResponseRegistered* responseRegistered = (QLFRendezvousResponseRegistered*) result;
 
-            NSError *error = nil;
-
-            NSData *encKey = [_rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
-
-            QLFRendezvousResponderInfo *responderInfo =
-            [_rendezvousCrypto decryptResponderInfoWithData:responseRegistered.encryptedResponderInfo
-                                              encryptionKey:encKey
-                                                      error:&error];
-
             // TODO: [GR]: Take a view whether we need to show this error to the client code.
 
-            if ([_rendezvousCrypto validateResponseRegistered:responseRegistered
-                                            authenticationKey:authKey
-                                                          tag:rendezvousTag
-                                                    hashedTag:hashedTag
-                                                        error:nil])
+            if ([_rendezvousCrypto validateEncryptedResponderInfo:responseRegistered.info
+                                                authenticationKey:authKey
+                                                              tag:rendezvousTag
+                                                        hashedTag:hashedTag
+                                                            error:nil])
             {
+                NSError *error = nil;
+
+                NSData *encKey = [_rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
+                
+                QLFRendezvousResponderInfo *responderInfo =
+                [_rendezvousCrypto decryptResponderInfoWithData:responseRegistered.info.value
+                                                  encryptionKey:encKey
+                                                          error:&error];
+
                 QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:responderInfo.requesterPublicKey];
                 QredoDhPrivateKey *responderPrivateKey = [[QredoDhPrivateKey alloc] initWithData:responderKeyPair.privKey.bytes];
                 
                 _metadata.rendezvousTag = rendezvousTag;
                 _transCap = responderInfo.transCap;
                 _metadata.type = responderInfo.conversationType;
-                _authenticationType = responseRegistered.authenticationType;
+                _authenticationType = responseRegistered.info.authenticationType;
 
                 [self generateAndStoreKeysWithPrivateKey:responderPrivateKey
                                                publicKey:requesterPublicKey

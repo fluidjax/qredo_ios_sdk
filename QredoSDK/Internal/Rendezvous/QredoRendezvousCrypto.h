@@ -39,11 +39,11 @@
                                                encryptionKey:(NSData *)encryptionKey
                                                        error:(NSError **)error;
 
-- (BOOL)validateResponseRegistered:(QLFRendezvousResponseRegistered *)response
-                 authenticationKey:(NSData *)authenticationKey
-                               tag:(NSString *)tag
-                         hashedTag:(QLFRendezvousHashedTag *)hashedTag
-                             error:(NSError **)error;
+- (BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
+                     authenticationKey:(NSData *)authenticationKey
+                                   tag:(NSString *)tag
+                             hashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                 error:(NSError **)error;
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)fullTag

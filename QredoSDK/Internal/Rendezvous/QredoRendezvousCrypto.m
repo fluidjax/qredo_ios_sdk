@@ -153,15 +153,15 @@ static const int QredoRendezvousMasterKeyLength = 32;
 }
 
 
-- (BOOL)validateResponseRegistered:(QLFRendezvousResponseRegistered *)response
-                 authenticationKey:(NSData *)authenticationKey
-                               tag:(NSString *)tag
-                         hashedTag:(QLFRendezvousHashedTag *)hashedTag
-                             error:(NSError **)error
+- (BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
+                     authenticationKey:(NSData *)authenticationKey
+                                   tag:(NSString *)tag
+                             hashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                 error:(NSError **)error
 {
-    QLFRendezvousAuthType *authenticationType = response.authenticationType;
-    QLFAuthenticationCode *authenticationCode = response.authenticationCode;
-    NSData *encryptedResponderData = response.encryptedResponderInfo;
+    QLFRendezvousAuthType *authenticationType = encryptedResponderInfo.authenticationType;
+    QLFAuthenticationCode *authenticationCode = encryptedResponderInfo.authenticationCode;
+    NSData *encryptedResponderData = encryptedResponderInfo.value;
     
     id<QredoRendezvousRespondHelper> rendezvousHelper = [self rendezvousHelperForAuthType:authenticationType
                                                                                   fullTag:tag
