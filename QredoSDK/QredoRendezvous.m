@@ -185,7 +185,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _tag = [rendezvousHelper tag];
 
     // Hash the tag.
-    NSData *masterKey = [_crypto masterKeyWithTag:tag];
+    NSData *masterKey = [_crypto masterKeyWithTag:_tag];
     QLFAuthenticationCode *authKey = [_crypto authenticationKeyWithMasterKey:masterKey];
     _hashedTag  = [_crypto hashedTagWithMasterKey:masterKey];
     NSData *responderInfoEncKey = [_crypto encryptionKeyWithMasterKey:masterKey];
