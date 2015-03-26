@@ -100,11 +100,6 @@
     [super testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid];
 }
 
-- (void)testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_EmptyPrefix
-{
-    [super testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_EmptyPrefix];
-}
-
 - (void)testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix
 {
     [super testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix];

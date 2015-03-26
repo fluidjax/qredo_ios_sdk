@@ -126,7 +126,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
-@property (nonatomic) NSArray *rootCertificates;
+@property (nonatomic) NSArray *trustedRootRefs;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
 
@@ -140,6 +140,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // Want tests to abort if error occurrs
     self.continueAfterFailure = NO;
     
+    // Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
+    [self setupRootCertificates];
     self.cryptoImpl = [[CryptoImplV1 alloc] init];
     
     // Must remove any existing keys before starting
@@ -188,6 +190,17 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     return keyRefPair;
 }
 
+- (void)setupRootCertificates
+{
+    // Java-SDK root cert
+    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
+    int expectedNumberOfRootCertificateRefs = 1;
+    
+    self.trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
+    XCTAssertNotNil(self.trustedRootRefs, @"Root certificates should not be nil.");
+    XCTAssertEqual(self.trustedRootRefs.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
+}
+
 - (void)setupTestPublicCertificateAndPrivateKey4096Bit
 {
     // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to raw private RSA key, and the PEM public certificates
@@ -202,11 +215,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSString *pkcs12Password = @"password";
     int expectedNumberOfChainCertificateRefs = 2;
     
-    
-    
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data
                                                                                              password:pkcs12Password
-                                                                                  rootCertificateRefs:self.rootCertificates];
+                                                                                  rootCertificateRefs:self.trustedRootRefs];
     XCTAssertNotNil(identityDictionary, @"Incorrect identity validation result. Should have returned valid NSDictionary.");
     
     SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
@@ -231,7 +242,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT
+                                                                               resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -260,7 +272,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT
+                                                                               resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -287,7 +300,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
-    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    [anotherClient respondWithTag:randomTag
+                  trustedRootRefs:self.trustedRootRefs
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
         NSLog(@"Responded. Error = %@, Conversation = %@", error, conversation);
@@ -585,7 +600,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:NO]
+                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT
+                                                                               resetData:NO]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -609,7 +625,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
-    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    [anotherClient respondWithTag:randomTag
+                  trustedRootRefs:nil // Anonymous rendezvous, so technically not needed
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
     }];
@@ -699,7 +717,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
-    [anotherClient respondWithTag:fullTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    [anotherClient respondWithTag:fullTag
+                  trustedRootRefs:self.trustedRootRefs
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
     }];
@@ -750,6 +770,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                  authenticationType:authenticationType
                                       configuration:configuration
                                           publicKey:publicKey
+                                    trustedRootRefs:self.trustedRootRefs
                                      signingHandler:signingHandler
                                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                       
@@ -805,7 +826,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Responding to Rendezvous");
     __block QredoConversation *createdConversation = nil;
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
-    [anotherClient respondWithTag:fullTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    [anotherClient respondWithTag:fullTag
+                  trustedRootRefs:self.trustedRootRefs
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNotNil(conversation);
         XCTAssertNil(error);
         createdConversation = conversation;
@@ -1028,6 +1051,89 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                                   signingHandler:signingHandler];
 }
 
+- (void)testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid
+{
+    NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeX509Pem;
+    
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc]
+       initWithConversationType:kRendezvousTestConversationType
+       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
+       transCap:nil];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    NSLog(@"Creating authenticated rendezvous (generating internal keys)");
+    [client createAuthenticatedRendezvousWithPrefix:randomPrefix
+                                 authenticationType:authenticationType
+                                      configuration:configuration
+                                  completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                                      
+                                      XCTAssertNotNil(error);
+                                      XCTAssertNil(rendezvous);
+                                      [createExpectation fulfill];
+                                  }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid
+{
+    NSString *emptyPrefix = @"";
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeX509Pem;
+    
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc]
+       initWithConversationType:kRendezvousTestConversationType
+       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
+       transCap:nil];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    NSLog(@"Creating authenticated rendezvous (generating internal keys)");
+    [client createAuthenticatedRendezvousWithPrefix:emptyPrefix
+                                 authenticationType:authenticationType
+                                      configuration:configuration
+                                  completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                                      
+                                      XCTAssertNotNil(error);
+                                      XCTAssertNil(rendezvous);
+                                      [createExpectation fulfill];
+                                  }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix
+{
+    [self setupTestPublicCertificateAndPrivateKey4096Bit];
+    
+    NSString *randomPrefix = [[QredoQUID QUID] QUIDString];
+    QredoRendezvousAuthenticationType authenticationType = QredoRendezvousAuthenticationTypeX509Pem;
+    NSString *publicKey = self.publicKeyCertificateChainPem;
+
+    // X.509 always needs a signing handler
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:self.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+
+    [self common_createAndRespondRendezvousForAuthenticationType:authenticationType
+                                                          prefix:randomPrefix
+                                                       publicKey:publicKey
+                                                  signingHandler:signingHandler];
+}
+
 - (void)testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix
 {
     NSString *nilPrefix = nil; // Invalid, nil prefix
@@ -1145,7 +1251,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
-    [anotherClient respondWithTag:fullTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    [anotherClient respondWithTag:fullTag
+                  trustedRootRefs:self.trustedRootRefs
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssert(error);
         [respondExpectation fulfill];
     }];
