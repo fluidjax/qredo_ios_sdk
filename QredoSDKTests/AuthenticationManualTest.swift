@@ -25,7 +25,8 @@ class AuthenticationManualTest: XCTestCase {
 
         let conversationExpectation = expectationWithDescription("respond to rendezvous")
         var conversation : QredoConversation!
-        client.respondWithTag(rendezvousTag, completionHandler: { (conversation_, error) -> Void in
+        // TODO: DH - Suspect we're not responding to an X.509 authenticated rendezvous, so nil trustedRootRefs is okay for test
+        client.respondWithTag(rendezvousTag, trustedRootRefs:nil, completionHandler: { (conversation_, error) -> Void in
             if error != nil {
                 println("failed to respond: \(error)")
             }

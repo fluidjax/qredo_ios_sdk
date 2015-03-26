@@ -33,7 +33,9 @@
 // This test has frequently helped in triggering intermittent bugs
 - (void)testConversationMultiple
 {
-    self.continueAfterFailure = NO;
+    // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
+    self.continueAfterFailure = YES;
+
     for (int i = 0; i < 20; i++)
     {
         NSLog(@"\n\n\n\n******** Start Test %d ********\n", i);

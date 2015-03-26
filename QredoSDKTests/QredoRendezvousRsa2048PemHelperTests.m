@@ -82,6 +82,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -98,6 +99,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -161,6 +163,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -177,6 +180,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -250,6 +254,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag1
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -266,6 +271,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag1
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -282,6 +288,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag2
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -298,6 +305,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:finalFullTag1
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper1);
     XCTAssertNil(error);
@@ -320,6 +328,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:finalFullTag1
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper2);
     XCTAssertNil(error);
@@ -340,6 +349,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:finalFullTag2
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper2);
     XCTAssertNil(error);
@@ -397,6 +407,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -413,6 +424,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -472,6 +484,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -487,6 +500,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -551,6 +565,7 @@
     XCTAssertThrows([QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                                           fullTag:initialFullTag
                                                                            crypto:crypto
+                                                                  trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                                    signingHandler:signingHandler
                                                                             error:&error]);
 }
@@ -565,6 +580,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -584,6 +600,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -603,6 +620,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -627,6 +645,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -646,6 +665,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -665,6 +685,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -686,6 +707,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -711,6 +733,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -761,6 +784,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -818,6 +842,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -851,6 +876,7 @@
     XCTAssertThrows([QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                                           fullTag:initialFullTag
                                                                            crypto:crypto
+                                                                  trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                                             error:&error]);
 }
 
@@ -863,6 +889,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -879,6 +906,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -895,6 +923,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -917,6 +946,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -933,6 +963,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -949,6 +980,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -967,6 +999,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -993,6 +1026,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1019,6 +1053,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1046,6 +1081,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1073,6 +1109,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1100,6 +1137,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootRefs:nil // Nil TrustedRootRefs fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);

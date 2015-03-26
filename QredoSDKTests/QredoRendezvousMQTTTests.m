@@ -30,7 +30,9 @@
 // This test has frequently helped in triggering intermittent bugs
 - (void)testCreateRendezvousMultiple
 {
-    self.continueAfterFailure = NO;
+    // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
+    self.continueAfterFailure = YES;
+
     for (int i = 0; i < 10; i++)
     {
         NSLog(@"Test %d", i);
@@ -86,6 +88,26 @@
 - (void)testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix
 {
     [super testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix];
+}
+
+-(void)testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid
+{
+    [super testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid];
+}
+
+-(void)testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid
+{
+    [super testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_EmptyPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_EmptyPrefix];
+}
+
+- (void)testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix
+{
+    [super testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix];
 }
 
 - (void)testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix

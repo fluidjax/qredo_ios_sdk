@@ -112,7 +112,8 @@ class RendezvousMultipleSubsription: XCTestCase {
             XCTFail("something failed in the listener \(error)")
         }
 
-        clients.secondClient.respondWithTag(rendezvousTag) { conversation, error in
+        // We know we're responding to anonymous rendezvous, so nil trustedRootRefs is fine for this test
+        clients.secondClient.respondWithTag(rendezvousTag, trustedRootRefs:nil) { conversation, error in
             XCTAssertNil(error, "failed to respond")
             respondExpectation?.fulfill()
         }
@@ -128,7 +129,7 @@ class RendezvousMultipleSubsription: XCTestCase {
 
 
 
-//        // Now start listening on both instances of the same rendezvous
+        // Now start listening on both instances of the same rendezvous
         let fetchedRendezvousListener = RendezvousBlockDelegate()
         var receiveResponseOnFetchedRendezvousExpectation : XCTestExpectation? = expectationWithDescription("response on fetched rendezvous")
         var receiveResponseOnFetchedRendezvous = false
@@ -154,7 +155,8 @@ class RendezvousMultipleSubsription: XCTestCase {
 
         respondExpectation = expectationWithDescription("respond")
 
-        clients.secondClient.respondWithTag(rendezvousTag) { conversation, error in
+        // We know we're responding to anonymous rendezvous, so nil trustedRootRefs is fine for this test
+        clients.secondClient.respondWithTag(rendezvousTag, trustedRootRefs:nil) { conversation, error in
             XCTAssertNil(error, "failed to respond")
             respondExpectation?.fulfill()
         }
