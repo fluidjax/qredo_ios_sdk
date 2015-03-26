@@ -144,30 +144,36 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return self;
 }
 
+// TODO: DH - provide alternative method signature for non-X.509 authenticated rendezvous without trustedRootRefs?
+// TODO: DH - replace TrustedRootRefs with generic format for certs - e.g. array of PEMs to avoid being tied to Apple's SecCertificateRef?
 - (void)createRendezvousWithTag:(NSString *)tag
              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
+                trustedRootRefs:(NSArray *)trustedRootRefs
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
+    LogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootRefs count: %lul.", tag, (unsigned long)trustedRootRefs.count);
     
     // TODO: DH - write tests 
     // TODO: DH - validate that the configuration and tag formats match
+    // TODO: DH - enforce non-nil trustedRootRefs on X.509 PEM
     
     self.configuration = configuration;
-    QredoRendezvousCrypto *_crypto = [QredoRendezvousCrypto instance];
+    
+    QredoRendezvousCrypto *crypto = [QredoRendezvousCrypto instance];
+
     // Box up optional values.
     NSSet *maybeDurationSeconds  = [self maybe:configuration.durationSeconds];
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
-
-    
+   
     NSError *error = nil;
-    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:authenticationType
-                                                                                              fullTag:tag
-                                                                                       signingHandler:signingHandler
-                                                                                                error:&error];
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [crypto rendezvousHelperForAuthenticationType:authenticationType
+                                                                                             fullTag:tag
+                                                                                     trustedRootRefs:trustedRootRefs
+                                                                                      signingHandler:signingHandler
+                                                                                               error:&error];
     if (!rendezvousHelper) {
         // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
         // be to much information.
@@ -177,14 +183,14 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     _tag = [rendezvousHelper tag];
 
     // Hash the tag.
-    QLFAuthenticationCode *authKey = [_crypto authKey:_tag];
-    _hashedTag  = [_crypto hashedTagWithAuthKey:authKey];
+    QLFAuthenticationCode *authKey = [crypto authKey:_tag];
+    _hashedTag  = [crypto hashedTagWithAuthKey:authKey];
 
     LogDebug(@"Hashed tag: %@", _hashedTag);
 
     // Generate the rendezvous key pairs.
-    QLFKeyPairLF *accessControlKeyPair = [_crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];
-    QLFKeyPairLF *requesterKeyPair     = [_crypto newRequesterKeyPair];
+    QLFKeyPairLF *accessControlKeyPair = [crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];
+    QLFKeyPairLF *requesterKeyPair     = [crypto newRequesterKeyPair];
 
     _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData: requesterKeyPair.privKey.bytes];
 
@@ -194,7 +200,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     
     // Generate the authentication code.
     QLFAuthenticationCode *authenticationCode
-    = [_crypto authenticationCodeWithHashedTag:_hashedTag
+    = [crypto authenticationCodeWithHashedTag:_hashedTag
                               conversationType:configuration.conversationType
                                durationSeconds:maybeDurationSeconds
                               maxResponseCount:maybeMaxResponseCount

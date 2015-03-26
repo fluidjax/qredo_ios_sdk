@@ -10,6 +10,11 @@
 #import "QredoLogging.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 
+@interface QredoAbstractRendezvousX509PemHelper ()
+
+@property (nonatomic) NSArray *trustedRootRefs;
+
+@end
 
 @implementation QredoAbstractRendezvousX509PemHelper
 
@@ -41,9 +46,8 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         return nil;
     }
     
-    NSArray *trustedRootRefs = [self.cryptoImpl getTrustedRootRefs];
     SecKeyRef publicKeyRef = [QredoCertificateUtils validateCertificateChain:certificateChainRefs
-                                                         rootCertificateRefs:trustedRootRefs];
+                                                         rootCertificateRefs:self.trustedRootRefs];
     if (!publicKeyRef) {
         LogError(@"Authentication tag (certificate chain) did not validate correctly. Authentication tag: %@", authenticationTag);
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
@@ -57,6 +61,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 @interface QredoRendezvousX509PemCreateHelper ()
 
+// TODO: DH - look at moving these 2 properties into the QredoAbstractRendezvousX509PemHelper as common to Create and Response helpers
 @property (nonatomic) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @property (nonatomic) SecKeyRef publicKeyRef;
 @property (nonatomic, copy) signDataBlock signingHandler;
@@ -65,10 +70,17 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 @implementation QredoRendezvousX509PemCreateHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootRefs:(NSArray *)trustedRootRefs
+                 signingHandler:(signDataBlock)signingHandler
+                          error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
+        
+        // TrustedRootRefs is required for X.509 PEM authenticated rendezvous
+        super.trustedRootRefs = trustedRootRefs;
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");
@@ -163,9 +175,9 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 @end
 
-
 @interface QredoRendezvousX509PemRespondHelper ()
 
+// TODO: DH - look at moving these 2 properties into the QredoAbstractRendezvousX509PemHelper as common to Create and Response helpers
 @property (nonatomic) QredoAuthenticatedRendezvousTag *authenticatedRendezvousTag;
 @property (nonatomic) SecKeyRef publicKeyRef;
 
@@ -173,10 +185,17 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 @implementation QredoRendezvousX509PemRespondHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootRefs:(NSArray *)trustedRootRefs
+                          error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
+        
+        // TrustedRootRefs is required for X.509 PEM authenticated rendezvous
+        super.trustedRootRefs = trustedRootRefs;
+        
         if (!fullTag) {
             LogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);

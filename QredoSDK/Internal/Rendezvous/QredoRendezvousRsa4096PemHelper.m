@@ -30,8 +30,14 @@ static const NSUInteger kRsa4096KeyLengthBits = 4096;
 
 @implementation QredoRendezvousRsa4096PemCreateHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootRefs:(NSArray *)trustedRootRefs
+                 signingHandler:(signDataBlock)signingHandler
+                          error:(NSError **)error
 {
+    // TrustedRootRefs is unused in RSA authenticated rendezvous
+
     self = [super initWithFullTag:fullTag
                            crypto:crypto
                    signingHandler:signingHandler
@@ -71,8 +77,13 @@ static const NSUInteger kRsa4096KeyLengthBits = 4096;
 
 @implementation QredoRendezvousRsa4096PemRespondHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootRefs:(NSArray *)trustedRootRefs
+                          error:(NSError **)error
 {
+    // TrustedRootRefs is unused in RSA authenticated rendezvous
+
     self = [super initWithFullTag:fullTag
                            crypto:crypto
                              type:QredoRendezvousAuthenticationTypeRsa4096Pem

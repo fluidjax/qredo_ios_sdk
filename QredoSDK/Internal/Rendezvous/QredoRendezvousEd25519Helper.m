@@ -64,11 +64,17 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
 
 @implementation QredoRendezvousEd25519CreateHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootRefs:(NSArray *)trustedRootRefs
+                 signingHandler:(signDataBlock)signingHandler
+                          error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
         
+        // TrustedRootRefs is unused in Ed25519 authenticated rendezvous
+
         if (!fullTag) {
             LogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
@@ -205,10 +211,16 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
 
 @implementation QredoRendezvousEd25519RespondHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootRefs:(NSArray *)trustedRootRefs
+                          error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
+        
+        // TrustedRootRefs is unused in Ed25519 authenticated rendezvous
+        
         if (!fullTag) {
             LogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
