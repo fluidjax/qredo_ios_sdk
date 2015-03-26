@@ -357,6 +357,28 @@ static NSString *const QredoKeychainPassword = @"Password123";
         completionHandler(nil, error);
         return;
     }
+    else if (authenticationType == QredoRendezvousAuthenticationTypeX509Pem) {
+        if (!trustedRootRefs) {
+            // Cannot have nil trusted root refs
+            NSString *message = @"TrustedRootRefs cannot be nil when creating X.509 authenicated rendezvous, as creation will fail.";
+            LogError(@"%@", message);
+            NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                                 code:QredoErrorCodeRendezvousInvalidData
+                                             userInfo:@{ NSLocalizedDescriptionKey : message }];
+            completionHandler(nil, error);
+            return;
+        }
+        else if (trustedRootRefs.count == 0) {
+            // Cannot have no trusted root refs
+            NSString *message = @"TrustedRootRefs cannot be empty when creating X.509 authenicated rendezvous, as creation will fail.";
+            LogError(@"%@", message);
+            NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                                 code:QredoErrorCodeRendezvousInvalidData
+                                             userInfo:@{ NSLocalizedDescriptionKey : message }];
+            completionHandler(nil, error);
+            return;
+        }
+    }
     
     // TODO: DH - validate that the configuration provided is an authenticated rendezvous, and that public key is present
     // TODO: DH - validate inputs (any which aren't validated later)
@@ -392,9 +414,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
-    
-    // TODO: DH - validate configurations?
-    
     // although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
     dispatch_async(_rendezvousQueue, ^{
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self];
