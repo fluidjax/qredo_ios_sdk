@@ -232,13 +232,14 @@ static const int QredoRendezvousMasterKeyLength = 32;
     if ([QredoAuthenticatedRendezvousTag isAuthenticatedTag:tag]) {
         return [QredoCrypto hkdfExtractSha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
                                    initialKeyMaterial:tagData];
-    } else {
-        return [QredoCrypto pbkdf2Sha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
-                           bypassSaltLengthCheck:NO
-                                    passwordData:tagData
-                          requiredKeyLengthBytes:32
-                                      iterations:10000];
     }
+
+    return [QredoCrypto pbkdf2Sha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
+                       bypassSaltLengthCheck:NO
+                                passwordData:tagData
+                      requiredKeyLengthBytes:32
+                                  iterations:10000];
+
 }
 
 - (QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey
