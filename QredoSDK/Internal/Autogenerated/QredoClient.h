@@ -719,6 +719,27 @@
 @end
 
 
+@interface QLFEncryptedResponderInfo : NSObject<QredoMarshallable>
+
+@property (readonly) NSData *value;
+@property (readonly) QLFAuthenticationCode *authenticationCode;
+@property (readonly) QLFRendezvousAuthType *authenticationType;
+
++ (QLFEncryptedResponderInfo *)encryptedResponderInfoWithValue:(NSData *)value authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithValue:(NSData *)value authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType;
+- (NSComparisonResult)compare:(QLFEncryptedResponderInfo *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToEncryptedResponderInfo:(QLFEncryptedResponderInfo *)other;
+- (NSUInteger)hash;
+
+@end
+
+
 @interface QLFRendezvousCreateResult : NSObject<QredoMarshallable>
 
 
@@ -837,6 +858,29 @@
 @end
 
 
+@interface QLFRendezvousCreationInfo : NSObject<QredoMarshallable>
+
+@property (readonly) QLFRendezvousHashedTag *hashedTag;
+@property (readonly) NSSet *durationSeconds;
+@property (readonly) NSSet *maxResponseCount;
+@property (readonly) QLFRendezvousOwnershipPublicKey *ownershipPublicKey;
+@property (readonly) QLFEncryptedResponderInfo *encryptedResponderInfo;
+
++ (QLFRendezvousCreationInfo *)rendezvousCreationInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithHashedTag:(QLFRendezvousHashedTag *)hashedTag durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo;
+- (NSComparisonResult)compare:(QLFRendezvousCreationInfo *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToRendezvousCreationInfo:(QLFRendezvousCreationInfo *)other;
+- (NSUInteger)hash;
+
+@end
+
+
 @interface QLFRendezvousResponseRejectionReason : NSObject<QredoMarshallable>
 
 
@@ -912,6 +956,86 @@
 - (NSComparisonResult)compare:(QLFRendezvousResponseInvalid *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToRendezvousResponseInvalid:(QLFRendezvousResponseInvalid *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFRendezvousRespondResult : NSObject<QredoMarshallable>
+
+
+
++ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithInfo:(QLFEncryptedResponderInfo *)info;
+
++ (QLFRendezvousRespondResult *)rendezvousResponseUnknownTag;
+
++ (QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (void)ifRendezvousResponseRegistered:(void (^)(QLFEncryptedResponderInfo *))ifRendezvousResponseRegisteredBlock ifRendezvousResponseUnknownTag:(void (^)())ifRendezvousResponseUnknownTagBlock ifRendezvousResponseRejected:(void (^)(QLFRendezvousResponseRejectionReason *))ifRendezvousResponseRejectedBlock;
+- (NSComparisonResult)compare:(QLFRendezvousRespondResult *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToRendezvousRespondResult:(QLFRendezvousRespondResult *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFRendezvousResponseRegistered : QLFRendezvousRespondResult
+
+@property (readonly) QLFEncryptedResponderInfo *info;
+
++ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithInfo:(QLFEncryptedResponderInfo *)info;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithInfo:(QLFEncryptedResponderInfo *)info;
+- (NSComparisonResult)compare:(QLFRendezvousResponseRegistered *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToRendezvousResponseRegistered:(QLFRendezvousResponseRegistered *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFRendezvousResponseUnknownTag : QLFRendezvousRespondResult
+
+
+
++ (QLFRendezvousRespondResult *)rendezvousResponseUnknownTag;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)init;
+- (NSComparisonResult)compare:(QLFRendezvousResponseUnknownTag *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToRendezvousResponseUnknownTag:(QLFRendezvousResponseUnknownTag *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFRendezvousResponseRejected : QLFRendezvousRespondResult
+
+@property (readonly) QLFRendezvousResponseRejectionReason *reason;
+
++ (QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithReason:(QLFRendezvousResponseRejectionReason *)reason;
+- (NSComparisonResult)compare:(QLFRendezvousResponseRejected *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToRendezvousResponseRejected:(QLFRendezvousResponseRejected *)other;
 - (NSUInteger)hash;
 
 @end
@@ -1342,33 +1466,6 @@
 @end
 
 
-@interface QLFRendezvousCreationInfo : NSObject<QredoMarshallable>
-
-@property (readonly) QLFRendezvousHashedTag *hashedTag;
-@property (readonly) QLFRendezvousAuthType *authenticationType;
-@property (readonly) NSString *conversationType;
-@property (readonly) NSSet *durationSeconds;
-@property (readonly) NSSet *maxResponseCount;
-@property (readonly) NSSet *transCap;
-@property (readonly) QLFRequesterPublicKey *requesterPublicKey;
-@property (readonly) QLFRendezvousOwnershipPublicKey *ownershipPublicKey;
-@property (readonly) QLFAuthenticationCode *authenticationCode;
-
-+ (QLFRendezvousCreationInfo *)rendezvousCreationInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag authenticationType:(QLFRendezvousAuthType *)authenticationType conversationType:(NSString *)conversationType durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount transCap:(NSSet *)transCap requesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey authenticationCode:(QLFAuthenticationCode *)authenticationCode;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithHashedTag:(QLFRendezvousHashedTag *)hashedTag authenticationType:(QLFRendezvousAuthType *)authenticationType conversationType:(NSString *)conversationType durationSeconds:(NSSet *)durationSeconds maxResponseCount:(NSSet *)maxResponseCount transCap:(NSSet *)transCap requesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey authenticationCode:(QLFAuthenticationCode *)authenticationCode;
-- (NSComparisonResult)compare:(QLFRendezvousCreationInfo *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToRendezvousCreationInfo:(QLFRendezvousCreationInfo *)other;
-- (NSUInteger)hash;
-
-@end
-
-
 @interface QLFRendezvousDescriptor : NSObject<QredoMarshallable>
 
 @property (readonly) NSString *tag;
@@ -1396,81 +1493,22 @@
 @end
 
 
-@interface QLFRendezvousRespondResult : NSObject<QredoMarshallable>
+@interface QLFRendezvousResponderInfo : NSObject<QredoMarshallable>
 
+@property (readonly) QLFRequesterPublicKey *requesterPublicKey;
+@property (readonly) NSString *conversationType;
+@property (readonly) NSSet *transCap;
 
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithCreationInfo:(QLFRendezvousCreationInfo *)creationInfo;
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseUnknownTag;
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason;
++ (QLFRendezvousResponderInfo *)rendezvousResponderInfoWithRequesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey conversationType:(NSString *)conversationType transCap:(NSSet *)transCap;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (void)ifRendezvousResponseRegistered:(void (^)(QLFRendezvousCreationInfo *))ifRendezvousResponseRegisteredBlock ifRendezvousResponseUnknownTag:(void (^)())ifRendezvousResponseUnknownTagBlock ifRendezvousResponseRejected:(void (^)(QLFRendezvousResponseRejectionReason *))ifRendezvousResponseRejectedBlock;
-- (NSComparisonResult)compare:(QLFRendezvousRespondResult *)other;
+- (instancetype)initWithRequesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey conversationType:(NSString *)conversationType transCap:(NSSet *)transCap;
+- (NSComparisonResult)compare:(QLFRendezvousResponderInfo *)other;
 - (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToRendezvousRespondResult:(QLFRendezvousRespondResult *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFRendezvousResponseRegistered : QLFRendezvousRespondResult
-
-@property (readonly) QLFRendezvousCreationInfo *creationInfo;
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithCreationInfo:(QLFRendezvousCreationInfo *)creationInfo;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithCreationInfo:(QLFRendezvousCreationInfo *)creationInfo;
-- (NSComparisonResult)compare:(QLFRendezvousResponseRegistered *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToRendezvousResponseRegistered:(QLFRendezvousResponseRegistered *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFRendezvousResponseUnknownTag : QLFRendezvousRespondResult
-
-
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseUnknownTag;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)init;
-- (NSComparisonResult)compare:(QLFRendezvousResponseUnknownTag *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToRendezvousResponseUnknownTag:(QLFRendezvousResponseUnknownTag *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFRendezvousResponseRejected : QLFRendezvousRespondResult
-
-@property (readonly) QLFRendezvousResponseRejectionReason *reason;
-
-+ (QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithReason:(QLFRendezvousResponseRejectionReason *)reason;
-- (NSComparisonResult)compare:(QLFRendezvousResponseRejected *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToRendezvousResponseRejected:(QLFRendezvousResponseRejected *)other;
+- (BOOL)isEqualToRendezvousResponderInfo:(QLFRendezvousResponderInfo *)other;
 - (NSUInteger)hash;
 
 @end

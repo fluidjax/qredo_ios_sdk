@@ -410,20 +410,28 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void(^)(NSError *error))completionHandler
 {
     LogDebug(@"Responding to (hashed) tag: %@", rendezvousTag);
-    
+
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
     QLFRendezvous *_rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:self.client.serviceInvoker];
 
-    QLFAuthenticationCode *authKey = [_rendezvousCrypto authKey:rendezvousTag];
-    QLFRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithAuthKey:authKey];
+    NSData *masterKey = [_rendezvousCrypto masterKeyWithTag:rendezvousTag];
+    NSData *authKey = [_rendezvousCrypto authenticationKeyWithMasterKey:masterKey];
+
+    QLFRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithMasterKey:masterKey];
 
     // Generate the rendezvous key pairs.
     QLFKeyPairLF *responderKeyPair     = [_rendezvousCrypto newRequesterKeyPair];
-    NSData *requesterPublicKeyBytes      = [[responderKeyPair pubKey] bytes];
+    NSData *responderPublicKeyBytes    = [[responderKeyPair pubKey] bytes];
+
+    QLFAuthenticationCode *responderAuthenticationCode
+    = [_rendezvousCrypto responderAuthenticationCodeWithHashedTag:hashedTag
+                                                authenticationKey:authKey
+                                               responderPublicKey:responderPublicKeyBytes];
+
 
     QLFRendezvousResponse *response = [QLFRendezvousResponse rendezvousResponseWithHashedTag:hashedTag
-                                                                              responderPublicKey:requesterPublicKeyBytes
-                                                                     responderAuthenticationCode:authKey];
+                                                                          responderPublicKey:responderPublicKeyBytes
+                                                                 responderAuthenticationCode:responderAuthenticationCode];
 
 
 
@@ -434,20 +442,30 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         if ([result isKindOfClass:[QLFRendezvousResponseRegistered class]]) {
             QLFRendezvousResponseRegistered* responseRegistered = (QLFRendezvousResponseRegistered*) result;
 
-            QLFRendezvousCreationInfo *creationInfo = responseRegistered.creationInfo;
-
             // TODO: [GR]: Take a view whether we need to show this error to the client code.
-            
-            if ([_rendezvousCrypto validateCreationInfo:creationInfo tag:rendezvousTag error:nil]) {
+
+            if ([_rendezvousCrypto validateEncryptedResponderInfo:responseRegistered.info
+                                                authenticationKey:authKey
+                                                              tag:rendezvousTag
+                                                        hashedTag:hashedTag
+                                                            error:nil])
+            {
+                NSError *error = nil;
+
+                NSData *encKey = [_rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
                 
-                QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:creationInfo.requesterPublicKey];
-                
+                QLFRendezvousResponderInfo *responderInfo =
+                [_rendezvousCrypto decryptResponderInfoWithData:responseRegistered.info.value
+                                                  encryptionKey:encKey
+                                                          error:&error];
+
+                QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:responderInfo.requesterPublicKey];
                 QredoDhPrivateKey *responderPrivateKey = [[QredoDhPrivateKey alloc] initWithData:responderKeyPair.privKey.bytes];
                 
                 _metadata.rendezvousTag = rendezvousTag;
-                _transCap = responseRegistered.creationInfo.transCap;
-                _metadata.type = responseRegistered.creationInfo.conversationType;
-                _authenticationType = responseRegistered.creationInfo.authenticationType;
+                _transCap = responderInfo.transCap;
+                _metadata.type = responderInfo.conversationType;
+                _authenticationType = responseRegistered.info.authenticationType;
 
                 [self generateAndStoreKeysWithPrivateKey:responderPrivateKey
                                                publicKey:requesterPublicKey
@@ -473,6 +491,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                               userInfo:@{NSLocalizedDescriptionKey: @"Unknown response from the server"}]);
         }
     }];
+
 }
 
 - (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler

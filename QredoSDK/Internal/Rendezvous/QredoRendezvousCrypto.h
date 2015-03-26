@@ -11,18 +11,15 @@
 + (QredoRendezvousCrypto *)instance;
 
 - (QLFAuthenticationCode *)authenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                            conversationType:(NSString *)conversationType
-                                             durationSeconds:(NSSet *)durationSeconds
-                                            maxResponseCount:(NSSet *)maxResponseCount
-                                                    transCap:(NSSet *)transCap
-                                          requesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey
-                                      accessControlPublicKey:(QLFRendezvousOwnershipPublicKey *)accessControlPublicKey
-                                           authenticationKey:(QLFAuthenticationCode *)authenticationKey
-                                            rendezvousHelper:(id<QredoRendezvousHelper>)rendezvousHelper;
+                                         authenticationKey:(NSData *)authenticationKey
+                                    encryptedResponderData:(NSData *)encryptedResponderData;
 
-- (QLFRendezvousHashedTag *)hashedTag:(NSString *)tag;
-- (QLFRendezvousHashedTag *)hashedTagWithAuthKey:(QLFAuthenticationCode *)authKey;
-- (QLFAuthenticationCode *)authKey:(NSString *)tag;
+
+- (QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                                  authenticationKey:(NSData *)authenticationKey
+                                                 responderPublicKey:(NSData *)responderPublicKey;
+
+
 - (QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId;
 - (QLFKeyPairLF *)newRequesterKeyPair;
 - (QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
@@ -35,14 +32,32 @@
                     nonce:(QLFNonce*)nonce
                privateKey:(QredoPrivateKey*)privateKey;
 
-- (BOOL)validateCreationInfo:(QLFRendezvousCreationInfo *)creationInfo
-                         tag:(NSString *)tag
-                       error:(NSError **)error;
+- (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
+                   encryptionKey:(NSData *)encryptionKey;
+
+- (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
+                   encryptionKey:(NSData *)encryptionKey
+                              iv:(NSData *)iv;
+
+- (QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
+                                               encryptionKey:(NSData *)encryptionKey
+                                                       error:(NSError **)error;
+
+- (BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
+                     authenticationKey:(NSData *)authenticationKey
+                                   tag:(NSString *)tag
+                             hashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                 error:(NSError **)error;
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)fullTag
                                                           signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;
+
+- (NSData *)masterKeyWithTag:(NSString *)tag;
+- (QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey;
+- (NSData *)encryptionKeyWithMasterKey:(NSData *)masterKey;
+- (NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey;
 
 
 @end

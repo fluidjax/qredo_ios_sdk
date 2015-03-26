@@ -46,6 +46,11 @@
     return self;
 }
 
++ (BOOL)isAuthenticatedTag:(NSString *)tag
+{
+    return [tag containsString:@"@"];
+}
+
 - (BOOL)processFullTag:(NSString *)fullTag error:(NSError **)error
 {
     if (!fullTag) {
