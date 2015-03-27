@@ -106,8 +106,8 @@ class KeychainTransporterReceiverTests: XCTestCase {
             if state == .CreatedRendezvous {
                 XCTAssertNotNil(receiverMock.rendezvousTag, "rendezvous tag should not be nil")
 
-                // KeychainReceiver currently uses anonymous rendezvous. If this changes to X.509 authenticated rendezvous, a valid TrustedRootRefs will be required
-                self.senderClient.respondWithTag(self.stripURIPrefix(receiverMock.rendezvousTag!), trustedRootRefs:nil, completionHandler: { (conversation, error) -> Void in
+                // KeychainReceiver currently uses anonymous rendezvous. If this changes to X.509 authenticated rendezvous, a valid trustedRootPems will be required
+                self.senderClient.respondWithTag(self.stripURIPrefix(receiverMock.rendezvousTag!), trustedRootPems:nil, completionHandler: { (conversation, error) -> Void in
                     XCTAssertNil(error, "unexpected error")
                     XCTAssertNotNil(conversation, "failed to respond to the rendezvous")
                     if let actualConversation = conversation {
@@ -182,8 +182,8 @@ class KeychainTransporterReceiverTests: XCTestCase {
         receiverMock.stateHandler = { state in
             if state == .CreatedRendezvous {
                 XCTAssertNotNil(receiverMock.rendezvousTag, "rendezvous tag should not be nil")
-                // KeychainReceiver currently uses anonymous rendezvous. If this changes to X.509 authenticated rendezvous, a valid TrustedRootRefs will be required
-                self.senderClient.respondWithTag(self.stripURIPrefix(receiverMock.rendezvousTag!), trustedRootRefs:nil, completionHandler: { (conversation, error) -> Void in
+                // KeychainReceiver currently uses anonymous rendezvous. If this changes to X.509 authenticated rendezvous, a valid trustedRootPems will be required
+                self.senderClient.respondWithTag(self.stripURIPrefix(receiverMock.rendezvousTag!), trustedRootPems:nil, completionHandler: { (conversation, error) -> Void in
                     XCTAssertNotNil(conversation, "failed to respond to the rendezvous")
                     transporterConversation = conversation
                     if let actualConversation = conversation {

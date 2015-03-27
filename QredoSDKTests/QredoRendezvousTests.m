@@ -126,7 +126,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
-@property (nonatomic) NSArray *trustedRootRefs;
+@property (nonatomic) NSArray *trustedRootPems;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
 
@@ -192,13 +192,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 - (void)setupRootCertificates
 {
-    // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
     int expectedNumberOfRootCertificateRefs = 1;
     
-    self.trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
-    XCTAssertNotNil(self.trustedRootRefs, @"Root certificates should not be nil.");
-    XCTAssertEqual(self.trustedRootRefs.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
+    // Java-SDK root cert
+    self.trustedRootPems = [[NSArray alloc] initWithObjects:TestCertJavaSdkRootPem, nil];
+    XCTAssertNotNil(self.trustedRootPems, @"Root certificates should not be nil.");
+    XCTAssertEqual(self.trustedRootPems.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificates.");
 }
 
 - (void)setupTestPublicCertificateAndPrivateKey4096Bit
@@ -215,9 +214,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSString *pkcs12Password = @"password";
     int expectedNumberOfChainCertificateRefs = 2;
     
+    NSArray *trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificatesArray:self.trustedRootPems];
+    XCTAssertNotNil(trustedRootRefs);
+    
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data
                                                                                              password:pkcs12Password
-                                                                                  rootCertificateRefs:self.trustedRootRefs];
+                                                                                  rootCertificateRefs:trustedRootRefs];
     XCTAssertNotNil(identityDictionary, @"Incorrect identity validation result. Should have returned valid NSDictionary.");
     
     SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
@@ -301,7 +303,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:randomTag
-                  trustedRootRefs:self.trustedRootRefs
+                  trustedRootPems:self.trustedRootPems
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
@@ -626,7 +628,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:randomTag
-                  trustedRootRefs:nil // Anonymous rendezvous, so technically not needed
+                  trustedRootPems:nil // Anonymous rendezvous, so technically not needed
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
@@ -718,7 +720,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:fullTag
-                  trustedRootRefs:self.trustedRootRefs
+                  trustedRootPems:self.trustedRootPems
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
@@ -770,7 +772,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                  authenticationType:authenticationType
                                       configuration:configuration
                                           publicKey:publicKey
-                                    trustedRootRefs:self.trustedRootRefs
+                                    trustedRootPems:self.trustedRootPems
                                      signingHandler:signingHandler
                                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                       
@@ -827,7 +829,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block QredoConversation *createdConversation = nil;
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:fullTag
-                  trustedRootRefs:self.trustedRootRefs
+                  trustedRootPems:self.trustedRootPems
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNotNil(conversation);
         XCTAssertNil(error);
@@ -1252,7 +1254,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:fullTag
-                  trustedRootRefs:self.trustedRootRefs
+                  trustedRootPems:self.trustedRootPems
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssert(error);
         [respondExpectation fulfill];

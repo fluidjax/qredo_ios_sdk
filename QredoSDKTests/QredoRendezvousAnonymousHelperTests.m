@@ -39,7 +39,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -56,7 +56,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:createFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -92,7 +92,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -115,7 +115,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -151,7 +151,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -172,7 +172,7 @@
     XCTAssertThrows([QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                                           fullTag:initialFullTag
                                                                            crypto:nil
-                                                                  trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                                  trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                                    signingHandler:signingHandler
                                                                             error:&error]);
 }
@@ -190,7 +190,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -217,7 +217,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -238,7 +238,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);
@@ -258,7 +258,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);
@@ -276,7 +276,7 @@
     XCTAssertThrows([QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                                           fullTag:initialFullTag
                                                                            crypto:nil
-                                                                  trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                                  trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                                             error:&error]);
 }
 
@@ -291,7 +291,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                    trustedRootRefs:nil // Nil is fine for Anonymous rendezvous
+                                                    trustedRootPems:nil // Nil is fine for Anonymous rendezvous
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);
