@@ -144,20 +144,19 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return self;
 }
 
-// TODO: DH - provide alternative method signature for non-X.509 authenticated rendezvous without trustedRootRefs?
-// TODO: DH - replace TrustedRootRefs with generic format for certs - e.g. array of PEMs to avoid being tied to Apple's SecCertificateRef?
+// TODO: DH - provide alternative method signature for non-X.509 authenticated rendezvous without trustedRootPems?
 - (void)createRendezvousWithTag:(NSString *)tag
              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootRefs count: %lul.", tag, (unsigned long)trustedRootRefs.count);
+    LogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
     
     // TODO: DH - write tests 
     // TODO: DH - validate that the configuration and tag formats match
-    // TODO: DH - enforce non-nil trustedRootRefs on X.509 PEM
+    // TODO: DH - enforce non-nil trustedRootPems on X.509 PEM
     
     self.configuration = configuration;
     
@@ -171,7 +170,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     NSError *error = nil;
     id<QredoRendezvousCreateHelper> rendezvousHelper = [crypto rendezvousHelperForAuthenticationType:authenticationType
                                                                                              fullTag:tag
-                                                                                     trustedRootRefs:trustedRootRefs
+                                                                                     trustedRootPems:trustedRootPems
                                                                                       signingHandler:signingHandler
                                                                                                error:&error];
     if (!rendezvousHelper) {

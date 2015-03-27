@@ -25,6 +25,24 @@ static const NSUInteger kX509AuthenticatedRendezvousEmptySignatureLength = 256;
 // TODO: DH - confirm the minimum length of X.509 authentication tag (i.e. single certificate with RSA 2048 bit Public key) - 2048 bit key must be at least 256 bytes long, unsure how much certificate wrapping adds
 static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
+- (instancetype)initWithCrypto:(id<CryptoImpl>)crypto
+               trustedRootPems:(NSArray *)trustedRootPems
+                         error:(NSError **)error
+{
+    self = [super initWithCrypto:crypto];
+    if (self) {
+        
+        // TrustedRootPems is required for X.509 PEM authenticated rendezvous. Convert from PEM to SecCertificateRefs
+        _trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificatesArray:trustedRootPems];
+        if (!_trustedRootRefs) {
+            LogError(@"Could not convert trusted root PEM certificates into SecCertificateRefs.");
+            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorTrustedRootsInvalid, nil);
+            return nil;
+        }
+    }
+    return self;
+}
+
 - (QredoRendezvousAuthenticationType)type
 {
     return QredoRendezvousAuthenticationTypeX509Pem;
@@ -72,15 +90,12 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                  signingHandler:(signDataBlock)signingHandler
                           error:(NSError **)error
 {
-    self = [super initWithCrypto:crypto];
+    self = [super initWithCrypto:crypto trustedRootPems:trustedRootPems error:error];
     if (self) {
-        
-        // TrustedRootRefs is required for X.509 PEM authenticated rendezvous
-        super.trustedRootRefs = trustedRootRefs;
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");
@@ -187,14 +202,11 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                           error:(NSError **)error
 {
-    self = [super initWithCrypto:crypto];
+    self = [super initWithCrypto:crypto trustedRootPems:trustedRootPems error:error];
     if (self) {
-        
-        // TrustedRootRefs is required for X.509 PEM authenticated rendezvous
-        super.trustedRootRefs = trustedRootRefs;
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");

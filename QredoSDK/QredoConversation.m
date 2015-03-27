@@ -384,10 +384,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 }
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
-                   trustedRootRefs:(NSArray *)trustedRootRefs
+                   trustedRootPems:(NSArray *)trustedRootPems
                  completionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"Responding to (hashed) tag: %@. TrustedRootRefs count: %lul.", rendezvousTag, (unsigned long)trustedRootRefs.count);
+    LogDebug(@"Responding to (hashed) tag: %@. TrustedRootPems count: %lul.", rendezvousTag, (unsigned long)trustedRootPems.count);
     
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
     QLFRendezvous *_rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:self.client.serviceInvoker];
@@ -418,7 +418,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
             
             if ([_rendezvousCrypto validateCreationInfo:creationInfo
                                                     tag:rendezvousTag
-                                        trustedRootRefs:trustedRootRefs
+                                        trustedRootPems:trustedRootPems
                                                   error:nil]) {
                 
                 QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:creationInfo.requesterPublicKey];

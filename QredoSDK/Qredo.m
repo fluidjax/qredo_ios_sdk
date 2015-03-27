@@ -280,11 +280,11 @@ static NSString *const QredoKeychainPassword = @"Password123";
                            configuration:(QredoRendezvousConfiguration *)configuration
                        completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
-    // Anonymous Rendezvous are created using the full tag. Signing handler and trustedRootRefs is unused
+    // Anonymous Rendezvous are created using the full tag. Signing handler and trustedRootPems is unused
     [self createRendezvousWithTag:tag
                authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                     configuration:configuration
-                  trustedRootRefs:[[NSArray alloc] init]
+                  trustedRootPems:[[NSArray alloc] init]
                    signingHandler:nil
                 completionHandler:completionHandler];
 }
@@ -327,23 +327,22 @@ static NSString *const QredoKeychainPassword = @"Password123";
         prefixedTag = [NSString stringWithFormat:@"%@@", prefix];
     }
 
-    // Authenticated Rendezvous with internally generated keys. Signing handler and trustedRootRefs is unused
+    // Authenticated Rendezvous with internally generated keys. Signing handler and trustedRootPems is unused
     [self createRendezvousWithTag:prefixedTag
                authenticationType:authenticationType
                     configuration:configuration
-                  trustedRootRefs:[[NSArray alloc] init]
+                  trustedRootPems:[[NSArray alloc] init]
                    signingHandler:nil
                 completionHandler:completionHandler];
 }
 
 // TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (external keys)
 // TODO: DH - create unit test with nil signing handler and confirm detected deeper down stack
-// TODO: DH - replace TrustedRootRefs with generic format for certs - e.g. array of PEMs to avoid being tied to Apple's SecCertificateRef?
 - (void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
                              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                   configuration:(QredoRendezvousConfiguration *)configuration
                                       publicKey:(NSString *)publicKey
-                                trustedRootRefs:(NSArray *)trustedRootRefs
+                                trustedRootPems:(NSArray *)trustedRootPems
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
@@ -358,9 +357,9 @@ static NSString *const QredoKeychainPassword = @"Password123";
         return;
     }
     else if (authenticationType == QredoRendezvousAuthenticationTypeX509Pem) {
-        if (!trustedRootRefs) {
-            // Cannot have nil trusted root refs
-            NSString *message = @"TrustedRootRefs cannot be nil when creating X.509 authenicated rendezvous, as creation will fail.";
+        if (!trustedRootPems) {
+            // Cannot have nil trusted root PEMs
+            NSString *message = @"TrustedRootPems cannot be nil when creating X.509 authenicated rendezvous, as creation will fail.";
             LogError(@"%@", message);
             NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                                  code:QredoErrorCodeRendezvousInvalidData
@@ -368,9 +367,9 @@ static NSString *const QredoKeychainPassword = @"Password123";
             completionHandler(nil, error);
             return;
         }
-        else if (trustedRootRefs.count == 0) {
+        else if (trustedRootPems.count == 0) {
             // Cannot have no trusted root refs
-            NSString *message = @"TrustedRootRefs cannot be empty when creating X.509 authenicated rendezvous, as creation will fail.";
+            NSString *message = @"TrustedRootPems cannot be empty when creating X.509 authenicated rendezvous, as creation will fail.";
             LogError(@"%@", message);
             NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                                  code:QredoErrorCodeRendezvousInvalidData
@@ -402,7 +401,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
     [self createRendezvousWithTag:fullTag
                authenticationType:authenticationType
                     configuration:configuration
-                  trustedRootRefs:trustedRootRefs
+                  trustedRootPems:trustedRootPems
                    signingHandler:signingHandler
                 completionHandler:completionHandler];
 }
@@ -410,7 +409,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 - (void)createRendezvousWithTag:(NSString *)tag
              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
@@ -420,7 +419,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
         [rendezvous createRendezvousWithTag:tag
                          authenticationType:authenticationType
                               configuration:configuration
-                            trustedRootRefs:trustedRootRefs
+                            trustedRootPems:trustedRootPems
                              signingHandler:signingHandler
                           completionHandler:^(NSError *error) {
             if (error) {
@@ -551,7 +550,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 }
 
 - (void)respondWithTag:(NSString *)tag
-       trustedRootRefs:(NSArray *)trustedRootRefs
+       trustedRootPems:(NSArray *)trustedRootPems
      completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler
 {
     NSAssert(completionHandler, @"completionHandler should not be nil");
@@ -559,7 +558,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
     dispatch_async(_rendezvousQueue, ^{
         QredoConversation *conversation = [[QredoConversation alloc] initWithClient:self];
         [conversation respondToRendezvousWithTag:tag
-                                 trustedRootRefs:trustedRootRefs
+                                 trustedRootPems:trustedRootPems
                                completionHandler:^(NSError *error) {
             if (error) {
                 completionHandler(nil, error);

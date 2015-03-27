@@ -183,13 +183,13 @@
 
 - (BOOL)validateCreationInfo:(QLFRendezvousCreationInfo *)creationInfo
                          tag:(NSString *)tag
-             trustedRootRefs:(NSArray *)trustedRootRefs
+             trustedRootPems:(NSArray *)trustedRootPems
                        error:(NSError **)error
 {
     QLFRendezvousAuthType *authType = creationInfo.authenticationType;
     id<QredoRendezvousRespondHelper> rendezvousHelper = [self rendezvousHelperForAuthType:authType
                                                                                   fullTag:tag
-                                                                          trustedRootRefs:trustedRootRefs
+                                                                          trustedRootPems:trustedRootPems
                                                                                     error:error];
     
     NSData *authKey = [self authKey:tag];
@@ -224,21 +224,21 @@
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)tag
-                                                         trustedRootRefs:trustedRootRefs
+                                                         trustedRootPems:trustedRootPems
                                                           signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error
 {
     return [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:authenticationType
                                                                  fullTag:tag
                                                                   crypto:_crypto
-                                                         trustedRootRefs:trustedRootRefs
+                                                         trustedRootPems:trustedRootPems
                                                           signingHandler:signingHandler
                                                                    error:error];
 }
 
 - (id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthType:(QLFRendezvousAuthType *)authType
                                                         fullTag:(NSString *)tag
-                                                trustedRootRefs:(NSArray *)trustedRootRefs
+                                                trustedRootPems:(NSArray *)trustedRootPems
                                                           error:(NSError **)error
 {
     __block id<QredoRendezvousRespondHelper> rendezvousHelper = nil;
@@ -248,7 +248,7 @@
         = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                                 fullTag:tag
                                                                  crypto:_crypto
-                                                        trustedRootRefs:trustedRootRefs
+                                                        trustedRootPems:trustedRootPems
                                                                   error:error];
 
     } ifRendezvousTrusted:^(QLFRendezvousAuthSignature *signature) {
@@ -257,7 +257,7 @@
             = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                                     fullTag:tag
                                                                      crypto:_crypto
-                                                            trustedRootRefs:trustedRootRefs
+                                                            trustedRootPems:trustedRootPems
                                                                       error:error];
 
         } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
@@ -265,7 +265,7 @@
             = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509PemSelfsigned
                                                                     fullTag:tag
                                                                      crypto:_crypto
-                                                            trustedRootRefs:trustedRootRefs
+                                                            trustedRootPems:trustedRootPems
                                                                       error:error];
 
         } ifRendezvousAuthED25519:^(NSData *signature) {
@@ -273,7 +273,7 @@
             = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
                                                                     fullTag:tag
                                                                      crypto:_crypto
-                                                            trustedRootRefs:trustedRootRefs
+                                                            trustedRootPems:trustedRootPems
                                                                       error:error];
 
         } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
@@ -281,7 +281,7 @@
             = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                                     fullTag:tag
                                                                      crypto:_crypto
-                                                            trustedRootRefs:trustedRootRefs
+                                                            trustedRootPems:trustedRootPems
                                                                       error:error];
 
         } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
@@ -289,7 +289,7 @@
             = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
                                                                     fullTag:tag
                                                                      crypto:_crypto
-                                                            trustedRootRefs:trustedRootRefs
+                                                            trustedRootPems:trustedRootPems
                                                                       error:error];
 
         }];

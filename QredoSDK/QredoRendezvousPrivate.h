@@ -33,7 +33,7 @@
 - (void)createRendezvousWithTag:(NSString *)tag
              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler;
 

@@ -66,14 +66,14 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                  signingHandler:(signDataBlock)signingHandler
                           error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
         
-        // TrustedRootRefs is unused in Ed25519 authenticated rendezvous
+        // TrustedRootPems is unused in Ed25519 authenticated rendezvous
 
         if (!fullTag) {
             LogError(@"Full tag is nil.");
@@ -213,13 +213,13 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                           error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
         
-        // TrustedRootRefs is unused in Ed25519 authenticated rendezvous
+        // TrustedRootPems is unused in Ed25519 authenticated rendezvous
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");

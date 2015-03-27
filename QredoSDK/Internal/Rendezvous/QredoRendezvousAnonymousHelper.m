@@ -21,14 +21,14 @@ static const NSUInteger kRandomTagLength = 32;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                  signingHandler:(signDataBlock)signingHandler
                           error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
         
-        // Crypto and TrustedRootRefs are unused in anonymous rendezvous
+        // Crypto and TrustedRootPems are unused in anonymous rendezvous
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");
@@ -67,10 +67,10 @@ static const NSUInteger kRandomTagLength = 32;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                           error:(NSError **)error
 {
-    return [self initWithFullTag:fullTag crypto:crypto trustedRootRefs:trustedRootRefs signingHandler:nil error:error];
+    return [self initWithFullTag:fullTag crypto:crypto trustedRootPems:trustedRootPems signingHandler:nil error:error];
 }
 
 - (QredoRendezvousAuthenticationType)type
@@ -112,13 +112,13 @@ static const NSUInteger kRandomTagLength = 32;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                           error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
         
-        // Crypto and TrustedRootRefs are unused for anonymous rendezvous
+        // Crypto and TrustedRootPems are unused for anonymous rendezvous
 
         if (!fullTag) {
             LogError(@"Full tag is nil.");

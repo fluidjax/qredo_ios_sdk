@@ -230,7 +230,7 @@ static NSString *const kQredoAttestationRendezvousTag = @"MEGAVISA15";
 
     // TODO: DH - need to confirm whether the rendezvous being responded to could be an X.509 authenticated rendezvous (so valid trusted roots required)
     [self.client respondWithTag:kQredoAttestationRendezvousTag
-                trustedRootRefs:[[NSArray alloc] init] // No trusted roots, so cannot respond to X.509 authenticated rendezvous
+                trustedRootPems:[[NSArray alloc] init] // No trusted roots, so cannot respond to X.509 authenticated rendezvous
               completionHandler:^(QredoConversation *conversation, NSError *error)
     {
         if (error) {

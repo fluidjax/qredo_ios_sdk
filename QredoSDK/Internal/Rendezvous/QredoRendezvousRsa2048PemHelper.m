@@ -32,11 +32,11 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                  signingHandler:(signDataBlock)signingHandler
                           error:(NSError **)error
 {
-    // TrustedRootRefs is unused in RSA authenticated rendezvous
+    // TrustedRootPems is unused in RSA authenticated rendezvous
 
     self = [super initWithFullTag:fullTag
                            crypto:crypto
@@ -79,10 +79,10 @@ static const NSUInteger kRsa2048KeyLengthBits = 2048;
 
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
-                trustedRootRefs:(NSArray *)trustedRootRefs
+                trustedRootPems:(NSArray *)trustedRootPems
                           error:(NSError **)error
 {
-    // TrustedRootRefs is unused in RSA authenticated rendezvous
+    // TrustedRootPems is unused in RSA authenticated rendezvous
 
     self = [super initWithFullTag:fullTag
                            crypto:crypto
