@@ -376,7 +376,7 @@
     NSUInteger hash = 0;
     hash = hash * 31u + [_items hash];
     hash = hash * 31u + [_maxSequenceValue hash];
-    hash = hash * 31u + _current;
+    hash = hash * 31u + (NSUInteger)_current;
     return hash;
        
 }
@@ -1280,7 +1280,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _credentialType;
+    hash = hash * 31u + (NSUInteger)_credentialType;
     hash = hash * 31u + [_encryptedMasterKey hash];
     return hash;
        
@@ -1389,7 +1389,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _credentialType;
+    hash = hash * 31u + (NSUInteger)_credentialType;
     hash = hash * 31u + [_encryptedKeyChain hash];
     hash = hash * 31u + [_encryptedRecoveryInfo hash];
     return hash;
@@ -1683,7 +1683,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _slotNumber;
+    hash = hash * 31u + (NSUInteger)_slotNumber;
     hash = hash * 31u + [_blindingKey hash];
     hash = hash * 31u + [_nextBlindingKey hash];
     return hash;
@@ -1782,7 +1782,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _currentKeySlotNumber;
+    hash = hash * 31u + (NSUInteger)_currentKeySlotNumber;
     hash = hash * 31u + [_keySlots hash];
     return hash;
        
@@ -1880,7 +1880,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _credentialType;
+    hash = hash * 31u + (NSUInteger)_credentialType;
     hash = hash * 31u + [_masterKey hash];
     return hash;
        
@@ -3789,7 +3789,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_response hash];
-    hash = hash * 31u + _sequenceValue;
+    hash = hash * 31u + (NSUInteger)_sequenceValue;
     return hash;
        
 }
@@ -3887,7 +3887,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_responses hash];
-    hash = hash * 31u + _sequenceValue;
+    hash = hash * 31u + (NSUInteger)_sequenceValue;
     return hash;
        
 }
@@ -3997,7 +3997,7 @@
     NSUInteger hash = 0;
     hash = hash * 31u + [_token hash];
     hash = hash * 31u + [_signature hash];
-    hash = hash * 31u + _keyId;
+    hash = hash * 31u + (NSUInteger)_keyId;
     return hash;
        
 }
@@ -4205,9 +4205,9 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_signedBlindedToken hash];
-    hash = hash * 31u + _slotNumber;
-    hash = hash * 31u + _remainingSecondsUntilTokenExpires;
-    hash = hash * 31u + _remainingSecondsUntilNextTokenIsAvailable;
+    hash = hash * 31u + (NSUInteger)_slotNumber;
+    hash = hash * 31u + (NSUInteger)_remainingSecondsUntilTokenExpires;
+    hash = hash * 31u + (NSUInteger)_remainingSecondsUntilNextTokenIsAvailable;
     return hash;
        
 }
@@ -4521,7 +4521,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_credentialValidationResults hash];
-    hash = hash * 31u + _sameIdentity;
+    hash = hash * 31u + (NSUInteger)_sameIdentity;
     hash = hash * 31u + [_authenticatorCertChain hash];
     hash = hash * 31u + [_signature hash];
     return hash;
@@ -5687,7 +5687,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_rendezvousTag hash];
-    hash = hash * 31u + _amRendezvousOwner;
+    hash = hash * 31u + (NSUInteger)_amRendezvousOwner;
     hash = hash * 31u + [_conversationId hash];
     hash = hash * 31u + [_conversationType hash];
     hash = hash * 31u + [_authenticationType hash];
@@ -6649,7 +6649,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _v;
+    hash = hash * 31u + (NSUInteger)_v;
     return hash;
        
 }
@@ -6739,7 +6739,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _v;
+    hash = hash * 31u + (NSUInteger)_v;
     return hash;
        
 }
@@ -7459,8 +7459,8 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_serviceAccess hash];
-    hash = hash * 31u + _expirySeconds;
-    hash = hash * 31u + _renegotiationSeconds;
+    hash = hash * 31u + (NSUInteger)_expirySeconds;
+    hash = hash * 31u + (NSUInteger)_renegotiationSeconds;
     hash = hash * 31u + [_issuanceDateTimeUTC hash];
     return hash;
        
@@ -7704,7 +7704,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_dataType hash];
-    hash = hash * 31u + _accessLevel;
+    hash = hash * 31u + (NSUInteger)_accessLevel;
     hash = hash * 31u + [_summaryValues hash];
     return hash;
        
@@ -7998,7 +7998,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _maxAccessLevel;
+    hash = hash * 31u + (NSUInteger)_maxAccessLevel;
     hash = hash * 31u + [_vaultKeys hash];
     return hash;
        
@@ -8107,8 +8107,8 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _accessLevel;
-    hash = hash * 31u + _credentialType;
+    hash = hash * 31u + (NSUInteger)_accessLevel;
+    hash = hash * 31u + (NSUInteger)_credentialType;
     hash = hash * 31u + [_encryptedVaultKeys hash];
     return hash;
        
@@ -8326,7 +8326,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + _credentialType;
+    hash = hash * 31u + (NSUInteger)_credentialType;
     hash = hash * 31u + [_operatorInfo hash];
     hash = hash * 31u + [_vaultInfo hash];
     hash = hash * 31u + [_encryptedRecoveryInfo hash];
@@ -8461,7 +8461,7 @@
     NSUInteger hash = 0;
     hash = hash * 31u + [_vaultId hash];
     hash = hash * 31u + [_sequenceId hash];
-    hash = hash * 31u + _sequenceValue;
+    hash = hash * 31u + (NSUInteger)_sequenceValue;
     hash = hash * 31u + [_itemId hash];
     hash = hash * 31u + [_encryptedHeaders hash];
     return hash;
@@ -8682,7 +8682,7 @@
     NSUInteger hash = 0;
     hash = hash * 31u + [_vaultId hash];
     hash = hash * 31u + [_sequenceId hash];
-    hash = hash * 31u + _sequenceValue;
+    hash = hash * 31u + (NSUInteger)_sequenceValue;
     hash = hash * 31u + [_itemId hash];
     return hash;
        
@@ -8792,7 +8792,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_results hash];
-    hash = hash * 31u + _current;
+    hash = hash * 31u + (NSUInteger)_current;
     hash = hash * 31u + [_sequenceIds hash];
     return hash;
        
@@ -8891,7 +8891,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_sequenceId hash];
-    hash = hash * 31u + _sequenceValue;
+    hash = hash * 31u + (NSUInteger)_sequenceValue;
     return hash;
        
 }
@@ -9037,7 +9037,7 @@ QredoServiceInvoker *_invoker;
                completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 completionHandler(nil, error);
+                 completionHandler(NO, error);
             }];
          
 }
@@ -9308,7 +9308,7 @@ QredoServiceInvoker *_invoker;
                completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 completionHandler(nil, error);
+                 completionHandler(NO, error);
             }];
          
 }
