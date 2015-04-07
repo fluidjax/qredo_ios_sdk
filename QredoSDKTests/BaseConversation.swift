@@ -75,7 +75,8 @@ class BaseConversation: XCTestCase {
         creatorRendezvous?.delegate = rendezvousDelegate
         creatorRendezvous?.startListening()
 
-        responderClient.respondWithTag(randomTag, completionHandler: { conversation, error in
+        // We know we're responding to anonymous rendezvous, so nil trustedRootPems is fine
+        responderClient.respondWithTag(randomTag, trustedRootPems:nil, completionHandler: { conversation, error in
             XCTAssertNil(error, "failed to respond")
 
             self.responderConversation = conversation

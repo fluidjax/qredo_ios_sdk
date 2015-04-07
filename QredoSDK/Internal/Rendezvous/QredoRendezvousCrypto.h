@@ -37,12 +37,13 @@
 
 - (BOOL)validateCreationInfo:(QLFRendezvousCreationInfo *)creationInfo
                          tag:(NSString *)tag
+             trustedRootPems:(NSArray *)trustedRootPems
                        error:(NSError **)error;
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)fullTag
+                                                         trustedRootPems:trustedRootPems
                                                           signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;
-
 
 @end

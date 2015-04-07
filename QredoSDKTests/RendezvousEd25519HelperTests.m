@@ -40,13 +40,12 @@
     
     error = nil;
     id<QredoRendezvousCreateHelper> createHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:initialFullTag
-       crypto:self.cryptoImpl
-       signingHandler:signingHandler
-       error:&error
-       ];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                     signingHandler:signingHandler
+                                                              error:&error];
     XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
@@ -56,11 +55,11 @@
     
     error = nil;
     id<QredoRendezvousRespondHelper> respondHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:finalFullTag
-       crypto:self.cryptoImpl
-       error:&error];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
@@ -98,13 +97,12 @@
     
     error = nil;
     id<QredoRendezvousCreateHelper> createHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:initialFullTag
-       crypto:self.cryptoImpl
-       signingHandler:signingHandler
-       error:&error
-       ];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                     signingHandler:signingHandler
+                                                              error:&error];
     XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
@@ -114,11 +112,11 @@
     
     error = nil;
     id<QredoRendezvousRespondHelper> respondHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:finalFullTag
-       crypto:self.cryptoImpl
-       error:&error];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
@@ -146,13 +144,12 @@
 
     error = nil;
     id<QredoRendezvousCreateHelper> createHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:initialFullTag
-       crypto:self.cryptoImpl
-       signingHandler:signingHandler
-       error:&error
-       ];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                     signingHandler:signingHandler
+                                                              error:&error];
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -171,13 +168,12 @@
     
     error = nil;
     id<QredoRendezvousCreateHelper> createHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:initialFullTag
-       crypto:self.cryptoImpl
-       signingHandler:signingHandler
-       error:&error
-       ];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                     signingHandler:signingHandler
+                                                              error:&error];
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
@@ -199,13 +195,12 @@
 
     error = nil;
     id<QredoRendezvousCreateHelper> createHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:initialFullTag
-       crypto:self.cryptoImpl
-       signingHandler:signingHandler
-       error:&error
-       ];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                     signingHandler:signingHandler
+                                                              error:&error];
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
@@ -224,13 +219,12 @@
     
     error = nil;
     id<QredoRendezvousCreateHelper> createHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:initialFullTag
-       crypto:self.cryptoImpl
-       signingHandler:signingHandler
-       error:&error
-       ];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                     signingHandler:signingHandler
+                                                              error:&error];
     XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
@@ -239,11 +233,11 @@
     
     error = nil;
     id<QredoRendezvousRespondHelper> respondHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:finalFullTag
-       crypto:self.cryptoImpl
-       error:&error];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
@@ -293,13 +287,12 @@
     
     error = nil;
     id<QredoRendezvousCreateHelper> createHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:initialFullTag
-       crypto:self.cryptoImpl
-       signingHandler:signingHandler
-       error:&error
-       ];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                     signingHandler:signingHandler
+                                                              error:&error];
     XCTAssertNotNil(createHelper);
     XCTAssertNil(error);
     
@@ -309,11 +302,11 @@
 
     error = nil;
     id<QredoRendezvousRespondHelper> respondHelper
-    = [QredoRendezvousHelpers
-       rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-       fullTag:finalFullTag
-       crypto:self.cryptoImpl
-       error:&error];
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
     
@@ -342,9 +335,9 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
-                                                              error:&error
-       ];
+                                                              error:&error];
 
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
@@ -366,9 +359,9 @@
                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
                      fullTag:initialFullTag
                      crypto:nil
+                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
                      signingHandler:signingHandler
-                     error:&error
-                     ]);
+                     error:&error]);
     
 }
 
@@ -380,6 +373,7 @@
                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
                      fullTag:@"someTag@"
                      crypto:nil
+                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
                      error:&error]);
 }
 
@@ -387,11 +381,12 @@
 {
     NSError *error = nil;
     
-    id helper = [QredoRendezvousHelpers
-                     rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                     fullTag:nil
-                     crypto:self.cryptoImpl
-                     error:&error];
+    id helper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:nil
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     
     XCTAssertNil(helper);
     XCTAssert(error);
@@ -407,11 +402,12 @@
     NSString *initialFullTag = @"MyTestRendez@Vous@"; // No authentication tag part = Generate keys internally
     
     error = nil;
-    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
-                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                                                      fullTag:initialFullTag
-                                                      crypto:self.cryptoImpl
-                                                      error:&error];
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -425,11 +421,12 @@
     NSString *initialFullTag = @"@AZVZXcTD5Qw6x6goPoRbfifq6MaHJys4xmmyEKozpact";
     
     error = nil;
-    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
-                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                                                      fullTag:initialFullTag
-                                                      crypto:self.cryptoImpl
-                                                      error:&error];
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
 }
@@ -441,11 +438,12 @@
     NSString *initialFullTag = @"prefix@AZVZXcTD5Qw6x6goPoRbfifq6MaHJys4xmmyEKozpact";
     
     error = nil;
-    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
-                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                                                      fullTag:initialFullTag
-                                                      crypto:self.cryptoImpl
-                                                      error:&error];
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
 }
@@ -458,11 +456,12 @@
     NSString *initialFullTag = @"AZVZXcTD5Qw6x6goPoRbfifq6MaHJys4xmmyEKozpact";
     
     error = nil;
-    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
-                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                                                      fullTag:initialFullTag
-                                                      crypto:self.cryptoImpl
-                                                      error:&error];
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -477,11 +476,12 @@
     NSString *initialFullTag = @"test@1234567890123456789012345678901234567890tv+-";
     
     error = nil;
-    id<QredoRendezvousRespondHelper> respondHelper = [QredoRendezvousHelpers
-                                                      rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                                                      fullTag:initialFullTag
-                                                      crypto:self.cryptoImpl
-                                                      error:&error];
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                              error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);

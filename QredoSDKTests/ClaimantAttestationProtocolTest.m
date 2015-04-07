@@ -75,7 +75,10 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void (^)(NSError *))completionHandler
 {
     [self obtainQredoClientWithCompletionHandler:^(QredoClient *qredoClient) {
-        [qredoClient respondWithTag:rendezvousTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        // TODO: DH - need to confirm whether rendezvous being responded to could be X.509 authenticated rendezvous (so valid trusted roots required)
+        [qredoClient respondWithTag:rendezvousTag
+                    trustedRootPems:nil // No trusted roots, so cannot respond to X.509 authenticated rendezvous
+                  completionHandler:^(QredoConversation *conversation, NSError *error) {
             if (completionHandler) {
                 _conversation = conversation;
                 conversation.delegate = self;

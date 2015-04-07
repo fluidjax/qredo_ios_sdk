@@ -19,10 +19,16 @@
 
 static const NSUInteger kRandomTagLength = 32;
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootPems:(NSArray *)trustedRootPems
+                 signingHandler:(signDataBlock)signingHandler
+                          error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
+        
+        // Crypto and TrustedRootPems are unused in anonymous rendezvous
         
         if (!fullTag) {
             LogError(@"Full tag is nil.");
@@ -59,9 +65,12 @@ static const NSUInteger kRandomTagLength = 32;
     return self;
 }
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootPems:(NSArray *)trustedRootPems
+                          error:(NSError **)error
 {
-    return [self initWithFullTag:fullTag crypto:crypto signingHandler:nil error:error];
+    return [self initWithFullTag:fullTag crypto:crypto trustedRootPems:trustedRootPems signingHandler:nil error:error];
 }
 
 - (QredoRendezvousAuthenticationType)type
@@ -101,10 +110,15 @@ static const NSUInteger kRandomTagLength = 32;
 
 @implementation QredoRendezvousAnonymousRespondHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootPems:(NSArray *)trustedRootPems
+                          error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
     if (self) {
+        
+        // Crypto and TrustedRootPems are unused for anonymous rendezvous
 
         if (!fullTag) {
             LogError(@"Full tag is nil.");
