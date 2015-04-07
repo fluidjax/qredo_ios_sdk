@@ -1,4 +1,4 @@
-xcodeproj 'QredoSDK_pods.xcodeproj/'
+xcodeproj 'QredoSDK_pods.xcodeproj/', 'TestCoverage' => :debug
 
 source 'https://github.com/CocoaPods/Specs.git'
 source 'git@github.com:Qredo/qredo_cocoapods.git'
@@ -30,8 +30,17 @@ post_install do |installer_representation|
             puts target.name + ": Treating warnings as errors"
             config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'YES'
 
-            # For Debug configs, enable logging and code coverage measurements
             if config.name == 'Debug'
+                puts target.name + ": Enabling Qredo logging"
+                definitions = '$(inherited)'
+                definitions += ' QREDO_LOG_ERROR'
+                definitions += ' QREDO_LOG_DEBUG'
+                definitions += ' QREDO_LOG_INFO'
+                definitions += ' QREDO_LOG_TRACE'
+                config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = definitions
+            end
+            
+            if config.name == 'TestCoverage'
                 puts target.name + ": Enabling Qredo logging"
                 definitions = '$(inherited)'
                 definitions += ' QREDO_LOG_ERROR'
