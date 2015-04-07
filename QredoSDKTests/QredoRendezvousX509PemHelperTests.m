@@ -217,6 +217,150 @@
     XCTAssertNil(error);
 }
 
+- (void)testSignatureAndVerification_ExternalKeys_OutOfOrderPemChain
+{
+    // This test proves changing the order of the PEM chain (although keeping Subject cert first) doesn't cause
+    // the validation to fail.
+    
+    // Concatenate the Subject (2048 bit key), Root and Intermediate certs together in an unexpected (but not invalid) order
+    NSString *outOfOrderPublicKeyCertificateChain = [NSString stringWithFormat:@"%@%@%@",
+                                                           TestCertJavaSdkClient2048Pem,
+                                                           TestCertJavaSdkRootPem,
+                                                           TestCertJavaSdkIntermediatePem];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = outOfOrderPublicKeyCertificateChain;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:self.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(createHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
+    XCTAssert([finalFullTag hasSuffix:outOfOrderPublicKeyCertificateChain]);
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(respondHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *respondFullTag = [respondHelper tag];
+    XCTAssertNotNil(respondFullTag);
+    XCTAssert([respondFullTag isEqualToString:finalFullTag]);
+    
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    error = nil;
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    XCTAssertNotNil(signature);
+    XCTAssertNil(error);
+    
+    error = nil;
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
+    XCTAssertTrue(result);
+    XCTAssertNil(error);
+}
+
+- (void)testSignatureAndVerification_ExternalKeys_IncludeUnnecessaryPemCerts
+{
+    // This test proves that including unnecessary PEM certificates doesn't prevent the authenticated rendezvous
+    // being created, and that the unnecessary certs appear in the final tag.
+    
+    // Concatenate the Subject (2048 bit key), repeated Root and Intermediate certs, along with unrelated certs
+    // together in any old order.
+    NSString *outOfOrderPublicKeyCertificateChain = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@",
+                                                     TestCertJavaSdkClient2048Pem,
+                                                     TestCertJavaSdkClient4096Pem,
+                                                     TestCertJavaSdkRootPem,
+                                                     TestCertJavaSdkClient2048Pem,
+                                                     TestCertJavaSdkClient4096Pem,
+                                                     TestCertDHTestingLocalhostClientPem,
+                                                     TestCertJavaSdkRootPem,
+                                                     TestCertJavaSdkIntermediatePem];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = outOfOrderPublicKeyCertificateChain;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:self.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(createHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
+    XCTAssert([finalFullTag hasSuffix:outOfOrderPublicKeyCertificateChain]);
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(respondHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *respondFullTag = [respondHelper tag];
+    XCTAssertNotNil(respondFullTag);
+    XCTAssert([respondFullTag isEqualToString:finalFullTag]);
+    
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    error = nil;
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    XCTAssertNotNil(signature);
+    XCTAssertNil(error);
+    
+    error = nil;
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
+    XCTAssertTrue(result);
+    XCTAssertNil(error);
+}
+
 - (void)testSignatureAndVerification_ExternalKeys_MultiUse {
     
     // Importing the same key (even under different name) into Apple Keychain has been seen to fail at times.
