@@ -30,7 +30,7 @@
     self.cryptoImpl = [[CryptoImplV1 alloc] init];
     
     // For most tests we'll use the 2048 bit key
-    [self setupTestPublicCertificateAndPrivateKey4096Bit];
+    [self setupTestPublicCertificateAndPrivateKey2048Bit];
 }
 
 - (void)tearDown {
@@ -50,7 +50,7 @@
     XCTAssertEqual(self.trustedRootRefs.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
 }
 
-- (void)setupTestPublicCertificateAndPrivateKey4096Bit
+- (void)setupTestPublicCertificateAndPrivateKey2048Bit
 {
     // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to raw private RSA key, and the PEM public certificates
     
@@ -58,9 +58,9 @@
     // Use SecCertificateRefs to create a PEM which is then processed (to confirm validity)
     
     
-    // 1.) Create identity - Test client 4096 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient4096WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient4096WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    // 1.) Create identity - Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
+    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
+                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
     NSString *pkcs12Password = @"password";
     int expectedNumberOfChainCertificateRefs = 2;
     
@@ -134,6 +134,76 @@
     XCTAssertNotNil(respondFullTag);
     XCTAssert([respondFullTag isEqualToString:finalFullTag]);
 
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    error = nil;
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    XCTAssertNotNil(signature);
+    XCTAssertNil(error);
+    
+    error = nil;
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
+    XCTAssertTrue(result);
+    XCTAssertNil(error);
+}
+
+- (void)testSignatureAndVerification_ExternalKeys_RootIncludedInPemCertChain
+{
+    // This test proves that including the Root in the PEM cert chain (should just be 'Subject->Intermediate')
+    // doesn't cause the validation to fail.  There's a separate test to prove that doing so doesn't automatically
+    // make the chain trusted
+    
+    // Concatenate the Subject (2048 bit key), Intermediate and Root certs together
+    NSString *publicKeyCertificateChainWithRootIncluded = [NSString stringWithFormat:@"%@%@%@",
+                                                           TestCertJavaSdkClient2048Pem,
+                                                           TestCertJavaSdkIntermediatePem,
+                                                           TestCertJavaSdkRootPem];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = publicKeyCertificateChainWithRootIncluded;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:self.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(createHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
+    XCTAssert([finalFullTag hasSuffix:publicKeyCertificateChainWithRootIncluded]);
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(respondHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *respondFullTag = [respondHelper tag];
+    XCTAssertNotNil(respondFullTag);
+    XCTAssert([respondFullTag isEqualToString:finalFullTag]);
+    
     NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
@@ -584,6 +654,44 @@
     NSString *authenticationTag = self.publicKeyCertificateChainPem;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
 
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        // This block shouldn't be called (we're not signing anything), we just need a valid block (so just return input)
+        return data;
+    };
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:noTrustedRoots
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorTrustedRootsInvalid);
+}
+
+- (void)testCreateHelper_Invalid_UntrustedPublicKeyCertChainWithRootInChain
+{
+    // This test will not have any trusted roots, but will include the root in the PEM chain.
+    // This test will ensure that this scenario does not result in trust verifying.
+
+    // Concatenate the Subject (2048-bit key), Intermediate and Root certs together
+    NSString *publicKeyCertificateChainWithRootIncluded = [NSString stringWithFormat:@"%@%@%@",
+                                                           TestCertJavaSdkClient2048Pem,
+                                                           TestCertJavaSdkIntermediatePem,
+                                                           TestCertJavaSdkRootPem];
+    
+    // To not trust the chain, we must create an empty array
+    NSArray *noTrustedRoots = [[NSArray alloc] init];
+    
+    NSError *error = nil;
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = publicKeyCertificateChainWithRootIncluded;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
         // This block shouldn't be called (we're not signing anything), we just need a valid block (so just return input)
         return data;
