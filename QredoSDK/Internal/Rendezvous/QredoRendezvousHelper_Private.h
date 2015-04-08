@@ -6,11 +6,18 @@
 #import "CryptoImpl.h"
 
 @protocol QredoRendezvousCreatePrivateHelper <QredoRendezvousCreateHelper>
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto signingHandler:(signDataBlock)signingHandler error:(NSError **)error;
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootPems:(NSArray *)trustedRootPems
+                 signingHandler:(signDataBlock)signingHandler
+                          error:(NSError **)error;
 @end
 
 @protocol QredoRendezvousRespondPrivateHelper <QredoRendezvousRespondHelper>
-- (instancetype)initWithFullTag:(NSString *)fullTag crypto:(id<CryptoImpl>)crypto error:(NSError **)error;
+- (instancetype)initWithFullTag:(NSString *)fullTag
+                         crypto:(id<CryptoImpl>)crypto
+                trustedRootPems:(NSArray *)trustedRootPems
+                          error:(NSError **)error;
 @end
 
 

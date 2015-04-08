@@ -181,7 +181,10 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     __block QredoConversation *responderConversation = nil;
     NSLog(@"\n2nd client responding to rendezvous");
-    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems is valid for this test
+    [anotherClient respondWithTag:randomTag
+                  trustedRootPems:nil
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         NSLog(@"\nRendezvous respond completion handler entered");
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);
@@ -264,7 +267,10 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     NSLog(@"Responding to Rendezvous");
     __block QredoConversation *responderConversation = nil;
-    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems is valid for this test
+    [anotherClient respondWithTag:randomTag
+                  trustedRootPems:nil
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);
 
@@ -488,7 +494,10 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
 
     __block QredoConversation *responderConversation = nil;
-    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems is valid for this test
+    [anotherClient respondWithTag:randomTag
+                  trustedRootPems:nil
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);
         XCTAssert(conversation.metadata.isEphemeral);
@@ -564,7 +573,10 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [rendezvous startListening];
     
     __block QredoConversation *responderConversation = nil;
-    [anotherClient respondWithTag:randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems is valid for this test
+    [anotherClient respondWithTag:randomTag
+                  trustedRootPems:nil
+                completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);
         XCTAssertFalse(conversation.metadata.isEphemeral);

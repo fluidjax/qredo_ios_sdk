@@ -15,7 +15,8 @@
 
 @interface QredoRendezvousX509PemHelperTests : XCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
-@property (nonatomic) NSArray *rootCertificates;
+@property (nonatomic) NSArray *trustedRootPems;
+@property (nonatomic) NSArray *trustedRootRefs;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
 @end
@@ -26,10 +27,10 @@
     [super setUp];
     
     [self setupRootCertificates];
-    self.cryptoImpl = [[CryptoImplV1 alloc] initWithTrustedRootRefs:self.rootCertificates];
+    self.cryptoImpl = [[CryptoImplV1 alloc] init];
     
     // For most tests we'll use the 2048 bit key
-    [self setupTestPublicCertificateAndPrivateKey4096Bit];
+    [self setupTestPublicCertificateAndPrivateKey2048Bit];
 }
 
 - (void)tearDown {
@@ -38,16 +39,18 @@
 
 - (void)setupRootCertificates
 {
-    // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
     int expectedNumberOfRootCertificateRefs = 1;
     
-    self.rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
-    XCTAssertNotNil(self.rootCertificates, @"Root certificates should not be nil.");
-    XCTAssertEqual(self.rootCertificates.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
+    // Java-SDK root cert
+    self.trustedRootPems = [[NSArray alloc] initWithObjects:TestCertJavaSdkRootPem, nil];
+    XCTAssertNotNil(self.trustedRootPems);
+
+    self.trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificatesArray:self.trustedRootPems];
+    XCTAssertNotNil(self.trustedRootRefs, @"Root certificates should not be nil.");
+    XCTAssertEqual(self.trustedRootRefs.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
 }
 
-- (void)setupTestPublicCertificateAndPrivateKey4096Bit
+- (void)setupTestPublicCertificateAndPrivateKey2048Bit
 {
     // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to raw private RSA key, and the PEM public certificates
     
@@ -55,9 +58,9 @@
     // Use SecCertificateRefs to create a PEM which is then processed (to confirm validity)
     
     
-    // 1.) Create identity - Test client 4096 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient4096WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient4096WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    // 1.) Create identity - Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
+    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
+                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
     NSString *pkcs12Password = @"password";
     int expectedNumberOfChainCertificateRefs = 2;
     
@@ -65,7 +68,7 @@
     
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data
                                                                                              password:pkcs12Password
-                                                                                  rootCertificateRefs:self.rootCertificates];
+                                                                                  rootCertificateRefs:self.trustedRootRefs];
     XCTAssertNotNil(identityDictionary, @"Incorrect identity validation result. Should have returned valid NSDictionary.");
     
     SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
@@ -103,6 +106,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -120,6 +124,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -129,6 +134,220 @@
     XCTAssertNotNil(respondFullTag);
     XCTAssert([respondFullTag isEqualToString:finalFullTag]);
 
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    error = nil;
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    XCTAssertNotNil(signature);
+    XCTAssertNil(error);
+    
+    error = nil;
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
+    XCTAssertTrue(result);
+    XCTAssertNil(error);
+}
+
+- (void)testSignatureAndVerification_ExternalKeys_RootIncludedInPemCertChain
+{
+    // This test proves that including the Root in the PEM cert chain (should just be 'Subject->Intermediate')
+    // doesn't cause the validation to fail.  There's a separate test to prove that doing so doesn't automatically
+    // make the chain trusted
+    
+    // Concatenate the Subject (2048 bit key), Intermediate and Root certs together
+    NSString *publicKeyCertificateChainWithRootIncluded = [NSString stringWithFormat:@"%@%@%@",
+                                                           TestCertJavaSdkClient2048Pem,
+                                                           TestCertJavaSdkIntermediatePem,
+                                                           TestCertJavaSdkRootPem];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = publicKeyCertificateChainWithRootIncluded;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:self.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(createHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
+    XCTAssert([finalFullTag hasSuffix:publicKeyCertificateChainWithRootIncluded]);
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(respondHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *respondFullTag = [respondHelper tag];
+    XCTAssertNotNil(respondFullTag);
+    XCTAssert([respondFullTag isEqualToString:finalFullTag]);
+    
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    error = nil;
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    XCTAssertNotNil(signature);
+    XCTAssertNil(error);
+    
+    error = nil;
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
+    XCTAssertTrue(result);
+    XCTAssertNil(error);
+}
+
+- (void)testSignatureAndVerification_ExternalKeys_OutOfOrderPemChain
+{
+    // This test proves changing the order of the PEM chain (although keeping Subject cert first) doesn't cause
+    // the validation to fail.
+    
+    // Concatenate the Subject (2048 bit key), Root and Intermediate certs together in an unexpected (but not invalid) order
+    NSString *outOfOrderPublicKeyCertificateChain = [NSString stringWithFormat:@"%@%@%@",
+                                                           TestCertJavaSdkClient2048Pem,
+                                                           TestCertJavaSdkRootPem,
+                                                           TestCertJavaSdkIntermediatePem];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = outOfOrderPublicKeyCertificateChain;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:self.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(createHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
+    XCTAssert([finalFullTag hasSuffix:outOfOrderPublicKeyCertificateChain]);
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(respondHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *respondFullTag = [respondHelper tag];
+    XCTAssertNotNil(respondFullTag);
+    XCTAssert([respondFullTag isEqualToString:finalFullTag]);
+    
+    NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    error = nil;
+    QLFRendezvousAuthSignature *signature = [createHelper signatureWithData:dataToSign error:&error];
+    XCTAssertNotNil(signature);
+    XCTAssertNil(error);
+    
+    error = nil;
+    BOOL result = [respondHelper isValidSignature:signature rendezvousData:dataToSign error:&error];
+    XCTAssertTrue(result);
+    XCTAssertNil(error);
+}
+
+- (void)testSignatureAndVerification_ExternalKeys_IncludeUnnecessaryPemCerts
+{
+    // This test proves that including unnecessary PEM certificates doesn't prevent the authenticated rendezvous
+    // being created, and that the unnecessary certs appear in the final tag.
+    
+    // Concatenate the Subject (2048 bit key), repeated Root and Intermediate certs, along with unrelated certs
+    // together in any old order.
+    NSString *outOfOrderPublicKeyCertificateChain = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@",
+                                                     TestCertJavaSdkClient2048Pem,
+                                                     TestCertJavaSdkClient4096Pem,
+                                                     TestCertJavaSdkRootPem,
+                                                     TestCertJavaSdkClient2048Pem,
+                                                     TestCertJavaSdkClient4096Pem,
+                                                     TestCertDHTestingLocalhostClientPem,
+                                                     TestCertJavaSdkRootPem,
+                                                     TestCertJavaSdkIntermediatePem];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = outOfOrderPublicKeyCertificateChain;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:self.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    NSError *error = nil;
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNotNil(createHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(createHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *finalFullTag = [createHelper tag];
+    XCTAssertNotNil(finalFullTag);
+    XCTAssert([finalFullTag hasPrefix:prefix]);
+    XCTAssert([finalFullTag hasSuffix:outOfOrderPublicKeyCertificateChain]);
+    
+    error = nil;
+    id<QredoRendezvousRespondHelper> respondHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:finalFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                              error:&error];
+    XCTAssertNotNil(respondHelper);
+    XCTAssertNil(error);
+    XCTAssertEqual(respondHelper.type, QredoRendezvousAuthenticationTypeX509Pem);
+    
+    NSString *respondFullTag = [respondHelper tag];
+    XCTAssertNotNil(respondFullTag);
+    XCTAssert([respondFullTag isEqualToString:finalFullTag]);
+    
     NSData *dataToSign = [@"The data to sign" dataUsingEncoding:NSUTF8StringEncoding];
     
     error = nil;
@@ -171,6 +390,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag1
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -187,6 +407,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag1
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -203,6 +424,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag2
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -219,6 +441,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag1
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper1);
     XCTAssertNil(error);
@@ -241,6 +464,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag1
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper2);
     XCTAssertNil(error);
@@ -261,6 +485,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag2
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper2);
     XCTAssertNil(error);
@@ -296,6 +521,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -312,6 +538,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -344,6 +571,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -359,6 +587,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -425,6 +654,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -456,6 +686,7 @@
     XCTAssertThrows([QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                                           fullTag:initialFullTag
                                                                            crypto:crypto
+                                                                  trustedRootPems:self.trustedRootPems
                                                                    signingHandler:signingHandler
                                                                             error:&error]);
 }
@@ -473,6 +704,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -495,6 +727,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -517,6 +750,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -544,6 +778,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -555,8 +790,8 @@
 
 - (void)testCreateHelper_Invalid_UntrustedPublicKeyCertChain
 {
-    // To not trust the chain, we must create out own CryptoImpl without the required roots
-    id<CryptoImpl> noRootsCrypto = [[CryptoImplV1 alloc] init];
+    // To not trust the chain, we must create an empty array
+    NSArray *noTrustedRoots = [[NSArray alloc] init];
 
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
@@ -571,14 +806,53 @@
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
-                                                             crypto:noRootsCrypto
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:noTrustedRoots
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
-    XCTAssertEqual(error.code, QredoRendezvousHelperErrorAuthenticationTagInvalid);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorTrustedRootsInvalid);
+}
+
+- (void)testCreateHelper_Invalid_UntrustedPublicKeyCertChainWithRootInChain
+{
+    // This test will not have any trusted roots, but will include the root in the PEM chain.
+    // This test will ensure that this scenario does not result in trust verifying.
+
+    // Concatenate the Subject (2048-bit key), Intermediate and Root certs together
+    NSString *publicKeyCertificateChainWithRootIncluded = [NSString stringWithFormat:@"%@%@%@",
+                                                           TestCertJavaSdkClient2048Pem,
+                                                           TestCertJavaSdkIntermediatePem,
+                                                           TestCertJavaSdkRootPem];
+    
+    // To not trust the chain, we must create an empty array
+    NSArray *noTrustedRoots = [[NSArray alloc] init];
+    
+    NSError *error = nil;
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = publicKeyCertificateChainWithRootIncluded;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        // This block shouldn't be called (we're not signing anything), we just need a valid block (so just return input)
+        return data;
+    };
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:noTrustedRoots
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorTrustedRootsInvalid);
 }
 
 - (void)testCreateHelper_Invalid_MultipleAtsInTag
@@ -596,7 +870,8 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
-                                                     signingHandler:signingHandler
+                                                    trustedRootPems:self.trustedRootPems
+                                                    signingHandler:signingHandler
                                                               error:&error
        ];
     XCTAssertNil(createHelper);
@@ -618,6 +893,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -639,6 +915,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -667,6 +944,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -683,6 +961,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -715,6 +994,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -731,6 +1011,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -760,6 +1041,7 @@
     XCTAssertThrows([QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                                           fullTag:initialFullTag
                                                                            crypto:crypto
+                                                                  trustedRootPems:self.trustedRootPems
                                                                             error:&error]);
 }
 
@@ -772,6 +1054,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -788,6 +1071,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -804,6 +1088,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -826,6 +1111,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -851,6 +1137,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -862,18 +1149,19 @@
     XCTAssert([finalFullTag hasPrefix:prefix]);
     XCTAssert([finalFullTag hasSuffix:self.publicKeyCertificateChainPem]);
     
-    // To not trust the chain, we must create out own CryptoImpl without the required roots
-    id<CryptoImpl> noRootsCrypto = [[CryptoImplV1 alloc] init];
+    // To not trust the chain, we must create an empty array
+    NSArray *noTrustedRoots = [[NSArray alloc] init];
 
     id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:finalFullTag
-                                                             crypto:noRootsCrypto
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:noTrustedRoots
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
-    XCTAssertEqual(error.code, QredoRendezvousHelperErrorAuthenticationTagInvalid);
+    XCTAssertEqual(error.code, QredoRendezvousHelperErrorTrustedRootsInvalid);
 }
 
 
@@ -888,6 +1176,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -904,6 +1193,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -922,6 +1212,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -948,6 +1239,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -974,6 +1266,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1001,6 +1294,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1028,6 +1322,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1055,6 +1350,7 @@
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);

@@ -31,8 +31,14 @@ extern NSString *const kQredoConversationVaultItemLabelType;
                       transCap:(NSSet *)transCap;
 
 // Generate the keys, conversation ID, queue IDs and will save in the vault
-- (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey publicKey:(QredoDhPublicKey*)publicKey rendezvousOwner:(BOOL)rendezvousOwner completionHandler:(void(^)(NSError *error))completionHandler;
-- (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
+                                 publicKey:(QredoDhPublicKey*)publicKey
+                           rendezvousOwner:(BOOL)rendezvousOwner
+                         completionHandler:(void(^)(NSError *error))completionHandler;
+
+- (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
+                   trustedRootPems:(NSArray *)trustedRootPems
+                 completionHandler:(void(^)(NSError *error))completionHandler;
 
 - (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
                            incoming:(BOOL)incoming

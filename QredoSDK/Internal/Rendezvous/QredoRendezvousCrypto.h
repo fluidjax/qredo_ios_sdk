@@ -45,12 +45,14 @@
 
 - (BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
                      authenticationKey:(NSData *)authenticationKey
-                                   tag:(NSString *)tag
+                         tag:(NSString *)tag
                              hashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                 error:(NSError **)error;
+                       trustedRootPems:(NSArray *)trustedRootPems
+                       error:(NSError **)error;
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)fullTag
+                                                         trustedRootPems:trustedRootPems
                                                           signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;
 

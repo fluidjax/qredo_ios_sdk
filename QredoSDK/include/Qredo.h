@@ -72,6 +72,7 @@ extern NSString *const QredoRendezvousURIProtocol;
                              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                   configuration:(QredoRendezvousConfiguration *)configuration
                                       publicKey:(NSString *)publicKey
+                                trustedRootPems:(NSArray *)trustedRootPems
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
@@ -86,7 +87,9 @@ extern NSString *const QredoRendezvousURIProtocol;
 - (void)fetchRendezvousWithMetadata:(QredoRendezvousMetadata *)metadata completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 /** Joins the rendezvous and stores conversation into the vault */
-- (void)respondWithTag:(NSString *)tag completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler;
+- (void)respondWithTag:(NSString *)tag
+       trustedRootPems:(NSArray *)trustedRootPems
+     completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler;
 
 /** Enumerates through the conversations that have been stored in the Vault
  @discussion assign YES to *stop to break the enumeration */

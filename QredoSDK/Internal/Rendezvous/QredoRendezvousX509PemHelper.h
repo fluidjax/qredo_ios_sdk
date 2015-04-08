@@ -8,6 +8,11 @@
 extern const NSInteger kX509AuthenticatedRendezvousSaltLength;
 
 @interface QredoAbstractRendezvousX509PemHelper : QredoAbstractRendezvousHelper
+
+- (instancetype)initWithCrypto:(id<CryptoImpl>)crypto
+               trustedRootPems:(NSArray *)trustedRootPems
+                         error:(NSError **)error;
+
 @end
 
 @interface QredoRendezvousX509PemCreateHelper : QredoAbstractRendezvousX509PemHelper<QredoRendezvousCreatePrivateHelper>

@@ -107,6 +107,7 @@
     id<QredoRendezvousCreateHelper> rendezvousHelper
     = [rendezvousCrypto rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
                                                       fullTag:@"Ed25519@"
+                                              trustedRootPems:nil
                                                signingHandler:nil
                                                         error:nil];
 
@@ -115,6 +116,7 @@
     rendezvousHelper
     = [rendezvousCrypto rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                       fullTag:@"RSA2048@"
+                                              trustedRootPems:nil
                                                signingHandler:nil
                                                         error:nil];
 
@@ -124,6 +126,7 @@
     rendezvousHelper
     = [rendezvousCrypto rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
                                                       fullTag:@"RSA4096@"
+                                              trustedRootPems:nil
                                                signingHandler:nil
                                                         error:nil];
 

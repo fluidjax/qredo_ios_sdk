@@ -102,7 +102,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (NSUInteger)hash
 {
-    return [_itemId hash] ^ [_sequenceId hash] ^ _sequenceValue;
+    return [_itemId hash] ^ [_sequenceId hash] ^ (NSUInteger)_sequenceValue;
 }
 
 // For private use only.

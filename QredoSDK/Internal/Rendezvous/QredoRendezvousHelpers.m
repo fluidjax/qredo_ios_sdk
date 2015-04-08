@@ -16,25 +16,46 @@
 + (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)fullTag
                                                                   crypto:(id<CryptoImpl>)crypto
+                                                         trustedRootPems:(NSArray *)trustedRootPems
                                                                 signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error
 {
     switch (authenticationType) {
             
         case QredoRendezvousAuthenticationTypeAnonymous:
-            return [[QredoRendezvousAnonymousCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousAnonymousCreateHelper alloc] initWithFullTag:fullTag
+                                                                          crypto:crypto
+                                                                 trustedRootPems:trustedRootPems
+                                                                  signingHandler:signingHandler
+                                                                           error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeEd25519:
-            return [[QredoRendezvousEd25519CreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousEd25519CreateHelper alloc] initWithFullTag:fullTag
+                                                                        crypto:crypto
+                                                               trustedRootPems:trustedRootPems
+                                                                signingHandler:signingHandler
+                                                                         error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeX509Pem:
-            return [[QredoRendezvousX509PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousX509PemCreateHelper alloc] initWithFullTag:fullTag
+                                                                        crypto:crypto
+                                                               trustedRootPems:trustedRootPems
+                                                                signingHandler:signingHandler
+                                                                         error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeRsa2048Pem:
-            return [[QredoRendezvousRsa2048PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousRsa2048PemCreateHelper alloc] initWithFullTag:fullTag
+                                                                           crypto:crypto
+                                                                  trustedRootPems:trustedRootPems
+                                                                   signingHandler:signingHandler
+                                                                            error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
-            return [[QredoRendezvousRsa4096PemCreateHelper alloc] initWithFullTag:fullTag crypto:crypto signingHandler:signingHandler error:(NSError **)error];
+            return [[QredoRendezvousRsa4096PemCreateHelper alloc] initWithFullTag:fullTag
+                                                                           crypto:crypto
+                                                                  trustedRootPems:trustedRootPems
+                                                                   signingHandler:signingHandler
+                                                                            error:(NSError **)error];
             
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add X.509 Self-signed support
@@ -50,24 +71,40 @@
 + (id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                   fullTag:(NSString *)fullTag
                                                                    crypto:(id<CryptoImpl>)crypto
+                                                          trustedRootPems:(NSArray *)trustedRootPems
                                                                     error:(NSError **)error
 {
     switch (authenticationType) {
             
         case QredoRendezvousAuthenticationTypeAnonymous:
-            return [[QredoRendezvousAnonymousRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            return [[QredoRendezvousAnonymousRespondHelper alloc] initWithFullTag:fullTag
+                                                                           crypto:crypto
+                                                                  trustedRootPems:trustedRootPems
+                                                                            error:error];
             
         case QredoRendezvousAuthenticationTypeEd25519:
-            return [[QredoRendezvousEd25519RespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            return [[QredoRendezvousEd25519RespondHelper alloc] initWithFullTag:fullTag
+                                                                         crypto:crypto
+                                                                trustedRootPems:trustedRootPems
+                                                                          error:error];
             
         case QredoRendezvousAuthenticationTypeX509Pem:
-            return [[QredoRendezvousX509PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            return [[QredoRendezvousX509PemRespondHelper alloc] initWithFullTag:fullTag
+                                                                         crypto:crypto
+                                                                trustedRootPems:trustedRootPems
+                                                                          error:error];
             
         case QredoRendezvousAuthenticationTypeRsa2048Pem:
-            return [[QredoRendezvousRsa2048PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            return [[QredoRendezvousRsa2048PemRespondHelper alloc] initWithFullTag:fullTag
+                                                                            crypto:crypto
+                                                                   trustedRootPems:trustedRootPems
+                                                                             error:error];
             
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
-            return [[QredoRendezvousRsa4096PemRespondHelper alloc] initWithFullTag:fullTag crypto:crypto error:error];
+            return [[QredoRendezvousRsa4096PemRespondHelper alloc] initWithFullTag:fullTag
+                                                                            crypto:crypto
+                                                                   trustedRootPems:trustedRootPems
+                                                                             error:error];
 
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add X.509 Self-signed support

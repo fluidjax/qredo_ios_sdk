@@ -152,30 +152,35 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return self;
 }
 
+// TODO: DH - provide alternative method signature for non-X.509 authenticated rendezvous without trustedRootPems?
 - (void)createRendezvousWithTag:(NSString *)tag
              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
+                trustedRootPems:(NSArray *)trustedRootPems
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"Creating rendezvous with (plaintext) tag: %@", tag);
+    LogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
     
     // TODO: DH - write tests 
     // TODO: DH - validate that the configuration and tag formats match
+    // TODO: DH - enforce non-nil trustedRootPems on X.509 PEM
     
     self.configuration = configuration;
-    QredoRendezvousCrypto *_crypto = [QredoRendezvousCrypto instance];
+    
+    QredoRendezvousCrypto *crypto = [QredoRendezvousCrypto instance];
+
     // Box up optional values.
     NSSet *maybeDurationSeconds  = [self maybe:configuration.durationSeconds];
     NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
     NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
-
-    
+   
     NSError *error = nil;
-    id<QredoRendezvousCreateHelper> rendezvousHelper = [_crypto rendezvousHelperForAuthenticationType:authenticationType
-                                                                                              fullTag:tag
-                                                                                       signingHandler:signingHandler
-                                                                                                error:&error];
+    id<QredoRendezvousCreateHelper> rendezvousHelper = [crypto rendezvousHelperForAuthenticationType:authenticationType
+                                                                                             fullTag:tag
+                                                                                     trustedRootPems:trustedRootPems
+                                                                                      signingHandler:signingHandler
+                                                                                               error:&error];
     if (!rendezvousHelper) {
         // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
         // be to much information.
@@ -185,20 +190,20 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _tag = [rendezvousHelper tag];
 
     // Hash the tag.
-    NSData *masterKey = [_crypto masterKeyWithTag:_tag];
-    QLFAuthenticationCode *authKey = [_crypto authenticationKeyWithMasterKey:masterKey];
-    _hashedTag  = [_crypto hashedTagWithMasterKey:masterKey];
-    NSData *responderInfoEncKey = [_crypto encryptionKeyWithMasterKey:masterKey];
+    NSData *masterKey = [crypto masterKeyWithTag:_tag];
+    QLFAuthenticationCode *authKey = [crypto authenticationKeyWithMasterKey:masterKey];
+    _hashedTag  = [crypto hashedTagWithMasterKey:masterKey];
+    NSData *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
 
     LogDebug(@"Hashed tag: %@", _hashedTag);
 
     // Generate the rendezvous key pairs.
-    QLFKeyPairLF *accessControlKeyPair = [_crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];
-    QLFKeyPairLF *requesterKeyPair     = [_crypto newRequesterKeyPair];
+    QLFKeyPairLF *accessControlKeyPair = [crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];
+    QLFKeyPairLF *requesterKeyPair     = [crypto newRequesterKeyPair];
 
     _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData: requesterKeyPair.privKey.bytes];
 
-    _ownershipPrivateKey = [_crypto accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
+    _ownershipPrivateKey = [crypto accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
 
     NSData *accessControlPublicKeyBytes  = [[accessControlKeyPair pubKey] bytes];
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];
@@ -208,18 +213,18 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                conversationType:configuration.conversationType
                                                                        transCap:maybeTransCap];
 
-    NSData *encryptedResponderData = [_crypto encryptResponderInfo:responderInfo
+    NSData *encryptedResponderData = [crypto encryptResponderInfo:responderInfo
                                                      encryptionKey:responderInfoEncKey];
 
     // Generate the authentication code.
     QLFAuthenticationCode *authenticationCode
-    = [_crypto authenticationCodeWithHashedTag:_hashedTag
+    = [crypto authenticationCodeWithHashedTag:_hashedTag
                              authenticationKey:authKey
                         encryptedResponderData:encryptedResponderData];
 
     QLFRendezvousAuthType *authType = nil;
     if ([rendezvousHelper type] == QredoRendezvousAuthenticationTypeAnonymous) {
-        authType = [QLFRendezvousAuthType rendezvousAnonymous];
+        authType= [QLFRendezvousAuthType rendezvousAnonymous];
     } else {
         QLFRendezvousAuthSignature *authSignature = [rendezvousHelper signatureWithData:authenticationCode error:&error];
         if (!authSignature) {
@@ -392,7 +397,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
     if (error) {
         completionHandler(error);
-        return ;
+        return;
     }
 
     [_rendezvous getResponsesWithHashedTag:_hashedTag
@@ -575,7 +580,7 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
         if (error) {
             [_updateListener didTerminateSubscriptionWithError:error];
             completionHandler(error);
-            return ;
+            return;
         }
         LogDebug(@"Rendezvous subscription result handler called. Correlation id = %@", _subscriptionCorrelationId);
 
