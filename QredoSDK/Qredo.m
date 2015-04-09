@@ -19,6 +19,7 @@
 #import "QredoKeychainReceiver.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoManagerAppRootViewController.h"
+#import "QredoCertificate.h"
 
 // TEMP
 #import "QredoConversationProtocol.h"
@@ -34,8 +35,11 @@ NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
 NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
-static NSString *const QredoClientDefaultServiceURL = @"http://edge.qredo.me:8080/services";
-static NSString *const QredoClientMQTTServiceURL = @"tcp://edge.qredo.me:1883";
+//static NSString *const QredoClientDefaultServiceURL = @"http://edge.qredo.me:8080/services";
+static NSString *const QredoClientDefaultServiceURL = @"https://edge.qredo.me:443/services";
+
+//static NSString *const QredoClientMQTTServiceURL = @"tcp://edge.qredo.me:1883";
+static NSString *const QredoClientMQTTServiceURL = @"ssl://edge.qredo.me:8883";
 
 NSString *const QredoRendezvousURIProtocol = @"qrp:";
 
@@ -44,27 +48,93 @@ static NSString *const QredoKeychainOperatorName = @"Qredo Mock Operator";
 static NSString *const QredoKeychainOperatorAccountId = @"1234567890";
 static NSString *const QredoKeychainPassword = @"Password123";
 
+
+
 @implementation QredoClientOptions
+{
+    QredoCertificate *_certificate;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    NSAssert(FALSE, @"Please use [QredoClientOptions initWithPinnedCertificate:] in stead of init without arguments]");
+    self = nil;
+    return self;
+}
+
+- (instancetype)initWithPinnedCertificate:(QredoCertificate *)certificate
+{
+    return [self initWithMQTT:NO resetData:NO pinnedCertificate:certificate];
+}
 
 - (instancetype)initWithMQTT:(BOOL)useMQTT
 {
-    return [self initWithMQTT:useMQTT resetData:NO];
+    return [self initWithMQTT:useMQTT resetData:NO pinnedCertificate:nil];
 }
 
 - (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData
 {
-    self = [super init];
-    self.useMQTT = useMQTT;
-    self.resetData = resetData;
-    return self;
+    return [self initWithMQTT:useMQTT resetData:resetData pinnedCertificate:nil];
 }
 
 - (instancetype)initWithResetData:(BOOL)resetData
 {
+    return [self initWithMQTT:NO resetData:resetData pinnedCertificate:nil];
+}
+
+- (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData pinnedCertificate:(QredoCertificate *)certificate
+{
     self = [super init];
+    self.useMQTT = useMQTT;
     self.resetData = resetData;
+    _certificate = certificate;
+    if (!_certificate) {
+        _certificate = [self createDefaultPinnedCertificate];
+    }
     return self;
 }
+
+- (QredoCertificate *)certificate
+{
+    return _certificate;
+}
+
+
+- (QredoCertificate *)createDefaultPinnedCertificate
+{
+    NSString *base64EncodedDerCertificateData
+    = @"MIIDqDCCAZACAQEwDQYJKoZIhvcNAQEFBQAwXDELMAkGA1UEBhMCR0IxEzARBgNV\
+    BAgTClNvbWUtU3RhdGUxDzANBgNVBAcTBkxvbmRvbjESMBAGA1UEChMJUXJlZG8g\
+    THRkMRMwEQYDVQQDFAoqLnFyZWRvLm1lMB4XDTE1MDEyNzExMzYwN1oXDTE2MDEy\
+    NzExMzYwN1owXDELMAkGA1UEBhMCR0IxEzARBgNVBAgTClNvbWUtU3RhdGUxDzAN\
+    BgNVBAcTBkxvbmRvbjESMBAGA1UEChMJUXJlZG8gTHRkMRMwEQYDVQQDFAoqLnFy\
+    ZWRvLm1lMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCmNq1Ahfqld4Cq/rFY\
+    Bopt1ls4G5rjVZfedTxCsE40oouiptGzuxYbSHyrxc4H7QF5BMKadR1Ea0HeAN1i\
+    iLABM8I9GFuT0Xg3acrEZkEbSk7MJ4Md5t1e5LO7L3dIjbuHLG2R9Kwy9qBh2Dfm\
+    ySCDv8SvTAKd70b7d7XEUPvqQwIDAQABMA0GCSqGSIb3DQEBBQUAA4ICAQBRahBe\
+    hTG/tzFUUCeP9pt5baegn136fljGmcsyTqwztKC7fYBrGwgpynOjwjROl9qgn+SV\
+    ehL2NcE0WQvtZpwQhdrj5D8iIxZXQbH+xwB6URT18yAf83yfati2myguBQqxYN6U\
+    sehIBb4fX7ZMgXJfNvvYiTRh0GXx7SPK3ugnqlX0GN8uswiNQ7Sl1U6UGWmEM97c\
+    ydxTSKsc75ZjdTzC0zu8IoI2m2EXvrcgRFNbBCePd8RG6mlpb86lju/mVE9Ws/vM\
+    DaOm3Sfd34qufsiPg1MzUkdKEdQT5isWL2bwkkRN3JSbeP9PQ5X8R2wX1O3VirjE\
+    DkFo1obyiR0mMEdzEoOx7QFAKZwlnHsjh/fnlHmdhLG576aCMBw7fU5vzsaYBXwb\
+    JZGF8IgmBAFADBMx/1hzZbok/bYyu0dmc4nJ1yRdpmM/4tARNTi/VTOCq0CHfj6e\
+    /pYxjdXGitOzNqqxQsMp5oY6HTDSV8WN+gW6OlZbHoJuNvqlYe2hTcPui8N9DDEQ\
+    OB9tiCBY4e/SdQKtlV28eiVH+Ot7DhRW9keMiwg/L5DrexkzwpHZjuhIez5h0kso\
+    pVQBfANzWhSMIqfso83ebvBAOdALdDx8QZ03gDcm5f1iKweq9h9El1PRofZN8qCd\
+    0FLaR9WebXZrrMSnQIo/BEE1t+k1hTfidH7S1Q==";
+    
+    NSData *derCertificateData
+    = [[NSData alloc] initWithBase64EncodedString:base64EncodedDerCertificateData
+                                          options:NSDataBase64DecodingIgnoreUnknownCharacters];
+    
+    SecCertificateRef secCert = SecCertificateCreateWithData(kCFAllocatorDefault, (__bridge CFDataRef)(derCertificateData));
+    QredoCertificate *qredoCert = [QredoCertificate certificateWithSecCertificateRef:secCert];
+    
+    return qredoCert;
+}
+
 @end
 
 // Private stuff
@@ -127,7 +197,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
     __block NSError *error = nil;
     
-    __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL];
+    __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL pinnedCertificate:options.certificate];
     
     void(^completeAuthorization)() = ^() {
         
@@ -225,14 +295,20 @@ static NSString *const QredoKeychainPassword = @"Password123";
     [managerAppRootViewController show];
 }
 
+
 - (instancetype)initWithServiceURL:(NSURL *)serviceURL
+{
+    return [self initWithServiceURL:serviceURL pinnedCertificate:nil];
+}
+
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate
 {
     self = [self init];
     if (!self) return nil;
 
     _serviceURL = serviceURL;
     if (_serviceURL) {
-        _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL];
+        _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL pinnedCertificate:certificate];
     }
 
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
