@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "186E8FFF66DD9DA40013BEB4"
+               BlueprintIdentifier = "6C60DF27586D988D49A7508D"
                BuildableName = "libPods-QredoSDK-LinguaFranca.a"
                BlueprintName = "Pods-QredoSDK-LinguaFranca"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3B53329D9FBAAAFD541712F2"
+               BlueprintIdentifier = "8BBA7BF77AB102209B448A85"
                BuildableName = "libPods-QredoSDK.a"
                BlueprintName = "Pods-QredoSDK"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -54,7 +54,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "Debug">
+      buildConfiguration = "TestCoverage">
       <Testables>
       </Testables>
       <MacroExpansion>
