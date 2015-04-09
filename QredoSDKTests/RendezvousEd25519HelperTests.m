@@ -187,7 +187,7 @@
     NSString *prefix = @"MyTestRendez";
     NSString *authenticationTag = @"Vous";
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
-    
+
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
         // This block shouldn't be called (due to validation errors), we just need a valid block (so just return input)
         return data;

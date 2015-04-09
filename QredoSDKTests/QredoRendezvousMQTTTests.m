@@ -17,6 +17,10 @@
     XCTFail(@"Restore modified tests");
 }
 
+- (void)testCreateRendezvousAndGetResponses
+{
+    [super testCreateRendezvousAndGetResponses];
+}
 // TODO: DH - restore modified tests
 - (void)testCreateRendezvous_NilSigningHandler {
 //    [super testCreateRendezvous_NilSigningHandler];

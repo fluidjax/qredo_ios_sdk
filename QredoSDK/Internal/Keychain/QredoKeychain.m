@@ -45,6 +45,7 @@ static uint8_t zeroBytes32[32] = {0};
 {
     BOOL _isInitialized;
     QredoQUID *_vaultId;
+    QredoED25519SigningKey *_vaultSigningKey;
 
     NSData *_authKey;
     NSData *_bulkKey;
@@ -99,12 +100,14 @@ static uint8_t zeroBytes32[32] = {0};
     _operatorInfo = keychain.operatorInfo;
 
     _vaultId = keychain.vaultInfo.vaultID;
+    QredoED25519VerifyKey *vaultVerifyKey = [[QredoED25519VerifyKey alloc] initWithKeyData:_vaultId.data];
+
+    _vaultSigningKey = [[QredoED25519SigningKey alloc] initWithSeed:nil
+                                                            keyData:keychain.vaultInfo.ownershipPrivateKey
+                                                          verifyKey:vaultVerifyKey];
 
     QLFVaultKeyStore *keystore = (QLFVaultKeyStore*)[keychain.vaultInfo.keyStore anyObject];
     NSData *encryptedVaultKeys = keystore.encryptedVaultKeys;
-
-    NSLog(@"%@", encryptedVaultKeys);
-
 
     uint8_t zeroBytes32[32] = {0};
     NSData *noCredential = [NSData dataWithBytes:zeroBytes32 length:32];
@@ -245,6 +248,7 @@ static uint8_t zeroBytes32[32] = {0};
                                                                   encryptedVaultKeys:encryptedVaultKeys];
 
     QLFVaultInfoType *vaultInfoType = [QLFVaultInfoType vaultInfoTypeWithVaultID:_vaultId
+                                                             ownershipPrivateKey:_vaultSigningKey.data
                                                                         keyStore:[NSSet setWithObject:vaultKeyStore]];
 
 
@@ -271,7 +275,10 @@ static uint8_t zeroBytes32[32] = {0};
 - (void)generateNewKeys
 {
     _isInitialized = YES;
-    _vaultId = [QredoQUID QUID];
+
+    _vaultSigningKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKey];
+
+    _vaultId = [[QredoQUID alloc] initWithQUIDData:_vaultSigningKey.verifyKey.data];
 
     NSData *masterKey = [NSData dataWithRandomBytesOfLength:32];
     NSData *noCredential = [NSData dataWithBytes:zeroBytes32 length:32];
@@ -300,6 +307,9 @@ static uint8_t zeroBytes32[32] = {0};
     return _vaultId;
 }
 
-
+- (QredoED25519SigningKey *)vaultSigningKey
+{
+    return _vaultSigningKey;
+}
 
 @end

@@ -146,6 +146,7 @@ static const NSUInteger kRandomTagLength = 32;
     return self;
 }
 
+
 - (QredoRendezvousAuthenticationType)type
 {
     return QredoRendezvousAuthenticationTypeAnonymous;
@@ -161,6 +162,11 @@ static const NSUInteger kRandomTagLength = 32;
     return nil;
 }
 
+- (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
+{
+    return nil;
+}
+
 - (BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
     LogDebug(@"Anonymous Rendezvous - signature is always valid!");
@@ -168,7 +174,5 @@ static const NSUInteger kRandomTagLength = 32;
 }
 
 @end
-
-
 
 

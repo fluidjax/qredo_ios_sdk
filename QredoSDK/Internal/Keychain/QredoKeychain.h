@@ -4,6 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
+#import "CryptoImpl.h"
 
 NS_ENUM(NSInteger, QredoCredentialType) {
     QredoCredentialTypeNoCredential = 0,
@@ -31,6 +32,8 @@ NS_ENUM(NSInteger, QredoCredentialType) {
 
 - (void)setVaultId:(QredoQUID*)newVaultId; // TODO: temporary!
 - (QredoQUID *)vaultId;
+- (QredoED25519SigningKey *)vaultSigningKey;
 
 - (QLFVaultKeyPair *)vaultKeys;
+
 @end

@@ -54,12 +54,15 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     QredoConversation *creatorConversation;
 }
+
+@property NSString *conversationType;
 @end
 
 @implementation ConversationTests
 
 - (void)setUp {
     [super setUp];
+    self.conversationType = @"test.chat~";
     [self authoriseClient];
 }
 
@@ -74,7 +77,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -97,7 +100,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 - (void)testConversationCreation {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 maxResponseCount:@1];
     
     __block QredoRendezvous *rendezvous = nil;
     
@@ -124,7 +127,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 maxResponseCount:@1];
     
     __block QredoRendezvous *rendezvous = nil;
     
@@ -157,7 +160,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     NSLog(@"\nCreating 2nd client");
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
-    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
@@ -207,7 +210,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 maxResponseCount:@1];
 
     __block QredoRendezvous *rendezvous = nil;
 
@@ -235,7 +238,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
 
     NSLog(@"Creating client 2");
-    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
@@ -293,7 +296,9 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     NSString *firstMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [NSDate date]];
     
-    QredoConversationMessage *newMessage = [[QredoConversationMessage alloc] initWithValue:[firstMessageText dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
+    QredoConversationMessage *newMessage = [[QredoConversationMessage alloc] initWithValue:[firstMessageText dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                  dataType:kMessageType
+                                                                             summaryValues:nil];
 
     NSLog(@"Publishing message (before setting up listener). Message: %@", firstMessageText);
     [responderConversation publishMessage:newMessage
@@ -393,6 +398,8 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
 
     XCTAssertNotNil(conversatoinFromVault);
+    XCTAssert([conversatoinFromVault.metadata.rendezvousTag isEqualToString:randomTag], @"Rendezvous tag should be the same");
+    XCTAssert([conversatoinFromVault.metadata.type isEqualToString:configuration.conversationType], @"Conversation type should be the same");
 
     // Making sure that we can use the fetched conversation
     __block XCTestExpectation *didPublishAnotherMessage = [self expectationWithDescription:@"did publish another message"];
@@ -462,7 +469,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
 
-    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
@@ -515,7 +522,9 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 {    
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat"
+                                                                                                 durationSeconds:@600
+                                                                                                maxResponseCount:@1];
     
     __block QredoRendezvous *rendezvous = nil;
     
@@ -541,7 +550,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
 
-    [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
+    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
                                         options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {

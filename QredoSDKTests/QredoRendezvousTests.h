@@ -5,6 +5,7 @@
 @property BOOL useMQTT;
 
 - (void)authoriseClient;
+- (void)testCreateRendezvousAndGetResponses;
 // TODO: DH - restore modified tests
 //- (void)testCreateRendezvous_NoSigningHandler;
 //- (void)testCreateRendezvous_NilSigningHandler;
