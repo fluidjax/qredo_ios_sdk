@@ -113,7 +113,89 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 - (QredoCertificate *)createDefaultPinnedCertificate
 {
-    // This is the server self signed test certificate using an RSA Public Key: (1024 bit).
+    /* 
+     
+     This is the server self signed test certificate using an RSA Public Key: (1024 bit).
+     
+        Certificate:
+            Data:
+                Version: 1 (0x0)
+                Serial Number: 1 (0x1)
+                Signature Algorithm: sha1WithRSAEncryption
+                Issuer: C=GB, ST=Some-State, L=London, O=Qredo Ltd, CN=*.qredo.me
+                Validity
+                    Not Before: Jan 27 11:36:07 2015 GMT
+                    Not After : Jan 27 11:36:07 2016 GMT
+                Subject: C=GB, ST=Some-State, L=London, O=Qredo Ltd, CN=*.qredo.me
+                Subject Public Key Info:
+                    Public Key Algorithm: rsaEncryption
+                    RSA Public Key: (1024 bit)
+                        Modulus (1024 bit):
+                            00:a6:36:ad:40:85:fa:a5:77:80:aa:fe:b1:58:06:
+                            8a:6d:d6:5b:38:1b:9a:e3:55:97:de:75:3c:42:b0:
+                            4e:34:a2:8b:a2:a6:d1:b3:bb:16:1b:48:7c:ab:c5:
+                            ce:07:ed:01:79:04:c2:9a:75:1d:44:6b:41:de:00:
+                            dd:62:88:b0:01:33:c2:3d:18:5b:93:d1:78:37:69:
+                            ca:c4:66:41:1b:4a:4e:cc:27:83:1d:e6:dd:5e:e4:
+                            b3:bb:2f:77:48:8d:bb:87:2c:6d:91:f4:ac:32:f6:
+                            a0:61:d8:37:e6:c9:20:83:bf:c4:af:4c:02:9d:ef:
+                            46:fb:77:b5:c4:50:fb:ea:43
+                        Exponent: 65537 (0x10001)
+            Signature Algorithm: sha1WithRSAEncryption
+                51:6a:10:5e:85:31:bf:b7:31:54:50:27:8f:f6:9b:79:6d:a7:
+                a0:9f:5d:fa:7e:58:c6:99:cb:32:4e:ac:33:b4:a0:bb:7d:80:
+                6b:1b:08:29:ca:73:a3:c2:34:4e:97:da:a0:9f:e4:95:7a:12:
+                f6:35:c1:34:59:0b:ed:66:9c:10:85:da:e3:e4:3f:22:23:16:
+                57:41:b1:fe:c7:00:7a:51:14:f5:f3:20:1f:f3:7c:9f:6a:d8:
+                b6:9b:28:2e:05:0a:b1:60:de:94:b1:e8:48:05:be:1f:5f:b6:
+                4c:81:72:5f:36:fb:d8:89:34:61:d0:65:f1:ed:23:ca:de:e8:
+                27:aa:55:f4:18:df:2e:b3:08:8d:43:b4:a5:d5:4e:94:19:69:
+                84:33:de:dc:c9:dc:53:48:ab:1c:ef:96:63:75:3c:c2:d3:3b:
+                bc:22:82:36:9b:61:17:be:b7:20:44:53:5b:04:27:8f:77:c4:
+                46:ea:69:69:6f:ce:a5:8e:ef:e6:54:4f:56:b3:fb:cc:0d:a3:
+                a6:dd:27:dd:df:8a:ae:7e:c8:8f:83:53:33:52:47:4a:11:d4:
+                13:e6:2b:16:2f:66:f0:92:44:4d:dc:94:9b:78:ff:4f:43:95:
+                fc:47:6c:17:d4:ed:d5:8a:b8:c4:0e:41:68:d6:86:f2:89:1d:
+                26:30:47:73:12:83:b1:ed:01:40:29:9c:25:9c:7b:23:87:f7:
+                e7:94:79:9d:84:b1:b9:ef:a6:82:30:1c:3b:7d:4e:6f:ce:c6:
+                98:05:7c:1b:25:91:85:f0:88:26:04:01:40:0c:13:31:ff:58:
+                73:65:ba:24:fd:b6:32:bb:47:66:73:89:c9:d7:24:5d:a6:63:
+                3f:e2:d0:11:35:38:bf:55:33:82:ab:40:87:7e:3e:9e:fe:96:
+                31:8d:d5:c6:8a:d3:b3:36:aa:b1:42:c3:29:e6:86:3a:1d:30:
+                d2:57:c5:8d:fa:05:ba:3a:56:5b:1e:82:6e:36:fa:a5:61:ed:
+                a1:4d:c3:ee:8b:c3:7d:0c:31:10:38:1f:6d:88:20:58:e1:ef:
+                d2:75:02:ad:95:5d:bc:7a:25:47:f8:eb:7b:0e:14:56:f6:47:
+                8c:8b:08:3f:2f:90:eb:7b:19:33:c2:91:d9:8e:e8:48:7b:3e:
+                61:d2:4b:28:a5:54:01:7c:03:73:5a:14:8c:22:a7:ec:a3:cd:
+                de:6e:f0:40:39:d0:0b:74:3c:7c:41:9d:37:80:37:26:e5:fd:
+                62:2b:07:aa:f6:1f:44:97:53:d1:a1:f6:4d:f2:a0:9d:d0:52:
+                da:47:d5:9e:6d:76:6b:ac:c4:a7:40:8a:3f:04:41:35:b7:e9:
+                35:85:37:e2:74:7e:d2:d5
+     
+        -----BEGIN CERTIFICATE-----
+        MIIDqDCCAZACAQEwDQYJKoZIhvcNAQEFBQAwXDELMAkGA1UEBhMCR0IxEzARBgNV
+        BAgTClNvbWUtU3RhdGUxDzANBgNVBAcTBkxvbmRvbjESMBAGA1UEChMJUXJlZG8g
+        THRkMRMwEQYDVQQDFAoqLnFyZWRvLm1lMB4XDTE1MDEyNzExMzYwN1oXDTE2MDEy
+        NzExMzYwN1owXDELMAkGA1UEBhMCR0IxEzARBgNVBAgTClNvbWUtU3RhdGUxDzAN
+        BgNVBAcTBkxvbmRvbjESMBAGA1UEChMJUXJlZG8gTHRkMRMwEQYDVQQDFAoqLnFy
+        ZWRvLm1lMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCmNq1Ahfqld4Cq/rFY
+        Bopt1ls4G5rjVZfedTxCsE40oouiptGzuxYbSHyrxc4H7QF5BMKadR1Ea0HeAN1i
+        iLABM8I9GFuT0Xg3acrEZkEbSk7MJ4Md5t1e5LO7L3dIjbuHLG2R9Kwy9qBh2Dfm
+        ySCDv8SvTAKd70b7d7XEUPvqQwIDAQABMA0GCSqGSIb3DQEBBQUAA4ICAQBRahBe
+        hTG/tzFUUCeP9pt5baegn136fljGmcsyTqwztKC7fYBrGwgpynOjwjROl9qgn+SV
+        ehL2NcE0WQvtZpwQhdrj5D8iIxZXQbH+xwB6URT18yAf83yfati2myguBQqxYN6U
+        sehIBb4fX7ZMgXJfNvvYiTRh0GXx7SPK3ugnqlX0GN8uswiNQ7Sl1U6UGWmEM97c
+        ydxTSKsc75ZjdTzC0zu8IoI2m2EXvrcgRFNbBCePd8RG6mlpb86lju/mVE9Ws/vM
+        DaOm3Sfd34qufsiPg1MzUkdKEdQT5isWL2bwkkRN3JSbeP9PQ5X8R2wX1O3VirjE
+        DkFo1obyiR0mMEdzEoOx7QFAKZwlnHsjh/fnlHmdhLG576aCMBw7fU5vzsaYBXwb
+        JZGF8IgmBAFADBMx/1hzZbok/bYyu0dmc4nJ1yRdpmM/4tARNTi/VTOCq0CHfj6e
+        /pYxjdXGitOzNqqxQsMp5oY6HTDSV8WN+gW6OlZbHoJuNvqlYe2hTcPui8N9DDEQ
+        OB9tiCBY4e/SdQKtlV28eiVH+Ot7DhRW9keMiwg/L5DrexkzwpHZjuhIez5h0kso
+        pVQBfANzWhSMIqfso83ebvBAOdALdDx8QZ03gDcm5f1iKweq9h9El1PRofZN8qCd
+        0FLaR9WebXZrrMSnQIo/BEE1t+k1hTfidH7S1Q==
+        -----END CERTIFICATE-----
+     
+     */
     NSString *base64EncodedDerCertificateData
     = @"MIIDqDCCAZACAQEwDQYJKoZIhvcNAQEFBQAwXDELMAkGA1UEBhMCR0IxEzARBgNV\
     BAgTClNvbWUtU3RhdGUxDzANBgNVBAcTBkxvbmRvbjESMBAGA1UEChMJUXJlZG8g\
