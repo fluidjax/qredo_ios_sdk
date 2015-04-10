@@ -8350,32 +8350,28 @@
 
 @end
 
-@implementation QLFVaultItemMetaDataLF
+@implementation QLFVaultItemMetadata
 
 
 
-+ (QLFVaultItemMetaDataLF *)vaultItemMetaDataLFWithDataType:(NSString *)dataType accessLevel:(int32_t)accessLevel summaryValues:(NSSet *)summaryValues
++ (QLFVaultItemMetadata *)vaultItemMetadataWithDataType:(NSString *)dataType values:(NSSet *)values
 {
 
-    return [[QLFVaultItemMetaDataLF alloc] initWithDataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
+    return [[QLFVaultItemMetadata alloc] initWithDataType:dataType values:values];
        
 }
 
 + (QredoMarshaller)marshaller
 {
     return ^(id element, QredoWireFormatWriter *writer) {
-        QLFVaultItemMetaDataLF *e = (QLFVaultItemMetaDataLF *)element;
-        [writer writeConstructorStartWithObjectName:@"VaultItemMetaDataLF"];
-            [writer writeFieldStartWithFieldName:@"accessLevel"];
-                [QredoPrimitiveMarshallers int32Marshaller]([NSNumber numberWithLong: [e accessLevel]], writer);
-            [writer writeEnd];
-
+        QLFVaultItemMetadata *e = (QLFVaultItemMetadata *)element;
+        [writer writeConstructorStartWithObjectName:@"VaultItemMetadata"];
             [writer writeFieldStartWithFieldName:@"dataType"];
                 [QredoPrimitiveMarshallers stringMarshaller]([e dataType], writer);
             [writer writeEnd];
 
-            [writer writeFieldStartWithFieldName:@"summaryValues"];
-                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QLFIndexable marshaller]]([e summaryValues], writer);
+            [writer writeFieldStartWithFieldName:@"values"];
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QLFIndexable marshaller]]([e values], writer);
             [writer writeEnd];
 
         [writer writeEnd];
@@ -8385,40 +8381,35 @@
 + (QredoUnmarshaller)unmarshaller
 {
     return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'VaultItemMetaDataLF'
-            [reader readFieldStart]; // TODO assert that field name is 'accessLevel'
-                int32_t accessLevel = (int32_t )[[QredoPrimitiveMarshallers int32Unmarshaller](reader) longValue];
-            [reader readEnd];
+        [reader readConstructorStart];// TODO assert that constructor name is 'VaultItemMetadata'
             [reader readFieldStart]; // TODO assert that field name is 'dataType'
                 NSString *dataType = (NSString *)[QredoPrimitiveMarshallers stringUnmarshaller](reader);
             [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'summaryValues'
-                NSSet *summaryValues = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QLFIndexable unmarshaller]](reader);
+            [reader readFieldStart]; // TODO assert that field name is 'values'
+                NSSet *values = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QLFIndexable unmarshaller]](reader);
             [reader readEnd];
         [reader readEnd];
-        return [QLFVaultItemMetaDataLF vaultItemMetaDataLFWithDataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
+        return [QLFVaultItemMetadata vaultItemMetadataWithDataType:dataType values:values];
     };
 }
 
-- (instancetype)initWithDataType:(NSString *)dataType accessLevel:(int32_t)accessLevel summaryValues:(NSSet *)summaryValues
+- (instancetype)initWithDataType:(NSString *)dataType values:(NSSet *)values
 {
 
     self = [super init];
     if (self) {
         _dataType = dataType;
-        _accessLevel = accessLevel;
-        _summaryValues = summaryValues;
+        _values = values;
     }
     return self;
        
 }
 
-- (NSComparisonResult)compare:(QLFVaultItemMetaDataLF *)other
+- (NSComparisonResult)compare:(QLFVaultItemMetadata *)other
 {
 
     QREDO_COMPARE_OBJECT(dataType);
-    QREDO_COMPARE_SCALAR(accessLevel);
-    QREDO_COMPARE_OBJECT(summaryValues);
+    QREDO_COMPARE_OBJECT(values);
     return NSOrderedSame;
        
 }
@@ -8426,11 +8417,11 @@
 - (BOOL)isEqualTo:(id)other
 {
 
-    return [self isEqualToVaultItemMetaDataLF:other];
+    return [self isEqualToVaultItemMetadata:other];
        
 }
 
-- (BOOL)isEqualToVaultItemMetaDataLF:(QLFVaultItemMetaDataLF *)other
+- (BOOL)isEqualToVaultItemMetadata:(QLFVaultItemMetadata *)other
 {
 
     if (other == self)
@@ -8439,9 +8430,7 @@
         return NO;
     if (_dataType != other.dataType && ![_dataType isEqual:other.dataType])
         return NO;
-    if (_accessLevel != other.accessLevel)
-        return NO;
-    if (_summaryValues != other.summaryValues && ![_summaryValues isEqual:other.summaryValues])
+    if (_values != other.values && ![_values isEqual:other.values])
         return NO;
     return YES;
        
@@ -8452,106 +8441,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_dataType hash];
-    hash = hash * 31u + (NSUInteger)_accessLevel;
-    hash = hash * 31u + [_summaryValues hash];
-    return hash;
-       
-}
-
-@end
-
-@implementation QLFVaultItemLF
-
-
-
-+ (QLFVaultItemLF *)vaultItemLFWithMetadata:(QLFVaultItemMetaDataLF *)metadata value:(NSData *)value
-{
-
-    return [[QLFVaultItemLF alloc] initWithMetadata:metadata value:value];
-       
-}
-
-+ (QredoMarshaller)marshaller
-{
-    return ^(id element, QredoWireFormatWriter *writer) {
-        QLFVaultItemLF *e = (QLFVaultItemLF *)element;
-        [writer writeConstructorStartWithObjectName:@"VaultItemLF"];
-            [writer writeFieldStartWithFieldName:@"metadata"];
-                [QLFVaultItemMetaDataLF marshaller]([e metadata], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"value"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e value], writer);
-            [writer writeEnd];
-
-        [writer writeEnd];
-    };
-}
-
-+ (QredoUnmarshaller)unmarshaller
-{
-    return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'VaultItemLF'
-            [reader readFieldStart]; // TODO assert that field name is 'metadata'
-                QLFVaultItemMetaDataLF *metadata = (QLFVaultItemMetaDataLF *)[QLFVaultItemMetaDataLF unmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'value'
-                NSData *value = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
-            [reader readEnd];
-        [reader readEnd];
-        return [QLFVaultItemLF vaultItemLFWithMetadata:metadata value:value];
-    };
-}
-
-- (instancetype)initWithMetadata:(QLFVaultItemMetaDataLF *)metadata value:(NSData *)value
-{
-
-    self = [super init];
-    if (self) {
-        _metadata = metadata;
-        _value = value;
-    }
-    return self;
-       
-}
-
-- (NSComparisonResult)compare:(QLFVaultItemLF *)other
-{
-
-    QREDO_COMPARE_OBJECT(metadata);
-    QREDO_COMPARE_OBJECT(value);
-    return NSOrderedSame;
-       
-}
-
-- (BOOL)isEqualTo:(id)other
-{
-
-    return [self isEqualToVaultItemLF:other];
-       
-}
-
-- (BOOL)isEqualToVaultItemLF:(QLFVaultItemLF *)other
-{
-
-    if (other == self)
-        return YES;
-    if (!other || ![other.class isEqual:self.class])
-        return NO;
-    if (_metadata != other.metadata && ![_metadata isEqual:other.metadata])
-        return NO;
-    if (_value != other.value && ![_value isEqual:other.value])
-        return NO;
-    return YES;
-       
-}
-
-- (NSUInteger)hash
-{
-
-    NSUInteger hash = 0;
-    hash = hash * 31u + [_metadata hash];
-    hash = hash * 31u + [_value hash];
+    hash = hash * 31u + [_values hash];
     return hash;
        
 }
@@ -9096,128 +8986,6 @@
 
 @end
 
-@implementation QLFVaultItemDescriptorLF
-
-
-
-+ (QLFVaultItemDescriptorLF *)vaultItemDescriptorLFWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QLFVaultItemId *)itemId
-{
-
-    return [[QLFVaultItemDescriptorLF alloc] initWithVaultId:vaultId sequenceId:sequenceId sequenceValue:sequenceValue itemId:itemId];
-       
-}
-
-+ (QredoMarshaller)marshaller
-{
-    return ^(id element, QredoWireFormatWriter *writer) {
-        QLFVaultItemDescriptorLF *e = (QLFVaultItemDescriptorLF *)element;
-        [writer writeConstructorStartWithObjectName:@"VaultItemDescriptorLF"];
-            [writer writeFieldStartWithFieldName:@"itemId"];
-                [QredoPrimitiveMarshallers quidMarshaller]([e itemId], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"sequenceId"];
-                [QredoPrimitiveMarshallers quidMarshaller]([e sequenceId], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"sequenceValue"];
-                [QredoPrimitiveMarshallers int64Marshaller]([NSNumber numberWithLongLong: [e sequenceValue]], writer);
-            [writer writeEnd];
-
-            [writer writeFieldStartWithFieldName:@"vaultId"];
-                [QredoPrimitiveMarshallers quidMarshaller]([e vaultId], writer);
-            [writer writeEnd];
-
-        [writer writeEnd];
-    };
-}
-
-+ (QredoUnmarshaller)unmarshaller
-{
-    return ^id(QredoWireFormatReader *reader) {
-        [reader readConstructorStart];// TODO assert that constructor name is 'VaultItemDescriptorLF'
-            [reader readFieldStart]; // TODO assert that field name is 'itemId'
-                QLFVaultItemId *itemId = (QLFVaultItemId *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'sequenceId'
-                QLFVaultSequenceId *sequenceId = (QLFVaultSequenceId *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'sequenceValue'
-                QLFVaultSequenceValue sequenceValue = (QLFVaultSequenceValue )[[QredoPrimitiveMarshallers int64Unmarshaller](reader) longLongValue];
-            [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'vaultId'
-                QLFVaultId *vaultId = (QLFVaultId *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
-            [reader readEnd];
-        [reader readEnd];
-        return [QLFVaultItemDescriptorLF vaultItemDescriptorLFWithVaultId:vaultId sequenceId:sequenceId sequenceValue:sequenceValue itemId:itemId];
-    };
-}
-
-- (instancetype)initWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QLFVaultItemId *)itemId
-{
-
-    self = [super init];
-    if (self) {
-        _vaultId = vaultId;
-        _sequenceId = sequenceId;
-        _sequenceValue = sequenceValue;
-        _itemId = itemId;
-    }
-    return self;
-       
-}
-
-- (NSComparisonResult)compare:(QLFVaultItemDescriptorLF *)other
-{
-
-    QREDO_COMPARE_OBJECT(vaultId);
-    QREDO_COMPARE_OBJECT(sequenceId);
-    QREDO_COMPARE_SCALAR(sequenceValue);
-    QREDO_COMPARE_OBJECT(itemId);
-    return NSOrderedSame;
-       
-}
-
-- (BOOL)isEqualTo:(id)other
-{
-
-    return [self isEqualToVaultItemDescriptorLF:other];
-       
-}
-
-- (BOOL)isEqualToVaultItemDescriptorLF:(QLFVaultItemDescriptorLF *)other
-{
-
-    if (other == self)
-        return YES;
-    if (!other || ![other.class isEqual:self.class])
-        return NO;
-    if (_vaultId != other.vaultId && ![_vaultId isEqual:other.vaultId])
-        return NO;
-    if (_sequenceId != other.sequenceId && ![_sequenceId isEqual:other.sequenceId])
-        return NO;
-    if (_sequenceValue != other.sequenceValue)
-        return NO;
-    if (_itemId != other.itemId && ![_itemId isEqual:other.itemId])
-        return NO;
-    return YES;
-       
-}
-
-- (NSUInteger)hash
-{
-
-    NSUInteger hash = 0;
-    hash = hash * 31u + [_vaultId hash];
-    hash = hash * 31u + [_sequenceId hash];
-    hash = hash * 31u + (NSUInteger)_sequenceValue;
-    hash = hash * 31u + [_itemId hash];
-    return hash;
-       
-}
-
-@end
-
 @implementation QLFVaultItemRef
 
 
@@ -9554,6 +9322,116 @@
     hash = hash * 31u + [_header hash];
     hash = hash * 31u + [_encryptedBody hash];
     hash = hash * 31u + [_authCode hash];
+    return hash;
+       
+}
+
+@end
+
+@implementation QLFVaultItem
+
+
+
++ (QLFVaultItem *)vaultItemWithRef:(QLFVaultItemRef *)ref metadata:(QLFVaultItemMetadata *)metadata body:(NSData *)body
+{
+
+    return [[QLFVaultItem alloc] initWithRef:ref metadata:metadata body:body];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFVaultItem *e = (QLFVaultItem *)element;
+        [writer writeConstructorStartWithObjectName:@"VaultItem"];
+            [writer writeFieldStartWithFieldName:@"body"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e body], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"metadata"];
+                [QLFVaultItemMetadata marshaller]([e metadata], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"ref"];
+                [QLFVaultItemRef marshaller]([e ref], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        [reader readConstructorStart];// TODO assert that constructor name is 'VaultItem'
+            [reader readFieldStart]; // TODO assert that field name is 'body'
+                NSData *body = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'metadata'
+                QLFVaultItemMetadata *metadata = (QLFVaultItemMetadata *)[QLFVaultItemMetadata unmarshaller](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'ref'
+                QLFVaultItemRef *ref = (QLFVaultItemRef *)[QLFVaultItemRef unmarshaller](reader);
+            [reader readEnd];
+        [reader readEnd];
+        return [QLFVaultItem vaultItemWithRef:ref metadata:metadata body:body];
+    };
+}
+
+- (instancetype)initWithRef:(QLFVaultItemRef *)ref metadata:(QLFVaultItemMetadata *)metadata body:(NSData *)body
+{
+
+    self = [super init];
+    if (self) {
+        _ref = ref;
+        _metadata = metadata;
+        _body = body;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFVaultItem *)other
+{
+
+    QREDO_COMPARE_OBJECT(ref);
+    QREDO_COMPARE_OBJECT(metadata);
+    QREDO_COMPARE_OBJECT(body);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToVaultItem:other];
+       
+}
+
+- (BOOL)isEqualToVaultItem:(QLFVaultItem *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_ref != other.ref && ![_ref isEqual:other.ref])
+        return NO;
+    if (_metadata != other.metadata && ![_metadata isEqual:other.metadata])
+        return NO;
+    if (_body != other.body && ![_body isEqual:other.body])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + [_ref hash];
+    hash = hash * 31u + [_metadata hash];
+    hash = hash * 31u + [_body hash];
     return hash;
        
 }

@@ -1745,42 +1745,21 @@
 @end
 
 
-@interface QLFVaultItemMetaDataLF : NSObject<QredoMarshallable>
+@interface QLFVaultItemMetadata : NSObject<QredoMarshallable>
 
 @property (readonly) NSString *dataType;
-@property (readonly) int32_t accessLevel;
-@property (readonly) NSSet *summaryValues;
+@property (readonly) NSSet *values;
 
-+ (QLFVaultItemMetaDataLF *)vaultItemMetaDataLFWithDataType:(NSString *)dataType accessLevel:(int32_t)accessLevel summaryValues:(NSSet *)summaryValues;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithDataType:(NSString *)dataType accessLevel:(int32_t)accessLevel summaryValues:(NSSet *)summaryValues;
-- (NSComparisonResult)compare:(QLFVaultItemMetaDataLF *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToVaultItemMetaDataLF:(QLFVaultItemMetaDataLF *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFVaultItemLF : NSObject<QredoMarshallable>
-
-@property (readonly) QLFVaultItemMetaDataLF *metadata;
-@property (readonly) NSData *value;
-
-+ (QLFVaultItemLF *)vaultItemLFWithMetadata:(QLFVaultItemMetaDataLF *)metadata value:(NSData *)value;
++ (QLFVaultItemMetadata *)vaultItemMetadataWithDataType:(NSString *)dataType values:(NSSet *)values;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithMetadata:(QLFVaultItemMetaDataLF *)metadata value:(NSData *)value;
-- (NSComparisonResult)compare:(QLFVaultItemLF *)other;
+- (instancetype)initWithDataType:(NSString *)dataType values:(NSSet *)values;
+- (NSComparisonResult)compare:(QLFVaultItemMetadata *)other;
 - (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToVaultItemLF:(QLFVaultItemLF *)other;
+- (BOOL)isEqualToVaultItemMetadata:(QLFVaultItemMetadata *)other;
 - (NSUInteger)hash;
 
 @end
@@ -1890,28 +1869,6 @@
 @end
 
 
-@interface QLFVaultItemDescriptorLF : NSObject<QredoMarshallable>
-
-@property (readonly) QLFVaultId *vaultId;
-@property (readonly) QLFVaultSequenceId *sequenceId;
-@property (readonly) QLFVaultSequenceValue sequenceValue;
-@property (readonly) QLFVaultItemId *itemId;
-
-+ (QLFVaultItemDescriptorLF *)vaultItemDescriptorLFWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QLFVaultItemId *)itemId;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QLFVaultItemId *)itemId;
-- (NSComparisonResult)compare:(QLFVaultItemDescriptorLF *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToVaultItemDescriptorLF:(QLFVaultItemDescriptorLF *)other;
-- (NSUInteger)hash;
-
-@end
-
-
 @interface QLFVaultItemRef : NSObject<QredoMarshallable>
 
 @property (readonly) QLFVaultId *vaultId;
@@ -1971,6 +1928,27 @@
 - (NSComparisonResult)compare:(QLFEncryptedVaultItem *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToEncryptedVaultItem:(QLFEncryptedVaultItem *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFVaultItem : NSObject<QredoMarshallable>
+
+@property (readonly) QLFVaultItemRef *ref;
+@property (readonly) QLFVaultItemMetadata *metadata;
+@property (readonly) NSData *body;
+
++ (QLFVaultItem *)vaultItemWithRef:(QLFVaultItemRef *)ref metadata:(QLFVaultItemMetadata *)metadata body:(NSData *)body;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithRef:(QLFVaultItemRef *)ref metadata:(QLFVaultItemMetadata *)metadata body:(NSData *)body;
+- (NSComparisonResult)compare:(QLFVaultItem *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToVaultItem:(QLFVaultItem *)other;
 - (NSUInteger)hash;
 
 @end

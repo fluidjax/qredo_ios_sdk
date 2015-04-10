@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
+#import "QredoED25519SigningKey.h"
+#import "QredoED25519VerifyKey.h"
 
 @interface QredoVaultCrypto : NSObject
 
@@ -10,9 +12,20 @@
 
 - (instancetype)initWithBulkKey:(NSData *)bulkKey authenticationKey:(NSData *)authenticationKey;
 
-- (QLFEncryptedVaultItem *)encryptVaultItemLF:(QLFVaultItemLF *)vaultItemLF
-                                   descriptor:(QLFVaultItemDescriptorLF *)vaultItemDescriptor;
-- (QLFVaultItemLF *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem;
-- (QLFVaultItemMetaDataLF *)decryptEncryptedVaultItemMetaData:(QLFEncryptedVaultItemMetaData *)encryptedVaultItemMetaData;
+- (QLFEncryptedVaultItemHeader *)encryptVaultItemHeaderWithItemRef:(QLFVaultItemRef *)vaultItemRef
+                                                          metadata:(QLFVaultItemMetadata *)metadata;
+
+- (QLFEncryptedVaultItem *)encryptVaultItemWithBody:(NSData *)body
+                           encryptedVaultItemHeader:( QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader;
+
+- (QLFVaultItem *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem;
+- (QLFVaultItemMetadata *)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader;
+
+
+// Used for testing
++ (NSData *)vaultMasterKeyWithUserMasterKey:(NSData *)userMasterKey;
++ (NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey info:(NSString *)info;
++ (QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey;
++ (QLFVaultKeyPair *)vaultKeyPairWithVaultKey:(NSData *)vaultKey;
 
 @end

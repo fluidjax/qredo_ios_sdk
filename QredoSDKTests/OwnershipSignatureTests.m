@@ -263,17 +263,22 @@ static char ownershipSignature_listOp_signatureBytes[] = {
 - (void)testCreateOperation
 {
     QLFOperationType *operationType = [QLFOperationType operationCreate];
-    
-    QLFEncryptedVaultItemMetaData *metadata
-    = [QLFEncryptedVaultItemMetaData encryptedVaultItemMetaDataWithVaultId:quidWithBytes(vaultIdBytes)
-                                                                sequenceId:quidWithBytes(sequenceIdBytes)
-                                                             sequenceValue:1
-                                                                    itemId:quidWithBytes(itemIdvalBytes)
-                                                          encryptedHeaders:dataWithBytes(randBytesForMetaBytes)];
-    
+
+    QLFVaultItemRef *vaultItemRef
+    = [QLFVaultItemRef vaultItemRefWithVaultId:quidWithBytes(vaultIdBytes)
+                                    sequenceId:quidWithBytes(sequenceIdBytes)
+                                 sequenceValue:1
+                                        itemId:quidWithBytes(itemIdvalBytes)];
+
+    QLFEncryptedVaultItemHeader *header
+    = [QLFEncryptedVaultItemHeader encryptedVaultItemHeaderWithRef:vaultItemRef
+                                                 encryptedMetadata:dataWithBytes(randBytesForMetaBytes)
+                                                          authCode:nil]; // FIXME:
+
     QLFEncryptedVaultItem *vaultItem
-    = [QLFEncryptedVaultItem encryptedVaultItemWithMeta:metadata
-                                         encryptedValue:dataWithBytes(randBytesForItemBytes)];
+    = [QLFEncryptedVaultItem encryptedVaultItemWithHeader:header
+                                            encryptedBody:dataWithBytes(randBytesForItemBytes)
+                                                 authCode:nil]; // FIXME:
 
     NSData *expectedSignature = dataWithBytes(ownershipSignature_createOp_signatureBytes);
     [self assertOwnershipSignatureWithOperationType:operationType
