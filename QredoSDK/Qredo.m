@@ -113,6 +113,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 - (QredoCertificate *)createDefaultPinnedCertificate
 {
+    // This is the server self signed test certificate using an RSA Public Key: (1024 bit).
     NSString *base64EncodedDerCertificateData
     = @"MIIDqDCCAZACAQEwDQYJKoZIhvcNAQEFBQAwXDELMAkGA1UEBhMCR0IxEzARBgNV\
     BAgTClNvbWUtU3RhdGUxDzANBgNVBAcTBkxvbmRvbjESMBAGA1UEChMJUXJlZG8g\
