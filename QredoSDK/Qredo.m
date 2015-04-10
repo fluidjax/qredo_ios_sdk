@@ -65,7 +65,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 
 
 
-- (instancetype)initWithDefaultTrsutedRoots
+- (instancetype)initWithDefaultTrustedRoots
 {
     return [self initWithMQTT:NO resetData:NO pinnedCertificate:nil];
 }
