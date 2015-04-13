@@ -2,10 +2,14 @@
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"
 #import "CryptoImplV1.h"
+#import "QredoErrorCodes.h"
 
 #define QREDO_VAULT_MASTER_SALT  [@"U7TIOyVRqCKuFFNa" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_VAULT_SUBTYPE_SALT [@"rf3cxEQ8B9Nc8uFj" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_VAULT_LEAF_SALT    [@"pCN6lt8gryL3d0BN" dataUsingEncoding:NSUTF8StringEncoding]
+
+#define QREDO_VAULT_SYSTEM_INFO  @"System Vault"
+#define QREDO_VAULT_USER_INFO    @"User Vault"
 
 @implementation QredoVaultCrypto
 
@@ -30,6 +34,17 @@
 ///////////////////////////////////////////////////////////////////////////////
 // QredoVaultCrypto Interface
 ///////////////////////////////////////////////////////////////////////////////
+
++ (NSData *)systemVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey
+{
+    return [self vaultKeyWithVaultMasterKey:vaultMasterKey info:QREDO_VAULT_SYSTEM_INFO];
+}
+
++ (NSData *)userVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey
+{
+    return [self vaultKeyWithVaultMasterKey:vaultMasterKey info:QREDO_VAULT_USER_INFO];
+}
+
 
 + (NSData *)vaultMasterKeyWithUserMasterKey:(NSData *)userMasterKey
 {
@@ -65,7 +80,12 @@
 {
     NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
 
-    NSData *encryptedMetadata = [self encryptData:serializedMetadata key:_bulkKey];
+    return [self encryptIncludingMessageHeaderWithData:serializedMetadata];
+}
+
+- (NSData *)encryptIncludingMessageHeaderWithData:(NSData *)data
+{
+    NSData *encryptedMetadata = [self encryptData:data key:_bulkKey];
 
     NSData *encryptedMetadataWithMessageHeader =
     [QredoPrimitiveMarshallers marshalObject:encryptedMetadata
@@ -98,7 +118,7 @@
 - (QLFEncryptedVaultItem *)encryptVaultItemWithBody:(NSData *)body
                            encryptedVaultItemHeader:( QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
 {
-    NSData *encryptedBody = [self encryptData:body key:_bulkKey];
+    NSData *encryptedBody = [self encryptIncludingMessageHeaderWithData:body];
     NSData *authCode = [self authenticationCodeWithData:encryptedBody vaultItemRef:encryptedVaultItemHeader.ref];
 
     return [QLFEncryptedVaultItem encryptedVaultItemWithHeader:encryptedVaultItemHeader
@@ -106,63 +126,63 @@
                                                       authCode:authCode];
 }
 
-- (QLFEncryptedVaultItem *)encryptVaultItemLF:(QLFVaultItem *)vaultItemLF
-                                   descriptor:(QLFVaultItemRef *)vaultItemDescriptor {
+- (QLFVaultItem *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
+                                      error:(NSError **)error
+{
 
-    // Extract...
-    QLFVaultItemMetadata *vaultItemMetaDataLF = [vaultItemLF metadata];
-    NSData *vaultItemValue = [vaultItemLF body];
+    QLFVaultItemMetadata *vaultItemMetaDataLF = [self decryptEncryptedVaultItemHeader:[encryptedVaultItem header] error:error];
+    if (!vaultItemMetaDataLF) return nil;
 
-    // Encrypt...
-    QLFEncryptedVaultItemHeader *encryptedVaultItemMetaData =
-            [self encryptVaultItemMetaData:vaultItemMetaDataLF
-                       vaultItemDescriptor:vaultItemDescriptor];
-    NSData *encryptedVaultItemValue = vaultItemValue ? [self encryptVaultItemValue:vaultItemValue] : [NSData data];
+    NSData *authenticationCode = [self authenticationCodeWithData:encryptedVaultItem.encryptedBody
+                                                     vaultItemRef:encryptedVaultItem.header.ref];
 
-    // Package...
-    return [QLFEncryptedVaultItem encryptedVaultItemWithHeader:encryptedVaultItemMetaData
-                                                 encryptedBody:encryptedVaultItemValue
-                                                      authCode:nil]; // FIXME:
+    if (![authenticationCode isEqualToData:encryptedVaultItem.authCode]) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeMalformedOrTamperedData
+                                     userInfo:nil];
+        }
+        return nil;
+    }
 
-}
 
-- (QLFVaultItem *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem {
+    NSData *encryptedBodyRaw
+    = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItem.encryptedBody
+                                    unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
+                                     parseHeader:YES];
 
-    QLFVaultItemMetadata *vaultItemMetaDataLF =
-            [self decryptEncryptedVaultItemHeader:[encryptedVaultItem header]];
-    NSData *value = [self decryptData:[encryptedVaultItem encryptedBody] key:_bulkKey];
+    NSData *value = [self decryptData:encryptedBodyRaw key:_bulkKey];
 
     return [QLFVaultItem vaultItemWithRef:encryptedVaultItem.header.ref metadata:vaultItemMetaDataLF body:value];
 }
 
 - (QLFVaultItemMetadata *)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
+                                                    error:(NSError **)error
 {
+    NSData *authenticationCode = [self authenticationCodeWithData:encryptedVaultItemHeader.encryptedMetadata
+                                                     vaultItemRef:encryptedVaultItemHeader.ref];
+
+    if (![authenticationCode isEqualToData:encryptedVaultItemHeader.authCode]) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeMalformedOrTamperedData
+                                     userInfo:nil];
+        }
+        return nil;
+    }
+
     NSData *encryptedHeaders = [encryptedVaultItemHeader encryptedMetadata];
-    NSData *decryptedHeaders = [self decryptData:encryptedHeaders key:_bulkKey];
+    NSData *encyrptedHeadersRaw
+    = [QredoPrimitiveMarshallers unmarshalObject:encryptedHeaders
+                                    unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
+                                     parseHeader:YES];
+
+    NSData *decryptedHeaders = [self decryptData:encyrptedHeadersRaw key:_bulkKey];
 
     return [QredoPrimitiveMarshallers unmarshalObject:decryptedHeaders
-                                         unmarshaller:[QLFVaultItemMetadata unmarshaller]];
+                                         unmarshaller:[QLFVaultItemMetadata unmarshaller]
+                                          parseHeader:NO];
 
-}
-
-- (QLFEncryptedVaultItemHeader *)encryptVaultItemMetaData:(QLFVaultItemMetadata *)vaultItemMetaDataLF
-                                      vaultItemDescriptor:(QLFVaultItemRef *)vaultItemDescriptor
-{
-
-    NSData *serializedHeaders = [QredoPrimitiveMarshallers marshalObject:vaultItemMetaDataLF
-                                                              marshaller:[QLFVaultItemMetadata marshaller]];
-    NSData *encryptedHeaders = [self encryptData:serializedHeaders key:_bulkKey];
-    QLFVaultId *vaultId = [vaultItemDescriptor vaultId];
-    QLFVaultSequenceId *sequenceId = [vaultItemDescriptor sequenceId];
-
-    QLFVaultItemRef *vaultItemRef = [QLFVaultItemRef vaultItemRefWithVaultId:vaultId
-                                                                  sequenceId:sequenceId
-                                                               sequenceValue:[vaultItemDescriptor sequenceValue]
-                                                                      itemId:[vaultItemDescriptor itemId]];
-
-    return [QLFEncryptedVaultItemHeader encryptedVaultItemHeaderWithRef:vaultItemRef
-                                                      encryptedMetadata:encryptedHeaders
-                                                               authCode:nil]; // FIXME:
 }
 
 - (NSData *)decryptData:(NSData *)encryptedDataWithIv key:(NSData *)key {

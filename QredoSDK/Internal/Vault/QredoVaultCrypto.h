@@ -18,9 +18,13 @@
 - (QLFEncryptedVaultItem *)encryptVaultItemWithBody:(NSData *)body
                            encryptedVaultItemHeader:( QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader;
 
-- (QLFVaultItem *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem;
-- (QLFVaultItemMetadata *)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader;
+- (QLFVaultItem *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
+                                      error:(NSError **)error;
+- (QLFVaultItemMetadata *)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
+                                                    error:(NSError **)error;
 
++ (NSData *)systemVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey;
++ (NSData *)userVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey;
 
 // Used for testing
 + (NSData *)vaultMasterKeyWithUserMasterKey:(NSData *)userMasterKey;

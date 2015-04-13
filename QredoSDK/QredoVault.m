@@ -455,7 +455,12 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
          if (!error && [result count]) {
              QLFEncryptedVaultItem *encryptedVaultItem = [result allObjects][0];
 
-             QLFVaultItem *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem];
+             NSError *decryptionError = nil;
+             QLFVaultItem *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem error:&decryptionError];
+             if (error) {
+                 completionHandler(nil, decryptionError);
+                 return ;
+             }
 
              NSDictionary *summaryValues = [vaultItemLF.metadata.values dictionaryFromIndexableSet];
 
@@ -518,7 +523,16 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
              QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = [result allObjects][0];
 
-             QLFVaultItemMetadata *vaultItemMetadataLF = [_vaultCrypto decryptEncryptedVaultItemHeader:encryptedVaultItemHeader];
+             NSError *decryptionError = nil;
+             QLFVaultItemMetadata *vaultItemMetadataLF
+             = [_vaultCrypto decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
+                                                       error:&decryptionError];
+
+             if (decryptionError) {
+                 completionHandler(nil, decryptionError);
+                 return;
+             }
+
 
              NSDictionary *summaryValues = [vaultItemMetadataLF.values dictionaryFromIndexableSet];
 
@@ -654,7 +668,14 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
             BOOL stop = FALSE;
             for (QLFEncryptedVaultItemHeader *result in results) {
                 @try {
-                    QLFVaultItemMetadata* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemHeader:result];
+                    NSError *error = nil;
+                    QLFVaultItemMetadata* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemHeader:result
+                                                                                                  error:&error];
+                    if (error) {
+                        // skipping the error
+                        LogError(@"Failed to decrypt an item with error: %@", error);
+                        continue;
+                    }
                     
                     QredoVaultItemDescriptor *descriptor
                     = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.ref.sequenceId
