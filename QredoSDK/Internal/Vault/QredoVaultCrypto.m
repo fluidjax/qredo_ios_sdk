@@ -26,8 +26,8 @@
 - (instancetype)initWithBulkKey:(NSData *)bulkKey
               authenticationKey:(NSData *)authenticationKey {
     self = [super init];
-    _bulkKey           = [QredoCrypto sha256:bulkKey];
-    _authenticationKey = [QredoCrypto sha256:authenticationKey];
+    _bulkKey           = bulkKey;
+    _authenticationKey = authenticationKey;
     return self;
 }
 
@@ -85,7 +85,7 @@
 
 - (NSData *)encryptIncludingMessageHeaderWithData:(NSData *)data
 {
-    NSData *encryptedMetadata = [self encryptData:data key:_bulkKey];
+    NSData *encryptedMetadata = [[CryptoImplV1 sharedInstance] encryptWithKey:_bulkKey data:data];
 
     NSData *encryptedMetadataWithMessageHeader =
     [QredoPrimitiveMarshallers marshalObject:encryptedMetadata
@@ -151,7 +151,7 @@
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
 
-    NSData *value = [self decryptData:encryptedBodyRaw key:_bulkKey];
+    NSData *value = [[CryptoImplV1 sharedInstance] decryptWithKey:_bulkKey data:encryptedBodyRaw];
 
     return [QLFVaultItem vaultItemWithRef:encryptedVaultItem.header.ref metadata:vaultItemMetaDataLF body:value];
 }
@@ -177,39 +177,15 @@
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
 
-    NSData *decryptedHeaders = [self decryptData:encyrptedHeadersRaw key:_bulkKey];
+    NSData *decryptedHeaders = [[CryptoImplV1 sharedInstance] decryptWithKey:_bulkKey data:encyrptedHeadersRaw];
 
     return [QredoPrimitiveMarshallers unmarshalObject:decryptedHeaders
                                          unmarshaller:[QLFVaultItemMetadata unmarshaller]
                                           parseHeader:NO];
 
 }
-
-- (NSData *)decryptData:(NSData *)encryptedDataWithIv key:(NSData *)key {
-    NSData *iv = [NSData dataWithBytes:[encryptedDataWithIv bytes]
-                                length:16];
-    NSData *encryptedData = [NSData dataWithBytes:[encryptedDataWithIv bytes]  + [iv length]
-                                           length:[encryptedDataWithIv length] - [iv length]];
-    return [QredoCrypto decryptData:encryptedData
-                         withAesKey:key
-                                 iv:iv];
-}
-
-- (NSData *)encryptData:(NSData *)data key:(NSData *)key {
-    NSData *iv = [QredoCrypto secureRandomWithSize:16];
-    NSData *encryptedData;
-    if (data) {
-        encryptedData = [QredoCrypto encryptData:data withAesKey:key iv:iv];
-    } else {
-        encryptedData = [NSData data];
-    }
-    NSMutableData *encryptedDataWithIv = [NSMutableData dataWithData:iv];
-    [encryptedDataWithIv appendData:encryptedData];
-    return encryptedDataWithIv;
-}
-
 - (NSData *)encryptVaultItemValue:(NSData *)data {
-    return [self encryptData:data key:_bulkKey];
+    return [[CryptoImplV1 sharedInstance] encryptWithKey:_bulkKey data:data];
 }
 
 @end
