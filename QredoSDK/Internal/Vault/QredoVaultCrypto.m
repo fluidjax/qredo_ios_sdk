@@ -197,7 +197,12 @@
 
 - (NSData *)encryptData:(NSData *)data key:(NSData *)key {
     NSData *iv = [QredoCrypto secureRandomWithSize:16];
-    NSData *encryptedData = [QredoCrypto encryptData:data withAesKey:key iv:iv];
+    NSData *encryptedData;
+    if (data) {
+        encryptedData = [QredoCrypto encryptData:data withAesKey:key iv:iv];
+    } else {
+        encryptedData = [NSData data];
+    }
     NSMutableData *encryptedDataWithIv = [NSMutableData dataWithData:iv];
     [encryptedDataWithIv appendData:encryptedData];
     return encryptedDataWithIv;
