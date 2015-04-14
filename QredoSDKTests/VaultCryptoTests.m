@@ -33,8 +33,11 @@
     NSLog(@" encyrptionKey     = %@", encryptionAndAuthKeys.encryptionKey);
     NSLog(@" authentication    = %@", encryptionAndAuthKeys.authenticationKey);
 
-    QredoQUID *sequenceID = [QredoQUID QUID];
-    QredoQUID *itemID = [QredoQUID QUID];
+
+//    QredoQUID *sequenceID = [QredoQUID QUID];
+//    QredoQUID *itemID = [QredoQUID QUID];
+    QredoQUID *sequenceID = [[QredoQUID alloc] initWithQUIDString:@"536153cde3e743a5b34c5dac49281e261a3acccacb314473bc143ee24f87c0a9"];
+    QredoQUID *itemID = [[QredoQUID alloc] initWithQUIDString:@"96b9a6c3a366401f9e42e006c61689ae5c29c4a2835d4e4d992c98eb56cddfd1"];
 
     int64_t sequenceValue = 1;
     QLFVaultItemRef *vaultItemRef = [QLFVaultItemRef vaultItemRefWithVaultId:vaultID
@@ -59,9 +62,6 @@
                                                                                   values:indexableValues];
 
     NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
-    NSData *serializedMetadataWithMessage = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:YES];
-
-
 
     NSLog(@" sequenceID        = %@ (random)", sequenceID);
     NSLog(@" itemID            = %@ (random)", itemID);
@@ -69,7 +69,6 @@
     NSLog(@" metadata.values   = %@", metadataValues);
 
     NSLog(@" metadata          = %@", serializedMetadata);
-    NSLog(@" message(metadata) = %@", serializedMetadataWithMessage);
 
     QredoVaultCrypto *vaultCrypto
     = [QredoVaultCrypto vaultCryptoWithBulkKey:encryptionAndAuthKeys.encryptionKey
