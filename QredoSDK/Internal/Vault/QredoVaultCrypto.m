@@ -85,6 +85,7 @@
 
 - (NSData *)encryptIncludingMessageHeaderWithData:(NSData *)data
 {
+    if (!data) data = [NSData data];
     NSData *encryptedMetadata = [[CryptoImplV1 sharedInstance] encryptWithKey:_bulkKey data:data];
 
     NSData *encryptedMetadataWithMessageHeader =
@@ -185,6 +186,7 @@
 
 }
 - (NSData *)encryptVaultItemValue:(NSData *)data {
+    if (!data) data = [NSData data];
     return [[CryptoImplV1 sharedInstance] encryptWithKey:_bulkKey data:data];
 }
 
