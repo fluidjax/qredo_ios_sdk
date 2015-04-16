@@ -35,11 +35,11 @@ NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
 NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
-//static NSString *const QredoClientDefaultServiceURL = @"http://edge.qredo.me:8080/services";
-static NSString *const QredoClientDefaultServiceURL = @"https://edge.qredo.me:443/services";
+//static NSString *const QredoClientDefaultServiceURL = @"http://dev.qredo.me:8080/services";
+static NSString *const QredoClientDefaultServiceURL = @"https://dev.qredo.me:443/services";
 
-//static NSString *const QredoClientMQTTServiceURL = @"tcp://edge.qredo.me:1883";
-static NSString *const QredoClientMQTTServiceURL = @"ssl://edge.qredo.me:8883";
+//static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
+static NSString *const QredoClientMQTTServiceURL = @"ssl://dev.qredo.me:8883";
 
 NSString *const QredoRendezvousURIProtocol = @"qrp:";
 
