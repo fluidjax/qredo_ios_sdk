@@ -719,6 +719,12 @@ static NSString *const QredoKeychainPassword = @"Password123";
 }
 
 - (void)respondWithTag:(NSString *)tag
+     completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler
+{
+    [self respondWithTag:tag trustedRootPems:nil completionHandler:completionHandler];
+}
+
+- (void)respondWithTag:(NSString *)tag
        trustedRootPems:(NSArray *)trustedRootPems
      completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler
 {
