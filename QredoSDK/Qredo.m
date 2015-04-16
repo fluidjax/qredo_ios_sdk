@@ -281,12 +281,14 @@ static NSString *const QredoKeychainPassword = @"Password123";
     // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
     LogDebug(@"Authorising client for conversation types: %@. VaultDataTypes: %@. Options: %@.", conversationTypes, vaultDataTypes, options);
 
+    if (!options) {
+        options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+    }
+    
     NSURL *serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
-
     if (options.useMQTT) {
         serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
     }
-
 
     __block NSError *error = nil;
     
