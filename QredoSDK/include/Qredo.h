@@ -97,6 +97,10 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 /** Joins the rendezvous and stores conversation into the vault */
 - (void)respondWithTag:(NSString *)tag
+     completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler;
+
+/** Joins the rendezvous and stores conversation into the vault */
+- (void)respondWithTag:(NSString *)tag
        trustedRootPems:(NSArray *)trustedRootPems
      completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler;
 
