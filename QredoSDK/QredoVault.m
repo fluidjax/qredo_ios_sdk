@@ -456,8 +456,15 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
              QLFEncryptedVaultItem *encryptedVaultItem = [result allObjects][0];
 
              NSError *decryptionError = nil;
-             QLFVaultItem *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem error:&decryptionError];
-             if (error) {
+             QLFVaultItem *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem
+                                                                           error:&decryptionError];
+             if (!vaultItemLF) {
+                 if (!decryptionError) {
+                     decryptionError = [NSError errorWithDomain:QredoErrorDomain
+                                                           code:QredoErrorCodeMalformedOrTamperedData
+                                                       userInfo:nil];
+                 }
+
                  completionHandler(nil, decryptionError);
                  return ;
              }
@@ -528,7 +535,13 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
              = [_vaultCrypto decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
                                                        error:&decryptionError];
 
-             if (decryptionError) {
+             if (!vaultItemMetadataLF) {
+                 if (!decryptionError) {
+                     decryptionError = [NSError errorWithDomain:QredoErrorDomain
+                                                           code:QredoErrorCodeMalformedOrTamperedData
+                                                       userInfo:nil];
+                 }
+
                  completionHandler(nil, decryptionError);
                  return;
              }
