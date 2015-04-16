@@ -12,6 +12,7 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     QredoErrorCodeUnknown = 1000,
     QredoErrorCodeRemoteOperationFailure,
     QredoErrorCodeAppNotAuthorized,
+    QredoErrorCodeMalformedOrTamperedData,
 
     // Vault errors
     QredoErrorCodeVaultUnknown = 2000,

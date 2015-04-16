@@ -234,23 +234,22 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
 
-    QLFVaultItemDescriptorLF *vaultItemDescriptor =
-    [QLFVaultItemDescriptorLF vaultItemDescriptorLFWithVaultId:_vaultId
-                                                    sequenceId:_sequenceId
-                                                 sequenceValue:newSequenceValue
-                                                        itemId:itemId];
+    QLFVaultItemRef *vaultItemDescriptor =
+    [QLFVaultItemRef vaultItemRefWithVaultId:_vaultId
+                                  sequenceId:_sequenceId
+                               sequenceValue:newSequenceValue
+                                      itemId:itemId];
 
-    QLFVaultItemMetaDataLF *vaultItemMetaDataLF =
-    [QLFVaultItemMetaDataLF vaultItemMetaDataLFWithDataType:dataType
-                                                accessLevel:metadata.accessLevel
-                                              summaryValues:[summaryValues indexableSet]];
+    QLFVaultItemMetadata *vaultItemMetaDataLF =
+    [QLFVaultItemMetadata vaultItemMetadataWithDataType:dataType
+                                                 values:[summaryValues indexableSet]];
 
-    QLFVaultItemLF *vaultItemLF = [QLFVaultItemLF vaultItemLFWithMetadata:vaultItemMetaDataLF
-                                                                    value:vaultItem.value];
+    QLFEncryptedVaultItemHeader *encryptedVaultItemHeader =
+    [_vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemDescriptor
+                                           metadata:vaultItemMetaDataLF];
 
-    QLFEncryptedVaultItem *encryptedVaultItem = [_vaultCrypto encryptVaultItemLF:vaultItemLF
-                                                                      descriptor:vaultItemDescriptor];
-
+    QLFEncryptedVaultItem *encryptedVaultItem = [_vaultCrypto encryptVaultItemWithBody:vaultItem.value
+                                                              encryptedVaultItemHeader:encryptedVaultItemHeader];
 
     NSError *error = nil;
 
@@ -454,27 +453,39 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
              completionHandler:^(NSSet *result, NSError *error)
     {
          if (!error && [result count]) {
-             QLFEncryptedVaultItem *encryptedVaultItem = [result allObjects][0];
+             QLFEncryptedVaultItem *encryptedVaultItem = [result anyObject];
 
-             QLFVaultItemLF *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem];
+             NSError *decryptionError = nil;
+             QLFVaultItem *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem
+                                                                           error:&decryptionError];
+             if (!vaultItemLF) {
+                 if (!decryptionError) {
+                     decryptionError = [NSError errorWithDomain:QredoErrorDomain
+                                                           code:QredoErrorCodeMalformedOrTamperedData
+                                                       userInfo:nil];
+                 }
 
-             NSDictionary *summaryValues = [vaultItemLF.metadata.summaryValues dictionaryFromIndexableSet];
+                 completionHandler(nil, decryptionError);
+                 return ;
+             }
 
-             QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItem.meta.sequenceId
-                                                                                                  sequenceValue:encryptedVaultItem.meta.sequenceValue
-                                                                                                         itemId:encryptedVaultItem.meta.itemId];
+             NSDictionary *summaryValues = [vaultItemLF.metadata.values dictionaryFromIndexableSet];
+
+             QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItem.header.ref.sequenceId
+                                                                                                  sequenceValue:encryptedVaultItem.header.ref.sequenceValue
+                                                                                                         itemId:encryptedVaultItem.header.ref.itemId];
 
              QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                                                dataType:vaultItemLF.metadata.dataType
-                                                                                            accessLevel:vaultItemLF.metadata.accessLevel
+                                                                                            accessLevel:0
                                                                                           summaryValues:summaryValues];
-             
+
              if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
                  error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
                  completionHandler(nil, error);
              }
              else {
-                 QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.value];
+                 QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.body];
                  completionHandler(vaultItem, nil);
              }
 
@@ -508,7 +519,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     }
 
 
-    [_vault getItemMetaDataWithVaultId:_vaultId
+    [_vault getItemHeaderWithVaultId:_vaultId
                             sequenceId:sequenceId
                          sequenceValue:sequenceValues
                                 itemId:itemDescriptor.itemId
@@ -517,19 +528,35 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
      {
          if (!error && result.count) {
 
-             QLFEncryptedVaultItemMetaData *encryptedVaultItemMetaData = [result allObjects][0];
+             QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = [result anyObject];
 
-             QLFVaultItemMetaDataLF *vaultItemMetadataLF = [_vaultCrypto decryptEncryptedVaultItemMetaData:encryptedVaultItemMetaData];
+             NSError *decryptionError = nil;
+             QLFVaultItemMetadata *vaultItemMetadataLF
+             = [_vaultCrypto decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
+                                                       error:&decryptionError];
 
-             NSDictionary *summaryValues = [vaultItemMetadataLF.summaryValues dictionaryFromIndexableSet];
+             if (!vaultItemMetadataLF) {
+                 if (!decryptionError) {
+                     decryptionError = [NSError errorWithDomain:QredoErrorDomain
+                                                           code:QredoErrorCodeMalformedOrTamperedData
+                                                       userInfo:nil];
+                 }
 
-             QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItemMetaData.sequenceId
-                                                                                                  sequenceValue:encryptedVaultItemMetaData.sequenceValue
-                                                                                                         itemId:encryptedVaultItemMetaData.itemId];
+                 completionHandler(nil, decryptionError);
+                 return;
+             }
+
+
+             NSDictionary *summaryValues = [vaultItemMetadataLF.values dictionaryFromIndexableSet];
+
+             QredoVaultItemDescriptor *descriptor
+             = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItemHeader.ref.sequenceId
+                                                             sequenceValue:encryptedVaultItemHeader.ref.sequenceValue
+                                                                    itemId:encryptedVaultItemHeader.ref.itemId];
 
              QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                                                dataType:vaultItemMetadataLF.dataType
-                                                                                            accessLevel:vaultItemMetadataLF.accessLevel
+                                                                                            accessLevel:0
                                                                                           summaryValues:summaryValues];
              if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
                  error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
@@ -627,10 +654,10 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     }
 
     // Sync sequence IDs...
-    [_vault queryItemMetaDataWithVaultId:_vaultId
-                          sequenceStates:sequenceStates
-                               signature:ownershipSignature
-                       completionHandler:^void(QLFVaultItemMetaDataResults *vaultItemMetaDataResults, NSError *error)
+    [_vault queryItemHeadersWithVaultId:_vaultId
+                         sequenceStates:sequenceStates
+                              signature:ownershipSignature
+                      completionHandler:^void(QLFVaultItemQueryResults *vaultItemMetaDataResults, NSError *error)
     {
         if (error) {
             if (completionHandler) {
@@ -652,19 +679,28 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
         void(^enumerateResultsWithHandler)(EnumerateResultsWithHandler) = ^(EnumerateResultsWithHandler handler) {
             
             BOOL stop = FALSE;
-            for (QLFEncryptedVaultItemMetaData *result in results) {
+            for (QLFEncryptedVaultItemHeader *result in results) {
                 @try {
-                    QLFVaultItemMetaDataLF* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemMetaData:result];
+                    NSError *error = nil;
+                    QLFVaultItemMetadata* decryptedItem = [_vaultCrypto decryptEncryptedVaultItemHeader:result
+                                                                                                  error:&error];
+                    if (error) {
+                        // skipping the error
+                        LogError(@"Failed to decrypt an item with error: %@", error);
+                        continue;
+                    }
                     
-                    QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.sequenceId
-                                                                                                         sequenceValue:result.sequenceValue
-                                                                                                                itemId:result.itemId];
-                    
-                    QredoVaultItemMetadata* externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                                                          dataType:decryptedItem.dataType
-                                                                                                       accessLevel:decryptedItem.accessLevel
-                                                                                                     summaryValues:[decryptedItem.summaryValues dictionaryFromIndexableSet]];
-                    
+                    QredoVaultItemDescriptor *descriptor
+                    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.ref.sequenceId
+                                                                    sequenceValue:result.ref.sequenceValue
+                                                                           itemId:result.ref.itemId];
+
+                    QredoVaultItemMetadata *externalItem
+                    = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                     dataType:decryptedItem.dataType
+                                                                  accessLevel:0
+                                                                summaryValues:[decryptedItem.values dictionaryFromIndexableSet]];
+
                     if (handler) {
                         handler(externalItem, &stop);
                     }

@@ -65,6 +65,7 @@
 		0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9DDDFD19ED3A1500B4248C /* QredoVault.m */; };
 		0AA03C8919E2E6CF00F2CF43 /* Qredo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA03C8819E2E6CF00F2CF43 /* Qredo.m */; };
 		0AA0CAD919D9B92B0025DD4D /* QredoConversationCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */; };
+		0AA38FD01AD6E8E000D2F391 /* VaultCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA38FCF1AD6E8E000D2F391 /* VaultCryptoTests.m */; };
 		0AAB39751AB1DA8D00460797 /* QredoClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AAB39731AB1DA8D00460797 /* QredoClient.h */; };
 		0AAB39761AB1DA8D00460797 /* QredoClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB39741AB1DA8D00460797 /* QredoClient.m */; };
 		0AAB397A1AB1E0C000460797 /* NSDictionary+IndexableSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AAB39781AB1E0C000460797 /* NSDictionary+IndexableSet.h */; };
@@ -303,6 +304,7 @@
 		0AA03C8819E2E6CF00F2CF43 /* Qredo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Qredo.m; sourceTree = "<group>"; };
 		0AA0CAD719D9B92B0025DD4D /* QredoConversationCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoConversationCrypto.h; sourceTree = "<group>"; };
 		0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversationCrypto.m; sourceTree = "<group>"; };
+		0AA38FCF1AD6E8E000D2F391 /* VaultCryptoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VaultCryptoTests.m; sourceTree = "<group>"; };
 		0AAB39731AB1DA8D00460797 /* QredoClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoClient.h; sourceTree = "<group>"; };
 		0AAB39741AB1DA8D00460797 /* QredoClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClient.m; sourceTree = "<group>"; };
 		0AAB39781AB1E0C000460797 /* NSDictionary+IndexableSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+IndexableSet.h"; sourceTree = "<group>"; };
@@ -592,6 +594,7 @@
 				0A38C5F91A8CDC2800C458A7 /* AuthenticationProtocolBlockDelegate.swift */,
 				0A7811B21AAA013400479973 /* RendezvousMultipleSubsription.swift */,
 				7831F07E1AB327A000C8C10C /* OwnershipSignatureTests.m */,
+				0AA38FCF1AD6E8E000D2F391 /* VaultCryptoTests.m */,
 			);
 			path = QredoSDKTests;
 			sourceTree = "<group>";
@@ -1408,6 +1411,7 @@
 				0A65740D1A2F3B7200D5502E /* ConversationMQTTTests.m in Sources */,
 				DCCEED691A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m in Sources */,
 				0A6574121A2F3B7200D5502E /* QredoRendezvousCryptoTest.m in Sources */,
+				0AA38FD01AD6E8E000D2F391 /* VaultCryptoTests.m in Sources */,
 				0A6574161A2F3B7200D5502E /* QredoTestUtils.m in Sources */,
 				0A65741C1A2F3B7200D5502E /* QredoVaultUpdateTests.m in Sources */,
 			);
