@@ -22,6 +22,7 @@
 #import "QredoED25519SigningKey.h"
 #import "QredoED25519VerifyKey.h"
 #import "QredoSigner.h"
+#import "CryptoImplV1.h"
 
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
@@ -205,6 +206,44 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     
     QLFVaultKeyPair *keyPair = [qredoKeychan vaultKeys];
 
+    _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:keyPair.encryptionKey
+                                          authenticationKey:keyPair.authenticationKey];
+    
+    return self;
+}
+
+- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan signingKeySeed:(NSData *)signingKeySeed
+{
+    if (!client || !qredoKeychan || !signingKeySeed) return nil;
+    self = [super init];
+    if (!self) return nil;
+    
+    _client = client;
+    _qredoKeychan = qredoKeychan;
+    _signingKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:signingKeySeed];
+    
+    _vaultId = [[QredoQUID alloc] initWithQUIDData:_signingKey.verifyKey.data];
+    _highwatermark = QredoVaultHighWatermarkOrigin;
+    
+    _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
+    
+    [self loadState];
+    
+    if (!_sequenceId) {
+        _sequenceId = [QredoQUID QUID];
+        [self saveState];
+    }
+    
+    _updateListener = [[QredoUpdateListener alloc] init];
+    _updateListener.delegate = self;
+    _updateListener.dataSource = self;
+    _updateListener.pollInterval = kQredoVaultUpdateInterval;
+    
+    _vault = [QLFVault vaultWithServiceInvoker:_client.serviceInvoker];
+    _vaultSequenceCache = [QredoVaultSequenceCache instance];
+    
+    QLFVaultKeyPair *keyPair = [qredoKeychan vaultKeys];
+    
     _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:keyPair.encryptionKey
                                           authenticationKey:keyPair.authenticationKey];
     

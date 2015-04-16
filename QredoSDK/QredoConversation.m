@@ -1027,8 +1027,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     QredoQUID *conversationVaultID = [QredoQUID QUIDByHashingData:derivedVaultIdData];
 
-    _store = [[QredoVault alloc] initWithClient:_client qredoKeychain:_client.systemVault.qredoKeychain
-                                        vaultId:conversationVaultID];
+    _store = [[QredoVault alloc] initWithClient:_client
+                                  qredoKeychain:_client.systemVault.qredoKeychain
+                                 signingKeySeed:[conversationVaultID data]];
 
     return _store;
 }
