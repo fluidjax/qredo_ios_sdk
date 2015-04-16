@@ -9789,7 +9789,7 @@ QredoServiceInvoker *_invoker;
                completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 completionHandler(nil, error);
+                 completionHandler(NO, error);
             }];
          
 }
@@ -10040,7 +10040,7 @@ QredoServiceInvoker *_invoker;
                completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 completionHandler(nil, error);
+                 completionHandler(NO, error);
             }];
          
 }
