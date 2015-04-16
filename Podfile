@@ -4,10 +4,16 @@ source 'https://github.com/CocoaPods/Specs.git'
 source 'git@github.com:Qredo/qredo_cocoapods.git'
 
 target 'QredoSDK' do
+    
 #	pod "LinguaFranca", "~> 0.3"
 #	pod "LinguaFranca", :git => "git@github.com:Qredo/LinguaFranca.git", :tag => "ios-0.3"
 #	pod "LinguaFranca", :git => "git@github.com:Qredo/LinguaFranca.git", :branch => "feature/pods"
 	pod "LinguaFranca", :path => "../LinguaFranca/LinguaFranca.podspec"
+    
+    # The QredoLibPaho dependency is only here for convenience during development. Relase builds
+    # should not have it here.
+    pod "QredoLibPaho", :path => "../qredo_ios_libpaho/QredoLibPaho.podspec"
+    
 end
 
 target 'CryptoTests' do

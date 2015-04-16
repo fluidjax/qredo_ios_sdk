@@ -21,15 +21,24 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
+@class QredoCertificate;
 
 @interface QredoClientOptions : NSObject
 
 @property BOOL useMQTT;
 @property BOOL resetData;
 
+- (instancetype)initWithDefaultTrustedRoots;
+- (instancetype)initDefaultPinnnedCertificate;
+- (instancetype)initWithPinnedCertificate:(QredoCertificate *)certificate;
 
-- (instancetype)initWithMQTT:(BOOL)useMQTT;
+/** @deprecated */
+- (instancetype)initWithMQTT:(BOOL)useMQTT ;
+
+/** @deprecated */
 - (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData;
+
+/** @deprecated */
 - (instancetype)initWithResetData:(BOOL)resetData;
 
 @end
