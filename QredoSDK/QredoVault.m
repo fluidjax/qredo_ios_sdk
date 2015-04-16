@@ -453,7 +453,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
              completionHandler:^(NSSet *result, NSError *error)
     {
          if (!error && [result count]) {
-             QLFEncryptedVaultItem *encryptedVaultItem = [result allObjects][0];
+             QLFEncryptedVaultItem *encryptedVaultItem = [result anyObject];
 
              NSError *decryptionError = nil;
              QLFVaultItem *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem
@@ -528,7 +528,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
      {
          if (!error && result.count) {
 
-             QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = [result allObjects][0];
+             QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = [result anyObject];
 
              NSError *decryptionError = nil;
              QLFVaultItemMetadata *vaultItemMetadataLF
