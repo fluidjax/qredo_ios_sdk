@@ -77,19 +77,23 @@
     NSLog(@"Conversation type: \"%@\"", conversationType);
 
 
-
-
     QLFRendezvousResponderInfo *responderInfo
     = [QLFRendezvousResponderInfo rendezvousResponderInfoWithRequesterPublicKey:requesterPublicKeyBytes
                                                                conversationType:conversationType
                                                                        transCap:[NSSet set]];
 
-    NSData *marshalledResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo];
+    NSData *marshalledResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     NSLog(@"Marshalled responder info %@", marshalledResponderInfo);
     NSLog(@"---");
 
     NSData *encryptedResponderInfo = [rendezvousCrypto encryptResponderInfo:responderInfo encryptionKey:encKey];
-    NSLog(@"Encrypted responder info %@", encryptedResponderInfo);
+    NSData *encryptedResponderInfoRaw
+    = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderInfo
+                                    unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
+                                     parseHeader:YES];
+    NSRange ivRange = NSMakeRange(0, 16);
+    NSLog(@"IV = %@", [encryptedResponderInfoRaw subdataWithRange:ivRange]);
+    NSLog(@"Encrypted responder info with message header: %@", encryptedResponderInfo);
 
     NSData *authenticationCode = [rendezvousCrypto authenticationCodeWithHashedTag:hashedTag
                                                                  authenticationKey:authKey

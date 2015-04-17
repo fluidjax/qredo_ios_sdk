@@ -319,22 +319,19 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                encryptionKey:(NSData *)encryptionKey
                                                        error:(NSError **)error
 {
-    const int ivLength = 16;
-    if (encryptedResponderData.length < ivLength) {
-        if (error) {
-            *error = [NSError errorWithDomain:QredoErrorDomain
-                                         code:QredoErrorCodeRendezvousInvalidData
-                                     userInfo:@{
-                                                NSLocalizedDescriptionKey: @"Invalid responder data"
-                                                }];
-            return nil;
-        }
-    }
-    NSData *iv = [NSData dataWithBytes:encryptedResponderData.bytes length:ivLength];
-    NSData *encryptedData = [NSData dataWithBytes:(encryptedResponderData.bytes + ivLength)
-                                           length:encryptedResponderData.length - ivLength];
+    NSData *encryptedResponderDataRaw = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderData
+                                                                      unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
+                                                                       parseHeader:YES];
 
-    NSData *decryptedData = [QredoCrypto decryptData:encryptedData withAesKey:encryptionKey iv:iv];
+
+    NSData *decryptedData;
+    @try {
+        decryptedData = [[CryptoImplV1 sharedInstance] decryptWithKey:encryptionKey
+                                                                 data:encryptedResponderDataRaw];
+    }
+    @catch (NSException *exception) {
+        LogError(@"Failed to decode: %@", exception);
+    }
 
     if (!decryptedData) {
         if (error) {
@@ -350,7 +347,8 @@ static const int QredoRendezvousMasterKeyLength = 32;
     @try {
         QLFRendezvousResponderInfo *responderInfo =
         [QredoPrimitiveMarshallers unmarshalObject:decryptedData
-                                      unmarshaller:[QLFRendezvousResponderInfo unmarshaller]];
+                                      unmarshaller:[QLFRendezvousResponderInfo unmarshaller]
+                                       parseHeader:NO];
         return responderInfo;
     }
     @catch (NSException *exception) {
@@ -369,7 +367,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 - (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                    encryptionKey:(NSData *)encryptionKey
 {
-    NSData *iv = [NSData dataWithRandomBytesOfLength:16];
+    NSData *iv = [QredoCrypto secureRandomWithSize:16];
     return [self encryptResponderInfo:responderInfo encryptionKey:encryptionKey iv:iv];
 }
 
@@ -377,17 +375,14 @@ static const int QredoRendezvousMasterKeyLength = 32;
                    encryptionKey:(NSData *)encryptionKey
                               iv:(NSData *)iv
 {
+    NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
 
-    NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo];
+    NSData *encryptedResponderInfo =
+    [[CryptoImplV1 sharedInstance] encryptWithKey:encryptionKey data:serializedResponderInfo iv:iv];
 
-    NSData *encryptedResponderInfo = [QredoCrypto encryptData:serializedResponderInfo
-                                                   withAesKey:encryptionKey
-                                                           iv:iv];
-
-    NSMutableData *encryptedResponderInfoWithIV = [NSMutableData dataWithData:iv];
-    [encryptedResponderInfoWithIV appendData:encryptedResponderInfo];
-    
-    return [encryptedResponderInfoWithIV copy];
+    return [QredoPrimitiveMarshallers marshalObject:encryptedResponderInfo
+                                         marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
+                                      includeHeader:YES];
 }
 
 @end
