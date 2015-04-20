@@ -41,6 +41,8 @@ static NSString *const QredoClientDefaultServiceURL = @"https://dev.qredo.me:443
 //static NSString *const QredoClientMQTTServiceURL = @"tcp://dev.qredo.me:1883";
 static NSString *const QredoClientMQTTServiceURL = @"ssl://dev.qredo.me:8883";
 
+static NSString *const QredoClientWebSocketsServiceURL = @"wss://dev.qredo.me:443/services";
+
 NSString *const QredoRendezvousURIProtocol = @"qrp:";
 
 
@@ -99,7 +101,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
 - (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData pinnedCertificate:(QredoCertificate *)certificate
 {
     self = [super init];
-    self.useMQTT = useMQTT;
+    self.transportType = useMQTT ? QredoClientOptionsTransportTypeMQTT : QredoClientOptionsTransportTypeHTTP;
     self.resetData = resetData;
     _certificate = certificate;
     return self;
@@ -285,11 +287,19 @@ static NSString *const QredoKeychainPassword = @"Password123";
         options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     }
     
-    NSURL *serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
-    if (options.useMQTT) {
-        serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
+    NSURL *serviceURL = nil;
+    switch (options.transportType) {
+        case QredoClientOptionsTransportTypeHTTP:
+            serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
+            break;
+        case QredoClientOptionsTransportTypeMQTT:
+            serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
+            break;
+        case QredoClientOptionsTransportTypeWebSockets:
+            serviceURL = [NSURL URLWithString:QredoClientWebSocketsServiceURL];
+            break;
     }
-
+    
     __block NSError *error = nil;
     
     __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL pinnedCertificate:options.certificate];

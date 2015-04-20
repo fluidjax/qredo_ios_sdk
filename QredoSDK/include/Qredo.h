@@ -23,9 +23,17 @@ extern NSString *const QredoRendezvousURIProtocol;
 @class QredoRendezvousMetadata;
 @class QredoCertificate;
 
+
+typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
+    QredoClientOptionsTransportTypeHTTP,
+    QredoClientOptionsTransportTypeMQTT,
+    QredoClientOptionsTransportTypeWebSockets,
+};
+
+
 @interface QredoClientOptions : NSObject
 
-@property BOOL useMQTT;
+@property (nonatomic) QredoClientOptionsTransportType transportType;
 @property BOOL resetData;
 
 - (instancetype)initWithDefaultTrustedRoots;
