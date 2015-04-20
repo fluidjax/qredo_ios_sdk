@@ -319,13 +319,14 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                encryptionKey:(NSData *)encryptionKey
                                                        error:(NSError **)error
 {
-    NSData *encryptedResponderDataRaw = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderData
-                                                                      unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
-                                                                       parseHeader:YES];
-
-
     NSData *decryptedData;
+
     @try {
+        NSData *encryptedResponderDataRaw
+        = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderData
+                                        unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
+                                         parseHeader:YES];
+
         decryptedData = [[CryptoImplV1 sharedInstance] decryptWithKey:encryptionKey
                                                                  data:encryptedResponderDataRaw];
     }
