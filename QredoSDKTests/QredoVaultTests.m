@@ -73,9 +73,13 @@
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
+    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+    clientOptions.transportType = self.transportType;
+    clientOptions.resetData = YES;
+    
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:clientOptions
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -111,9 +115,13 @@
     client = nil;
 
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    
+    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+    clientOptions.transportType = self.transportType;
+    
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT]
+                                        options:clientOptions
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);

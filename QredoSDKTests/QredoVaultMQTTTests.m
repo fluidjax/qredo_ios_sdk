@@ -7,7 +7,7 @@
 @implementation QredoVaultMQTTTests
 
 - (void)setUp {
-    self.useMQTT = YES;
+    self.transportType = QredoClientOptionsTransportTypeMQTT;
     [super setUp];
 }
 
