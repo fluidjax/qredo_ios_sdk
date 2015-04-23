@@ -47,15 +47,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 //static const double kQredoConversationUpdateInterval = 1.0; // seconds - polling period for items (non-multi-response transports)
 //static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 
-// TODO: these values should not be in clear memory. Add red herring
-#define SALT_CONVERSATION_ID [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_CONVERSATION_A_BULKKEY [@"ConversationBulkEncryptionKeyA" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_CONVERSATION_A_AUTHKEY [@"ConversationAuthenticationKeyA" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_CONVERSATION_B_BULKKEY [@"ConversationBulkEncryptionKeyB" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_CONVERSATION_B_AUTHKEY [@"ConversationAuthenticationKeyB" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_REQUESTER_INBOUND_QUEUE [@"eeK3hieyengahp3A" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_RESPONDER_INBOUND_QUEUE [@"Wo6ahjata4tae5ij" dataUsingEncoding:NSUTF8StringEncoding]
-
 @interface QredoConversationMetadata ()
 @property (readwrite) NSString *type;
 @property (readwrite) QredoQUID *conversationId;
@@ -334,29 +325,23 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _yourPublicKey = publicKey;
 
 
-    NSData *requesterInboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_BULKKEY
-                                                                 myPrivateKey:privateKey
-                                                                yourPublicKey:publicKey];
+    NSData *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMyPrivateKey:privateKey
+                                                                                           yourPublicKey:publicKey];
 
-    NSData *requesterInboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_AUTHKEY
-                                                                 myPrivateKey:privateKey
-                                                                yourPublicKey:publicKey];
+    NSData *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMyPrivateKey:privateKey
+                                                                                               yourPublicKey:publicKey];
 
-    NSData *responderInboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_BULKKEY
-                                                                 myPrivateKey:privateKey
-                                                                yourPublicKey:publicKey];
+    NSData *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMyPrivateKey:privateKey
+                                                                                           yourPublicKey:publicKey];
 
-    NSData *responderInboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_AUTHKEY
-                                                                 myPrivateKey:privateKey
-                                                                yourPublicKey:publicKey];
+    NSData *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMyPrivateKey:privateKey
+                                                                                               yourPublicKey:publicKey];
 
-    NSData *requesterInboundQueueKeyPairSalt = [_crypto getDiffieHellmanSecretWithSalt:SALT_REQUESTER_INBOUND_QUEUE
-                                                                          myPrivateKey:privateKey
-                                                                         yourPublicKey:publicKey];
+    NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMyPrivateKey:privateKey
+                                                                                                yourPublicKey:publicKey];
 
-    NSData *responderInboundQueueKeyPairSalt = [_crypto getDiffieHellmanSecretWithSalt:SALT_RESPONDER_INBOUND_QUEUE
-                                                                          myPrivateKey:privateKey
-                                                                         yourPublicKey:publicKey];
+    NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMyPrivateKey:privateKey
+                                                                                                yourPublicKey:publicKey];
 
     QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
     QredoED25519SigningKey *responderInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueKeyPairSalt];
@@ -386,10 +371,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         _outboundSigningKey = requesterInboundQueueSigningKey;
     }
 
-    NSData *conversationIdData = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_ID
-                                                            myPrivateKey:privateKey
-                                                           yourPublicKey:publicKey];
-    _metadata.conversationId = [[QredoQUID alloc] initWithQUIDData:conversationIdData];
+    _metadata.conversationId = [_conversationCrypto conversationIdWithMyPrivateKey:privateKey
+                                                                     yourPublicKey:publicKey];
 }
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag

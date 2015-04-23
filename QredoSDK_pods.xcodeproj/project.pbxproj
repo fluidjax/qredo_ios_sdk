@@ -59,6 +59,7 @@
 		0A65741D1A2F3B7200D5502E /* RendezvousListenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A65740C1A2F3B7200D5502E /* RendezvousListenerTests.m */; };
 		0A68F7521A77B2AC0045D21D /* QredoConversationMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A68F7501A77B2AC0045D21D /* QredoConversationMessage.h */; };
 		0A68F7551A77B2C70045D21D /* QredoConversationMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A68F7541A77B2C70045D21D /* QredoConversationMessage.m */; };
+		0A759D711AE15EE60032185D /* ConversationCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A759D701AE15EE60032185D /* ConversationCryptoTests.m */; };
 		0A7811B31AAA013400479973 /* RendezvousMultipleSubsription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7811B21AAA013400479973 /* RendezvousMultipleSubsription.swift */; };
 		0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A85E6E619FAA95200775115 /* QredoRendezvous.m */; };
 		0A8F5C5319FE90E60068C8D8 /* QredoConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */; };
@@ -290,6 +291,7 @@
 		0A68F7501A77B2AC0045D21D /* QredoConversationMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoConversationMessage.h; sourceTree = "<group>"; };
 		0A68F7541A77B2C70045D21D /* QredoConversationMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversationMessage.m; sourceTree = "<group>"; };
 		0A68F7561A77BF9F0045D21D /* QredoConversationMessagePrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoConversationMessagePrivate.h; sourceTree = "<group>"; };
+		0A759D701AE15EE60032185D /* ConversationCryptoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationCryptoTests.m; sourceTree = "<group>"; };
 		0A7811B21AAA013400479973 /* RendezvousMultipleSubsription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendezvousMultipleSubsription.swift; sourceTree = "<group>"; };
 		0A85E6E619FAA95200775115 /* QredoRendezvous.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvous.m; sourceTree = "<group>"; };
 		0A85E6E919FAB2EE00775115 /* QredoPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoPrivate.h; sourceTree = "<group>"; };
@@ -562,7 +564,9 @@
 				0AE3E5C91A361D2900EF192A /* KeychainTransporter */,
 				0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */,
 				0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */,
+				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
 				0A6573F41A2F3B7200D5502E /* ConversationMQTTTests.m */,
+				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
 				0A6573F51A2F3B7200D5502E /* ConversationTests.h */,
 				0A6573F61A2F3B7200D5502E /* ConversationTests.m */,
 				0A6573F81A2F3B7200D5502E /* HighwatermarksTests.m */,
@@ -595,6 +599,7 @@
 				0A7811B21AAA013400479973 /* RendezvousMultipleSubsription.swift */,
 				7831F07E1AB327A000C8C10C /* OwnershipSignatureTests.m */,
 				0AA38FCF1AD6E8E000D2F391 /* VaultCryptoTests.m */,
+				0A759D701AE15EE60032185D /* ConversationCryptoTests.m */,
 			);
 			path = QredoSDKTests;
 			sourceTree = "<group>";
@@ -895,7 +900,6 @@
 		DC1B55141A81245100D2F8B1 /* Rendezvous */ = {
 			isa = PBXGroup;
 			children = (
-				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
 				DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */,
 				78B88F5D1A653E78009E3B01 /* RendezvousEd25519HelperTests.m */,
 				DCC22DB91A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m */,
@@ -1408,6 +1412,7 @@
 				7810CC5E1A388BCE00421892 /* KeychainReceiverMock.swift in Sources */,
 				DCC22DBA1A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m in Sources */,
 				7810CC5D1A388BCE00421892 /* KeychainSenderMock.swift in Sources */,
+				0A759D711AE15EE60032185D /* ConversationCryptoTests.m in Sources */,
 				0A65740D1A2F3B7200D5502E /* ConversationMQTTTests.m in Sources */,
 				DCCEED691A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m in Sources */,
 				0A6574121A2F3B7200D5502E /* QredoRendezvousCryptoTest.m in Sources */,
