@@ -77,7 +77,6 @@
 		0AADB0841A15848C00CFD014 /* QredoRendezvous.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0AADB0851A15848C00CFD014 /* QredoConversation.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A9DDDFA19EC2F2700B4248C /* QredoConversation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0ABF4D971A5D84F20096BF19 /* ConversationBlockDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */; };
-		0AD259171A2F410500FC8942 /* libqredosdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libqredosdk.a */; };
 		0AD2595B1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD259591A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h */; };
 		0AD2595C1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD2595A1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m */; };
 		0AD2595F1A2F7CD800FC8942 /* QredoKeychainSenderQR.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD2595D1A2F7CD800FC8942 /* QredoKeychainSenderQR.h */; };
@@ -102,6 +101,7 @@
 		0AE25AE61AB90B0200C10F02 /* QredoSigner.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE25AE41AB90B0200C10F02 /* QredoSigner.m */; };
 		0AEE5C5E1A5C13B10018BE19 /* ControlMessagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE5C5D1A5C13B10018BE19 /* ControlMessagesTests.swift */; };
 		0AEE5C601A5C3B110018BE19 /* RendezvousBlockDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */; };
+		15B7E5715457C1138F305F7E /* libPods-QredoSDKTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A2D6A83B8036703AC57C91D7 /* libPods-QredoSDKTests.a */; };
 		22683D78E7D4E008255CBD4B /* libPods-CryptoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7422C5016D6775275AF5625F /* libPods-CryptoTests.a */; };
 		7810CC5A1A388BCE00421892 /* KeychainTransporterSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */; };
 		7810CC5B1A388BCE00421892 /* KeychainTransporterReceiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */; };
@@ -214,6 +214,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		03BF2FF191EA50C42BF48038 /* Pods-QredoSDKTests.testcoverage.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDKTests.testcoverage.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests.testcoverage.xcconfig"; sourceTree = "<group>"; };
+		096EC1B3958F6045487A2FC2 /* Pods-QredoSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDKTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests.release.xcconfig"; sourceTree = "<group>"; };
 		0A0693B91AC3253700E3ECD4 /* NSData+ParseHex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+ParseHex.h"; sourceTree = "<group>"; };
 		0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+ParseHex.m"; sourceTree = "<group>"; };
 		0A1035291A389DFD002479D9 /* QredoKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychain.h; sourceTree = "<group>"; };
@@ -403,6 +405,8 @@
 		78F868D81A5F1A37009CAFFE /* QredoBase58.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoBase58.h; sourceTree = "<group>"; };
 		78F868D91A5F1A37009CAFFE /* QredoBase58.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoBase58.m; sourceTree = "<group>"; };
 		78FD009A1ADD4D1600CC3226 /* Qredo+Attestation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Qredo+Attestation.m"; sourceTree = "<group>"; };
+		A2D6A83B8036703AC57C91D7 /* libPods-QredoSDKTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDKTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A47F0CAFF626850217E1B6C6 /* Pods-QredoSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDKTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C6F08B75EA9612EEFBB981E6 /* Pods-QredoSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LinguaFrancaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C87E16460AC916F97E987172 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -447,7 +451,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AD259171A2F410500FC8942 /* libqredosdk.a in Frameworks */,
+				15B7E5715457C1138F305F7E /* libPods-QredoSDKTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,7 +568,6 @@
 				0AE3E5C91A361D2900EF192A /* KeychainTransporter */,
 				0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */,
 				0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */,
-				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
 				0A6573F41A2F3B7200D5502E /* ConversationMQTTTests.m */,
 				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
 				0A6573F51A2F3B7200D5502E /* ConversationTests.h */,
@@ -837,6 +840,7 @@
 				C87E16460AC916F97E987172 /* libPods.a */,
 				7422C5016D6775275AF5625F /* libPods-CryptoTests.a */,
 				C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */,
+				A2D6A83B8036703AC57C91D7 /* libPods-QredoSDKTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -853,6 +857,9 @@
 				C6F08B75EA9612EEFBB981E6 /* Pods-QredoSDK.debug.xcconfig */,
 				D8C39E0D9D92F594981A8B82 /* Pods-QredoSDK.testcoverage.xcconfig */,
 				51E7849C0ADBBFC7048B488A /* Pods-QredoSDK.release.xcconfig */,
+				A47F0CAFF626850217E1B6C6 /* Pods-QredoSDKTests.debug.xcconfig */,
+				03BF2FF191EA50C42BF48038 /* Pods-QredoSDKTests.testcoverage.xcconfig */,
+				096EC1B3958F6045487A2FC2 /* Pods-QredoSDKTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -995,10 +1002,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A16F8D219C358B400639779 /* Build configuration list for PBXNativeTarget "QredoSDKTests" */;
 			buildPhases = (
+				88FB723E0F8363D46D19F341 /* Check Pods Manifest.lock */,
 				DCCB414D1A94E5BE00FEFE04 /* ShellScript */,
 				0A16F8C719C358B400639779 /* Sources */,
 				0A16F8C819C358B400639779 /* Frameworks */,
 				0A16F8C919C358B400639779 /* Resources */,
+				4945EFF30414537B47DF3BAA /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1152,6 +1161,36 @@
 
 /* Begin PBXShellScriptBuildPhase section */
 		195D91B54897DC81CC9DD289 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		4945EFF30414537B47DF3BAA /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		88FB723E0F8363D46D19F341 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1605,6 +1644,7 @@
 		};
 		0A16F8D319C358B400639779 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A47F0CAFF626850217E1B6C6 /* Pods-QredoSDKTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1660,6 +1700,7 @@
 		};
 		0A16F8D419C358B400639779 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 096EC1B3958F6045487A2FC2 /* Pods-QredoSDKTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1946,6 +1987,7 @@
 		};
 		0AB2D7671AD3FB0D00843A22 /* TestCoverage */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 03BF2FF191EA50C42BF48038 /* Pods-QredoSDKTests.testcoverage.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
