@@ -1,13 +1,13 @@
 #import "QredoVaultTests.h"
 
-@interface QredoVaultMQTTTests : QredoVaultTests
+@interface QredoVaultWebSocketTests : QredoVaultTests
 
 @end
 
-@implementation QredoVaultMQTTTests
+@implementation QredoVaultWebSocketTests
 
 - (void)setUp {
-    self.transportType = QredoClientOptionsTransportTypeMQTT;
+    self.transportType = QredoClientOptionsTransportTypeWebSockets;
     [super setUp];
 }
 
@@ -46,4 +46,5 @@
 - (void)testVaultItemMetadataAndMutableMetadata {
     [super testVaultItemMetadataAndMutableMetadata];
 }
+
 @end

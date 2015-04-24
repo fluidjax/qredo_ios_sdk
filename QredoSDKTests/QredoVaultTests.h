@@ -1,8 +1,9 @@
 #import <XCTest/XCTest.h>
+#import "Qredo.h"
 
 @interface QredoVaultTests : XCTestCase
 
-@property BOOL useMQTT;
+@property (nonatomic) QredoClientOptionsTransportType transportType;
 
 - (void)authoriseClient;
 - (void)testPersistanceVaultId;
