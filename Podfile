@@ -29,8 +29,6 @@ target 'LinguaFrancaTests' do
 end
 
 target 'QredoSDKTests' do
-    pod "LinguaFranca", :path => "../LinguaFranca/LinguaFranca.podspec"
-    pod "QredoSDK", :path => "."
 end
 
 post_install do |installer_representation|
