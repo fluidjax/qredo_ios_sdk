@@ -103,6 +103,7 @@
 		0AEE5C601A5C3B110018BE19 /* RendezvousBlockDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */; };
 		15B7E5715457C1138F305F7E /* libPods-QredoSDKTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A2D6A83B8036703AC57C91D7 /* libPods-QredoSDKTests.a */; };
 		22683D78E7D4E008255CBD4B /* libPods-CryptoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7422C5016D6775275AF5625F /* libPods-CryptoTests.a */; };
+		7805FF6D1AEA5B12006AF2FE /* QredoVaultWebSocketTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7805FF6C1AEA5B12006AF2FE /* QredoVaultWebSocketTests.m */; };
 		7810CC5A1A388BCE00421892 /* KeychainTransporterSenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD99E891A31C8A1004F25E1 /* KeychainTransporterSenderTests.swift */; };
 		7810CC5B1A388BCE00421892 /* KeychainTransporterReceiverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3E5C71A3616AB00EF192A /* KeychainTransporterReceiverTests.swift */; };
 		7810CC5C1A388BCE00421892 /* KeychainTransporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5D371B1A371BF900A9D1A2 /* KeychainTransporterTests.swift */; };
@@ -352,6 +353,7 @@
 		4B89221D725D983055FA30F8 /* Pods-CryptoTests.testcoverage.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CryptoTests.testcoverage.xcconfig"; path = "Pods/Target Support Files/Pods-CryptoTests/Pods-CryptoTests.testcoverage.xcconfig"; sourceTree = "<group>"; };
 		51E7849C0ADBBFC7048B488A /* Pods-QredoSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.release.xcconfig"; sourceTree = "<group>"; };
 		7422C5016D6775275AF5625F /* libPods-CryptoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CryptoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7805FF6C1AEA5B12006AF2FE /* QredoVaultWebSocketTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultWebSocketTests.m; sourceTree = "<group>"; };
 		7816B8EA1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainArchiverForAppleKeychain.h; sourceTree = "<group>"; };
 		7816B8EB1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainArchiverForAppleKeychain.m; sourceTree = "<group>"; };
 		781D137C1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainQRCodeScannerViewController.h; sourceTree = "<group>"; };
@@ -585,6 +587,7 @@
 				0A6574071A2F3B7200D5502E /* QredoVaultTests.h */,
 				0A6574081A2F3B7200D5502E /* QredoVaultTests.m */,
 				0A6574091A2F3B7200D5502E /* QredoVaultUpdateMQTTTests.m */,
+				7805FF6C1AEA5B12006AF2FE /* QredoVaultWebSocketTests.m */,
 				0A65740A1A2F3B7200D5502E /* QredoVaultUpdateTests.h */,
 				0A65740B1A2F3B7200D5502E /* QredoVaultUpdateTests.m */,
 				0A65740C1A2F3B7200D5502E /* RendezvousListenerTests.m */,
@@ -1425,6 +1428,7 @@
 				0A6574131A2F3B7200D5502E /* QredoRendezvousMQTTTests.m in Sources */,
 				0A6574111A2F3B7200D5502E /* NSDictionary+Contains.m in Sources */,
 				7810CC5B1A388BCE00421892 /* KeychainTransporterReceiverTests.swift in Sources */,
+				7805FF6D1AEA5B12006AF2FE /* QredoVaultWebSocketTests.m in Sources */,
 				0A19C0231A6EA0A4004B5783 /* BaseConversation.swift in Sources */,
 				0A38C5FA1A8CDC2800C458A7 /* AuthenticationProtocolBlockDelegate.swift in Sources */,
 				0A6574151A2F3B7200D5502E /* QredoSExpressionTests.m in Sources */,
