@@ -39,36 +39,40 @@
     NSLog(@"My private key: %@", myPrivateKeyData);
     NSLog(@"Your public key: %@", yourPublicKeyData);
 
+    NSData *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
+                                                                     yourPublicKey:yourPublicKey];
+
     NSData *requesterInboundEncryptionKey
-    = [_conversationCrypto requesterInboundEncryptionKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
 
     NSData *requesterInboundAuthenticationKey
-    = [_conversationCrypto requesterInboundAuthenticationKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
 
     NSData *requesterInboundQueueSeed
-    = [_conversationCrypto requesterInboundQueueSeedWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
 
     QredoED25519SigningKey *requesterOwnershipKeyPair
     = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
 
 
     NSData *responderInboundEncryptionKey
-    = [_conversationCrypto responderInboundEncryptionKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
 
     NSData *responderInboundAuthenticationKey
-    = [_conversationCrypto responderInboundAuthenticationKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
 
     NSData *responderInboundQueueSeed
-    = [_conversationCrypto responderInboundQueueSeedWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
 
     QredoED25519SigningKey *responderOwnershipKeyPair
     = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
 
 
     QredoQUID *conversationId
-    = [_conversationCrypto conversationIdWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto conversationIdWithMasterKey:masterKey];
 
 
+    NSLog(@"Conversation master key: %@", masterKey);
     NSLog(@"Conversation ID: %@", conversationId);
 
     NSLog(@"Requester inbound:");
@@ -105,34 +109,37 @@
     QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
     QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
 
+    NSData *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
+                                                                     yourPublicKey:yourPublicKey];
+
     NSData *requesterInboundEncryptionKey
-    = [_conversationCrypto requesterInboundEncryptionKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
 
     NSData *requesterInboundAuthenticationKey
-    = [_conversationCrypto requesterInboundAuthenticationKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
 
     NSData *requesterInboundQueueSeed
-    = [_conversationCrypto requesterInboundQueueSeedWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
 
     QredoED25519SigningKey *requesterOwnershipKeyPair
     = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
 
 
     NSData *responderInboundEncryptionKey
-    = [_conversationCrypto responderInboundEncryptionKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
 
     NSData *responderInboundAuthenticationKey
-    = [_conversationCrypto responderInboundAuthenticationKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
 
     NSData *responderInboundQueueSeed
-    = [_conversationCrypto responderInboundQueueSeedWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
 
     QredoED25519SigningKey *responderOwnershipKeyPair
     = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
 
 
     QredoQUID *conversationId
-    = [_conversationCrypto conversationIdWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    = [_conversationCrypto conversationIdWithMasterKey:masterKey];
 
 
     NSData *requesterInboundEncryptionKeyExpected

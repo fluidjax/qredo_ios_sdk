@@ -18,27 +18,21 @@
 - (NSData *)encryptMessage:(QLFConversationMessageLF *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey;
 - (QLFConversationMessageLF *)decryptMessage:(NSData *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError**)error;
 
-- (NSData *)requesterInboundEncryptionKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+- (NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                                    yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
-- (NSData *)requesterInboundAuthenticationKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                                yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+- (NSData *)requesterInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
 
+- (NSData *)requesterInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
 
-- (NSData *)requesterInboundQueueSeedWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+- (NSData *)requesterInboundQueueSeedWithMasterKey:(NSData *)masterKey;
 
+- (NSData *)responderInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
 
-- (NSData *)responderInboundEncryptionKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+- (NSData *)responderInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
 
-- (NSData *)responderInboundAuthenticationKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                                yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+- (NSData *)responderInboundQueueSeedWithMasterKey:(NSData *)masterKey;
 
-- (NSData *)responderInboundQueueSeedWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
-
-- (QredoQUID *)conversationIdWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+- (QredoQUID *)conversationIdWithMasterKey:(NSData *)masterKey;
 
 @end
