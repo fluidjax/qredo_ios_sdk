@@ -257,16 +257,16 @@
 
 @interface QLFEncryptedConversationItem : NSObject<QredoMarshallable>
 
-@property (readonly) NSData *encryptedBody;
+@property (readonly) NSData *encryptedMessage;
 @property (readonly) QLFAuthCode *authCode;
 
-+ (QLFEncryptedConversationItem *)encryptedConversationItemWithEncryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode;
++ (QLFEncryptedConversationItem *)encryptedConversationItemWithEncryptedMessage:(NSData *)encryptedMessage authCode:(QLFAuthCode *)authCode;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithEncryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode;
+- (instancetype)initWithEncryptedMessage:(NSData *)encryptedMessage authCode:(QLFAuthCode *)authCode;
 - (NSComparisonResult)compare:(QLFEncryptedConversationItem *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToEncryptedConversationItem:(QLFEncryptedConversationItem *)other;

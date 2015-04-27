@@ -986,10 +986,10 @@
 
 
 
-+ (QLFEncryptedConversationItem *)encryptedConversationItemWithEncryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode
++ (QLFEncryptedConversationItem *)encryptedConversationItemWithEncryptedMessage:(NSData *)encryptedMessage authCode:(QLFAuthCode *)authCode
 {
 
-    return [[QLFEncryptedConversationItem alloc] initWithEncryptedBody:encryptedBody authCode:authCode];
+    return [[QLFEncryptedConversationItem alloc] initWithEncryptedMessage:encryptedMessage authCode:authCode];
        
 }
 
@@ -1002,8 +1002,8 @@
                 [QredoPrimitiveMarshallers byteSequenceMarshaller]([e authCode], writer);
             [writer writeEnd];
 
-            [writer writeFieldStartWithFieldName:@"encryptedBody"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e encryptedBody], writer);
+            [writer writeFieldStartWithFieldName:@"encryptedMessage"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e encryptedMessage], writer);
             [writer writeEnd];
 
         [writer writeEnd];
@@ -1017,20 +1017,20 @@
             [reader readFieldStart]; // TODO assert that field name is 'authCode'
                 QLFAuthCode *authCode = (QLFAuthCode *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
-            [reader readFieldStart]; // TODO assert that field name is 'encryptedBody'
-                NSData *encryptedBody = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readFieldStart]; // TODO assert that field name is 'encryptedMessage'
+                NSData *encryptedMessage = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
             [reader readEnd];
         [reader readEnd];
-        return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedBody:encryptedBody authCode:authCode];
+        return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:encryptedMessage authCode:authCode];
     };
 }
 
-- (instancetype)initWithEncryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode
+- (instancetype)initWithEncryptedMessage:(NSData *)encryptedMessage authCode:(QLFAuthCode *)authCode
 {
 
     self = [super init];
     if (self) {
-        _encryptedBody = encryptedBody;
+        _encryptedMessage = encryptedMessage;
         _authCode = authCode;
     }
     return self;
@@ -1040,7 +1040,7 @@
 - (NSComparisonResult)compare:(QLFEncryptedConversationItem *)other
 {
 
-    QREDO_COMPARE_OBJECT(encryptedBody);
+    QREDO_COMPARE_OBJECT(encryptedMessage);
     QREDO_COMPARE_OBJECT(authCode);
     return NSOrderedSame;
        
@@ -1060,7 +1060,7 @@
         return YES;
     if (!other || ![other.class isEqual:self.class])
         return NO;
-    if (_encryptedBody != other.encryptedBody && ![_encryptedBody isEqual:other.encryptedBody])
+    if (_encryptedMessage != other.encryptedMessage && ![_encryptedMessage isEqual:other.encryptedMessage])
         return NO;
     if (_authCode != other.authCode && ![_authCode isEqual:other.authCode])
         return NO;
@@ -1072,7 +1072,7 @@
 {
 
     NSUInteger hash = 0;
-    hash = hash * 31u + [_encryptedBody hash];
+    hash = hash * 31u + [_encryptedMessage hash];
     hash = hash * 31u + [_authCode hash];
     return hash;
        

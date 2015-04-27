@@ -53,8 +53,8 @@
     
     NSData *auth = [_crypto getAuthCodeWithKey:authKey data:serialiedEncryptedMessage];
 
-    return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedBody:serialiedEncryptedMessage
-                                                                           authCode:auth];
+    return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:serialiedEncryptedMessage
+                                                                              authCode:auth];
 }
 
 - (QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError**)error
@@ -72,7 +72,7 @@
         return nil;
     }
 
-    NSData *encryptedData = encryptedMessage.encryptedBody;
+    NSData *encryptedData = encryptedMessage.encryptedMessage;
 
 
     NSData *deserializedEncryptedData = [QredoPrimitiveMarshallers unmarshalObject:encryptedData
