@@ -65,45 +65,31 @@ static NSString *const QredoKeychainPassword = @"Password123";
     return self;
 }
 
-
-
 - (instancetype)initWithDefaultTrustedRoots
 {
-    return [self initWithMQTT:NO resetData:NO pinnedCertificate:nil];
+    self = [super init];
+    if (self) {
+        _certificate = nil;
+    }
+    return self;
 }
 
 - (instancetype)initDefaultPinnnedCertificate
 {
-    return [self initWithMQTT:NO resetData:NO pinnedCertificate:[self createDefaultPinnedCertificate]];
+    self = [super init];
+    if (self) {
+        _certificate = [self createDefaultPinnedCertificate];
+    }
+    return self;
 }
 
 - (instancetype)initWithPinnedCertificate:(QredoCertificate *)certificate
 {
-    NSAssert(certificate, @"In -initWithPinnedCertificate: a certificate must be provided.");
-    return [self initWithMQTT:NO resetData:NO pinnedCertificate:certificate];
-}
-
-- (instancetype)initWithMQTT:(BOOL)useMQTT
-{
-    return [self initWithMQTT:useMQTT resetData:NO pinnedCertificate:[self createDefaultPinnedCertificate]];
-}
-
-- (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData
-{
-    return [self initWithMQTT:useMQTT resetData:resetData pinnedCertificate:[self createDefaultPinnedCertificate]];
-}
-
-- (instancetype)initWithResetData:(BOOL)resetData
-{
-    return [self initWithMQTT:NO resetData:resetData pinnedCertificate:[self createDefaultPinnedCertificate]];
-}
-
-- (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData pinnedCertificate:(QredoCertificate *)certificate
-{
     self = [super init];
-    self.transportType = useMQTT ? QredoClientOptionsTransportTypeMQTT : QredoClientOptionsTransportTypeHTTP;
-    self.resetData = resetData;
-    _certificate = certificate;
+    if (self) {
+        NSAssert(certificate, @"In -initWithPinnedCertificate: a certificate must be provided.");
+        _certificate = certificate;
+    }
     return self;
 }
 

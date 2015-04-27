@@ -40,15 +40,6 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 - (instancetype)initDefaultPinnnedCertificate;
 - (instancetype)initWithPinnedCertificate:(QredoCertificate *)certificate;
 
-/** @deprecated */
-- (instancetype)initWithMQTT:(BOOL)useMQTT ;
-
-/** @deprecated */
-- (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData;
-
-/** @deprecated */
-- (instancetype)initWithResetData:(BOOL)resetData;
-
 @end
 
 /** Qredo Client */
