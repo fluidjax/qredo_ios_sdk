@@ -1,19 +1,19 @@
 #import "QredoRendezvousTests.h"
 
-@interface QredoRendezvousMQTTTests : QredoRendezvousTests
+@interface QredoRendezvousWebSocketTests : QredoRendezvousTests
 
 @end
 
-@implementation QredoRendezvousMQTTTests
+@implementation QredoRendezvousWebSocketTests
 
 - (void)setUp {
-    self.transportType = QredoClientOptionsTransportTypeMQTT;
+    self.transportType = QredoClientOptionsTransportTypeWebSockets;
     [super setUp];
 }
 
 // TODO: DH - restore modified tests
 - (void)testCreateRendezvous_NoSigningHandler {
-//    [super testCreateRendezvous_NoSigningHandler];
+    //    [super testCreateRendezvous_NoSigningHandler];
     XCTFail(@"Restore modified tests");
 }
 
@@ -23,7 +23,7 @@
 }
 // TODO: DH - restore modified tests
 - (void)testCreateRendezvous_NilSigningHandler {
-//    [super testCreateRendezvous_NilSigningHandler];
+    //    [super testCreateRendezvous_NilSigningHandler];
     XCTFail(@"Restore modified tests");
 }
 
@@ -36,7 +36,7 @@
 {
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = YES;
-
+    
     for (int i = 0; i < 10; i++)
     {
         NSLog(@"Test %d", i);

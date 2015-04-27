@@ -73,13 +73,22 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }
 }
 
+- (QredoClientOptions *)clientOptionsWithResetData:(BOOL)resetData
+{
+    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+    clientOptions.transportType = self.transportType;
+    clientOptions.resetData = resetData;
+    
+    return clientOptions;
+}
+
 - (void)authoriseClient
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
     [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[self clientOptionsWithResetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -162,7 +171,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
     [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[self clientOptionsWithResetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
@@ -240,7 +249,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     NSLog(@"Creating client 2");
     [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[self clientOptionsWithResetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
                                   NSLog(@"Authorize client completion handler called");
                                   XCTAssertNotNil(newClient);
@@ -471,7 +480,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[self clientOptionsWithResetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
@@ -552,7 +561,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[self clientOptionsWithResetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);

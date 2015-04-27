@@ -1,13 +1,13 @@
 #import "QredoVaultUpdateTests.h"
 
-@interface QredoVaultUpdateMQTTTests : QredoVaultUpdateTests
+@interface QredoVaultUpdateWebSocketTests : QredoVaultUpdateTests
 
 @end
 
-@implementation QredoVaultUpdateMQTTTests
+@implementation QredoVaultUpdateWebSocketTests
 
 - (void)setUp {
-    self.transportType = QredoClientOptionsTransportTypeMQTT;
+    self.transportType = QredoClientOptionsTransportTypeWebSockets;
     [super setUp];
 }
 
@@ -22,6 +22,5 @@
 - (void)testDeleteItems {
     [super testDeleteItems];
 }
-
 
 @end
