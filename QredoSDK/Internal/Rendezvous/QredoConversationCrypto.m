@@ -89,64 +89,47 @@
     return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData unmarshaller:[QLFConversationMessageLF unmarshaller]];
 }
 
-
-- (NSData *)requesterInboundEncryptionKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey
+- (NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                                    yourPublicKey:(QredoDhPublicKey *)yourPublicKey
 {
-    return [_crypto getDiffieHellmanSecretWithSalt:SALT_REQUESTER_INBOUND_ENCKEY
-                                      myPrivateKey:myPrivateKey
-                                     yourPublicKey:yourPublicKey];
-
+    return [_crypto getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
 }
 
-- (NSData *)requesterInboundAuthenticationKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                                yourPublicKey:(QredoDhPublicKey *)yourPublicKey
+- (NSData *)requesterInboundEncryptionKeyWithMasterKey:(NSData *)masterKey
 {
-    return [_crypto getDiffieHellmanSecretWithSalt:SALT_REQUESTER_INBOUND_AUTHKEY
-                                      myPrivateKey:myPrivateKey
-                                     yourPublicKey:yourPublicKey];
+    return [QredoCrypto hkdfSha256WithSalt:SALT_REQUESTER_INBOUND_ENCKEY initialKeyMaterial:masterKey info:nil];
 }
 
-
-- (NSData *)requesterInboundQueueSeedWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey
+- (NSData *)requesterInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey
 {
-    return [_crypto getDiffieHellmanSecretWithSalt:SALT_REQUESTER_INBOUND_QUEUE
-                                      myPrivateKey:myPrivateKey
-                                     yourPublicKey:yourPublicKey];
+    return [QredoCrypto hkdfSha256WithSalt:SALT_REQUESTER_INBOUND_AUTHKEY initialKeyMaterial:masterKey info:nil];
 }
 
 
-- (NSData *)responderInboundEncryptionKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey
+- (NSData *)requesterInboundQueueSeedWithMasterKey:(NSData *)masterKey
 {
-    return [_crypto getDiffieHellmanSecretWithSalt:SALT_RESPONDER_INBOUND_ENCKEY
-                                      myPrivateKey:myPrivateKey
-                                     yourPublicKey:yourPublicKey];
+    return [QredoCrypto hkdfSha256WithSalt:SALT_REQUESTER_INBOUND_QUEUE initialKeyMaterial:masterKey info:nil];
 }
 
-- (NSData *)responderInboundAuthenticationKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                                yourPublicKey:(QredoDhPublicKey *)yourPublicKey
+
+- (NSData *)responderInboundEncryptionKeyWithMasterKey:(NSData *)masterKey
 {
-    return [_crypto getDiffieHellmanSecretWithSalt:SALT_RESPONDER_INBOUND_AUTHKEY
-                                      myPrivateKey:myPrivateKey
-                                     yourPublicKey:yourPublicKey];
+    return [QredoCrypto hkdfSha256WithSalt:SALT_RESPONDER_INBOUND_ENCKEY initialKeyMaterial:masterKey info:nil];
 }
 
-- (NSData *)responderInboundQueueSeedWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey
+- (NSData *)responderInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey
 {
-    return [_crypto getDiffieHellmanSecretWithSalt:SALT_RESPONDER_INBOUND_QUEUE
-                                      myPrivateKey:myPrivateKey
-                                     yourPublicKey:yourPublicKey];
+    return [QredoCrypto hkdfSha256WithSalt:SALT_RESPONDER_INBOUND_AUTHKEY initialKeyMaterial:masterKey info:nil];
 }
 
-- (QredoQUID *)conversationIdWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                yourPublicKey:(QredoDhPublicKey *)yourPublicKey
+- (NSData *)responderInboundQueueSeedWithMasterKey:(NSData *)masterKey
 {
-    NSData *conversationIdData = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_ID
-                                                            myPrivateKey:myPrivateKey
-                                                           yourPublicKey:yourPublicKey];
+    return [QredoCrypto hkdfSha256WithSalt:SALT_RESPONDER_INBOUND_QUEUE initialKeyMaterial:masterKey info:nil];
+}
+
+- (QredoQUID *)conversationIdWithMasterKey:(NSData *)masterKey
+{
+    NSData *conversationIdData = [QredoCrypto hkdfSha256WithSalt:SALT_CONVERSATION_ID initialKeyMaterial:masterKey info:nil];
     return [[QredoQUID alloc] initWithQUIDData:conversationIdData];
 }
 

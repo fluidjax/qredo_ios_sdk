@@ -324,24 +324,20 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _myPrivateKey = privateKey;
     _yourPublicKey = publicKey;
 
+    NSData *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:privateKey
+                                                                     yourPublicKey:publicKey];
 
-    NSData *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMyPrivateKey:privateKey
-                                                                                           yourPublicKey:publicKey];
+    NSData *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
 
-    NSData *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMyPrivateKey:privateKey
-                                                                                               yourPublicKey:publicKey];
+    NSData *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
 
-    NSData *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMyPrivateKey:privateKey
-                                                                                           yourPublicKey:publicKey];
+    NSData *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
 
-    NSData *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMyPrivateKey:privateKey
-                                                                                               yourPublicKey:publicKey];
+    NSData *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
 
-    NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMyPrivateKey:privateKey
-                                                                                                yourPublicKey:publicKey];
+    NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
 
-    NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMyPrivateKey:privateKey
-                                                                                                yourPublicKey:publicKey];
+    NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
 
     QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
     QredoED25519SigningKey *responderInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueKeyPairSalt];
@@ -371,8 +367,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         _outboundSigningKey = requesterInboundQueueSigningKey;
     }
 
-    _metadata.conversationId = [_conversationCrypto conversationIdWithMyPrivateKey:privateKey
-                                                                     yourPublicKey:publicKey];
+    _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];
 }
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
