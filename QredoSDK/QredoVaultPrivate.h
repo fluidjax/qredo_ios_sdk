@@ -23,6 +23,7 @@
 
 - (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan;
 - (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan vaultId:(QredoQUID*)vaultId;
+- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan signingKeySeed:(NSData *)signingKeySeed;
 
 - (QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
 - (QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;
