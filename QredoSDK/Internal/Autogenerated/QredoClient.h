@@ -6,11 +6,11 @@
 #import "QredoServiceInvoker.h"
 
 #define QLFAnonymousToken1024 NSData
+#define QLFAuthCode NSData
 #define QLFAuthenticationCode NSData
 #define QLFAuthenticationKey256 NSData
 #define QLFBlindedToken QLFAnonymousToken1024
 #define QLFBlindingKey NSData
-#define QLFConversationItem NSData
 #define QLFConversationSequenceValue NSData
 #define QLFEncryptionKey256 NSData
 #define QLFFetchSize int32_t
@@ -30,7 +30,6 @@
 #define QLFIdentityCertificate NSString
 #define QLFTimestamp int64_t
 #define QLFTransCap NSData
-#define QLFVaultAuthCode NSData
 #define QLFVaultId QredoQUID
 #define QLFVaultItemId QredoQUID
 #define QLFVaultOwnershipPrivateKey NSData
@@ -56,26 +55,6 @@
 @end
 
 
-@interface QLFConversationItemWithSequenceValue : NSObject<QredoMarshallable>
-
-@property (readonly) QLFConversationItem *item;
-@property (readonly) QLFConversationSequenceValue *sequenceValue;
-
-+ (QLFConversationItemWithSequenceValue *)conversationItemWithSequenceValueWithItem:(QLFConversationItem *)item sequenceValue:(QLFConversationSequenceValue *)sequenceValue;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithItem:(QLFConversationItem *)item sequenceValue:(QLFConversationSequenceValue *)sequenceValue;
-- (NSComparisonResult)compare:(QLFConversationItemWithSequenceValue *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToConversationItemWithSequenceValue:(QLFConversationItemWithSequenceValue *)other;
-- (NSUInteger)hash;
-
-@end
-
-
 @interface QLFConversationPublishResult : NSObject<QredoMarshallable>
 
 @property (readonly) QLFConversationSequenceValue *sequenceValue;
@@ -90,27 +69,6 @@
 - (NSComparisonResult)compare:(QLFConversationPublishResult *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToConversationPublishResult:(QLFConversationPublishResult *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFConversationQueryItemsResult : NSObject<QredoMarshallable>
-
-@property (readonly) NSArray *items;
-@property (readonly) QLFConversationSequenceValue *maxSequenceValue;
-@property (readonly) BOOL current;
-
-+ (QLFConversationQueryItemsResult *)conversationQueryItemsResultWithItems:(NSArray *)items maxSequenceValue:(QLFConversationSequenceValue *)maxSequenceValue current:(BOOL)current;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithItems:(NSArray *)items maxSequenceValue:(QLFConversationSequenceValue *)maxSequenceValue current:(BOOL)current;
-- (NSComparisonResult)compare:(QLFConversationQueryItemsResult *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToConversationQueryItemsResult:(QLFConversationQueryItemsResult *)other;
 - (NSUInteger)hash;
 
 @end
@@ -292,6 +250,67 @@
 - (NSComparisonResult)compare:(QLFQRT *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToQRT:(QLFQRT *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFEncryptedConversationItem : NSObject<QredoMarshallable>
+
+@property (readonly) NSData *encryptedBody;
+@property (readonly) QLFAuthCode *authCode;
+
++ (QLFEncryptedConversationItem *)encryptedConversationItemWithEncryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithEncryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode;
+- (NSComparisonResult)compare:(QLFEncryptedConversationItem *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToEncryptedConversationItem:(QLFEncryptedConversationItem *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFConversationItemWithSequenceValue : NSObject<QredoMarshallable>
+
+@property (readonly) QLFEncryptedConversationItem *item;
+@property (readonly) QLFConversationSequenceValue *sequenceValue;
+
++ (QLFConversationItemWithSequenceValue *)conversationItemWithSequenceValueWithItem:(QLFEncryptedConversationItem *)item sequenceValue:(QLFConversationSequenceValue *)sequenceValue;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithItem:(QLFEncryptedConversationItem *)item sequenceValue:(QLFConversationSequenceValue *)sequenceValue;
+- (NSComparisonResult)compare:(QLFConversationItemWithSequenceValue *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToConversationItemWithSequenceValue:(QLFConversationItemWithSequenceValue *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFConversationQueryItemsResult : NSObject<QredoMarshallable>
+
+@property (readonly) NSArray *items;
+@property (readonly) QLFConversationSequenceValue *maxSequenceValue;
+@property (readonly) BOOL current;
+
++ (QLFConversationQueryItemsResult *)conversationQueryItemsResultWithItems:(NSArray *)items maxSequenceValue:(QLFConversationSequenceValue *)maxSequenceValue current:(BOOL)current;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithItems:(NSArray *)items maxSequenceValue:(QLFConversationSequenceValue *)maxSequenceValue current:(BOOL)current;
+- (NSComparisonResult)compare:(QLFConversationQueryItemsResult *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToConversationQueryItemsResult:(QLFConversationQueryItemsResult *)other;
 - (NSUInteger)hash;
 
 @end
@@ -1448,17 +1467,15 @@
 @property (readonly) QLFRendezvousAuthType *authenticationType;
 @property (readonly) QLFKeyPairLF *myKey;
 @property (readonly) QLFKeyLF *yourPublicKey;
-@property (readonly) QLFKeyLF *inboundBulkKey;
-@property (readonly) QLFKeyLF *outboundBulkKey;
 @property (readonly) NSSet *initialTransCap;
 
-+ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag amRendezvousOwner:(BOOL)amRendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey inboundBulkKey:(QLFKeyLF *)inboundBulkKey outboundBulkKey:(QLFKeyLF *)outboundBulkKey initialTransCap:(NSSet *)initialTransCap;
++ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag amRendezvousOwner:(BOOL)amRendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey initialTransCap:(NSSet *)initialTransCap;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag amRendezvousOwner:(BOOL)amRendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey inboundBulkKey:(QLFKeyLF *)inboundBulkKey outboundBulkKey:(QLFKeyLF *)outboundBulkKey initialTransCap:(NSSet *)initialTransCap;
+- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag amRendezvousOwner:(BOOL)amRendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey initialTransCap:(NSSet *)initialTransCap;
 - (NSComparisonResult)compare:(QLFConversationDescriptor *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToConversationDescriptor:(QLFConversationDescriptor *)other;
@@ -1657,44 +1674,44 @@
 @end
 
 
-@interface QLFConversationMessageMetaDataLF : NSObject<QredoMarshallable>
+@interface QLFConversationMessageMetadata : NSObject<QredoMarshallable>
 
 @property (readonly) QLFConversationMessageId *id;
 @property (readonly) NSSet *parentId;
 @property (readonly) QLFConversationSequenceValue *sequence;
 @property (readonly) NSString *dataType;
-@property (readonly) NSSet *summaryValues;
+@property (readonly) NSSet *values;
 
-+ (QLFConversationMessageMetaDataLF *)conversationMessageMetaDataLFWithID:(QLFConversationMessageId *)id parentId:(NSSet *)parentId sequence:(QLFConversationSequenceValue *)sequence dataType:(NSString *)dataType summaryValues:(NSSet *)summaryValues;
++ (QLFConversationMessageMetadata *)conversationMessageMetadataWithID:(QLFConversationMessageId *)id parentId:(NSSet *)parentId sequence:(QLFConversationSequenceValue *)sequence dataType:(NSString *)dataType values:(NSSet *)values;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithID:(QLFConversationMessageId *)id parentId:(NSSet *)parentId sequence:(QLFConversationSequenceValue *)sequence dataType:(NSString *)dataType summaryValues:(NSSet *)summaryValues;
-- (NSComparisonResult)compare:(QLFConversationMessageMetaDataLF *)other;
+- (instancetype)initWithID:(QLFConversationMessageId *)id parentId:(NSSet *)parentId sequence:(QLFConversationSequenceValue *)sequence dataType:(NSString *)dataType values:(NSSet *)values;
+- (NSComparisonResult)compare:(QLFConversationMessageMetadata *)other;
 - (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToConversationMessageMetaDataLF:(QLFConversationMessageMetaDataLF *)other;
+- (BOOL)isEqualToConversationMessageMetadata:(QLFConversationMessageMetadata *)other;
 - (NSUInteger)hash;
 
 @end
 
 
-@interface QLFConversationMessageLF : NSObject<QredoMarshallable>
+@interface QLFConversationMessage : NSObject<QredoMarshallable>
 
-@property (readonly) QLFConversationMessageMetaDataLF *metadata;
-@property (readonly) NSData *value;
+@property (readonly) QLFConversationMessageMetadata *metadata;
+@property (readonly) NSData *body;
 
-+ (QLFConversationMessageLF *)conversationMessageLFWithMetadata:(QLFConversationMessageMetaDataLF *)metadata value:(NSData *)value;
++ (QLFConversationMessage *)conversationMessageWithMetadata:(QLFConversationMessageMetadata *)metadata body:(NSData *)body;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithMetadata:(QLFConversationMessageMetaDataLF *)metadata value:(NSData *)value;
-- (NSComparisonResult)compare:(QLFConversationMessageLF *)other;
+- (instancetype)initWithMetadata:(QLFConversationMessageMetadata *)metadata body:(NSData *)body;
+- (NSComparisonResult)compare:(QLFConversationMessage *)other;
 - (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToConversationMessageLF:(QLFConversationMessageLF *)other;
+- (BOOL)isEqualToConversationMessage:(QLFConversationMessage *)other;
 - (NSUInteger)hash;
 
 @end
@@ -1895,15 +1912,15 @@
 
 @property (readonly) QLFVaultItemRef *ref;
 @property (readonly) NSData *encryptedMetadata;
-@property (readonly) QLFVaultAuthCode *authCode;
+@property (readonly) QLFAuthCode *authCode;
 
-+ (QLFEncryptedVaultItemHeader *)encryptedVaultItemHeaderWithRef:(QLFVaultItemRef *)ref encryptedMetadata:(NSData *)encryptedMetadata authCode:(QLFVaultAuthCode *)authCode;
++ (QLFEncryptedVaultItemHeader *)encryptedVaultItemHeaderWithRef:(QLFVaultItemRef *)ref encryptedMetadata:(NSData *)encryptedMetadata authCode:(QLFAuthCode *)authCode;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithRef:(QLFVaultItemRef *)ref encryptedMetadata:(NSData *)encryptedMetadata authCode:(QLFVaultAuthCode *)authCode;
+- (instancetype)initWithRef:(QLFVaultItemRef *)ref encryptedMetadata:(NSData *)encryptedMetadata authCode:(QLFAuthCode *)authCode;
 - (NSComparisonResult)compare:(QLFEncryptedVaultItemHeader *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)other;
@@ -1916,15 +1933,15 @@
 
 @property (readonly) QLFEncryptedVaultItemHeader *header;
 @property (readonly) NSData *encryptedBody;
-@property (readonly) QLFVaultAuthCode *authCode;
+@property (readonly) QLFAuthCode *authCode;
 
-+ (QLFEncryptedVaultItem *)encryptedVaultItemWithHeader:(QLFEncryptedVaultItemHeader *)header encryptedBody:(NSData *)encryptedBody authCode:(QLFVaultAuthCode *)authCode;
++ (QLFEncryptedVaultItem *)encryptedVaultItemWithHeader:(QLFEncryptedVaultItemHeader *)header encryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithHeader:(QLFEncryptedVaultItemHeader *)header encryptedBody:(NSData *)encryptedBody authCode:(QLFVaultAuthCode *)authCode;
+- (instancetype)initWithHeader:(QLFEncryptedVaultItemHeader *)header encryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode;
 - (NSComparisonResult)compare:(QLFEncryptedVaultItem *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToEncryptedVaultItem:(QLFEncryptedVaultItem *)other;
@@ -2002,7 +2019,7 @@
 + (QLFConversations *)conversationsWithServiceInvoker:(QredoServiceInvoker *)serviceInvoker;
 
 - (instancetype)initWithServiceInvoker:(QredoServiceInvoker *)serviceInvoker;
-- (void)publishWithQueueId:(QLFConversationQueueId *)queueId item:(QLFConversationItem *)item signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationPublishResult *result, NSError *error))completionHandler;
+- (void)publishWithQueueId:(QLFConversationQueueId *)queueId item:(QLFEncryptedConversationItem *)item signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationPublishResult *result, NSError *error))completionHandler;
 - (void)queryItemsWithQueueId:(QLFConversationQueueId *)queueId after:(NSSet *)after fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationQueryItemsResult *result, NSError *error))completionHandler;
 - (void)acknowledgeReceiptWithQueueId:(QLFConversationQueueId *)queueId upTo:(QLFConversationSequenceValue *)upTo signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationAckResult *result, NSError *error))completionHandler;
 - (void)subscribeWithQueueId:(QLFConversationQueueId *)queueId signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler;
