@@ -1632,7 +1632,6 @@
 		};
 		0A16F8D319C358B400639779 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A47F0CAFF626850217E1B6C6 /* Pods-QredoSDKTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1688,7 +1687,6 @@
 		};
 		0A16F8D419C358B400639779 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 096EC1B3958F6045487A2FC2 /* Pods-QredoSDKTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -1975,7 +1973,6 @@
 		};
 		0AB2D7671AD3FB0D00843A22 /* TestCoverage */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 03BF2FF191EA50C42BF48038 /* Pods-QredoSDKTests.testcoverage.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

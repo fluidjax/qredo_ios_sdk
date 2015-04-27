@@ -55,7 +55,7 @@ class RendezvousMultipleSubsription: XCTestCase {
         super.setUp()
 
         continueAfterFailure = false
-        let options = QredoClientOptions(MQTT: true, resetData: true)
+        let options = QredoClientOptions.qtu_clientOptionsWithTransportType(.MQTT, resetData: true)
 
         clients.authorize(self, options: options)
     }

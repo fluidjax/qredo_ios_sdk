@@ -15,7 +15,7 @@ class KeychainTransporterTests: XCTestCase {
 
         let senderClientExpectation = expectationWithDescription("sender client")
         let receiverClientExpectation = expectationWithDescription("receiver client")
-        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions(resetData: true)) { client, error in
+        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions.qtu_clientOptionsWithResetData(true)) { client, error in
             XCTAssertNil(error, "Failed to authenticate the test")
             XCTAssertNotNil(client, "Client should not be nil")
 
@@ -23,7 +23,7 @@ class KeychainTransporterTests: XCTestCase {
             senderClientExpectation.fulfill()
         }
 
-        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions(resetData: true)) { client, error in
+        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: QredoClientOptions.qtu_clientOptionsWithResetData(true)) { client, error in
             XCTAssertNil(error, "Failed to authenticate the test")
             XCTAssertNotNil(client, "Client should not be nil")
 
