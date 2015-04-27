@@ -10,6 +10,8 @@
 
 #import "QredoPrimitiveMarshallers.h"
 
+#import "QredoTestUtils.h"
+
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
@@ -143,7 +145,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
     if (!_qredoClient) {
         [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
                                      vaultDataTypes:nil
-                                            options:[[QredoClientOptions alloc] initWithMQTT:NO resetData:YES]
+                                            options:[QredoClientOptions qtu_clientOptionsWithResetData:YES]
                                   completionHandler:^(QredoClient *newClient, NSError *error)
          {
              _qredoClient = newClient;
@@ -436,7 +438,7 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
     if (!_qredoClient) {
         [QredoClient authorizeWithConversationTypes:@[@"test.chat"]
                                      vaultDataTypes:nil
-                                            options:[[QredoClientOptions alloc] initWithMQTT:NO resetData:YES]
+                                            options:[QredoClientOptions qtu_clientOptionsWithResetData:YES]
                                   completionHandler:^(QredoClient *newClient, NSError *error)
          {
              _qredoClient = newClient;
