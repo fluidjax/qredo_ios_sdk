@@ -16,13 +16,13 @@ class BaseConversation: XCTestCase {
     var conversationType = "com.qredo.test"
     let plainTextMessageType = "com.qredo.plaintext"
 
-    var useMQTT = false
+    var transportType = QredoClientOptionsTransportType.HTTP
 
     override func setUp() {
         super.setUp()
 
         let creatorClientExpectation = expectationWithDescription("authorize creator client")
-        let options = QredoClientOptions(MQTT: useMQTT, resetData: true)
+        let options = QredoClientOptions.qtu_clientOptionsWithTransportType(transportType, resetData: true)
         QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], options: options) { authorizedClient, error in
             XCTAssertNil(error, "failed to authorize client")
 
