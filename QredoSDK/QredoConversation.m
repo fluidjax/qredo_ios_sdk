@@ -479,8 +479,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
                                                          yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                        inboundBulkKey:[QLFKeyLF keyLFWithBytes:_inboundBulkKey]
-                                                       outboundBulkKey:[QLFKeyLF keyLFWithBytes:_outboundBulkKey]
                                                        initialTransCap:_transCap];
 
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
@@ -527,9 +525,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)sendMessageWithoutStoring:(QredoConversationMessage*)message
                 completionHandler:(void(^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler
 {
-    QLFConversationMessageLF *messageLF = [message messageLF];
+    QLFConversationMessage *messageLF = [message messageLF];
 
-    NSData *encryptedItem = [_conversationCrypto encryptMessage:messageLF
+    QLFEncryptedConversationItem *encryptedItem = [_conversationCrypto encryptMessage:messageLF
                                                         bulkKey:_outboundBulkKey
                                                         authKey:_outboundAuthKey];
 
@@ -915,7 +913,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QLFConversationItemWithSequenceValue *conversationItem = [result.items objectAtIndex:conversationItemIndex];
 
     NSError *decryptionError = nil;
-    QLFConversationMessageLF *decryptedMessage = [_conversationCrypto decryptMessage:conversationItem.item
+    QLFConversationMessage *decryptedMessage = [_conversationCrypto decryptMessage:conversationItem.item
                                                                                bulkKey:bulkKey
                                                                                authKey:authKey
                                                                                  error:&decryptionError];

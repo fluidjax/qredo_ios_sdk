@@ -20,11 +20,11 @@ NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
 
 @implementation QredoConversationMessage
 
-- (instancetype)initWithMessageLF:(QLFConversationMessageLF*)messageLF incoming:(BOOL)incoming
+- (instancetype)initWithMessageLF:(QLFConversationMessage*)messageLF incoming:(BOOL)incoming
 {
-    self = [self initWithValue:messageLF.value
+    self = [self initWithValue:messageLF.body
                       dataType:messageLF.metadata.dataType
-                 summaryValues:[messageLF.metadata.summaryValues dictionaryFromIndexableSet]];
+                 summaryValues:[messageLF.metadata.values dictionaryFromIndexableSet]];
     if (!self) return nil;
 
     _messageId = messageLF.metadata.id;
@@ -51,18 +51,18 @@ NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
     return self;
 }
 
-- (QLFConversationMessageLF*)messageLF
+- (QLFConversationMessage*)messageLF
 {
     NSSet* summaryValuesSet = [self.summaryValues indexableSet];
 
-    QLFConversationMessageMetaDataLF *messageMetadata =
-    [QLFConversationMessageMetaDataLF conversationMessageMetaDataLFWithID:[QredoQUID QUID]
-                                                                   parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
-                                                                   sequence:nil // TODO
-                                                                   dataType:self.dataType
-                                                              summaryValues:summaryValuesSet];
+    QLFConversationMessageMetadata *messageMetadata =
+    [QLFConversationMessageMetadata conversationMessageMetadataWithID:[QredoQUID QUID]
+                                                             parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
+                                                             sequence:nil // TODO
+                                                             dataType:self.dataType
+                                                               values:summaryValuesSet];
 
-    QLFConversationMessageLF *message = [[QLFConversationMessageLF alloc] initWithMetadata:messageMetadata value:self.value];
+    QLFConversationMessage *message = [[QLFConversationMessage alloc] initWithMetadata:messageMetadata body:self.value];
     return message;
 
 }
