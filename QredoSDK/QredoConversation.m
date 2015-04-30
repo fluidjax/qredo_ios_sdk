@@ -532,7 +532,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                         authKey:_outboundAuthKey];
 
     NSData *signaturePayloadData = [QredoPrimitiveMarshallers marshalObject:encryptedItem
-                                                                 marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
+                                                                 marshaller:[QLFEncryptedConversationItem marshaller]
                                                               includeHeader:NO];
 
     NSError *error = nil;
