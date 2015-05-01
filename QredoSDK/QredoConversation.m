@@ -996,15 +996,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 {
     if (_metadata.isEphemeral) return nil;
 
-    if (_store) return _store;
+    if (_store) return _store;    
 
-    NSMutableData *derivedVaultIdData = [[_client.systemVault.vaultId data] mutableCopy];
-    [derivedVaultIdData appendData:_inboundQueueId.data];
-
-    QredoQUID *conversationVaultID = [QredoQUID QUIDByHashingData:derivedVaultIdData];
-
-    _store = [[QredoVault alloc] initWithClient:_client qredoKeychain:_client.systemVault.qredoKeychain
-                                        vaultId:conversationVaultID];
+    NSData *vaultKey = [QredoVaultCrypto vaultKeyWithVaultMasterKey:_client.systemVault.vaultKeys.vaultKey
+                                                           infoData:_inboundQueueId.data];
+    QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKey:vaultKey];
+    _store = [[QredoVault alloc] initWithClient:_client vaultKeys:keys];
 
     return _store;
 }

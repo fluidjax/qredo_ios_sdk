@@ -133,8 +133,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 @interface QredoVault () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>
 {
     QredoClient *_client;
-    QredoKeychain *_qredoKeychan;
-    QredoQUID *_vaultId;
+    QredoVaultKeys *_vaultKeys;
     QredoQUID *_sequenceId;
 
     QredoVaultHighWatermark *_highwatermark;
@@ -142,8 +141,6 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QLFVault *_vault;
     QredoVaultCrypto *_vaultCrypto;
     QredoVaultSequenceCache *_vaultSequenceCache;
-
-    QredoED25519SigningKey *_signingKey;
 
     dispatch_queue_t _queue;
 
@@ -157,34 +154,25 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 @implementation QredoVault (Private)
 
-- (QredoQUID *)sequenceId {
+- (QredoVaultKeys *)vaultKeys
+{
+    return _vaultKeys;
+}
+
+- (QredoQUID *)sequenceId
+{
     return _sequenceId;
 }
 
-- (QredoKeychain *)qredoKeychain {
-    return _qredoKeychan;
-}
-
-- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan
+- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys
 {
-    if (!qredoKeychan) return nil;
-
-    return [self initWithClient:client qredoKeychain:qredoKeychan vaultId:qredoKeychan.vaultId];
-
-}
-
-- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan vaultId:(QredoQUID*)vaultId
-{
-    if (!client || !vaultId) return nil;
+    if (!client || !vaultKeys) return nil;
     self = [super init];
     if (!self) return nil;
 
     _client = client;
-    _qredoKeychan = qredoKeychan;
-    _vaultId = vaultId;
+    _vaultKeys = vaultKeys;
     _highwatermark = QredoVaultHighWatermarkOrigin;
-
-    _signingKey = qredoKeychan.vaultSigningKey;
 
     _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
 
@@ -202,11 +190,9 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     _vault = [QLFVault vaultWithServiceInvoker:_client.serviceInvoker];
     _vaultSequenceCache = [QredoVaultSequenceCache instance];
-    
-    QLFVaultKeyPair *keyPair = [qredoKeychan vaultKeys];
 
-    _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:keyPair.encryptionKey
-                                          authenticationKey:keyPair.authenticationKey];
+    _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:vaultKeys.encryptionKey
+                                          authenticationKey:vaultKeys.authenticationKey];
     
     return self;
 }
@@ -235,7 +221,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
 
     QLFVaultItemRef *vaultItemDescriptor =
-    [QLFVaultItemRef vaultItemRefWithVaultId:_vaultId
+    [QLFVaultItemRef vaultItemRefWithVaultId:_vaultKeys.vaultId
                                   sequenceId:_sequenceId
                                sequenceValue:newSequenceValue
                                       itemId:itemId];
@@ -254,7 +240,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSError *error = nil;
 
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
                                             operationType:[QLFOperationType operationCreate]
                                                      data:encryptedVaultItem
                                                     error:&error];
@@ -421,7 +407,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (QredoQUID *)vaultId
 {
-    return _vaultId;
+    return _vaultKeys.vaultId;
 }
 
 - (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
@@ -436,7 +422,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSSet *sequenceValues = [NSSet setWithObject:@(sequenceValue)];
     
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
                                                      vaultItemDescriptor:itemDescriptor
                                                  vaultItemSequenceValues:sequenceValues
                                                                    error:&error];
@@ -445,7 +431,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
         return;
     }
 
-    [_vault getItemWithVaultId:_vaultId
+    [_vault getItemWithVaultId:_vaultKeys.vaultId
                     sequenceId:sequenceId
                  sequenceValue:[NSSet setWithObjects:@(sequenceValue), nil]
                         itemId:itemDescriptor.itemId
@@ -509,7 +495,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     NSSet *sequenceValues = sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : [NSSet set];
     
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
                                                      vaultItemDescriptor:itemDescriptor
                                                  vaultItemSequenceValues:sequenceValues
                                                                    error:&error];
@@ -519,7 +505,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     }
 
 
-    [_vault getItemHeaderWithVaultId:_vaultId
+    [_vault getItemHeaderWithVaultId:_vaultKeys.vaultId
                             sequenceId:sequenceId
                          sequenceValue:sequenceValues
                                 itemId:itemDescriptor.itemId
@@ -644,7 +630,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     NSError *error = nil;
     
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureForListVaultItemsWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_signingKey]
+    = [QLFOwnershipSignature ownershipSignatureForListVaultItemsWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
                                                             sequenceStates:sequenceStates
                                                                      error:&error];
 
@@ -654,7 +640,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     }
 
     // Sync sequence IDs...
-    [_vault queryItemHeadersWithVaultId:_vaultId
+    [_vault queryItemHeadersWithVaultId:_vaultKeys.vaultId
                          sequenceStates:sequenceStates
                               signature:ownershipSignature
                       completionHandler:^void(QLFVaultItemQueryResults *vaultItemMetaDataResults, NSError *error)
@@ -818,9 +804,9 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    [defaults setObject:[_sequenceId data] forKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultId QUIDString]]];
+    [defaults setObject:[_sequenceId data] forKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultKeys.vaultId QUIDString]]];
 
-    NSString *hwmKey = [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultId QUIDString]];
+    NSString *hwmKey = [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultKeys.vaultId QUIDString]];
     if (_highwatermark) {
         [defaults setObject:[_highwatermark.sequenceState quidToStringDictionary] forKey:hwmKey];
     } else {
@@ -832,13 +818,13 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    NSData *sequenceIdData = [defaults objectForKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultId QUIDString]]];
+    NSData *sequenceIdData = [defaults objectForKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultKeys.vaultId QUIDString]]];
 
     if (sequenceIdData) {
         _sequenceId = [[QredoQUID alloc] initWithQUIDData:sequenceIdData];
     }
 
-    NSString *hwmKey = [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultId QUIDString]];
+    NSString *hwmKey = [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultKeys.vaultId QUIDString]];
     NSDictionary* sequenceState = [defaults objectForKey:hwmKey];
     if (sequenceState) {
         _highwatermark = [QredoVaultHighWatermark watermarkWithSequenceState:[sequenceState stringToQuidDictionary]];

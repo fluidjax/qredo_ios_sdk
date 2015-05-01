@@ -196,7 +196,7 @@
 
 - (void)sendKeychain
 {
-    NSData *keychainData = [[self.client.systemVault qredoKeychain] data];
+    NSData *keychainData = [NSData data]; // FIXME: [[self.client.systemVault qredoKeychain] data];
 
     QredoConversationMessage *keychainMessage = [[QredoConversationMessage alloc] initWithValue:keychainData
                                                                                        dataType:QredoKeychainTransporterMessageTypeKeychain

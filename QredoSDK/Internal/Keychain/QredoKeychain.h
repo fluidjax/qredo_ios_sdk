@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "CryptoImpl.h"
+#import "QredoVaultCrypto.h"
 
 NS_ENUM(NSInteger, QredoCredentialType) {
     QredoCredentialTypeNoCredential = 0,
@@ -20,20 +21,20 @@ NS_ENUM(NSInteger, QredoCredentialType) {
 
 @property QLFOperatorInfo *operatorInfo;
 
+@property QredoVaultKeys *systemVaultKeys;
+@property QredoVaultKeys *defaultVaultKeys;
+
 - (instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo;
 
 // used in tests only
-- (instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo vaultId:(QredoQUID*)vaultId authenticationKey:(NSData*)authenticationKey bulkKey:(NSData*)bulkKey;
 - (instancetype)initWithData:(NSData *)serializedData;
 
 - (NSData *)data;
-- (void)setVaultAuthKey:(NSData *)authKey bulkKey:(NSData *)bulkKey; // for testing
+//- (void)setVaultAuthKey:(NSData *)authKey bulkKey:(NSData *)bulkKey; // for testing
 - (void)generateNewKeys;
 
-- (void)setVaultId:(QredoQUID*)newVaultId; // TODO: temporary!
-- (QredoQUID *)vaultId;
-- (QredoED25519SigningKey *)vaultSigningKey;
+//- (void)setVaultId:(QredoQUID*)newVaultId; // TODO: temporary!
 
-- (QLFVaultKeyPair *)vaultKeys;
+
 
 @end
