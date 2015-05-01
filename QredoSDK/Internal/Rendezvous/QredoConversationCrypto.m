@@ -61,7 +61,9 @@
 {
     // verify auth code
     
-    BOOL verified = [_crypto verifyAuthCodeWithKey:authKey data:encryptedMessage.authCode];
+    BOOL verified = [_crypto verifyAuthCodeWithKey:authKey
+                                              data:encryptedMessage.encryptedMessage
+                                               mac:encryptedMessage.authCode];
     
     if (!verified) {
         if (error) {
@@ -81,8 +83,20 @@
 
     NSData *decryptedMessageData = [_crypto decryptWithKey:bulkKey data:deserializedEncryptedData];
 
-    
-    return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData unmarshaller:[QLFConversationMessage unmarshaller]];
+
+    @try {
+        return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData
+                                             unmarshaller:[QLFConversationMessage unmarshaller]];
+    }
+    @catch (NSException *exception) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationInvalidData
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Failed to parse data"}];
+
+        }
+        return nil;
+    }
 }
 
 - (NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
