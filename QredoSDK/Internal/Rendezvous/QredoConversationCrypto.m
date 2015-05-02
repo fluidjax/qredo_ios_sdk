@@ -38,13 +38,11 @@
     return self;
 }
 
-- (NSData *)encryptMessage:(QLFConversationMessageLF *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey
+- (QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey
 {
-    NSMutableData* result = [NSMutableData data];
-    
     NSData *serializedMessage =
         [QredoPrimitiveMarshallers marshalObject:message
-                                      marshaller:[QLFConversationMessageLF marshaller]];
+                                      marshaller:[QLFConversationMessage marshaller]];
 
     
     NSData *encryptedMessage = [_crypto encryptWithKey:bulkKey data:serializedMessage];
@@ -53,19 +51,19 @@
         [QredoPrimitiveMarshallers marshalObject:encryptedMessage
                                       marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
     
-    NSData * auth = [_crypto getAuthCodeWithKey:authKey data:serialiedEncryptedMessage];
-    
-    [result appendData:serialiedEncryptedMessage];
-    [result appendData:auth];
-    
-    return [result copy]; // return non-mutable copy
+    NSData *auth = [_crypto getAuthCodeWithKey:authKey data:serialiedEncryptedMessage];
+
+    return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:serialiedEncryptedMessage
+                                                                              authCode:auth];
 }
 
-- (QLFConversationMessageLF *)decryptMessage:(NSData *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError**)error
+- (QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError**)error
 {
     // verify auth code
     
-    BOOL verified = [_crypto verifyAuthCodeWithKey:authKey data:encryptedMessage];
+    BOOL verified = [_crypto verifyAuthCodeWithKey:authKey
+                                              data:encryptedMessage.encryptedMessage
+                                               mac:encryptedMessage.authCode];
     
     if (!verified) {
         if (error) {
@@ -76,7 +74,7 @@
         return nil;
     }
 
-    NSData *encryptedData = [encryptedMessage subdataWithRange:NSMakeRange(0, encryptedMessage.length - CC_SHA256_DIGEST_LENGTH)];
+    NSData *encryptedData = encryptedMessage.encryptedMessage;
 
 
     NSData *deserializedEncryptedData = [QredoPrimitiveMarshallers unmarshalObject:encryptedData
@@ -85,8 +83,20 @@
 
     NSData *decryptedMessageData = [_crypto decryptWithKey:bulkKey data:deserializedEncryptedData];
 
-    
-    return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData unmarshaller:[QLFConversationMessageLF unmarshaller]];
+
+    @try {
+        return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData
+                                             unmarshaller:[QLFConversationMessage unmarshaller]];
+    }
+    @catch (NSException *exception) {
+        if (error) {
+            *error = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeConversationInvalidData
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Failed to parse data"}];
+
+        }
+        return nil;
+    }
 }
 
 - (NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
