@@ -877,7 +877,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
     return [QredoKeychainArchivers defaultQredoKeychainArchiver];
 }
 
-- (QredoKeychain *)createDefaultKeychain
+- (void)createDefaultKeychain
 {
     QLFOperatorInfo *operatorInfo
     = [QLFOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
@@ -890,8 +890,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
     [keychain generateNewKeys];
 
     _keychain = keychain;
-
-    return keychain;
 }
 
 NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
