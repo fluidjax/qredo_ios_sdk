@@ -17,7 +17,7 @@ extern NSString *const kQredoConversationMessageTypeControl;
 
 @interface QredoConversationMessage (Private)
 
-- (instancetype)initWithMessageLF:(QLFConversationMessageLF*)messageLF incoming:(BOOL)incoming;
+- (instancetype)initWithMessageLF:(QLFConversationMessage*)messageLF incoming:(BOOL)incoming;
 // making read/write for private use
 @property QredoConversationHighWatermark *highWatermark;
 
@@ -25,6 +25,6 @@ extern NSString *const kQredoConversationMessageTypeControl;
 - (BOOL)isControlMessage;
 - (QredoConversationControlMessageType)controlMessageType;
 
-- (QLFConversationMessageLF*)messageLF;
+- (QLFConversationMessage*)messageLF;
 
 @end

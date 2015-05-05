@@ -17,29 +17,28 @@ static NSString *KAttestationClaimantConversationType = @"com.qredo.attestation.
 {
 
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:KAttestationClaimantConversationType
-                                                                                              authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                                                                  durationSeconds:nil
                                                                                                 maxResponseCount:nil
                                                                                                         transCap:nil];
 
     NSString *tag = [[QredoQUID QUID] QUIDString];
 //    NSString *tag = [NSString stringWithFormat:@"att-%ld", random() % 20000]; // TODO: short tags for manual testing only
-    [self createRendezvousWithTag:tag
-                    configuration:configuration
-                completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
-     {
-
-         if (error) {
-             completionHandler(nil, error);
-             return ;
-         }
-
-         // TODO: add attestation types to QredoAttestationRelyingParty
-
-         QredoAttestationRelyingParty *attestation = [[QredoAttestationRelyingParty alloc] initWithRendezvous:rendezvous attestationTypes:attestationTypes];
-         completionHandler(attestation, nil);
-     }];
-
+    [self createAnonymousRendezvousWithTag:tag
+                             configuration:configuration
+                         completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
+    {
+        if (error) {
+            completionHandler(nil, error);
+            return ;
+        }
+        
+        // TODO: add attestation types to QredoAttestationRelyingParty
+        
+        QredoAttestationRelyingParty *attestation = [[QredoAttestationRelyingParty alloc] initWithRendezvous:rendezvous attestationTypes:attestationTypes];
+        completionHandler(attestation, nil);
+    }];
+    
+    
 }
 
 - (void)enumeratateAttestationRelyingPartiesWithBlock:(void(^)(QredoAttestationRelyingParty *relyingParty, BOOL *stop))block

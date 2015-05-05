@@ -77,19 +77,23 @@
     NSLog(@"Conversation type: \"%@\"", conversationType);
 
 
-
-
     QLFRendezvousResponderInfo *responderInfo
     = [QLFRendezvousResponderInfo rendezvousResponderInfoWithRequesterPublicKey:requesterPublicKeyBytes
                                                                conversationType:conversationType
                                                                        transCap:[NSSet set]];
 
-    NSData *marshalledResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo];
+    NSData *marshalledResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     NSLog(@"Marshalled responder info %@", marshalledResponderInfo);
     NSLog(@"---");
 
     NSData *encryptedResponderInfo = [rendezvousCrypto encryptResponderInfo:responderInfo encryptionKey:encKey];
-    NSLog(@"Encrypted responder info %@", encryptedResponderInfo);
+    NSData *encryptedResponderInfoRaw
+    = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderInfo
+                                    unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
+                                     parseHeader:YES];
+    NSRange ivRange = NSMakeRange(0, 16);
+    NSLog(@"IV = %@", [encryptedResponderInfoRaw subdataWithRange:ivRange]);
+    NSLog(@"Encrypted responder info with message header: %@", encryptedResponderInfo);
 
     NSData *authenticationCode = [rendezvousCrypto authenticationCodeWithHashedTag:hashedTag
                                                                  authenticationKey:authKey
@@ -175,84 +179,84 @@
 - (void)testVectorAnonymous1
 {
     [self common_testVectorWithRendezvousTag:@"simple tag"
-                          requesterPublicKey:[NSData dataWithHexString:@"170da4b3 f0cdd9b0 7b750def 37a3222a 6eb7ced5 f59584b3 a2d0dafa aa646d78"]
-                                          iv:[NSData dataWithHexString:@"654c27de 2e445b0e 07b021d1 ed289226"]
+                          requesterPublicKey:[NSData dataWithHexString:@"d6a8581d 8904aac0 e7a1876e f0e376bc 7a8ca442 b5b5f8e1 50924b5d 485e0b15"]
+                                          iv:[NSData dataWithHexString:@"96f8ecc0 51aa4482 5dbf9000 91b37626"]
                            expectedMasterKey:[NSData dataWithHexString:@"fcc989f2 3ff77dd9 56cc5cde 637c2d7e b07376dc f7322565 e265e7f0 913b5ad9"]
-                           expectedHashedTag:[NSData dataWithHexString:@"45e11a5d 5376f6b2 a7190445 6386752a 77a532b6 95e61666 97191a07 1efc762e"]
-                   expectedAuthenticationKey:[NSData dataWithHexString:@"5e223be2 19ace014 1e642433 922da0dc 79b69c1b 9ab5e168 f1cc161f f43520a5"]
-                       expectedEncryptionKey:[NSData dataWithHexString:@"82492e20 fba5e460 78c32bb3 fcd71fb4 65510833 f95c4caf c4380a91 516b2af8"]
-              expectedEncryptedResponderData:[NSData dataWithHexString:@"654c27de 2e445b0e 07b021d1 ed289226 189cfd6f 4982e208 00384ed8 bcdecb07 fbe22e09 71ecbcbd 01669fd0 66fba748 056d3644 8acaf6ee 71c50cdf 96e42905 a42253d6 433c9517 fcd52e80 e402bb24 2234064b 6d901667 fde4438b a1042fe9 a8496b2b db1a9201 c8fa5a21 f2d6c0a5 3de5caa4 b2cf0a94 1152ae3c 924cef28 0fbc24f3 d56c8693 07233ccd e322c426 89d4f79a becf45fd 9f78161b b7ee6a7d 18b17435 0f482be6 30a35ded 3c5ec3cc f525cb56 2b4dcf98 d047b4b1 60eadbc1"]
-                  expectedAuthenticationCode:[NSData dataWithHexString:@"3180e9b8 39f7660f c3fc29f1 5b5e77cc 697a2b00 f8f20bd7 6a699110 54933fe9"]];
+                           expectedHashedTag:[NSData dataWithHexString:@"c656e308 5bb7b2fe e3211c6a b4177ef1 c3aa9b12 5ccfdf44 bd704fc1 c8ccbd6b"]
+                   expectedAuthenticationKey:[NSData dataWithHexString:@"554553ec 7376420e cb0f90ad 8e13b2ac b932cba0 f58439bb 899be026 031da7f7"]
+                       expectedEncryptionKey:[NSData dataWithHexString:@"aec94f68 7f538c8e 41ba16ea c89c59e1 b845bd32 8d746eb1 cf2dc6e9 4c19ea47"]
+              expectedEncryptedResponderData:[NSData dataWithHexString:@"28373a62 00000002 0000373a 62000000 02000031 37373a62 96f8ecc0 51aa4482 5dbf9000 91b37626 84a95b5d 40c7f62a 244933bd 5f3ff606 ca2e177e d93244b1 f43ebac3 5b31203f 006d110f fb2bf70d ed3fbc83 288b431e 3f61cafd 32f4adbf 985d21c1 6e425d6c acadbeec 6f0a3768 7c32c809 acf0663d 662b2b77 9b140af7 7e2dbc53 50a1b2fe 49781574 fe02ac38 663bc148 cde02d5c a113bff2 f89f1328 c35b9f12 ba22d120 7bea18e2 1f088b75 dbc0bed1 a7fe8918 302a1398 086b9360 d553d50b caca201f 29"]
+                  expectedAuthenticationCode:[NSData dataWithHexString:@"9b3019b6 b6a3c6ae db6a1477 32dc0bbc d5850b7c 6ee3af26 42e8c7eb 96e658ce"]];
 }
 
 - (void)testVectorAnonymous2
 {
     [self common_testVectorWithRendezvousTag:@"fcc989f23ff77dd956cc5cde637c2d7eb07376dcf7322565e265e7f0913b5ad9"
-                          requesterPublicKey:[NSData dataWithHexString:@"a9e433b6 d53fb533 31803d8b 2eeb0a46 7f738d84 b95fbf06 8e9c5d39 b232283b"]
-                                          iv:[NSData dataWithHexString:@"45dd4f82 e3d9aa0e 50ea33ad 5c53f3d0"]
+                          requesterPublicKey:[NSData dataWithHexString:@"5b6d589e fe52fd6f caff69f1 955e0ad1 a523218d 99ef7a27 04320941 e3fb0e57"]
+                                          iv:[NSData dataWithHexString:@"d24a66b7 67877955 65ab2de8 adf296b0"]
                            expectedMasterKey:[NSData dataWithHexString:@"c8b7e06c 18fdd7e2 2636f767 7f9a3ca9 e4b3f030 8867aec6 a5aad08a fff336e4"]
-                           expectedHashedTag:[NSData dataWithHexString:@"c9690da0 3fb47251 02df5c82 ecbff02c 4876c40e 5b28a432 4d95a6d1 56aa8870"]
-                   expectedAuthenticationKey:[NSData dataWithHexString:@"211f0f19 7862b138 0d11f10c 4f271f59 833f82a9 6a5a1672 b3d28f3b 84b32306"]
-                       expectedEncryptionKey:[NSData dataWithHexString:@"a0bd48dc 0e966902 e59c5edd 41a78746 1a23e7b0 b252c81a c8d7543a 1f6ae4b8"]
-              expectedEncryptedResponderData:[NSData dataWithHexString:@"45dd4f82 e3d9aa0e 50ea33ad 5c53f3d0 7ff9d352 a88a4eea 5bd8906a 54d41562 502f5cf9 f7e963b5 04261bce ded8677d 79e68cb6 8710d236 26b4333b 097179a1 aaff97c2 6550da1f 9bad6ced 7f971300 e8778a72 0494792c 929eff65 6e9a7dba fc3312fa 00c4b105 8f1d40a8 5d9ad4d5 5fbbfda2 b7cfd129 e483f257 49564cc4 94b0f431 2c6f1c7e d97dbbc7 290e67c9 61450578 0115f643 dad2cd67 b4d30e50 7238816c 841e7c65 96a9d3da def6dcfc 52d9ec7b 64f5313c 05b025c1 7d0b89c5"]
-                  expectedAuthenticationCode:[NSData dataWithHexString:@"f092c7c5 257d5737 a18ba467 c185cfab 8ed8cf0c 0b05d11a 8d05f931 c9ac4212"]];
+                           expectedHashedTag:[NSData dataWithHexString:@"df9806a9 3c8faf0d 32e275c9 f09ae242 c43b7a72 46530659 f36d9add 22f0a376"]
+                   expectedAuthenticationKey:[NSData dataWithHexString:@"40361aaa 601a402a 35b1a54a 235521a6 7ce039ce 340bb4d7 2ef6a7d4 ad1e6986"]
+                       expectedEncryptionKey:[NSData dataWithHexString:@"6d41012c 3e56f1a5 98b9ca79 f7ec6d57 62f6ff90 dfe90688 8bedf97f 65b31345"]
+              expectedEncryptedResponderData:[NSData dataWithHexString:@"28373a62 00000002 0000373a 62000000 02000031 37373a62 d24a66b7 67877955 65ab2de8 adf296b0 3164bcda df3a69e5 e0e79c5c aa322828 30eef730 6394b50c 2e775560 a94ca238 e2680915 5f5132fe 5cba4708 b7c4207f de8e725d 7b12576a 54fae808 b80901c5 78ce1df2 b6d0814e bdf662c3 29d689b7 735e0a05 908ce55b aabc0521 167ada48 e8357cf7 1ce41014 7333835a b5fad347 c08823d9 b80969e2 7b5fe4fd a9a448d1 f44cd54c 0ed9de7e 9b1c1944 1b208608 ea61ece0 f4a6168a 95598214 7d6327f1 29"]
+                  expectedAuthenticationCode:[NSData dataWithHexString:@"d3c5bfe8 ed6da94f dc07a67a 5c0f36bc 79f4eb68 2e7c1141 93fc630a 77c871b1"]];
 }
 
 - (void)testVectorEd25519
 {
-    [self common_testVectorWithRendezvousTag:@"Ed25519@EnsTU9pNJqRvZCdDEi8v2UomYKbYYatVxT9BjJYnPhDm"
-                          requesterPublicKey:[NSData dataWithHexString:@"b0d5e6a2 9f1ef48c 8bda0428 136ab1d4 adcdcc4c 14c64197 c5cb2c77 b15b0964"]
-                                          iv:[NSData dataWithHexString:@"ea874509 ffdf4960 03bd5dba f199f3bc"]
-                           expectedMasterKey:[NSData dataWithHexString:@"91b7ccfc 0ca921a2 d57589cd 2a9e29e2 62b68d46 15a5cb1c 996f23cf fc261dca"]
-                           expectedHashedTag:[NSData dataWithHexString:@"1d9ef515 cc3ad1ea 34a0d56f 3fd607f8 d6ab2189 c92f3129 20955afa aea7c564"]
-                   expectedAuthenticationKey:[NSData dataWithHexString:@"45d5fd3e fc7a2b0c 43efa7e9 2f52dc66 cf14bf6d 51a6952c 67861526 67e2b239"]
-                       expectedEncryptionKey:[NSData dataWithHexString:@"e37fb166 840015b1 891decdf 61c7b359 1630b902 c152e1b5 15cd9358 1f2f96aa"]
-              expectedEncryptedResponderData:[NSData dataWithHexString:@"ea874509 ffdf4960 03bd5dba f199f3bc 3888341b 3f47d0a6 7dd7996d 95e0cc82 35178b0a b413c0ab b70e2e50 95c0ea5e 319f67c7 552eb911 e93e7bcc a1dac672 dccdbac4 0f0c3e8d f77dc44d 8791cd29 64e3883f 7996508b 931dbb51 49b06f71 9faf19df 0561af4b 945fa9fa ffb51661 8f737b93 46da4498 095a52db 95c8cf31 aa4d7259 576252b5 9d737928 50abe10b a3434acb 5c9ff31d fd3a29ce 16791b62 c2f297c5 c16b2f13 72d6d50f 73f1de74 f9d4d5e8 8a0e9195 0d077491 3f25fb39"]
-                  expectedAuthenticationCode:[NSData dataWithHexString:@"280acb82 38fdc637 90abb382 7fda72d9 e9881417 57cf2411 4af356a1 265f024b"]];
+    [self common_testVectorWithRendezvousTag:@"Ed25519@6W1sJvs4wzaFSxSY24DbsdqQ939cZKET8eTRhXJbxeBV"
+                          requesterPublicKey:[NSData dataWithHexString:@"44d8d822 c18e7de7 729d1114 f3770067 22d60e8c c03dbf77 4a42b4f0 8402d04e"]
+                                          iv:[NSData dataWithHexString:@"ac03d367 689ce036 bb4198a7 c52fc85a"]
+                           expectedMasterKey:[NSData dataWithHexString:@"f2680364 4793c60e d2db7fce d2799fd5 01646d5c a99a6709 764ec0d8 a8066fce"]
+                           expectedHashedTag:[NSData dataWithHexString:@"1257eb33 d5ae3510 102772ca d84b643d 40513d15 2fb07ab3 ada6e3b3 c7696ed8"]
+                   expectedAuthenticationKey:[NSData dataWithHexString:@"fd772c6b 1c2b796c db7217a3 1f8c214f 71cb77b0 3ad71351 811fb9b1 81346ae6"]
+                       expectedEncryptionKey:[NSData dataWithHexString:@"1bdfdf1e b19cabf5 16c56efb 1e669839 1bc95b9f e706af3d 2db2b63f ab125d00"]
+              expectedEncryptedResponderData:[NSData dataWithHexString:@"28373a62 00000002 0000373a 62000000 02000031 37373a62 ac03d367 689ce036 bb4198a7 c52fc85a db638f3f b9fe436c d56362c2 61fae652 40fad57f 5e401772 a1488e35 b35a5242 2815bc4e 98babee0 4c626d0c 71ff100f 82aed190 08a0f3f9 db13d0ed 008af3e8 0e028e74 7013e3fa 0eb6eadb 60bb64d4 742f283f f0113b7a 508e5423 5dcf3b75 03aa3cac bdbcd28f 4c26c95e 09453362 e735ce04 31d2929d ed7aec7e 55876eae c8c362cf e2d5a83c 18ead062 6223e260 eee865af ac402a22 fb1488ab fff6f83f 29"]
+                  expectedAuthenticationCode:[NSData dataWithHexString:@"d37a2222 0196dfcd f0cd3048 e24cfa83 8f5e684d 42324a33 b2ff6ea6 972fb38b"]];
 }
 
 - (void)testVectorRsa2048
 {
     [self common_testVectorWithRendezvousTag:@"RSA2048@-----BEGIN PUBLIC KEY-----\n"
-     "MIIBCgKCAQEAmWXyJIrVRUdXcwsIaWHoqjhPqoDLLnEuSuc4b9qGxOxJhubTTbZa\n"
-     "dAPtv0+uYVjDPX+vccGEXJ6RKTHbA9XH5+arTtQ20FGRQj4eB+AW1yXIpVVMPmrt\n"
-     "q/HOGBqGwXtjafNfXxv05tUK9+Hr9po5TVTnzhsiCgQ33i/qT4HGx90F9oI0+RMB\n"
-     "WeikBJNZ9fAi7hCGQGOUK1bqbAhAgOJThMHjbFEoH48zJetcQCwCxLn8AgjtUUbx\n"
-     "Omi8tOzkck2Q6CZ/Ef4Cni5R5qOiM+CvLg/E/p0W1gkd2M0Vlh6OhsQmDGtspF5k\n"
-     "sEKUcxUWR/ph88rpheanrGISurrw1BNawQIDAQAB\n"
+     "MIIBCgKCAQEAxttMVWcoA3YnBMPEM5W9qtNpCR0wqNifnxp80yBNBc7WaLCBqrbI\n"
+     "UmiMueMdjVut+olQN/7Ha+vmkgU44j1cEbiG2lKiD/Lj/hdaUUwgjiqvGhQzaoS8\n"
+     "FDm2X0hWjtHG2Qlk7uWbxjxdE94Wi0Qi/ze7/FvV7jd9akgpwXPywl+gomNQu5W6\n"
+     "W90DLQh6ny0DSJJf1ymObTuBXDznxT264raQEj59LYnIGIoMYglxwPdOYFj0TtbP\n"
+     "hfEZ7DnrKXUIQ8RqASvnsm+yQxDcd5+W07wpx5+NtaLoRmjbhtvqOyZCDHTHanf+\n"
+     "U+hkYaLi/RMo4IZ8GBCgJe712SV/LoVSvwIDAQAB\n"
      "-----END PUBLIC KEY-----\n"
-                          requesterPublicKey:[NSData dataWithHexString:@"ea3a2249 8b5376e1 b8c28c55 20a36e48 b25b4481 b07931a4 53b0cae5 a21b825c"]
-                                          iv:[NSData dataWithHexString:@"171b2b05 c688d91d c3f56e4e c6a888f8"]
-                           expectedMasterKey:[NSData dataWithHexString:@"9715d83b 0e41ed4d 2800c031 d10557c8 3ae03d23 e8b42b6e ec2cf8bc 8c578a96"]
-                           expectedHashedTag:[NSData dataWithHexString:@"ffe888e8 24affbe0 a5425d7a c1609360 6e5422ba 1098d7a3 12a314f6 4aba4bf8"]
-                   expectedAuthenticationKey:[NSData dataWithHexString:@"3e3dee63 315c07f7 83fa7293 45c47e1e 9308a733 d65b369e cb60beb1 011766f8"]
-                       expectedEncryptionKey:[NSData dataWithHexString:@"54c7a96a 54a22ddf 4b8f8f6d f1463410 15f0ae14 709713cb 1eca0697 438d9ab5"]
-              expectedEncryptedResponderData:[NSData dataWithHexString:@"171b2b05 c688d91d c3f56e4e c6a888f8 ca180a49 be9605e6 190f8d58 9c63bf24 122198c6 ca97a894 93173b22 f1ad0f3c 413d992b b4c069e8 b8c64dba 8ea3c63d f72a33e2 9ed032a7 c72b38ab 64f758aa 656a1170 6b369808 2b189aff 58f952b4 68efe3d6 c77110de 62e5add5 f6b6e578 20d832c9 bb8cf208 d0009264 579f915b 68a452cd 8af408f2 f067a59f 465f3fdc 42ee32f4 d4ea8c3b 5e9efb55 7f61424a 3161a864 fc07fa9d d0f75bb9 39157820 06725305 50be7d12 cfa8114f ae71e8bf"]
-                  expectedAuthenticationCode:[NSData dataWithHexString:@"32081c5b 234afc5c 14eed8b6 2ec556e5 e3857e7d c961d79b ac59fded bfe7a6dd"]];
+                          requesterPublicKey:[NSData dataWithHexString:@"e9902e24 2763a9a4 452bd296 1ed56c6b 836def5a 42df65ad 4d070dfc 1a36257f"]
+                                          iv:[NSData dataWithHexString:@"40918efc 1d313164 3a9c3c61 9c270005"]
+                           expectedMasterKey:[NSData dataWithHexString:@"17b33a12 6c5eb2ac 25808f1d 8b750fcd bd511bfa 21b64fb3 56f930e9 1924dcbb"]
+                           expectedHashedTag:[NSData dataWithHexString:@"92f9a11d 63c2041a 76b92925 798f4fca 709e2544 3295c1e6 25ace5fe caec4556"]
+                   expectedAuthenticationKey:[NSData dataWithHexString:@"d2d8e70e 58b86920 5595af98 6e11a33c 2c6c1332 e0a70ee6 025f2472 3ccae205"]
+                       expectedEncryptionKey:[NSData dataWithHexString:@"3e556319 fc0311b7 27b6ceac ad6b64e0 6de13967 68cbed88 325b4a2f 17c8ea1d"]
+              expectedEncryptedResponderData:[NSData dataWithHexString:@"28373a62 00000002 0000373a 62000000 02000031 37373a62 40918efc 1d313164 3a9c3c61 9c270005 06f65b44 01473fdd 6b3c352a 35097dde 803337ce 05c12837 e2cdb77c 32bb7a70 f84e70d1 d6850918 df27c1dd 7656b354 236f7cdc 835aa82a 84609e22 90090114 9ff9c3ab 278bb839 258b9485 7e3f2556 00778863 6de8a647 dc678bfb 138a51e6 c7ee436a e99e5533 399ea7e2 987ad86a 62388a71 e6c91e02 582df6d3 c8f83309 ee0ca3c0 381ed3dd ebfbd53c 9c3ca1ff 9426fd03 7c74fc82 588b4cda 86c01104 29"]
+                  expectedAuthenticationCode:[NSData dataWithHexString:@"6303a523 2814d3c2 455563ef f463ad6f 9c50059b 1571e1d8 ea8f89f1 aa4c3a29"]];
 }
 
 - (void)testVectorRsa4096
 {
     [self common_testVectorWithRendezvousTag:@"RSA4096@-----BEGIN PUBLIC KEY-----\n"
-     "MIICCgKCAgEAyodmGOQiEkc4/emmx5hj242mls73dYFwpoxFHCupMji2V39Hx2pC\n"
-     "Qkdqk9rWsrK5YXvccMxqm4tMi7u4iuXLeE5FiD/VHyOCQO6W6nQgH9aBnmTBm14d\n"
-     "DTv65To7Dj/0OLnKMMvM3zTfNAtSHb/fWAIe60mSF7q4iJJglUr6V4gIohZAsZS6\n"
-     "X1+7V7noVhZeKFXT2/UwUqH4ZECKgjZO4cyz1dfOkw+JWRgQSksDMzzbgZzC9oz2\n"
-     "g9JZNtCHLtWQJi0Dhy0VEeyPqKiMqCRsUUtIst2j83k97GeicPDpOZalHpzBQ/m0\n"
-     "g79mDX2F2Z/OlR5zN8U+jn0VMa7SvRaFFEsVLqg7DfAFzcW/KTrU24sKTIvmtqBS\n"
-     "EMk49v26KHSgaNNCfi4euRcy7BFHYwF3LLsECcLytx3HxkHuCFOdN7RloB1TWB4z\n"
-     "AJZnIiYfPca4QvUvIUridnCEOJeYaK9QkmZQNmWjPpMe67FVG5hVeG/ccGFU59yc\n"
-     "fpIkMLDqBplVcHkT7nnp7A+cplJqJi7JdI8JX8BhQm5SsqxJf6y+fZANtuz6T2Bt\n"
-     "Hy/9kbbnirScNckuyyFCl02n7Au7sIX0IsO0Apd771G4Xt2UI+yE/5SlV+8qPqqN\n"
-     "U93/J9hAE7LX4Xxcn/J7QwMpjVxly1qxH5Vjy8JqxLMuJ3MhKAXhhWkCAwEAAQ==\n"
+     "MIICCgKCAgEA5vFN3MxfAZTYY/n4BampkmJDcobAoEMU3De54wwYaypPl23/xsRx\n"
+     "0+gVjlD19BJJj3AnUmbY4OQzFLRJLlAlhO5M5Gx3NCHG1dIp2kVfuOE5IrEP1RGu\n"
+     "yzF0cIyS2QKWURWYgEmSnW3JRrcoIUpcwaZngbBORM9VDRtL00SspTFkbwnR4qjW\n"
+     "kRfungaMFisuBjq9xryzC0BTWgTzjQNX/+kHpQpPQKIqNO1Sa8/1icZNtwR5t5kw\n"
+     "MqXT/c/krfwnOAchyjl/jdoPIU9GSVVFGeQsndZWOu9eJZ2IGGV+5nV8F0giJXiR\n"
+     "viCIvkyeNPpQ0EQq6co2DWHIPcfeOVJT3EZHVzaUWWzE15Nl180VDjItGdy+3vQw\n"
+     "Bxn3uSxibABDMcREuXC12JozfyfqZWgQFyRJb/cJ3EsBe05p+2XuruPmr5fMffsW\n"
+     "ZCKUqtvoMOQceEiplnqnfaG43W5gYixIoc3FdjlZsWdX8VUHGNJxk3CHqNo96NrQ\n"
+     "Xo4XJ8+VJM/UBDHyHIFD/KwcUgYt/aGeLNdR56YTXbzZzztDaYY4qQ28V6f0XcO7\n"
+     "44v1ZgEotZcjDBOm2A1pH49jC89XS5JTAM7uiR82C7RBbQP98R2pyDlA2fjQjxM1\n"
+     "kygNOQmNE5/EtNLHwqZ70J2ZTnrfAj5gMoGRuRFXIFZ+5kHlGy3Qg6ECAwEAAQ==\n"
      "-----END PUBLIC KEY-----\n"
-                          requesterPublicKey:[NSData dataWithHexString:@"5f6fa0f6 866be6b8 69dc52cd a516b1c3 4ac15fc8 bce4a470 64d60967 2b557810"]
-                                          iv:[NSData dataWithHexString:@"f6909f6d b0fcea1d a08ba8d1 ee17eeb9"]
-                           expectedMasterKey:[NSData dataWithHexString:@"a93af642 de141850 e504eaf6 b9cbedde 2534623c 7c58326d 83219d1a fcd14661"]
-                           expectedHashedTag:[NSData dataWithHexString:@"000af09d c4ef21c4 74d37f14 688f1f3a f5ea9ac4 84311923 fd8a5d19 16b2cb60"]
-                   expectedAuthenticationKey:[NSData dataWithHexString:@"4d1423d8 d7983ce2 193fe98f f56d7f19 a8c098c5 0c05abe7 7818f3bf db7d3772"]
-                       expectedEncryptionKey:[NSData dataWithHexString:@"9340c2dc 8bd6e767 1f4ff065 579e5e6d c6c1baf4 80a0f239 91a6b3a6 50d4139d"]
-              expectedEncryptedResponderData:[NSData dataWithHexString:@"f6909f6d b0fcea1d a08ba8d1 ee17eeb9 75787327 8027bda6 ca68525b 0c63b8be 03a5d9e7 d6df3a8e 14ed1dd8 6d833ce4 53abad97 5cd97eb0 abce1cce 6a13ff77 e01daed2 85b926b2 3244c782 39e6d39f c0fb5a97 495b7c59 522e1935 2febb947 83e5beb1 e9697b07 1fd36f81 237d1d46 7245243e 054eed2c 2f46ccec 6279ba31 da74cf09 dd19f96b edff0179 c76d5302 abdd64db 193f3b8b 12f1fa2a 7d97b564 5bdaecce ab435c87 ba23689b deb051a8 d8900e24 1aaa2906 17747f8e 4bfc7b66"]
-                  expectedAuthenticationCode:[NSData dataWithHexString:@"2a67cdb5 ff8a1208 ebd16aa5 f2d22c69 2426ee03 81d7f807 8a8f2d92 74190ac6"]];
+                          requesterPublicKey:[NSData dataWithHexString:@"2f3186a3 64963c85 fdf44647 31d78a26 7448f047 257c981c ea3fe215 90098041"]
+                                          iv:[NSData dataWithHexString:@"5570c5f6 9b0a9916 605150b3 fdc0a1ea"]
+                           expectedMasterKey:[NSData dataWithHexString:@"63b11411 144e9263 21b6e56e f76c8c56 a3cd38aa 8fc4665a 31796840 d4b8aadb"]
+                           expectedHashedTag:[NSData dataWithHexString:@"e93343c4 91d2806b 3d6652e0 273b1544 09d0b67f 36434977 0ba847a8 95d1940e"]
+                   expectedAuthenticationKey:[NSData dataWithHexString:@"31562e03 50a9b6e2 05f386de 21fa7b1b 7d8d0f62 a3d2fdd7 16a71f8d 4d48d552"]
+                       expectedEncryptionKey:[NSData dataWithHexString:@"45c19e09 731b3708 fb7a481d 0cbe96cb 308cc71a fb5ce08a 9ad91c9a 9f83abce"]
+              expectedEncryptedResponderData:[NSData dataWithHexString:@"28373a62 00000002 0000373a 62000000 02000031 37373a62 5570c5f6 9b0a9916 605150b3 fdc0a1ea 40c8011b e4e5433e f5101bf0 fc9d32f2 5bb56b05 0eda8e6b cee98256 725ff953 9c9fc784 086137d6 41f44330 bf624488 4645a551 99452074 b0f2defd 03a823ee 8809535e 8d77ab37 bd443c7b 3f0acd7d f00d9803 b3834634 0dab31d6 52ef3c4c 74432c14 d8acc46b 473434d1 2eaaad71 5481e64a 6f47450e 1cf7c5d3 5398e81b ae8bda1d 242d929e e432cd51 8508d6c1 3fa97136 d73c52e3 e242fa65 9a432d8c 29"]
+                  expectedAuthenticationCode:[NSData dataWithHexString:@"99310c79 39fae0b8 6c6ac5c3 5b6e6ac7 601e1083 b02ecbd5 b8cdc416 eabc7e2a"]];
 }
 @end

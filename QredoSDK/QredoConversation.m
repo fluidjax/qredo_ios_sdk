@@ -47,15 +47,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 //static const double kQredoConversationUpdateInterval = 1.0; // seconds - polling period for items (non-multi-response transports)
 //static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 
-// TODO: these values should not be in clear memory. Add red herring
-#define SALT_CONVERSATION_ID [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_CONVERSATION_A_BULKKEY [@"ConversationBulkEncryptionKeyA" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_CONVERSATION_A_AUTHKEY [@"ConversationAuthenticationKeyA" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_CONVERSATION_B_BULKKEY [@"ConversationBulkEncryptionKeyB" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_CONVERSATION_B_AUTHKEY [@"ConversationAuthenticationKeyB" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_REQUESTER_INBOUND_QUEUE [@"eeK3hieyengahp3A" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_RESPONDER_INBOUND_QUEUE [@"Wo6ahjata4tae5ij" dataUsingEncoding:NSUTF8StringEncoding]
-
 @interface QredoConversationMetadata ()
 @property (readwrite) NSString *type;
 @property (readwrite) QredoQUID *conversationId;
@@ -333,30 +324,20 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _myPrivateKey = privateKey;
     _yourPublicKey = publicKey;
 
+    NSData *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:privateKey
+                                                                     yourPublicKey:publicKey];
 
-    NSData *requesterInboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_BULKKEY
-                                                                 myPrivateKey:privateKey
-                                                                yourPublicKey:publicKey];
+    NSData *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
 
-    NSData *requesterInboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_A_AUTHKEY
-                                                                 myPrivateKey:privateKey
-                                                                yourPublicKey:publicKey];
+    NSData *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
 
-    NSData *responderInboundBulkKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_BULKKEY
-                                                                 myPrivateKey:privateKey
-                                                                yourPublicKey:publicKey];
+    NSData *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
 
-    NSData *responderInboundAuthKey = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_B_AUTHKEY
-                                                                 myPrivateKey:privateKey
-                                                                yourPublicKey:publicKey];
+    NSData *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
 
-    NSData *requesterInboundQueueKeyPairSalt = [_crypto getDiffieHellmanSecretWithSalt:SALT_REQUESTER_INBOUND_QUEUE
-                                                                          myPrivateKey:privateKey
-                                                                         yourPublicKey:publicKey];
+    NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
 
-    NSData *responderInboundQueueKeyPairSalt = [_crypto getDiffieHellmanSecretWithSalt:SALT_RESPONDER_INBOUND_QUEUE
-                                                                          myPrivateKey:privateKey
-                                                                         yourPublicKey:publicKey];
+    NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
 
     QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
     QredoED25519SigningKey *responderInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueKeyPairSalt];
@@ -386,10 +367,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         _outboundSigningKey = requesterInboundQueueSigningKey;
     }
 
-    NSData *conversationIdData = [_crypto getDiffieHellmanSecretWithSalt:SALT_CONVERSATION_ID
-                                                            myPrivateKey:privateKey
-                                                           yourPublicKey:publicKey];
-    _metadata.conversationId = [[QredoQUID alloc] initWithQUIDData:conversationIdData];
+    _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];
 }
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
@@ -501,8 +479,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
                                                          yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                        inboundBulkKey:[QLFKeyLF keyLFWithBytes:_inboundBulkKey]
-                                                       outboundBulkKey:[QLFKeyLF keyLFWithBytes:_outboundBulkKey]
                                                        initialTransCap:_transCap];
 
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
@@ -549,14 +525,14 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)sendMessageWithoutStoring:(QredoConversationMessage*)message
                 completionHandler:(void(^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler
 {
-    QLFConversationMessageLF *messageLF = [message messageLF];
+    QLFConversationMessage *messageLF = [message messageLF];
 
-    NSData *encryptedItem = [_conversationCrypto encryptMessage:messageLF
+    QLFEncryptedConversationItem *encryptedItem = [_conversationCrypto encryptMessage:messageLF
                                                         bulkKey:_outboundBulkKey
                                                         authKey:_outboundAuthKey];
 
     NSData *signaturePayloadData = [QredoPrimitiveMarshallers marshalObject:encryptedItem
-                                                                 marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
+                                                                 marshaller:[QLFEncryptedConversationItem marshaller]
                                                               includeHeader:NO];
 
     NSError *error = nil;
@@ -937,7 +913,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QLFConversationItemWithSequenceValue *conversationItem = [result.items objectAtIndex:conversationItemIndex];
 
     NSError *decryptionError = nil;
-    QLFConversationMessageLF *decryptedMessage = [_conversationCrypto decryptMessage:conversationItem.item
+    QLFConversationMessage *decryptedMessage = [_conversationCrypto decryptMessage:conversationItem.item
                                                                                bulkKey:bulkKey
                                                                                authKey:authKey
                                                                                  error:&decryptionError];
@@ -1025,10 +1001,11 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     NSMutableData *derivedVaultIdData = [[_client.systemVault.vaultId data] mutableCopy];
     [derivedVaultIdData appendData:_inboundQueueId.data];
 
-    QredoQUID *conversationVaultID = [QredoQUID QUIDByHashingData:derivedVaultIdData];
+    QredoQUID *storeOwnershipSeed = [QredoQUID QUIDByHashingData:derivedVaultIdData];
 
-    _store = [[QredoVault alloc] initWithClient:_client qredoKeychain:_client.systemVault.qredoKeychain
-                                        vaultId:conversationVaultID];
+    _store = [[QredoVault alloc] initWithClient:_client
+                                  qredoKeychain:_client.systemVault.qredoKeychain
+                                 signingKeySeed:[storeOwnershipSeed data]];
 
     return _store;
 }

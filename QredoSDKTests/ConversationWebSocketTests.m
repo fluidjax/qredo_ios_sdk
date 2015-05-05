@@ -1,17 +1,13 @@
-/*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
 #import "ConversationTests.h"
 
-@interface ConversationMQTTTests : ConversationTests
+@interface ConversationWebSocketTests : ConversationTests
 
 @end
 
-@implementation ConversationMQTTTests
+@implementation ConversationWebSocketTests
 
 - (void)setUp {
-    self.transportType = QredoClientOptionsTransportTypeMQTT;
+    self.transportType = QredoClientOptionsTransportTypeWebSockets;
     [super setUp];
 }
 
@@ -35,7 +31,7 @@
 {
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = YES;
-
+    
     for (int i = 0; i < 20; i++)
     {
         NSLog(@"\n\n\n\n******** Start Test %d ********\n", i);
@@ -51,6 +47,5 @@
 - (void)testMetadataOfPersistentConversation {
     [super testMetadataOfPersistentConversation];
 }
-
 
 @end

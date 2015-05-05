@@ -21,16 +21,24 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
+@class QredoCertificate;
+
+
+typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
+    QredoClientOptionsTransportTypeHTTP,
+    QredoClientOptionsTransportTypeMQTT,
+    QredoClientOptionsTransportTypeWebSockets,
+};
+
 
 @interface QredoClientOptions : NSObject
 
-@property BOOL useMQTT;
+@property (nonatomic) QredoClientOptionsTransportType transportType;
 @property BOOL resetData;
 
-
-- (instancetype)initWithMQTT:(BOOL)useMQTT;
-- (instancetype)initWithMQTT:(BOOL)useMQTT resetData:(BOOL)resetData;
-- (instancetype)initWithResetData:(BOOL)resetData;
+- (instancetype)initWithDefaultTrustedRoots;
+- (instancetype)initDefaultPinnnedCertificate;
+- (instancetype)initWithPinnedCertificate:(QredoCertificate *)certificate;
 
 @end
 
@@ -85,6 +93,10 @@ extern NSString *const QredoRendezvousURIProtocol;
 
 /** Fetches previously created rendezvous that has been stored in the vault */
 - (void)fetchRendezvousWithMetadata:(QredoRendezvousMetadata *)metadata completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+/** Joins the rendezvous and stores conversation into the vault */
+- (void)respondWithTag:(NSString *)tag
+     completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler;
 
 /** Joins the rendezvous and stores conversation into the vault */
 - (void)respondWithTag:(NSString *)tag

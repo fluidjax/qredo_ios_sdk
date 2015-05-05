@@ -28,7 +28,7 @@
     QredoConversation *creatorConversation;
 }
 
-@property BOOL useMQTT;
+@property (nonatomic) QredoClientOptionsTransportType transportType;
 
 @end
 
@@ -41,7 +41,7 @@
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -96,7 +96,7 @@
 
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
-                                        options:[[QredoClientOptions alloc] initWithMQTT:self.useMQTT resetData:YES]
+                                        options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);

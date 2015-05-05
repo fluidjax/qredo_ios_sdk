@@ -274,8 +274,9 @@ static const int QredoRendezvousMasterKeyLength = 32;
 {
     NSData *tagData = [tag dataUsingEncoding:NSUTF8StringEncoding];
     if ([QredoAuthenticatedRendezvousTag isAuthenticatedTag:tag]) {
-        return [QredoCrypto hkdfExtractSha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
-                                   initialKeyMaterial:tagData];
+        return [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
+                            initialKeyMaterial:tagData
+                                          info:nil];
     }
 
     return [QredoCrypto pbkdf2Sha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
@@ -291,8 +292,9 @@ static const int QredoRendezvousMasterKeyLength = 32;
     NSAssert(masterKey, @"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength, @"Wrong length of master key");
 
-    NSData *hashedTagData = [QredoCrypto hkdfExtractSha256WithSalt:QREDO_RENDEZVOUS_HASHED_TAG_SALT
-                                                initialKeyMaterial:masterKey];
+    NSData *hashedTagData = [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_HASHED_TAG_SALT
+                                         initialKeyMaterial:masterKey
+                                                       info:nil];
 
     return [[QredoQUID alloc] initWithQUIDData:hashedTagData];
 }
@@ -302,7 +304,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     NSAssert(masterKey, @"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength, @"Wrong length of master key");
 
-    return [QredoCrypto hkdfExtractSha256WithSalt:QREDO_RENDEZVOUS_ENC_SALT initialKeyMaterial:masterKey];
+    return [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_ENC_SALT initialKeyMaterial:masterKey info:nil];
 }
 
 - (NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey
@@ -310,29 +312,27 @@ static const int QredoRendezvousMasterKeyLength = 32;
     NSAssert(masterKey, @"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength, @"Wrong length of master key");
     
-    return [QredoCrypto hkdfExtractSha256WithSalt:QREDO_RENDEZVOUS_AUTH_SALT initialKeyMaterial:masterKey];
+    return [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_AUTH_SALT initialKeyMaterial:masterKey info:nil];
 }
 
 - (QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
                                                encryptionKey:(NSData *)encryptionKey
                                                        error:(NSError **)error
 {
-    const int ivLength = 16;
-    if (encryptedResponderData.length < ivLength) {
-        if (error) {
-            *error = [NSError errorWithDomain:QredoErrorDomain
-                                         code:QredoErrorCodeRendezvousInvalidData
-                                     userInfo:@{
-                                                NSLocalizedDescriptionKey: @"Invalid responder data"
-                                                }];
-            return nil;
-        }
-    }
-    NSData *iv = [NSData dataWithBytes:encryptedResponderData.bytes length:ivLength];
-    NSData *encryptedData = [NSData dataWithBytes:(encryptedResponderData.bytes + ivLength)
-                                           length:encryptedResponderData.length - ivLength];
+    NSData *decryptedData;
 
-    NSData *decryptedData = [QredoCrypto decryptData:encryptedData withAesKey:encryptionKey iv:iv];
+    @try {
+        NSData *encryptedResponderDataRaw
+        = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderData
+                                        unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
+                                         parseHeader:YES];
+
+        decryptedData = [[CryptoImplV1 sharedInstance] decryptWithKey:encryptionKey
+                                                                 data:encryptedResponderDataRaw];
+    }
+    @catch (NSException *exception) {
+        LogError(@"Failed to decode: %@", exception);
+    }
 
     if (!decryptedData) {
         if (error) {
@@ -348,7 +348,8 @@ static const int QredoRendezvousMasterKeyLength = 32;
     @try {
         QLFRendezvousResponderInfo *responderInfo =
         [QredoPrimitiveMarshallers unmarshalObject:decryptedData
-                                      unmarshaller:[QLFRendezvousResponderInfo unmarshaller]];
+                                      unmarshaller:[QLFRendezvousResponderInfo unmarshaller]
+                                       parseHeader:NO];
         return responderInfo;
     }
     @catch (NSException *exception) {
@@ -367,7 +368,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 - (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                    encryptionKey:(NSData *)encryptionKey
 {
-    NSData *iv = [NSData dataWithRandomBytesOfLength:16];
+    NSData *iv = [QredoCrypto secureRandomWithSize:16];
     return [self encryptResponderInfo:responderInfo encryptionKey:encryptionKey iv:iv];
 }
 
@@ -375,17 +376,14 @@ static const int QredoRendezvousMasterKeyLength = 32;
                    encryptionKey:(NSData *)encryptionKey
                               iv:(NSData *)iv
 {
+    NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
 
-    NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo];
+    NSData *encryptedResponderInfo =
+    [[CryptoImplV1 sharedInstance] encryptWithKey:encryptionKey data:serializedResponderInfo iv:iv];
 
-    NSData *encryptedResponderInfo = [QredoCrypto encryptData:serializedResponderInfo
-                                                   withAesKey:encryptionKey
-                                                           iv:iv];
-
-    NSMutableData *encryptedResponderInfoWithIV = [NSMutableData dataWithData:iv];
-    [encryptedResponderInfoWithIV appendData:encryptedResponderInfo];
-    
-    return [encryptedResponderInfoWithIV copy];
+    return [QredoPrimitiveMarshallers marshalObject:encryptedResponderInfo
+                                         marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
+                                      includeHeader:YES];
 }
 
 @end
