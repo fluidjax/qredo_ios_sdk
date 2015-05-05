@@ -64,7 +64,7 @@
 {
     _isInitialized = YES;
 
-    _masterKey = [NSData dataWithRandomBytesOfLength:32];
+    _masterKey = [QredoCrypto secureRandomWithSize:32];
 
     // Uncomment this line for testing cross-platform vault without keychain transporter
 //    _masterKey = [@"12345678901234567890123456789012" dataUsingEncoding:NSUTF8StringEncoding];
