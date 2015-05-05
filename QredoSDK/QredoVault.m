@@ -380,6 +380,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
                                                                     summaryValues:self.summaryValues];
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"QredoVaultItemMetadata: dataType=\"%@\", metadata values=%@", self.dataType, self.summaryValues];
+}
+
 @end
 
 
