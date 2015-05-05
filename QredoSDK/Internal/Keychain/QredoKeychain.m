@@ -56,7 +56,7 @@
 {
     if (!_isInitialized) return nil;
 
-    return [_masterKey copy];
+    return _masterKey;
 }
 
 
