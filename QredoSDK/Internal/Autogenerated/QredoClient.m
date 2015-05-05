@@ -9760,7 +9760,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -9781,7 +9782,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -9801,7 +9803,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -9820,7 +9823,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:YES];
          
 }
 
@@ -9864,7 +9868,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(NO, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -9908,7 +9913,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -9926,7 +9932,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -9946,7 +9953,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -9965,7 +9973,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:YES];
          
 }
 
@@ -9984,7 +9993,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -10028,7 +10038,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -10049,7 +10060,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -10070,7 +10082,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -10115,7 +10128,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(NO, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -10137,7 +10151,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -10159,7 +10174,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
@@ -10179,7 +10195,8 @@ QredoServiceInvoker *_invoker;
           }
             errorHandler:^(NSError *error) {
                  completionHandler(nil, error);
-            }];
+            }
+           multiResponse:NO];
          
 }
 
