@@ -221,8 +221,6 @@ static NSString *const QredoKeychainPassword = @"Password123";
 // Private stuff
 @interface QredoClient ()
 {
-    QredoQUID *_vaultId;
-
     QredoVault *_systemVault;
     QredoVault *_defaultVault;
     QredoServiceInvoker *_serviceInvoker;
@@ -862,10 +860,7 @@ static NSString *const QredoKeychainPassword = @"Password123";
     [self createDefaultKeychain];
     _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys];
 
-    completionHandler(nil);
-
-    // FIXME
-//    [self addDeviceToVaultWithCompletionHandler:completionHandler];
+    [self addDeviceToVaultWithCompletionHandler:completionHandler];
 }
 
 - (id<QredoKeychainArchiver>)qredoKeychainArchiver

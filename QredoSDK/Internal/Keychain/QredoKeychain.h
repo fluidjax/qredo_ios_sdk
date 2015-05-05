@@ -30,10 +30,7 @@ NS_ENUM(NSInteger, QredoCredentialType) {
 - (instancetype)initWithData:(NSData *)serializedData;
 
 - (NSData *)data;
-//- (void)setVaultAuthKey:(NSData *)authKey bulkKey:(NSData *)bulkKey; // for testing
 - (void)generateNewKeys;
-
-//- (void)setVaultId:(QredoQUID*)newVaultId; // TODO: temporary!
 
 
 

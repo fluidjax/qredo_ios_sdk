@@ -10,38 +10,6 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoVaultCrypto.h"
 
-#define SALT_RECOVERY_INFO [@"Zestybus" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_KEYSTORE_KEYS [@"Ferirama" dataUsingEncoding:NSUTF8StringEncoding]
-
-// TODO: DH - replace 'Bioyino' salt with one >= 8 bytes long as per RFC
-#define SALT_DERIVE_CREDENTIAL_AUTHENTICATION [@"Bioyino" dataUsingEncoding:NSUTF8StringEncoding]
-// TODO: DH - replace 'Waratel' salt with one >= 8 bytes long as per RFC
-#define SALT_DERIVE_CREDENTIAL_ENCRYPTION [@"Waratel" dataUsingEncoding:NSUTF8StringEncoding]
-
-#define SALT_KEYCHAIN_ENCRYPTION [@"Ukewaiqv" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_KEYCHAIN_AUTHENTICATION [@"Owyurdefip" dataUsingEncoding:NSUTF8StringEncoding]
-
-// TODO: DH - replace 'Goulbap' salt with one >= 8 bytes long as per RFC
-#define SALT_DERIVE_VAULT_KEYS [@"Goulbap" dataUsingEncoding:NSUTF8StringEncoding]
-
-// TODO: DH - replace 'Replitz' salt with one >= 8 bytes long as per RFC
-#define SALT_DERIVE_VAULT_ENCRYPTION_0 [@"Replitz" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_DERIVE_VAULT_ENCRYPTION_1 [@"Dizoolexa" dataUsingEncoding:NSUTF8StringEncoding]
-// TODO: DH - replace 'Aloidia' salt with one >= 8 bytes long as per RFC
-#define SALT_DERIVE_VAULT_ENCRYPTION_2 [@"Aloidia" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_DERIVE_VAULT_ENCRYPTION_3 [@"Loheckle" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_DERIVE_VAULT_ENCRYPTION_4 [@"Uliratha" dataUsingEncoding:NSUTF8StringEncoding]
-
-#define SALT_DERIVE_VAULT_AUTHENTICATION_0 [@"Loopnova" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_DERIVE_VAULT_AUTHENTICATION_1 [@"Mogotrevo" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_DERIVE_VAULT_AUTHENTICATION_2 [@"Ethosien" dataUsingEncoding:NSUTF8StringEncoding]
-
-// TODO: DH - replace 'Hioffpo' salt with one >= 8 bytes long as per RFC
-#define SALT_DERIVE_VAULT_AUTHENTICATION_3 [@"Hioffpo" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_DERIVE_VAULT_AUTHENTICATION_4 [@"Yokovich" dataUsingEncoding:NSUTF8StringEncoding]
-
-//static uint8_t zeroBytes32[32] = {0};
-
 @interface QredoKeychain ()
 {
     BOOL _isInitialized;
@@ -96,8 +64,10 @@
 {
     _isInitialized = YES;
 
-//    _masterKey = [NSData dataWithRandomBytesOfLength:32];
-    _masterKey = [@"12345678901234567890123456789012" dataUsingEncoding:NSUTF8StringEncoding];
+    _masterKey = [NSData dataWithRandomBytesOfLength:32];
+
+    // Uncomment this line for testing cross-platform vault without keychain transporter
+//    _masterKey = [@"12345678901234567890123456789012" dataUsingEncoding:NSUTF8StringEncoding];
     [self deriveKeys];
 }
 
