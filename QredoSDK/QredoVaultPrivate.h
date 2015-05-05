@@ -5,6 +5,7 @@
 #import "QredoVault.h"
 #import "QredoQUID.h"
 #import "QredoClient.h"
+#import "QredoVaultCrypto.h"
 
 // This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
 // It shall be included only in the implementation files
@@ -19,11 +20,9 @@
 @interface QredoVault (Private)
 
 - (QredoQUID *)sequenceId;
-- (QredoKeychain *)qredoKeychain;
+- (QredoVaultKeys *)vaultKeys;
 
-- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan;
-- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan vaultId:(QredoQUID*)vaultId;
-- (instancetype)initWithClient:(QredoClient *)client qredoKeychain:(QredoKeychain *)qredoKeychan signingKeySeed:(NSData *)signingKeySeed;
+- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys;
 
 - (QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
 - (QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;

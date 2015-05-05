@@ -11,6 +11,29 @@
 #define QREDO_VAULT_SYSTEM_INFO  @"System Vault"
 #define QREDO_VAULT_USER_INFO    @"User Vault"
 
+@implementation QredoVaultKeys
+
+- (instancetype)initWithVaultKey:(NSData *)vaultKey
+{
+    self = [super init];
+    if (!self) return nil;
+
+    QredoED25519SigningKey *ownershipKeyPair = [QredoVaultCrypto ownershipSigningKeyWithVaultKey:vaultKey];
+    QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
+    QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
+
+    self.vaultKey = vaultKey;
+    self.ownershipKeyPair = ownershipKeyPair;
+    self.encryptionKey = encryptionAndAuthKeys.encryptionKey;
+    self.authenticationKey = encryptionAndAuthKeys.authenticationKey;
+    self.vaultId = vaultID;
+
+    return self;
+}
+
+
+@end
+
 @implementation QredoVaultCrypto
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,11 +74,17 @@
     return [QredoCrypto hkdfSha256WithSalt:QREDO_VAULT_MASTER_SALT initialKeyMaterial:userMasterKey info:nil];
 }
 
-+ (NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey info:(NSString *)info
+
++ (NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey infoData:(NSData *)infoData
 {
     return [QredoCrypto hkdfSha256WithSalt:QREDO_VAULT_SUBTYPE_SALT
                         initialKeyMaterial:vaultMasterKey
-                                      info:[info dataUsingEncoding:NSUTF8StringEncoding]];
+                                      info:infoData];
+
+}
++ (NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey info:(NSString *)info
+{
+    return [self vaultKeyWithVaultMasterKey:vaultMasterKey infoData:[info dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 + (QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey

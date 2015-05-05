@@ -18,6 +18,7 @@ extern NSString *const QredoVaultItemSummaryKeyDeviceName;
 
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
+- (QredoKeychain *)keychain;
 
 - (void)createSystemVaultWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 - (BOOL)saveStateWithError:(NSError **)error;
