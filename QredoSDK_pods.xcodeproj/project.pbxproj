@@ -165,9 +165,34 @@
 		78FD009B1ADD4D1600CC3226 /* Qredo+Attestation.m in Sources */ = {isa = PBXBuildFile; fileRef = 78FD009A1ADD4D1600CC3226 /* Qredo+Attestation.m */; };
 		840D86AE4E7AF880C6473A37 /* libPods-QredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B7AE6692B1DA0D298F3A8A2 /* libPods-QredoSDK.a */; };
 		BAF7995EAF867BF94BC03324 /* libPods-LinguaFrancaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8736F82D73DEDA9E5CCC7F8 /* libPods-LinguaFrancaTests.a */; };
+		DC0787471ADD148300534CE7 /* QredoOpenSSLCertificateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0787461ADD148300534CE7 /* QredoOpenSSLCertificateUtilsTests.m */; };
 		DC0EAA041A8A46B50059BA4C /* QredoSecKeyRefPairTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0EAA031A8A46B50059BA4C /* QredoSecKeyRefPairTests.m */; };
 		DC1B55161A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC1B55151A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m */; };
 		DC3A0FF41A6D313D003B4A73 /* QredoServiceInvokerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3A0FF31A6D313D003B4A73 /* QredoServiceInvokerTests.m */; };
+		DC3DF7291AE7AC8200667893 /* clientCert1.1024.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7171AE7AC8200667893 /* clientCert1.1024.IntCA1cert.pem */; };
+		DC3DF72A1AE7AC8200667893 /* clientCert1.1024.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7181AE7AC8200667893 /* clientCert1.1024.IntCA1key.pem */; };
+		DC3DF72B1AE7AC8200667893 /* clientCert1.1024.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7191AE7AC8200667893 /* clientCert1.1024.IntCA1req.pem */; };
+		DC3DF72C1AE7AC8200667893 /* clientCert2.2048.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF71A1AE7AC8200667893 /* clientCert2.2048.IntCA1cert.pem */; };
+		DC3DF72D1AE7AC8200667893 /* clientCert2.2048.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF71B1AE7AC8200667893 /* clientCert2.2048.IntCA1key.pem */; };
+		DC3DF72E1AE7AC8200667893 /* clientCert2.2048.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF71C1AE7AC8200667893 /* clientCert2.2048.IntCA1req.pem */; };
+		DC3DF72F1AE7AC8200667893 /* clientCert3.4096.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF71D1AE7AC8200667893 /* clientCert3.4096.IntCA1cert.pem */; };
+		DC3DF7301AE7AC8200667893 /* clientCert3.4096.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF71E1AE7AC8200667893 /* clientCert3.4096.IntCA1key.pem */; };
+		DC3DF7311AE7AC8200667893 /* clientCert3.4096.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF71F1AE7AC8200667893 /* clientCert3.4096.IntCA1req.pem */; };
+		DC3DF7321AE7AC8200667893 /* clientCert4.8192.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7201AE7AC8200667893 /* clientCert4.8192.IntCA1cert.pem */; };
+		DC3DF7331AE7AC8200667893 /* clientCert4.8192.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7211AE7AC8200667893 /* clientCert4.8192.IntCA1key.pem */; };
+		DC3DF7341AE7AC8200667893 /* clientCert4.8192.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7221AE7AC8200667893 /* clientCert4.8192.IntCA1req.pem */; };
+		DC3DF7351AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7231AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1cert.pem */; };
+		DC3DF7361AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7241AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1key.pem */; };
+		DC3DF7371AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7251AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1req.pem */; };
+		DC3DF7381AE7AC8200667893 /* clientCert6.2048.IntCA2cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7261AE7AC8200667893 /* clientCert6.2048.IntCA2cert.pem */; };
+		DC3DF7391AE7AC8200667893 /* clientCert6.2048.IntCA2key.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7271AE7AC8200667893 /* clientCert6.2048.IntCA2key.pem */; };
+		DC3DF73A1AE7AC8200667893 /* clientCert6.2048.IntCA2req.pem in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7281AE7AC8200667893 /* clientCert6.2048.IntCA2req.pem */; };
+		DC3DF7411AE7E2D300667893 /* clientCert1.1024.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF73B1AE7E2D300667893 /* clientCert1.1024.IntCA1.pfx */; };
+		DC3DF7421AE7E2D300667893 /* clientCert2.2048.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF73C1AE7E2D300667893 /* clientCert2.2048.IntCA1.pfx */; };
+		DC3DF7431AE7E2D300667893 /* clientCert3.4096.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF73D1AE7E2D300667893 /* clientCert3.4096.IntCA1.pfx */; };
+		DC3DF7441AE7E2D300667893 /* clientCert4.8192.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF73E1AE7E2D300667893 /* clientCert4.8192.IntCA1.pfx */; };
+		DC3DF7451AE7E2D300667893 /* clientCert5.2048.Revoked.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF73F1AE7E2D300667893 /* clientCert5.2048.Revoked.IntCA1.pfx */; };
+		DC3DF7461AE7E2D300667893 /* clientCert6.2048.IntCA2.pfx in Resources */ = {isa = PBXBuildFile; fileRef = DC3DF7401AE7E2D300667893 /* clientCert6.2048.IntCA2.pfx */; };
 		DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */; };
 		DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */; };
 		DCC22DAE1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAD1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m */; };
@@ -187,6 +212,27 @@
 		DCE378EB1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE378E91A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m */; };
 		DCEB505C1A601DE700EE22FB /* QredoCertificateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB505B1A601DE700EE22FB /* QredoCertificateUtilsTests.m */; };
 		DCEB505F1A65488500EE22FB /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB505E1A65488500EE22FB /* TestCertificates.m */; };
+		DCFCC57F1AE68666000F8FC6 /* createRoot2xIntermediateAndFinalCerts.sh in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5271AE68665000F8FC6 /* createRoot2xIntermediateAndFinalCerts.sh */; };
+		DCFCC5921AE68666000F8FC6 /* interCA1crl.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5491AE68665000F8FC6 /* interCA1crl.pem */; };
+		DCFCC5931AE68666000F8FC6 /* interCA1crlAfterRevoke.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC54A1AE68665000F8FC6 /* interCA1crlAfterRevoke.pem */; };
+		DCFCC5941AE68666000F8FC6 /* interCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC54B1AE68665000F8FC6 /* interCA1cert.pem */; };
+		DCFCC5951AE68666000F8FC6 /* interCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC54C1AE68665000F8FC6 /* interCA1req.pem */; };
+		DCFCC5961AE68666000F8FC6 /* interCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC54F1AE68665000F8FC6 /* interCA1key.pem */; };
+		DCFCC5971AE68666000F8FC6 /* interCA1chainWithEmptyCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5501AE68665000F8FC6 /* interCA1chainWithEmptyCrl.pem */; };
+		DCFCC5981AE68666000F8FC6 /* interCA1chainWithRevokedCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5511AE68665000F8FC6 /* interCA1chainWithRevokedCrl.pem */; };
+		DCFCC5991AE68666000F8FC6 /* interCA2crl.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5551AE68665000F8FC6 /* interCA2crl.pem */; };
+		DCFCC59A1AE68666000F8FC6 /* interCA2crlAfterRevoke.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5561AE68665000F8FC6 /* interCA2crlAfterRevoke.pem */; };
+		DCFCC59B1AE68666000F8FC6 /* interCA2cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5571AE68665000F8FC6 /* interCA2cert.pem */; };
+		DCFCC59C1AE68666000F8FC6 /* interCA2req.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5581AE68665000F8FC6 /* interCA2req.pem */; };
+		DCFCC59D1AE68666000F8FC6 /* interCA2key.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC55B1AE68665000F8FC6 /* interCA2key.pem */; };
+		DCFCC59E1AE68666000F8FC6 /* interCA2chainWithEmptyCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC55C1AE68665000F8FC6 /* interCA2chainWithEmptyCrl.pem */; };
+		DCFCC59F1AE68666000F8FC6 /* interCA2chainWithRevokedCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC55D1AE68665000F8FC6 /* interCA2chainWithRevokedCrl.pem */; };
+		DCFCC5A01AE68666000F8FC6 /* openssl.cnf in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC55E1AE68665000F8FC6 /* openssl.cnf */; };
+		DCFCC5B21AE68666000F8FC6 /* rootCAcrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5781AE68666000F8FC6 /* rootCAcrl.pem */; };
+		DCFCC5B31AE68666000F8FC6 /* rootCAcrlAfterRevoke.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC5791AE68666000F8FC6 /* rootCAcrlAfterRevoke.pem */; };
+		DCFCC5B41AE68666000F8FC6 /* rootCAkey.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC57C1AE68666000F8FC6 /* rootCAkey.pem */; };
+		DCFCC5B51AE68666000F8FC6 /* rootCAcert.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC57D1AE68666000F8FC6 /* rootCAcert.pem */; };
+		DCFCC5B61AE68666000F8FC6 /* rootCAreq.pem in Resources */ = {isa = PBXBuildFile; fileRef = DCFCC57E1AE68666000F8FC6 /* rootCAreq.pem */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -422,9 +468,34 @@
 		C87E16460AC916F97E987172 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D642C20F1791178D19202888 /* Pods-CryptoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CryptoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CryptoTests/Pods-CryptoTests.release.xcconfig"; sourceTree = "<group>"; };
 		D8C39E0D9D92F594981A8B82 /* Pods-QredoSDK.testcoverage.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.testcoverage.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.testcoverage.xcconfig"; sourceTree = "<group>"; };
+		DC0787461ADD148300534CE7 /* QredoOpenSSLCertificateUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoOpenSSLCertificateUtilsTests.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/QredoOpenSSLCertificateUtilsTests.m"; sourceTree = "<group>"; };
 		DC0EAA031A8A46B50059BA4C /* QredoSecKeyRefPairTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoSecKeyRefPairTests.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/QredoSecKeyRefPairTests.m"; sourceTree = "<group>"; };
 		DC1B55151A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousX509PemHelperTests.m; sourceTree = "<group>"; };
 		DC3A0FF31A6D313D003B4A73 /* QredoServiceInvokerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoServiceInvokerTests.m; path = "../../LinguaFranca/objc-wire-format/LinguaFrancaTests/QredoServiceInvokerTests.m"; sourceTree = "<group>"; };
+		DC3DF7171AE7AC8200667893 /* clientCert1.1024.IntCA1cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert1.1024.IntCA1cert.pem; sourceTree = "<group>"; };
+		DC3DF7181AE7AC8200667893 /* clientCert1.1024.IntCA1key.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert1.1024.IntCA1key.pem; sourceTree = "<group>"; };
+		DC3DF7191AE7AC8200667893 /* clientCert1.1024.IntCA1req.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert1.1024.IntCA1req.pem; sourceTree = "<group>"; };
+		DC3DF71A1AE7AC8200667893 /* clientCert2.2048.IntCA1cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert2.2048.IntCA1cert.pem; sourceTree = "<group>"; };
+		DC3DF71B1AE7AC8200667893 /* clientCert2.2048.IntCA1key.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert2.2048.IntCA1key.pem; sourceTree = "<group>"; };
+		DC3DF71C1AE7AC8200667893 /* clientCert2.2048.IntCA1req.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert2.2048.IntCA1req.pem; sourceTree = "<group>"; };
+		DC3DF71D1AE7AC8200667893 /* clientCert3.4096.IntCA1cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert3.4096.IntCA1cert.pem; sourceTree = "<group>"; };
+		DC3DF71E1AE7AC8200667893 /* clientCert3.4096.IntCA1key.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert3.4096.IntCA1key.pem; sourceTree = "<group>"; };
+		DC3DF71F1AE7AC8200667893 /* clientCert3.4096.IntCA1req.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert3.4096.IntCA1req.pem; sourceTree = "<group>"; };
+		DC3DF7201AE7AC8200667893 /* clientCert4.8192.IntCA1cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert4.8192.IntCA1cert.pem; sourceTree = "<group>"; };
+		DC3DF7211AE7AC8200667893 /* clientCert4.8192.IntCA1key.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert4.8192.IntCA1key.pem; sourceTree = "<group>"; };
+		DC3DF7221AE7AC8200667893 /* clientCert4.8192.IntCA1req.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert4.8192.IntCA1req.pem; sourceTree = "<group>"; };
+		DC3DF7231AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert5.2048.Revoked.IntCA1cert.pem; sourceTree = "<group>"; };
+		DC3DF7241AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1key.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert5.2048.Revoked.IntCA1key.pem; sourceTree = "<group>"; };
+		DC3DF7251AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1req.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert5.2048.Revoked.IntCA1req.pem; sourceTree = "<group>"; };
+		DC3DF7261AE7AC8200667893 /* clientCert6.2048.IntCA2cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert6.2048.IntCA2cert.pem; sourceTree = "<group>"; };
+		DC3DF7271AE7AC8200667893 /* clientCert6.2048.IntCA2key.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert6.2048.IntCA2key.pem; sourceTree = "<group>"; };
+		DC3DF7281AE7AC8200667893 /* clientCert6.2048.IntCA2req.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = clientCert6.2048.IntCA2req.pem; sourceTree = "<group>"; };
+		DC3DF73B1AE7E2D300667893 /* clientCert1.1024.IntCA1.pfx */ = {isa = PBXFileReference; lastKnownFileType = file; path = clientCert1.1024.IntCA1.pfx; sourceTree = "<group>"; };
+		DC3DF73C1AE7E2D300667893 /* clientCert2.2048.IntCA1.pfx */ = {isa = PBXFileReference; lastKnownFileType = file; path = clientCert2.2048.IntCA1.pfx; sourceTree = "<group>"; };
+		DC3DF73D1AE7E2D300667893 /* clientCert3.4096.IntCA1.pfx */ = {isa = PBXFileReference; lastKnownFileType = file; path = clientCert3.4096.IntCA1.pfx; sourceTree = "<group>"; };
+		DC3DF73E1AE7E2D300667893 /* clientCert4.8192.IntCA1.pfx */ = {isa = PBXFileReference; lastKnownFileType = file; path = clientCert4.8192.IntCA1.pfx; sourceTree = "<group>"; };
+		DC3DF73F1AE7E2D300667893 /* clientCert5.2048.Revoked.IntCA1.pfx */ = {isa = PBXFileReference; lastKnownFileType = file; path = clientCert5.2048.Revoked.IntCA1.pfx; sourceTree = "<group>"; };
+		DC3DF7401AE7E2D300667893 /* clientCert6.2048.IntCA2.pfx */ = {isa = PBXFileReference; lastKnownFileType = file; path = clientCert6.2048.IntCA2.pfx; sourceTree = "<group>"; };
 		DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoAuthenticatedRendezvousTag.h; sourceTree = "<group>"; };
 		DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoAuthenticatedRendezvousTag.m; sourceTree = "<group>"; };
 		DCC22DAD1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoAuthenticatedRendezvousTagTests.m; sourceTree = "<group>"; };
@@ -444,6 +515,27 @@
 		DCEB505B1A601DE700EE22FB /* QredoCertificateUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = QredoCertificateUtilsTests.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/QredoCertificateUtilsTests.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DCEB505D1A65488500EE22FB /* TestCertificates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = TestCertificates.h; path = "../../LinguaFranca/objc-wire-format/CryptoTests/TestCertificates.h"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DCEB505E1A65488500EE22FB /* TestCertificates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = TestCertificates.m; path = "../../LinguaFranca/objc-wire-format/CryptoTests/TestCertificates.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		DCFCC5271AE68665000F8FC6 /* createRoot2xIntermediateAndFinalCerts.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = createRoot2xIntermediateAndFinalCerts.sh; sourceTree = "<group>"; };
+		DCFCC5491AE68665000F8FC6 /* interCA1crl.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA1crl.pem; sourceTree = "<group>"; };
+		DCFCC54A1AE68665000F8FC6 /* interCA1crlAfterRevoke.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA1crlAfterRevoke.pem; sourceTree = "<group>"; };
+		DCFCC54B1AE68665000F8FC6 /* interCA1cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA1cert.pem; sourceTree = "<group>"; };
+		DCFCC54C1AE68665000F8FC6 /* interCA1req.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA1req.pem; sourceTree = "<group>"; };
+		DCFCC54F1AE68665000F8FC6 /* interCA1key.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA1key.pem; sourceTree = "<group>"; };
+		DCFCC5501AE68665000F8FC6 /* interCA1chainWithEmptyCrl.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA1chainWithEmptyCrl.pem; sourceTree = "<group>"; };
+		DCFCC5511AE68665000F8FC6 /* interCA1chainWithRevokedCrl.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA1chainWithRevokedCrl.pem; sourceTree = "<group>"; };
+		DCFCC5551AE68665000F8FC6 /* interCA2crl.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA2crl.pem; sourceTree = "<group>"; };
+		DCFCC5561AE68665000F8FC6 /* interCA2crlAfterRevoke.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA2crlAfterRevoke.pem; sourceTree = "<group>"; };
+		DCFCC5571AE68665000F8FC6 /* interCA2cert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA2cert.pem; sourceTree = "<group>"; };
+		DCFCC5581AE68665000F8FC6 /* interCA2req.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA2req.pem; sourceTree = "<group>"; };
+		DCFCC55B1AE68665000F8FC6 /* interCA2key.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA2key.pem; sourceTree = "<group>"; };
+		DCFCC55C1AE68665000F8FC6 /* interCA2chainWithEmptyCrl.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA2chainWithEmptyCrl.pem; sourceTree = "<group>"; };
+		DCFCC55D1AE68665000F8FC6 /* interCA2chainWithRevokedCrl.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = interCA2chainWithRevokedCrl.pem; sourceTree = "<group>"; };
+		DCFCC55E1AE68665000F8FC6 /* openssl.cnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = openssl.cnf; sourceTree = "<group>"; };
+		DCFCC5781AE68666000F8FC6 /* rootCAcrl.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rootCAcrl.pem; sourceTree = "<group>"; };
+		DCFCC5791AE68666000F8FC6 /* rootCAcrlAfterRevoke.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rootCAcrlAfterRevoke.pem; sourceTree = "<group>"; };
+		DCFCC57C1AE68666000F8FC6 /* rootCAkey.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rootCAkey.pem; sourceTree = "<group>"; };
+		DCFCC57D1AE68666000F8FC6 /* rootCAcert.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rootCAcert.pem; sourceTree = "<group>"; };
+		DCFCC57E1AE68666000F8FC6 /* rootCAreq.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rootCAreq.pem; sourceTree = "<group>"; };
 		E742C6AFFE6F52D358BC2978 /* Pods-LinguaFrancaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LinguaFrancaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F51311E82FFB6BF1004DBEC5 /* Pods-LinguaFrancaTests.testcoverage.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LinguaFrancaTests.testcoverage.xcconfig"; path = "Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests.testcoverage.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -664,6 +756,7 @@
 		0A6573B71A2DE88100D5502E /* CryptoTests */ = {
 			isa = PBXGroup;
 			children = (
+				DCFCC5261AE68665000F8FC6 /* TestCerts */,
 				0A6573C21A2DEA1100D5502E /* CryptoImplV1Tests.m */,
 				DCEB505B1A601DE700EE22FB /* QredoCertificateUtilsTests.m */,
 				0A6573C31A2DEA1100D5502E /* QredoCryptoTests.m */,
@@ -672,6 +765,7 @@
 				0A6573C61A2DEA1100D5502E /* QredoEllipticCurvePointTests.m */,
 				0A6573C71A2DEA1100D5502E /* QredoKeyPairTests.m */,
 				0A6573C81A2DEA1100D5502E /* QredoKeyTests.m */,
+				DC0787461ADD148300534CE7 /* QredoOpenSSLCertificateUtilsTests.m */,
 				0A6573C91A2DEA1100D5502E /* QredoPSSTests.m */,
 				0A6573CA1A2DEA1100D5502E /* QredoRsaBlindSignatureTests.m */,
 				0A6573CB1A2DEA1100D5502E /* QredoRsaPrivateKeyTests.m */,
@@ -934,6 +1028,187 @@
 			name = Rendezvous;
 			sourceTree = "<group>";
 		};
+		DC3DF7161AE7AC8200667893 /* clientCerts */ = {
+			isa = PBXGroup;
+			children = (
+				DC3DF73B1AE7E2D300667893 /* clientCert1.1024.IntCA1.pfx */,
+				DC3DF73C1AE7E2D300667893 /* clientCert2.2048.IntCA1.pfx */,
+				DC3DF73D1AE7E2D300667893 /* clientCert3.4096.IntCA1.pfx */,
+				DC3DF73E1AE7E2D300667893 /* clientCert4.8192.IntCA1.pfx */,
+				DC3DF73F1AE7E2D300667893 /* clientCert5.2048.Revoked.IntCA1.pfx */,
+				DC3DF7401AE7E2D300667893 /* clientCert6.2048.IntCA2.pfx */,
+				DC3DF7171AE7AC8200667893 /* clientCert1.1024.IntCA1cert.pem */,
+				DC3DF7181AE7AC8200667893 /* clientCert1.1024.IntCA1key.pem */,
+				DC3DF7191AE7AC8200667893 /* clientCert1.1024.IntCA1req.pem */,
+				DC3DF71A1AE7AC8200667893 /* clientCert2.2048.IntCA1cert.pem */,
+				DC3DF71B1AE7AC8200667893 /* clientCert2.2048.IntCA1key.pem */,
+				DC3DF71C1AE7AC8200667893 /* clientCert2.2048.IntCA1req.pem */,
+				DC3DF71D1AE7AC8200667893 /* clientCert3.4096.IntCA1cert.pem */,
+				DC3DF71E1AE7AC8200667893 /* clientCert3.4096.IntCA1key.pem */,
+				DC3DF71F1AE7AC8200667893 /* clientCert3.4096.IntCA1req.pem */,
+				DC3DF7201AE7AC8200667893 /* clientCert4.8192.IntCA1cert.pem */,
+				DC3DF7211AE7AC8200667893 /* clientCert4.8192.IntCA1key.pem */,
+				DC3DF7221AE7AC8200667893 /* clientCert4.8192.IntCA1req.pem */,
+				DC3DF7231AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1cert.pem */,
+				DC3DF7241AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1key.pem */,
+				DC3DF7251AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1req.pem */,
+				DC3DF7261AE7AC8200667893 /* clientCert6.2048.IntCA2cert.pem */,
+				DC3DF7271AE7AC8200667893 /* clientCert6.2048.IntCA2key.pem */,
+				DC3DF7281AE7AC8200667893 /* clientCert6.2048.IntCA2req.pem */,
+			);
+			path = clientCerts;
+			sourceTree = "<group>";
+		};
+		DCFCC5261AE68665000F8FC6 /* TestCerts */ = {
+			isa = PBXGroup;
+			children = (
+				DC3DF7161AE7AC8200667893 /* clientCerts */,
+				DCFCC5271AE68665000F8FC6 /* createRoot2xIntermediateAndFinalCerts.sh */,
+				DCFCC5461AE68665000F8FC6 /* interCA1 */,
+				DCFCC5501AE68665000F8FC6 /* interCA1chainWithEmptyCrl.pem */,
+				DCFCC5511AE68665000F8FC6 /* interCA1chainWithRevokedCrl.pem */,
+				DCFCC5521AE68665000F8FC6 /* interCA2 */,
+				DCFCC55C1AE68665000F8FC6 /* interCA2chainWithEmptyCrl.pem */,
+				DCFCC55D1AE68665000F8FC6 /* interCA2chainWithRevokedCrl.pem */,
+				DCFCC55E1AE68665000F8FC6 /* openssl.cnf */,
+				DCFCC5751AE68666000F8FC6 /* rootCA */,
+			);
+			name = TestCerts;
+			path = "../../LinguaFranca/objc-wire-format/CryptoTests/TestCerts";
+			sourceTree = "<group>";
+		};
+		DCFCC5461AE68665000F8FC6 /* interCA1 */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC5471AE68665000F8FC6 /* certs */,
+				DCFCC5481AE68665000F8FC6 /* crl */,
+				DCFCC54B1AE68665000F8FC6 /* interCA1cert.pem */,
+				DCFCC54C1AE68665000F8FC6 /* interCA1req.pem */,
+				DCFCC54D1AE68665000F8FC6 /* newcerts */,
+				DCFCC54E1AE68665000F8FC6 /* private */,
+			);
+			path = interCA1;
+			sourceTree = "<group>";
+		};
+		DCFCC5471AE68665000F8FC6 /* certs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = certs;
+			sourceTree = "<group>";
+		};
+		DCFCC5481AE68665000F8FC6 /* crl */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC5491AE68665000F8FC6 /* interCA1crl.pem */,
+				DCFCC54A1AE68665000F8FC6 /* interCA1crlAfterRevoke.pem */,
+			);
+			path = crl;
+			sourceTree = "<group>";
+		};
+		DCFCC54D1AE68665000F8FC6 /* newcerts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = newcerts;
+			sourceTree = "<group>";
+		};
+		DCFCC54E1AE68665000F8FC6 /* private */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC54F1AE68665000F8FC6 /* interCA1key.pem */,
+			);
+			path = private;
+			sourceTree = "<group>";
+		};
+		DCFCC5521AE68665000F8FC6 /* interCA2 */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC5531AE68665000F8FC6 /* certs */,
+				DCFCC5541AE68665000F8FC6 /* crl */,
+				DCFCC5571AE68665000F8FC6 /* interCA2cert.pem */,
+				DCFCC5581AE68665000F8FC6 /* interCA2req.pem */,
+				DCFCC5591AE68665000F8FC6 /* newcerts */,
+				DCFCC55A1AE68665000F8FC6 /* private */,
+			);
+			path = interCA2;
+			sourceTree = "<group>";
+		};
+		DCFCC5531AE68665000F8FC6 /* certs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = certs;
+			sourceTree = "<group>";
+		};
+		DCFCC5541AE68665000F8FC6 /* crl */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC5551AE68665000F8FC6 /* interCA2crl.pem */,
+				DCFCC5561AE68665000F8FC6 /* interCA2crlAfterRevoke.pem */,
+			);
+			path = crl;
+			sourceTree = "<group>";
+		};
+		DCFCC5591AE68665000F8FC6 /* newcerts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = newcerts;
+			sourceTree = "<group>";
+		};
+		DCFCC55A1AE68665000F8FC6 /* private */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC55B1AE68665000F8FC6 /* interCA2key.pem */,
+			);
+			path = private;
+			sourceTree = "<group>";
+		};
+		DCFCC5751AE68666000F8FC6 /* rootCA */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC5761AE68666000F8FC6 /* certs */,
+				DCFCC5771AE68666000F8FC6 /* crl */,
+				DCFCC57A1AE68666000F8FC6 /* newcerts */,
+				DCFCC57B1AE68666000F8FC6 /* private */,
+				DCFCC57D1AE68666000F8FC6 /* rootCAcert.pem */,
+				DCFCC57E1AE68666000F8FC6 /* rootCAreq.pem */,
+			);
+			path = rootCA;
+			sourceTree = "<group>";
+		};
+		DCFCC5761AE68666000F8FC6 /* certs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = certs;
+			sourceTree = "<group>";
+		};
+		DCFCC5771AE68666000F8FC6 /* crl */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC5781AE68666000F8FC6 /* rootCAcrl.pem */,
+				DCFCC5791AE68666000F8FC6 /* rootCAcrlAfterRevoke.pem */,
+			);
+			path = crl;
+			sourceTree = "<group>";
+		};
+		DCFCC57A1AE68666000F8FC6 /* newcerts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = newcerts;
+			sourceTree = "<group>";
+		};
+		DCFCC57B1AE68666000F8FC6 /* private */ = {
+			isa = PBXGroup;
+			children = (
+				DCFCC57C1AE68666000F8FC6 /* rootCAkey.pem */,
+			);
+			path = private;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1151,6 +1426,51 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCFCC5A01AE68666000F8FC6 /* openssl.cnf in Resources */,
+				DC3DF7451AE7E2D300667893 /* clientCert5.2048.Revoked.IntCA1.pfx in Resources */,
+				DCFCC5921AE68666000F8FC6 /* interCA1crl.pem in Resources */,
+				DCFCC57F1AE68666000F8FC6 /* createRoot2xIntermediateAndFinalCerts.sh in Resources */,
+				DC3DF7361AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1key.pem in Resources */,
+				DC3DF7461AE7E2D300667893 /* clientCert6.2048.IntCA2.pfx in Resources */,
+				DC3DF7341AE7AC8200667893 /* clientCert4.8192.IntCA1req.pem in Resources */,
+				DC3DF7321AE7AC8200667893 /* clientCert4.8192.IntCA1cert.pem in Resources */,
+				DCFCC5931AE68666000F8FC6 /* interCA1crlAfterRevoke.pem in Resources */,
+				DCFCC5991AE68666000F8FC6 /* interCA2crl.pem in Resources */,
+				DCFCC5B21AE68666000F8FC6 /* rootCAcrl.pem in Resources */,
+				DC3DF7391AE7AC8200667893 /* clientCert6.2048.IntCA2key.pem in Resources */,
+				DCFCC59C1AE68666000F8FC6 /* interCA2req.pem in Resources */,
+				DC3DF7351AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1cert.pem in Resources */,
+				DC3DF7331AE7AC8200667893 /* clientCert4.8192.IntCA1key.pem in Resources */,
+				DC3DF7371AE7AC8200667893 /* clientCert5.2048.Revoked.IntCA1req.pem in Resources */,
+				DC3DF7301AE7AC8200667893 /* clientCert3.4096.IntCA1key.pem in Resources */,
+				DCFCC5941AE68666000F8FC6 /* interCA1cert.pem in Resources */,
+				DC3DF7311AE7AC8200667893 /* clientCert3.4096.IntCA1req.pem in Resources */,
+				DC3DF72E1AE7AC8200667893 /* clientCert2.2048.IntCA1req.pem in Resources */,
+				DCFCC59F1AE68666000F8FC6 /* interCA2chainWithRevokedCrl.pem in Resources */,
+				DCFCC5951AE68666000F8FC6 /* interCA1req.pem in Resources */,
+				DCFCC5B41AE68666000F8FC6 /* rootCAkey.pem in Resources */,
+				DCFCC5B31AE68666000F8FC6 /* rootCAcrlAfterRevoke.pem in Resources */,
+				DC3DF7421AE7E2D300667893 /* clientCert2.2048.IntCA1.pfx in Resources */,
+				DC3DF72A1AE7AC8200667893 /* clientCert1.1024.IntCA1key.pem in Resources */,
+				DCFCC5961AE68666000F8FC6 /* interCA1key.pem in Resources */,
+				DCFCC59E1AE68666000F8FC6 /* interCA2chainWithEmptyCrl.pem in Resources */,
+				DC3DF72F1AE7AC8200667893 /* clientCert3.4096.IntCA1cert.pem in Resources */,
+				DCFCC5B51AE68666000F8FC6 /* rootCAcert.pem in Resources */,
+				DCFCC59B1AE68666000F8FC6 /* interCA2cert.pem in Resources */,
+				DC3DF7381AE7AC8200667893 /* clientCert6.2048.IntCA2cert.pem in Resources */,
+				DCFCC59D1AE68666000F8FC6 /* interCA2key.pem in Resources */,
+				DCFCC5B61AE68666000F8FC6 /* rootCAreq.pem in Resources */,
+				DC3DF72C1AE7AC8200667893 /* clientCert2.2048.IntCA1cert.pem in Resources */,
+				DC3DF7411AE7E2D300667893 /* clientCert1.1024.IntCA1.pfx in Resources */,
+				DC3DF7441AE7E2D300667893 /* clientCert4.8192.IntCA1.pfx in Resources */,
+				DC3DF7291AE7AC8200667893 /* clientCert1.1024.IntCA1cert.pem in Resources */,
+				DCFCC5981AE68666000F8FC6 /* interCA1chainWithRevokedCrl.pem in Resources */,
+				DCFCC5971AE68666000F8FC6 /* interCA1chainWithEmptyCrl.pem in Resources */,
+				DCFCC59A1AE68666000F8FC6 /* interCA2crlAfterRevoke.pem in Resources */,
+				DC3DF7431AE7E2D300667893 /* clientCert3.4096.IntCA1.pfx in Resources */,
+				DC3DF73A1AE7AC8200667893 /* clientCert6.2048.IntCA2req.pem in Resources */,
+				DC3DF72D1AE7AC8200667893 /* clientCert2.2048.IntCA1key.pem in Resources */,
+				DC3DF72B1AE7AC8200667893 /* clientCert1.1024.IntCA1req.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1467,6 +1787,7 @@
 				DCEB505F1A65488500EE22FB /* TestCertificates.m in Sources */,
 				0A6573D41A2DEA1100D5502E /* QredoKeyTests.m in Sources */,
 				DC0EAA041A8A46B50059BA4C /* QredoSecKeyRefPairTests.m in Sources */,
+				DC0787471ADD148300534CE7 /* QredoOpenSSLCertificateUtilsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
