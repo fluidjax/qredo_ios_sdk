@@ -4,4 +4,4 @@
 
 #import "QredoErrorCodes.h"
 
-NSString *const QredoErrorDomain = @"com.qredo.error";
+NSString *const QredoErrorDomain = @"QredoError";
