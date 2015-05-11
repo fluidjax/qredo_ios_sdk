@@ -8,6 +8,7 @@
 #import "QredoLogging.h"
 
 @class QredoConversationProtocolCancelState;
+@class QredoConversationProtocolErrorState;
 
 @protocol QredoFSMProtocolEvents <NSObject>
 
@@ -31,11 +32,13 @@
 @property dispatch_queue_t processingQueue;
 
 @property QredoConversationProtocolCancelState *cancelState;
+@property QredoConversationProtocolErrorState *errorState;
 
 - (void)switchToNextState;
 - (void)failWithError:(NSError *)error;
 
 - (void)didFinish;
+- (void)didFinishSendingErrorMessageWithError:(NSError *)error;
 
 @end
 
@@ -51,6 +54,13 @@
 
 @interface QredoConversationProtocolCancelState : QredoConversationProtocolPublishingState
 @end
+
+@interface QredoConversationProtocolErrorState : QredoConversationProtocolPublishingState
+
+@property NSError *error;
+
+@end
+
 
 @interface QredoConversationProtocolExpectingState ()
 @property (nonatomic, strong) BOOL(^block)(QredoConversationMessage *);
@@ -112,6 +122,32 @@
 {
     if (state == self) {
         [self.fsmProtocol didFinish];
+    }
+}
+@end
+
+
+
+@implementation QredoConversationProtocolErrorState
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    self.error = nil;
+}
+- (instancetype)init
+{
+    NSData* messageValue = [self.error.description dataUsingEncoding:NSUTF8StringEncoding];
+    self = [super initWithBlock:^QredoConversationMessage * __nonnull{
+        return [[QredoConversationMessage alloc] initWithValue:messageValue
+                                                      dataType:self.cancelMessageType
+                                                 summaryValues:nil];
+    }];
+    return self;
+}
+
+- (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state
+{
+    if (state == self) {
+        [self.fsmProtocol didFinishSendingErrorMessageWithError:self.error];
     }
 }
 @end
@@ -264,6 +300,7 @@
     _states = [NSMutableArray new];
 
     self.cancelState = [[QredoConversationProtocolCancelState alloc] init];
+    self.errorState = [[QredoConversationProtocolErrorState alloc] init];
 
     return self;
 }
@@ -297,11 +334,11 @@
 
 - (void)failWithError:(NSError *)error
 {
-    // FIXME
-    // 1. create errorState
-    // 2. errorState should publish error message.
-    // 3. after publishing error message should call delegate.didFailWithError
-    // 4. set _finished = true
+    LogError(@"failWithError");
+
+    [self switchToState:self.errorState withConfigBlock:^{
+        self.errorState.error = error;
+    }];
 }
 
 - (void)switchToNextState
@@ -319,14 +356,27 @@
     }
 }
 
-- (void)didFinish {
+- (void)finish {
     NSAssert(!_finished, @"should not finish twice");
     _finished = YES;
 
     [self.conversation stopListening];
+}
+
+- (void)didFinish {
+    [self finish];
 
     if (self.delegate) {
         [self.delegate qredoConversationProtocolDidFinishSuccessfuly:self];
+    }
+}
+
+- (void)didFinishSendingErrorMessageWithError:(NSError *)error
+{
+    [self finish];
+
+    if (self.delegate) {
+        [self.delegate qredoConversationProtocol:self didFailWithError:error];
     }
 }
 

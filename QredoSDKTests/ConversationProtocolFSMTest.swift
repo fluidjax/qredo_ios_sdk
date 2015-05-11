@@ -171,6 +171,50 @@ class ConversationProtocolFSMTest: XCTestCase {
         expectMultipleMessages(10)
     }
 
+    func testExpectFail() {
+        let conversationHelper = ConversationsHelper()
+        conversationHelper.setUp(self)
+
+        let conversationProtocol = QredoConversationProtocolFSM(conversation: conversationHelper.creatorConversation)
+
+        conversationProtocol.addStates([
+            QredoConversationProtocolExpectingState { message -> Bool in
+                message.dataType == "com.test.correct"
+
+            }
+            ])
+
+
+        let message = QredoConversationMessage(
+            value: "hello".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true),
+            dataType: "com.test.wrong",
+            summaryValues: [:])
+
+        let publishExpectation = expectationWithDescription("publish message")
+        conversationHelper.responderConversation.publishMessage(message, completionHandler:
+            { (hwm, error) -> Void in
+                println("published message")
+                publishExpectation.fulfill()
+            })
+
+        var protocolFailureExpectation : XCTestExpectation? = expectationWithDescription("finish protocol")
+        let protocolDelegate = QredoConversationProtocolFSMBlockDelegate()
+        protocolDelegate.onSuccess = {
+            XCTFail("protocol should not succeed")
+        }
+
+        protocolDelegate.onError = { error in
+            protocolFailureExpectation?.fulfill()
+        }
+        conversationProtocol.startWithDelegate(protocolDelegate)
+
+        waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { (error) -> Void in
+            protocolFailureExpectation = nil
+        })
+        
+        conversationHelper.tearDown()
+    }
+
 
     // a sample code, to give an idea how a protcol can be defined
     func _testExample() {
