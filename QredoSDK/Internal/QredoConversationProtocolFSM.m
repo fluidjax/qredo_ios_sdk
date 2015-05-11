@@ -30,6 +30,7 @@
 
 @property id<QredoConversationProtocolFSMDelegate> delegate;
 @property dispatch_queue_t processingQueue;
+@property dispatch_queue_t interruptQueue;
 
 @property QredoConversationProtocolCancelState *cancelState;
 @property QredoConversationProtocolErrorState *errorState;
@@ -68,7 +69,6 @@
 
 @interface QredoConversationProtocolProcessingState ()
 {
-    dispatch_queue_t interruptQueue;
     BOOL finishedProcessing;
 }
 @property (nonatomic, strong) void(^block)(QredoConversationProtocolProcessingState *state);
@@ -118,6 +118,11 @@
     return self;
 }
 
+- (void)didFailWithError:(NSError *)error
+{
+    // Called when failed to send message. Do nothing
+}
+
 - (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state
 {
     if (state == self) {
@@ -135,14 +140,21 @@
 }
 - (instancetype)init
 {
-    NSData* messageValue = [self.error.description dataUsingEncoding:NSUTF8StringEncoding];
     self = [super initWithBlock:^QredoConversationMessage * __nonnull{
+        NSData* messageValue = [self.error.description dataUsingEncoding:NSUTF8StringEncoding];
+
         return [[QredoConversationMessage alloc] initWithValue:messageValue
                                                       dataType:self.cancelMessageType
                                                  summaryValues:nil];
     }];
     return self;
 }
+
+- (void)didFailWithError:(NSError *)error
+{
+    // Called when failed to send message. Do nothing
+}
+
 
 - (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state
 {
@@ -192,15 +204,20 @@
     dispatch_async(self.fsmProtocol.processingQueue, ^{
         self.block(self);
 
-        dispatch_sync(interruptQueue, ^{
+        __block BOOL wasInterrupted;
+        dispatch_sync(self.fsmProtocol.interruptQueue, ^{
+            wasInterrupted = finishedProcessing;
             finishedProcessing = YES;
         });
+        if (!wasInterrupted) {
+            [self.fsmProtocol switchToNextState];
+        }
     });
 }
 
 - (void)onInterrupted:(void(^)())onInterruptedBlock
 {
-    dispatch_sync(interruptQueue, ^{
+    dispatch_sync(self.fsmProtocol.interruptQueue, ^{
         self.onInterruptedBlock = onInterruptedBlock;
     });
 }
@@ -217,8 +234,11 @@
 
 - (void)willExit
 {
-    dispatch_sync(interruptQueue, ^{
+    if (finishedProcessing) return;
+
+    dispatch_sync(self.fsmProtocol.interruptQueue, ^{
         if (!finishedProcessing) {
+            finishedProcessing = YES;
             [self interrupt];
         }
     });
@@ -226,10 +246,9 @@
 
 - (void)failWithError:(NSError *)error
 {
-    dispatch_sync(interruptQueue, ^{
+    dispatch_async(self.fsmProtocol.interruptQueue, ^{
         if (!finishedProcessing) {
             finishedProcessing = YES;
-
 
             [self.fsmProtocol failWithError:error];
         }
@@ -269,6 +288,14 @@
 {
 }
 
+- (void)conversationCanceledWithMessage:(QredoConversationMessage *)message
+{
+    [self.fsmProtocol failWithError:[NSError errorWithDomain:QredoErrorDomain
+                                                        code:QredoErrorCodeConversationProtocolCancelledByOtherSide
+                                                    userInfo:@{@"message" : message.value}]];
+}
+
+
 @end
 
 @implementation QredoConversationProtocolFSMBlockDelegate
@@ -301,6 +328,9 @@
 
     self.cancelState = [[QredoConversationProtocolCancelState alloc] init];
     self.errorState = [[QredoConversationProtocolErrorState alloc] init];
+
+    self.processingQueue = dispatch_queue_create("com.qredo.conversation.protocol.processing", NULL);
+    self.interruptQueue = dispatch_queue_create("com.qredo.conversation.protocol.interrupt", NULL);
 
     return self;
 }
