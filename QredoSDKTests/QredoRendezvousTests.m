@@ -130,6 +130,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @property (nonatomic) NSArray *trustedRootPems;
+@property (nonatomic) NSArray *crlPems;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
 
@@ -197,10 +198,26 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 {
     int expectedNumberOfRootCertificateRefs = 1;
     
+    // TODO: DH - replace Java-SDK with DH generated test certs (so valid CRLs can be provided)
     // Java-SDK root cert
     self.trustedRootPems = [[NSArray alloc] initWithObjects:TestCertJavaSdkRootPem, nil];
     XCTAssertNotNil(self.trustedRootPems, @"Root certificates should not be nil.");
     XCTAssertEqual(self.trustedRootPems.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificates.");
+}
+
+- (void)setupCrls
+{
+    NSError *error = nil;
+    
+    NSString *rootCrl = [TestCertificates fetchPemForResource:@"rootCAcrlAfterRevoke" error:&error];
+    XCTAssertNotNil(rootCrl);
+    XCTAssertNil(error);
+    
+    NSString *intermediateCrl = [TestCertificates fetchPemForResource:@"interCA1crlAfterRevoke" error:&error];
+    XCTAssertNotNil(intermediateCrl);
+    XCTAssertNil(error);
+    
+    self.crlPems = [NSArray arrayWithObjects:rootCrl, intermediateCrl, nil];
 }
 
 - (void)setupTestPublicCertificateAndPrivateKey4096Bit
@@ -314,6 +331,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:randomTag
                   trustedRootPems:self.trustedRootPems
+                          crlPems:self.crlPems
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
@@ -681,6 +699,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:randomTag
                   trustedRootPems:nil // Anonymous rendezvous, so technically not needed
+                          crlPems:nil // Anonymous rendezvous, so technically not needed
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
@@ -772,6 +791,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:fullTag
                   trustedRootPems:self.trustedRootPems
+                          crlPems:self.crlPems
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         [respondExpectation fulfill];
@@ -824,6 +844,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                       configuration:configuration
                                           publicKey:publicKey
                                     trustedRootPems:self.trustedRootPems
+                                            crlPems:self.crlPems
                                      signingHandler:signingHandler
                                   completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                       
@@ -880,6 +901,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:fullTag
                   trustedRootPems:self.trustedRootPems
+                          crlPems:self.crlPems
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNotNil(conversation);
         XCTAssertNil(error);
@@ -1304,6 +1326,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:fullTag
                   trustedRootPems:self.trustedRootPems
+                          crlPems:self.crlPems
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssert(error);
         [respondExpectation fulfill];

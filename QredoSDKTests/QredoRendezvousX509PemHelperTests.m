@@ -17,6 +17,7 @@
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @property (nonatomic) NSArray *trustedRootPems;
 @property (nonatomic) NSArray *trustedRootRefs;
+@property (nonatomic) NSArray *crlPems;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
 @end
@@ -27,6 +28,7 @@
     [super setUp];
     
     [self setupRootCertificates];
+    [self setupCrls];
     self.cryptoImpl = [[CryptoImplV1 alloc] init];
     
     // For most tests we'll use the 2048 bit key
@@ -41,6 +43,7 @@
 {
     int expectedNumberOfRootCertificateRefs = 1;
     
+    // TODO: DH - replace Java-SDK with DH generated test certs (so valid CRLs can be provided)
     // Java-SDK root cert
     self.trustedRootPems = [[NSArray alloc] initWithObjects:TestCertJavaSdkRootPem, nil];
     XCTAssertNotNil(self.trustedRootPems);
@@ -48,6 +51,22 @@
     self.trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificatesArray:self.trustedRootPems];
     XCTAssertNotNil(self.trustedRootRefs, @"Root certificates should not be nil.");
     XCTAssertEqual(self.trustedRootRefs.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
+}
+
+- (void)setupCrls
+{
+    NSError *error = nil;
+    
+    NSString *rootCrl = [TestCertificates fetchPemForResource:@"rootCAcrlAfterRevoke" error:&error];
+    XCTAssertNotNil(rootCrl);
+    XCTAssertNil(error);
+    
+    NSString *intermediateCrl = [TestCertificates fetchPemForResource:@"interCA1crlAfterRevoke" error:&error];
+    XCTAssertNotNil(intermediateCrl);
+    XCTAssertNil(error);
+    
+    self.crlPems = [NSArray arrayWithObjects:rootCrl, intermediateCrl, nil];
+
 }
 
 - (void)setupTestPublicCertificateAndPrivateKey2048Bit
@@ -107,6 +126,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -125,6 +145,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -177,6 +198,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -195,6 +217,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -246,6 +269,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -264,6 +288,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -321,6 +346,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -339,6 +365,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -391,6 +418,7 @@
                                                             fullTag:initialFullTag1
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -408,6 +436,7 @@
                                                             fullTag:initialFullTag1
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -425,6 +454,7 @@
                                                             fullTag:initialFullTag2
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -442,6 +472,7 @@
                                                             fullTag:finalFullTag1
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper1);
     XCTAssertNil(error);
@@ -465,6 +496,7 @@
                                                             fullTag:finalFullTag1
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper2);
     XCTAssertNil(error);
@@ -486,6 +518,7 @@
                                                             fullTag:finalFullTag2
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper2);
     XCTAssertNil(error);
@@ -522,6 +555,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -539,6 +573,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -572,6 +607,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -588,6 +624,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -655,6 +692,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -687,6 +725,7 @@
                                                                           fullTag:initialFullTag
                                                                            crypto:crypto
                                                                   trustedRootPems:self.trustedRootPems
+                                                                          crlPems:self.crlPems
                                                                    signingHandler:signingHandler
                                                                             error:&error]);
 }
@@ -705,6 +744,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -728,6 +768,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -751,6 +792,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -779,6 +821,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -808,6 +851,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:noTrustedRoots
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -846,6 +890,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:noTrustedRoots
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -871,6 +916,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                     signingHandler:signingHandler
                                                               error:&error
        ];
@@ -894,6 +940,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -916,6 +963,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -945,6 +993,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -962,6 +1011,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -995,6 +1045,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -1012,6 +1063,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1042,6 +1094,7 @@
                                                                           fullTag:initialFullTag
                                                                            crypto:crypto
                                                                   trustedRootPems:self.trustedRootPems
+                                                                          crlPems:self.crlPems
                                                                             error:&error]);
 }
 
@@ -1055,6 +1108,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -1072,6 +1126,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -1089,6 +1144,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -1112,6 +1168,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -1138,6 +1195,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -1157,6 +1215,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:noTrustedRoots
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -1177,6 +1236,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -1194,6 +1254,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -1213,6 +1274,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1240,6 +1302,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1267,6 +1330,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1295,6 +1359,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1323,6 +1388,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1351,6 +1417,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1367,5 +1434,10 @@
 }
 
 // TODO: DH - add test using incorrect key length (e.g. 1024 bit). Unsure whether can detect yet.
+
+// TODO: DH - add test with revoked certificate (subject)
+// TODO: DH - add test with revoked certificate (intermediate)
+// TODO: DH - add test with missing CRL
+
 
 @end

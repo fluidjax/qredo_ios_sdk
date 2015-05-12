@@ -112,6 +112,7 @@
     = [rendezvousCrypto rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
                                                       fullTag:@"Ed25519@"
                                               trustedRootPems:nil
+                                                      crlPems:nil
                                                signingHandler:nil
                                                         error:nil];
 
@@ -121,6 +122,7 @@
     = [rendezvousCrypto rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
                                                       fullTag:@"RSA2048@"
                                               trustedRootPems:nil
+                                                      crlPems:nil
                                                signingHandler:nil
                                                         error:nil];
 
@@ -131,6 +133,7 @@
     = [rendezvousCrypto rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
                                                       fullTag:@"RSA4096@"
                                               trustedRootPems:nil
+                                                      crlPems:nil
                                                signingHandler:nil
                                                         error:nil];
 

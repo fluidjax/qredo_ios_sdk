@@ -119,9 +119,10 @@
     
     NSLog(@"Responding from another client");
     __block QredoConversation *responderConversation = nil;
-    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems is valid for this test
+    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
     [anotherClient respondWithTag:randomTag
                   trustedRootPems:nil
+                          crlPems:nil
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         NSLog(@"Received response completion handler");
         XCTAssertNil(error);
