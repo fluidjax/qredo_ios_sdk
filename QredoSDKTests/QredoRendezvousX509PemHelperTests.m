@@ -12,6 +12,7 @@
 #import "QredoClient.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "NSData+QredoRandomData.h"
+#import "QredoCryptoError.h"
 
 @interface QredoRendezvousX509PemHelperTests : XCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
@@ -66,7 +67,7 @@
     self.crlPems = [NSArray arrayWithObjects:rootCrl, intermediateCrl, nil];
 }
 
-- (void)setupTestPublicCertificateAndPrivateKey_qredoTestCA_2048
+- (void)setupTestPublicCertificateAndPrivateKeyForPfxResource:(NSString *)resource
 {
     // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to
     // raw private RSA key, and the PEM public certificates
@@ -75,11 +76,11 @@
     // Use SecCertificateRefs to create a PEM which is then processed (to confirm validity)
     
     
-    // 1.) Create identity - Test client 2048 certificate + priv key from QredoTestCA, with intermediate cert
+    // 1.) Create identity - Test client certificate + priv key from QredoTestCA, with intermediate cert
     NSError *error = nil;
     
     NSString *pkcs12Password = @"password";
-    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert2.2048.IntCA1" error:&error];
+    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:resource error:&error];
     XCTAssertNotNil(pkcs12Data);
     XCTAssertNil(error);
     int expectedNumberOfCertsInCertChain = 2;
@@ -123,10 +124,15 @@
                                                                     kSecImportItemCertChain);
     XCTAssertNotNil(certificateChainRefs, @"Incorrect identity validation result dictionary contents. Should contain valid certificate chain array.");
     XCTAssertEqual(certificateChainRefs.count, expectedNumberOfCertsInCertChain, @"Incorrect identity validation result dictionary contents. Should contain expected number of certificate chain refs.");
-
+    
     // The PEM certs for the full chain becomes the authentication tag in the tests.
     self.publicKeyCertificateChainPem = [QredoCertificateUtils convertCertificateRefsToPemCertificate:certificateChainRefs];
     XCTAssertNotNil(self.publicKeyCertificateChainPem);
+}
+
+- (void)setupTestPublicCertificateAndPrivateKey_qredoTestCA_2048
+{
+    [self setupTestPublicCertificateAndPrivateKeyForPfxResource:@"clientCert2.2048.IntCA1"];
 }
 
 - (void)testSignatureAndVerification_ExternalKeys
@@ -988,6 +994,169 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorTrustedRootsInvalid);
 }
 
+- (void)testCreateHelper_Invalid_MissingCrlForIntermediate
+{
+    NSError *error = nil;
+    
+    NSString *intermediateCrl = [TestCertificates fetchPemForResource:@"interCA1crlAfterRevoke" error:&error];
+    XCTAssertNotNil(intermediateCrl);
+    XCTAssertNil(error);
+    
+    // Only provide the Intermediate CRL
+    NSArray *intermediateCrlOnly = [[NSArray alloc] initWithObjects:intermediateCrl, nil];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = self.publicKeyCertificateChainPem;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        // This block shouldn't be called (we're not signing anything), we just need a valid block (so just return input)
+        return data;
+    };
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                            crlPems:intermediateCrlOnly
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodeCertificateIsNotValid);
+}
+
+- (void)testCreateHelper_Invalid_NoCrls
+{
+    NSError *error = nil;
+    
+    // Don't provide any CRLs
+    NSArray *noCrls = [[NSArray alloc] init];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = self.publicKeyCertificateChainPem;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        // This block shouldn't be called (we're not signing anything), we just need a valid block (so just return input)
+        return data;
+    };
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                            crlPems:noCrls
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodeCertificateIsNotValid);
+}
+
+- (void)testCreateHelper_Invalid_ClientCertRevoked
+{
+    // Switch test to use private key from revoked client cert
+    [self setupTestPublicCertificateAndPrivateKeyForPfxResource:@"clientCert5.2048.Revoked.IntCA1"];
+
+    NSError *error = nil;
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = self.publicKeyCertificateChainPem;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        // This block shouldn't be called (we're not signing anything), we just need a valid block (so just return input)
+        return data;
+    };
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodeCertificateIsNotValid);
+}
+
+- (void)testCreateHelper_Invalid_IntermediateCertRevoked
+{
+    // Switch test to use private key from revoked intermediate cert (CA2 is revoked)
+    [self setupTestPublicCertificateAndPrivateKeyForPfxResource:@"clientCert6.2048.IntCA2"];
+    
+    NSError *error = nil;
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = self.publicKeyCertificateChainPem;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        // This block shouldn't be called (we're not signing anything), we just need a valid block (so just return input)
+        return data;
+    };
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodeCertificateIsNotValid);
+}
+
+- (void)testCreateHelper_Invalid_MissingCrlForRoot
+{
+    NSError *error = nil;
+    
+    NSString *rootCrl = [TestCertificates fetchPemForResource:@"rootCAcrlAfterRevoke" error:&error];
+    XCTAssertNotNil(rootCrl);
+    XCTAssertNil(error);
+    
+    // Only provide the Root CRL
+    NSArray *rootCrlOnly = [[NSArray alloc] initWithObjects:rootCrl, nil];
+    
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = self.publicKeyCertificateChainPem;
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        // This block shouldn't be called (we're not signing anything), we just need a valid block (so just return input)
+        return data;
+    };
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                            crlPems:rootCrlOnly
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodeCertificateIsNotValid);
+}
+
 - (void)testCreateHelper_Invalid_MultipleAtsInTag
 {
     NSError *error = nil;
@@ -1059,6 +1228,38 @@
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorSignatureHandlerMissing);
+}
+
+- (void)testCreateHelper_Invalid_ClientCertificateKeyTooShort
+{
+    // Switch test to use private key from client cert with 1024 bit key (too short)
+    [self setupTestPublicCertificateAndPrivateKeyForPfxResource:@"clientCert1.1024.IntCA1"];
+    
+    NSError *error = nil;
+    NSString *prefix = @"MyTestRendezVous";
+    NSString *authenticationTag = self.publicKeyCertificateChainPem; // External keys, needs a signing handler
+    NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
+    signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
+        XCTAssertNotNil(data);
+        NSInteger saltLength = [QredoRendezvousHelpers saltLengthForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem];
+        NSData *signature = [QredoCrypto rsaPssSignMessage:data saltLength:saltLength keyRef:self.privateKeyRef];
+        XCTAssertNotNil(signature);
+        return signature;
+    };
+    
+    id<QredoRendezvousCreateHelper> createHelper
+    = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
+                                                            fullTag:initialFullTag
+                                                             crypto:self.cryptoImpl
+                                                    trustedRootPems:self.trustedRootPems
+                                                            crlPems:self.crlPems
+                                                     signingHandler:signingHandler
+                                                              error:&error
+       ];
+    XCTAssertNil(createHelper);
+    XCTAssertNotNil(error);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodePublicKeyInvalid);
 }
 
 - (void)testCreateHelperSigning_Invalid_NilDataToSign
@@ -1520,12 +1721,5 @@
                                                     error:&error];
     XCTAssertEqual(signatureValid, expectedValidity);
 }
-
-// TODO: DH - add test using incorrect key length (e.g. 1024 bit). Unsure whether can detect yet.
-
-// TODO: DH - add test with revoked certificate (subject)
-// TODO: DH - add test with revoked certificate (intermediate)
-// TODO: DH - add test with missing CRL (root and intermediate separately)
-
 
 @end
