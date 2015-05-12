@@ -937,8 +937,8 @@
        ];
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
-    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
-    XCTAssertEqual(error.code, QredoRendezvousHelperErrorTrustedRootsInvalid);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodeCertificateIsNotValid);
 }
 
 - (void)testCreateHelper_Invalid_UntrustedPublicKeyCertChainWithRootInChain
@@ -990,8 +990,8 @@
        ];
     XCTAssertNil(createHelper);
     XCTAssertNotNil(error);
-    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
-    XCTAssertEqual(error.code, QredoRendezvousHelperErrorTrustedRootsInvalid);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodeCertificateIsNotValid);
 }
 
 - (void)testCreateHelper_Invalid_MissingCrlForIntermediate
@@ -1508,8 +1508,8 @@
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
-    XCTAssertEqualObjects(error.domain, QredoRendezvousHelperErrorDomain);
-    XCTAssertEqual(error.code, QredoRendezvousHelperErrorTrustedRootsInvalid);
+    XCTAssertEqualObjects(error.domain, QredoCryptoErrorDomain);
+    XCTAssertEqual(error.code, QredoCryptoErrorCodeCertificateIsNotValid);
 }
 
 

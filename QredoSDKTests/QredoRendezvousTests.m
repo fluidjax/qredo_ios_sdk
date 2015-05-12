@@ -146,6 +146,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     // Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
     [self setupRootCertificates];
+    [self setupCrls];
     self.cryptoImpl = [[CryptoImplV1 alloc] init];
     
     // Must remove any existing keys before starting
@@ -196,13 +197,15 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 - (void)setupRootCertificates
 {
-    int expectedNumberOfRootCertificateRefs = 1;
+    NSError *error = nil;
     
-    // TODO: DH - replace Java-SDK with DH generated test certs (so valid CRLs can be provided)
-    // Java-SDK root cert
-    self.trustedRootPems = [[NSArray alloc] initWithObjects:TestCertJavaSdkRootPem, nil];
-    XCTAssertNotNil(self.trustedRootPems, @"Root certificates should not be nil.");
-    XCTAssertEqual(self.trustedRootPems.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificates.");
+    // Test certs root CA cert
+    NSString *rootCert = [TestCertificates fetchPemCertificateFromResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCert);
+    XCTAssertNil(error);
+    
+    self.trustedRootPems = [NSArray arrayWithObjects:rootCert, nil];
+    XCTAssertNotNil(self.trustedRootPems);
 }
 
 - (void)setupCrls
@@ -222,30 +225,53 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 - (void)setupTestPublicCertificateAndPrivateKey4096Bit
 {
-    // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to raw private RSA key, and the PEM public certificates
+    // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to
+    // raw private RSA key, and the PEM public certificates
     
     // Import some PKCS#12 data and then get the certificate chain refs from the identity.
     // Use SecCertificateRefs to create a PEM which is then processed (to confirm validity)
     
     
-    // 1.) Create identity - Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    // 1.) Create identity - Test client certificate + priv key from QredoTestCA, with intermediate cert
+    NSError *error = nil;
+    
     NSString *pkcs12Password = @"password";
-    int expectedNumberOfChainCertificateRefs = 2;
+    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert3.4096.IntCA1" error:&error];
+    XCTAssertNotNil(pkcs12Data);
+    XCTAssertNil(error);
+    int expectedNumberOfCertsInCertChain = 2;
     
-    NSArray *trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificatesArray:self.trustedRootPems];
-    XCTAssertNotNil(trustedRootRefs);
+    // QredoTestCA root
+    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCertificatesPemString);
+    XCTAssertNil(error);
+    int expectedNumberOfRootCertificateRefs = 1;
     
+    // Get the SecCertificateRef array for the root cert
+    NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
+    XCTAssertNotNil(rootCertificates, @"Root certificates should not be nil.");
+    XCTAssertEqual(rootCertificates.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
+    
+    // Create an Identity using the PKCS#12 data, validated with the root certificate ref
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data
                                                                                              password:pkcs12Password
-                                                                                  rootCertificateRefs:trustedRootRefs];
+                                                                                  rootCertificateRefs:rootCertificates];
     XCTAssertNotNil(identityDictionary, @"Incorrect identity validation result. Should have returned valid NSDictionary.");
     
-    SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
-                                                                      kSecImportItemIdentity);
+    // Extract the SecTrustRef from the Identity Dictionary result to ensure trust was successful
+    SecTrustRef trustRef = (SecTrustRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary, kSecImportItemTrust);
+    XCTAssertNotNil((__bridge id)trustRef, @"Incorrect identity validation result dictionary contents. Should contain valid trust ref.");
+    
+    // Extract the certificate chain refs (client and intermediate certs) from the Identity Dictionary result to ensure chain is correct
+    NSArray *certChain = (NSArray *)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary, kSecImportItemCertChain);
+    XCTAssertNotNil(certChain, @"Incorrect identity validation result dictionary contents. Should contain valid cert chain array.");
+    XCTAssertEqual(certChain.count, expectedNumberOfCertsInCertChain, @"Incorrect identity validation result dictionary contents. Wrong number of certificate refs in cert chain.");
+    
+    // Extract the SecIdentityRef from Identity Dictionary, this enables us to get the private SecKeyRef out, which is needed for RSA operations in tests
+    SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary, kSecImportItemIdentity);
     XCTAssertNotNil((__bridge id)identityRef, @"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
     
+    // Extract the SecKeyRef from the identity
     self.privateKeyRef = [QredoCrypto getPrivateKeyRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)self.privateKeyRef);
     
@@ -253,7 +279,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSArray *certificateChainRefs = (NSArray *)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
                                                                     kSecImportItemCertChain);
     XCTAssertNotNil(certificateChainRefs, @"Incorrect identity validation result dictionary contents. Should contain valid certificate chain array.");
-    XCTAssertEqual(certificateChainRefs.count, expectedNumberOfChainCertificateRefs, @"Incorrect identity validation result dictionary contents. Should contain expected number of certificate chain refs.");
+    XCTAssertEqual(certificateChainRefs.count, expectedNumberOfCertsInCertChain, @"Incorrect identity validation result dictionary contents. Should contain expected number of certificate chain refs.");
+    
+    // The PEM certs for the full chain becomes the authentication tag in the tests.
     self.publicKeyCertificateChainPem = [QredoCertificateUtils convertCertificateRefsToPemCertificate:certificateChainRefs];
     XCTAssertNotNil(self.publicKeyCertificateChainPem);
 }
