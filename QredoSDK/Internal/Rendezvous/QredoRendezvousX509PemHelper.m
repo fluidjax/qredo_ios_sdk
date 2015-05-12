@@ -14,7 +14,6 @@
 
 @interface QredoAbstractRendezvousX509PemHelper ()
 
-@property (nonatomic) NSArray *trustedRootRefs;
 @property (nonatomic) NSArray *trustedRootPems;
 @property (nonatomic) NSArray *crlPems;
 
@@ -43,14 +42,6 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         
         // CrlPems is required for X.509 PEM authenticated rendezvous
         _crlPems = [[NSArray alloc] initWithArray:crlPems copyItems:YES];
-
-        // Convert from PEM to SecCertificateRefs
-        _trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificatesArray:trustedRootPems];
-        if (!_trustedRootRefs) {
-            LogError(@"Could not convert trusted root PEM certificates into SecCertificateRefs.");
-            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorTrustedRootsInvalid, nil);
-            return nil;
-        }
     }
     return self;
 }
