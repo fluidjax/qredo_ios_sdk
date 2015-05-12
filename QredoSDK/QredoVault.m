@@ -419,7 +419,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 {
 
     QLFVaultSequenceId   *sequenceId    = itemDescriptor.sequenceId;
-    QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
+    QLFVaultSequenceValue sequenceValue = itemDescriptor.sequenceValue;
 
     NSError *error = nil;
 
