@@ -157,6 +157,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
                 trustedRootPems:(NSArray *)trustedRootPems
+                        crlPems:(NSArray *)crlPems
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler
 {
@@ -179,6 +180,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     id<QredoRendezvousCreateHelper> rendezvousHelper = [crypto rendezvousHelperForAuthenticationType:authenticationType
                                                                                              fullTag:tag
                                                                                      trustedRootPems:trustedRootPems
+                                                                                             crlPems:crlPems
                                                                                       signingHandler:signingHandler
                                                                                                error:&error];
     if (!rendezvousHelper) {

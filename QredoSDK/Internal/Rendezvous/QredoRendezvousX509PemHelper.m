@@ -32,6 +32,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
 - (instancetype)initWithCrypto:(id<CryptoImpl>)crypto
                trustedRootPems:(NSArray *)trustedRootPems
+                       crlPems:(NSArray *)crlPems
                          error:(NSError **)error
 {
     self = [super initWithCrypto:crypto];
@@ -40,8 +41,8 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         // TrustedRootPems is required for X.509 PEM authenticated rendezvous
         _trustedRootPems = [[NSArray alloc] initWithArray:trustedRootPems copyItems:YES];
         
-        // TODO: DH - populate crlPems after adding new argument
-        _crlPems = [[NSArray alloc] init];
+        // CrlPems is required for X.509 PEM authenticated rendezvous
+        _crlPems = [[NSArray alloc] initWithArray:crlPems copyItems:YES];
 
         // Convert from PEM to SecCertificateRefs
         _trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificatesArray:trustedRootPems];
@@ -141,10 +142,11 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
                 trustedRootPems:(NSArray *)trustedRootPems
+                        crlPems:(NSArray *)crlPems
                  signingHandler:(signDataBlock)signingHandler
                           error:(NSError **)error
 {
-    self = [super initWithCrypto:crypto trustedRootPems:trustedRootPems error:error];
+    self = [super initWithCrypto:crypto trustedRootPems:trustedRootPems crlPems:crlPems error:error];
     if (self) {
         
         if (!fullTag) {
@@ -267,9 +269,10 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
                 trustedRootPems:(NSArray *)trustedRootPems
+                        crlPems:(NSArray *)crlPems
                           error:(NSError **)error
 {
-    self = [super initWithCrypto:crypto trustedRootPems:trustedRootPems error:error];
+    self = [super initWithCrypto:crypto trustedRootPems:trustedRootPems crlPems:crlPems error:error];
     if (self) {
         
         if (!fullTag) {

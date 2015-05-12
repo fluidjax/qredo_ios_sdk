@@ -81,6 +81,7 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
                                   configuration:(QredoRendezvousConfiguration *)configuration
                                       publicKey:(NSString *)publicKey
                                 trustedRootPems:(NSArray *)trustedRootPems
+                                        crlPems:(NSArray *)crlPems
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
@@ -101,6 +102,7 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 /** Joins the rendezvous and stores conversation into the vault */
 - (void)respondWithTag:(NSString *)tag
        trustedRootPems:(NSArray *)trustedRootPems
+               crlPems:(NSArray *)crlPems
      completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler;
 
 /** Enumerates through the conversations that have been stored in the Vault
