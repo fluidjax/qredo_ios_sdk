@@ -98,11 +98,9 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 
     LogDebug(@"Certificate chain contains %lu intermediate certificates", (unsigned long)chainPemCertificates.count);
     
-    // TODO: DH - remove revocation check bypass!
-    
     // Validate chain using OpenSSL, but still need a SecKeyRef to allow use of existing RSA routines (e.g. signing)
     BOOL certificateIsValid = [QredoOpenSSLCertificateUtils validateCertificate:subjectPemCertificate
-                                                           skipRevocationChecks:YES
+                                                           skipRevocationChecks:NO
                                                            chainPemCertificates:chainPemCertificates
                                                             rootPemCertificates:self.trustedRootPems
                                                                         pemCrls:self.crlPems

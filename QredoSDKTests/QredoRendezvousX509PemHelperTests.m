@@ -16,7 +16,6 @@
 @interface QredoRendezvousX509PemHelperTests : XCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @property (nonatomic) NSArray *trustedRootPems;
-@property (nonatomic) NSArray *trustedRootRefs;
 @property (nonatomic) NSArray *crlPems;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
@@ -32,7 +31,7 @@
     self.cryptoImpl = [[CryptoImplV1 alloc] init];
     
     // For most tests we'll use the 2048 bit key
-    [self setupTestPublicCertificateAndPrivateKey2048Bit];
+    [self setupTestPublicCertificateAndPrivateKey_qredoTestCA_2048];
 }
 
 - (void)tearDown {
@@ -41,16 +40,15 @@
 
 - (void)setupRootCertificates
 {
-    int expectedNumberOfRootCertificateRefs = 1;
-    
-    // TODO: DH - replace Java-SDK with DH generated test certs (so valid CRLs can be provided)
-    // Java-SDK root cert
-    self.trustedRootPems = [[NSArray alloc] initWithObjects:TestCertJavaSdkRootPem, nil];
-    XCTAssertNotNil(self.trustedRootPems);
+    NSError *error = nil;
 
-    self.trustedRootRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificatesArray:self.trustedRootPems];
-    XCTAssertNotNil(self.trustedRootRefs, @"Root certificates should not be nil.");
-    XCTAssertEqual(self.trustedRootRefs.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
+    // Test certs root CA cert
+    NSString *rootCert = [TestCertificates fetchPemCertificateFromResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCert);
+    XCTAssertNil(error);
+    
+    self.trustedRootPems = [NSArray arrayWithObjects:rootCert, nil];
+    XCTAssertNotNil(self.trustedRootPems);
 }
 
 - (void)setupCrls
@@ -66,34 +64,57 @@
     XCTAssertNil(error);
     
     self.crlPems = [NSArray arrayWithObjects:rootCrl, intermediateCrl, nil];
-
 }
 
-- (void)setupTestPublicCertificateAndPrivateKey2048Bit
+- (void)setupTestPublicCertificateAndPrivateKey_qredoTestCA_2048
 {
-    // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to raw private RSA key, and the PEM public certificates
+    // iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to
+    // raw private RSA key, and the PEM public certificates
     
     // Import some PKCS#12 data and then get the certificate chain refs from the identity.
     // Use SecCertificateRefs to create a PEM which is then processed (to confirm validity)
     
     
-    // 1.) Create identity - Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    // 1.) Create identity - Test client 2048 certificate + priv key from QredoTestCA, with intermediate cert
+    NSError *error = nil;
+    
     NSString *pkcs12Password = @"password";
-    int expectedNumberOfChainCertificateRefs = 2;
+    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert2.2048.IntCA1" error:&error];
+    XCTAssertNotNil(pkcs12Data);
+    XCTAssertNil(error);
+    int expectedNumberOfCertsInCertChain = 2;
     
+    // QredoTestCA root
+    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCertificatesPemString);
+    XCTAssertNil(error);
+    int expectedNumberOfRootCertificateRefs = 1;
     
+    // Get the SecCertificateRef array for the root cert
+    NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
+    XCTAssertNotNil(rootCertificates, @"Root certificates should not be nil.");
+    XCTAssertEqual(rootCertificates.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
     
+    // Create an Identity using the PKCS#12 data, validated with the root certificate ref
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data
                                                                                              password:pkcs12Password
-                                                                                  rootCertificateRefs:self.trustedRootRefs];
+                                                                                  rootCertificateRefs:rootCertificates];
     XCTAssertNotNil(identityDictionary, @"Incorrect identity validation result. Should have returned valid NSDictionary.");
     
-    SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
-                                                                      kSecImportItemIdentity);
+    // Extract the SecTrustRef from the Identity Dictionary result to ensure trust was successful
+    SecTrustRef trustRef = (SecTrustRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary, kSecImportItemTrust);
+    XCTAssertNotNil((__bridge id)trustRef, @"Incorrect identity validation result dictionary contents. Should contain valid trust ref.");
+    
+    // Extract the certificate chain refs (client and intermediate certs) from the Identity Dictionary result to ensure chain is correct
+    NSArray *certChain = (NSArray *)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary, kSecImportItemCertChain);
+    XCTAssertNotNil(certChain, @"Incorrect identity validation result dictionary contents. Should contain valid cert chain array.");
+    XCTAssertEqual(certChain.count, expectedNumberOfCertsInCertChain, @"Incorrect identity validation result dictionary contents. Wrong number of certificate refs in cert chain.");
+    
+    // Extract the SecIdentityRef from Identity Dictionary, this enables us to get the private SecKeyRef out, which is needed for RSA operations in tests
+    SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary, kSecImportItemIdentity);
     XCTAssertNotNil((__bridge id)identityRef, @"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
     
+    // Extract the SecKeyRef from the identity
     self.privateKeyRef = [QredoCrypto getPrivateKeyRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)self.privateKeyRef);
     
@@ -101,7 +122,9 @@
     NSArray *certificateChainRefs = (NSArray *)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
                                                                     kSecImportItemCertChain);
     XCTAssertNotNil(certificateChainRefs, @"Incorrect identity validation result dictionary contents. Should contain valid certificate chain array.");
-    XCTAssertEqual(certificateChainRefs.count, expectedNumberOfChainCertificateRefs, @"Incorrect identity validation result dictionary contents. Should contain expected number of certificate chain refs.");
+    XCTAssertEqual(certificateChainRefs.count, expectedNumberOfCertsInCertChain, @"Incorrect identity validation result dictionary contents. Should contain expected number of certificate chain refs.");
+
+    // The PEM certs for the full chain becomes the authentication tag in the tests.
     self.publicKeyCertificateChainPem = [QredoCertificateUtils convertCertificateRefsToPemCertificate:certificateChainRefs];
     XCTAssertNotNil(self.publicKeyCertificateChainPem);
 }
@@ -175,10 +198,25 @@
     // make the chain trusted
     
     // Concatenate the Subject (2048 bit key), Intermediate and Root certs together
+    NSError *error = nil;
+    
+    NSString *cert = [TestCertificates fetchPemCertificateFromResource:@"clientCert2.2048.IntCA1cert" error:&error];
+    XCTAssertNotNil(cert);
+    XCTAssertNil(error);
+    
+    NSString *intermediateCert = [TestCertificates fetchPemCertificateFromResource:@"interCA1cert" error:&error];
+    XCTAssertNotNil(intermediateCert);
+    XCTAssertNil(error);
+    
+    NSString *rootCert = [TestCertificates fetchPemCertificateFromResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCert);
+    XCTAssertNil(error);
+    
+    // Concatenate the Subject (2048 bit key), Root and Intermediate certs together in an unexpected (but not invalid) order
     NSString *publicKeyCertificateChainWithRootIncluded = [NSString stringWithFormat:@"%@%@%@",
-                                                           TestCertJavaSdkClient2048Pem,
-                                                           TestCertJavaSdkIntermediatePem,
-                                                           TestCertJavaSdkRootPem];
+                                                           cert,
+                                                           intermediateCert,
+                                                           rootCert];
     
     NSString *prefix = @"MyTestRendezVous";
     NSString *authenticationTag = publicKeyCertificateChainWithRootIncluded;
@@ -192,7 +230,6 @@
         return signature;
     };
     
-    NSError *error = nil;
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
@@ -245,11 +282,25 @@
     // This test proves changing the order of the PEM chain (although keeping Subject cert first) doesn't cause
     // the validation to fail.
     
+    NSError *error = nil;
+    
+    NSString *cert = [TestCertificates fetchPemCertificateFromResource:@"clientCert2.2048.IntCA1cert" error:&error];
+    XCTAssertNotNil(cert);
+    XCTAssertNil(error);
+    
+    NSString *intermediateCert = [TestCertificates fetchPemCertificateFromResource:@"interCA1cert" error:&error];
+    XCTAssertNotNil(intermediateCert);
+    XCTAssertNil(error);
+    
+    NSString *rootCert = [TestCertificates fetchPemCertificateFromResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCert);
+    XCTAssertNil(error);
+    
     // Concatenate the Subject (2048 bit key), Root and Intermediate certs together in an unexpected (but not invalid) order
     NSString *outOfOrderPublicKeyCertificateChain = [NSString stringWithFormat:@"%@%@%@",
-                                                           TestCertJavaSdkClient2048Pem,
-                                                           TestCertJavaSdkRootPem,
-                                                           TestCertJavaSdkIntermediatePem];
+                                                           cert,
+                                                           rootCert,
+                                                           intermediateCert];
     
     NSString *prefix = @"MyTestRendezVous";
     NSString *authenticationTag = outOfOrderPublicKeyCertificateChain;
@@ -263,7 +314,6 @@
         return signature;
     };
     
-    NSError *error = nil;
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
@@ -318,18 +368,43 @@
     
     // Concatenate the Subject (2048 bit key), repeated Root and Intermediate certs, along with unrelated certs
     // together in any old order.
-    NSString *outOfOrderPublicKeyCertificateChain = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@",
-                                                     TestCertJavaSdkClient2048Pem,
-                                                     TestCertJavaSdkClient4096Pem,
-                                                     TestCertJavaSdkRootPem,
-                                                     TestCertJavaSdkClient2048Pem,
-                                                     TestCertJavaSdkClient4096Pem,
-                                                     TestCertDHTestingLocalhostClientPem,
-                                                     TestCertJavaSdkRootPem,
-                                                     TestCertJavaSdkIntermediatePem];
+    NSError *error = nil;
+    
+    NSString *cert = [TestCertificates fetchPemCertificateFromResource:@"clientCert2.2048.IntCA1cert" error:&error];
+    XCTAssertNotNil(cert);
+    XCTAssertNil(error);
+    
+    NSString *unnecessaryCert1 = [TestCertificates fetchPemCertificateFromResource:@"clientCert3.4096.IntCA1cert" error:&error];
+    XCTAssertNotNil(unnecessaryCert1);
+    XCTAssertNil(error);
+
+    NSString *unnecessaryCert2 = [TestCertificates fetchPemCertificateFromResource:@"clientCert6.2048.IntCA2cert" error:&error];
+    XCTAssertNotNil(unnecessaryCert2);
+    XCTAssertNil(error);
+
+    NSString *unnecessaryCert3 = [TestCertificates fetchPemCertificateFromResource:@"interCA2cert" error:&error];
+    XCTAssertNotNil(unnecessaryCert3);
+    XCTAssertNil(error);
+
+    NSString *intermediateCert = [TestCertificates fetchPemCertificateFromResource:@"interCA1cert" error:&error];
+    XCTAssertNotNil(intermediateCert);
+    XCTAssertNil(error);
+    
+    NSString *rootCert = [TestCertificates fetchPemCertificateFromResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCert);
+    XCTAssertNil(error);
+    
+    // Concatenate the Subject (2048 bit key), Root and Intermediate certs together in an unexpected (but not invalid) order
+    NSString *unnecessaryPublicKeyCertificateChain = [NSString stringWithFormat:@"%@%@%@%@%@%@",
+                                                      cert,
+                                                      unnecessaryCert1,
+                                                      unnecessaryCert2,
+                                                      intermediateCert,
+                                                      unnecessaryCert3,
+                                                      rootCert];
     
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = outOfOrderPublicKeyCertificateChain;
+    NSString *authenticationTag = unnecessaryPublicKeyCertificateChain;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     
     signDataBlock signingHandler = ^NSData *(NSData *data, QredoRendezvousAuthenticationType authenticationType) {
@@ -340,7 +415,6 @@
         return signature;
     };
     
-    NSError *error = nil;
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
                                                             fullTag:initialFullTag
@@ -357,7 +431,7 @@
     NSString *finalFullTag = [createHelper tag];
     XCTAssertNotNil(finalFullTag);
     XCTAssert([finalFullTag hasPrefix:prefix]);
-    XCTAssert([finalFullTag hasSuffix:outOfOrderPublicKeyCertificateChain]);
+    XCTAssert([finalFullTag hasSuffix:unnecessaryPublicKeyCertificateChain]);
     
     error = nil;
     id<QredoRendezvousRespondHelper> respondHelper
@@ -867,15 +941,29 @@
     // This test will ensure that this scenario does not result in trust verifying.
 
     // Concatenate the Subject (2048-bit key), Intermediate and Root certs together
+    NSError *error = nil;
+    
+    NSString *cert = [TestCertificates fetchPemCertificateFromResource:@"clientCert2.2048.IntCA1cert" error:&error];
+    XCTAssertNotNil(cert);
+    XCTAssertNil(error);
+    
+    NSString *intermediateCert = [TestCertificates fetchPemCertificateFromResource:@"interCA1cert" error:&error];
+    XCTAssertNotNil(intermediateCert);
+    XCTAssertNil(error);
+    
+    NSString *rootCert = [TestCertificates fetchPemCertificateFromResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCert);
+    XCTAssertNil(error);
+    
+    // Concatenate the Subject (2048-bit key), Intermediate and Root certs together
     NSString *publicKeyCertificateChainWithRootIncluded = [NSString stringWithFormat:@"%@%@%@",
-                                                           TestCertJavaSdkClient2048Pem,
-                                                           TestCertJavaSdkIntermediatePem,
-                                                           TestCertJavaSdkRootPem];
+                                                           cert,
+                                                           intermediateCert,
+                                                           rootCert];
     
     // To not trust the chain, we must create an empty array
     NSArray *noTrustedRoots = [[NSArray alloc] init];
     
-    NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
     NSString *authenticationTag = publicKeyCertificateChainWithRootIncluded;
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
@@ -954,7 +1042,7 @@
 {
     NSError *error = nil;
     NSString *prefix = @"MyTestRendezVous";
-    NSString *authenticationTag = TestKeyJavaSdkClient2048PemX509; // External keys, needs a signing handler
+    NSString *authenticationTag = self.publicKeyCertificateChainPem; // External keys, needs a signing handler
     NSString *initialFullTag = [NSString stringWithFormat:@"%@@%@", prefix, authenticationTag];
     signDataBlock signingHandler = nil; // No signing handler provided
     
@@ -1437,7 +1525,7 @@
 
 // TODO: DH - add test with revoked certificate (subject)
 // TODO: DH - add test with revoked certificate (intermediate)
-// TODO: DH - add test with missing CRL
+// TODO: DH - add test with missing CRL (root and intermediate separately)
 
 
 @end
