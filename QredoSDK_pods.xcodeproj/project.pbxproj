@@ -61,6 +61,9 @@
 		0A68F7551A77B2C70045D21D /* QredoConversationMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A68F7541A77B2C70045D21D /* QredoConversationMessage.m */; };
 		0A759D711AE15EE60032185D /* ConversationCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A759D701AE15EE60032185D /* ConversationCryptoTests.m */; };
 		0A7811B31AAA013400479973 /* RendezvousMultipleSubsription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7811B21AAA013400479973 /* RendezvousMultipleSubsription.swift */; };
+		0A7EE7991AFA70800094A703 /* QredoConversationProtocolFSM.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7EE7971AFA70800094A703 /* QredoConversationProtocolFSM.h */; };
+		0A7EE79A1AFA70800094A703 /* QredoConversationProtocolFSM.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EE7981AFA70800094A703 /* QredoConversationProtocolFSM.m */; };
+		0A7EE79C1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EE79B1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift */; };
 		0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A85E6E619FAA95200775115 /* QredoRendezvous.m */; };
 		0A8F5C5319FE90E60068C8D8 /* QredoConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */; };
 		0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9DDDFD19ED3A1500B4248C /* QredoVault.m */; };
@@ -77,6 +80,7 @@
 		0AADB0841A15848C00CFD014 /* QredoRendezvous.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0AADB0851A15848C00CFD014 /* QredoConversation.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A9DDDFA19EC2F2700B4248C /* QredoConversation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0ABF4D971A5D84F20096BF19 /* ConversationBlockDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */; };
+		0ABF743E1B0104340004B8BA /* ConversationsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABF743D1B0104340004B8BA /* ConversationsHelper.swift */; };
 		0AD2595B1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD259591A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h */; };
 		0AD2595C1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AD2595A1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.m */; };
 		0AD2595F1A2F7CD800FC8942 /* QredoKeychainSenderQR.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AD2595D1A2F7CD800FC8942 /* QredoKeychainSenderQR.h */; };
@@ -346,6 +350,9 @@
 		0A68F7561A77BF9F0045D21D /* QredoConversationMessagePrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoConversationMessagePrivate.h; sourceTree = "<group>"; };
 		0A759D701AE15EE60032185D /* ConversationCryptoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationCryptoTests.m; sourceTree = "<group>"; };
 		0A7811B21AAA013400479973 /* RendezvousMultipleSubsription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendezvousMultipleSubsription.swift; sourceTree = "<group>"; };
+		0A7EE7971AFA70800094A703 /* QredoConversationProtocolFSM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoConversationProtocolFSM.h; sourceTree = "<group>"; };
+		0A7EE7981AFA70800094A703 /* QredoConversationProtocolFSM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversationProtocolFSM.m; sourceTree = "<group>"; };
+		0A7EE79B1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationProtocolFSMTest.swift; sourceTree = "<group>"; };
 		0A85E6E619FAA95200775115 /* QredoRendezvous.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvous.m; sourceTree = "<group>"; };
 		0A85E6E919FAB2EE00775115 /* QredoPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoPrivate.h; sourceTree = "<group>"; };
 		0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversation.m; sourceTree = "<group>"; };
@@ -366,6 +373,7 @@
 		0AAB39791AB1E0C000460797 /* NSDictionary+IndexableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+IndexableSet.m"; sourceTree = "<group>"; };
 		0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRendezvous.h; sourceTree = "<group>"; };
 		0ABF4D961A5D84F20096BF19 /* ConversationBlockDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationBlockDelegate.swift; sourceTree = "<group>"; };
+		0ABF743D1B0104340004B8BA /* ConversationsHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationsHelper.swift; sourceTree = "<group>"; };
 		0AC016441A7FDA6D006EB7E5 /* QredoAttestationRelyingParty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoAttestationRelyingParty.h; sourceTree = "<group>"; };
 		0AC016451A7FDAC7006EB7E5 /* QredoClaimantAttestationSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoClaimantAttestationSession.h; sourceTree = "<group>"; };
 		0AC016461A7FEF38006EB7E5 /* QredoConversationProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoConversationProtocol.h; sourceTree = "<group>"; };
@@ -710,6 +718,8 @@
 				7831F07E1AB327A000C8C10C /* OwnershipSignatureTests.m */,
 				0AA38FCF1AD6E8E000D2F391 /* VaultCryptoTests.m */,
 				0A759D701AE15EE60032185D /* ConversationCryptoTests.m */,
+				0A7EE79B1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift */,
+				0ABF743D1B0104340004B8BA /* ConversationsHelper.swift */,
 			);
 			path = QredoSDKTests;
 			sourceTree = "<group>";
@@ -841,6 +851,8 @@
 				0A64FFAB1A83F431004F8BFA /* QredoAuthenticationClaimsProtocol.m */,
 				0A519B621A9E483100182499 /* QredoUpdateListener.h */,
 				0A519B631A9E483100182499 /* QredoUpdateListener.m */,
+				0A7EE7971AFA70800094A703 /* QredoConversationProtocolFSM.h */,
+				0A7EE7981AFA70800094A703 /* QredoConversationProtocolFSM.m */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -1253,6 +1265,7 @@
 				0AD259671A2F93F800FC8942 /* QredoKeychainReceiver.h in Headers */,
 				78F868DA1A5F1A37009CAFFE /* QredoBase58.h in Headers */,
 				78E5E1B61A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.h in Headers */,
+				0A7EE7991AFA70800094A703 /* QredoConversationProtocolFSM.h in Headers */,
 				786CE73C1AB1EFB500162392 /* QLFOwnershipSignature+FactoryMethods.h in Headers */,
 				0AADB0851A15848C00CFD014 /* QredoConversation.h in Headers */,
 				0A64FFAC1A83F431004F8BFA /* QredoAuthenticationClaimsProtocol.h in Headers */,
@@ -1696,6 +1709,7 @@
 				78AB8C731A8156DC00A3CCA7 /* QredoClaimantAttestationSession.m in Sources */,
 				0AD2596C1A2F943800FC8942 /* QredoKeychainSender.m in Sources */,
 				0AE25AE61AB90B0200C10F02 /* QredoSigner.m in Sources */,
+				0A7EE79A1AFA70800094A703 /* QredoConversationProtocolFSM.m in Sources */,
 				DCC22DB81A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.m in Sources */,
 				781D137F1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m in Sources */,
 				0A10352C1A389DFD002479D9 /* QredoKeychain.m in Sources */,
@@ -1722,6 +1736,7 @@
 				0A6574171A2F3B7200D5502E /* QredoVaultConsolidationTests.swift in Sources */,
 				7810CC5A1A388BCE00421892 /* KeychainTransporterSenderTests.swift in Sources */,
 				0A65741B1A2F3B7200D5502E /* QredoVaultUpdateMQTTTests.m in Sources */,
+				0A7EE79C1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift in Sources */,
 				0A7811B31AAA013400479973 /* RendezvousMultipleSubsription.swift in Sources */,
 				0A4269321A8A7CB200E93071 /* AuthenticationProtocolTests.swift in Sources */,
 				78E568401A8CFE7900A38E01 /* ClaimantAttestationProtocolTest.m in Sources */,
@@ -1737,6 +1752,7 @@
 				0A6574101A2F3B7200D5502E /* HighwatermarksTests.m in Sources */,
 				78BD42FC1A65763500FC015B /* Base58Tests.m in Sources */,
 				7889976F1A9CDD1600D563FA /* ConversationProtocolTest.m in Sources */,
+				0ABF743E1B0104340004B8BA /* ConversationsHelper.swift in Sources */,
 				DCCB41521A95F2A900FEFE04 /* QredoRendezvousRsaPemCommonHelperTests.m in Sources */,
 				DCC22DAE1A84DBE20047AB18 /* QredoAuthenticatedRendezvousTagTests.m in Sources */,
 				0A65740E1A2F3B7200D5502E /* ConversationTests.m in Sources */,

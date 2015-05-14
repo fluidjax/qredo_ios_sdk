@@ -23,3 +23,5 @@
 
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoClient.h"
+
+#import "QredoConversationProtocolFSM.h"
