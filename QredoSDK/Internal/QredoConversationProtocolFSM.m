@@ -14,7 +14,7 @@
 @protocol QredoFSMProtocolEvents <NSObject>
 
 - (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state;
-- (void)didFailWithError:(NSError *)error;
+- (void)didFailPublishingMessageWithState:(QredoConversationProtocolPublishingState *)state error:(NSError *)error;
 - (void)didReceiveExpectedMessageWithState:(QredoConversationProtocolExpectingState *)state;
 - (void)didFinishProcessingWithState:(QredoConversationProtocolProcessingState *)state;
 
@@ -25,7 +25,7 @@
 
 @end
 
-@interface QredoConversationProtocolFSM () <QredoFSMProtocolEvents>
+@interface QredoConversationProtocolFSM ()
 {
     NSMutableArray *_states;
     NSUInteger _currentStateIndex;
@@ -42,6 +42,11 @@
 
 - (void)switchToNextState;
 - (void)failWithError:(NSError *)error;
+
+@end
+
+
+@interface QredoConversationProtocolFSM (Events) <QredoFSMProtocolEvents>
 
 @end
 
@@ -99,7 +104,7 @@
     QredoConversationMessage *message = self.block();
     [self.conversationProtocol.conversation publishMessage:message completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
         if (error) {
-            [self.fsmProtocol didFailWithError:error];
+            [self.fsmProtocol didFailPublishingMessageWithState:self error:error];
             return ;
         }
 
@@ -113,6 +118,15 @@
         [self.fsmProtocol switchToNextState];
     }
 }
+
+- (void)didFailPublishingMessageWithState:(QredoConversationProtocolPublishingState *)state
+                                    error:(NSError *)error
+{
+    if (state == self) {
+        [self.fsmProtocol failWithError:error];
+    }
+}
+
 
 @end
 
@@ -288,11 +302,6 @@
 
 @end
 
-#pragma GCC diagnostic push
-#pragma clang diagnostic push
-
-#pragma GCC diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wprotocol"
 
 @implementation QredoConversationProtocolFSMState
 
@@ -306,6 +315,12 @@
     // fail with error: inconsistent state
 }
 
+- (void)didFailPublishingMessageWithState:(QredoConversationProtocolPublishingState *)state error:(NSError *)error
+{
+    // fail with error: inconsistent state
+}
+
+
 - (void)didReceiveExpectedMessageWithState:(QredoConversationProtocolExpectingState *)state
 {
     // fail with error: inconsistent state
@@ -315,9 +330,18 @@
 {
 }
 
+- (void)didFinishSendingCancelMessage
+{
+}
+
+- (void)didFinishSendingErrorMessageWithError:(NSError *)error
+{
+}
+
 - (void)cancel
 {
 }
+
 
 - (void)conversationCanceledWithMessage:(QredoConversationMessage *)message
 {
@@ -325,7 +349,6 @@
                                                         code:QredoErrorCodeConversationProtocolCancelledByOtherSide
                                                     userInfo:@{@"message" : message.value}]];
 }
-
 
 @end
 
@@ -425,6 +448,17 @@
     }
     [self switchToState:self.cancelState withConfigBlock:^{}];
 }
+
+@end
+
+
+#pragma GCC diagnostic push
+#pragma clang diagnostic push
+
+#pragma GCC diagnostic ignored "-Wprotocol"
+#pragma clang diagnostic ignored "-Wprotocol"
+
+@implementation QredoConversationProtocolFSM (Events)
 
 @end
 
