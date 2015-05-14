@@ -9,6 +9,7 @@
 
 @class QredoConversationProtocolCancelState;
 @class QredoConversationProtocolErrorState;
+@class QredoConversationProtocolFinishState;
 
 @protocol QredoFSMProtocolEvents <NSObject>
 
@@ -16,6 +17,9 @@
 - (void)didFailWithError:(NSError *)error;
 - (void)didReceiveExpectedMessageWithState:(QredoConversationProtocolExpectingState *)state;
 - (void)didFinishProcessingWithState:(QredoConversationProtocolProcessingState *)state;
+
+- (void)didFinishSendingErrorMessageWithError:(NSError *)error;
+- (void)didFinishSendingCancelMessage;
 
 - (void)cancel;
 
@@ -34,12 +38,10 @@
 
 @property QredoConversationProtocolCancelState *cancelState;
 @property QredoConversationProtocolErrorState *errorState;
+@property QredoConversationProtocolFinishState *finishState;
 
 - (void)switchToNextState;
 - (void)failWithError:(NSError *)error;
-
-- (void)didFinish;
-- (void)didFinishSendingErrorMessageWithError:(NSError *)error;
 
 @end
 
@@ -53,13 +55,20 @@
 @property (nonatomic, strong) QredoConversationMessage *(^block)();
 @end
 
-@interface QredoConversationProtocolCancelState : QredoConversationProtocolPublishingState
+@interface QredoConversationProtocolCancelState : QredoConversationProtocolFSMState
 @end
 
 @interface QredoConversationProtocolErrorState : QredoConversationProtocolPublishingState
 
 @property NSError *error;
 
+@end
+
+@interface QredoConversationProtocolFinishState : QredoConversationProtocolFSMState
+// keeping a separate flag `failed` just in case if it fails but for some reason `error` is nil.
+// should not happen ideally, but still it is more important to call the correct method on delegate.
+@property BOOL failed;
+@property NSError *error;
 @end
 
 
@@ -108,60 +117,59 @@
 @end
 
 @implementation QredoConversationProtocolCancelState
-- (instancetype)init
+- (void)didEnter
 {
-    self = [super initWithBlock:^QredoConversationMessage * __nonnull{
-        return [[QredoConversationMessage alloc] initWithValue:nil
-                                                      dataType:self.cancelMessageType
-                                                 summaryValues:nil];
+    QredoConversationMessage *cancelMessage
+    = [[QredoConversationMessage alloc] initWithValue:nil
+                                             dataType:self.cancelMessageType
+                                        summaryValues:nil];
+
+
+    [self.conversationProtocol.conversation publishMessage:cancelMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+        // don't care about error at this state
+
+        [self didFinishSendingCancelMessage];
     }];
-    return self;
 }
 
-- (void)didFailWithError:(NSError *)error
-{
-    // Called when failed to send message. Do nothing
-}
+- (void)didFinishSendingCancelMessage {
+    [self.fsmProtocol switchToState:self.fsmProtocol.finishState withConfigBlock:^{
 
-- (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state
-{
-    if (state == self) {
-        [self.fsmProtocol didFinish];
-    }
+    }];
 }
 @end
 
 
-
 @implementation QredoConversationProtocolErrorState
+
 - (void)prepareForReuse {
     [super prepareForReuse];
     self.error = nil;
 }
-- (instancetype)init
-{
-    self = [super initWithBlock:^QredoConversationMessage * __nonnull{
-        NSData* messageValue = [self.error.description dataUsingEncoding:NSUTF8StringEncoding];
 
-        return [[QredoConversationMessage alloc] initWithValue:messageValue
-                                                      dataType:self.cancelMessageType
-                                                 summaryValues:nil];
+- (void)didEnter
+{
+    NSData* messageValue = [self.error.description dataUsingEncoding:NSUTF8StringEncoding];
+
+    QredoConversationMessage *errorMessage
+    = [[QredoConversationMessage alloc] initWithValue:messageValue
+                                                  dataType:self.cancelMessageType
+                                             summaryValues:nil];
+
+    [self.conversationProtocol.conversation publishMessage:errorMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *publishError) {
+        // don't care about error at this state
+
+        [self didFinishSendingErrorMessageWithError:self.error];
     }];
-    return self;
 }
 
-- (void)didFailWithError:(NSError *)error
-{
-    // Called when failed to send message. Do nothing
+- (void)didFinishSendingErrorMessageWithError:(NSError *)error {
+    [self.fsmProtocol switchToState:self.fsmProtocol.finishState withConfigBlock:^{
+        self.fsmProtocol.finishState.failed = YES;
+        self.fsmProtocol.finishState.error = error;
+    }];
 }
 
-
-- (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state
-{
-    if (state == self) {
-        [self.fsmProtocol didFinishSendingErrorMessageWithError:self.error];
-    }
-}
 @end
 
 
@@ -257,6 +265,29 @@
 
 @end
 
+
+@implementation QredoConversationProtocolFinishState
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    self.failed = NO;
+    self.error = nil;
+}
+
+- (void)didEnter {
+    [self.fsmProtocol.conversation stopListening];
+
+    if (self.fsmProtocol.delegate) {
+        if (self.failed) {
+            [self.fsmProtocol.delegate qredoConversationProtocol:self.fsmProtocol didFailWithError:self.error];
+        } else {
+            [self.fsmProtocol.delegate qredoConversationProtocolDidFinishSuccessfuly:self.fsmProtocol];
+        }
+    }
+}
+
+@end
+
 #pragma GCC diagnostic push
 #pragma clang diagnostic push
 
@@ -318,7 +349,6 @@
 
 @implementation QredoConversationProtocolFSM
 
-
 - (instancetype)initWithConversation:(QredoConversation *)conversation
 {
     self = [super initWithConversation:conversation];
@@ -328,6 +358,7 @@
 
     self.cancelState = [[QredoConversationProtocolCancelState alloc] init];
     self.errorState = [[QredoConversationProtocolErrorState alloc] init];
+    self.finishState = [[QredoConversationProtocolFinishState alloc] init];
 
     self.processingQueue = dispatch_queue_create("com.qredo.conversation.protocol.processing", NULL);
     self.interruptQueue = dispatch_queue_create("com.qredo.conversation.protocol.interrupt", NULL);
@@ -382,31 +413,7 @@
     if (_currentStateIndex < _states.count) {
         [self switchToState:_states[_currentStateIndex] withConfigBlock:^{ }];
     } else {
-        [self didFinish];
-    }
-}
-
-- (void)finish {
-    NSAssert(!_finished, @"should not finish twice");
-    _finished = YES;
-
-    [self.conversation stopListening];
-}
-
-- (void)didFinish {
-    [self finish];
-
-    if (self.delegate) {
-        [self.delegate qredoConversationProtocolDidFinishSuccessfuly:self];
-    }
-}
-
-- (void)didFinishSendingErrorMessageWithError:(NSError *)error
-{
-    [self finish];
-
-    if (self.delegate) {
-        [self.delegate qredoConversationProtocol:self didFailWithError:error];
+        [self switchToState:self.finishState withConfigBlock:^{ }];
     }
 }
 
