@@ -114,17 +114,17 @@
 
 - (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state
 {
-    if (state == self) {
-        [self.fsmProtocol switchToNextState];
-    }
+    NSAssert(state == self, @"Unexpected state. Please debug");
+
+    [self.fsmProtocol switchToNextState];
 }
 
 - (void)didFailPublishingMessageWithState:(QredoConversationProtocolPublishingState *)state
                                     error:(NSError *)error
 {
-    if (state == self) {
-        [self.fsmProtocol failWithError:error];
-    }
+    NSAssert(state == self, @"Unexpected state. Please debug");
+
+    [self.fsmProtocol failWithError:error];
 }
 
 
