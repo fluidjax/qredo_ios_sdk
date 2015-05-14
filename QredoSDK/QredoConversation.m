@@ -208,7 +208,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     _metadata = [[QredoConversationMetadata alloc] init];
     _metadata.conversationId = descriptor.conversationId;
-    _metadata.amRendezvousOwner = descriptor.amRendezvousOwner;
+    _metadata.amRendezvousOwner = descriptor.rendezvousOwner;
     _metadata.rendezvousTag = descriptor.rendezvousTag;
     _metadata.type = descriptor.conversationType;
 
@@ -473,7 +473,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     QLFConversationDescriptor *descriptor =
     [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
-                                                     amRendezvousOwner:_metadata.amRendezvousOwner
+                                                       rendezvousOwner:_metadata.amRendezvousOwner
                                                         conversationId:_metadata.conversationId
                                                       conversationType:_metadata.type
                                                     authenticationType:_authenticationType
