@@ -419,7 +419,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 {
 
     QLFVaultSequenceId   *sequenceId    = itemDescriptor.sequenceId;
-    QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
+    QLFVaultSequenceValue sequenceValue = itemDescriptor.sequenceValue;
 
     NSError *error = nil;
 
@@ -709,25 +709,45 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
         };
         
         
-        // Get the unique item IDs, update our mappings.
         if (shouldConsolidateResults) {
             
-            NSMutableDictionary *latestMetadata = [NSMutableDictionary dictionary];
+            
+            // Filter out all items wich are pointed ot by back pointers.
+            
+            /*
+             TODO: [GR] This agorithm can use high levels of memory if the vault contains many items. Hence it 
+             is advisable to revise this algorithm in connection with caching, and certainly before release.
+             */
+            
+            NSMutableDictionary *metadataRefMap = [NSMutableDictionary dictionary];
+            NSMutableArray *metadataArray = [NSMutableArray array];
             enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
-                
-                QredoVaultItemDescriptor *key = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vaultItemMetadata.descriptor.sequenceId itemId:vaultItemMetadata.descriptor.itemId];
-                QredoVaultItemMetadata* existingMetadata = latestMetadata[key];
-                if (!existingMetadata ||
-                    existingMetadata.descriptor.sequenceValue > vaultItemMetadata.descriptor.sequenceValue) {
-                    latestMetadata[key] = vaultItemMetadata;
-                }
-                
-
+                metadataRefMap[vaultItemMetadata.descriptor] = vaultItemMetadata;
+                [metadataArray addObject:vaultItemMetadata];
             });
             
-            for (QredoVaultItemMetadata* metadata in [latestMetadata allValues]) {
+            QredoVaultItemDescriptor *(^backpointerOfMetadata)(QredoVaultItemMetadata *metadata)
+            = ^QredoVaultItemDescriptor *(QredoVaultItemMetadata *metadata) {
+                NSNumber *previousSequenceValue = metadata.summaryValues[@"_v"];
+                if (!previousSequenceValue) {
+                    return nil;
+                }
+                QredoVaultItemDescriptor *descriptor = metadata.descriptor;
+                return [[QredoVaultItemDescriptor alloc] initWithSequenceId:descriptor.sequenceId
+                                                              sequenceValue:[previousSequenceValue longValue]
+                                                                     itemId:descriptor.itemId];
+            };
+            
+            for (QredoVaultItemMetadata* metadata in metadataArray) {
+                QredoVaultItemDescriptor *backPointer = backpointerOfMetadata(metadata);
+                if (backPointer) {
+                    [metadataRefMap removeObjectForKey:backPointer];
+                }
+            }
+            
+            for (QredoVaultItemMetadata* metadata in metadataArray) {
                 BOOL stop = NO;
-                if (![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+                if (metadataRefMap[metadata.descriptor] && ![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
                     block(metadata, &stop);
                     if (stop) {
                         break;
@@ -737,6 +757,8 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
             
         }
         else {
+            
+            // Return all items in the vault, ie. all permutaions of itmes ids, sequence ids and sequence values.
             
             enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
                 block(vaultItemMetadata, stop);

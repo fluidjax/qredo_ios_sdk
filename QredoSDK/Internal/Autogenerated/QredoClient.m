@@ -3914,7 +3914,7 @@
         QLFRendezvousCreationInfo *e = (QLFRendezvousCreationInfo *)element;
         [writer writeConstructorStartWithObjectName:@"RendezvousCreationInfo"];
             [writer writeFieldStartWithFieldName:@"durationSeconds"];
-                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e durationSeconds], writer);
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]]([e durationSeconds], writer);
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"encryptedResponderInfo"];
@@ -3926,7 +3926,7 @@
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"maxResponseCount"];
-                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e maxResponseCount], writer);
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]]([e maxResponseCount], writer);
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"ownershipPublicKey"];
@@ -3942,7 +3942,7 @@
     return ^id(QredoWireFormatReader *reader) {
         [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousCreationInfo'
             [reader readFieldStart]; // TODO assert that field name is 'durationSeconds'
-                NSSet *durationSeconds = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
+                NSSet *durationSeconds = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int32Unmarshaller]](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'encryptedResponderInfo'
                 QLFEncryptedResponderInfo *encryptedResponderInfo = (QLFEncryptedResponderInfo *)[QLFEncryptedResponderInfo unmarshaller](reader);
@@ -3951,7 +3951,7 @@
                 QLFRendezvousHashedTag *hashedTag = (QLFRendezvousHashedTag *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'maxResponseCount'
-                NSSet *maxResponseCount = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
+                NSSet *maxResponseCount = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int32Unmarshaller]](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'ownershipPublicKey'
                 QLFRendezvousOwnershipPublicKey *ownershipPublicKey = (QLFRendezvousOwnershipPublicKey *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
@@ -6795,10 +6795,10 @@
 
 
 
-+ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag amRendezvousOwner:(BOOL)amRendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey initialTransCap:(NSSet *)initialTransCap
++ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey initialTransCap:(NSSet *)initialTransCap
 {
 
-    return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag amRendezvousOwner:amRendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey initialTransCap:initialTransCap];
+    return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey initialTransCap:initialTransCap];
        
 }
 
@@ -6807,10 +6807,6 @@
     return ^(id element, QredoWireFormatWriter *writer) {
         QLFConversationDescriptor *e = (QLFConversationDescriptor *)element;
         [writer writeConstructorStartWithObjectName:@"ConversationDescriptor"];
-            [writer writeFieldStartWithFieldName:@"amRendezvousOwner"];
-                [QredoPrimitiveMarshallers booleanMarshaller]([NSNumber numberWithBool: [e amRendezvousOwner]], writer);
-            [writer writeEnd];
-
             [writer writeFieldStartWithFieldName:@"authenticationType"];
                 [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
             [writer writeEnd];
@@ -6831,6 +6827,10 @@
                 [QLFKeyPairLF marshaller]([e myKey], writer);
             [writer writeEnd];
 
+            [writer writeFieldStartWithFieldName:@"rendezvousOwner"];
+                [QredoPrimitiveMarshallers booleanMarshaller]([NSNumber numberWithBool: [e rendezvousOwner]], writer);
+            [writer writeEnd];
+
             [writer writeFieldStartWithFieldName:@"rendezvousTag"];
                 [QredoPrimitiveMarshallers stringMarshaller]([e rendezvousTag], writer);
             [writer writeEnd];
@@ -6847,9 +6847,6 @@
 {
     return ^id(QredoWireFormatReader *reader) {
         [reader readConstructorStart];// TODO assert that constructor name is 'ConversationDescriptor'
-            [reader readFieldStart]; // TODO assert that field name is 'amRendezvousOwner'
-                BOOL amRendezvousOwner = (BOOL )[[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
-            [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
                 QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
             [reader readEnd];
@@ -6865,6 +6862,9 @@
             [reader readFieldStart]; // TODO assert that field name is 'myKey'
                 QLFKeyPairLF *myKey = (QLFKeyPairLF *)[QLFKeyPairLF unmarshaller](reader);
             [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'rendezvousOwner'
+                BOOL rendezvousOwner = (BOOL )[[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
+            [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'rendezvousTag'
                 NSString *rendezvousTag = (NSString *)[QredoPrimitiveMarshallers stringUnmarshaller](reader);
             [reader readEnd];
@@ -6872,17 +6872,17 @@
                 QLFKeyLF *yourPublicKey = (QLFKeyLF *)[QLFKeyLF unmarshaller](reader);
             [reader readEnd];
         [reader readEnd];
-        return [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag amRendezvousOwner:amRendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey initialTransCap:initialTransCap];
+        return [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey initialTransCap:initialTransCap];
     };
 }
 
-- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag amRendezvousOwner:(BOOL)amRendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey initialTransCap:(NSSet *)initialTransCap
+- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey initialTransCap:(NSSet *)initialTransCap
 {
 
     self = [super init];
     if (self) {
         _rendezvousTag = rendezvousTag;
-        _amRendezvousOwner = amRendezvousOwner;
+        _rendezvousOwner = rendezvousOwner;
         _conversationId = conversationId;
         _conversationType = conversationType;
         _authenticationType = authenticationType;
@@ -6898,7 +6898,7 @@
 {
 
     QREDO_COMPARE_OBJECT(rendezvousTag);
-    QREDO_COMPARE_SCALAR(amRendezvousOwner);
+    QREDO_COMPARE_SCALAR(rendezvousOwner);
     QREDO_COMPARE_OBJECT(conversationId);
     QREDO_COMPARE_OBJECT(conversationType);
     QREDO_COMPARE_OBJECT(authenticationType);
@@ -6925,7 +6925,7 @@
         return NO;
     if (_rendezvousTag != other.rendezvousTag && ![_rendezvousTag isEqual:other.rendezvousTag])
         return NO;
-    if (_amRendezvousOwner != other.amRendezvousOwner)
+    if (_rendezvousOwner != other.rendezvousOwner)
         return NO;
     if (_conversationId != other.conversationId && ![_conversationId isEqual:other.conversationId])
         return NO;
@@ -6948,7 +6948,7 @@
 
     NSUInteger hash = 0;
     hash = hash * 31u + [_rendezvousTag hash];
-    hash = hash * 31u + (NSUInteger)_amRendezvousOwner;
+    hash = hash * 31u + (NSUInteger)_rendezvousOwner;
     hash = hash * 31u + [_conversationId hash];
     hash = hash * 31u + [_conversationType hash];
     hash = hash * 31u + [_authenticationType hash];
@@ -6990,7 +6990,7 @@
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"durationSeconds"];
-                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e durationSeconds], writer);
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]]([e durationSeconds], writer);
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"hashedTag"];
@@ -6998,7 +6998,7 @@
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"maxResponseCount"];
-                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int64Marshaller]]([e maxResponseCount], writer);
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]]([e maxResponseCount], writer);
             [writer writeEnd];
 
             [writer writeFieldStartWithFieldName:@"requesterKeyPair"];
@@ -7031,13 +7031,13 @@
                 NSString *conversationType = (NSString *)[QredoPrimitiveMarshallers stringUnmarshaller](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'durationSeconds'
-                NSSet *durationSeconds = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
+                NSSet *durationSeconds = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int32Unmarshaller]](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'hashedTag'
                 QLFRendezvousHashedTag *hashedTag = (QLFRendezvousHashedTag *)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'maxResponseCount'
-                NSSet *maxResponseCount = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int64Unmarshaller]](reader);
+                NSSet *maxResponseCount = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers int32Unmarshaller]](reader);
             [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'requesterKeyPair'
                 QLFKeyPairLF *requesterKeyPair = (QLFKeyPairLF *)[QLFKeyPairLF unmarshaller](reader);
