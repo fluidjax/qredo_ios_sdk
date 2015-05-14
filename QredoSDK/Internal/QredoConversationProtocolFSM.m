@@ -28,7 +28,7 @@
     BOOL _finished;
 }
 
-@property id<QredoConversationProtocolFSMDelegate> delegate;
+@property (weak) id<QredoConversationProtocolFSMDelegate> delegate;
 @property dispatch_queue_t processingQueue;
 @property dispatch_queue_t interruptQueue;
 
