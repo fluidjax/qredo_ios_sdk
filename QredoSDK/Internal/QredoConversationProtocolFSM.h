@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)onInterrupted:(void(^)())onInterruptedBlock;
 - (void)failWithError:(NSError *)error;
+- (void)finishProcessing;
 
 @end
 

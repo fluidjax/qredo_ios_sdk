@@ -16,7 +16,9 @@
 - (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state;
 - (void)didFailPublishingMessageWithState:(QredoConversationProtocolPublishingState *)state error:(NSError *)error;
 - (void)didReceiveExpectedMessageWithState:(QredoConversationProtocolExpectingState *)state;
+
 - (void)didFinishProcessingWithState:(QredoConversationProtocolProcessingState *)state;
+- (void)didFailProcessingWithState:(QredoConversationProtocolProcessingState *)state error:(NSError *)error;
 
 - (void)didFinishSendingErrorMessageWithError:(NSError *)error;
 - (void)didFinishSendingCancelMessage;
@@ -84,6 +86,7 @@
 @interface QredoConversationProtocolProcessingState ()
 {
     BOOL finishedProcessing;
+    BOOL wasInterrupted;
 }
 @property (nonatomic, strong) void(^block)(QredoConversationProtocolProcessingState *state);
 @property (nonatomic, strong) void(^onInterruptedBlock)();
@@ -225,15 +228,6 @@
 {
     dispatch_async(self.fsmProtocol.processingQueue, ^{
         self.block(self);
-
-        __block BOOL wasInterrupted;
-        dispatch_sync(self.fsmProtocol.interruptQueue, ^{
-            wasInterrupted = finishedProcessing;
-            finishedProcessing = YES;
-        });
-        if (!wasInterrupted) {
-            [self.fsmProtocol switchToNextState];
-        }
     });
 }
 
@@ -246,8 +240,8 @@
 
 - (void)interrupt
 {
+    wasInterrupted = YES;
     void(^localInterruptedBlock)()  = self.onInterruptedBlock;
-        
 
     if (localInterruptedBlock) {
         localInterruptedBlock();
@@ -266,15 +260,47 @@
     });
 }
 
+- (void)finishProcessing
+{
+    dispatch_sync(self.fsmProtocol.interruptQueue, ^{
+        if (wasInterrupted) {
+            return ;
+        }
+
+        NSAssert(!finishedProcessing, @"The state has already finished");
+        finishedProcessing = YES;
+
+        [self.fsmProtocol didFinishProcessingWithState:self];
+    });
+}
+
 - (void)failWithError:(NSError *)error
 {
-    dispatch_async(self.fsmProtocol.interruptQueue, ^{
-        if (!finishedProcessing) {
-            finishedProcessing = YES;
+    dispatch_sync(self.fsmProtocol.interruptQueue, ^{
+        NSAssert(!finishedProcessing, @"The state has already finished");
+        finishedProcessing = YES;
 
-            [self.fsmProtocol failWithError:error];
-        }
+        [self.fsmProtocol didFailProcessingWithState:self error:error];
     });
+}
+
+- (void)didFailProcessingWithState:(QredoConversationProtocolProcessingState *)state error:(NSError *)error
+{
+    if (state == self) {
+        [self.fsmProtocol failWithError:error];
+    }
+}
+
+- (void)didFinishProcessingWithState:(QredoConversationProtocolProcessingState *)state
+{
+    if (state == self) {
+        dispatch_sync(self.fsmProtocol.interruptQueue, ^{
+            finishedProcessing = YES;
+        });
+        if (!wasInterrupted) {
+            [self.fsmProtocol switchToNextState];
+        }
+    }
 }
 
 @end
@@ -312,36 +338,43 @@
 
 - (void)didPublishMessageWithState:(QredoConversationProtocolPublishingState *)state
 {
-    // fail with error: inconsistent state
+    [NSException raise:NSInternalInconsistencyException format:@"It is not a Publishing state"];
 }
 
 - (void)didFailPublishingMessageWithState:(QredoConversationProtocolPublishingState *)state error:(NSError *)error
 {
-    // fail with error: inconsistent state
+    [NSException raise:NSInternalInconsistencyException format:@"It is not a Publishing state"];
 }
 
 
 - (void)didReceiveExpectedMessageWithState:(QredoConversationProtocolExpectingState *)state
 {
-    // fail with error: inconsistent state
+    [NSException raise:NSInternalInconsistencyException format:@"It is not a Expecting state"];
 }
 
 - (void)didFinishProcessingWithState:(QredoConversationProtocolProcessingState *)state
 {
+    [NSException raise:NSInternalInconsistencyException format:@"It is not a Processing state"];
+}
+
+- (void)didFailProcessingWithState:(QredoConversationProtocolProcessingState *)state error:(NSError *)error
+{
+    [NSException raise:NSInternalInconsistencyException format:@"It is not a Processing state"];
 }
 
 - (void)didFinishSendingCancelMessage
 {
+    [NSException raise:NSInternalInconsistencyException format:@"It is not a Cancel state"];
 }
 
 - (void)didFinishSendingErrorMessageWithError:(NSError *)error
 {
+    [NSException raise:NSInternalInconsistencyException format:@"It is not an Error state"];
 }
 
 - (void)cancel
 {
 }
-
 
 - (void)conversationCanceledWithMessage:(QredoConversationMessage *)message
 {

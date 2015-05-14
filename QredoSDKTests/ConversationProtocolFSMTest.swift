@@ -233,6 +233,7 @@ class ConversationProtocolFSMTest: XCTestCase {
             let state = QredoConversationProtocolProcessingState { state in
                 println("processing state \(stateIndex)")
                 expectation.fulfill()
+                state.finishProcessing()
             }
 
             states.append(state)
@@ -341,6 +342,7 @@ class ConversationProtocolFSMTest: XCTestCase {
                 }
 
                 println("exit processing")
+                state.finishProcessing()
             }
             ])
 
@@ -409,6 +411,7 @@ class ConversationProtocolFSMTest: XCTestCase {
                 }
 
                 println("exit processing")
+                state.finishProcessing()
             }
             ])
 
@@ -474,8 +477,9 @@ class ConversationProtocolFSMTest: XCTestCase {
 
             state.onInterrupted {
                 // called when the state is interrupted. Either cancelled on this device or by the other side
-
             }
+
+            state.finishProcessing()
         }
 
         let askDecision = QredoConversationProtocolProcessingState { state in
@@ -490,6 +494,9 @@ class ConversationProtocolFSMTest: XCTestCase {
             // if failed
             state.failWithError(NSError(domain: QredoErrorDomain, code: QredoErrorCode.Unknown.rawValue, userInfo: nil))
 
+
+            // or if successful
+            state.finishProcessing()
         }
 
         let sendDecision = QredoConversationProtocolPublishingState {
