@@ -10,7 +10,7 @@
 #import "QredoOpenSSLCertificateUtils.h"
 #import "QredoLogging.h"
 #import "QredoAuthenticatedRendezvousTag.h"
-#import "NSData+QredoRandomData.h"
+#import "NSData+Conversion.h"
 
 @interface QredoAbstractRendezvousX509PemHelper ()
 
@@ -171,7 +171,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         }
         
         // Generate a random ID to temporarily (for life of this object) 'name' the keys.
-        NSString *keyId = [QredoLogging hexRepresentationOfNSData:[NSData dataWithRandomBytesOfLength:kRandomKeyIdentifierLength]];
+        NSString *keyId = [[QredoCrypto secureRandomWithSize:kRandomKeyIdentifierLength] hexadecimalString];
         _publicKeyIdentifier = [keyId stringByAppendingString:@".public"];
 
         // Confirm that the authentication tag is a PEM certificate chain which validates correctly
@@ -291,7 +291,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         }
         
         // Generate a random ID to temporarily (for life of this object) 'name' the keys.
-        NSString *keyId = [QredoLogging hexRepresentationOfNSData:[NSData dataWithRandomBytesOfLength:kRandomKeyIdentifierLength]];
+        NSString *keyId = [[QredoCrypto secureRandomWithSize:kRandomKeyIdentifierLength] hexadecimalString];
         _publicKeyIdentifier = [keyId stringByAppendingString:@".public"];
 
         _publicKeyRef = [self getPublicKeyRefFromX509AuthenticationTag:_authenticatedRendezvousTag.authenticationTag
