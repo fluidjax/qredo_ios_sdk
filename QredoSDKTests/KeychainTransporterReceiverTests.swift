@@ -149,7 +149,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
         }
 
         // double timeout, because we are doing quite a few operations here
-        self.waitForExpectationsWithTimeout(2 * qtu_defaultTimeout, handler: nil)
+        self.waitForExpectationsWithTimeout(60, handler: nil)
 
         XCTAssertEqual(completionHandlerCalls, 1, "should call the completion handler only once")
         XCTAssertTrue(receiverMock.didCallWillCreateRendezvous, "should prepare the receiver delegate")

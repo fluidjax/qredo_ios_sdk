@@ -69,7 +69,7 @@ class KeychainTransporterTests: XCTestCase {
             senderCompletionExpectation.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(2 * qtu_defaultTimeout, handler: nil)
+        self.waitForExpectationsWithTimeout(100, handler: nil)
 
         XCTAssertTrue(receiverMock.didCallWillCreateRendezvous, "should prepare the receiver delegate")
         XCTAssertTrue(receiverMock.didCallDidCreateRendezvous, "did not create a rendezvous")

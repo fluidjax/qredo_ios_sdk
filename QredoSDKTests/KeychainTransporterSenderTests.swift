@@ -175,7 +175,7 @@ class KeychainTransporterSenderTests: XCTestCase {
             senderCompletionExpectation.fulfill()
         }
 
-        self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+        self.waitForExpectationsWithTimeout(50, handler: nil)
 
         XCTAssertNotNil(transporterConversation, "should get response to the rendezvous")
         XCTAssertFalse(senderMock.didCallEstablishedConnection, "Should not establish connection with the wrong conversation type")
