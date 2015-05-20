@@ -28,6 +28,10 @@
 
 - (void)qredoKeychainReceiverDidInstallKeychain:(QredoKeychainReceiver *)receiver;
 
+
+@optional
+- (void)qredoKeychainReceiverDidSendDeviceInfo:(QredoKeychainReceiver *)receiver;
+
 @end
 
 @interface QredoKeychainReceiver : NSObject
