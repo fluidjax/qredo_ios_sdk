@@ -16,8 +16,8 @@
     BOOL cancelled;
 }
 
-@property id<QredoKeychainReceiverDelegate> delegate;
-@property QredoClient *client;
+@property (weak) id<QredoKeychainReceiverDelegate> delegate;
+@property (weak) QredoClient *client;
 @property QredoKeychain *keychain;
 @property NSData *keychainData;
 @property QredoConversationProtocolFSM *conversationProtocol;
