@@ -1,0 +1,6 @@
+
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/LinguaFranca" "${PODS_ROOT}/Headers/Public/QredoCommon" "${PODS_ROOT}/Headers/Public/QredoCrypto" "${PODS_ROOT}/Headers/Public/QredoCrypto/openssl" "${PODS_ROOT}/Headers/Public/QredoCrypto/sodium" "${PODS_ROOT}/Headers/Public/QredoLibPaho" "${PODS_ROOT}/Headers/Public/SocketRocket"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/LinguaFranca" -isystem "${PODS_ROOT}/Headers/Public/QredoCommon" -isystem "${PODS_ROOT}/Headers/Public/QredoCrypto" -isystem "${PODS_ROOT}/Headers/Public/QredoCrypto/openssl" -isystem "${PODS_ROOT}/Headers/Public/QredoCrypto/sodium" -isystem "${PODS_ROOT}/Headers/Public/QredoLibPaho" -isystem "${PODS_ROOT}/Headers/Public/SocketRocket"
+PODS_ROOT = ${SRCROOT}/Pods
+
+

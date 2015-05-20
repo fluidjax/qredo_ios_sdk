@@ -14,6 +14,8 @@ target 'QredoSDK' do
 
     # The QredoLibPaho dependency is only here for convenience during development. Relase builds
     # should not have it here.
+    pod "QredoCommon", :path => "../qredo_ios_common/QredoCommon.podspec"
+    pod "QredoCrypto", :path => "../qredo_ios_crypto/QredoCrypto.podspec"
     pod "LinguaFranca", :path => "../LinguaFranca/LinguaFranca.podspec"
 #    pod "QredoLibPaho", :path => "../qredo_ios_libpaho/QredoLibPaho.podspec"
 #    pod "SocketRocket", :path => "../SocketRocket/SocketRocket.podspec"
@@ -21,10 +23,13 @@ target 'QredoSDK' do
 end
 
 target 'CryptoTests' do
-	pod "LinguaFranca/Crypto", :path => "../LinguaFranca/LinguaFranca.podspec"
+    pod "QredoCommon", :path => "../qredo_ios_common/QredoCommon.podspec"
+    pod "QredoCrypto", :path => "../qredo_ios_crypto/QredoCrypto.podspec"
 end
 
 target 'LinguaFrancaTests' do
+    pod "QredoCommon", :path => "../qredo_ios_common/QredoCommon.podspec"
+    pod "QredoCrypto", :path => "../qredo_ios_crypto/QredoCrypto.podspec"
 	pod "LinguaFranca", :path => "../LinguaFranca/LinguaFranca.podspec"
 end
 
