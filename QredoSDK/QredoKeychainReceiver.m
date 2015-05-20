@@ -8,6 +8,7 @@
 #import "QredoPrivate.h"
 #import "QredoKeychain.h"
 #import "QredoConversationProtocolFSM.h"
+#import "QredoKeychainTransporterHelper.h"
 
 @interface QredoKeychainReceiver () <QredoRendezvousDelegate, QredoConversationProtocolFSMDelegate>
 {
@@ -23,8 +24,8 @@
 @property QredoConversationProtocolFSM *conversationProtocol;
 
 @property QredoConversationProtocolProcessingState *confirmKeychainState;
-
-@property NSString *senderDeviceName;
+@property QredoConversationMessage *senderDeviceInfoMessage;
+@property QredoDeviceInfo *senderDeviceInfo;
 
 @end
 
@@ -50,10 +51,11 @@
 
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:QredoKeychainTransporterConversationType
-                                                                                                 durationSeconds:@(QredoKeychainTransporterRendezvousDuration)
-                                                                                                maxResponseCount:@1];
-    
+    QredoRendezvousConfiguration *configuration
+    = [[QredoRendezvousConfiguration alloc] initWithConversationType:QredoKeychainTransporterConversationType
+                                                     durationSeconds:@(QredoKeychainTransporterRendezvousDuration)
+                                                    maxResponseCount:@1];
+
     [self.client createAnonymousRendezvousWithTag:randomTag
                                     configuration:configuration
                                 completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
@@ -86,29 +88,15 @@
     [rendezvous startListening];
 }
 
-- (QredoDeviceInfo*)deviceInfo
-{
-    QredoDeviceInfo *info = [[QredoDeviceInfo alloc] init];
-
-    info.name = @"iPhone"; // TODO: put the device name
-
-    return info;
-}
-
 - (void)startProtocolWithConversation:(QredoConversation *)conversation
 {
     self.conversationProtocol = [[QredoConversationProtocolFSM alloc] initWithConversation:conversation];
 
-    NSString *fingerprint = [self fingerPrintWithConversation:conversation];
+    NSString *fingerprint = [QredoKeychainTransporterHelper fingerprintWithConversation:conversation];
 
     QredoConversationProtocolPublishingState *publishDeviceInfoState
     = [[QredoConversationProtocolPublishingState alloc] initWithBlock:^QredoConversationMessage * __nonnull{
-        QredoDeviceInfo *deviceInfo = [self deviceInfo];
-
-        return [[QredoConversationMessage alloc] initWithValue:nil
-                                                      dataType:QredoKeychainTransporterMessageTypeDeviceInfo
-                                                 summaryValues:@{QredoKeychainTransporterMessageKeyDeviceName: deviceInfo.name}];
-
+        return [QredoKeychainTransporterHelper deviceInfoMessage];
     }];
 
 
@@ -123,18 +111,31 @@
     QredoConversationProtocolExpectingState  *expectSenderDeviceInfoState
     = [[QredoConversationProtocolExpectingState alloc] initWithBlock:^BOOL(QredoConversationMessage * __nonnull message) {
         if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeDeviceInfo]) {
-            self.senderDeviceName = message.summaryValues[QredoKeychainTransporterMessageKeyDeviceName];
-
-            if (self.senderDeviceName) {
-                return YES;
-            }
+            self.senderDeviceInfoMessage = message;
+            return YES;
         }
         return NO;
+    }];
+
+    QredoConversationProtocolProcessingState *parseSenderDeviceInfoState
+    = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state)
+    {
+        NSError *error = nil;
+        self.senderDeviceInfo
+        = [QredoKeychainTransporterHelper parseDeviceInfoFromMessage:self.senderDeviceInfoMessage
+                                                               error:&error];
+
+        if (!self.senderDeviceInfo) {
+            [state failWithError:error];
+        } else {
+            [state finishProcessing];
+        }
     }];
 
     QredoConversationProtocolProcessingState *showFingerprintState
     = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
         [self.delegate qredoKeychainReceiver:self didEstablishConnectionWithFingerprint:fingerprint];
+        [state finishProcessing];
     }];
 
     QredoConversationProtocolExpectingState *expectKeychainState
@@ -205,6 +206,7 @@
     [self.conversationProtocol addStates:@[publishDeviceInfoState,
                                            notifyDidSendDeviceInfoState,
                                            expectSenderDeviceInfoState,
+                                           parseSenderDeviceInfoState,
                                            showFingerprintState,
                                            expectKeychainState,
                                            confirmKeychainState,
@@ -213,11 +215,6 @@
                                            showParseConfirmationKeychainState,
                                            installKeychainState]];
     [self.conversationProtocol startWithDelegate:self];
-}
-
-- (NSString *)fingerPrintWithConversation:(QredoConversation *)conversation
-{
-    return [[conversation.metadata.conversationId QUIDString] substringToIndex:QredoKeychainTransporterFingerprintLength];
 }
 
 - (BOOL)parseKeychainFromData:(NSData*)data error:(NSError **)error;
@@ -229,7 +226,9 @@
         keychain = [[QredoKeychain alloc] initWithData:data];
     }
     @catch (NSException *exception) {
-        parseError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:@{NSLocalizedDescriptionKey: exception.description}];
+        parseError = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeKeychainCouldNotBeRetrieved
+                                     userInfo:@{NSLocalizedDescriptionKey: exception.description}];
     }
 
     
@@ -238,7 +237,9 @@
     if (success) {
         self.keychain = keychain;
     } else {
-        parseError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeUnknown userInfo:@{NSLocalizedDescriptionKey: @"Invalid keychain data"}];
+        parseError = [NSError errorWithDomain:QredoErrorDomain
+                                         code:QredoErrorCodeUnknown
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Invalid keychain data"}];
     }
 
     if (error && parseError) {
@@ -285,6 +286,7 @@
 - (void)qredoConversationProtocol:(QredoConversationProtocolFSM *)protocol didFailWithError:(NSError *)error
 {
     NSAssert(error, @"Should never fail without an error");
+    [self.delegate qredoKeychainReceiver:self didFailWithError:error];
     if (clientCompletionHandler) clientCompletionHandler(error);
 }
 @end
