@@ -8,8 +8,10 @@
 #import "QredoPrivate.h"
 #import "QredoVaultPrivate.h"
 #import "QredoKeychain.h"
+#import "QredoConversationProtocolFSM.h"
+#import "QredoKeychainTransporterHelper.h"
 
-@interface QredoKeychainSender () <QredoConversationDelegate>
+@interface QredoKeychainSender () <QredoConversationProtocolFSMDelegate>
 {
     // completion handler that is passed to startWithCompletionHandler:
     void(^clientCompletionHandler)(NSError *error);
@@ -17,9 +19,14 @@
     BOOL cancelled;
 }
 
-@property id<QredoKeychainSenderDelegate> delegate;
-@property QredoClient *client;
-@property QredoConversation *conversation;
+@property (weak) id<QredoKeychainSenderDelegate> delegate;
+@property (weak) QredoClient *client;
+
+@property QredoConversationProtocolFSM *conversationProtocol;
+@property QredoConversationMessage *receiverDeviceInfoMessage;
+@property QredoDeviceInfo *receiverDeviceInfo;
+
+@property QredoConversationProtocolProcessingState *confirmSendingState;
 
 @end
 
@@ -40,22 +47,13 @@
 {
     clientCompletionHandler = completionHandler;
 
-    [self.delegate qredoKeychainSenderDiscoverRendezvous:self completionHander:^BOOL(NSString *rendezvousTagWithProtocol) {
-
-        BOOL validTag = YES;
-
+    [self.delegate qredoKeychainSenderDiscoverRendezvous:self completionHander:^BOOL(NSString *rendezvousTagWithProtocol)
+    {
         NSString *rendezvousTag = [self stringProtocolFromTag:rendezvousTagWithProtocol];
 
-
         if (!rendezvousTag) {
-            validTag = NO;
-        } else {
-            validTag = [self verifyRendezvousTag:rendezvousTag];
-        }
-
-        if (!validTag) {
             completionHandler([NSError errorWithDomain:QredoErrorDomain
-                                                  code:QredoErrorCodeUnknown
+                                                  code:QredoErrorCodeUnknown // TODO:
                                               userInfo:@{NSLocalizedDescriptionKey: @"Invalid rendevous tag"}]);
             return NO;
         }
@@ -74,211 +72,154 @@
     return [rendezvousTagWithProtocol substringFromIndex:QredoRendezvousURIProtocol.length];;
 }
 
-- (BOOL)verifyRendezvousTag:(NSString *)rendezvousTag
+- (void)startProtocolWithConversation:(QredoConversation *)conversation
 {
-    return YES;
-//    @try {
-//        QredoQUID *quid = [[QredoQUID alloc] initWithQUIDString:rendezvousTag];
-//        return quid != nil;
-//    }
-//    @catch (NSException *exception) {
-//        return NO;
-//    }
+    self.conversationProtocol = [[QredoConversationProtocolFSM alloc] initWithConversation:conversation];
 
+    NSString *fingerprint = [QredoKeychainTransporterHelper fingerprintWithConversation:conversation];
+
+    QredoConversationProtocolExpectingState  *expectReceiverDeviceInfoState
+    = [[QredoConversationProtocolExpectingState alloc] initWithBlock:^BOOL(QredoConversationMessage * __nonnull message) {
+        if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeDeviceInfo]) {
+            self.receiverDeviceInfoMessage = message;
+            return YES;
+        }
+        return NO;
+    }];
+
+    // TODO: move to receiver
+    QredoConversationProtocolProcessingState *parseDeviceInfoState
+    = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
+        NSError *error = nil;
+        self.receiverDeviceInfo
+        = [QredoKeychainTransporterHelper parseDeviceInfoFromMessage:self.receiverDeviceInfoMessage
+                                                               error:&error];
+
+        if (!self.receiverDeviceInfo) {
+            [state failWithError:error];
+        } else {
+            [state finishProcessing];
+        }
+    }];
+
+    QredoConversationProtocolPublishingState *publishDeviceInfoState
+    = [[QredoConversationProtocolPublishingState alloc] initWithBlock:^QredoConversationMessage * __nonnull {
+        return [QredoKeychainTransporterHelper deviceInfoMessage];
+    }];
+
+    QredoConversationProtocolProcessingState *confirmSendingKeychainState
+    = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state)
+       {
+           self.confirmSendingState = state;
+
+           [state onInterrupted:^{
+               self.confirmSendingState = nil;
+           }];
+
+           [self.delegate qredoKeychainSender:self
+             didEstablishConnectionWithDevice:self.receiverDeviceInfo
+                                  fingerprint:fingerprint
+                          confirmationHandler:^(BOOL confirmed)
+            {
+                if (confirmed) {
+                    [self.confirmSendingState finishProcessing];
+                    self.confirmSendingState = nil;
+                } else {
+                    [self.conversationProtocol cancel];
+                }
+            }];
+       }];
+
+    QredoConversationProtocolPublishingState *publishKeychainState
+    = [[QredoConversationProtocolPublishingState alloc] initWithBlock:^QredoConversationMessage * __nonnull{
+        NSData *keychainData = self.client.keychain.data;
+
+        return [[QredoConversationMessage alloc] initWithValue:keychainData
+                                                      dataType:QredoKeychainTransporterMessageTypeKeychain
+                                                 summaryValues:nil];
+    }];
+
+
+    QredoConversationProtocolExpectingState *expectConfirmationMessageState
+    = [[QredoConversationProtocolExpectingState alloc] initWithBlock:^BOOL(QredoConversationMessage * __nonnull message) {
+        return [message.dataType isEqualToString: QredoKeychainTransporterMessageTypeConfirmReceiving];
+    }];
+
+
+    QredoConversationProtocolProcessingState *notifyFinishSendingState
+    = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
+        [self.delegate qredoKeychainSenderDidFinishSending:self];
+        [state finishProcessing];
+    }];
+
+    [self.conversationProtocol addStates:@[expectReceiverDeviceInfoState,
+                                           parseDeviceInfoState,
+                                           publishDeviceInfoState,
+                                           confirmSendingKeychainState,
+                                           publishKeychainState,
+                                           expectConfirmationMessageState,
+                                           notifyFinishSendingState
+                                           ]];
+
+    [self.conversationProtocol startWithDelegate:self];
 }
 
 - (void)didDiscoverRendezvousTag:(NSString *)rendezvousTag
 {
-    // KeychainReceiver currently uses anonymous rendezvous. If this changes to X.509 authenticated rendezvous, a valid trusted roots array will be required
     [self.client respondWithTag:rendezvousTag
-                trustedRootPems:nil
-              completionHandler:^(QredoConversation *conversation, NSError *error) {
-        @synchronized(self) {
-            if (cancelled) return ;
+              completionHandler:^(QredoConversation *conversation, NSError *error)
+     {
+         if (cancelled) return ;
 
-            if (error) {
-                [self handleError:error];
-                return ;
-            }
+         if (error) {
+             [self handleError:error];
+             return ;
+         }
 
-            if (![conversation.metadata.type isEqualToString:QredoKeychainTransporterConversationType])
-            {
-                [self handleError:[NSError errorWithDomain:QredoErrorDomain
-                                                      code:QredoErrorCodeUnknown // TODO
-                                                  userInfo:@{NSLocalizedDescriptionKey : @"Wrong conversation type"}]];
-                return ;
-            }
+         if (![conversation.metadata.type isEqualToString:QredoKeychainTransporterConversationType])
+         {
+             [self handleError:[NSError errorWithDomain:QredoErrorDomain
+                                                   code:QredoErrorCodeUnknown // TODO:
+                                               userInfo:@{NSLocalizedDescriptionKey: @"Wrong conversation type"}]];
+             return ;
+         }
 
-            QredoConversationMessage *deviceInfoMessage = [[QredoConversationMessage alloc] initWithValue:nil dataType:QredoKeychainTransporterMessageTypeDeviceInfo
-                                                                                            summaryValues:@{QredoKeychainTransporterMessageKeyDeviceName: @"iPhone"}];
-
-            self.conversation = conversation;
-            self.conversation.delegate = self;
-
-            [conversation publishMessage:deviceInfoMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-                if (error) {
-                    [self handleError:error];
-                    return;
-                }
-                
-                [self.conversation startListening];
-            }];
-
-        }
-    }];
-}
-
-- (void)stopCommunication
-{
-    [self.conversation stopListening];
+         [self startProtocolWithConversation:conversation];
+     }];
 }
 
 // called when user presses "Cancel" in the UI, and when user doesn't confirm sending the keychain
 - (void)cancel
 {
-    @synchronized(self) {
-        cancelled = true;
-        if (self.conversation) {
-            // Notify the receiver that this device is not going to send anything
-            QredoConversationMessage *cancelMessage = [[QredoConversationMessage alloc] initWithValue:nil
-                                                                                             dataType:QredoKeychainTransporterMessageTypeCancelReceiving
-                                                                                        summaryValues:nil];
+    cancelled = true;
 
-            [self.conversation publishMessage:cancelMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-                [self stopCommunication];
-            }];
-        } else {
-            [self stopCommunication];
-        }
-
-        if (clientCompletionHandler) {
-            clientCompletionHandler([NSError errorWithDomain:QredoErrorDomain
-                                                        code:QredoErrorCodeUnknown
-                                                    userInfo:@{NSLocalizedDescriptionKey: @"Transmission has been cancelled"}]);
-        }
+    if (self.conversationProtocol) {
+        [self.conversationProtocol cancel];
+    } else {
+        if (clientCompletionHandler) clientCompletionHandler(nil);
     }
 }
 
 - (void)handleError:(NSError *)error
 {
-    [self stopCommunication];
     [self.delegate qredoKeychainSender:self didFailWithError:error];
     if (clientCompletionHandler) clientCompletionHandler(error);
 }
 
-- (NSString *)fingerprint
+#pragma mark
+
+- (void)qredoConversationProtocolDidFinishSuccessfuly:(QredoConversationProtocolFSM *)protocol
 {
-    return [[self.conversation.metadata.conversationId QUIDString] substringToIndex:5];
+    if (clientCompletionHandler) clientCompletionHandler(nil);
 }
 
-- (void)didReceiveDeviceInfoMessage:(QredoConversationMessage *)message
+- (void)qredoConversationProtocol:(QredoConversationProtocolFSM *)protocol didFailWithError:(NSError *)error
 {
-    NSError *error = nil;
-    QredoDeviceInfo *deviceInfo = [self parseDeviceInfoFromMessage:message error:&error];
-
-    if (error) {
-        [self handleError:error];
-        return;
-    }
-
-    [self.delegate qredoKeychainSender:self didEstablishConnectionWithDevice:deviceInfo fingerprint:[self fingerprint]
-                   confirmationHandler:^(BOOL confirmed) {
-
-                       if (confirmed) {
-                           [self sendKeychain];
-                       } else {
-                           // the delegate should hide all the UI at this point
-                           [self cancel];
-                       }
-
-                   }];
-}
-
-- (void)sendKeychain
-{
-    NSData *keychainData = self.client.keychain.data;
-
-    QredoConversationMessage *keychainMessage = [[QredoConversationMessage alloc] initWithValue:keychainData
-                                                                                       dataType:QredoKeychainTransporterMessageTypeKeychain
-                                                                                  summaryValues:nil];
-
-    [self.conversation publishMessage:keychainMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-        self->keychainHasBeenSent = true;
-    }];
-}
-
-- (QredoDeviceInfo*)parseDeviceInfoFromMessage:(QredoConversationMessage *)message error:(NSError**)error
-{
-    id deviceName = message.summaryValues[QredoKeychainTransporterMessageKeyDeviceName];
-
-    if (!deviceName || ![deviceName isKindOfClass:[NSString class]]) {
-        if (error) {
-            *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeUnknown userInfo:@{NSLocalizedDescriptionKey : @"Invalid device name"}];
-        }
-        return nil;
-    }
-
-    QredoDeviceInfo *info = [[QredoDeviceInfo alloc] init];
-
-    info.name = deviceName;
-
-    return info;
-}
-
-- (void)throwInconsistentState
-{
-    [self handleError:[NSError errorWithDomain:QredoErrorDomain
-                                          code:QredoErrorCodeUnknown // TODO
-                                      userInfo:@{NSLocalizedDescriptionKey: @"Inconsistent state"}]];
-}
-
-- (void)didReceiveParsedConfirmationMessage:(QredoConversationMessage *)message
-{
-    if (!keychainHasBeenSent) {
-        [self throwInconsistentState];
-        return;
-    }
-
-    BOOL success = YES;
-    // TODO: this message should contain flag if the parsing of the keychai was successful
-    if (success) {
-        [self.delegate qredoKeychainSenderDidFinishSending:self];
-
-        if (clientCompletionHandler) clientCompletionHandler(nil);
-    } else {
-        [self handleError:[NSError errorWithDomain:QredoErrorDomain
-                                              code:QredoErrorCodeUnknown
-                                          userInfo:@{NSLocalizedDescriptionKey: @"The other device failed to parse the keychain"}]];
-    }
-}
-
-- (void)didReceiveCancelMessage:(QredoConversationMessage *)message
-{
-    if (!keychainHasBeenSent) {
-        [self throwInconsistentState];
-        return;
-    }
-
-    [self handleError:[NSError errorWithDomain:QredoErrorDomain
-                                          code:QredoErrorCodeUnknown
-                                      userInfo:@{NSLocalizedDescriptionKey: @"The other device has cancelled the transmission"}]];
+    NSAssert(error, @"Should never fail without an error");
+    [self.delegate qredoKeychainSender:self didFailWithError:error];
+    if (clientCompletionHandler) clientCompletionHandler(error);
 }
 
 
-#pragma mark QredoConversationDelegate
-
-- (void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message
-{
-    if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeDeviceInfo]) {
-        [self didReceiveDeviceInfoMessage:message];
-    } else if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeConfirmReceiving]) {
-        [self didReceiveParsedConfirmationMessage:message];
-    } else if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeCancelReceiving]) {
-        [self didReceiveCancelMessage:message];
-    } else {
-        NSLog(@"Unsupported message type: %@", message.dataType);
-        [self handleError:[NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeUnknown userInfo:@{NSLocalizedDescriptionKey : @"Received unknown message"}]];
-    }
-}
 
 @end
