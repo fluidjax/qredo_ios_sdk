@@ -9,6 +9,7 @@ class KeychainReceiverMock : NSObject, QredoKeychainReceiverDelegate {
         case Idle
         case Prepared
         case CreatedRendezvous
+        case SentDeviceInfo
         case EstablishedConnection
         case ReceivedKeychain
         case InstalledKeychain
@@ -28,6 +29,8 @@ class KeychainReceiverMock : NSObject, QredoKeychainReceiverDelegate {
     var didCallDidFail = false
     var didCallDidReceiveKeychain = false
     var didCallDidInstallKeychain = false
+
+    var didSendDeviceInfo = false
 
     var rendezvousTag : String? = nil
     var connectionFingerprint : String? = nil
@@ -56,6 +59,12 @@ class KeychainReceiverMock : NSObject, QredoKeychainReceiverDelegate {
 
         if switchState(.Idle) { return }
         if switchState(.Prepared) { return }
+    }
+
+    func qredoKeychainReceiverDidSendDeviceInfo(receiver: QredoKeychainReceiver!) {
+        didSendDeviceInfo = true
+
+        if switchState(.SentDeviceInfo) { return }
     }
 
     func qredoKeychainReceiver(receiver: QredoKeychainReceiver!, didCreateRendezvousWithTag tag: String!) {
