@@ -21,6 +21,7 @@
 @property (weak) QredoClient *client;
 @property QredoKeychain *keychain;
 @property NSData *keychainData;
+@property QredoRendezvous *rendezvous;
 @property QredoConversationProtocolFSM *conversationProtocol;
 
 @property QredoConversationProtocolProcessingState *confirmKeychainState;
@@ -84,8 +85,9 @@
     [self.delegate qredoKeychainReceiver:self
               didCreateRendezvousWithTag:[QredoRendezvousURIProtocol stringByAppendingString:rendezvous.tag]];
 
-    rendezvous.delegate = self;
-    [rendezvous startListening];
+    self.rendezvous = rendezvous;
+    self.rendezvous.delegate = self;
+    [self.rendezvous startListening];
 }
 
 - (void)startProtocolWithConversation:(QredoConversation *)conversation
@@ -265,6 +267,8 @@
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
     [self startProtocolWithConversation:conversation];
+    [self.rendezvous stopListening];
+    self.rendezvous = nil;
 }
 
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didTimeout:(NSError *)error
