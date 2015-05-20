@@ -145,14 +145,13 @@
     [self.conversationProtocol.conversation publishMessage:cancelMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
         // don't care about error at this state
 
-        [self didFinishSendingCancelMessage];
+        [self.fsmProtocol didFinishSendingCancelMessage];
     }];
 }
 
-- (void)didFinishSendingCancelMessage {
-    [self.fsmProtocol switchToState:self.fsmProtocol.finishState withConfigBlock:^{
-
-    }];
+- (void)didFinishSendingCancelMessage
+{
+    [self.fsmProtocol switchToState:self.fsmProtocol.finishState withConfigBlock:^{ }];
 }
 @end
 
