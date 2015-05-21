@@ -482,11 +482,12 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                            configuration:(QredoRendezvousConfiguration *)configuration
                        completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
-    // Anonymous Rendezvous are created using the full tag. Signing handler and trustedRootPems is unused
+    // Anonymous Rendezvous are created using the full tag. Signing handler, trustedRootPems and crlPems are unused
     [self createRendezvousWithTag:tag
                authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                     configuration:configuration
                   trustedRootPems:[[NSArray alloc] init]
+                          crlPems:[[NSArray alloc] init]
                    signingHandler:nil
                 completionHandler:completionHandler];
 }
@@ -529,11 +530,12 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         prefixedTag = [NSString stringWithFormat:@"%@@", prefix];
     }
 
-    // Authenticated Rendezvous with internally generated keys. Signing handler and trustedRootPems is unused
+    // Authenticated Rendezvous with internally generated keys. Signing handler, trustedRootPems and crlPems are unused
     [self createRendezvousWithTag:prefixedTag
                authenticationType:authenticationType
                     configuration:configuration
                   trustedRootPems:[[NSArray alloc] init]
+                          crlPems:[[NSArray alloc] init]
                    signingHandler:nil
                 completionHandler:completionHandler];
 }
@@ -545,6 +547,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                   configuration:(QredoRendezvousConfiguration *)configuration
                                       publicKey:(NSString *)publicKey
                                 trustedRootPems:(NSArray *)trustedRootPems
+                                        crlPems:(NSArray *)crlPems
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
@@ -604,6 +607,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                authenticationType:authenticationType
                     configuration:configuration
                   trustedRootPems:trustedRootPems
+                          crlPems:crlPems
                    signingHandler:signingHandler
                 completionHandler:completionHandler];
 }
@@ -612,6 +616,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
              authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                   configuration:(QredoRendezvousConfiguration *)configuration
                 trustedRootPems:(NSArray *)trustedRootPems
+                        crlPems:(NSArray *)crlPems
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
@@ -622,6 +627,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                          authenticationType:authenticationType
                               configuration:configuration
                             trustedRootPems:trustedRootPems
+                                    crlPems:crlPems
                              signingHandler:signingHandler
                           completionHandler:^(NSError *error) {
             if (error) {
@@ -754,11 +760,12 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 - (void)respondWithTag:(NSString *)tag
      completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler
 {
-    [self respondWithTag:tag trustedRootPems:nil completionHandler:completionHandler];
+    [self respondWithTag:tag trustedRootPems:nil crlPems:nil completionHandler:completionHandler];
 }
 
 - (void)respondWithTag:(NSString *)tag
        trustedRootPems:(NSArray *)trustedRootPems
+               crlPems:(NSArray *)crlPems
      completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler
 {
     NSAssert(completionHandler, @"completionHandler should not be nil");
@@ -767,6 +774,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         QredoConversation *conversation = [[QredoConversation alloc] initWithClient:self];
         [conversation respondToRendezvousWithTag:tag
                                  trustedRootPems:trustedRootPems
+                                         crlPems:crlPems
                                completionHandler:^(NSError *error) {
             if (error) {
                 completionHandler(nil, error);

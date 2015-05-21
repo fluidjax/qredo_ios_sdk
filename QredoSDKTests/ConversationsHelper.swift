@@ -72,7 +72,7 @@ class ConversationsHelper: NSObject {
         creatorRendezvous?.startListening()
 
         // We know we're responding to anonymous rendezvous, so nil trustedRootPems is fine
-        responderClient.respondWithTag(randomTag, trustedRootPems:nil, completionHandler: { conversation, error in
+        responderClient.respondWithTag(randomTag, completionHandler: { conversation, error in
             assert(error == nil, "failed to respond")
 
             self.responderConversation = conversation

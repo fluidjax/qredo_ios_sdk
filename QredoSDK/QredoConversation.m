@@ -372,6 +372,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
                    trustedRootPems:(NSArray *)trustedRootPems
+                           crlPems:(NSArray *)crlPems
                  completionHandler:(void(^)(NSError *error))completionHandler
 {
     LogDebug(@"Responding to (hashed) tag: %@. TrustedRootPems count: %lul.", rendezvousTag, (unsigned long)trustedRootPems.count);
@@ -414,6 +415,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                               tag:rendezvousTag
                                                         hashedTag:hashedTag
                                                   trustedRootPems:trustedRootPems
+                                                          crlPems:crlPems
                                                             error:nil])
             {
                 NSError *error = nil;

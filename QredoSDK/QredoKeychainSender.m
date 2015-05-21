@@ -89,9 +89,10 @@
 
 - (void)didDiscoverRendezvousTag:(NSString *)rendezvousTag
 {
-    // KeychainReceiver currently uses anonymous rendezvous. If this changes to X.509 authenticated rendezvous, a valid trusted roots array will be required
+    // KeychainReceiver currently uses anonymous rendezvous. If this changes to X.509 authenticated rendezvous, valid trusted roots/CRL arrays will be required
     [self.client respondWithTag:rendezvousTag
                 trustedRootPems:nil
+                        crlPems:nil
               completionHandler:^(QredoConversation *conversation, NSError *error) {
         @synchronized(self) {
             if (cancelled) return ;

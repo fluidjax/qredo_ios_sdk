@@ -40,6 +40,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -57,6 +58,7 @@
                                                             fullTag:createFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -93,6 +95,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -116,6 +119,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -152,6 +156,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -173,6 +178,7 @@
                                                                           fullTag:initialFullTag
                                                                            crypto:nil
                                                                   trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                                          crlPems:nil // Nil is fine for Anonymous rendezvous
                                                                    signingHandler:signingHandler
                                                                             error:&error]);
 }
@@ -191,6 +197,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -218,6 +225,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -239,6 +247,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);
@@ -259,6 +268,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);
@@ -277,6 +287,7 @@
                                                                           fullTag:initialFullTag
                                                                            crypto:nil
                                                                   trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                                          crlPems:nil // Nil is fine for Anonymous rendezvous
                                                                             error:&error]);
 }
 
@@ -292,6 +303,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Anonymous rendezvous
+                                                            crlPems:nil // Nil is fine for Anonymous rendezvous
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);

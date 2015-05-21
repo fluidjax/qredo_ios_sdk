@@ -158,6 +158,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                    tag:(NSString *)tag
                              hashedTag:(QLFRendezvousHashedTag *)hashedTag
                        trustedRootPems:(NSArray *)trustedRootPems
+                               crlPems:(NSArray *)crlPems
                                  error:(NSError **)error
 {
     QLFRendezvousAuthType *authenticationType = encryptedResponderInfo.authenticationType;
@@ -167,6 +168,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     id<QredoRendezvousRespondHelper> rendezvousHelper = [self rendezvousHelperForAuthType:authenticationType
                                                                                   fullTag:tag
                                                                           trustedRootPems:trustedRootPems
+                                                                                  crlPems:crlPems
                                                                                     error:error];
     
     NSData *calculatedAuthenticationCode
@@ -196,7 +198,8 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 - (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)tag
-                                                         trustedRootPems:trustedRootPems
+                                                         trustedRootPems:(NSArray *)trustedRootPems
+                                                                 crlPems:(NSArray *)crlPems
                                                           signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error
 {
@@ -204,6 +207,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                                  fullTag:tag
                                                                   crypto:_crypto
                                                          trustedRootPems:trustedRootPems
+                                                                 crlPems:crlPems
                                                           signingHandler:signingHandler
                                                                    error:error];
 }
@@ -211,6 +215,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 - (id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthType:(QLFRendezvousAuthType *)authType
                                                         fullTag:(NSString *)tag
                                                 trustedRootPems:(NSArray *)trustedRootPems
+                                                        crlPems:(NSArray *)crlPems
                                                           error:(NSError **)error
 {
     __block id<QredoRendezvousRespondHelper> rendezvousHelper = nil;
@@ -221,6 +226,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                                 fullTag:tag
                                                                  crypto:_crypto
                                                         trustedRootPems:trustedRootPems
+                                                                crlPems:crlPems
                                                                   error:error];
 
     } ifRendezvousTrusted:^(QLFRendezvousAuthSignature *signature) {
@@ -230,6 +236,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                                     fullTag:tag
                                                                      crypto:_crypto
                                                             trustedRootPems:trustedRootPems
+                                                                    crlPems:crlPems
                                                                       error:error];
 
         } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
@@ -238,6 +245,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                                     fullTag:tag
                                                                      crypto:_crypto
                                                             trustedRootPems:trustedRootPems
+                                                                    crlPems:crlPems
                                                                       error:error];
 
         } ifRendezvousAuthED25519:^(NSData *signature) {
@@ -246,6 +254,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                                     fullTag:tag
                                                                      crypto:_crypto
                                                             trustedRootPems:trustedRootPems
+                                                                    crlPems:crlPems
                                                                       error:error];
 
         } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
@@ -254,6 +263,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                                     fullTag:tag
                                                                      crypto:_crypto
                                                             trustedRootPems:trustedRootPems
+                                                                    crlPems:crlPems
                                                                       error:error];
 
         } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
@@ -262,6 +272,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                                     fullTag:tag
                                                                      crypto:_crypto
                                                             trustedRootPems:trustedRootPems
+                                                                    crlPems:crlPems
                                                                       error:error];
 
         }];
