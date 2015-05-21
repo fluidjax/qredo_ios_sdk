@@ -9,6 +9,7 @@
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
                 trustedRootPems:(NSArray *)trustedRootPems
+                        crlPems:(NSArray *)crlPems
                  signingHandler:(signDataBlock)signingHandler
                           error:(NSError **)error;
 @end
@@ -17,6 +18,7 @@
 - (instancetype)initWithFullTag:(NSString *)fullTag
                          crypto:(id<CryptoImpl>)crypto
                 trustedRootPems:(NSArray *)trustedRootPems
+                        crlPems:(NSArray *)crlPems
                           error:(NSError **)error;
 @end
 

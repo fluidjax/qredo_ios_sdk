@@ -17,6 +17,7 @@
                                                                  fullTag:(NSString *)fullTag
                                                                   crypto:(id<CryptoImpl>)crypto
                                                          trustedRootPems:(NSArray *)trustedRootPems
+                                                                 crlPems:(NSArray *)crlPems
                                                                 signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error
 {
@@ -26,6 +27,7 @@
             return [[QredoRendezvousAnonymousCreateHelper alloc] initWithFullTag:fullTag
                                                                           crypto:crypto
                                                                  trustedRootPems:trustedRootPems
+                                                                         crlPems:crlPems
                                                                   signingHandler:signingHandler
                                                                            error:(NSError **)error];
             
@@ -33,6 +35,7 @@
             return [[QredoRendezvousEd25519CreateHelper alloc] initWithFullTag:fullTag
                                                                         crypto:crypto
                                                                trustedRootPems:trustedRootPems
+                                                                       crlPems:crlPems
                                                                 signingHandler:signingHandler
                                                                          error:(NSError **)error];
             
@@ -40,6 +43,7 @@
             return [[QredoRendezvousX509PemCreateHelper alloc] initWithFullTag:fullTag
                                                                         crypto:crypto
                                                                trustedRootPems:trustedRootPems
+                                                                       crlPems:crlPems
                                                                 signingHandler:signingHandler
                                                                          error:(NSError **)error];
             
@@ -47,6 +51,7 @@
             return [[QredoRendezvousRsa2048PemCreateHelper alloc] initWithFullTag:fullTag
                                                                            crypto:crypto
                                                                   trustedRootPems:trustedRootPems
+                                                                          crlPems:crlPems
                                                                    signingHandler:signingHandler
                                                                             error:(NSError **)error];
             
@@ -54,6 +59,7 @@
             return [[QredoRendezvousRsa4096PemCreateHelper alloc] initWithFullTag:fullTag
                                                                            crypto:crypto
                                                                   trustedRootPems:trustedRootPems
+                                                                          crlPems:crlPems
                                                                    signingHandler:signingHandler
                                                                             error:(NSError **)error];
             
@@ -72,6 +78,7 @@
                                                                   fullTag:(NSString *)fullTag
                                                                    crypto:(id<CryptoImpl>)crypto
                                                           trustedRootPems:(NSArray *)trustedRootPems
+                                                                  crlPems:(NSArray *)crlPems
                                                                     error:(NSError **)error
 {
     switch (authenticationType) {
@@ -80,30 +87,35 @@
             return [[QredoRendezvousAnonymousRespondHelper alloc] initWithFullTag:fullTag
                                                                            crypto:crypto
                                                                   trustedRootPems:trustedRootPems
+                                                                          crlPems:crlPems
                                                                             error:error];
             
         case QredoRendezvousAuthenticationTypeEd25519:
             return [[QredoRendezvousEd25519RespondHelper alloc] initWithFullTag:fullTag
                                                                          crypto:crypto
                                                                 trustedRootPems:trustedRootPems
+                                                                        crlPems:crlPems
                                                                           error:error];
             
         case QredoRendezvousAuthenticationTypeX509Pem:
             return [[QredoRendezvousX509PemRespondHelper alloc] initWithFullTag:fullTag
                                                                          crypto:crypto
                                                                 trustedRootPems:trustedRootPems
+                                                                        crlPems:crlPems
                                                                           error:error];
             
         case QredoRendezvousAuthenticationTypeRsa2048Pem:
             return [[QredoRendezvousRsa2048PemRespondHelper alloc] initWithFullTag:fullTag
                                                                             crypto:crypto
                                                                    trustedRootPems:trustedRootPems
+                                                                           crlPems:crlPems
                                                                              error:error];
             
         case QredoRendezvousAuthenticationTypeRsa4096Pem:
             return [[QredoRendezvousRsa4096PemRespondHelper alloc] initWithFullTag:fullTag
                                                                             crypto:crypto
                                                                    trustedRootPems:trustedRootPems
+                                                                           crlPems:crlPems
                                                                              error:error];
 
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:

@@ -112,8 +112,8 @@ class RendezvousMultipleSubsription: XCTestCase {
             XCTFail("something failed in the listener \(error)")
         }
 
-        // We know we're responding to anonymous rendezvous, so nil trustedRootPems is fine for this test
-        clients.secondClient.respondWithTag(rendezvousTag, trustedRootPems:nil) { conversation, error in
+        // We know we're responding to anonymous rendezvous, so nil trustedRootPems/crlPems is fine for this test
+        clients.secondClient.respondWithTag(rendezvousTag, trustedRootPems:nil, crlPems:nil) { conversation, error in
             XCTAssertNil(error, "failed to respond")
             respondExpectation?.fulfill()
         }
@@ -155,8 +155,8 @@ class RendezvousMultipleSubsription: XCTestCase {
 
         respondExpectation = expectationWithDescription("respond")
 
-        // We know we're responding to anonymous rendezvous, so nil trustedRootPems is fine for this test
-        clients.secondClient.respondWithTag(rendezvousTag, trustedRootPems:nil) { conversation, error in
+        // We know we're responding to anonymous rendezvous, so nil trustedRootPems/crlPems is fine for this test
+        clients.secondClient.respondWithTag(rendezvousTag, trustedRootPems:nil, crlPems:nil) { conversation, error in
             XCTAssertNil(error, "failed to respond")
             respondExpectation?.fulfill()
         }

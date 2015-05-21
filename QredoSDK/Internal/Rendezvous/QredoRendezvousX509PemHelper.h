@@ -11,6 +11,7 @@ extern const NSInteger kX509AuthenticatedRendezvousSaltLength;
 
 - (instancetype)initWithCrypto:(id<CryptoImpl>)crypto
                trustedRootPems:(NSArray *)trustedRootPems
+                       crlPems:(NSArray *)crlPems
                          error:(NSError **)error;
 
 @end

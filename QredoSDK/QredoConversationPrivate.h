@@ -38,6 +38,7 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
                    trustedRootPems:(NSArray *)trustedRootPems
+                           crlPems:(NSArray *)crlPems
                  completionHandler:(void(^)(NSError *error))completionHandler;
 
 - (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block

@@ -44,6 +44,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error];
     XCTAssertNotNil(createHelper);
@@ -59,6 +60,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -101,6 +103,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error];
     XCTAssertNotNil(createHelper);
@@ -116,6 +119,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -148,6 +152,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error];
     XCTAssertNil(createHelper);
@@ -172,6 +177,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error];
     XCTAssertNil(createHelper);
@@ -199,6 +205,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error];
     XCTAssertNil(createHelper);
@@ -223,6 +230,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error];
     XCTAssertNotNil(createHelper);
@@ -237,6 +245,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -291,6 +300,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error];
     XCTAssertNotNil(createHelper);
@@ -306,6 +316,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -336,6 +347,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                      signingHandler:signingHandler
                                                               error:&error];
 
@@ -360,6 +372,7 @@
                      fullTag:initialFullTag
                      crypto:nil
                      trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                     crlPems:nil // Nil is fine for Ed25519 rendezvous
                      signingHandler:signingHandler
                      error:&error]);
     
@@ -374,6 +387,7 @@
                      fullTag:@"someTag@"
                      crypto:nil
                      trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                     crlPems:nil // Nil is fine for Ed25519 rendezvous
                      error:&error]);
 }
 
@@ -386,6 +400,7 @@
                                                             fullTag:nil
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     
     XCTAssertNil(helper);
@@ -407,6 +422,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -426,6 +442,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -443,6 +460,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -461,6 +479,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -481,6 +500,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil is fine for Ed25519 rendezvous
+                                                            crlPems:nil // Nil is fine for Ed25519 rendezvous
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);

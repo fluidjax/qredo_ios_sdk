@@ -83,6 +83,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -100,6 +101,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -164,6 +166,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -181,6 +184,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -255,6 +259,7 @@
                                                             fullTag:initialFullTag1
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -272,6 +277,7 @@
                                                             fullTag:initialFullTag1
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -289,6 +295,7 @@
                                                             fullTag:initialFullTag2
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -306,6 +313,7 @@
                                                             fullTag:finalFullTag1
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper1);
     XCTAssertNil(error);
@@ -329,6 +337,7 @@
                                                             fullTag:finalFullTag1
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper2);
     XCTAssertNil(error);
@@ -350,6 +359,7 @@
                                                             fullTag:finalFullTag2
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper2);
     XCTAssertNil(error);
@@ -408,6 +418,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -425,6 +436,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -485,6 +497,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -501,6 +514,7 @@
                                                             fullTag:finalFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -566,6 +580,7 @@
                                                                           fullTag:initialFullTag
                                                                            crypto:crypto
                                                                   trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                                          crlPems:nil // Nil CrlPems is fine for RSA tests
                                                                    signingHandler:signingHandler
                                                                             error:&error]);
 }
@@ -581,6 +596,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -601,6 +617,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -621,6 +638,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -646,6 +664,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -666,6 +685,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -686,6 +706,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -708,6 +729,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -734,6 +756,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -785,6 +808,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -843,6 +867,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -877,6 +902,7 @@
                                                                           fullTag:initialFullTag
                                                                            crypto:crypto
                                                                   trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                                          crlPems:nil // Nil CrlPems is fine for RSA tests
                                                                             error:&error]);
 }
 
@@ -890,6 +916,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -907,6 +934,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -924,6 +952,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -947,6 +976,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -964,6 +994,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -981,6 +1012,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNil(respondHelper);
     XCTAssertNotNil(error);
@@ -1000,6 +1032,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1027,6 +1060,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1054,6 +1088,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1082,6 +1117,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1110,6 +1146,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -1138,6 +1175,7 @@
                                                             fullTag:initialFullTag
                                                              crypto:self.cryptoImpl
                                                     trustedRootPems:nil // Nil TrustedRootPems fine for RSA tests
+                                                            crlPems:nil // Nil CrlPems is fine for RSA tests
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);

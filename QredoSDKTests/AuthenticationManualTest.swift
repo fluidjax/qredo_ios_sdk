@@ -25,8 +25,8 @@ class AuthenticationManualTest: XCTestCase {
 
         let conversationExpectation = expectationWithDescription("respond to rendezvous")
         var conversation : QredoConversation!
-        // TODO: DH - Suspect we're not responding to an X.509 authenticated rendezvous, so nil trustedRootPems is okay for test
-        client.respondWithTag(rendezvousTag, trustedRootPems:nil, completionHandler: { (conversation_, error) -> Void in
+        // TODO: DH - Suspect we're not responding to an X.509 authenticated rendezvous, so nil trustedRootPems/crlPems is okay for test
+        client.respondWithTag(rendezvousTag, trustedRootPems:nil, crlPems:nil, completionHandler: { (conversation_, error) -> Void in
             if error != nil {
                 println("failed to respond: \(error)")
             }

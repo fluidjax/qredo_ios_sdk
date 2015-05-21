@@ -80,6 +80,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
         // TODO: DH - need to confirm whether rendezvous being responded to could be X.509 authenticated rendezvous (so valid trusted roots required)
         [qredoClient respondWithTag:rendezvousTag
                     trustedRootPems:nil // No trusted roots, so cannot respond to X.509 authenticated rendezvous
+                            crlPems:nil // Not CRLs, so cannot respond to X.509 authenticated rendezvous
                   completionHandler:^(QredoConversation *conversation, NSError *error) {
             if (completionHandler) {
                 _conversation = conversation;
