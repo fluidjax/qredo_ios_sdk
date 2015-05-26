@@ -7,9 +7,9 @@
 
 - (void)authoriseClient;
 - (void)testCreateRendezvousAndGetResponses;
-// TODO: DH - restore modified tests
-//- (void)testCreateRendezvous_NoSigningHandler;
-//- (void)testCreateRendezvous_NilSigningHandler;
+
+- (void)testCreateAndFetchAnonymousRendezvous;
+- (void)testCreateDuplicateAndFetchAnonymousRendezvous
 - (void)testCreateAndRespondAnonymousRendezvous;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix;

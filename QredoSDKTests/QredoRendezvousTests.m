@@ -443,227 +443,225 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 }
 
-// TODO: DH - ensure that all tests (including in other files) are renamed to match new name of createXXXRendezvous
+- (void)testCreateAndFetchAnonymousRendezvous
+{
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
-// TODO: DH - review this test - make to be an authenticated rendezvous
-//- (void)testCreateAnonymousRendezvous_NoSigningHandler {
-//    NSString *randomTag = [[QredoQUID QUID] QUIDString];
-//
-//    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
-//                                                                                                 durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-//                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
-//
-//    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-//
-//    NSLog(@"Creating rendezvous");
-//    [client createAnonymousRendezvousWithTag:randomTag
-//                               configuration:configuration
-//                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//                               XCTAssertNil(error);
-//                               XCTAssertNotNil(rendezvous);
-//                               [createExpectation fulfill];
-//                           }];
-//    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
-//        createExpectation = nil;
-//    }];
-//
-//    __block XCTestExpectation *failCreateExpectation = [self expectationWithDescription:@"create rendezvous with the same tag"];
-//
-//    NSLog(@"Creating duplicate rendezvous");
-//    [client createAnonymousRendezvousWithTag:randomTag
-//                               configuration:configuration
-//                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//                               XCTAssertNotNil(error);
-//                               XCTAssertNil(rendezvous);
-//                               
-//                               XCTAssertEqual(error.code, QredoErrorCodeRendezvousAlreadyExists);
-//                               
-//                               [failCreateExpectation fulfill];
-//                           }];
-//    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
-//        failCreateExpectation = nil;
-//    }];
-//
-//
-//    // Enumerating stored rendezvous
-//    __block XCTestExpectation *didFindStoredRendezvousMetadataExpecttion = [self expectationWithDescription:@"find stored rendezvous metadata"];
-//    __block QredoRendezvousMetadata *rendezvousMetadataFromEnumeration = nil;
-//
-//    __block int count = 0;
-//    NSLog(@"Enumerating rendezvous");
-//    [client enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
-//        if ([rendezvousMetadata.tag isEqualToString:randomTag]) {
-//            rendezvousMetadataFromEnumeration = rendezvousMetadata;
-//            count++;
-//        }
-//    } completionHandler:^(NSError *error) {
-//        XCTAssertNil(error);
-//        XCTAssertEqual(count, 1);
-//        [didFindStoredRendezvousMetadataExpecttion fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-//        didFindStoredRendezvousMetadataExpecttion = nil;
-//    }];
-//
-//    XCTAssertNotNil(rendezvousMetadataFromEnumeration);
-//
-//    // Fetching the full rendezvous object
-//    __block XCTestExpectation *didFindStoredRendezvous = [self expectationWithDescription:@"find stored rendezvous"];
-//    __block QredoRendezvous *rendezvousFromEnumeration = nil;
-//
-//    NSLog(@"Fetching rendezvous with metadata from enumeration");
-//    [client fetchRendezvousWithMetadata:rendezvousMetadataFromEnumeration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//        XCTAssertNil(error);
-//        XCTAssertNotNil(rendezvous);
-//        rendezvousFromEnumeration = rendezvous;
-//        [didFindStoredRendezvous fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
-//        didFindStoredRendezvous = nil;
-//    }];
-//
-//
-//    XCTAssertNotNil(rendezvousFromEnumeration);
-//
-//    NSLog(@"Verifying rendezvous from enumeration");
-//    [self verifyRendezvous:rendezvousFromEnumeration randomTag:randomTag];
-//
-//    
-//    NSLog(@"Fetching rendezvous with tag");
-//    // Trying to load the rendezvous by tag, without enumeration
-//    __block XCTestExpectation *didFetchExpectation = [self expectationWithDescription:@"fetch rendezvous from vault by tag"];
-//    __block QredoRendezvous *rendezvousFromFetch = nil;
-//    [client fetchRendezvousWithTag:randomTag completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//        XCTAssertNotNil(rendezvous);
-//        XCTAssertNil(error);
-//
-//        rendezvousFromFetch = rendezvous;
-//        [didFetchExpectation fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
-//        didFetchExpectation = nil;
-//    }];
-//
-//
-//    XCTAssertNotNil(rendezvousFromFetch);
-//    
-//    NSLog(@"Verifying rendezvous from fetch");
-//    [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
-//}
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
+                                                                                                 durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
 
-// TODO: DH - this will be renamed to one of the authenticated rendezvous option?
-//- (void)testCreateRendezvous_NilSigningHandler {
-//    NSString *randomTag = [[QredoQUID QUID] QUIDString];
-//    
-//    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
-//                                                                                                 durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-//                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
-//    
-//    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-//    
-//    NSLog(@"Creating rendezvous");
-//    [client createRendezvousWithTag:randomTag
-//                      configuration:configuration
-//                     signingHandler:nil
-//                  completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//                      XCTAssertNil(error);
-//                      XCTAssertNotNil(rendezvous);
-//                      [createExpectation fulfill];
-//                  }];
-//    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
-//        createExpectation = nil;
-//    }];
-//    
-//    __block XCTestExpectation *failCreateExpectation = [self expectationWithDescription:@"create rendezvous with the same tag"];
-//    
-//    NSLog(@"Creating duplicate rendezvous");
-//    [client createRendezvousWithTag:randomTag
-//                      configuration:configuration
-//                     signingHandler:nil
-//                  completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//                      XCTAssertNotNil(error);
-//                      XCTAssertNil(rendezvous);
-//                      
-//                      XCTAssertEqual(error.code, QredoErrorCodeRendezvousAlreadyExists);
-//                      
-//                      [failCreateExpectation fulfill];
-//                  }];
-//    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
-//        failCreateExpectation = nil;
-//    }];
-//    
-//    
-//    // Enumerating stored rendezvous
-//    __block XCTestExpectation *didFindStoredRendezvousMetadataExpecttion = [self expectationWithDescription:@"find stored rendezvous metadata"];
-//    __block QredoRendezvousMetadata *rendezvousMetadataFromEnumeration = nil;
-//    
-//    __block int count = 0;
-//    NSLog(@"Enumerating rendezvous");
-//    [client enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
-//        if ([rendezvousMetadata.tag isEqualToString:randomTag]) {
-//            rendezvousMetadataFromEnumeration = rendezvousMetadata;
-//            count++;
-//        }
-//    } completionHandler:^(NSError *error) {
-//        XCTAssertNil(error);
-//        XCTAssertEqual(count, 1);
-//        [didFindStoredRendezvousMetadataExpecttion fulfill];
-//    }];
-//    
-//    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-//        didFindStoredRendezvousMetadataExpecttion = nil;
-//    }];
-//    
-//    XCTAssertNotNil(rendezvousMetadataFromEnumeration);
-//    
-//    // Fetching the full rendezvous object
-//    __block XCTestExpectation *didFindStoredRendezvous = [self expectationWithDescription:@"find stored rendezvous"];
-//    __block QredoRendezvous *rendezvousFromEnumeration = nil;
-//    
-//    NSLog(@"Fetching rendezvous with metadata from enumeration");
-//    [client fetchRendezvousWithMetadata:rendezvousMetadataFromEnumeration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//        XCTAssertNil(error);
-//        XCTAssertNotNil(rendezvous);
-//        rendezvousFromEnumeration = rendezvous;
-//        [didFindStoredRendezvous fulfill];
-//    }];
-//    
-//    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
-//        didFindStoredRendezvous = nil;
-//    }];
-//    
-//    
-//    XCTAssertNotNil(rendezvousFromEnumeration);
-//    
-//    NSLog(@"Verifying rendezvous from enumeration");
-//    [self verifyRendezvous:rendezvousFromEnumeration randomTag:randomTag];
-//    
-//    
-//    NSLog(@"Fetching rendezvous with tag");
-//    // Trying to load the rendezvous by tag, without enumeration
-//    __block XCTestExpectation *didFetchExpectation = [self expectationWithDescription:@"fetch rendezvous from vault by tag"];
-//    __block QredoRendezvous *rendezvousFromFetch = nil;
-//    [client fetchRendezvousWithTag:randomTag completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//        XCTAssertNotNil(rendezvous);
-//        XCTAssertNil(error);
-//        
-//        rendezvousFromFetch = rendezvous;
-//        [didFetchExpectation fulfill];
-//    }];
-//    
-//    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
-//        didFetchExpectation = nil;
-//    }];
-//    
-//    
-//    XCTAssertNotNil(rendezvousFromFetch);
-//    
-//    NSLog(@"Verifying rendezvous from fetch");
-//    [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
-//}
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+
+    NSLog(@"Creating rendezvous");
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(rendezvous);
+                               [createExpectation fulfill];
+                           }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+
+    __block XCTestExpectation *failCreateExpectation = [self expectationWithDescription:@"create rendezvous with the same tag"];
+
+    NSLog(@"Creating duplicate rendezvous");
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                               XCTAssertNotNil(error);
+                               XCTAssertNil(rendezvous);
+                               
+                               XCTAssertEqual(error.code, QredoErrorCodeRendezvousAlreadyExists);
+                               
+                               [failCreateExpectation fulfill];
+                           }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        failCreateExpectation = nil;
+    }];
+
+
+    // Enumerating stored rendezvous
+    __block XCTestExpectation *didFindStoredRendezvousMetadataExpecttion = [self expectationWithDescription:@"find stored rendezvous metadata"];
+    __block QredoRendezvousMetadata *rendezvousMetadataFromEnumeration = nil;
+
+    __block int count = 0;
+    NSLog(@"Enumerating rendezvous");
+    [client enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
+        if ([rendezvousMetadata.tag isEqualToString:randomTag]) {
+            rendezvousMetadataFromEnumeration = rendezvousMetadata;
+            count++;
+        }
+    } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertEqual(count, 1);
+        [didFindStoredRendezvousMetadataExpecttion fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        didFindStoredRendezvousMetadataExpecttion = nil;
+    }];
+
+    XCTAssertNotNil(rendezvousMetadataFromEnumeration);
+
+    // Fetching the full rendezvous object
+    __block XCTestExpectation *didFindStoredRendezvous = [self expectationWithDescription:@"find stored rendezvous"];
+    __block QredoRendezvous *rendezvousFromEnumeration = nil;
+
+    NSLog(@"Fetching rendezvous with metadata from enumeration");
+    [client fetchRendezvousWithMetadata:rendezvousMetadataFromEnumeration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(rendezvous);
+        rendezvousFromEnumeration = rendezvous;
+        [didFindStoredRendezvous fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
+        didFindStoredRendezvous = nil;
+    }];
+
+
+    XCTAssertNotNil(rendezvousFromEnumeration);
+
+    NSLog(@"Verifying rendezvous from enumeration");
+    [self verifyRendezvous:rendezvousFromEnumeration randomTag:randomTag];
+
+    
+    NSLog(@"Fetching rendezvous with tag");
+    // Trying to load the rendezvous by tag, without enumeration
+    __block XCTestExpectation *didFetchExpectation = [self expectationWithDescription:@"fetch rendezvous from vault by tag"];
+    __block QredoRendezvous *rendezvousFromFetch = nil;
+    [client fetchRendezvousWithTag:randomTag completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        XCTAssertNotNil(rendezvous);
+        XCTAssertNil(error);
+
+        rendezvousFromFetch = rendezvous;
+        [didFetchExpectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
+        didFetchExpectation = nil;
+    }];
+
+
+    XCTAssertNotNil(rendezvousFromFetch);
+    
+    NSLog(@"Verifying rendezvous from fetch");
+    [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
+}
+
+- (void)testCreateDuplicateAndFetchAnonymousRendezvous
+{
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
+                                                                                                 durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
+                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    NSLog(@"Creating rendezvous");
+    [client createAnonymousRendezvousWithTag:randomTag
+                      configuration:configuration
+                  completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
+    {
+                      XCTAssertNil(error);
+                      XCTAssertNotNil(rendezvous);
+                      [createExpectation fulfill];
+                  }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    __block XCTestExpectation *failCreateExpectation = [self expectationWithDescription:@"create rendezvous with the same tag"];
+    
+    NSLog(@"Creating duplicate rendezvous");
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
+    {
+                      XCTAssertNotNil(error);
+                      XCTAssertNil(rendezvous);
+                      
+                      XCTAssertEqual(error.code, QredoErrorCodeRendezvousAlreadyExists);
+                      
+                      [failCreateExpectation fulfill];
+                  }];
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        failCreateExpectation = nil;
+    }];
+    
+    
+    // Enumerating stored rendezvous
+    __block XCTestExpectation *didFindStoredRendezvousMetadataExpecttion = [self expectationWithDescription:@"find stored rendezvous metadata"];
+    __block QredoRendezvousMetadata *rendezvousMetadataFromEnumeration = nil;
+    
+    __block int count = 0;
+    NSLog(@"Enumerating rendezvous");
+    [client enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
+        if ([rendezvousMetadata.tag isEqualToString:randomTag]) {
+            rendezvousMetadataFromEnumeration = rendezvousMetadata;
+            count++;
+        }
+    } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertEqual(count, 1);
+        [didFindStoredRendezvousMetadataExpecttion fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        didFindStoredRendezvousMetadataExpecttion = nil;
+    }];
+    
+    XCTAssertNotNil(rendezvousMetadataFromEnumeration);
+    
+    // Fetching the full rendezvous object
+    __block XCTestExpectation *didFindStoredRendezvous = [self expectationWithDescription:@"find stored rendezvous"];
+    __block QredoRendezvous *rendezvousFromEnumeration = nil;
+    
+    NSLog(@"Fetching rendezvous with metadata from enumeration");
+    [client fetchRendezvousWithMetadata:rendezvousMetadataFromEnumeration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(rendezvous);
+        rendezvousFromEnumeration = rendezvous;
+        [didFindStoredRendezvous fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
+        didFindStoredRendezvous = nil;
+    }];
+    
+    
+    XCTAssertNotNil(rendezvousFromEnumeration);
+    
+    NSLog(@"Verifying rendezvous from enumeration");
+    [self verifyRendezvous:rendezvousFromEnumeration randomTag:randomTag];
+    
+    
+    NSLog(@"Fetching rendezvous with tag");
+    // Trying to load the rendezvous by tag, without enumeration
+    __block XCTestExpectation *didFetchExpectation = [self expectationWithDescription:@"fetch rendezvous from vault by tag"];
+    __block QredoRendezvous *rendezvousFromFetch = nil;
+    [client fetchRendezvousWithTag:randomTag completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        XCTAssertNotNil(rendezvous);
+        XCTAssertNil(error);
+        
+        rendezvousFromFetch = rendezvous;
+        [didFetchExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
+        didFetchExpectation = nil;
+    }];
+    
+    
+    XCTAssertNotNil(rendezvousFromFetch);
+    
+    NSLog(@"Verifying rendezvous from fetch");
+    [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
+}
 
 - (void)testCreateAndRespondAnonymousRendezvous
 {
