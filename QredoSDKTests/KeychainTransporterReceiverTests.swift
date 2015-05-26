@@ -50,7 +50,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
 
         receiver.startWithCompletionHandler { error in
             completionHandlerCalls++
-            XCTAssertNotNil(error, "Should be the cancellation error")
+            XCTAssertNil(error, "Should be the cancellation error")
             receiverCompletionExpectation?.fulfill()
             receiverCompletionExpectation = nil
         }
@@ -73,7 +73,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
         var completionHandlerCalls = 0
         receiver.startWithCompletionHandler { error in
             completionHandlerCalls++
-            XCTAssertNotNil(error, "Should be the cancellation error")
+            XCTAssertNil(error, "Should be the cancellation error")
 
             receiverCompletionExpectation?.fulfill()
             receiverCompletionExpectation = nil
@@ -102,19 +102,38 @@ class KeychainTransporterReceiverTests: XCTestCase {
             }
         }
 
+        var transporterConversation : QredoConversation?
+
         receiverMock.stateHandler = { state in
-            if state == .CreatedRendezvous {
+            switch (state) {
+
+            case .CreatedRendezvous:
                 XCTAssertNotNil(receiverMock.rendezvousTag, "rendezvous tag should not be nil")
 
                 // KeychainReceiver currently uses anonymous rendezvous. If this changes to X.509 authenticated rendezvous, a valid trustedRootPems/crlPems will be required
                 self.senderClient.respondWithTag(self.stripURIPrefix(receiverMock.rendezvousTag!), trustedRootPems:nil, crlPems:nil, completionHandler: { (conversation, error) -> Void in
                     XCTAssertNil(error, "unexpected error")
                     XCTAssertNotNil(conversation, "failed to respond to the rendezvous")
+
+                    transporterConversation = conversation
+
                     if let actualConversation = conversation {
                         actualConversation.delegate = conversationDelegate
                         actualConversation.startListening()
                     }
                 })
+
+            case .SentDeviceInfo:
+                let deviceInfoMessage = QredoConversationMessage(
+                    value: nil,
+                    dataType: QredoKeychainTransporterMessageTypeDeviceInfo,
+                    summaryValues: [QredoKeychainTransporterMessageKeyDeviceName: "test devie"])
+
+                transporterConversation?.publishMessage(deviceInfoMessage, completionHandler: { (highwatermark, error) -> Void in
+                    XCTAssertNil(error, "failed to send the message")
+                })
+
+            default: ()
             }
         }
 
@@ -123,18 +142,19 @@ class KeychainTransporterReceiverTests: XCTestCase {
         var completionHandlerCalls = 0
         receiver.startWithCompletionHandler { error in
             completionHandlerCalls++
-            XCTAssertNotNil(error, "Should be the cancellation error")
+            XCTAssertNil(error, "Should be success")
 
             receiverCompletionExpectation?.fulfill()
             receiverCompletionExpectation = nil
         }
 
         // double timeout, because we are doing quite a few operations here
-        self.waitForExpectationsWithTimeout(2 * qtu_defaultTimeout, handler: nil)
+        self.waitForExpectationsWithTimeout(60, handler: nil)
 
         XCTAssertEqual(completionHandlerCalls, 1, "should call the completion handler only once")
         XCTAssertTrue(receiverMock.didCallWillCreateRendezvous, "should prepare the receiver delegate")
         XCTAssertTrue(receiverMock.didCallDidCreateRendezvous, "should create the rendezvous")
+        XCTAssertTrue(receiverMock.didSendDeviceInfo, "should send device info")
         XCTAssertTrue(receiverMock.didCallDidEstablishConnection, "should establish the connection")
         XCTAssertNotNil(receiverMock.connectionFingerprint, "should have connection fingerprint")
         if let fingerprint = receiverMock.connectionFingerprint {
@@ -211,11 +231,19 @@ class KeychainTransporterReceiverTests: XCTestCase {
     }
 
     func testInvalidKeychainMessageType() {
-        checkInvalidKeychainData(QredoConversationMessage(value: "hello".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true), dataType: "invalid type", summaryValues: [:]))
+        checkInvalidKeychainData(
+            QredoConversationMessage(
+                value: "hello".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true),
+                dataType: "invalid type",
+                summaryValues: [:]))
     }
 
     func testInvalidKeychainMessageData() {
-        checkInvalidKeychainData(QredoConversationMessage(value: "hello".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true), dataType: QredoKeychainTransporterMessageTypeKeychain, summaryValues: [:]))
+        checkInvalidKeychainData(
+            QredoConversationMessage(
+                value: "hello".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true),
+                dataType: QredoKeychainTransporterMessageTypeKeychain,
+                summaryValues: [:]))
     }
 
 }

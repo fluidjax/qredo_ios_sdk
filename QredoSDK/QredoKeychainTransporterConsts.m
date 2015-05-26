@@ -11,5 +11,5 @@ NSInteger QredoKeychainTransporterFingerprintLength = 5;
 NSString *const QredoKeychainTransporterMessageTypeDeviceInfo = @"com.qredo.keychain.device-name";
 NSString *const QredoKeychainTransporterMessageTypeKeychain = @"com.qredo.keychain";
 NSString *const QredoKeychainTransporterMessageTypeConfirmReceiving = @"com.qredo.keychain.received";
-NSString *const QredoKeychainTransporterMessageTypeCancelReceiving = @"com.qredo.keychain.cancel";
+NSString *const QredoKeychainTransporterMessageTypeCancelReceiving = @"com.qredo.cancel";
 NSString *const QredoKeychainTransporterMessageKeyDeviceName = @"device-name";

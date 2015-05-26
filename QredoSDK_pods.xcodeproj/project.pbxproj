@@ -55,6 +55,8 @@
 		0A7EE79C1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EE79B1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift */; };
 		0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A85E6E619FAA95200775115 /* QredoRendezvous.m */; };
 		0A8F5C5319FE90E60068C8D8 /* QredoConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */; };
+		0A9D98041B0CD269007F2A11 /* QredoKeychainTransporterHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A9D98021B0CD269007F2A11 /* QredoKeychainTransporterHelper.h */; };
+		0A9D98051B0CD269007F2A11 /* QredoKeychainTransporterHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9D98031B0CD269007F2A11 /* QredoKeychainTransporterHelper.m */; };
 		0A9DDDFE19ED3A1500B4248C /* QredoVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9DDDFD19ED3A1500B4248C /* QredoVault.m */; };
 		0AA03C8919E2E6CF00F2CF43 /* Qredo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA03C8819E2E6CF00F2CF43 /* Qredo.m */; };
 		0AA0CAD919D9B92B0025DD4D /* QredoConversationCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */; };
@@ -389,6 +391,8 @@
 		0A85E6E919FAB2EE00775115 /* QredoPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoPrivate.h; sourceTree = "<group>"; };
 		0A8F5C5219FE90E60068C8D8 /* QredoConversation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversation.m; sourceTree = "<group>"; };
 		0A8F5C5419FE911B0068C8D8 /* QredoConversationPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoConversationPrivate.h; sourceTree = "<group>"; };
+		0A9D98021B0CD269007F2A11 /* QredoKeychainTransporterHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeychainTransporterHelper.h; sourceTree = "<group>"; };
+		0A9D98031B0CD269007F2A11 /* QredoKeychainTransporterHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeychainTransporterHelper.m; sourceTree = "<group>"; };
 		0A9DDDF919EC2ED800B4248C /* QredoVault.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoVault.h; sourceTree = "<group>"; };
 		0A9DDDFA19EC2F2700B4248C /* QredoConversation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoConversation.h; sourceTree = "<group>"; };
 		0A9DDDFB19EC2F8F00B4248C /* QredoTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoTypes.h; sourceTree = "<group>"; };
@@ -984,6 +988,8 @@
 				78E5E1B51A322D12004ADD5C /* QredoKeychainFingerprintConfirmationViewController.m */,
 				781D137C1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.h */,
 				781D137D1A3248A6006DCE36 /* QredoKeychainQRCodeScannerViewController.m */,
+				0A9D98021B0CD269007F2A11 /* QredoKeychainTransporterHelper.h */,
+				0A9D98031B0CD269007F2A11 /* QredoKeychainTransporterHelper.m */,
 			);
 			name = "Keychain Transporter";
 			sourceTree = "<group>";
@@ -1283,6 +1289,7 @@
 			files = (
 				0AD2595B1A2F7CCA00FC8942 /* QredoKeychainReceiverQR.h in Headers */,
 				DCC22DBF1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h in Headers */,
+				0A9D98041B0CD269007F2A11 /* QredoKeychainTransporterHelper.h in Headers */,
 				0AADB0811A15848C00CFD014 /* Qredo.h in Headers */,
 				786DF4E11A5D5358000B4164 /* QredoRendezvousHelper.h in Headers */,
 				78E5E1B21A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.h in Headers */,
@@ -1804,6 +1811,7 @@
 				78E5E1AB1A30D710004ADD5C /* QredoKeychainSendReceiveViewController.m in Sources */,
 				78F868DB1A5F1A37009CAFFE /* QredoBase58.m in Sources */,
 				0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */,
+				0A9D98051B0CD269007F2A11 /* QredoKeychainTransporterHelper.m in Sources */,
 				78AB8C731A8156DC00A3CCA7 /* QredoClaimantAttestationSession.m in Sources */,
 				0AD2596C1A2F943800FC8942 /* QredoKeychainSender.m in Sources */,
 				0AE25AE61AB90B0200C10F02 /* QredoSigner.m in Sources */,
