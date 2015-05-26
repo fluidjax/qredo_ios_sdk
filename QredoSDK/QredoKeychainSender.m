@@ -208,7 +208,7 @@
     if (clientCompletionHandler) clientCompletionHandler(error);
 }
 
-#pragma mark
+#pragma mark QredoConversationProtocolFSMDelegate
 
 - (void)qredoConversationProtocolDidFinishSuccessfuly:(QredoConversationProtocolFSM *)protocol
 {

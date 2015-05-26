@@ -282,7 +282,7 @@
                                       userInfo:nil]];
 }
 
-#pragma mark
+#pragma mark QredoConversationProtocolFSMDelegate
 
 - (void)qredoConversationProtocolDidFinishSuccessfuly:(QredoConversationProtocolFSM *)protocol
 {
