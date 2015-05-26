@@ -96,6 +96,8 @@
 
     NSString *fingerprint = [QredoKeychainTransporterHelper fingerprintWithConversation:conversation];
 
+    __weak QredoKeychainReceiver *weakSelf = self;
+
     QredoConversationProtocolPublishingState *publishDeviceInfoState
     = [[QredoConversationProtocolPublishingState alloc] initWithBlock:^QredoConversationMessage * __nonnull{
         return [QredoKeychainTransporterHelper deviceInfoMessage];
@@ -104,8 +106,8 @@
 
     QredoConversationProtocolProcessingState *notifyDidSendDeviceInfoState
     = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
-        if ([self.delegate respondsToSelector:@selector(qredoKeychainReceiverDidSendDeviceInfo:)]) {
-            [self.delegate qredoKeychainReceiverDidSendDeviceInfo:self];
+        if ([weakSelf.delegate respondsToSelector:@selector(qredoKeychainReceiverDidSendDeviceInfo:)]) {
+            [weakSelf.delegate qredoKeychainReceiverDidSendDeviceInfo:weakSelf];
         }
         [state finishProcessing];
     }];
@@ -113,7 +115,7 @@
     QredoConversationProtocolExpectingState  *expectSenderDeviceInfoState
     = [[QredoConversationProtocolExpectingState alloc] initWithBlock:^BOOL(QredoConversationMessage * __nonnull message) {
         if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeDeviceInfo]) {
-            self.senderDeviceInfoMessage = message;
+            weakSelf.senderDeviceInfoMessage = message;
             return YES;
         }
         return NO;
@@ -123,11 +125,11 @@
     = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state)
     {
         NSError *error = nil;
-        self.senderDeviceInfo
-        = [QredoKeychainTransporterHelper parseDeviceInfoFromMessage:self.senderDeviceInfoMessage
+        weakSelf.senderDeviceInfo
+        = [QredoKeychainTransporterHelper parseDeviceInfoFromMessage:weakSelf.senderDeviceInfoMessage
                                                                error:&error];
 
-        if (!self.senderDeviceInfo) {
+        if (!weakSelf.senderDeviceInfo) {
             [state failWithError:error];
         } else {
             [state finishProcessing];
@@ -136,14 +138,14 @@
 
     QredoConversationProtocolProcessingState *showFingerprintState
     = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
-        [self.delegate qredoKeychainReceiver:self didEstablishConnectionWithFingerprint:fingerprint];
+        [weakSelf.delegate qredoKeychainReceiver:weakSelf didEstablishConnectionWithFingerprint:fingerprint];
         [state finishProcessing];
     }];
 
     QredoConversationProtocolExpectingState *expectKeychainState
     = [[QredoConversationProtocolExpectingState alloc] initWithBlock:^BOOL(QredoConversationMessage * __nonnull message) {
         if ([message.dataType isEqualToString:QredoKeychainTransporterMessageTypeKeychain] && message.value) {
-            self.keychainData = message.value;
+            weakSelf.keychainData = message.value;
             return YES;
         }
         return NO;
@@ -151,14 +153,14 @@
 
     QredoConversationProtocolProcessingState *confirmKeychainState
     = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
-        self.confirmKeychainState = state;
+        weakSelf.confirmKeychainState = state;
         [state onInterrupted:^{
-            self.confirmKeychainState = nil;
+            weakSelf.confirmKeychainState = nil;
         }];
 
-        [self.delegate qredoKeychainReceiver:self didReceiveKeychainWithConfirmationHandler:^(BOOL confirmed) {
-            [self.confirmKeychainState finishProcessing];
-            self.confirmKeychainState = nil;
+        [weakSelf.delegate qredoKeychainReceiver:weakSelf didReceiveKeychainWithConfirmationHandler:^(BOOL confirmed) {
+            [weakSelf.confirmKeychainState finishProcessing];
+            weakSelf.confirmKeychainState = nil;
         }];
     }];
 
@@ -172,7 +174,7 @@
     QredoConversationProtocolProcessingState *parseKeychainState
     = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
         NSError *error = nil;
-        BOOL parsed = [self parseKeychainFromData:self.keychainData error:&error];
+        BOOL parsed = [weakSelf parseKeychainFromData:weakSelf.keychainData error:&error];
 
         if (!parsed) {
             [state failWithError:error];
@@ -184,11 +186,11 @@
 
     QredoConversationProtocolProcessingState *showParseConfirmationKeychainState
     = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
-        [self.delegate qredoKeychainReceiver:self didReceiveKeychainWithConfirmationHandler:^(BOOL confirmed) {
+        [weakSelf.delegate qredoKeychainReceiver:weakSelf didReceiveKeychainWithConfirmationHandler:^(BOOL confirmed) {
             if (confirmed) {
                 [state finishProcessing];
             } else {
-                [self.conversationProtocol cancel];
+                [weakSelf.conversationProtocol cancel];
             }
         }];
     }];
@@ -196,8 +198,8 @@
     QredoConversationProtocolProcessingState *installKeychainState
     = [[QredoConversationProtocolProcessingState alloc] initWithBlock:^(QredoConversationProtocolProcessingState * __nonnull state) {
         NSError *error = nil;
-        if ([self installkeychainWithError:&error]) {
-            [self.delegate qredoKeychainReceiverDidInstallKeychain:self];
+        if ([weakSelf installkeychainWithError:&error]) {
+            [weakSelf.delegate qredoKeychainReceiverDidInstallKeychain:weakSelf];
 
             [state finishProcessing];
         } else {
