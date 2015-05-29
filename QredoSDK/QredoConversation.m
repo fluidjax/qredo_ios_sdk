@@ -266,28 +266,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     }
 }
 
-- (QredoVaultItemDescriptor*)vaultItemDescriptor
-{
-    QredoVault *vault = [self.client systemVault];
-
-    QLFVaultItemId *itemId = [vault itemIdWithQUID:_metadata.conversationId type:kQredoConversationVaultItemType];
-
-    QredoVaultItemDescriptor *itemDescriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId
-                                                                                                    itemId:itemId];
-
-    return itemDescriptor;
-}
-
 - (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
                                  publicKey:(QredoDhPublicKey*)publicKey
                            rendezvousOwner:(BOOL)rendezvousOwner
                          completionHandler:(void(^)(NSError *error))completionHandler
 {
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey rendezvousOwner:rendezvousOwner];
-
-    QredoVault *vault = [self.client systemVault];
-
-    QredoVaultItemDescriptor *itemDescriptor = [self vaultItemDescriptor];
 
     void (^storeCompletionHandler)(NSError *) = ^(NSError *error) {
         if (error) {
@@ -308,17 +292,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
            }];
     };
 
-    [vault getItemMetadataWithDescriptor:itemDescriptor
-                       completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
-        if (vaultItemMetadata) {
-            // Already stored
-            completionHandler(nil);
-        } else if (error.code == QredoErrorCodeVaultItemNotFound) {
-            [self storeWithCompletionHandler:storeCompletionHandler];
-        } else {
-            storeCompletionHandler(error);
-        }
-    }];
+    [self storeWithCompletionHandler:storeCompletionHandler];
 }
 
 - (void)generateKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
@@ -471,6 +445,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 - (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
+    NSAssert(!self.metadata.conversationRef, @"Conversation has been already stored");
     QLFKeyPairLF *myKey = [QLFKeyPairLF keyPairLFWithPubKey:[QLFKeyLF keyLFWithBytes:[NSData data]] /* should be empty */
                                                         privKey:[QLFKeyLF keyLFWithBytes:[_myPrivateKey data]]];
 
@@ -879,10 +854,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         _deleted = YES;
         
         QredoVault *vault = [_client systemVault];
-        
-        QredoVaultItemDescriptor *itemDescriptor = [self vaultItemDescriptor];
 
-        [vault getItemMetadataWithDescriptor:itemDescriptor
+        [vault getItemMetadataWithDescriptor:self.metadata.conversationRef.vaultItemDescriptor
                            completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
         {
             if (error) {
