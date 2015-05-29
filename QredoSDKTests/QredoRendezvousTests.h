@@ -9,7 +9,7 @@
 - (void)testCreateRendezvousAndGetResponses;
 
 - (void)testCreateAndFetchAnonymousRendezvous;
-- (void)testCreateDuplicateAndFetchAnonymousRendezvous
+- (void)testCreateDuplicateAndFetchAnonymousRendezvous;
 - (void)testCreateAndRespondAnonymousRendezvous;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix;

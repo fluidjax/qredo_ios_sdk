@@ -437,7 +437,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     [_vault getItemWithVaultId:_vaultKeys.vaultId
                     sequenceId:sequenceId
-                 sequenceValue:[NSSet setWithObjects:@(sequenceValue), nil]
+                 sequenceValue:sequenceValues
                         itemId:itemDescriptor.itemId
                      signature:ownershipSignature
              completionHandler:^(NSSet *result, NSError *error)

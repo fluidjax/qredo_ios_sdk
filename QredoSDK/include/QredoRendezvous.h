@@ -45,11 +45,18 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 @end
 
+@interface QredoRendezvousRef : NSObject
+
+- (instancetype)initWithData:(NSData *)data;
+@property (readonly) NSData *data;
+
+@end
 
 // QredoRendezvousMetadata objects are returned in [QredoClient enumerateRendezvousWithBlock:] method.
 // Although, at the moment it has only tag, we might add more information later.
 @interface QredoRendezvousMetadata : NSObject
 
+@property (readonly) QredoRendezvousRef *rendezvousRef;
 @property (readonly, copy) NSString *tag;
 @property (readonly) QredoRendezvousAuthenticationType authenticationType;
 
@@ -64,8 +71,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 @interface QredoRendezvous : NSObject
 /** See `QredoRendezvousConfiguration` */
 @property (readonly) QredoRendezvousConfiguration *configuration;
-@property (readonly, copy) NSString *tag;
-@property (readonly) QredoRendezvousAuthenticationType authenticationType;
+@property (readonly) QredoRendezvousMetadata *metadata;
 
 /** See `QredoRendezvousDelegate` */
 @property (weak) id<QredoRendezvousDelegate> delegate;
@@ -76,8 +82,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 @property (readonly) QredoRendezvousHighWatermark highWatermark;
 
 - (void)resetHighWatermark;
-
-- (QredoRendezvousMetadata*)metadata;
 
 /** Not implemented yet. */
 - (void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
