@@ -7,15 +7,7 @@
 
 #import "QredoRendezvous.h"
 #import "QredoClient.h"
-
-@interface QredoRendezvousRef ()
-
-@property QredoVaultItemDescriptor *vaultItemDescriptor;
-@property (readwrite) NSData *data;
-
-- (instancetype)initWithVaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor vault:(QredoVault *)vault;
-
-@end
+#import "QredoTypesPrivate.h"
 
 @interface QredoRendezvousMetadata ()
 

@@ -797,6 +797,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
             metadata.amRendezvousOwner = [[vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelAmOwner] boolValue];
             metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];
             metadata.rendezvousTag = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelTag];
+            metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor vault:vault];
 
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
             block(metadata, &stopObjectEnumeration);
@@ -807,15 +808,12 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     }];
 }
 
-- (void)fetchConversationWithId:(QredoQUID*)conversationId
+- (void)fetchConversationWithRef:(QredoConversationRef *)conversationRef
               completionHandler:(void(^)(QredoConversation* conversation, NSError *error))completionHandler
 {
     QredoVault *vault = [self systemVault];
 
-    QLFVaultId *vaultItemId = [vault itemIdWithQUID:conversationId type:kQredoConversationVaultItemType];
-    QredoVaultItemDescriptor *vaultItemDescriptor
-    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:vaultItemId];
-    [vault getItemWithDescriptor:vaultItemDescriptor
+    [vault getItemWithDescriptor:conversationRef.vaultItemDescriptor
                completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          if (error) {
@@ -829,10 +827,10 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
      }];
 }
 
-- (void)deleteConversationWithId:(QredoQUID*)conversationId
+- (void)deleteConversationWithRef:(QredoConversationRef *)conversationRef
                completionHandler:(void(^)(NSError *error))completionHandler
 {
-    [self fetchConversationWithId:conversationId
+    [self fetchConversationWithRef:conversationRef
                 completionHandler:^(QredoConversation *conversation, NSError *error)
      {
          if (error) {

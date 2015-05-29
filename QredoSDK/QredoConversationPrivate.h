@@ -48,6 +48,7 @@ extern NSString *const kQredoConversationVaultItemLabelType;
                   completionHandler:(void(^)(NSError *error))completionHandler
                highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler;
 
+
 - (void)loadHighestHWMWithCompletionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
@@ -59,7 +60,7 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 @end
 
 @interface QredoConversationMetadata (Private)
-
+@property (readwrite) QredoConversationRef *conversationRef;
 @property (readwrite) NSString *type;
 @property (readwrite) QredoQUID *conversationId;
 @property (readwrite) BOOL amRendezvousOwner;
