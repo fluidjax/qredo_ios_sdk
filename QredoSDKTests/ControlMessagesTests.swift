@@ -92,7 +92,7 @@ class ControlMessagesTests: BaseConversation {
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 
         let fetchConversationExpectation = expectationWithDescription("fetch conversation")
-        client.fetchConversationWithId(conversation.metadata().conversationId, completionHandler: { (conversation, error) -> Void in
+        client.fetchConversationWithRef(conversation.metadata().conversationRef, completionHandler: { (conversation, error) -> Void in
             XCTAssertNotNil(error, "should fail to load the conversation")
             XCTAssertNil(conversation, "conversation should be nil")
             fetchConversationExpectation.fulfill()

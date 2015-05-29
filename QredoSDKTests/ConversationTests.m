@@ -395,7 +395,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *didFetchConversation = [self expectationWithDescription:@"fetch conversation from system vault"];
 
     __block QredoConversation *conversatoinFromVault = nil;
-    [client fetchConversationWithId:metadataFromEnumeration.conversationId completionHandler:^(QredoConversation *conversation, NSError *error) {
+    [client fetchConversationWithRef:metadataFromEnumeration.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
         NSLog(@"Fetch conversation completion handler called.");
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);
