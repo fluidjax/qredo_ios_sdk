@@ -37,11 +37,6 @@
     [super testCreateDuplicateAndFetchAnonymousRendezvous];
 }
 
-
-- (void)testCreate {
-    [super testCreate]
-}
-
 - (void)testCreateAndRespondAnonymousRendezvous {
     [super testCreateAndRespondAnonymousRendezvous];
 }
