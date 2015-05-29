@@ -4,6 +4,7 @@
 
 #import "QredoQUID.h"
 #import "QredoConversationMessage.h"
+#import "QredoTypes.h"
 
 @class QredoVault;
 @class QredoConversation;
@@ -18,9 +19,13 @@ extern NSString *const kQredoConversationVaultItemType;
 
 extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin;
 
+@interface QredoConversationRef : QredoObjectRef
+
+@end
 
 @interface QredoConversationMetadata : NSObject
 /** Same as `QredoRendezvousConfiguration.conversationType` */
+@property (readonly) QredoConversationRef *conversationRef;
 @property (readonly) NSString *type;
 @property (readonly) QredoQUID *conversationId;
 @property (readonly) BOOL amRendezvousOwner;

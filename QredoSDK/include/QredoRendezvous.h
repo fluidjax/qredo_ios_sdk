@@ -45,10 +45,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 @end
 
-@interface QredoRendezvousRef : NSObject
-
-- (instancetype)initWithData:(NSData *)data;
-@property (readonly) NSData *data;
+@interface QredoRendezvousRef : QredoObjectRef
 
 @end
 
