@@ -61,10 +61,14 @@
         _isPollingActive = YES;
         [self startPolling];
     }
+    
+    _isListening = YES;
 }
 
 - (void)stopListening
 {
+    _isListening = NO;
+
     // If we support multi-response, then use it, otherwise poll
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self])
     {

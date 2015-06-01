@@ -6,7 +6,7 @@ import Foundation
 import XCTest
 
 
-class VaultListener : NSObject, QredoVaultDelegate {
+class VaultListener : NSObject, QredoVaultObserver {
     
     var expecation: XCTestExpectation?
     var fulfillTimer: NSTimer?
@@ -179,9 +179,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         let vault = qredo.defaultVault()
         
         let listener = VaultListener()
-        vault.delegate = listener
-        
-        vault.startListening()
+        vault.addQredoVaultObserver(listener)
         
         
         let item1 = QredoVaultItem(
@@ -254,6 +252,8 @@ class QredoVaultConsolidationTests: XCTestCase {
         XCTAssertEqual(listener.receivedItemMetadata.count, 2, "after two update puts the listner must only be notified of two items")
 
         listener.reset()
+        
+        vault.removeQredoVaultObaserver(listener)
 
     }
 

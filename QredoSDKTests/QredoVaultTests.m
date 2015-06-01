@@ -8,7 +8,7 @@
 #import "QredoTestUtils.h"
 #import "NSDictionary+Contains.h"
 
-@interface QredoVaultListener : NSObject<QredoVaultDelegate>
+@interface QredoVaultListener : NSObject<QredoVaultObserver>
 
 @property XCTestExpectation *didReceiveVaultItemMetadataExpectation;
 @property XCTestExpectation *didFailWithErrorExpectation;
@@ -521,9 +521,7 @@
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
     listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
 
-    vault.delegate = listener;
-
-    [vault startListening];
+    [vault addQredoVaultObserver:listener];
     
     // Create an item to ensure that there's data later than any current HWM
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -550,7 +548,7 @@
     XCTAssertTrue(listener.receivedItems.count > 0);
 
 
-    [vault stopListening];
+    [vault removeQredoVaultObaserver:listener];
 }
 
 - (void)testVaultItemMetadataAndMutableMetadata

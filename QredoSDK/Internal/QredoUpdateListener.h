@@ -50,6 +50,8 @@
 
 @property (nonatomic) BOOL enumerateAfterSubscription;
 
+@property (nonatomic, readonly) BOOL isListening;
+
 - (void)startListening;
 - (void)stopListening;
 

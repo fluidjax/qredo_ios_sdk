@@ -137,6 +137,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     QredoQUID *_sequenceId;
 
     QredoVaultHighWatermark *_highwatermark;
+    
+    NSHashTable *_observers;
+    dispatch_queue_t _observerNotificaionQueue;
+
 
     QLFVault *_vault;
     QredoVaultCrypto *_vaultCrypto;
@@ -173,6 +177,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     _client = client;
     _vaultKeys = vaultKeys;
     _highwatermark = QredoVaultHighWatermarkOrigin;
+    
+    _observers = [NSHashTable weakObjectsHashTable];
+    _observerNotificaionQueue = dispatch_queue_create("com.qredo.vault.observer.notifications",
+                                                      DISPATCH_QUEUE_SERIAL);
 
     _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
 
@@ -568,15 +576,49 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
      }];
 }
 
-- (void)startListening
+- (void)addQredoVaultObserver:(id<QredoVaultObserver>)observer
 {
-    [_updateListener startListening];
+    NSAssert(observer, @"An observer must be supplied to [QredoVault addQredoVaultObserver:]");
+    
+    dispatch_async(_observerNotificaionQueue, ^{
+        
+        [_observers addObject:observer];
+        
+        if (!_updateListener.isListening) {
+            [_updateListener startListening];
+        }
+        
+    });
 }
 
-- (void)stopListening
+- (void)removeQredoVaultObaserver:(id<QredoVaultObserver>)observer
 {
-    [_updateListener stopListening];
+    NSAssert(observer, @"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
+    
+    dispatch_async(_observerNotificaionQueue, ^{
+        
+        [_observers removeObject:observer];
+        
+        if ([_observers count] < 1 && !_updateListener.isListening) {
+            [_updateListener stopListening];
+        }
+        
+    });
 }
+
+
+- (void)notyfyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock
+{
+    dispatch_async(_observerNotificaionQueue, ^{
+        
+        for (id<QredoVaultObserver> observer in _observers) {
+            notificationBlock(observer);
+        }
+        
+    });
+}
+     
+     
 
 - (void)resetWatermark
 {
@@ -885,9 +927,11 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 {
     QredoVaultItemMetadata *vaultItemMetadata = (QredoVaultItemMetadata *)item;
 
-    if ([_delegate respondsToSelector:@selector(qredoVault:didReceiveVaultItemMetadata:)]) {
-        [_delegate qredoVault:self didReceiveVaultItemMetadata:vaultItemMetadata];
-    }
+    [self notyfyObservers:^(id<QredoVaultObserver> observer) {
+        if ([observer respondsToSelector:@selector(qredoVault:didReceiveVaultItemMetadata:)]) {
+            [observer qredoVault:self didReceiveVaultItemMetadata:vaultItemMetadata];
+        }
+    }];
 }
 
 @end

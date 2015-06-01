@@ -14,7 +14,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @class QredoVault;
 @class QredoVaultItemMetadata;
 
-@protocol QredoVaultDelegate <NSObject>
+@protocol QredoVaultObserver <NSObject>
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata;
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error;
@@ -74,20 +74,15 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  */
 @interface QredoVault : NSObject
 
-@property (weak) id<QredoVaultDelegate> delegate;
-
 - (QredoQUID *)vaultId;
 
 - (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
 
 - (void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
 
-/** 
- Start listening for the new items. In future revisions it may also return changes on existing items. Notifications will be returned to the delegate
- @discussion fails if delegate == nil 
- */
-- (void)startListening;
-- (void)stopListening;
+
+- (void)addQredoVaultObserver:(id<QredoVaultObserver>)observer;
+- (void)removeQredoVaultObaserver:(id<QredoVaultObserver>)observer;
 
 - (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
