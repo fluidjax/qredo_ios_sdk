@@ -13,7 +13,12 @@
 - (void)testEnumeration;
 - (void)testEnumerationReturnsCreatedItem;
 - (void)testEnumerationAbortsOnStop;
+
 - (void)testListener;
+- (void)testMultipleListeners;
+- (void)testRemovingListenerDurringNotification;
+- (void)testRemovingNotObservingListener;
+
 - (void)testVaultItemMetadataAndMutableMetadata;
 
 @end

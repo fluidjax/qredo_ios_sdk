@@ -47,6 +47,51 @@
 
 @end
 
+
+
+@interface QredoVaultListenerWithEmptyImplementation : NSObject<QredoVaultObserver>
+{
+    BOOL _dealocEntered;
+}
+@property (nonatomic) QredoVault *vault;
+@end
+
+@implementation QredoVaultListenerWithEmptyImplementation
+
+- (instancetype)initWithVault:(QredoVault *)vault
+{
+    self = [super init];
+    if (self) {
+        self.vault = vault;
+        [self.vault addQredoVaultObserver:self];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    _dealocEntered = YES;
+    [self.vault removeQredoVaultObaserver:self];
+}
+
+- (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error
+{
+}
+
+- (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata
+{
+    if (_dealocEntered) {
+        NSAssert(FALSE, @"QredoVaultListenerWithEmptyImplementation notified after dealoc has been called.");
+    }
+}
+
+@end
+
+@interface QredoVault()
+- (void)notyfyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock;
+@end
+
+
 @interface QredoVaultTests ()
 {
     QredoClient *client;
@@ -550,6 +595,136 @@
 
     [vault removeQredoVaultObaserver:listener];
 }
+
+- (void)testMultipleListeners
+{
+    XCTAssertNotNil(client);
+    
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    QredoVaultListener *listener1 = [[QredoVaultListener alloc] init];
+    listener1.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    
+    [vault addQredoVaultObserver:listener1];
+    
+    QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
+    listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    
+    [vault addQredoVaultObserver:listener2];
+    
+    // Create an item to ensure that there's data later than any current HWM
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2"};
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error);
+         item1Descriptor = newItemMetadata.descriptor;
+     }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener1.didReceiveVaultItemMetadataExpectation = nil;
+        listener2.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    XCTAssertNil(listener1.error);
+    XCTAssertNotNil(listener1.receivedItems);
+    XCTAssertTrue(listener1.receivedItems.count > 0);
+
+    XCTAssertNil(listener2.error);
+    XCTAssertNotNil(listener2.receivedItems);
+    XCTAssertTrue(listener2.receivedItems.count > 0);
+
+    
+    [vault removeQredoVaultObaserver:listener1];
+    [vault removeQredoVaultObaserver:listener2];
+}
+
+
+- (void)testRemovingListenerDurringNotification
+{
+    XCTAssertNotNil(client);
+    
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    NSMutableArray *listeners = [NSMutableArray new];
+    
+    for (int i = 0; i < 50; i++) {
+        QredoVaultListenerWithEmptyImplementation *listener = [[QredoVaultListenerWithEmptyImplementation alloc] initWithVault:vault];
+        [listeners addObject:listener];
+    }
+    
+    
+    __block BOOL keepNotifying = YES;
+    
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+        
+        while (keepNotifying) {
+            [vault notyfyObservers:^(id<QredoVaultObserver> observer) {
+                [observer qredoVault:vault didReceiveVaultItemMetadata:nil];
+                [observer qredoVault:vault didFailWithError:nil];
+            }];
+            
+            // NSLog(@"testRemovingListenerDurringNotification: Notify observers");
+        }
+        
+    });
+    
+    
+    __block XCTestExpectation *allListnersRemovedExpectation = [self expectationWithDescription:@"All listners are removed"];
+
+    
+    [self removeLastListenerOrFinishWith:listeners allListnersRemovedExpectation:allListnersRemovedExpectation];
+    
+    [self waitForExpectationsWithTimeout:[listeners count] handler:^(NSError *error) {
+        allListnersRemovedExpectation = nil;
+    }];
+    
+    keepNotifying = NO;
+}
+
+- (void)removeLastListenerOrFinishWith:(NSMutableArray *)listeners allListnersRemovedExpectation:(XCTestExpectation *)allListnersRemovedExpectation
+{
+    QredoVaultListenerWithEmptyImplementation *listener = [listeners lastObject];
+    if (listener) {
+        
+        [listeners removeObject:listener];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self removeLastListenerOrFinishWith:listeners allListnersRemovedExpectation:allListnersRemovedExpectation];
+        });
+        
+    } else {
+        
+        [allListnersRemovedExpectation fulfill];
+        
+    }
+
+}
+
+- (void)testRemovingNotObservingListener
+{
+    XCTAssertNotNil(client);
+    
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    QredoVaultListener *listener1 = [[QredoVaultListener alloc] init];
+    [vault addQredoVaultObserver:listener1];
+    
+    QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
+    
+    XCTAssertNoThrow([vault removeQredoVaultObaserver:listener2]);
+    XCTAssertNoThrow([vault removeQredoVaultObaserver:listener1]);
+}
+
 
 - (void)testVaultItemMetadataAndMutableMetadata
 {
