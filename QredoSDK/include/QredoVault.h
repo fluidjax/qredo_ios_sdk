@@ -80,8 +80,23 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 - (void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
 
-
+/**
+ Adds an observer to the vault.
+ 
+ @param observer The observer to be added.
+ 
+ @discussion An observer should be added to the vault in order to receive notifications when 
+ items in the vault change. It is important to remove the added observer before it is dealocated.
+ */
 - (void)addQredoVaultObserver:(id<QredoVaultObserver>)observer;
+
+/**
+ Removes an observer from the vault.
+ 
+ @param observer The observer to be removed.
+ 
+ @discussion An observer use this method to remove it self before being dealocated.
+ */
 - (void)removeQredoVaultObaserver:(id<QredoVaultObserver>)observer;
 
 - (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;

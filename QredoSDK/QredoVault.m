@@ -22,6 +22,7 @@
 #import "QredoED25519SigningKey.h"
 #import "QredoED25519VerifyKey.h"
 #import "QredoSigner.h"
+#import "QredoObserverList.h"
 
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
@@ -138,8 +139,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
     QredoVaultHighWatermark *_highwatermark;
     
-    NSHashTable *_observers;
-    dispatch_queue_t _observerNotificaionQueue;
+    QredoObserverList *_observers;
 
 
     QLFVault *_vault;
@@ -178,9 +178,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     _vaultKeys = vaultKeys;
     _highwatermark = QredoVaultHighWatermarkOrigin;
     
-    _observers = [NSHashTable weakObjectsHashTable];
-    _observerNotificaionQueue = dispatch_queue_create("com.qredo.vault.observer.notifications",
-                                                      DISPATCH_QUEUE_SERIAL);
+    _observers = [[QredoObserverList alloc] init];
 
     _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
 
@@ -578,44 +576,32 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 
 - (void)addQredoVaultObserver:(id<QredoVaultObserver>)observer
 {
-    NSAssert(observer, @"An observer must be supplied to [QredoVault addQredoVaultObserver:]");
-    
-    dispatch_async(_observerNotificaionQueue, ^{
+    QredoUpdateListener *updateListener = _updateListener;
+    [_observers addObserver:observer completionHandler:^{
         
-        [_observers addObject:observer];
-        
-        if (!_updateListener.isListening) {
-            [_updateListener startListening];
+        if (!updateListener.isListening) {
+            [updateListener startListening];
         }
         
-    });
+    }];
 }
 
 - (void)removeQredoVaultObaserver:(id<QredoVaultObserver>)observer
 {
-    NSAssert(observer, @"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
-    
-    dispatch_async(_observerNotificaionQueue, ^{
+    QredoUpdateListener *updateListener = _updateListener;
+    QredoObserverList *observers = _observers;
+    [_observers removeObaserver:observer completionHandler:^{
         
-        [_observers removeObject:observer];
-        
-        if ([_observers count] < 1 && !_updateListener.isListening) {
-            [_updateListener stopListening];
+        if ([observers count] < 1 && !_updateListener.isListening) {
+            [updateListener stopListening];
         }
         
-    });
+    }];
 }
-
 
 - (void)notyfyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock
 {
-    dispatch_async(_observerNotificaionQueue, ^{
-        
-        for (id<QredoVaultObserver> observer in _observers) {
-            notificationBlock(observer);
-        }
-        
-    });
+    [_observers notyfyObservers:notificationBlock];
 }
      
      
