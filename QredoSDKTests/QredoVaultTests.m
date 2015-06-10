@@ -63,7 +63,7 @@
     self = [super init];
     if (self) {
         self.vault = vault;
-        [self.vault addQredoVaultObserver:self];
+        [self.vault addVaultObserver:self];
     }
     return self;
 }
@@ -71,7 +71,7 @@
 - (void)dealloc
 {
     _dealocEntered = YES;
-    [self.vault removeQredoVaultObaserver:self];
+    [self.vault removeVaultObaserver:self];
 }
 
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error
@@ -566,7 +566,7 @@
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
     listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
 
-    [vault addQredoVaultObserver:listener];
+    [vault addVaultObserver:listener];
     
     // Create an item to ensure that there's data later than any current HWM
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -593,7 +593,7 @@
     XCTAssertTrue(listener.receivedItems.count > 0);
 
 
-    [vault removeQredoVaultObaserver:listener];
+    [vault removeVaultObaserver:listener];
 }
 
 - (void)testMultipleListeners
@@ -606,12 +606,12 @@
     QredoVaultListener *listener1 = [[QredoVaultListener alloc] init];
     listener1.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
     
-    [vault addQredoVaultObserver:listener1];
+    [vault addVaultObserver:listener1];
     
     QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
     listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
     
-    [vault addQredoVaultObserver:listener2];
+    [vault addVaultObserver:listener2];
     
     // Create an item to ensure that there's data later than any current HWM
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -643,8 +643,8 @@
     XCTAssertTrue(listener2.receivedItems.count > 0);
 
     
-    [vault removeQredoVaultObaserver:listener1];
-    [vault removeQredoVaultObaserver:listener2];
+    [vault removeVaultObaserver:listener1];
+    [vault removeVaultObaserver:listener2];
 }
 
 
@@ -717,12 +717,12 @@
     XCTAssertNotNil(vault);
     
     QredoVaultListener *listener1 = [[QredoVaultListener alloc] init];
-    [vault addQredoVaultObserver:listener1];
+    [vault addVaultObserver:listener1];
     
     QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
     
-    XCTAssertNoThrow([vault removeQredoVaultObaserver:listener2]);
-    XCTAssertNoThrow([vault removeQredoVaultObaserver:listener1]);
+    XCTAssertNoThrow([vault removeVaultObaserver:listener2]);
+    XCTAssertNoThrow([vault removeVaultObaserver:listener1]);
 }
 
 

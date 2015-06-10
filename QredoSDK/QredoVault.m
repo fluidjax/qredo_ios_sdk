@@ -574,7 +574,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
      }];
 }
 
-- (void)addQredoVaultObserver:(id<QredoVaultObserver>)observer
+- (void)addVaultObserver:(id<QredoVaultObserver>)observer
 {
     QredoUpdateListener *updateListener = _updateListener;
     [_observers addObserver:observer completionHandler:^{
@@ -586,7 +586,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     }];
 }
 
-- (void)removeQredoVaultObaserver:(id<QredoVaultObserver>)observer
+- (void)removeVaultObaserver:(id<QredoVaultObserver>)observer
 {
     QredoUpdateListener *updateListener = _updateListener;
     QredoObserverList *observers = _observers;

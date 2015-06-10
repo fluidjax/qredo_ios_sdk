@@ -179,7 +179,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         let vault = qredo.defaultVault()
         
         let listener = VaultListener()
-        vault.addQredoVaultObserver(listener)
+        vault.addVaultObserver(listener)
         
         
         let item1 = QredoVaultItem(
@@ -253,7 +253,7 @@ class QredoVaultConsolidationTests: XCTestCase {
 
         listener.reset()
         
-        vault.removeQredoVaultObaserver(listener)
+        vault.removeVaultObaserver(listener)
 
     }
 
