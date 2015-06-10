@@ -672,8 +672,6 @@
                 [observer qredoVault:vault didReceiveVaultItemMetadata:nil];
                 [observer qredoVault:vault didFailWithError:nil];
             }];
-            
-            // NSLog(@"testRemovingListenerDurringNotification: Notify observers");
         }
         
     });
