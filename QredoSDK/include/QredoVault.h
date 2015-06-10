@@ -86,7 +86,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  @param observer The observer to be added.
  
  @discussion An observer should be added to the vault in order to receive notifications when 
- items in the vault change. It is important to remove the added observer before it is dealocated.
+ items in the vault change. It is important to remove the added observer before it is deallocated.
  */
 - (void)addVaultObserver:(id<QredoVaultObserver>)observer;
 
@@ -95,7 +95,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  
  @param observer The observer to be removed.
  
- @discussion An observer use this method to remove it self before being dealocated.
+ @discussion An observer use this method to remove it self before being deallocated.
  */
 - (void)removeVaultObaserver:(id<QredoVaultObserver>)observer;
 

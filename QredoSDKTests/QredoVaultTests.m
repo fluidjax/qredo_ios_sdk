@@ -51,7 +51,7 @@
 
 @interface QredoVaultListenerWithEmptyImplementation : NSObject<QredoVaultObserver>
 {
-    BOOL _dealocEntered;
+    BOOL _deallocEntered;
 }
 @property (nonatomic) QredoVault *vault;
 @end
@@ -70,7 +70,7 @@
 
 - (void)dealloc
 {
-    _dealocEntered = YES;
+    _deallocEntered = YES;
     [self.vault removeVaultObaserver:self];
 }
 
@@ -80,8 +80,8 @@
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata
 {
-    if (_dealocEntered) {
-        NSAssert(FALSE, @"QredoVaultListenerWithEmptyImplementation notified after dealoc has been called.");
+    if (_deallocEntered) {
+        NSAssert(FALSE, @"QredoVaultListenerWithEmptyImplementation notified after dealloc has been called.");
     }
 }
 
