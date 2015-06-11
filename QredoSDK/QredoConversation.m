@@ -273,7 +273,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 {
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey rendezvousOwner:rendezvousOwner];
 
-    void (^storeCompletionHandler)(NSError *) = ^(NSError *error) {
+    [self storeWithCompletionHandler:^(NSError *error)
+    {
         if (error) {
             completionHandler(error);
             return;
@@ -290,9 +291,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
            completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
                completionHandler(error);
            }];
-    };
-
-    [self storeWithCompletionHandler:storeCompletionHandler];
+    }];
 }
 
 - (void)generateKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
