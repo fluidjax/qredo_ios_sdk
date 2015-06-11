@@ -704,10 +704,14 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
             QredoRendezvousAuthenticationType authenticationType
             = [[vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
 
+            QredoRendezvousRef *rendezvousRef
+            = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor
+                                                                vault:vault];
+
             QredoRendezvousMetadata *metadata
             = [[QredoRendezvousMetadata alloc] initWithTag:tag
                                         authenticationType:authenticationType
-                                       vaultItemDescriptor:vaultItemMetadata.descriptor];
+                                             rendezvousRef:rendezvousRef];
 
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
             block(metadata, &stopObjectEnumeration);
@@ -718,21 +722,16 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     }];
 }
 
-- (void)fetchRendezvousWithTag:(NSString *)tag
+- (void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
-    QredoVault *vault = [self systemVault];
-    QredoQUID *vaultItemId = [vault itemIdWithName:tag type:kQredoRendezvousVaultItemType];
-
-    QredoVaultItemDescriptor *itemDescriptor
-    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:vaultItemId];
-    [self fetchRendezvousWithVaultItemDescriptor:itemDescriptor completionHandler:completionHandler];
+    [self fetchRendezvousWithVaultItemDescriptor:ref.vaultItemDescriptor completionHandler:completionHandler];
 }
 
 - (void)fetchRendezvousWithMetadata:(QredoRendezvousMetadata *)metadata
                   completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
-    [self fetchRendezvousWithVaultItemDescriptor:metadata.vaultItemDescriptor completionHandler:completionHandler];
+    [self fetchRendezvousWithRef:metadata.rendezvousRef completionHandler:completionHandler];
 }
 
 
@@ -798,6 +797,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
             metadata.amRendezvousOwner = [[vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelAmOwner] boolValue];
             metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];
             metadata.rendezvousTag = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelTag];
+            metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor vault:vault];
 
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
             block(metadata, &stopObjectEnumeration);
@@ -808,15 +808,12 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     }];
 }
 
-- (void)fetchConversationWithId:(QredoQUID*)conversationId
+- (void)fetchConversationWithRef:(QredoConversationRef *)conversationRef
               completionHandler:(void(^)(QredoConversation* conversation, NSError *error))completionHandler
 {
     QredoVault *vault = [self systemVault];
 
-    QLFVaultId *vaultItemId = [vault itemIdWithQUID:conversationId type:kQredoConversationVaultItemType];
-    QredoVaultItemDescriptor *vaultItemDescriptor
-    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:vaultItemId];
-    [vault getItemWithDescriptor:vaultItemDescriptor
+    [vault getItemWithDescriptor:conversationRef.vaultItemDescriptor
                completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          if (error) {
@@ -830,10 +827,10 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
      }];
 }
 
-- (void)deleteConversationWithId:(QredoQUID*)conversationId
+- (void)deleteConversationWithRef:(QredoConversationRef *)conversationRef
                completionHandler:(void(^)(NSError *error))completionHandler
 {
-    [self fetchConversationWithId:conversationId
+    [self fetchConversationWithRef:conversationRef
                 completionHandler:^(QredoConversation *conversation, NSError *error)
      {
          if (error) {

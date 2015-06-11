@@ -34,24 +34,24 @@ NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
 NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticationType";
 
+@implementation QredoRendezvousRef
+
+@end
+
 @implementation QredoRendezvousMetadata
 
 - (instancetype)initWithTag:(NSString*)tag
          authenticationType:(QredoRendezvousAuthenticationType)authenticationType
-        vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor
+              rendezvousRef:(QredoRendezvousRef *)rendezvousRef
 {
     self = [super init];
     if (!self) return nil;
 
     _tag = [tag copy];
     _authenticationType = authenticationType;
-    _vaultItemDescriptor = vaultItemDescriptor;
+    self.rendezvousRef = rendezvousRef;
 
     return self;
-}
-
-- (QredoVaultItemDescriptor *)vaultItemDescriptor {
-    return _vaultItemDescriptor;
 }
 
 @end
@@ -110,6 +110,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 @property QredoRendezvousConfiguration *configuration;
 @property (readwrite, copy) NSString *tag;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
+@property (readwrite) QredoRendezvousMetadata *metadata;
 
 - (NSSet *)maybe:(id)object;
 
@@ -285,10 +286,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 - (void)storeWithCompletionHandler:(void(^)(NSError* error))completionHandler
 {
-    QredoVault *vault = _client.systemVault;
-
-    QLFVaultItemId *itemId = [vault itemIdWithName:_tag type:kQredoRendezvousVaultItemType];
-
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:_descriptor
                                                                  marshaller:[QLFRendezvousDescriptor marshaller]];
 
@@ -304,10 +301,19 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
     [_client.systemVault strictlyPutNewItem:vaultItem
-                                     itemId:itemId
-                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-                              completionHandler(error);
-                          }];
+                          completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         if (newItemMetadata) {
+             QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
+                                                                                                   vault:_client.systemVault];
+
+             LogDebug(@"Saved rendezvous into vault item: id=%@, seqId=%@, seqVal=%ld", newItemMetadata.descriptor.itemId, newItemMetadata.descriptor.sequenceId, (long)newItemMetadata.descriptor.sequenceValue);
+             self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:self.tag
+                                                       authenticationType:self.authenticationType
+                                                            rendezvousRef:rendezvousRef];
+         }
+         completionHandler(error);
+     }];
 }
 
 @end
@@ -512,17 +518,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
          completionHandler(conversation, nil);
      }];
-}
-
-- (QredoRendezvousMetadata*)metadata {
-    QredoVault *vault = _client.systemVault;
-
-    QLFVaultItemId *itemId = [vault itemIdWithName:_tag type:kQredoRendezvousVaultItemType];
-    QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vault.sequenceId itemId:itemId];
-
-    return [[QredoRendezvousMetadata alloc] initWithTag:self.tag
-                                     authenticationType:self.authenticationType
-                                    vaultItemDescriptor:descriptor];
 }
 
 #pragma mark -

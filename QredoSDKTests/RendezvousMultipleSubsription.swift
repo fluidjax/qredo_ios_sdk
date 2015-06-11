@@ -63,6 +63,7 @@ class RendezvousMultipleSubsription: XCTestCase {
     func testMultipleSubscriptions() {
         var createdRendezvous : QredoRendezvous!
         let rendezvousTag = QredoQUID().QUIDString()
+        var rendezvousRef : QredoRendezvousRef!
 
         var createRendezvousExpectation : XCTestExpectation? = expectationWithDescription("create a rendezvous")
         clients.firstClient.createAnonymousRendezvousWithTag(rendezvousTag,
@@ -70,6 +71,7 @@ class RendezvousMultipleSubsription: XCTestCase {
                 XCTAssertNil(error, "failed to register a rendezvous")
                 XCTAssertNotNil(rendezvous, "rendezvous should not be nil")
                 createdRendezvous = rendezvous
+                rendezvousRef = rendezvous.metadata.rendezvousRef
 
                 createRendezvousExpectation?.fulfill()
         }
@@ -77,12 +79,12 @@ class RendezvousMultipleSubsription: XCTestCase {
         waitForExpectationsWithTimeout(qtu_defaultTimeout) { error in
             createRendezvousExpectation = nil
         }
-
+        XCTAssertNotNil(rendezvousRef, "RendezvousRef should not be nil")
 
 
         var fetchedRendezvous : QredoRendezvous!
         var fetchRendezvousExpectation : XCTestExpectation? = expectationWithDescription("fetch rendezvous")
-        clients.firstClient.fetchRendezvousWithTag(rendezvousTag, completionHandler: { (rendezvous, error) -> Void in
+        clients.firstClient.fetchRendezvousWithRef(rendezvousRef, completionHandler: { (rendezvous, error) -> Void in
             XCTAssertNil(error, "failed to fetch the rendezvous")
             XCTAssertNotNil(rendezvous, "rendezvous should not be nil")
 

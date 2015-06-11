@@ -48,6 +48,7 @@
 		0A65741D1A2F3B7200D5502E /* RendezvousListenerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A65740C1A2F3B7200D5502E /* RendezvousListenerTests.m */; };
 		0A68F7521A77B2AC0045D21D /* QredoConversationMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A68F7501A77B2AC0045D21D /* QredoConversationMessage.h */; };
 		0A68F7551A77B2C70045D21D /* QredoConversationMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A68F7541A77B2C70045D21D /* QredoConversationMessage.m */; };
+		0A74FC041B18C3A800529F60 /* QredoTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A74FC031B18C3A800529F60 /* QredoTypes.m */; };
 		0A759D711AE15EE60032185D /* ConversationCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A759D701AE15EE60032185D /* ConversationCryptoTests.m */; };
 		0A7811B31AAA013400479973 /* RendezvousMultipleSubsription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7811B21AAA013400479973 /* RendezvousMultipleSubsription.swift */; };
 		0A7EE7991AFA70800094A703 /* QredoConversationProtocolFSM.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7EE7971AFA70800094A703 /* QredoConversationProtocolFSM.h */; };
@@ -382,6 +383,8 @@
 		0A68F7501A77B2AC0045D21D /* QredoConversationMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoConversationMessage.h; sourceTree = "<group>"; };
 		0A68F7541A77B2C70045D21D /* QredoConversationMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversationMessage.m; sourceTree = "<group>"; };
 		0A68F7561A77BF9F0045D21D /* QredoConversationMessagePrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoConversationMessagePrivate.h; sourceTree = "<group>"; };
+		0A74FC031B18C3A800529F60 /* QredoTypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoTypes.m; sourceTree = "<group>"; };
+		0A74FC051B18C40500529F60 /* QredoTypesPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoTypesPrivate.h; sourceTree = "<group>"; };
 		0A759D701AE15EE60032185D /* ConversationCryptoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationCryptoTests.m; sourceTree = "<group>"; };
 		0A7811B21AAA013400479973 /* RendezvousMultipleSubsription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendezvousMultipleSubsription.swift; sourceTree = "<group>"; };
 		0A7EE7971AFA70800094A703 /* QredoConversationProtocolFSM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoConversationProtocolFSM.h; sourceTree = "<group>"; };
@@ -903,6 +906,8 @@
 				0A519B631A9E483100182499 /* QredoUpdateListener.m */,
 				0A7EE7971AFA70800094A703 /* QredoConversationProtocolFSM.h */,
 				0A7EE7981AFA70800094A703 /* QredoConversationProtocolFSM.m */,
+				0A74FC031B18C3A800529F60 /* QredoTypes.m */,
+				0A74FC051B18C40500529F60 /* QredoTypesPrivate.h */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -1790,6 +1795,7 @@
 				0A519B651A9E483100182499 /* QredoUpdateListener.m in Sources */,
 				DCC22DC01A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m in Sources */,
 				786DF4EF1A5D80C0000B4164 /* QredoRendezvousHelpers.m in Sources */,
+				0A74FC041B18C3A800529F60 /* QredoTypes.m in Sources */,
 				78A2F1F21A431F8900974EFB /* QredoWelcomeViewController.m in Sources */,
 				786DF4E61A5D76E4000B4164 /* QredoRendezvousAnonymousHelper.m in Sources */,
 				DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */,
