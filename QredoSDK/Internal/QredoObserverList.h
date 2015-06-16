@@ -20,8 +20,8 @@
 
 #pragma mark Add, remove and notify observers
 
-- (void)addObserver:(id)observer completionHandler:(void(^)())completionHandler;
-- (void)removeObaserver:(id)observer completionHandler:(void(^)())completionHandler;
+- (void)addObserver:(id)observer;
+- (void)removeObaserver:(id)observer;
 - (void)notyfyObservers:(void(^)(id observer))notificationBlock;
 
 

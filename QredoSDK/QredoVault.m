@@ -577,26 +577,20 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
 - (void)addVaultObserver:(id<QredoVaultObserver>)observer
 {
     QredoUpdateListener *updateListener = _updateListener;
-    [_observers addObserver:observer completionHandler:^{
-        
-        if (!updateListener.isListening) {
-            [updateListener startListening];
-        }
-        
-    }];
+    [_observers addObserver:observer];
+    if (!updateListener.isListening) {
+        [updateListener startListening];
+    }
 }
 
 - (void)removeVaultObaserver:(id<QredoVaultObserver>)observer
 {
     QredoUpdateListener *updateListener = _updateListener;
     QredoObserverList *observers = _observers;
-    [_observers removeObaserver:observer completionHandler:^{
-        
-        if ([observers count] < 1 && !_updateListener.isListening) {
-            [updateListener stopListening];
-        }
-        
-    }];
+    [_observers removeObaserver:observer];
+    if ([observers count] < 1 && !_updateListener.isListening) {
+        [updateListener stopListening];
+    }
 }
 
 - (void)notyfyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock

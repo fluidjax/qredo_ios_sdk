@@ -17,6 +17,7 @@
 - (void)testListener;
 - (void)testMultipleListeners;
 - (void)testRemovingListenerDurringNotification;
+- (void)testMultipleRemovingListenerDurringNotification;
 - (void)testRemovingNotObservingListener;
 
 - (void)testVaultItemMetadataAndMutableMetadata;

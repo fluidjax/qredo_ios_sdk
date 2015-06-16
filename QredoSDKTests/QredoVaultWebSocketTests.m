@@ -51,6 +51,10 @@
     [super testRemovingListenerDurringNotification];
 }
 
+- (void)testMultipleRemovingListenerDurringNotification {
+    [super testMultipleRemovingListenerDurringNotification];
+}
+
 - (void)testRemovingNotObservingListener {
     [super testRemovingNotObservingListener];
 }

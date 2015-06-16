@@ -657,7 +657,7 @@
     
     NSMutableArray *listeners = [NSMutableArray new];
     
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 20; i++) {
         QredoVaultListenerWithEmptyImplementation *listener = [[QredoVaultListenerWithEmptyImplementation alloc] initWithVault:vault];
         [listeners addObject:listener];
     }
@@ -682,11 +682,18 @@
     
     [self removeLastListenerOrFinishWith:listeners allListnersRemovedExpectation:allListnersRemovedExpectation];
     
-    [self waitForExpectationsWithTimeout:[listeners count] handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:[listeners count]*10 handler:^(NSError *error) {
         allListnersRemovedExpectation = nil;
     }];
     
     keepNotifying = NO;
+}
+
+- (void)testMultipleRemovingListenerDurringNotification
+{
+    for (int i = 0; i < 10; i++) {
+        [self testRemovingListenerDurringNotification];
+    }
 }
 
 - (void)removeLastListenerOrFinishWith:(NSMutableArray *)listeners allListnersRemovedExpectation:(XCTestExpectation *)allListnersRemovedExpectation

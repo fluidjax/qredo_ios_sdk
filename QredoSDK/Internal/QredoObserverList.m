@@ -27,7 +27,16 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 
 @interface QredoObserverList ()
 {
-    dispatch_queue_t _observerNotificaionQueue;
+    /*
+     Synchronisies access to `_observerProxies`.
+     */
+    dispatch_queue_t _observerOperationQueue;
+    
+    /*
+     Notification of observers takes place on this queue.
+     */
+    dispatch_queue_t _observerNotificationQueue;
+    
     NSMutableArray *_observerProxies;
 }
 
@@ -83,7 +92,8 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     self = [super init];
     if (self) {
         _associationKey = associationKey ? associationKey : kDefaultAssociationKey;
-        _observerNotificaionQueue = dispatch_queue_create(NULL, DISPATCH_QUEUE_SERIAL);
+        _observerOperationQueue = dispatch_queue_create("com.qredo.QredoObserverList.observerOperationQueue", DISPATCH_QUEUE_SERIAL);
+        _observerNotificationQueue = dispatch_queue_create("com.qredo.QredoObserverList.observerNotificationQueue", DISPATCH_QUEUE_CONCURRENT);
         _observerProxies = [NSMutableArray array];
     }
     return self;
@@ -92,11 +102,11 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 
 #pragma mark Add, remove and notify observers
 
-- (void)addObserver:(id)observer completionHandler:(void(^)())completionHandler
+- (void)addObserver:(id)observer
 {
     NSAssert(observer, @"An observer must be supplied to [QredoVault addQredoVaultObserver:]");
     
-    dispatch_async(_observerNotificaionQueue, ^{
+    dispatch_sync(_observerOperationQueue, ^{
         
         QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
         if (!observerProxy) {
@@ -108,27 +118,19 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
         
         [_observerProxies addObject:observerProxy];
         
-        if (completionHandler) {
-            completionHandler();
-        }
-        
     });
 }
 
-- (void)removeObaserver:(id)observer completionHandler:(void(^)())completionHandler
+- (void)removeObaserver:(id)observer
 {
     NSAssert(observer, @"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
     
     QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
     
-    dispatch_async(_observerNotificaionQueue, ^{
+    dispatch_sync(_observerOperationQueue, ^{
         
         if (observerProxy) {
             [_observerProxies removeObject:observerProxy];
-        }
-        
-        if (completionHandler) {
-            completionHandler();
         }
         
     });
@@ -136,7 +138,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 
 - (void)notyfyObservers:(void(^)(id observer))notificationBlock
 {
-    dispatch_async(_observerNotificaionQueue, ^{
+    dispatch_sync(_observerOperationQueue, ^{
         
         for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
             
@@ -145,7 +147,10 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
                 continue;
             }
             
-            notificationBlock(observerProxy.observer);
+            dispatch_async(_observerNotificationQueue, ^{
+                notificationBlock(observerProxy.observer);
+            });
+            
         }
         
     });
