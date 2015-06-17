@@ -234,6 +234,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 - (void)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
+                           origin:(QredoVaultItemOrigin)origin
                 completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
 {
     NSError *error = nil;
@@ -265,6 +266,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                                   accessLevel:0
                                                 summaryValues:summaryValues];
 
+    metadata.origin = origin;
+
     if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
         error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
         completionHandler(nil, error);
@@ -276,6 +279,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 - (void)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
+                                 origin:(QredoVaultItemOrigin)origin
                       completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler
 {
     NSError *error = nil;
@@ -307,6 +311,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                                                                       dataType:vaultItemMetadataLF.dataType
                                                                                    accessLevel:0
                                                                                  summaryValues:summaryValues];
+
+    metadata.origin = origin;
     if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
         error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
         completionHandler(nil, error);
@@ -345,7 +351,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
      {
          if (!error && [result count]) {
              QLFEncryptedVaultItem *encryptedVaultItem = [result anyObject];
-             [self decryptEncryptedVaultItem:encryptedVaultItem completionHandler:completionHandler];
+             [self decryptEncryptedVaultItem:encryptedVaultItem
+                                      origin:QredoVaultItemOriginServer
+                           completionHandler:completionHandler];
          } else {
              if (!error) {
                  error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemNotFound userInfo:nil];
@@ -386,7 +394,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
          if (!error && result.count) {
              QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = [result anyObject];
 
-             [self decryptEncryptedVaultItemHeader:encryptedVaultItemHeader completionHandler:completionHandler];
+             [self decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
+                                            origin:QredoVaultItemOriginServer
+                                 completionHandler:completionHandler];
          } else {
              if (!error) {
                  error = [NSError errorWithDomain:QredoErrorDomain
@@ -459,7 +469,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         if (object && [object isKindOfClass:[QLFEncryptedVaultItem class]]) {
             QLFEncryptedVaultItem *encryptedVaultItem = (QLFEncryptedVaultItem *)object;
 
-            [self decryptEncryptedVaultItem:encryptedVaultItem completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+            [self decryptEncryptedVaultItem:encryptedVaultItem
+                                     origin:QredoVaultItemOriginCache
+                          completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
             {
                 // in case if cache entry is corrupted
                 if (!vaultItem) {
@@ -484,7 +496,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
          if (object && [object isKindOfClass:[QLFEncryptedVaultItemHeader class]]) {
              QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = (QLFEncryptedVaultItemHeader *)object;
 
-             [self decryptEncryptedVaultItemHeader:encryptedVaultItemHeader completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
+             [self decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
+                                            origin:QredoVaultItemOriginCache
+                                 completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
               {
                   // in case if cache entry is corrupted
                   if (!vaultItemMetadata) {

@@ -28,6 +28,22 @@
 + (instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState;
 @end
 
+typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
+{
+    QredoVaultItemOriginServer,
+    QredoVaultItemOriginCache
+};
+
+@interface QredoVaultItemMetadata ()
+
+@property QredoVaultItemDescriptor *descriptor;
+@property (copy) NSString *dataType;
+@property QredoAccessLevel accessLevel;
+@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
+@property QredoVaultItemOrigin origin;
+
+@end
+
 
 @interface QredoVault (Private)
 
