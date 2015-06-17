@@ -36,99 +36,6 @@ static NSString *const QredoVaultItemMetadataItemTypeRendezvous = @"com.qredo.re
 static NSString *const QredoVaultItemMetadataItemTypeConversation = @"com.qredo.conversation";
 
 static const double kQredoVaultUpdateInterval = 1.0; // seconds
-QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
-
-// Opaque Class. Keeping interface only here
-@interface QredoVaultHighWatermark()
-// key: SequenceId (QredoQUID*), value: SequenceValue (NSNumber*)
-// TODO: WARNING NSNumber on 32-bit systems can keep maximum 32-bit integers, but we need 64. Kept NSNumber because in the LF code we use NSNumber right now
-@property NSMutableDictionary *sequenceState;
-- (NSSet*)vaultSequenceState;
-+ (instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState;
-@end
-
-@implementation QredoVaultHighWatermark
-
-+ (instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState
-{
-    QredoVaultHighWatermark *watermark = [[QredoVaultHighWatermark alloc] init];
-    watermark.sequenceState = [sequenceState mutableCopy];
-    return watermark;
-}
-
-- (NSSet*)vaultSequenceState
-{
-    NSMutableSet *sequenceStates = [NSMutableSet set];
-
-    NSArray *sortedKeys = [[self.sequenceState allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    for (QredoQUID* sequenceId in sortedKeys) {
-        QLFVaultSequenceState *state = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId
-                                                                                 sequenceValue:[[self.sequenceState objectForKey:sequenceId] longLongValue]];
-
-        [sequenceStates addObject:state];
-    }
-    return [sequenceStates copy]; // immutable copy
-}
-@end
-
-@implementation QredoVaultItemDescriptor
-
-+ (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId
-{
-    return [[QredoVaultItemDescriptor alloc] initWithSequenceId:sequenceId itemId:itemId];
-}
-
-- (instancetype)initWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId
-{
-    self = [super init];
-    if (!self) return nil;
-
-    _sequenceId = sequenceId;
-    _itemId = itemId;
-
-    return self;
-}
-
-- (BOOL)isEqual:(id)object {
-    if (object == self) return YES;
-
-    if ([object isKindOfClass:[QredoVaultItemDescriptor class]]) {
-        QredoVaultItemDescriptor *other = (QredoVaultItemDescriptor*)object;
-        return ([self.sequenceId isEqual:other.sequenceId] || self.sequenceId == other.sequenceId) &&
-            ([self.itemId isEqual:other.itemId] || self.itemId == other.itemId) &&
-            (self.sequenceValue == other.sequenceValue);
-    } else return [super isEqual:object];
-}
-
-- (NSUInteger)hash
-{
-    return [_itemId hash] ^ [_sequenceId hash] ^ (NSUInteger)_sequenceValue;
-}
-
-// For private use only.
-+ (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QredoQUID *)itemId
-{
-    return [[self alloc] initWithSequenceId:sequenceId sequenceValue:sequenceValue itemId:itemId];
-}
-
-// For private use only.
-- (instancetype)initWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QredoQUID *)itemId
-{
-    self = [self initWithSequenceId:sequenceId itemId:itemId];
-    if (!self) return nil;
-    
-    _sequenceValue = sequenceValue;
-    
-    return self;
-}
-
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    return self;
-}
-
-@end
 
 @interface QredoVault () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>
 {
@@ -311,99 +218,6 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
               completionHandler:completionHandler];
 }
 
-
-@end
-
-@implementation QredoVaultItem
-+ (instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value
-{
-    return [[QredoVaultItem alloc] initWithMetadata:metadata value:value];
-}
-
-- (instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value
-{
-    self = [super init];
-    if (!self) return nil;
-    _metadata = metadata;
-    _value = value;
-
-    return self;
-}
-@end
-
-@interface QredoVaultItemMetadata ()
-@property QredoVaultItemDescriptor *descriptor;
-@property (copy) NSString *dataType;
-@property QredoAccessLevel accessLevel;
-@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
-@end
-
-@implementation QredoVaultItemMetadata
-
-+ (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor dataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues
-{
-    return [[self alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
-}
-
-
-+ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues
-{
-    return [self vaultItemMetadataWithDescriptor:nil dataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
-}
-
-- (instancetype)initWithDescriptor:(QredoVaultItemDescriptor *)descriptor dataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues
-{
-    self = [super init];
-    if (!self) return nil;
-
-    _descriptor = descriptor;
-    _dataType = dataType;
-    _accessLevel = accessLevel;
-    _summaryValues = summaryValues;
-
-    return self;
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    return [[QredoVaultItemMetadata allocWithZone:zone] initWithDescriptor:self.descriptor
-                                                                  dataType:self.dataType
-                                                               accessLevel:self.accessLevel
-                                                             summaryValues:self.summaryValues];
-}
-
-- (id)mutableCopyWithZone:(NSZone *)zone
-{
-    return [[QredoMutableVaultItemMetadata allocWithZone:zone] initWithDescriptor:self.descriptor
-                                                                         dataType:self.dataType
-                                                                      accessLevel:self.accessLevel
-                                                                    summaryValues:self.summaryValues];
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"QredoVaultItemMetadata: dataType=\"%@\", metadata values=%@", self.dataType, self.summaryValues];
-}
-
-@end
-
-
-@implementation QredoMutableVaultItemMetadata
-
-@dynamic descriptor, dataType, accessLevel, summaryValues;
-
-- (void)setSummaryValue:(id)value forKey:(NSString *)key
-{
-    NSMutableDictionary *mutableSummaryValues = [self.summaryValues mutableCopy];
-    if (!mutableSummaryValues) {
-        if (value) {
-            self.summaryValues = [NSDictionary dictionaryWithObject:value forKey:key];
-        }
-    }
-    else {
-        [mutableSummaryValues setObject:value forKey:key];
-        self.summaryValues = mutableSummaryValues;
-    }
-}
 
 @end
 
@@ -733,9 +547,9 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
                     return nil;
                 }
                 QredoVaultItemDescriptor *descriptor = metadata.descriptor;
-                return [[QredoVaultItemDescriptor alloc] initWithSequenceId:descriptor.sequenceId
-                                                              sequenceValue:[previousSequenceValue longValue]
-                                                                     itemId:descriptor.itemId];
+                return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:descriptor.sequenceId
+                                                                     sequenceValue:[previousSequenceValue longValue]
+                                                                            itemId:descriptor.itemId];
             };
             
             for (QredoVaultItemMetadata* metadata in metadataArray) {
