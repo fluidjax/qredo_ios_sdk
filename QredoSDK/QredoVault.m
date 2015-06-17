@@ -405,8 +405,12 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                  itemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
                     completionHandler:(void (^)(NSError *error))completionHandler
 {
-    [_cacheHeaders setObject:encryptedVaultItemHeader forKey:itemDescriptor.cacheKey];
-    completionHandler(nil);
+    [_cacheHeaders setObject:encryptedVaultItemHeader
+                      forKey:itemDescriptor.cacheKey
+                       block:^(PINCache *cache, NSString *key, id __nullable object) {
+        completionHandler(nil);
+    }];
+
 }
 
 
@@ -418,8 +422,12 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                          itemDescriptor:itemDescriptor
                       completionHandler:^(NSError *error)
     {
-        [_cacheItems setObject:encryptedVaultItem forKey:itemDescriptor.cacheKey];
-        completionHandler(nil);
+        [_cacheItems setObject:encryptedVaultItem
+                        forKey:itemDescriptor.cacheKey
+                         block:^(PINCache *cache, NSString *key, id __nullable object)
+        {
+            completionHandler(nil);
+        }];
     }];
 }
 
