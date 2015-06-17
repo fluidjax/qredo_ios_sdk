@@ -23,6 +23,10 @@
 #import "QredoED25519VerifyKey.h"
 #import "QredoSigner.h"
 
+// Cache
+#import <PINCache/PINCache.h>
+#import "QredoVaultItem+Cache.h"
+
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
@@ -52,6 +56,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     dispatch_queue_t _queue;
 
     QredoUpdateListener *_updateListener;
+
+    PINCache *_cacheItems;
+    PINCache *_cacheHeaders;
 }
 
 - (void)saveState;
@@ -100,6 +107,10 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:vaultKeys.encryptionKey
                                           authenticationKey:vaultKeys.authenticationKey];
+
+
+    _cacheItems = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".items"]];
+    _cacheHeaders = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".headers"]];
     
     return self;
 }
@@ -115,7 +126,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 {
     return [self itemIdWithName:[quid QUIDString] type:type];
 }
-
 
 - (void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
                        itemId:(QredoQUID*)itemId dataType:(NSString *)dataType
@@ -166,18 +176,19 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                        sequenceId:_sequenceId
                                     sequenceValue:newSequenceValue];
              
-             
              QredoMutableVaultItemMetadata *newMetadata = [metadata mutableCopy];
              newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
                                                                                     sequenceValue:newSequenceValue
                                                                                            itemId:itemId];
-             
-             completionHandler(newMetadata, nil);
-             
+
+             [self cacheEncryptedVaultItem:encryptedVaultItem
+                            itemDescriptor:newMetadata.descriptor
+                         completionHandler:^(NSError *error)
+             {
+                 completionHandler(newMetadata, nil);
+             }];
          } else {
-             
              completionHandler(nil, error);
-             
          }
      }];
 }
@@ -186,13 +197,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
          completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
 {
     QredoQUID *itemId = [QredoQUID QUID];
-    [self strictlyPutNewItem:vaultItem itemId:itemId completionHandler:completionHandler];
-}
-
-- (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem
-                    itemId:(QredoQUID *)itemId
-         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
-{
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
     newSummaryValues[QredoVaultItemMetadataItemDateCreated] = [NSDate date];
@@ -215,30 +219,113 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                          itemId:itemId
                        dataType:metadata.dataType
                   summaryValues:newSummaryValues
-              completionHandler:completionHandler];
+              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         if (newItemMetadata) {
+             [self removeBodyFromCacheWithVaultItemDescriptor:vaultItem.metadata.descriptor
+                                            completionHandler:^(NSError *error)
+             {
+                 completionHandler(newItemMetadata, error);
+             }];
+         } else {
+             completionHandler(newItemMetadata, error);
+         }
+     }];
 }
 
-
-@end
-
-@implementation QredoVault
-
-- (QredoQUID *)vaultId
+- (void)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
+                completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
 {
-    return _vaultKeys.vaultId;
+    NSError *error = nil;
+
+    NSError *decryptionError = nil;
+    QLFVaultItem *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem
+                                                                  error:&decryptionError];
+    if (!vaultItemLF) {
+        if (!decryptionError) {
+            decryptionError = [NSError errorWithDomain:QredoErrorDomain
+                                                  code:QredoErrorCodeMalformedOrTamperedData
+                                              userInfo:nil];
+        }
+
+        completionHandler(nil, decryptionError);
+        return ;
+    }
+
+    NSDictionary *summaryValues = [vaultItemLF.metadata.values dictionaryFromIndexableSet];
+
+    QredoVaultItemDescriptor *descriptor
+    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItem.header.ref.sequenceId
+                                                    sequenceValue:encryptedVaultItem.header.ref.sequenceValue
+                                                           itemId:encryptedVaultItem.header.ref.itemId];
+
+    QredoVaultItemMetadata *metadata
+    = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                     dataType:vaultItemLF.metadata.dataType
+                                                  accessLevel:0
+                                                summaryValues:summaryValues];
+
+    if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+        error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
+        completionHandler(nil, error);
+    }
+    else {
+        QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.body];
+        completionHandler(vaultItem, nil);
+    }
 }
 
-- (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-            completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
+- (void)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
+                      completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler
 {
+    NSError *error = nil;
+    NSError *decryptionError = nil;
+    QLFVaultItemMetadata *vaultItemMetadataLF
+    = [_vaultCrypto decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
+                                              error:&decryptionError];
 
+    if (!vaultItemMetadataLF) {
+        if (!decryptionError) {
+            decryptionError = [NSError errorWithDomain:QredoErrorDomain
+                                                  code:QredoErrorCodeMalformedOrTamperedData
+                                              userInfo:nil];
+        }
+
+        completionHandler(nil, decryptionError);
+        return;
+    }
+
+
+    NSDictionary *summaryValues = [vaultItemMetadataLF.values dictionaryFromIndexableSet];
+
+    QredoVaultItemDescriptor *descriptor
+    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItemHeader.ref.sequenceId
+                                                    sequenceValue:encryptedVaultItemHeader.ref.sequenceValue
+                                                           itemId:encryptedVaultItemHeader.ref.itemId];
+
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                      dataType:vaultItemMetadataLF.dataType
+                                                                                   accessLevel:0
+                                                                                 summaryValues:summaryValues];
+    if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+        error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
+        completionHandler(nil, error);
+    }
+    else {
+        completionHandler(metadata, nil);
+    }
+}
+
+- (void)getItemFromServerWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                      completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
+{
     QLFVaultSequenceId   *sequenceId    = itemDescriptor.sequenceId;
     QLFVaultSequenceValue sequenceValue = itemDescriptor.sequenceValue;
 
     NSError *error = nil;
 
     NSSet *sequenceValues = [NSSet setWithObject:@(sequenceValue)];
-    
+
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
                                                      vaultItemDescriptor:itemDescriptor
@@ -255,55 +342,21 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                         itemId:itemDescriptor.itemId
                      signature:ownershipSignature
              completionHandler:^(NSSet *result, NSError *error)
-    {
+     {
          if (!error && [result count]) {
              QLFEncryptedVaultItem *encryptedVaultItem = [result anyObject];
-
-             NSError *decryptionError = nil;
-             QLFVaultItem *vaultItemLF = [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem
-                                                                           error:&decryptionError];
-             if (!vaultItemLF) {
-                 if (!decryptionError) {
-                     decryptionError = [NSError errorWithDomain:QredoErrorDomain
-                                                           code:QredoErrorCodeMalformedOrTamperedData
-                                                       userInfo:nil];
-                 }
-
-                 completionHandler(nil, decryptionError);
-                 return ;
-             }
-
-             NSDictionary *summaryValues = [vaultItemLF.metadata.values dictionaryFromIndexableSet];
-
-             QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItem.header.ref.sequenceId
-                                                                                                  sequenceValue:encryptedVaultItem.header.ref.sequenceValue
-                                                                                                         itemId:encryptedVaultItem.header.ref.itemId];
-
-             QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                                               dataType:vaultItemLF.metadata.dataType
-                                                                                            accessLevel:0
-                                                                                          summaryValues:summaryValues];
-
-             if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
-                 error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
-                 completionHandler(nil, error);
-             }
-             else {
-                 QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.body];
-                 completionHandler(vaultItem, nil);
-             }
-
+             [self decryptEncryptedVaultItem:encryptedVaultItem completionHandler:completionHandler];
          } else {
              if (!error) {
                  error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemNotFound userInfo:nil];
              }
              completionHandler(nil, error);
          }
-    }];
+     }];
 }
 
-- (void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-                    completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler
+- (void)getItemMetadataFromServerWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                              completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler
 {
     QLFVaultSequenceId *sequenceId = itemDescriptor.sequenceId;
     QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
@@ -311,7 +364,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     NSError *error = nil;
 
     NSSet *sequenceValues = sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : [NSSet set];
-    
+
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
                                                      vaultItemDescriptor:itemDescriptor
@@ -324,52 +377,16 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
     [_vault getItemHeaderWithVaultId:_vaultKeys.vaultId
-                            sequenceId:sequenceId
-                         sequenceValue:sequenceValues
-                                itemId:itemDescriptor.itemId
-                             signature:ownershipSignature
-                     completionHandler:^(NSSet *result, NSError *error)
+                          sequenceId:sequenceId
+                       sequenceValue:sequenceValues
+                              itemId:itemDescriptor.itemId
+                           signature:ownershipSignature
+                   completionHandler:^(NSSet *result, NSError *error)
      {
          if (!error && result.count) {
-
              QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = [result anyObject];
 
-             NSError *decryptionError = nil;
-             QLFVaultItemMetadata *vaultItemMetadataLF
-             = [_vaultCrypto decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
-                                                       error:&decryptionError];
-
-             if (!vaultItemMetadataLF) {
-                 if (!decryptionError) {
-                     decryptionError = [NSError errorWithDomain:QredoErrorDomain
-                                                           code:QredoErrorCodeMalformedOrTamperedData
-                                                       userInfo:nil];
-                 }
-
-                 completionHandler(nil, decryptionError);
-                 return;
-             }
-
-
-             NSDictionary *summaryValues = [vaultItemMetadataLF.values dictionaryFromIndexableSet];
-
-             QredoVaultItemDescriptor *descriptor
-             = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItemHeader.ref.sequenceId
-                                                             sequenceValue:encryptedVaultItemHeader.ref.sequenceValue
-                                                                    itemId:encryptedVaultItemHeader.ref.itemId];
-
-             QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                                               dataType:vaultItemMetadataLF.dataType
-                                                                                            accessLevel:0
-                                                                                          summaryValues:summaryValues];
-             if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
-                 error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
-                 completionHandler(nil, error);
-             }
-             else {
-                 completionHandler(metadata, nil);
-             }
-
+             [self decryptEncryptedVaultItemHeader:encryptedVaultItemHeader completionHandler:completionHandler];
          } else {
              if (!error) {
                  error = [NSError errorWithDomain:QredoErrorDomain
@@ -378,7 +395,100 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
              }
              completionHandler(nil, error);
          }
+     }];
+}
 
+
+#pragma mark Cache
+
+- (void)cacheEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
+                 itemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                    completionHandler:(void (^)(NSError *error))completionHandler
+{
+    [_cacheHeaders setObject:encryptedVaultItemHeader forKey:itemDescriptor.cacheKey];
+    completionHandler(nil);
+}
+
+
+- (void)cacheEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
+                 itemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+              completionHandler:(void (^)(NSError *error))completionHandler
+{
+    [self cacheEncryptedVaultItemHeader:encryptedVaultItem.header
+                         itemDescriptor:itemDescriptor
+                      completionHandler:^(NSError *error)
+    {
+        [_cacheItems setObject:encryptedVaultItem forKey:itemDescriptor.cacheKey];
+        completionHandler(nil);
+    }];
+}
+
+- (void)removeBodyFromCacheWithVaultItemDescriptor:(QredoVaultItemDescriptor *)descriptor
+                                 completionHandler:(void (^)(NSError *error))completionHandler
+{
+    [_cacheItems removeObjectForKey:descriptor.cacheKey
+                              block:^(PINCache *cache, NSString *key, id __nullable object)
+     {
+         completionHandler(nil);
+     }];
+}
+
+@end
+
+@implementation QredoVault
+
+- (QredoQUID *)vaultId
+{
+    return _vaultKeys.vaultId;
+}
+
+- (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+            completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
+{
+    [_cacheItems objectForKey:itemDescriptor.cacheKey
+                        block:^(PINCache *cache, NSString *key, id __nullable object)
+    {
+        if (object && [object isKindOfClass:[QLFEncryptedVaultItem class]]) {
+            QLFEncryptedVaultItem *encryptedVaultItem = (QLFEncryptedVaultItem *)object;
+
+            [self decryptEncryptedVaultItem:encryptedVaultItem completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+            {
+                // in case if cache entry is corrupted
+                if (!vaultItem) {
+                    [self getItemFromServerWithDescriptor:itemDescriptor completionHandler:completionHandler];
+                } else {
+                    completionHandler(vaultItem, error);
+                }
+            }];
+
+        } else {
+            [self getItemFromServerWithDescriptor:itemDescriptor completionHandler:completionHandler];
+        }
+    }];
+}
+
+- (void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                    completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler
+{
+    [_cacheHeaders objectForKey:itemDescriptor.cacheKey
+                        block:^(PINCache *cache, NSString *key, id __nullable object)
+     {
+         if (object && [object isKindOfClass:[QLFEncryptedVaultItemHeader class]]) {
+             QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = (QLFEncryptedVaultItemHeader *)object;
+
+             [self decryptEncryptedVaultItemHeader:encryptedVaultItemHeader completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
+              {
+                  // in case if cache entry is corrupted
+                  if (!vaultItemMetadata) {
+                      [self getItemMetadataFromServerWithDescriptor:itemDescriptor completionHandler:completionHandler];
+                  } else {
+                      completionHandler(vaultItemMetadata, error);
+                  }
+              }];
+
+         } else {
+             [self getItemMetadataFromServerWithDescriptor:itemDescriptor completionHandler:completionHandler];
+         }
      }];
 }
 
@@ -630,10 +740,17 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
                   summaryValues:newSummaryValues
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
-         completionHandler(newItemMetadata.descriptor, error);
+         if (newItemMetadata) {
+             [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
+                                            completionHandler:^(NSError *cacheError)
+              {
+                  completionHandler(newItemMetadata.descriptor, error);
+              }];
+         } else {
+             completionHandler(nil, error);
+         }
      }];
 }
-
 
 - (QredoVaultHighWatermark *)highWatermark
 {
