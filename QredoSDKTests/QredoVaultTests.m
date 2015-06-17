@@ -7,6 +7,7 @@
 #import "Qredo.h"
 #import "QredoTestUtils.h"
 #import "NSDictionary+Contains.h"
+#import "QredoVaultPrivate.h"
 
 @interface QredoVaultListener : NSObject<QredoVaultDelegate>
 
@@ -287,6 +288,179 @@
          XCTAssertNotNil(error);
          XCTAssertNil(vaultItemMetadata);
          
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+}
+
+
+
+- (void)testGettingItemsFromCache
+{
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error);
+         item1Descriptor = newItemMetadata.descriptor;
+         XCTAssertEqual(newItemMetadata.origin, QredoVaultItemOriginServer);
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+
+    testExpectation = [self expectationWithDescription:@"get item 1 with descriptor"];
+    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItem);
+
+         XCTAssertTrue([vaultItem.metadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
+             return [a isEqual:b];
+         }]);
+
+         XCTAssertEqual(vaultItem.metadata.origin, QredoVaultItemOriginCache);
+
+         XCTAssert([vaultItem.value isEqualToData:item1Data]);
+
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+
+    __block QredoVaultItemMetadata *newMetadata = nil;
+    testExpectation = [self expectationWithDescription:@"get item 1 metadata"];
+    [vault getItemMetadataWithDescriptor:item1Descriptor
+                       completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItemMetadata);
+
+         XCTAssertEqual(vaultItemMetadata.origin, QredoVaultItemOriginCache);
+         newMetadata = vaultItemMetadata;
+
+         XCTAssertTrue([vaultItemMetadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
+             return [a isEqual:b];
+         }]);
+
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+
+    // Update item
+    testExpectation = [self expectationWithDescription:@"update item"];
+    __block QredoVaultItemMetadata *updatedItemMetadata = nil;
+    NSData *updatedItemData = [@"updated value" dataUsingEncoding:NSUTF8StringEncoding];
+    QredoVaultItem *updatedItem = [QredoVaultItem vaultItemWithMetadata:newMetadata
+                                                                  value:updatedItemData];
+    [vault putItem:updatedItem completionHandler:^(QredoVaultItemMetadata *itemMetadata, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(itemMetadata);
+
+        XCTAssertEqual(itemMetadata.origin, QredoVaultItemOriginServer);
+        updatedItemMetadata = itemMetadata;
+        [testExpectation fulfill];
+    }];
+
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        testExpectation = nil;
+    }];
+
+
+    testExpectation = [self expectationWithDescription:@"get original metadata after update"];
+    [vault getItemMetadataWithDescriptor:item1Descriptor
+                       completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItemMetadata);
+
+         XCTAssertEqual(vaultItemMetadata.origin, QredoVaultItemOriginCache);
+
+         XCTAssertTrue([vaultItemMetadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
+             return [a isEqual:b];
+         }]);
+
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+
+
+    testExpectation = [self expectationWithDescription:@"get updated metadata after update"];
+    [vault getItemMetadataWithDescriptor:updatedItemMetadata.descriptor
+                       completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItemMetadata);
+
+         XCTAssertEqual(vaultItemMetadata.origin, QredoVaultItemOriginCache);
+
+         XCTAssertTrue([vaultItemMetadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
+             return [a isEqual:b];
+         }]);
+
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+
+    testExpectation = [self expectationWithDescription:@"get original item body (should not be in cache)"];
+    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItem);
+
+         XCTAssertEqual(vaultItem.metadata.origin, QredoVaultItemOriginServer);
+
+         XCTAssert([vaultItem.value isEqualToData:item1Data]);
+
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+
+
+    testExpectation = [self expectationWithDescription:@"get updated item body"];
+    [vault getItemWithDescriptor:updatedItemMetadata.descriptor
+               completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItem);
+
+         XCTAssertEqual(vaultItem.metadata.origin, QredoVaultItemOriginCache);
+
+         XCTAssert([vaultItem.value isEqualToData:updatedItemData]);
+
          [testExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {

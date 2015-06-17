@@ -177,6 +177,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                     sequenceValue:newSequenceValue];
              
              QredoMutableVaultItemMetadata *newMetadata = [metadata mutableCopy];
+             newMetadata.origin = QredoVaultItemOriginServer;
              newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
                                                                                     sequenceValue:newSequenceValue
                                                                                            itemId:itemId];

@@ -15,5 +15,6 @@
 - (void)testEnumerationAbortsOnStop;
 - (void)testListener;
 - (void)testVaultItemMetadataAndMutableMetadata;
+- (void)testGettingItemsFromCache;
 
 @end
