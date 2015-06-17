@@ -19,6 +19,16 @@
 @end
 
 
+// Opaque Class. Keeping interface only here
+@interface QredoVaultHighWatermark()
+// key: SequenceId (QredoQUID*), value: SequenceValue (NSNumber*)
+// TODO: WARNING NSNumber on 32-bit systems can keep maximum 32-bit integers, but we need 64. Kept NSNumber because in the LF code we use NSNumber right now
+@property NSMutableDictionary *sequenceState;
+- (NSSet*)vaultSequenceState;
++ (instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState;
+@end
+
+
 @interface QredoVault (Private)
 
 - (QredoQUID *)sequenceId;
