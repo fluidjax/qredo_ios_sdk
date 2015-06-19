@@ -88,7 +88,7 @@
 @end
 
 @interface QredoVault()
-- (void)notyfyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock;
+- (void)notifyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock;
 @end
 
 
@@ -668,7 +668,7 @@
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
         
         while (keepNotifying) {
-            [vault notyfyObservers:^(id<QredoVaultObserver> observer) {
+            [vault notifyObservers:^(id<QredoVaultObserver> observer) {
                 [observer qredoVault:vault didReceiveVaultItemMetadata:nil];
                 [observer qredoVault:vault didFailWithError:nil];
             }];

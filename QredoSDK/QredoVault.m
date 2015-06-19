@@ -593,9 +593,9 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     }
 }
 
-- (void)notyfyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock
+- (void)notifyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock
 {
-    [_observers notyfyObservers:notificationBlock];
+    [_observers notifyObservers:notificationBlock];
 }
      
      
@@ -907,7 +907,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 {
     QredoVaultItemMetadata *vaultItemMetadata = (QredoVaultItemMetadata *)item;
 
-    [self notyfyObservers:^(id<QredoVaultObserver> observer) {
+    [self notifyObservers:^(id<QredoVaultObserver> observer) {
         if ([observer respondsToSelector:@selector(qredoVault:didReceiveVaultItemMetadata:)]) {
             [observer qredoVault:self didReceiveVaultItemMetadata:vaultItemMetadata];
         }

@@ -22,7 +22,7 @@
 
 - (void)addObserver:(id)observer;
 - (void)removeObaserver:(id)observer;
-- (void)notyfyObservers:(void(^)(id observer))notificationBlock;
+- (void)notifyObservers:(void(^)(id observer))notificationBlock;
 
 
 #pragma mark Misc utils

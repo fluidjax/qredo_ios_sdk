@@ -127,7 +127,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     }
 }
 
-- (void)notyfyObservers:(void(^)(id observer))notificationBlock
+- (void)notifyObservers:(void(^)(id observer))notificationBlock
 {
     @synchronized(self) {
         
