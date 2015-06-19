@@ -28,11 +28,6 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 @interface QredoObserverList ()
 {
     /*
-     Synchronisies access to `_observerProxies`.
-     */
-    dispatch_queue_t _observerOperationQueue;
-    
-    /*
      Notification of observers takes place on this queue.
      */
     dispatch_queue_t _observerNotificationQueue;
@@ -92,7 +87,6 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     self = [super init];
     if (self) {
         _associationKey = associationKey ? associationKey : kDefaultAssociationKey;
-        _observerOperationQueue = dispatch_queue_create("com.qredo.QredoObserverList.observerOperationQueue", DISPATCH_QUEUE_SERIAL);
         _observerNotificationQueue = dispatch_queue_create("com.qredo.QredoObserverList.observerNotificationQueue", DISPATCH_QUEUE_CONCURRENT);
         _observerProxies = [NSMutableArray array];
     }
@@ -106,7 +100,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 {
     NSAssert(observer, @"An observer must be supplied to [QredoVault addQredoVaultObserver:]");
     
-    dispatch_sync(_observerOperationQueue, ^{
+    @synchronized(self) {
         
         QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
         if (!observerProxy) {
@@ -118,7 +112,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
         
         [_observerProxies addObject:observerProxy];
         
-    });
+    }
 }
 
 - (void)removeObaserver:(id)observer
@@ -127,18 +121,18 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     
     QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
     
-    dispatch_sync(_observerOperationQueue, ^{
+    @synchronized(self) {
         
         if (observerProxy) {
             [_observerProxies removeObject:observerProxy];
         }
         
-    });
+    }
 }
 
 - (void)notyfyObservers:(void(^)(id observer))notificationBlock
 {
-    dispatch_sync(_observerOperationQueue, ^{
+    @synchronized(self) {
         
         for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
             
@@ -153,7 +147,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
             
         }
         
-    });
+    }
 }
 
 
