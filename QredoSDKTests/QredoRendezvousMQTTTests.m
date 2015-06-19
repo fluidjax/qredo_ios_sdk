@@ -27,6 +27,16 @@
     XCTFail(@"Restore modified tests");
 }
 
+- (void)testCreateAndFetchAnonymousRendezvous
+{
+    [super testCreateAndFetchAnonymousRendezvous];
+}
+
+- (void)testCreateDuplicateAndFetchAnonymousRendezvous
+{
+    [super testCreateDuplicateAndFetchAnonymousRendezvous];
+}
+
 - (void)testCreateAndRespondAnonymousRendezvous {
     [super testCreateAndRespondAnonymousRendezvous];
 }

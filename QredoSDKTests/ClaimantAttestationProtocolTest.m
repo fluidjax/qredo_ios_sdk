@@ -559,7 +559,7 @@ typedef ClaimantAttestationProtocolTest_BobHelper BobHelper;
     }];
     
     __block XCTestExpectation *aliceRespondsToRendezvousExpectation = [self expectationWithDescription:@"Alice responds to Bob's rendezvous"];
-    [self.alicesDevice respondToRendezvousWithTag:self.bobHelper.rendezvous.tag
+    [self.alicesDevice respondToRendezvousWithTag:self.bobHelper.rendezvous.metadata.tag
                                 completionHandler:^(NSError *error)
      {
          NSAssert(!error, @"Alice could nor respond to Bob's rendezvous.");

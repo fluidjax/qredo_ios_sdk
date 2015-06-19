@@ -7,18 +7,17 @@
 
 #import "QredoRendezvous.h"
 #import "QredoClient.h"
+#import "QredoTypesPrivate.h"
 
-@interface QredoRendezvousMetadata () {
-    QredoVaultItemDescriptor *_vaultItemDescriptor;
-}
+@interface QredoRendezvousMetadata ()
 
-@property (readonly) QredoVaultItemDescriptor *vaultItemDescriptor;
+@property (readwrite) QredoRendezvousRef *rendezvousRef;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 @property (readwrite, copy) NSString *tag;
 
 - (instancetype)initWithTag:(NSString*)tag
          authenticationType:(QredoRendezvousAuthenticationType)authenticationType
-        vaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+              rendezvousRef:(QredoRendezvousRef *)rendezvousRef;
 
 @end
 

@@ -14,6 +14,18 @@
 
 @interface QredoVaultItemDescriptor()<NSCopying>
 @property (readonly) QLFVaultSequenceValue sequenceValue;
+
++ (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QredoQUID *)itemId;
+@end
+
+
+// Opaque Class. Keeping interface only here
+@interface QredoVaultHighWatermark()
+// key: SequenceId (QredoQUID*), value: SequenceValue (NSNumber*)
+// TODO: WARNING NSNumber on 32-bit systems can keep maximum 32-bit integers, but we need 64. Kept NSNumber because in the LF code we use NSNumber right now
+@property NSMutableDictionary *sequenceState;
+- (NSSet*)vaultSequenceState;
++ (instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState;
 @end
 
 
@@ -29,6 +41,6 @@
 
 
 // public method doesn't allow to specify itemId
-- (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem itemId:(QredoQUID *)itemId completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+- (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
 @end
