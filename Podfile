@@ -6,6 +6,8 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 
 target 'QredoSDK' do
+
+    pod "PINCache"
     
 #	pod "LinguaFranca", "~> 0.3"
 #	pod "LinguaFranca", :git => "git@github.com:Qredo/LinguaFranca.git", :tag => "ios-0.3"

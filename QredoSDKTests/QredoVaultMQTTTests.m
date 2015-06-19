@@ -62,4 +62,9 @@
 - (void)testVaultItemMetadataAndMutableMetadata {
     [super testVaultItemMetadataAndMutableMetadata];
 }
+
+- (void)testGettingItemsFromCache {
+    [super testGettingItemsFromCache];
+}
+
 @end
