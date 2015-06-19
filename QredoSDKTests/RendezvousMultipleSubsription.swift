@@ -101,7 +101,7 @@ class RendezvousMultipleSubsription: XCTestCase {
         var receiveResponseExpectation : XCTestExpectation? = expectationWithDescription("received response on the delegate")
 
         var receivedResponse = false
-        let createdRendezvousListener = RendezvousBlockDelegate()
+        let createdRendezvousListener = RendezvousBlockObserver()
         createdRendezvousListener.responseHandler = { conversation in
             println("createdRendezvousListener respond")
             XCTAssertFalse(receivedResponse, "Already received one response")
@@ -120,8 +120,7 @@ class RendezvousMultipleSubsription: XCTestCase {
             respondExpectation?.fulfill()
         }
 
-        createdRendezvous.delegate = createdRendezvousListener
-        createdRendezvous.startListening()
+        createdRendezvous.addRendezvousObserver(createdRendezvousListener)
 
         waitForExpectationsWithTimeout(60) { error in
             receiveResponseExpectation = nil
@@ -132,7 +131,7 @@ class RendezvousMultipleSubsription: XCTestCase {
 
 
         // Now start listening on both instances of the same rendezvous
-        let fetchedRendezvousListener = RendezvousBlockDelegate()
+        let fetchedRendezvousListener = RendezvousBlockObserver()
         var receiveResponseOnFetchedRendezvousExpectation : XCTestExpectation? = expectationWithDescription("response on fetched rendezvous")
         var receiveResponseOnFetchedRendezvous = false
         fetchedRendezvousListener.responseHandler = { conversation in
@@ -148,8 +147,7 @@ class RendezvousMultipleSubsription: XCTestCase {
             XCTFail("something failed in the listener \(error)")
         }
 
-        fetchedRendezvous.delegate = fetchedRendezvousListener
-        fetchedRendezvous.startListening()
+        fetchedRendezvous.addRendezvousObserver(fetchedRendezvousListener)
 
         // reset listener on created rendezvous
         receiveResponseExpectation = expectationWithDescription("response on created rendezvos")

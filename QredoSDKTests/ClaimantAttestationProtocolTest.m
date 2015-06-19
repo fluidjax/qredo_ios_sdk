@@ -373,7 +373,7 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
 //===============================================================================================================
 
 
-@interface ClaimantAttestationProtocolTest_BobHelper : NSObject<QredoRendezvousDelegate, QredoClaimantAttestationProtocolDataSource>
+@interface ClaimantAttestationProtocolTest_BobHelper : NSObject<QredoRendezvousObserver, QredoClaimantAttestationProtocolDataSource>
 
 @property (nonatomic) QredoRendezvous *rendezvous;
 @property (nonatomic) QredoConversation *conversation;
@@ -418,8 +418,7 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
                                     completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
          {
              self.rendezvous = rendezvous;
-             rendezvous.delegate = self;
-             [rendezvous startListening];
+             [rendezvous addRendezvousObserver:self];
              
              if (completionHandler) {
                  completionHandler(error);
@@ -463,7 +462,7 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
         _rendezvousResponseHandler = rendezvousResponseHandler;
         if (_conversation && _rendezvousResponseHandler) {
             _rendezvousResponseHandler(_conversation);
-            [self.rendezvous stopListening];
+            [self.rendezvous removeRendezvousObaserver:self];
         }
     }
 }
@@ -499,7 +498,7 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
 }
 
 
-#pragma mark QredoRendezvousDelegate
+#pragma mark QredoRendezvousObserver
 
 - (void)qredoRendezvous:(QredoRendezvous*)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
@@ -507,7 +506,7 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
         self.conversation = conversation;
         if (self.rendezvousResponseHandler) {
             self.rendezvousResponseHandler(conversation);
-            [self.rendezvous stopListening];
+            [self.rendezvous removeRendezvousObaserver:self];
         }
     }
 }

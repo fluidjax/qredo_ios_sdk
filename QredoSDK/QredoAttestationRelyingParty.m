@@ -23,7 +23,6 @@
     self.attestationTypes = [attestationTypes copy];
 
     self.rendezvous = rendezvous;
-    self.rendezvous.delegate = self;
 
     self.metadata = [[QredoAttestationRelyingPartyMetadata alloc] init];
     self.metadata.tag = self.rendezvous.metadata.tag;
@@ -33,12 +32,12 @@
 
 - (void)startListening
 {
-    [self.rendezvous startListening];
+    [self.rendezvous addRendezvousObserver:self];
 }
 
 - (void)stopListening
 {
-    [self.rendezvous stopListening];
+    [self.rendezvous removeRendezvousObaserver:self];
 }
 
 

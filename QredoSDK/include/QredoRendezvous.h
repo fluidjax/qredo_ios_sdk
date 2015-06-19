@@ -14,7 +14,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 @class QredoRendezvous;
 
-@protocol QredoRendezvousDelegate <NSObject>
+@protocol QredoRendezvousObserver <NSObject>
 @required
 /** Called when a new response is received */
 - (void)qredoRendezvous:(QredoRendezvous*)rendezvous didReceiveReponse:(QredoConversation *)conversation;
@@ -70,8 +70,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 @property (readonly) QredoRendezvousConfiguration *configuration;
 @property (readonly) QredoRendezvousMetadata *metadata;
 
-/** See `QredoRendezvousDelegate` */
-@property (weak) id<QredoRendezvousDelegate> delegate;
 
 /** High watermark defining the last point when we get the number of responders. Updated when listening for events. See `startListening`.
  The value of the high watermark is persisted on the device.
@@ -83,10 +81,8 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 /** Not implemented yet. */
 - (void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
-/** Start listening for responses to the rendezvous. `delegate` should be set before calling this method. */
-- (void)startListening;
-/** Stops listening for responses to the rendezvous. */
-- (void)stopListening;
+- (void)addRendezvousObserver:(id<QredoRendezvousObserver>)observer;
+- (void)removeRendezvousObaserver:(id<QredoRendezvousObserver>)observer;
 
 /** Enumerates all the conversations (responses) that were created for this rendezvous */
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;

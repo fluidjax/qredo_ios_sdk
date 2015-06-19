@@ -47,7 +47,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 @end
 
-@interface ConversationTests() <QredoRendezvousDelegate>
+@interface ConversationTests() <QredoRendezvousObserver>
 {
     QredoClient *client;
     XCTestExpectation *didReceiveResponseExpectation;
@@ -160,10 +160,8 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         createExpectation = nil;
     }];
 
-    rendezvous.delegate = self;
-    
     NSLog(@"\nStarting listening");
-    [rendezvous startListening];
+    [rendezvous addRendezvousObserver:self];
     
     // another client with a new vault
     NSLog(@"\nCreating 2nd client");
@@ -211,7 +209,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
 
     NSLog(@"\nStopping listening");
-    [rendezvous stopListening];
+    [rendezvous removeRendezvousObaserver:self];
 
     [anotherClient closeSession];
 }
@@ -270,10 +268,8 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
 
-    rendezvous.delegate = self;
-
     NSLog(@"Starting listening for rendezvous");
-    [rendezvous startListening];
+    [rendezvous addRendezvousObserver:self];
 
     NSLog(@"Responding to Rendezvous");
     __block QredoConversation *responderConversation = nil;
@@ -296,7 +292,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
 
     NSLog(@"Stopping listening for rendezvous");
-    [rendezvous stopListening];
+    [rendezvous removeRendezvousObaserver:self];
     
     // Sending message
     XCTAssertNotNil(responderConversation);
@@ -499,9 +495,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
     
-    rendezvous.delegate = self;
-    
-    [rendezvous startListening];
+    [rendezvous addRendezvousObserver:self];
     
 
     __block QredoConversation *responderConversation = nil;
@@ -525,7 +519,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         didRespondExpectation = nil;
     }];
     
-    [rendezvous stopListening];
+    [rendezvous removeRendezvousObaserver:self];
     
     [anotherClient closeSession];
 }
@@ -580,9 +574,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
     
-    rendezvous.delegate = self;
-    
-    [rendezvous startListening];
+    [rendezvous addRendezvousObserver:self];
     
     __block QredoConversation *responderConversation = nil;
     // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
@@ -605,7 +597,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         didRespondExpectation = nil;
     }];
     
-    [rendezvous stopListening];
+    [rendezvous removeRendezvousObaserver:self];
     
     [anotherClient closeSession];
 }
