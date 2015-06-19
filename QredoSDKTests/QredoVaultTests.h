@@ -21,5 +21,6 @@
 - (void)testRemovingNotObservingListener;
 
 - (void)testVaultItemMetadataAndMutableMetadata;
+- (void)testGettingItemsFromCache;
 
 @end

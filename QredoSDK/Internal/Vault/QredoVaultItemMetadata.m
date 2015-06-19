@@ -7,14 +7,6 @@
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
 
-
-@interface QredoVaultItemMetadata ()
-@property QredoVaultItemDescriptor *descriptor;
-@property (copy) NSString *dataType;
-@property QredoAccessLevel accessLevel;
-@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
-@end
-
 @implementation QredoVaultItemMetadata
 
 + (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
