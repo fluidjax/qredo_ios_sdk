@@ -22,6 +22,7 @@
 #import "QredoED25519SigningKey.h"
 #import "QredoED25519VerifyKey.h"
 #import "QredoSigner.h"
+#import "QredoObserverList.h"
 
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
@@ -44,6 +45,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoQUID *_sequenceId;
 
     QredoVaultHighWatermark *_highwatermark;
+    
+    QredoObserverList *_observers;
+
 
     QLFVault *_vault;
     QredoVaultCrypto *_vaultCrypto;
@@ -80,6 +84,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     _client = client;
     _vaultKeys = vaultKeys;
     _highwatermark = QredoVaultHighWatermarkOrigin;
+    
+    _observers = [[QredoObserverList alloc] init];
 
     _queue = dispatch_queue_create("com.qredo.vault.updates", nil);
 
@@ -382,15 +388,31 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
      }];
 }
 
-- (void)startListening
+- (void)addVaultObserver:(id<QredoVaultObserver>)observer
 {
-    [_updateListener startListening];
+    QredoUpdateListener *updateListener = _updateListener;
+    [_observers addObserver:observer];
+    if (!updateListener.isListening) {
+        [updateListener startListening];
+    }
 }
 
-- (void)stopListening
+- (void)removeVaultObaserver:(id<QredoVaultObserver>)observer
 {
-    [_updateListener stopListening];
+    QredoUpdateListener *updateListener = _updateListener;
+    QredoObserverList *observers = _observers;
+    [_observers removeObaserver:observer];
+    if ([observers count] < 1 && !_updateListener.isListening) {
+        [updateListener stopListening];
+    }
 }
+
+- (void)notifyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock
+{
+    [_observers notifyObservers:notificationBlock];
+}
+     
+     
 
 - (void)resetWatermark
 {
@@ -699,9 +721,11 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 {
     QredoVaultItemMetadata *vaultItemMetadata = (QredoVaultItemMetadata *)item;
 
-    if ([_delegate respondsToSelector:@selector(qredoVault:didReceiveVaultItemMetadata:)]) {
-        [_delegate qredoVault:self didReceiveVaultItemMetadata:vaultItemMetadata];
-    }
+    [self notifyObservers:^(id<QredoVaultObserver> observer) {
+        if ([observer respondsToSelector:@selector(qredoVault:didReceiveVaultItemMetadata:)]) {
+            [observer qredoVault:self didReceiveVaultItemMetadata:vaultItemMetadata];
+        }
+    }];
 }
 
 @end

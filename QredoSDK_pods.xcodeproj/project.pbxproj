@@ -164,6 +164,8 @@
 		78AB8C6F1A810B7200A3CCA7 /* QredoClaimantAttestationProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AB8C6D1A810B7200A3CCA7 /* QredoClaimantAttestationProtocol.m */; };
 		78AB8C711A8156AB00A3CCA7 /* QredoAttestationRelyingParty.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AB8C701A8156AB00A3CCA7 /* QredoAttestationRelyingParty.m */; };
 		78AB8C731A8156DC00A3CCA7 /* QredoClaimantAttestationSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AB8C721A8156DC00A3CCA7 /* QredoClaimantAttestationSession.m */; };
+		78AB956B1B220278006724E5 /* QredoObserverList.h in Headers */ = {isa = PBXBuildFile; fileRef = 78AB95691B220278006724E5 /* QredoObserverList.h */; };
+		78AB956C1B220278006724E5 /* QredoObserverList.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AB956A1B220278006724E5 /* QredoObserverList.m */; };
 		78B88F5E1A653E78009E3B01 /* RendezvousEd25519HelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 78B88F5D1A653E78009E3B01 /* RendezvousEd25519HelperTests.m */; };
 		78BD42FC1A65763500FC015B /* Base58Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BD42FB1A65763500FC015B /* Base58Tests.m */; };
 		78E568401A8CFE7900A38E01 /* ClaimantAttestationProtocolTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 78E5683F1A8CFE7900A38E01 /* ClaimantAttestationProtocolTest.m */; };
@@ -519,6 +521,8 @@
 		78AB8C6D1A810B7200A3CCA7 /* QredoClaimantAttestationProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClaimantAttestationProtocol.m; sourceTree = "<group>"; };
 		78AB8C701A8156AB00A3CCA7 /* QredoAttestationRelyingParty.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoAttestationRelyingParty.m; sourceTree = "<group>"; };
 		78AB8C721A8156DC00A3CCA7 /* QredoClaimantAttestationSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClaimantAttestationSession.m; sourceTree = "<group>"; };
+		78AB95691B220278006724E5 /* QredoObserverList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoObserverList.h; sourceTree = "<group>"; };
+		78AB956A1B220278006724E5 /* QredoObserverList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoObserverList.m; sourceTree = "<group>"; };
 		78B88F5D1A653E78009E3B01 /* RendezvousEd25519HelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RendezvousEd25519HelperTests.m; sourceTree = "<group>"; };
 		78BD42FB1A65763500FC015B /* Base58Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Base58Tests.m; sourceTree = "<group>"; };
 		78E5683F1A8CFE7900A38E01 /* ClaimantAttestationProtocolTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClaimantAttestationProtocolTest.m; sourceTree = "<group>"; };
@@ -920,6 +924,8 @@
 				0A7EE7981AFA70800094A703 /* QredoConversationProtocolFSM.m */,
 				0A74FC031B18C3A800529F60 /* QredoTypes.m */,
 				0A74FC051B18C40500529F60 /* QredoTypesPrivate.h */,
+				78AB95691B220278006724E5 /* QredoObserverList.h */,
+				78AB956A1B220278006724E5 /* QredoObserverList.m */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -1310,6 +1316,7 @@
 				0AADB0811A15848C00CFD014 /* Qredo.h in Headers */,
 				786DF4E11A5D5358000B4164 /* QredoRendezvousHelper.h in Headers */,
 				78E5E1B21A31BF9E004ADD5C /* QredoKeychainQRCodeDisplayViewController.h in Headers */,
+				78AB956B1B220278006724E5 /* QredoObserverList.h in Headers */,
 				78AB8C6E1A810B7200A3CCA7 /* QredoClaimantAttestationProtocol.h in Headers */,
 				78E5E1AE1A31B7B2004ADD5C /* QredoKeychainActivityViewController.h in Headers */,
 				0AD2596F1A2F947700FC8942 /* QredoDeviceInfo.h in Headers */,
@@ -1817,6 +1824,7 @@
 				0AD259681A2F93F800FC8942 /* QredoKeychainReceiver.m in Sources */,
 				0AD259701A2F947700FC8942 /* QredoDeviceInfo.m in Sources */,
 				786DF4EA1A5D76FB000B4164 /* QredoRendezvousEd25519Helper.m in Sources */,
+				78AB956C1B220278006724E5 /* QredoObserverList.m in Sources */,
 				78AB8C6F1A810B7200A3CCA7 /* QredoClaimantAttestationProtocol.m in Sources */,
 				0AAB39761AB1DA8D00460797 /* QredoClient.m in Sources */,
 				0AD99E841A30D8B8004F25E1 /* QredoKeychainTransporterConsts.m in Sources */,

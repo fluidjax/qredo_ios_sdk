@@ -14,7 +14,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @class QredoVault;
 @class QredoVaultItemMetadata;
 
-@protocol QredoVaultDelegate <NSObject>
+@protocol QredoVaultObserver <NSObject>
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata;
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error;
@@ -74,20 +74,30 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  */
 @interface QredoVault : NSObject
 
-@property (weak) id<QredoVaultDelegate> delegate;
-
 - (QredoQUID *)vaultId;
 
 - (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
 
 - (void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
 
-/** 
- Start listening for the new items. In future revisions it may also return changes on existing items. Notifications will be returned to the delegate
- @discussion fails if delegate == nil 
+/**
+ Adds an observer to the vault.
+ 
+ @param observer The observer to be added.
+ 
+ @discussion An observer should be added to the vault in order to receive notifications when 
+ items in the vault change. It is important to remove the added observer before it is deallocated.
  */
-- (void)startListening;
-- (void)stopListening;
+- (void)addVaultObserver:(id<QredoVaultObserver>)observer;
+
+/**
+ Removes an observer from the vault.
+ 
+ @param observer The observer to be removed.
+ 
+ @discussion An observer use this method to remove it self before being deallocated.
+ */
+- (void)removeVaultObaserver:(id<QredoVaultObserver>)observer;
 
 - (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 

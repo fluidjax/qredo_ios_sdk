@@ -43,6 +43,22 @@
     [super testListener];
 }
 
+- (void)testMultipleListeners {
+    [super testMultipleListeners];
+}
+
+- (void)testRemovingListenerDurringNotification {
+    [super testRemovingListenerDurringNotification];
+}
+
+- (void)testMultipleRemovingListenerDurringNotification {
+    [super testMultipleRemovingListenerDurringNotification];
+}
+
+- (void)testRemovingNotObservingListener {
+    [super testRemovingNotObservingListener];
+}
+
 - (void)testVaultItemMetadataAndMutableMetadata {
     [super testVaultItemMetadataAndMutableMetadata];
 }
