@@ -76,10 +76,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 
 - (instancetype)init
 {
-    self = [self initWithAssociationKey:nil];
-    if (self) {
-    }
-    return self;
+    return [self initWithAssociationKey:nil];
 }
 
 - (instancetype)initWithAssociationKey:(NSString *)associationKey
