@@ -143,8 +143,8 @@ class KeychainTransporterSenderTests: XCTestCase {
         var publishDeviceInfoExpectation : XCTestExpectation?
         var receivedResponseExpectation : XCTestExpectation?
 
-        let rendezvousDelegate = RendezvousBlockDelegate()
-        rendezvousDelegate.responseHandler = { conversation in
+        let rendezvousObserver = RendezvousBlockObserver()
+        rendezvousObserver.responseHandler = { conversation in
             transporterConversation = conversation
 
             receivedResponseExpectation?.fulfill()
@@ -172,8 +172,7 @@ class KeychainTransporterSenderTests: XCTestCase {
         }
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 
-        receiverRendezvous?.delegate = rendezvousDelegate
-        receiverRendezvous?.startListening()
+        receiverRendezvous?.addRendezvousObserver(rendezvousObserver)
 
         let senderMock = KeychainSenderMock()
         let sender = QredoKeychainSender(client: senderClient, delegate: senderMock)
@@ -193,7 +192,7 @@ class KeychainTransporterSenderTests: XCTestCase {
 
         self.waitForExpectationsWithTimeout(50, handler: nil)
 
-        receiverRendezvous?.stopListening()
+        receiverRendezvous?.removeRendezvousObserver(rendezvousObserver)
 
         XCTAssertNotNil(transporterConversation, "should get response to the rendezvous")
 

@@ -11,7 +11,7 @@
 @end
 
 
-@interface QredoAttestationRelyingParty () <QredoRendezvousDelegate>
+@interface QredoAttestationRelyingParty () <QredoRendezvousObserver>
 
 @property (nonatomic) QredoRendezvous *rendezvous;
 @property (nonatomic) NSArray *attestationTypes;

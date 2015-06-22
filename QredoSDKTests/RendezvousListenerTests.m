@@ -20,7 +20,7 @@
 // It may also cover responder's edge cases:
 // - responding to non-existing tag
 
-@interface RendezvousListenerTests : XCTestCase <QredoRendezvousDelegate>
+@interface RendezvousListenerTests : XCTestCase <QredoRendezvousObserver>
 {
     QredoClient *client;
     XCTestExpectation *didReceiveResponseExpectation;
@@ -113,9 +113,7 @@
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
 
-    rendezvous.delegate = self;
-
-    [rendezvous startListening];
+    [rendezvous addRendezvousObserver:self];
     
     NSLog(@"Responding from another client");
     __block QredoConversation *responderConversation = nil;
@@ -141,7 +139,7 @@
     // Sending message
     XCTAssertNotNil(responderConversation);
     
-    [rendezvous stopListening];
+    [rendezvous removeRendezvousObserver:self];
     
     [anotherClient closeSession];
 }

@@ -25,6 +25,7 @@
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoSigner.h"
 #import "NSData+QredoRandomData.h"
+#import "QredoObserverList.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
@@ -102,6 +103,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     NSString *_tag;
 
     dispatch_queue_t _enumerationQueue;
+    QredoObserverList *_observers;
     QredoUpdateListener *_updateListener;
     id _subscriptionCorrelationId;
 }
@@ -129,6 +131,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
     _enumerationQueue = dispatch_queue_create("com.qredo.rendezvous.enumrate", nil);
 
+    _observers = [[QredoObserverList alloc] init];
+    
     _updateListener = [[QredoUpdateListener alloc] init];
     _updateListener.delegate = self;
     _updateListener.dataSource = self;
@@ -334,15 +338,27 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     // TODO: implement later
 }
 
-- (void)startListening
+- (void)addRendezvousObserver:(id<QredoRendezvousObserver>)observer
 {
-    [_updateListener startListening];
+    [_observers addObserver:observer];
+    if (!_updateListener.isListening) {
+        [_updateListener startListening];
+    }
 }
 
-- (void)stopListening
+- (void)removeRendezvousObserver:(id<QredoRendezvousObserver>)observer
 {
-    [_updateListener stopListening];
+    [_observers removeObaserver:observer];
+    if ([_observers count] < 1 && !_updateListener.isListening) {
+        [_updateListener stopListening];
+    }
 }
+
+- (void)notifyObservers:(void(^)(id<QredoRendezvousObserver> observer))notificationBlock
+{
+    [_observers notifyObservers:notificationBlock];
+}
+
 
 - (BOOL)processResponse:(QLFRendezvousResponse *)response
           sequenceValue:(QLFRendezvousSequenceValue)sequenceValue
@@ -544,7 +560,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
 subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
-    NSAssert(_delegate, @"Rendezvous delegate should be set before starting listening for the updates");
+    NSAssert([_observers count] > 0, @"There shoud be 1 or more rendezvous observers before starting listening for the updates");
 
     LogDebug(@"Subscribing to new responses/conversations. self=%@", self);
 
@@ -621,9 +637,11 @@ unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
     QredoConversation *conversation = (QredoConversation *)item;
 
-    if ([_delegate respondsToSelector:@selector(qredoRendezvous:didReceiveReponse:)]) {
-        [_delegate qredoRendezvous:self didReceiveReponse:conversation];
-    }
+    [self notifyObservers:^(id<QredoRendezvousObserver> observer) {
+        if ([observer respondsToSelector:@selector(qredoRendezvous:didReceiveReponse:)]) {
+            [observer qredoRendezvous:self didReceiveReponse:conversation];
+        }
+    }];
 }
 
 @end

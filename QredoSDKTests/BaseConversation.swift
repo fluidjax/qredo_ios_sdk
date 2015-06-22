@@ -56,8 +56,6 @@ class BaseConversation: XCTestCase {
             if let actualRendezvous = rendezvous {
                 creatorRendezvous = actualRendezvous
                 rendezvousExpectation.fulfill()
-
-                creatorRendezvous?.stopListening()
             }
         }
 
@@ -66,14 +64,13 @@ class BaseConversation: XCTestCase {
         let receiveResponseForRendezvousExpectation = expectationWithDescription("get response for rendezvous")
         let respondToRendezvousExpectation = expectationWithDescription("respond to rendezvous")
 
-        let rendezvousDelegate = RendezvousBlockDelegate()
-        rendezvousDelegate.responseHandler = { conversation in
+        let rendezvousObserver = RendezvousBlockObserver()
+        rendezvousObserver.responseHandler = { conversation in
             self.creatorConversation = conversation
             receiveResponseForRendezvousExpectation.fulfill()
         }
 
-        creatorRendezvous?.delegate = rendezvousDelegate
-        creatorRendezvous?.startListening()
+        creatorRendezvous?.addRendezvousObserver(rendezvousObserver)
 
         // We know we're responding to anonymous rendezvous, so nil trustedRootPems/crlPems is fine
         responderClient.respondWithTag(randomTag, trustedRootPems:nil, crlPems:nil, completionHandler: { conversation, error in

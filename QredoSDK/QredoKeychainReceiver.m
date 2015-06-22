@@ -10,7 +10,7 @@
 #import "QredoConversationProtocolFSM.h"
 #import "QredoKeychainTransporterHelper.h"
 
-@interface QredoKeychainReceiver () <QredoRendezvousDelegate, QredoConversationProtocolFSMDelegate>
+@interface QredoKeychainReceiver () <QredoRendezvousObserver, QredoConversationProtocolFSMDelegate>
 {
     // completion handler that is passed to startWithCompletionHandler:
     void(^clientCompletionHandler)(NSError *error);
@@ -86,8 +86,7 @@
               didCreateRendezvousWithTag:[QredoRendezvousURIProtocol stringByAppendingString:rendezvous.metadata.tag]];
 
     self.rendezvous = rendezvous;
-    self.rendezvous.delegate = self;
-    [self.rendezvous startListening];
+    [self.rendezvous addRendezvousObserver:self];
 }
 
 - (void)startProtocolWithConversation:(QredoConversation *)conversation
@@ -264,12 +263,12 @@
     return [self.client setKeychain:self.keychain error:error];
 }
 
-#pragma mark QredoRendezvousDelegate
+#pragma mark QredoRendezvousObserver
 
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
     [self startProtocolWithConversation:conversation];
-    [self.rendezvous stopListening];
+    [self.rendezvous removeRendezvousObserver:self];
     self.rendezvous = nil;
 }
 

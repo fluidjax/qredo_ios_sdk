@@ -52,8 +52,6 @@ class ConversationsHelper: NSObject {
             if let actualRendezvous = rendezvous {
                 creatorRendezvous = actualRendezvous
                 rendezvousExpectation.fulfill()
-
-                creatorRendezvous?.stopListening()
             }
         }
 
@@ -62,14 +60,13 @@ class ConversationsHelper: NSObject {
         let receiveResponseForRendezvousExpectation = testCase.expectationWithDescription("get response for rendezvous")
         let respondToRendezvousExpectation = testCase.expectationWithDescription("respond to rendezvous")
 
-        let rendezvousDelegate = RendezvousBlockDelegate()
-        rendezvousDelegate.responseHandler = { conversation in
+        let rendezvousObserver = RendezvousBlockObserver()
+        rendezvousObserver.responseHandler = { conversation in
             self.creatorConversation = conversation
             receiveResponseForRendezvousExpectation.fulfill()
         }
 
-        creatorRendezvous?.delegate = rendezvousDelegate
-        creatorRendezvous?.startListening()
+        creatorRendezvous?.addRendezvousObserver(rendezvousObserver)
 
         // We know we're responding to anonymous rendezvous, so nil trustedRootPems is fine
         responderClient.respondWithTag(randomTag, completionHandler: { conversation, error in

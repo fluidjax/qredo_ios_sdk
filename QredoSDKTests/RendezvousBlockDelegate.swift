@@ -4,11 +4,11 @@
 
 import UIKit
 
-class RendezvousBlockDelegate : NSObject, QredoRendezvousDelegate {
+class RendezvousBlockObserver : NSObject, QredoRendezvousObserver {
     var responseHandler : (QredoConversation -> Void)? = nil
     var errorHandler : (NSError -> Void)? = nil
 
-    func RendezvousBlockDelegate(responseBlock : (QredoConversation! -> Void), errorHandler: (NSError -> Void)) {
+    func RendezvousBlockObserver(responseBlock : (QredoConversation! -> Void), errorHandler: (NSError -> Void)) {
         self.responseHandler = responseBlock
         self.errorHandler = errorHandler
     }

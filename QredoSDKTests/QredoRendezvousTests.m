@@ -24,7 +24,7 @@ static NSString *const kRendezvousTestConversationType = @"test.chat";
 static long long kRendezvousTestMaxResponseCount = 10;
 static long long kRendezvousTestDurationSeconds = 120; // 2 minutes
 
-@interface RendezvousListener : NSObject <QredoRendezvousDelegate>
+@interface RendezvousListener : NSObject <QredoRendezvousObserver>
 
 @property XCTestExpectation *expectation;
 
@@ -349,8 +349,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     NSLog(@"Listener expectation created: %@", listener.expectation);
-    rendezvous.delegate = listener;
-    [rendezvous startListening];
+    [rendezvous addRendezvousObserver:listener];
 
     // Give time for the subscribe/getResponses process to complete before we respond. Avoid any previous responses being included in the respondExpectation
     [NSThread sleepForTimeInterval:2];
@@ -371,7 +370,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         listener.expectation = nil;
     }];
     
-    [rendezvous stopListening];
+    [rendezvous removeRendezvousObserver:listener];
     
     // Nil the listener expectation afterwards because have seen times when a different call to this method for the same Rendezvous has triggered fulfill twice, which throws an exception.  Wasn't a duplicate response, as it had a different ResponderPublicKey.
     listener.expectation = nil;
@@ -397,7 +396,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [anotherClient closeSession];
     
     // Remove the listener, to avoid any possibilty of the listener being held/called after exiting
-    rendezvous.delegate = nil;
+    [rendezvous removeRendezvousObserver:listener];
 }
 
 - (void)testCreateRendezvousAndGetResponses
@@ -732,8 +731,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     NSLog(@"Listener expectation created: %@", listener.expectation);
-    createdRendezvous.delegate = listener;
-    [createdRendezvous startListening];
+    [createdRendezvous addRendezvousObserver:listener];
     
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
@@ -753,7 +751,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         listener.expectation = nil;
     }];
     
-    [createdRendezvous stopListening];
+    [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
 
@@ -824,8 +822,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     NSLog(@"Listener expectation created: %@", listener.expectation);
-    createdRendezvous.delegate = listener;
-    [createdRendezvous startListening];
+    [createdRendezvous addRendezvousObserver:listener];
     
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
@@ -846,7 +843,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         listener.expectation = nil;
     }];
     
-    [createdRendezvous stopListening];
+    [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
 }
@@ -933,8 +930,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     NSLog(@"Listener expectation created: %@", listener.expectation);
-    createdRendezvous.delegate = listener;
-    [createdRendezvous startListening];
+    [createdRendezvous addRendezvousObserver:listener];
     
     NSLog(@"Responding to Rendezvous");
     __block QredoConversation *createdConversation = nil;
@@ -974,7 +970,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         deleteExpectation = nil;
     }];
     
-    [createdRendezvous stopListening];
+    [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
 }
@@ -1359,8 +1355,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     NSLog(@"Listener expectation created: %@", listener.expectation);
-    createdRendezvous.delegate = listener;
-    [createdRendezvous startListening];
+    [createdRendezvous addRendezvousObserver:listener];
     
     NSLog(@"Responding to Rendezvous");
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
@@ -1381,7 +1376,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         listener.expectation = nil;
     }];
     
-    [createdRendezvous stopListening];
+    [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
 }
