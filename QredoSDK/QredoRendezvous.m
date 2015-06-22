@@ -346,7 +346,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     }
 }
 
-- (void)removeRendezvousObaserver:(id<QredoRendezvousObserver>)observer
+- (void)removeRendezvousObserver:(id<QredoRendezvousObserver>)observer
 {
     [_observers removeObaserver:observer];
     if ([_observers count] < 1 && !_updateListener.isListening) {

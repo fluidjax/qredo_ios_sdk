@@ -268,7 +268,7 @@
 - (void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
     [self startProtocolWithConversation:conversation];
-    [self.rendezvous removeRendezvousObaserver:self];
+    [self.rendezvous removeRendezvousObserver:self];
     self.rendezvous = nil;
 }
 

@@ -37,7 +37,7 @@
 
 - (void)stopListening
 {
-    [self.rendezvous removeRendezvousObaserver:self];
+    [self.rendezvous removeRendezvousObserver:self];
 }
 
 

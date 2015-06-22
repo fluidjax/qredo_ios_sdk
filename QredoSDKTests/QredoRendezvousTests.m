@@ -370,7 +370,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         listener.expectation = nil;
     }];
     
-    [rendezvous removeRendezvousObaserver:listener];
+    [rendezvous removeRendezvousObserver:listener];
     
     // Nil the listener expectation afterwards because have seen times when a different call to this method for the same Rendezvous has triggered fulfill twice, which throws an exception.  Wasn't a duplicate response, as it had a different ResponderPublicKey.
     listener.expectation = nil;
@@ -396,7 +396,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [anotherClient closeSession];
     
     // Remove the listener, to avoid any possibilty of the listener being held/called after exiting
-    [rendezvous removeRendezvousObaserver:listener];
+    [rendezvous removeRendezvousObserver:listener];
 }
 
 - (void)testCreateRendezvousAndGetResponses
@@ -751,7 +751,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         listener.expectation = nil;
     }];
     
-    [createdRendezvous removeRendezvousObaserver:listener];
+    [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
 
@@ -843,7 +843,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         listener.expectation = nil;
     }];
     
-    [createdRendezvous removeRendezvousObaserver:listener];
+    [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
 }
@@ -970,7 +970,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         deleteExpectation = nil;
     }];
     
-    [createdRendezvous removeRendezvousObaserver:listener];
+    [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
 }
@@ -1376,7 +1376,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         listener.expectation = nil;
     }];
     
-    [createdRendezvous removeRendezvousObaserver:listener];
+    [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
 }

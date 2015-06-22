@@ -209,7 +209,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
 
     NSLog(@"\nStopping listening");
-    [rendezvous removeRendezvousObaserver:self];
+    [rendezvous removeRendezvousObserver:self];
 
     [anotherClient closeSession];
 }
@@ -292,7 +292,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
 
     NSLog(@"Stopping listening for rendezvous");
-    [rendezvous removeRendezvousObaserver:self];
+    [rendezvous removeRendezvousObserver:self];
     
     // Sending message
     XCTAssertNotNil(responderConversation);
@@ -519,7 +519,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         didRespondExpectation = nil;
     }];
     
-    [rendezvous removeRendezvousObaserver:self];
+    [rendezvous removeRendezvousObserver:self];
     
     [anotherClient closeSession];
 }
@@ -597,7 +597,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         didRespondExpectation = nil;
     }];
     
-    [rendezvous removeRendezvousObaserver:self];
+    [rendezvous removeRendezvousObserver:self];
     
     [anotherClient closeSession];
 }

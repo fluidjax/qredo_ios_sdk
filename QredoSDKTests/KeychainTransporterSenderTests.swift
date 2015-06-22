@@ -192,7 +192,7 @@ class KeychainTransporterSenderTests: XCTestCase {
 
         self.waitForExpectationsWithTimeout(50, handler: nil)
 
-        receiverRendezvous?.removeRendezvousObaserver(rendezvousObserver)
+        receiverRendezvous?.removeRendezvousObserver(rendezvousObserver)
 
         XCTAssertNotNil(transporterConversation, "should get response to the rendezvous")
 

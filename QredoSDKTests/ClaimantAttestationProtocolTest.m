@@ -462,7 +462,7 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
         _rendezvousResponseHandler = rendezvousResponseHandler;
         if (_conversation && _rendezvousResponseHandler) {
             _rendezvousResponseHandler(_conversation);
-            [self.rendezvous removeRendezvousObaserver:self];
+            [self.rendezvous removeRendezvousObserver:self];
         }
     }
 }
@@ -506,7 +506,7 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
         self.conversation = conversation;
         if (self.rendezvousResponseHandler) {
             self.rendezvousResponseHandler(conversation);
-            [self.rendezvous removeRendezvousObaserver:self];
+            [self.rendezvous removeRendezvousObserver:self];
         }
     }
 }

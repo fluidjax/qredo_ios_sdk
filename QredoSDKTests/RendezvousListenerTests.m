@@ -139,7 +139,7 @@
     // Sending message
     XCTAssertNotNil(responderConversation);
     
-    [rendezvous removeRendezvousObaserver:self];
+    [rendezvous removeRendezvousObserver:self];
     
     [anotherClient closeSession];
 }
