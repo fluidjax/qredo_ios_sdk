@@ -3,6 +3,9 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "Qredo.h"
 
 @interface QredoSettingsViewController : UITableViewController
+
+- (instancetype)initWithQredoClient:(QredoClient *)qredoClient;
 @end

@@ -59,4 +59,6 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 // public method doesn't allow to specify itemId
 - (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
+- (void)clearCache;
+
 @end
