@@ -72,7 +72,7 @@
 - (void)dealloc
 {
     _deallocEntered = YES;
-    [self.vault removeVaultObaserver:self];
+    [self.vault removeVaultObserver:self];
 }
 
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error
@@ -767,7 +767,7 @@
     XCTAssertTrue(listener.receivedItems.count > 0);
 
 
-    [vault removeVaultObaserver:listener];
+    [vault removeVaultObserver:listener];
 }
 
 - (void)testMultipleListeners
@@ -817,8 +817,8 @@
     XCTAssertTrue(listener2.receivedItems.count > 0);
 
     
-    [vault removeVaultObaserver:listener1];
-    [vault removeVaultObaserver:listener2];
+    [vault removeVaultObserver:listener1];
+    [vault removeVaultObserver:listener2];
 }
 
 
@@ -900,8 +900,8 @@
     
     QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
     
-    XCTAssertNoThrow([vault removeVaultObaserver:listener2]);
-    XCTAssertNoThrow([vault removeVaultObaserver:listener1]);
+    XCTAssertNoThrow([vault removeVaultObserver:listener2]);
+    XCTAssertNoThrow([vault removeVaultObserver:listener1]);
 }
 
 

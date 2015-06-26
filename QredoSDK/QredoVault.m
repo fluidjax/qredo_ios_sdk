@@ -548,7 +548,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     }
 }
 
-- (void)removeVaultObaserver:(id<QredoVaultObserver>)observer
+- (void)removeVaultObserver:(id<QredoVaultObserver>)observer
 {
     QredoUpdateListener *updateListener = _updateListener;
     QredoObserverList *observers = _observers;
