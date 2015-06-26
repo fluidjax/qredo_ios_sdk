@@ -83,7 +83,7 @@ class ConversationProtocolFSMTest: XCTestCase {
             receiveMessageExpectation = nil
         })
         
-        conversationHelper.responderConversation.removeConversationObaserver(conversationDelegate)
+        conversationHelper.responderConversation.removeConversationObserver(conversationDelegate)
         
         conversationHelper.tearDown()
     }
@@ -314,7 +314,7 @@ class ConversationProtocolFSMTest: XCTestCase {
             receiveMessageExpectation = nil
         })
 
-        conversationHelper.responderConversation.removeConversationObaserver(conversationDelegate)
+        conversationHelper.responderConversation.removeConversationObserver(conversationDelegate)
 
         conversationHelper.tearDown()
     }
@@ -382,7 +382,7 @@ class ConversationProtocolFSMTest: XCTestCase {
             receiveMessageExpectation = nil
         })
 
-        conversationHelper.responderConversation.removeConversationObaserver(conversationDelegate)
+        conversationHelper.responderConversation.removeConversationObserver(conversationDelegate)
         
         conversationHelper.tearDown()
     }

@@ -60,7 +60,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 - (void)acknowledgeReceiptUpToHighWatermark:(QredoConversationHighWatermark*)highWatermark;
 
 - (void)addConversationObserver:(id<QredoConversationObserver>)observer;
-- (void)removeConversationObaserver:(id<QredoConversationObserver>)observer;
+- (void)removeConversationObserver:(id<QredoConversationObserver>)observer;
 
 - (QredoVault*)store;
 

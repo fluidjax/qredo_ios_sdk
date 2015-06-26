@@ -358,7 +358,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
     
     NSLog(@"Stopping listening for conversation items");
-    [creatorConversation removeConversationObaserver:listener];
+    [creatorConversation removeConversationObserver:listener];
 
     XCTAssert([responderConversation.metadata.conversationId isEqual:creatorConversation.metadata.conversationId],
               @"Conversation ID from responder and creator should be the same");
@@ -430,7 +430,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
     XCTAssertFalse(listener.failed);
 
-    [responderConversation removeConversationObaserver:anotherListener];
+    [responderConversation removeConversationObserver:anotherListener];
 
     [anotherClient closeSession];
 }

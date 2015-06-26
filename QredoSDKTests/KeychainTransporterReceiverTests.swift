@@ -150,7 +150,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
         // double timeout, because we are doing quite a few operations here
         self.waitForExpectationsWithTimeout(60, handler: nil)
         
-        transporterConversation?.removeConversationObaserver(conversationDelegate)
+        transporterConversation?.removeConversationObserver(conversationDelegate)
 
         XCTAssertEqual(completionHandlerCalls, 1, "should call the completion handler only once")
         XCTAssertTrue(receiverMock.didCallWillCreateRendezvous, "should prepare the receiver delegate")
@@ -226,7 +226,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
         // double timeout, because we are doing quite a few operations here
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        transporterConversation?.removeConversationObaserver(conversationDelegate)
+        transporterConversation?.removeConversationObserver(conversationDelegate)
 
         XCTAssertEqual(completionHandlerCalls, 1, "should call the completion handler only once")
         XCTAssertFalse(receiverMock.didCallDidReceiveKeychain, "Should not receive keychain")

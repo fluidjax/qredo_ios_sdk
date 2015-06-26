@@ -102,8 +102,8 @@ class ConversationMessageStoreTests: BaseConversation {
         XCTAssertEqual(responderStoreItems, totalMessageCount, "Didn't get all the expected messages in the store")
         XCTAssertEqual(mineMessages, 1, "Should be just 1 my message")
         
-        responderConversation.removeConversationObaserver(responderDelegate)
-        creatorConversation.removeConversationObaserver(responderDelegate)
+        responderConversation.removeConversationObserver(responderDelegate)
+        creatorConversation.removeConversationObserver(responderDelegate)
 
     }
     

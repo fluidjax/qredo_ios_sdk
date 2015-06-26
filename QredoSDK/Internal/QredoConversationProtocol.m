@@ -226,7 +226,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
         return;
     }
     
-    [self.conversation removeConversationObaserver:self];
+    [self.conversation removeConversationObserver:self];
     _isObservingConversation = NO;
 }
 

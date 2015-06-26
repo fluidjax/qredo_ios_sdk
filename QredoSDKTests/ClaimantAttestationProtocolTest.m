@@ -74,7 +74,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 
 - (void)dealloc
 {
-    [_conversation removeConversationObaserver:self];
+    [_conversation removeConversationObserver:self];
 }
 
 #pragma mark Actions

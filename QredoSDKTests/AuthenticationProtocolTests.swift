@@ -105,7 +105,7 @@ class AuthenticationProtocolTests: BaseConversation {
 
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
         
-        creatorConversation.removeConversationObaserver(validatorDelegate)
+        creatorConversation.removeConversationObserver(validatorDelegate)
     }
 
     func sendRequest(responseMessage: QredoConversationMessage, expectErrorCode: QredoErrorCode?) {
@@ -194,7 +194,7 @@ class AuthenticationProtocolTests: BaseConversation {
             println("Timed out")
         })
         
-        creatorConversation.removeConversationObaserver(validatorDelegate)
+        creatorConversation.removeConversationObserver(validatorDelegate)
 
     }
 

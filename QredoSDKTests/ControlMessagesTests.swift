@@ -58,7 +58,7 @@ class ControlMessagesTests: BaseConversation {
         
         XCTAssertEqual(leftMessageCounter, 1, "Should be one 'joined' control message")
         
-        listeningConversation.removeConversationObaserver(listeningDelegate)
+        listeningConversation.removeConversationObserver(listeningDelegate)
     }
 
     func testDeleteControlMessageOnCreatorSide() {
