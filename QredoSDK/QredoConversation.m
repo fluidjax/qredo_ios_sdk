@@ -25,6 +25,7 @@
 #import "QredoUpdateListener.h"
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoSigner.h"
+#import "QredoVaultCrypto.h"
 
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
