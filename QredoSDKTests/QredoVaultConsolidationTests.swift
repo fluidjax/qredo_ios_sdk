@@ -253,7 +253,7 @@ class QredoVaultConsolidationTests: XCTestCase {
 
         listener.reset()
         
-        vault.removeVaultObaserver(listener)
+        vault.removeVaultObserver(listener)
 
     }
 
