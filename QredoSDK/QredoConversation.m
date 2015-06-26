@@ -837,7 +837,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 - (void)removeConversationObserver:(id<QredoConversationObserver>)observer
 {
-    [_observers removeObaserver:observer];
+    [_observers removeObserver:observer];
     if ([_observers count] < 1 && !_updateListener.isListening) {
         [_updateListener stopListening];
     }
