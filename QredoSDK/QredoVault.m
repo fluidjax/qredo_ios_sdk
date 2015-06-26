@@ -69,6 +69,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 - (void)saveState;
 - (void)loadState;
+- (void)clearState;
 
 @end
 
@@ -219,6 +220,13 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     [PINDiskCache moveItemAtURLToTrash:_cacheHeaders.diskCache.cacheURL];
     [PINDiskCache moveItemAtURLToTrash:_cacheItems.diskCache.cacheURL];
     [PINDiskCache emptyTrash];
+}
+
+- (void)clearAllData
+{
+    [self clearCache];
+    [self clearState];
+    [_vaultSequenceCache clear];
 }
 
 - (void)cacheEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
@@ -417,32 +425,50 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     return _highwatermark;
 }
 
+- (NSString *)sequenceIdKeyForDefaults
+{
+    return [QredoVaultOptionSequenceId stringByAppendingString:[_vaultKeys.vaultId QUIDString]];
+}
+
+- (NSString *)hwmKeyForDefaults
+{
+    return [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultKeys.vaultId QUIDString]];
+}
+
+- (void)clearState
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    [defaults removeObjectForKey:self.sequenceIdKeyForDefaults];
+    [defaults removeObjectForKey:self.hwmKeyForDefaults];
+    [defaults synchronize];
+}
+
 - (void)saveState
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    [defaults setObject:[_sequenceId data] forKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultKeys.vaultId QUIDString]]];
+    [defaults setObject:[_sequenceId data] forKey:self.sequenceIdKeyForDefaults];
 
-    NSString *hwmKey = [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultKeys.vaultId QUIDString]];
     if (_highwatermark) {
-        [defaults setObject:[_highwatermark.sequenceState quidToStringDictionary] forKey:hwmKey];
+        [defaults setObject:[_highwatermark.sequenceState quidToStringDictionary] forKey:self.hwmKeyForDefaults];
     } else {
-        [defaults removeObjectForKey:hwmKey];
+        [defaults removeObjectForKey:self.hwmKeyForDefaults];
     }
+    [defaults synchronize];
 }
 
 - (void)loadState
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    NSData *sequenceIdData = [defaults objectForKey:[QredoVaultOptionSequenceId stringByAppendingString:[_vaultKeys.vaultId QUIDString]]];
+    NSData *sequenceIdData = [defaults objectForKey:self.sequenceIdKeyForDefaults];
 
     if (sequenceIdData) {
         _sequenceId = [[QredoQUID alloc] initWithQUIDData:sequenceIdData];
     }
 
-    NSString *hwmKey = [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultKeys.vaultId QUIDString]];
-    NSDictionary* sequenceState = [defaults objectForKey:hwmKey];
+    NSDictionary* sequenceState = [defaults objectForKey:self.hwmKeyForDefaults];
     if (sequenceState) {
         _highwatermark = [QredoVaultHighWatermark watermarkWithSequenceState:[sequenceState stringToQuidDictionary]];
     } else {
