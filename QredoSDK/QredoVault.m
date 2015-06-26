@@ -42,6 +42,12 @@ static NSString *const QredoVaultItemMetadataItemTypeConversation = @"com.qredo.
 
 static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
+@interface PINDiskCache (Private)
+
++(BOOL)moveItemAtURLToTrash:(NSURL *)itemURL;
+
+@end
+
 @interface QredoVault () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>
 {
     QredoClient *_client;
@@ -417,6 +423,18 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 #pragma mark Cache
+
+- (void)clearCache
+{
+    [_cacheHeaders removeAllObjects];
+    [_cacheItems removeAllObjects];
+
+    // [PINDiskCache removeAllObjects] removes folders with all its contents, but then it creates a new empty one.
+    // These lines make sure that folder is removed entirely.
+    [PINDiskCache moveItemAtURLToTrash:_cacheHeaders.diskCache.cacheURL];
+    [PINDiskCache moveItemAtURLToTrash:_cacheItems.diskCache.cacheURL];
+    [PINDiskCache emptyTrash];
+}
 
 - (void)cacheEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
                  itemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor

@@ -30,6 +30,7 @@ extern NSString *const QredoVaultItemSummaryKeyDeviceName;
 + (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error;
 + (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error;
 
+- (BOOL)deleteCurrentDataWithError:(NSError **)error;
 @end
 
 

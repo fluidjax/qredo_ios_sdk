@@ -332,7 +332,8 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         }
         
     };
-    
+
+    BOOL loaded = [client loadStateWithError:&error];
     
     if (options.resetData) {
         
@@ -349,7 +350,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     }
     
     
-    if (![client loadStateWithError:&error]) {
+    if (!loaded) {
         
         if ([error.domain isEqualToString:QredoErrorDomain] && error.code == QredoErrorCodeKeychainCouldNotBeFound) {
             
@@ -892,7 +893,20 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     return NO;
 }
 
+- (BOOL)deleteCurrentDataWithError:(NSError **)error {
+    if (!_systemVault || !_defaultVault) {
+        return YES;
+    }
+
+    [_systemVault clearCache];
+    [_defaultVault clearCache];
+
+    return [self deleteDefaultVaultKeychainWithError:error];
+}
+
 - (void)createSystemVaultWithCompletionHandler:(void(^)(NSError *error))completionHandler {
+    [self deleteCurrentDataWithError:nil];
+
     [self createDefaultKeychain];
     [self initializeVaults];
 
@@ -949,6 +963,8 @@ withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
 - (BOOL)setKeychain:(QredoKeychain *)keychain
               error:(NSError **)error
 {
+    [self deleteCurrentDataWithError:nil];
+
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
     BOOL result = [self saveSystemVaultKeychain:keychain
                withKeychainWithKeychainArchiver:keychainArchiver
