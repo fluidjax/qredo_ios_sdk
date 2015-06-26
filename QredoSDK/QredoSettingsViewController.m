@@ -72,13 +72,19 @@ static NSString *const kDestructiveActionCellIdentifier = @"kDestructiveActionCe
 
 
 @interface QredoSettingsViewController ()
+@property (nonatomic) QredoClient *qredoClient;
 @property (nonatomic, copy) NSArray *sections;
 @end
 
 @implementation QredoSettingsViewController
 
-- (instancetype)init {
-    return [super initWithStyle:UITableViewStyleGrouped];
+- (instancetype)initWithQredoClient:(QredoClient *)qredoClient
+{
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        self.qredoClient = qredoClient;
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -205,7 +211,7 @@ static NSString *const kDestructiveActionCellIdentifier = @"kDestructiveActionCe
     UIViewController *presentingViewController = self.presentingViewController;
     [self dismissViewControllerAnimated:YES completion:^{
         NSError *error = nil;
-        [QredoClient deleteDefaultVaultKeychainWithError:&error];
+        [self.qredoClient deleteCurrentDataWithError:&error];
         if (!error) {
             
             if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
