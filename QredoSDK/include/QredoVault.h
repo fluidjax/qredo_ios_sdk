@@ -97,7 +97,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  
  @discussion An observer use this method to remove it self before being deallocated.
  */
-- (void)removeVaultObaserver:(id<QredoVaultObserver>)observer;
+- (void)removeVaultObserver:(id<QredoVaultObserver>)observer;
 
 - (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 

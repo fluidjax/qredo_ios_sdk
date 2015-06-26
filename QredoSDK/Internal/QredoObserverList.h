@@ -21,7 +21,7 @@
 #pragma mark Add, remove and notify observers
 
 - (void)addObserver:(id)observer;
-- (void)removeObaserver:(id)observer;
+- (void)removeObserver:(id)observer;
 - (void)notifyObservers:(void(^)(id observer))notificationBlock;
 
 

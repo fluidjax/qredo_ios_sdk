@@ -112,7 +112,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     }
 }
 
-- (void)removeObaserver:(id)observer
+- (void)removeObserver:(id)observer
 {
     NSAssert(observer, @"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
     
