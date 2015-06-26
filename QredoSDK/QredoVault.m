@@ -429,6 +429,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     [_cacheHeaders removeAllObjects];
     [_cacheItems removeAllObjects];
 
+    // [PINDiskCache removeAllObjects] removes folders with all its contents, but then it creates a new empty one.
+    // These lines make sure that folder is removed entirely.
     [PINDiskCache moveItemAtURLToTrash:_cacheHeaders.diskCache.cacheURL];
     [PINDiskCache moveItemAtURLToTrash:_cacheItems.diskCache.cacheURL];
     [PINDiskCache emptyTrash];
