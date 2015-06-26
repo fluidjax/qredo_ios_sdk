@@ -24,7 +24,7 @@ static NSString *const kMessageType = @"com.qredo.text";
 static NSString *const kMessageTestValue = @"(1)hello, world";
 static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
-@interface ConversationMessageListener : NSObject <QredoConversationDelegate>
+@interface ConversationMessageListener : NSObject <QredoConversationObserver>
 @property XCTestExpectation *didReceiveMessageExpectation;
 @property NSString *expectedMessageValue;
 @property BOOL failed;
@@ -325,10 +325,9 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
     listener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published before listening"];
     listener.expectedMessageValue = firstMessageText;
-    creatorConversation.delegate = listener;
 
     NSLog(@"Starting listening for conversation items");
-    [creatorConversation startListening];
+    [creatorConversation addConversationObserver:listener];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         listener.didReceiveMessageExpectation = nil;
@@ -359,7 +358,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
     
     NSLog(@"Stopping listening for conversation items");
-    [creatorConversation stopListening];
+    [creatorConversation removeConversationObaserver:listener];
 
     XCTAssert([responderConversation.metadata.conversationId isEqual:creatorConversation.metadata.conversationId],
               @"Conversation ID from responder and creator should be the same");
@@ -414,8 +413,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     ConversationMessageListener *anotherListener = [[ConversationMessageListener alloc] init];
     anotherListener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message"];
     anotherListener.expectedMessageValue = kMessageTestValue2;
-    responderConversation.delegate = anotherListener;
-    [responderConversation startListening];
+    [responderConversation addConversationObserver:anotherListener];
     
     QredoConversationMessage *anotherMessage = [[QredoConversationMessage alloc] initWithValue:[kMessageTestValue2 dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
     [conversatoinFromVault publishMessage:anotherMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
@@ -432,7 +430,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
     XCTAssertFalse(listener.failed);
 
-    [responderConversation stopListening];
+    [responderConversation removeConversationObaserver:anotherListener];
 
     [anotherClient closeSession];
 }

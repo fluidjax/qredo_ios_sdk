@@ -50,14 +50,15 @@ class ControlMessagesTests: BaseConversation {
             }
         }
 
-        listeningConversation.delegate = listeningDelegate
-        listeningConversation.startListening()
+        listeningConversation.addConversationObserver(listeningDelegate)
 
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { error in
             listenerExpectation = nil
         })
         
         XCTAssertEqual(leftMessageCounter, 1, "Should be one 'joined' control message")
+        
+        listeningConversation.removeConversationObaserver(listeningDelegate)
     }
 
     func testDeleteControlMessageOnCreatorSide() {

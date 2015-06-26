@@ -76,15 +76,14 @@ class ConversationProtocolFSMTest: XCTestCase {
                 receiveMessageExpectation?.fulfill()
             }
         }
-        conversationHelper.responderConversation.delegate = conversationDelegate
-        conversationHelper.responderConversation.startListening()
+        conversationHelper.responderConversation.addConversationObserver(conversationDelegate)
 
 
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { (error) -> Void in
             receiveMessageExpectation = nil
         })
         
-        conversationHelper.responderConversation.stopListening()
+        conversationHelper.responderConversation.removeConversationObaserver(conversationDelegate)
         
         conversationHelper.tearDown()
     }
@@ -309,14 +308,13 @@ class ConversationProtocolFSMTest: XCTestCase {
 
             receiveMessageExpectation?.fulfill()
         }
-        conversationHelper.responderConversation.delegate = conversationDelegate
-        conversationHelper.responderConversation.startListening()
+        conversationHelper.responderConversation.addConversationObserver(conversationDelegate)
 
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { (error) -> Void in
             receiveMessageExpectation = nil
         })
 
-        conversationHelper.responderConversation.stopListening()
+        conversationHelper.responderConversation.removeConversationObaserver(conversationDelegate)
 
         conversationHelper.tearDown()
     }
@@ -378,14 +376,13 @@ class ConversationProtocolFSMTest: XCTestCase {
 
             receiveMessageExpectation?.fulfill()
         }
-        conversationHelper.responderConversation.delegate = conversationDelegate
-        conversationHelper.responderConversation.startListening()
+        conversationHelper.responderConversation.addConversationObserver(conversationDelegate)
 
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { (error) -> Void in
             receiveMessageExpectation = nil
         })
 
-        conversationHelper.responderConversation.stopListening()
+        conversationHelper.responderConversation.removeConversationObaserver(conversationDelegate)
         
         conversationHelper.tearDown()
     }

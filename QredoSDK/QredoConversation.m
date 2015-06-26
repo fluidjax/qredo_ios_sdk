@@ -25,6 +25,7 @@
 #import "QredoUpdateListener.h"
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoSigner.h"
+#import "QredoObserverList.h"
 
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
@@ -153,7 +154,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoVault *_store;
 
     QredoConversationHighWatermark *_highestStoredIncomingHWM;
-
+    
+    QredoObserverList *_observers;
     QredoUpdateListener *_updateListener;
 }
 
@@ -197,6 +199,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     _authenticationType = authenticationType;
 
+    _observers = [[QredoObserverList alloc] init];
+    
     _updateListener = [QredoUpdateListener new];
     _updateListener.dataSource = self;
     _updateListener.delegate = self;
@@ -823,15 +827,27 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     // TODO: Implement acknowledgeReceiptUpToHighWatermark
 }
 
-- (void)startListening
+- (void)addConversationObserver:(id<QredoConversationObserver>)observer
 {
-    [_updateListener startListening];
+    [_observers addObserver:observer];
+    if (!_updateListener.isListening) {
+        [_updateListener startListening];
+    }
 }
 
-- (void)stopListening
+- (void)removeConversationObaserver:(id<QredoConversationObserver>)observer
 {
-    [_updateListener stopListening];
+    [_observers removeObaserver:observer];
+    if ([_observers count] < 1 && !_updateListener.isListening) {
+        [_updateListener stopListening];
+    }
 }
+
+- (void)notifyObservers:(void(^)(id<QredoConversationObserver> observer))notificationBlock
+{
+    [_observers notifyObservers:notificationBlock];
+}
+
 
 - (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
@@ -1017,7 +1033,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
 subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
-    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
+    NSAssert([_observers count] > 0, @"Conversation observers should be added before starting listening for the updates");
 
     LogDebug(@"Subscribing to new conversation items/messages.");
 
@@ -1044,15 +1060,18 @@ unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 #pragma mark Qredo Update Listener - Delegate
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item
 {
-    QredoConversationMessage *message = (QredoConversationMessage *)item;
-    if ([message isControlMessage]) {
-        if ([message controlMessageType] == QredoConversationControlMessageTypeLeft &&
-            [_delegate respondsToSelector:@selector(qredoConversationOtherPartyHasLeft:)]) {
-            [_delegate qredoConversationOtherPartyHasLeft:self];
+    
+    [self notifyObservers:^(id<QredoConversationObserver> observer) {
+        QredoConversationMessage *message = (QredoConversationMessage *)item;
+        if ([message isControlMessage]) {
+            if ([message controlMessageType] == QredoConversationControlMessageTypeLeft &&
+                [observer respondsToSelector:@selector(qredoConversationOtherPartyHasLeft:)]) {
+                [observer qredoConversationOtherPartyHasLeft:self];
+            }
+        } else {
+            [observer qredoConversation:self didReceiveNewMessage:message];
         }
-    } else {
-        [self.delegate qredoConversation:self didReceiveNewMessage:message];
-    }
+    }];
 }
 
 @end

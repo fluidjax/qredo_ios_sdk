@@ -332,7 +332,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 
 - (void)start
 {
-    [self.conversationProtocol.conversation startListening];
+    [self.conversationProtocol startObservingConversation];
     [self.claimantAttestationProtocol switchToState:self.claimantAttestationProtocol.requestingPresentaionState
                                    withConfigBlock:^{}];
 }
@@ -1051,7 +1051,7 @@ static const NSTimeInterval kAuthenticateTimeout = 60;
 - (void)didEnter
 {
     [super didEnter];
-    [self.conversationProtocol.conversation stopListening];
+    [self.conversationProtocol stopObservingConversation];
     [self.claimantAttestationProtocol.delegate claimantAttestationProtocol:self.claimantAttestationProtocol
                                                         didFinishWithError:self.error];
 }

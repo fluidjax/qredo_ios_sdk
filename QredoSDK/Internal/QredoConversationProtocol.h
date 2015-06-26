@@ -89,6 +89,10 @@
 
 - (instancetype)initWithConversation:(QredoConversation *)conversation;
 
+- (void)startObservingConversation;
+- (void)stopObservingConversation;
+
+
 #pragma mark Event handling
 
 - (void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock;

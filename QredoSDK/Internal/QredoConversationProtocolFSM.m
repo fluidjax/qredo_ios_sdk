@@ -314,7 +314,7 @@
 }
 
 - (void)didEnter {
-    [self.fsmProtocol.conversation stopListening];
+    [self.fsmProtocol stopObservingConversation];
 
     if (self.fsmProtocol.delegate) {
         if (self.failed) {
@@ -444,7 +444,7 @@
 
     self.delegate = delegate;
     _currentStateIndex = 0;
-    [self.conversation startListening];
+    [self startObservingConversation];
     [self switchToState:_states[_currentStateIndex] withConfigBlock:^{ }];
 }
 

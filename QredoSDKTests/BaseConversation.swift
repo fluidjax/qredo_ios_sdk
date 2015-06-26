@@ -84,9 +84,6 @@ class BaseConversation: XCTestCase {
     }
 
     override func tearDown() {
-        responderConversation.stopListening()
-        creatorConversation.stopListening()
-
         creatorClient.closeSession()
         responderClient.closeSession()
     }

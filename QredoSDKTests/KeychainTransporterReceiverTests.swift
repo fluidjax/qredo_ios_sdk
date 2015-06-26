@@ -118,8 +118,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
                     transporterConversation = conversation
 
                     if let actualConversation = conversation {
-                        actualConversation.delegate = conversationDelegate
-                        actualConversation.startListening()
+                        actualConversation.addConversationObserver(conversationDelegate)
                     }
                 })
 
@@ -150,6 +149,8 @@ class KeychainTransporterReceiverTests: XCTestCase {
 
         // double timeout, because we are doing quite a few operations here
         self.waitForExpectationsWithTimeout(60, handler: nil)
+        
+        transporterConversation?.removeConversationObaserver(conversationDelegate)
 
         XCTAssertEqual(completionHandlerCalls, 1, "should call the completion handler only once")
         XCTAssertTrue(receiverMock.didCallWillCreateRendezvous, "should prepare the receiver delegate")
@@ -207,8 +208,7 @@ class KeychainTransporterReceiverTests: XCTestCase {
                     XCTAssertNotNil(conversation, "failed to respond to the rendezvous")
                     transporterConversation = conversation
                     if let actualConversation = conversation {
-                        actualConversation.delegate = conversationDelegate
-                        actualConversation.startListening()
+                        actualConversation.addConversationObserver(conversationDelegate)
                     }
                 })
             }
@@ -225,6 +225,8 @@ class KeychainTransporterReceiverTests: XCTestCase {
 
         // double timeout, because we are doing quite a few operations here
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+        
+        transporterConversation?.removeConversationObaserver(conversationDelegate)
 
         XCTAssertEqual(completionHandlerCalls, 1, "should call the completion handler only once")
         XCTAssertFalse(receiverMock.didCallDidReceiveKeychain, "Should not receive keychain")

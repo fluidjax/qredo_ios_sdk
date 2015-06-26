@@ -37,7 +37,10 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 //--------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-@interface QredoConversationProtocol ()<QredoConversationDelegate>
+@interface QredoConversationProtocol ()<QredoConversationObserver>
+{
+    BOOL _isObservingConversation;
+}
 @property (nonatomic) dispatch_queue_t protocolQueue;
 @property (nonatomic) QredoConversation *conversation;
 @end
@@ -201,9 +204,30 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     if (self) {
         _protocolQueue = dispatch_queue_create("QredoConversationProtocol__protocolQueue", DISPATCH_QUEUE_SERIAL);
         self.conversation = conversation;
-        self.conversation.delegate = self;
     }
     return self;
+}
+
+- (void)startObservingConversation
+{
+    if (_isObservingConversation) {
+        NSAssert1(TRUE, @"Attempting to start observing a conversation in %@ while the conversation is already observed.", NSStringFromClass([self class]));
+        return;
+    }
+    
+    [self.conversation addConversationObserver:self];
+    _isObservingConversation = YES;
+}
+
+- (void)stopObservingConversation
+{
+    if (!_isObservingConversation) {
+        NSAssert1(TRUE, @"Attempting to stop observing a conversation in %@ while the conversation is not being observed.", NSStringFromClass([self class]));
+        return;
+    }
+    
+    [self.conversation removeConversationObaserver:self];
+    _isObservingConversation = NO;
 }
 
 
@@ -251,7 +275,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 }
 
 
-#pragma mark QredoConversationDelegate implementation
+#pragma mark QredoConversationObserver implementation
 
 - (void)qredoConversation:(QredoConversation *)conversation
      didReceiveNewMessage:(QredoConversationMessage *)message
