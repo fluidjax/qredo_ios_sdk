@@ -59,12 +59,10 @@ class ConversationMessageStoreTests: BaseConversation {
 
             XCTAssert(totalMessageCount <= expectMessagesCount, "Recevied more messages than expected")
         }
-        responderConversation.delegate = responderDelegate
-        creatorConversation.delegate = responderDelegate
+        responderConversation.addConversationObserver(responderDelegate)
+        creatorConversation.addConversationObserver(responderDelegate)
 
-        responderConversation.startListening()
-        creatorConversation.startListening()
-
+        
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { (error) -> Void in
             messageArrivedExpectation = nil
         })
@@ -103,6 +101,10 @@ class ConversationMessageStoreTests: BaseConversation {
 
         XCTAssertEqual(responderStoreItems, totalMessageCount, "Didn't get all the expected messages in the store")
         XCTAssertEqual(mineMessages, 1, "Should be just 1 my message")
+        
+        responderConversation.removeConversationObserver(responderDelegate)
+        creatorConversation.removeConversationObserver(responderDelegate)
+
     }
     
 }

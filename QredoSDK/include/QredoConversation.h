@@ -35,7 +35,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 @property (readonly, getter=isPersistent) BOOL persistent;
 @end
 
-@protocol QredoConversationDelegate <NSObject>
+@protocol QredoConversationObserver <NSObject>
 
 @required
 - (void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message;
@@ -46,8 +46,6 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 @end
 
 @interface QredoConversation : NSObject
-/** See `QredoConversationDelegate` */
-@property (weak) id<QredoConversationDelegate> delegate;
 
 - (QredoConversationMetadata *)metadata;
 @property (readonly) QredoConversationHighWatermark* highWatermark;
@@ -61,8 +59,8 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  */
 - (void)acknowledgeReceiptUpToHighWatermark:(QredoConversationHighWatermark*)highWatermark;
 
-- (void)startListening;
-- (void)stopListening;
+- (void)addConversationObserver:(id<QredoConversationObserver>)observer;
+- (void)removeConversationObserver:(id<QredoConversationObserver>)observer;
 
 - (QredoVault*)store;
 

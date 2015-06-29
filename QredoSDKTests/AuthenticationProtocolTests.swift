@@ -83,8 +83,7 @@ class AuthenticationProtocolTests: BaseConversation {
             }
         }
 
-        creatorConversation.delegate = validatorDelegate
-        creatorConversation.startListening()
+        creatorConversation.addConversationObserver(validatorDelegate)
 
 
         let authDelegate = AuthenticationProtocolBlockDelegate()
@@ -105,6 +104,8 @@ class AuthenticationProtocolTests: BaseConversation {
         authProtocol.cancel()
 
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
+        
+        creatorConversation.removeConversationObserver(validatorDelegate)
     }
 
     func sendRequest(responseMessage: QredoConversationMessage, expectErrorCode: QredoErrorCode?) {
@@ -133,7 +134,7 @@ class AuthenticationProtocolTests: BaseConversation {
     }
 
 
-    func sendRequest(expectErrorCode: QredoErrorCode?, validatorDelegate : QredoConversationDelegate) {
+    func sendRequest(expectErrorCode: QredoErrorCode?, validatorDelegate : QredoConversationObserver) {
         let authProtocol = QredoAuthenticationProtocol(conversation: responderConversation)
 
         let credential1 = QLFCredential(
@@ -153,8 +154,7 @@ class AuthenticationProtocolTests: BaseConversation {
             claimMessages: [claimMessage],
             conversationSecret: "secret".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true))
 
-        creatorConversation.delegate = validatorDelegate
-        creatorConversation.startListening()
+        creatorConversation.addConversationObserver(validatorDelegate)
 
 
         let authDelegate = AuthenticationProtocolBlockDelegate()
@@ -192,9 +192,10 @@ class AuthenticationProtocolTests: BaseConversation {
 
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { (error) -> Void in
             println("Timed out")
-            self.creatorConversation.stopListening()
-            self.creatorConversation.delegate = nil
         })
+        
+        creatorConversation.removeConversationObserver(validatorDelegate)
+
     }
 
 }

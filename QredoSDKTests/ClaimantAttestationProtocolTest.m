@@ -34,7 +34,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
 //===============================================================================================================
 
 
-@interface ClaimantAttestationProtocolTest_AliceDevice : NSObject<QredoConversationDelegate>
+@interface ClaimantAttestationProtocolTest_AliceDevice : NSObject<QredoConversationObserver>
 
 @property (nonatomic) QredoConversationMessage *receivedMemessage;
 
@@ -72,6 +72,11 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
     QredoClient *_qredoClient;
 }
 
+- (void)dealloc
+{
+    [_conversation removeConversationObserver:self];
+}
+
 #pragma mark Actions
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag completionHandler:(void (^)(NSError *))completionHandler
@@ -84,8 +89,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
                   completionHandler:^(QredoConversation *conversation, NSError *error) {
             if (completionHandler) {
                 _conversation = conversation;
-                conversation.delegate = self;
-                [conversation startListening];
+                [conversation addConversationObserver:self];
                 completionHandler(error);
             }
         }];
@@ -231,7 +235,7 @@ static NSTimeInterval kDefaultExpectationTimeout = 5.0;
     }
 }
 
-#pragma mark  QredoConversationDelegate
+#pragma mark  QredoConversationObserver
 - (void)qredoConversation:(QredoConversation *)conversation
      didReceiveNewMessage:(QredoConversationMessage *)message
 {

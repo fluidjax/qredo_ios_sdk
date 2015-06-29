@@ -80,9 +80,6 @@ class ConversationsHelper: NSObject {
     }
 
     func tearDown() {
-        responderConversation.stopListening()
-        creatorConversation.stopListening()
-        
         creatorClient.closeSession()
         responderClient.closeSession()
     }

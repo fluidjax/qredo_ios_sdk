@@ -226,7 +226,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 
 @implementation QredoAuthenticationState_Finish
 - (void)didEnter {
-    [self.authenticationProtocol.conversation stopListening];
+    [self.authenticationProtocol stopObservingConversation];
 }
 
 - (void)conversationCanceledWithMessage:(QredoConversationMessage *)message {
@@ -305,7 +305,7 @@ static NSString *const kAttestationValidationResultMessageType = @"com.qredo.att
 - (void)didEnter
 {
     [self.authenticationProtocol.delegate qredoAuthenticationProtocolDidSendClaims:self.authenticationProtocol];
-    [self.authenticationProtocol.conversation startListening];
+    [self.authenticationProtocol startObservingConversation];
 }
 
 - (void)cancel
