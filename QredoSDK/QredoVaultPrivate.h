@@ -5,12 +5,13 @@
 #import "QredoVault.h"
 #import "QredoQUID.h"
 #import "QredoClient.h"
-#import "QredoVaultCrypto.h"
 
 // This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
 // It shall be included only in the implementation files
 
-@class QredoClient, QredoKeychain;
+NSString *const QredoVaultItemMetadataItemTypeTombstone;
+
+@class QredoClient, QredoKeychain, QredoVaultKeys;
 
 @interface QredoVaultItemDescriptor()<NSCopying>
 @property (readonly) QLFVaultSequenceValue sequenceValue;
@@ -59,6 +60,10 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 // public method doesn't allow to specify itemId
 - (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
+// Cleans only cache. Vault object is still usable after that
 - (void)clearCache;
+
+// Destroys all data, including sequenceId record. Vault objects is not supposed to be used after that
+- (void)clearAllData;
 
 @end

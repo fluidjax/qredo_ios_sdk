@@ -44,6 +44,17 @@
     }
 }
 
+- (void)testCreateAndFetchAnonymousRendezvous
+{
+    [super testCreateAndFetchAnonymousRendezvous];
+}
+
+- (void)testCreateDuplicateAndFetchAnonymousRendezvous
+{
+    [super testCreateDuplicateAndFetchAnonymousRendezvous];
+}
+
+
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix
 {
     [super testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix];

@@ -3,6 +3,7 @@
 #import "NSData+QredoRandomData.h"
 #import "CryptoImplV1.h"
 #import "QredoErrorCodes.h"
+#import "NSDictionary+IndexableSet.h"
 
 #define QREDO_VAULT_MASTER_SALT  [@"U7TIOyVRqCKuFFNa" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_VAULT_SUBTYPE_SALT [@"rf3cxEQ8B9Nc8uFj" dataUsingEncoding:NSUTF8StringEncoding]
@@ -217,6 +218,95 @@
 - (NSData *)encryptVaultItemValue:(NSData *)data {
     if (!data) data = [NSData data];
     return [[CryptoImplV1 sharedInstance] encryptWithKey:_bulkKey data:data];
+}
+
+- (void)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
+                           origin:(QredoVaultItemOrigin)origin
+                completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
+{
+    NSError *error = nil;
+
+    NSError *decryptionError = nil;
+    QLFVaultItem *vaultItemLF = [self decryptEncryptedVaultItem:encryptedVaultItem
+                                                                  error:&decryptionError];
+    if (!vaultItemLF) {
+        if (!decryptionError) {
+            decryptionError = [NSError errorWithDomain:QredoErrorDomain
+                                                  code:QredoErrorCodeMalformedOrTamperedData
+                                              userInfo:nil];
+        }
+
+        completionHandler(nil, decryptionError);
+        return ;
+    }
+
+    NSDictionary *summaryValues = [vaultItemLF.metadata.values dictionaryFromIndexableSet];
+
+    QredoVaultItemDescriptor *descriptor
+    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItem.header.ref.sequenceId
+                                                    sequenceValue:encryptedVaultItem.header.ref.sequenceValue
+                                                           itemId:encryptedVaultItem.header.ref.itemId];
+
+    QredoVaultItemMetadata *metadata
+    = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                     dataType:vaultItemLF.metadata.dataType
+                                                  accessLevel:0
+                                                summaryValues:summaryValues];
+
+    metadata.origin = origin;
+
+    if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+        error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
+        completionHandler(nil, error);
+    }
+    else {
+        QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.body];
+        completionHandler(vaultItem, nil);
+    }
+}
+
+- (void)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
+                                 origin:(QredoVaultItemOrigin)origin
+                      completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler
+{
+    NSError *error = nil;
+    NSError *decryptionError = nil;
+    QLFVaultItemMetadata *vaultItemMetadataLF
+    = [self decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
+                                              error:&decryptionError];
+
+    if (!vaultItemMetadataLF) {
+        if (!decryptionError) {
+            decryptionError = [NSError errorWithDomain:QredoErrorDomain
+                                                  code:QredoErrorCodeMalformedOrTamperedData
+                                              userInfo:nil];
+        }
+
+        completionHandler(nil, decryptionError);
+        return;
+    }
+
+
+    NSDictionary *summaryValues = [vaultItemMetadataLF.values dictionaryFromIndexableSet];
+
+    QredoVaultItemDescriptor *descriptor
+    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:encryptedVaultItemHeader.ref.sequenceId
+                                                    sequenceValue:encryptedVaultItemHeader.ref.sequenceValue
+                                                           itemId:encryptedVaultItemHeader.ref.itemId];
+
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                      dataType:vaultItemMetadataLF.dataType
+                                                                                   accessLevel:0
+                                                                                 summaryValues:summaryValues];
+
+    metadata.origin = origin;
+    if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+        error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
+        completionHandler(nil, error);
+    }
+    else {
+        completionHandler(metadata, nil);
+    }
 }
 
 @end

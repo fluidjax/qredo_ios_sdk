@@ -25,6 +25,7 @@
 #import "QredoUpdateListener.h"
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoSigner.h"
+#import "QredoVaultCrypto.h"
 #import "QredoObserverList.h"
 
 
@@ -154,7 +155,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoVault *_store;
 
     QredoConversationHighWatermark *_highestStoredIncomingHWM;
-    
+
     QredoObserverList *_observers;
     QredoUpdateListener *_updateListener;
 }
@@ -831,16 +832,16 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 {
     [_observers addObserver:observer];
     if (!_updateListener.isListening) {
-        [_updateListener startListening];
-    }
+    [_updateListener startListening];
+}
 }
 
 - (void)removeConversationObserver:(id<QredoConversationObserver>)observer
 {
     [_observers removeObserver:observer];
     if ([_observers count] < 1 && !_updateListener.isListening) {
-        [_updateListener stopListening];
-    }
+    [_updateListener stopListening];
+}
 }
 
 - (void)notifyObservers:(void(^)(id<QredoConversationObserver> observer))notificationBlock
@@ -1062,15 +1063,15 @@ unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
     
     [self notifyObservers:^(id<QredoConversationObserver> observer) {
-        QredoConversationMessage *message = (QredoConversationMessage *)item;
-        if ([message isControlMessage]) {
-            if ([message controlMessageType] == QredoConversationControlMessageTypeLeft &&
+    QredoConversationMessage *message = (QredoConversationMessage *)item;
+    if ([message isControlMessage]) {
+        if ([message controlMessageType] == QredoConversationControlMessageTypeLeft &&
                 [observer respondsToSelector:@selector(qredoConversationOtherPartyHasLeft:)]) {
                 [observer qredoConversationOtherPartyHasLeft:self];
-            }
-        } else {
-            [observer qredoConversation:self didReceiveNewMessage:message];
         }
+    } else {
+            [observer qredoConversation:self didReceiveNewMessage:message];
+    }
     }];
 }
 

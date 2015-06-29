@@ -898,8 +898,8 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         return YES;
     }
 
-    [_systemVault clearCache];
-    [_defaultVault clearCache];
+    [_systemVault clearAllData];
+    [_defaultVault clearAllData];
 
     return [self deleteDefaultVaultKeychainWithError:error];
 }
