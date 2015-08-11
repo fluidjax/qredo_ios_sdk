@@ -61,23 +61,17 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 - (instancetype)initWithConversationType:(NSString*)conversationType
 {
-    return [self initWithConversationType:conversationType durationSeconds:nil maxResponseCount:nil];
+    return [self initWithConversationType:conversationType durationSeconds:nil isUnlimitedResponseCount:NO];
 }
 
-- (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount
-{
-    return [self initWithConversationType:conversationType durationSeconds:durationSeconds maxResponseCount:maxResponseCount transCap:nil];
-}
-
-- (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds maxResponseCount:(NSNumber *)maxResponseCount transCap:(NSSet*)transCap
+- (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount
 {
     self = [super init];
     if (!self) return nil;
     
     _conversationType = [conversationType copy];
     _durationSeconds = durationSeconds;
-    _maxResponseCount = maxResponseCount;
-    _transCap = transCap;
+    _isUnlimitedResponseCount = isUnlimitedResponseCount;
     
     return self;
 }
@@ -178,9 +172,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
     // Box up optional values.
     NSSet *maybeDurationSeconds  = [self maybe:configuration.durationSeconds];
-    NSSet *maybeMaxResponseCount = [self maybe:configuration.maxResponseCount];
-    NSSet *maybeTransCap         = [self maybe:nil]; // TODO: review when TransCap is defined
-   
+    QLFRendezvousResponseCountLimit *responseCount = configuration.isUnlimitedResponseCount
+        ? [QLFRendezvousResponseCountLimit rendezvousUnlimitedResponses]
+        : [QLFRendezvousResponseCountLimit rendezvousSingleResponse];
+
     NSError *error = nil;
     id<QredoRendezvousCreateHelper> rendezvousHelper = [crypto rendezvousHelperForAuthenticationType:authenticationType
                                                                                              fullTag:tag
@@ -218,7 +213,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFRendezvousResponderInfo *responderInfo
     = [QLFRendezvousResponderInfo rendezvousResponderInfoWithRequesterPublicKey:requesterPublicKeyBytes
                                                                conversationType:configuration.conversationType
-                                                                       transCap:maybeTransCap];
+                                                                       transCap:[NSSet set]];
 
     NSData *encryptedResponderData = [crypto encryptResponderInfo:responderInfo
                                                      encryptionKey:responderInfoEncKey];
@@ -254,7 +249,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFRendezvousCreationInfo *_creationInfo =
     [QLFRendezvousCreationInfo rendezvousCreationInfoWithHashedTag:_hashedTag
                                                    durationSeconds:maybeDurationSeconds
-                                                  maxResponseCount:maybeMaxResponseCount
+                                                responseCountLimit:responseCount
                                                 ownershipPublicKey:accessControlPublicKeyBytes
                                             encryptedResponderInfo:encryptedResponderInfo];
 
@@ -264,8 +259,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                         conversationType:configuration.conversationType
                                       authenticationType:authType
                                          durationSeconds:maybeDurationSeconds
-                                        maxResponseCount:maybeMaxResponseCount
-                                                transCap:maybeTransCap
+                                      responseCountLimit:responseCount
                                         requesterKeyPair:requesterKeyPair
                                     accessControlKeyPair:accessControlKeyPair];
 
@@ -518,8 +512,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
                                                              authenticationType:_lfAuthType
                                                                   rendezvousTag:_tag
-                                                                converationType:_configuration.conversationType
-                                                                       transCap:_configuration.transCap];
+                                                                converationType:_configuration.conversationType];
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
     
     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey

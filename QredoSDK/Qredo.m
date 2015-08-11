@@ -647,10 +647,19 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                         unmarshaller:[QLFRendezvousDescriptor unmarshaller]];
 
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self fromLFDescriptor:descriptor];
+
+        __block BOOL isUnlimitedResponseCount = NO;
+
+        [descriptor.responseCountLimit ifRendezvousSingleResponse:^{
+            isUnlimitedResponseCount = NO;
+        } ifRendezvousUnlimitedResponses:^{
+            isUnlimitedResponseCount = YES;
+        }];
+
         rendezvous.configuration
         = [[QredoRendezvousConfiguration alloc] initWithConversationType:descriptor.conversationType
                                                          durationSeconds:[descriptor.durationSeconds anyObject]
-                                                        maxResponseCount:[descriptor.maxResponseCount anyObject]];
+                                                isUnlimitedResponseCount:isUnlimitedResponseCount];
         return rendezvous;
     }
     @catch (NSException *e) {

@@ -18,8 +18,7 @@ static NSString *KAttestationClaimantConversationType = @"com.qredo.attestation.
 
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:KAttestationClaimantConversationType
                                                                                                  durationSeconds:nil
-                                                                                                maxResponseCount:nil
-                                                                                                        transCap:nil];
+                                                                                        isUnlimitedResponseCount:YES];
 
     NSString *tag = [[QredoQUID QUID] QUIDString];
 //    NSString *tag = [NSString stringWithFormat:@"att-%ld", random() % 20000]; // TODO: short tags for manual testing only

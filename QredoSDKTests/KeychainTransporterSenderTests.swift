@@ -104,9 +104,8 @@ class KeychainTransporterSenderTests: XCTestCase {
 
     func testKeychainSenderWrongConversationType() {
         let rendezvousTag = QredoRendezvousURIProtocol.stringByAppendingString(QredoQUID().QUIDString())
-
         let rendezvousExpectation = self.expectationWithDescription("new rendezvous")
-        receiverClient.createAnonymousRendezvousWithTag(rendezvousTag, configuration: QredoRendezvousConfiguration(conversationType: "invalid type", durationSeconds: 60, maxResponseCount: 1)) { rendezvous, error in
+        receiverClient.createAnonymousRendezvousWithTag(rendezvousTag, configuration: QredoRendezvousConfiguration(conversationType: "invalid type", durationSeconds: 60, isUnlimitedResponseCount: false)) { rendezvous, error in
             XCTAssertNil(error, "failed to create rendezvous")
             XCTAssertNotNil(rendezvous, "rendezvous should not be nil")
 
@@ -163,7 +162,7 @@ class KeychainTransporterSenderTests: XCTestCase {
 
         var receiverRendezvous : QredoRendezvous?
         let rendezvousExpectation = self.expectationWithDescription("create rendezvous")
-        receiverClient.createAnonymousRendezvousWithTag(rendezvousTag, configuration: QredoRendezvousConfiguration(conversationType: QredoKeychainTransporterConversationType, durationSeconds: 60, maxResponseCount: 1)) { rendezvous, error in
+        receiverClient.createAnonymousRendezvousWithTag(rendezvousTag, configuration: QredoRendezvousConfiguration(conversationType: QredoKeychainTransporterConversationType, durationSeconds: 60, isUnlimitedResponseCount: false)) { rendezvous, error in
             XCTAssertNil(error, "failed to create rendezvous")
             XCTAssertNotNil(rendezvous, "rendezvous should not be nil")
 

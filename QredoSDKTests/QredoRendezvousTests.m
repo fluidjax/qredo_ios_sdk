@@ -21,7 +21,6 @@
 #import <objc/runtime.h>
 
 static NSString *const kRendezvousTestConversationType = @"test.chat";
-static long long kRendezvousTestMaxResponseCount = 10;
 static long long kRendezvousTestDurationSeconds = 120; // 2 minutes
 
 @interface RendezvousListener : NSObject <QredoRendezvousObserver>
@@ -322,7 +321,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     XCTAssert([rendezvous.configuration.conversationType isEqualToString:kRendezvousTestConversationType]);
     XCTAssertEqual(rendezvous.configuration.durationSeconds.longLongValue, kRendezvousTestDurationSeconds);
-    XCTAssertEqual(rendezvous.configuration.maxResponseCount.longLongValue, kRendezvousTestMaxResponseCount);
 
     __block QredoClient *anotherClient = nil;
 
@@ -406,7 +404,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
                                                                                                  durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
+                                                                                                isUnlimitedResponseCount:YES];
 
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -448,7 +446,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
                                                                                                  durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
+                                                                                                isUnlimitedResponseCount:YES];
 
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
 
@@ -567,8 +565,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:kRendezvousTestConversationType
                                                                                                  durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-                                                                                                maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
-    
+                                                                                        isUnlimitedResponseCount:YES
+                                                   ];
+
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvousRef *rendezvousRef = nil;
     
@@ -684,7 +683,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]];
+       isUnlimitedResponseCount:YES];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -765,8 +764,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
-       transCap:nil];
+       isUnlimitedResponseCount:YES];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -869,8 +867,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
-       transCap:nil];
+       isUnlimitedResponseCount:YES];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -1170,8 +1167,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
-       transCap:nil];
+       isUnlimitedResponseCount:YES];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
@@ -1200,8 +1196,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
-       transCap:nil];
+       isUnlimitedResponseCount:YES];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
@@ -1255,8 +1250,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
-       transCap:nil];
+       isUnlimitedResponseCount:YES];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -1297,8 +1291,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
        durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-       maxResponseCount:[NSNumber numberWithLongLong:kRendezvousTestMaxResponseCount]
-       transCap:nil];
+       isUnlimitedResponseCount:YES];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
