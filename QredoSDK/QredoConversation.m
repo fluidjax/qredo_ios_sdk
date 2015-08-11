@@ -145,7 +145,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     BOOL _deleted;
 
-    NSSet *_transCap;
     QredoDhPublicKey *_yourPublicKey;
     QredoDhPrivateKey *_myPrivateKey;
 
@@ -168,14 +167,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 - (instancetype)initWithClient:(QredoClient *)client
 {
-    return [self initWithClient:client authenticationType:nil rendezvousTag:nil converationType:nil transCap:nil];
+    return [self initWithClient:client authenticationType:nil rendezvousTag:nil converationType:nil];
 }
 
 - (instancetype)initWithClient:(QredoClient *)client
             authenticationType:(QLFRendezvousAuthType *)authenticationType
                  rendezvousTag:(NSString *)rendezvousTag
                converationType:(NSString *)conversationType
-                      transCap:(NSSet *)transCap
 {
     self = [super init];
     if (!self) return nil;
@@ -196,8 +194,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.rendezvousTag = rendezvousTag;
     _metadata.type = conversationType;
 
-    _transCap = transCap;
-
     _authenticationType = authenticationType;
 
     _observers = [[QredoObserverList alloc] init];
@@ -214,8 +210,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     self = [self initWithClient:client
              authenticationType:descriptor.authenticationType
                   rendezvousTag:descriptor.rendezvousTag
-                converationType:descriptor.conversationType
-                       transCap:descriptor.initialTransCap];
+                converationType:descriptor.conversationType];
     if (!self) return nil;
 
     _metadata = [[QredoConversationMetadata alloc] init];
@@ -416,7 +411,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                 QredoDhPrivateKey *responderPrivateKey = [[QredoDhPrivateKey alloc] initWithData:responderKeyPair.privKey.bytes];
                 
                 _metadata.rendezvousTag = rendezvousTag;
-                _transCap = responderInfo.transCap;
                 _metadata.type = responderInfo.conversationType;
                 _authenticationType = responseRegistered.info.authenticationType;
 
@@ -462,7 +456,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
                                                          yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                       initialTransCap:_transCap];
+                                                       initialTransCap:[NSSet set]];
 
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];

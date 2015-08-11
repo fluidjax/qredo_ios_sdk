@@ -414,8 +414,8 @@ typedef ClaimantAttestationProtocolTest_ProtocolDelegate ProtocolDelegate;
         
         QredoRendezvousConfiguration *configuration
         = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"com.qredo.attesation.relyingparty"
-                                                         durationSeconds:@(600)
-                                                        maxResponseCount:@(1)];
+                                                         durationSeconds:@600
+                                                isUnlimitedResponseCount:NO];
 
         [qredoClient createAnonymousRendezvousWithTag:tag
                                         configuration:configuration

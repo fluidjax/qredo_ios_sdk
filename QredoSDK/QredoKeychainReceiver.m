@@ -55,7 +55,7 @@
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc] initWithConversationType:QredoKeychainTransporterConversationType
                                                      durationSeconds:@(QredoKeychainTransporterRendezvousDuration)
-                                                    maxResponseCount:@1];
+                                            isUnlimitedResponseCount:NO];
 
     [self.client createAnonymousRendezvousWithTag:randomTag
                                     configuration:configuration

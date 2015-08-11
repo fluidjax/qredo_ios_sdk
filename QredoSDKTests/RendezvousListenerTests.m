@@ -65,7 +65,7 @@
 - (void)testRendezvousResponder {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 isUnlimitedResponseCount:NO];
 
     __block QredoRendezvous *rendezvous = nil;
 

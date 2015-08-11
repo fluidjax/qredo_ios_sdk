@@ -109,7 +109,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 - (void)testConversationCreation {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 isUnlimitedResponseCount:NO];
     
     __block QredoRendezvous *rendezvous = nil;
     
@@ -136,7 +136,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 isUnlimitedResponseCount:NO];
     
     __block QredoRendezvous *rendezvous = nil;
     
@@ -218,7 +218,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 isUnlimitedResponseCount:NO];
 
     __block QredoRendezvous *rendezvous = nil;
 
@@ -448,7 +448,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 maxResponseCount:@1];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 isUnlimitedResponseCount:NO];
     
     __block QredoRendezvous *rendezvous = nil;
     
@@ -528,8 +528,8 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat"
                                                                                                  durationSeconds:@600
-                                                                                                maxResponseCount:@1];
-    
+                                                                                        isUnlimitedResponseCount:NO];
+
     __block QredoRendezvous *rendezvous = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
