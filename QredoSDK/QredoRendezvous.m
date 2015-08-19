@@ -106,7 +106,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 @property QredoRendezvousConfiguration *configuration;
 @property (readwrite, copy) NSString *tag;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
-@property (readwrite) QredoRendezvousMetadata *metadata;
+@property  QredoRendezvousMetadata *metadata;
 
 - (NSSet *)maybe:(id)object;
 

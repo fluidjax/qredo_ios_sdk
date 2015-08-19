@@ -24,8 +24,10 @@
 @interface QredoRendezvous (Private)
 
 @property (readwrite) QredoRendezvousConfiguration *configuration;
+@property (readwrite) QredoRendezvousMetadata *metadata;
 @property (readwrite) NSString *tag;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
+
 
 - (instancetype)initWithClient:(QredoClient *)client;
 - (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFRendezvousDescriptor*)descriptor;

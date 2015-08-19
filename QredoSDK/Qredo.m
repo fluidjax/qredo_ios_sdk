@@ -658,10 +658,27 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
         rendezvous.configuration
         = [[QredoRendezvousConfiguration alloc] initWithConversationType:descriptor.conversationType
-                                                         durationSeconds:[descriptor.durationSeconds anyObject]
+                                                durationSeconds:[descriptor.durationSeconds anyObject]
                                                 isUnlimitedResponseCount:isUnlimitedResponseCount];
+        
+        QredoVault *vault = [self systemVault];
+        
+        QredoRendezvousRef *rendezvousRef
+        = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:vaultItem.metadata.descriptor
+                                                            vault:vault];
+        
+       QredoRendezvousAuthenticationType authenticationType
+        = [[vaultItem.metadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
+        
+        rendezvous.metadata
+        = [[QredoRendezvousMetadata alloc] initWithTag:descriptor.tag
+                                    authenticationType:authenticationType
+                                    rendezvousRef:rendezvousRef];
+        
         return rendezvous;
-    }
+        
+        
+   }
     @catch (NSException *e) {
         if (error) {
             *error = [NSError errorWithDomain:QredoErrorDomain
