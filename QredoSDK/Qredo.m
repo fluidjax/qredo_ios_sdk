@@ -642,39 +642,8 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 - (QredoRendezvous*)rendezvousFromVaultItem:(QredoVaultItem*)vaultItem error:(NSError**)error {
     @try {
-        QLFRendezvousDescriptor *descriptor
-        = [QredoPrimitiveMarshallers unmarshalObject:vaultItem.value
-                                        unmarshaller:[QLFRendezvousDescriptor unmarshaller]];
-
-        QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self fromLFDescriptor:descriptor];
-
-        __block BOOL isUnlimitedResponseCount = NO;
-
-        [descriptor.responseCountLimit ifRendezvousSingleResponse:^{
-            isUnlimitedResponseCount = NO;
-        } ifRendezvousUnlimitedResponses:^{
-            isUnlimitedResponseCount = YES;
-        }];
-
-        rendezvous.configuration
-        = [[QredoRendezvousConfiguration alloc] initWithConversationType:descriptor.conversationType
-                                                durationSeconds:[descriptor.durationSeconds anyObject]
-                                                isUnlimitedResponseCount:isUnlimitedResponseCount];
-        
-        QredoVault *vault = [self systemVault];
-        
-        QredoRendezvousRef *rendezvousRef
-        = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:vaultItem.metadata.descriptor
-                                                            vault:vault];
-        
-       QredoRendezvousAuthenticationType authenticationType
-        = [[vaultItem.metadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
-        
-        rendezvous.metadata
-        = [[QredoRendezvousMetadata alloc] initWithTag:descriptor.tag
-                                    authenticationType:authenticationType
-                                    rendezvousRef:rendezvousRef];
-        
+ 
+        QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithVaultItem:self fromVaultItem:vaultItem];
         return rendezvous;
         
         
