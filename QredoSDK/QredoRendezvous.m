@@ -106,7 +106,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 @property QredoRendezvousConfiguration *configuration;
 @property (readwrite, copy) NSString *tag;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
-@property (readwrite) QredoRendezvousMetadata *metadata;
+@property  QredoRendezvousMetadata *metadata;
 
 - (NSSet *)maybe:(id)object;
 
@@ -150,6 +150,45 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
     return self;
 }
+
+- (instancetype)initWithVaultItem:(QredoClient *)client fromVaultItem: (QredoVaultItem*)vaultItem
+{
+    
+    
+    QLFRendezvousDescriptor *descriptor  = [QredoPrimitiveMarshallers unmarshalObject:vaultItem.value
+                                            unmarshaller:[QLFRendezvousDescriptor unmarshaller]];
+   
+    self = [self initWithClient:client fromLFDescriptor:descriptor];
+    
+    __block BOOL isUnlimitedResponseCount = NO;
+    
+    [descriptor.responseCountLimit ifRendezvousSingleResponse:^{
+        isUnlimitedResponseCount = NO;
+    } ifRendezvousUnlimitedResponses:^{
+        isUnlimitedResponseCount = YES;
+    }];
+    
+    self.configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:descriptor.conversationType
+                                                               durationSeconds:[descriptor.durationSeconds anyObject]
+                                                               isUnlimitedResponseCount:isUnlimitedResponseCount];
+    
+    
+    QredoVault *vault = [_client systemVault];
+    
+    QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:vaultItem.metadata.descriptor
+                                                                    vault:vault];
+    
+    QredoRendezvousAuthenticationType authenticationType = [[vaultItem.metadata.summaryValues
+                                                             objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
+    
+    
+    self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:descriptor.tag
+                                                     authenticationType:authenticationType
+                                                     rendezvousRef:rendezvousRef];
+    
+    return self;
+}
+
 
 // TODO: DH - provide alternative method signature for non-X.509 authenticated rendezvous without trustedRootPems?
 - (void)createRendezvousWithTag:(NSString *)tag
