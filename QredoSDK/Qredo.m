@@ -780,6 +780,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     });
 }
 
+
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
                       completionHandler:(void (^)(NSError *))completionHandler
 {
@@ -823,6 +824,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
      }];
 }
 
+
 - (void)deleteConversationWithRef:(QredoConversationRef *)conversationRef
                completionHandler:(void(^)(NSError *error))completionHandler
 {
@@ -837,6 +839,65 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
          [conversation deleteConversationWithCompletionHandler:completionHandler];
      }];
 }
+
+
+- (void)activateRendezvous:(QredoRendezvousRef *)ref
+              duration:(NSNumber *)duration
+              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+
+{
+    // validate that the duration is >= 0
+    if (duration < 0)
+    {
+        NSString *message = @"'The Rendezvous duration must not be negative";
+        LogError(@"%@", message);
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeRendezvousInvalidData
+                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
+        completionHandler(nil, error);
+        return;
+    }
+
+    // get the Rendezvous using the ref
+    [self fetchRendezvousWithRef: ref completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        
+        if (error) {
+            completionHandler(nil, error);
+            return ;
+        }
+        
+        [rendezvous activateRendezvous:duration completionHandler:^(NSError *error)
+           {
+               if (error) {
+                   completionHandler(nil, error);
+               } else {
+                   completionHandler(rendezvous, nil);
+               }
+            }
+         ];
+        }
+     ];
+                 
+}
+
+
+- (void)deactivateRendezvous:(QredoRendezvousRef *)ref
+           completionHandler:(void (^)(NSError *))completionHandler
+
+{
+    
+    // get the Rendezvous using the ref
+    [self fetchRendezvousWithRef: ref completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        
+        if (error) {
+            completionHandler(error);
+            return ;
+        }
+    }];
+
+    
+}
+
 
 #pragma mark -
 #pragma mark Private Methods
