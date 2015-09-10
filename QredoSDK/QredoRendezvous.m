@@ -103,8 +103,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 // making the properties read/write for private use
-@property (readwrite) NSNumber *durationSeconds;
-@property (readwrite) BOOL isUnlimitedResponseCount;
 @property QredoRendezvousConfiguration *configuration;
 
 @property (readwrite, copy) NSString *tag;
@@ -360,17 +358,27 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 {
     NSError *error = nil;
+    NSSet *durationSeconds  = [self maybe:duration];
     
-    NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:nil
+    NSData *marshalledData = nil;
+    NSMutableData *payloadData = [NSMutableData data];
+    
+    
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:nil
                                                         marshaller:^(id element, QredoWireFormatWriter *writer)
-                           {
-                               [writer writeQUID:_hashedTag];
-                           }
-                           includeHeader:NO];
+                       {[writer writeQUID:_hashedTag];}
+                        includeHeader:NO];
+    [payloadData appendData:marshalledData];
+
+    
+    QredoMarshaller setMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]];
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:durationSeconds marshaller:setMarshaller includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
     
     QLFOwnershipSignature *ownershipSignature =
     [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
-                                          operationType:[QLFOperationType operationList]
+                                          operationType:[QLFOperationType operationCreate]
                                          marshalledData:payloadData
                                          error:&error];
     
@@ -379,8 +387,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         return;
     }
   
-    
-    NSSet *durationSeconds  = [self maybe:duration];
     
        
     [_rendezvous activateWithHashedTag:_hashedTag
@@ -462,10 +468,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                             rendezvousRef:rendezvousRef];
                   
                   // when we know everything is successful, update the rendezvous duration and response count
-                  // the update rendezvous ref will be available in the rendezvous object
-                  self.configuration.durationSeconds = duration;
-                  self.configuration.isUnlimitedResponseCount = TRUE;
-
+                  // the updated rendezvous ref will be available in the rendezvous object
+                  self.configuration = [[QredoRendezvousConfiguration alloc]  initWithConversationType:_descriptor.conversationType
+                                                                              durationSeconds: duration
+                                                                              isUnlimitedResponseCount:TRUE];
+                  
               }
               completionHandler(error);
               
@@ -473,6 +480,39 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
          
      }];
     
+}
+
+- (void)deactivateRendezvous: (void(^)(NSError* error))completionHandler
+{
+   NSError *error = nil;
+    
+    NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:nil
+                                                        marshaller:^(id element, QredoWireFormatWriter *writer)
+                           {
+                               [writer writeQUID:_hashedTag];
+                           }
+                                                     includeHeader:NO];
+    
+   QLFOwnershipSignature *ownershipSignature =
+    [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
+                                          operationType:[QLFOperationType operationDelete]
+                                         marshalledData:payloadData
+                                                  error:&error];
+    
+    if (error) {
+        completionHandler(error);
+        return;
+    }
+    
+    
+    [_rendezvous deactivateWithHashedTag:_hashedTag
+                     signature:ownershipSignature
+                     completionHandler:^(QLFRendezvousDeactivated *result, NSError *error)
+       {
+           completionHandler(error);
+       }
+     ];
+
 }
 
 

@@ -22,15 +22,6 @@
 @end
 
 
-@interface QredoRendezvousConfiguration (Private)
-
-@property (readwrite) NSNumber *durationSeconds;
-@property (readwrite) BOOL isUnlimitedResponseCount;
-
-@end
-
-
-
 @interface QredoRendezvous (Private)
 
 @property (readwrite) QredoRendezvousConfiguration *configuration;
@@ -51,6 +42,8 @@
               completionHandler:(void(^)(NSError *error))completionHandler;
 - (void)activateRendezvous: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler;
 - (void)updateRendezvousWithDuration: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler;
+- (void)deactivateRendezvous :(void (^)(NSError *error))completionHandler;
+
 
 
 

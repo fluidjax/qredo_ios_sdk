@@ -841,7 +841,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 }
 
 
-- (void)activateRendezvous:(QredoRendezvousRef *)ref
+- (void)activateRendezvousWithRef:(QredoRendezvousRef *)ref
               duration:(NSNumber *)duration
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 
@@ -866,6 +866,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
             return ;
         }
         
+        
         [rendezvous activateRendezvous:duration completionHandler:^(NSError *error)
            {
                if (error) {
@@ -881,7 +882,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 }
 
 
-- (void)deactivateRendezvous:(QredoRendezvousRef *)ref
+- (void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref
            completionHandler:(void (^)(NSError *))completionHandler
 
 {
@@ -893,6 +894,13 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
             completionHandler(error);
             return ;
         }
+        
+    [rendezvous deactivateRendezvous:^(NSError *error) {
+        
+         completionHandler(error);
+      }];
+        
+          
     }];
 
     
