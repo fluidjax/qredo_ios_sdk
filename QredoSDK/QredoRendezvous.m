@@ -450,7 +450,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
          QredoVaultItem *newVaultItem =
          [QredoVaultItem vaultItemWithMetadata:metadataCopy value: updatedRendezvousData];
          
-         // update the vault item
+         // add the item to the Vault. This will be the same Rendezvous but will update the sequence value
           [_client.systemVault strictlyUpdateItem: newVaultItem completionHandler: ^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
           {
               if (error) {
@@ -467,8 +467,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                             authenticationType:self.authenticationType
                                                             rendezvousRef:rendezvousRef];
                   
-                  // when we know everything is successful, update the rendezvous duration and response count
-                  // the updated rendezvous ref will be available in the rendezvous object
                   self.configuration = [[QredoRendezvousConfiguration alloc]  initWithConversationType:_descriptor.conversationType
                                                                               durationSeconds: duration
                                                                               isUnlimitedResponseCount:TRUE];
