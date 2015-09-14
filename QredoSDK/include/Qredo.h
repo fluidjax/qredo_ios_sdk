@@ -9,8 +9,6 @@
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
 #import "QredoErrorCodes.h"
-#import "QredoAttestationRelyingParty.h"
-#import "QredoClaimantAttestationSession.h"
 
 // Revision 1
 // See https://github.com/Qredo/ios-sdk/wiki/SDK-revisions
@@ -112,15 +110,5 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 - (void)fetchConversationWithRef:(QredoConversationRef *)conversationRef completionHandler:(void(^)(QredoConversation* conversation, NSError *error))completionHandler;
 
 - (void)deleteConversationWithRef:(QredoConversationRef *)conversationRef completionHandler:(void(^)(NSError *error))completionHandler;
-
-@end
-
-@interface QredoClient (Attestation)
-
-- (void)registerAttestationRelyingPartyWithTypes:(NSArray*)attestationTypes /* dob, photo */
-                               completionHandler:(void(^)(QredoAttestationRelyingParty *relyingParty, NSError *error))completionHandler;
-
-- (void)enumeratateAttestationRelyingPartiesWithBlock:(void(^)(QredoAttestationRelyingParty *relyingParty, BOOL *stop))block
-                                    completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
