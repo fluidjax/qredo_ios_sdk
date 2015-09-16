@@ -1,6 +1,5 @@
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoRendezvous.h"
 
 @interface QredoRendezvousTests : XCTestCase
 
@@ -27,8 +26,5 @@
 - (void)testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix;
 - (void)testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix;
 - (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature;
-- (void)testActivateExpiredRendezvous;
-- (void)testActivateExpiredRendezvousAndFetchFromNewRef;
-
 
 @end
