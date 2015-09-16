@@ -120,9 +120,9 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
         completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 /** Deactivates a Rendezvous.
-Existing conversations established with this Rendezvous will still be available.
+Existing conversations established with this Rendezvous will still be available and are NOT closed
 New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again */
-- (void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void(^)(NSError *error))completionHandler;
+ - (void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
 
