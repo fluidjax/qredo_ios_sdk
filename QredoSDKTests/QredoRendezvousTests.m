@@ -1595,39 +1595,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 - (void)testDeactivateAndRespondToRendezvous
 {
     
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    
     NSNumber *testDuration = [NSNumber numberWithLong: 300];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
 
-    
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc]
-                                                   initWithConversationType:kRendezvousTestConversationType
-                                                   durationSeconds:testDuration
-                                                   isUnlimitedResponseCount:FALSE];
-    
-    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-    
-    __block QredoRendezvousRef *rendezvousRef = nil;
-    
-    NSLog(@"Creating rendezvous");
-    [client createAnonymousRendezvousWithTag:randomTag
-                               configuration:configuration
-                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-                               XCTAssertNil(error);
-                               XCTAssertNotNil(rendezvous);
-                               
-                               XCTAssertNotNil(rendezvous.metadata);
-                               XCTAssertNotNil(rendezvous.metadata.rendezvousRef);
-                               
-                               rendezvousRef = rendezvous.metadata.rendezvousRef;
-                               
-                               [createExpectation fulfill];
-                           }];
-    
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
-        createExpectation = nil;
-    }];
-
-    
     
     // should not be able to respond to a deactivated rendezvous
      __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate rendezvous"];
@@ -1641,7 +1614,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
          NSLog(@"Trying to respond to deactivated rendezvous");
 
          // responding to the deactivated rendezvous should fail
-         [client respondWithTag: randomTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+         [client respondWithTag: self.randomlyCreatedTag completionHandler:^(QredoConversation *conversation, NSError *error) {
              //
              XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse);
          }];
