@@ -721,6 +721,18 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 - (void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
+  // an unknown ref will throw an exception, but catch a nil ref here
+  if (ref == nil)
+   {
+        NSString *message = @"'The RendezvousRef must not be nil";
+        
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeRendezvousInvalidData
+                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
+        completionHandler(nil, error);
+        return;
+   }
+    
     [self fetchRendezvousWithVaultItemDescriptor:ref.vaultItemDescriptor completionHandler:completionHandler];
 }
 
@@ -846,10 +858,23 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 
 {
-    // validate that the duration is >= 0
-    if (duration < 0)
+    
+    if (completionHandler == nil) {
+        
+        NSException* myException = [NSException
+                                    exceptionWithName:@"NilCompletionHandler"
+                                    reason:@"CompletionHandlerisNil"
+                                    userInfo:nil];
+        @throw myException;
+        
+    }
+    
+    // validate that the duration is >= 0 and that the RendezvousRef is not nil
+      if ([duration longValue] < 0)
+
     {
-        NSString *message = @"'The Rendezvous duration must not be negative";
+        NSString *message =  @"'The Rendezvous duration must not be negative";
+
         LogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
@@ -857,6 +882,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         completionHandler(nil, error);
         return;
     }
+    
 
     // get the Rendezvous using the ref
     [self fetchRendezvousWithRef: ref completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
@@ -867,7 +893,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         }
         
         
-        [rendezvous activateRendezvous:duration completionHandler:^(NSError *error)
+      [rendezvous activateRendezvous:duration completionHandler:^(NSError *error)
            {
                if (error) {
                    completionHandler(nil, error);
@@ -878,7 +904,8 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
          ];
         }
      ];
-                 
+    
+    
 }
 
 
@@ -886,6 +913,17 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
            completionHandler:(void (^)(NSError *))completionHandler
 
 {
+    
+    if (completionHandler == nil) {
+        
+        NSException* myException = [NSException
+                                    exceptionWithName:@"NilCompletionHandler"
+                                    reason:@"CompletionHandlerisNil"
+                                    userInfo:nil];
+        @throw myException;
+        
+    }
+
     
     // get the Rendezvous using the ref
     [self fetchRendezvousWithRef: ref completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
