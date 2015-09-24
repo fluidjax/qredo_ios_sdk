@@ -1584,32 +1584,24 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 - (void)testActivateUnknownRendezvous
 {
     // create an invalid rendezvousRef
-    QredoRendezvousRef *rendezvousRef = ((QredoRendezvousRef *)@1235555);
-    
+    QredoRendezvousRef *rendezvousRef = [self createUnknownRendezvousRef];
+    XCTAssertNotNil(rendezvousRef);
+
     
     NSNumber *activateWithNewDuration =  [NSNumber numberWithLong: 1000];
     
     __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
     
-    @try {
-        
-        // now activate the rendezvous
+        // now activate the rendezvous.
         [client activateRendezvousWithRef:rendezvousRef duration: activateWithNewDuration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
             
-            // check the responses
+            // check the response. it should return an error since the rendezvous cannot be found
             XCTAssertNotNil(error);
-            
+            XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
+
             [createActivateExpectation fulfill];
         }];
         
-    }
-    
-    @catch (NSException *e) {
-        
-        // we are expecting an error. 
-        [createActivateExpectation fulfill];
-        
-    }
     
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
         createActivateExpectation = nil;
@@ -1884,47 +1876,78 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
 }
 
+
+
 - (void)testDeactivateUnknownRendezvous
 {
     
-    // create an invalid rendezvousRef
-    QredoRendezvousRef *rendezvousRef = ((QredoRendezvousRef *)@1235555);
+    QredoRendezvousRef *newRef = [self createUnknownRendezvousRef];
+    XCTAssertNotNil(newRef);
+
     
-    __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate nil rendezvous"];
+     __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate unknown rendezvous"];
     
-    @try {
-    
-    
-    // now deactivate the rendezvous
-    [client deactivateRendezvousWithRef:rendezvousRef completionHandler:^(NSError *error) {
-        
-        // check the responses. we expect an error
-        XCTAssertNotNil(error);
-        XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
-        
-        [deactivateExpectation fulfill];
-        
-    }];
-        
-    }
-    
-    @catch (NSException *e) {
-        
-        // we are expecting an error. check it's the right one
-        [deactivateExpectation fulfill];
-        
-    }
-    
-    
+
+       // now deactivate the rendezvous
+     [client deactivateRendezvousWithRef:newRef completionHandler:^(NSError *error) {
+         
+         // check the responses. we expect an error. for this test it will be QredoErrorCodeRendezvousInvalidData
+         XCTAssertNotNil(error);
+         XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
+         [deactivateExpectation fulfill];
+         
+     }];
+     
+  
     [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
-        deactivateExpectation = nil;
-    }];
-    
+         deactivateExpectation = nil;
+     }];
+
     
 }
 
 
+- (QredoRendezvousRef*) createUnknownRendezvousRef
 
+{
+    
+    
+    QredoVault *vault = [client systemVault];
+    
+    NSDictionary *item1SummaryValues = @{@"name": @"Joe Bloggs"};
+    QredoVaultItem *item1 =
+    [QredoVaultItem vaultItemWithMetadata:
+     [QredoVaultItemMetadata
+      vaultItemMetadataWithDataType :@"com.qredo.test"
+      accessLevel:0
+      summaryValues:item1SummaryValues]
+                                    value:[@"item name" dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    __block XCTestExpectation *createRendezvousRefExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    __block QredoRendezvousRef *rendezvousRef = nil;
+    
+    NSLog(@"Creating rendezvous ref");
+    
+    [vault putItem:item1 completionHandler:
+     ^(QredoVaultItemMetadata  *newVaultItemMetadata, NSError *error)
+     {
+         
+         rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:newVaultItemMetadata.descriptor
+                                                                    vault: vault];
+         
+         [createRendezvousRefExpectation fulfill];
+         
+       }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createRendezvousRefExpectation = nil;
+    }];
+    
+    return rendezvousRef;
+    
+}
 
 
 
