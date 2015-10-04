@@ -20,7 +20,7 @@ target 'QredoSDK' do
     pod "QredoCrypto", :path => "../qredo_ios_crypto/QredoCrypto.podspec"
     pod "LinguaFranca", :path => "../LinguaFranca/LinguaFranca.podspec"
 #    pod "QredoLibPaho", :path => "../qredo_ios_libpaho/QredoLibPaho.podspec"
-#    pod "SocketRocket", :path => "../SocketRocket/SocketRocket.podspec"
+    pod "SocketRocket", :path => "../SocketRocket/SocketRocket.podspec"
 
 end
 

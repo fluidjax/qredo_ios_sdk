@@ -51,7 +51,7 @@ class AuthenticationProtocolTests: BaseConversation {
         var receivedClaims = false
         let validatorDelegate = ConversationBlockDelegate()
         validatorDelegate.messageHandler = { (message : QredoConversationMessage) in
-            println("Received \(message.dataType)")
+            print("Received \(message.dataType)")
 
             if message.dataType == "com.qredo.attestation.authentication.claims" {
                 if (receivedClaims) {
@@ -76,7 +76,7 @@ class AuthenticationProtocolTests: BaseConversation {
 
         let validatorDelegate = ConversationBlockDelegate()
         validatorDelegate.messageHandler = { (message : QredoConversationMessage) in
-            println("Received \(message.dataType)")
+            print("Received \(message.dataType)")
 
             if message.dataType == "com.qredo.attestation.cancel" {
                 cancelMessageExpectation.fulfill()
@@ -119,12 +119,12 @@ class AuthenticationProtocolTests: BaseConversation {
 
         let validatorDelegate = ConversationBlockDelegate()
         validatorDelegate.messageHandler = { (message : QredoConversationMessage) in
-            println("Received \(message.dataType)")
+            print("Received \(message.dataType)")
 
             if message.dataType == "com.qredo.attestation.authentication.claims" {
                 receivedRequestExpectation.fulfill()
 
-                println("publishing response")
+                print("publishing response")
 
                 self.creatorConversation.publishMessage(responseMessage, completionHandler: publishResponseCompletionHandler)
             }
@@ -163,12 +163,12 @@ class AuthenticationProtocolTests: BaseConversation {
         let successOrFailureExpectation = self.expectationWithDescription("finish authentication protocol")
 
         authDelegate.sentClaimsBlock = {
-            println("Sent claims")
+            print("Sent claims")
             sentClaimsExpectation.fulfill()
         }
 
         authDelegate.failureBlock = { (error : NSError) in
-            println("received error \(error)")
+            print("received error \(error)")
             successOrFailureExpectation.fulfill()
 
             if let errorCode = expectErrorCode?.rawValue {
@@ -179,7 +179,7 @@ class AuthenticationProtocolTests: BaseConversation {
         }
 
         authDelegate.successBlock = { result in
-            println("received response \(result)")
+            print("received response \(result)")
             successOrFailureExpectation.fulfill()
 
             if expectErrorCode != nil {
@@ -191,7 +191,7 @@ class AuthenticationProtocolTests: BaseConversation {
         authProtocol.sendAuthenticationRequest(authRequest)
 
         self.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: { (error) -> Void in
-            println("Timed out")
+            print("Timed out")
         })
         
         creatorConversation.removeConversationObserver(validatorDelegate)

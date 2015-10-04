@@ -34,7 +34,9 @@ class KeychainTransporterReceiverTests: XCTestCase {
     }
 
     func stripURIPrefix(tag: String) -> String {
-        let tagIndex = advance(tag.startIndex, QredoRendezvousURIProtocol.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        
+        let tagIndex = tag.startIndex.advancedBy(QredoRendezvousURIProtocol.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+        
         return tag.substringFromIndex(tagIndex)
     }
 
@@ -93,9 +95,9 @@ class KeychainTransporterReceiverTests: XCTestCase {
         let receiver = QredoKeychainReceiver(client: receiverClient, delegate: receiverMock)
 
         var receiverCompletionExpectation : XCTestExpectation? = self.expectationWithDescription("receiver completion")
-        var deviceInfoExpectation = self.expectationWithDescription("receive device info")
+        let deviceInfoExpectation = self.expectationWithDescription("receive device info")
 
-        var conversationDelegate = ConversationBlockDelegate()
+        let conversationDelegate = ConversationBlockDelegate()
         conversationDelegate.messageHandler = { message in
             if message.dataType == QredoKeychainTransporterMessageTypeDeviceInfo {
                 deviceInfoExpectation.fulfill()
@@ -169,13 +171,13 @@ class KeychainTransporterReceiverTests: XCTestCase {
         let receiver = QredoKeychainReceiver(client: receiverClient, delegate: receiverMock)
 
         var receiverCompletionExpectation : XCTestExpectation? = self.expectationWithDescription("receiver completion")
-        var deviceInfoExpectation = self.expectationWithDescription("receive device info")
-        var publishInvalidKeychain = self.expectationWithDescription("publish keychain")
-        var acknowledgeExpectation = self.expectationWithDescription("confirm or cancel message")
+        let deviceInfoExpectation = self.expectationWithDescription("receive device info")
+        let publishInvalidKeychain = self.expectationWithDescription("publish keychain")
+        let acknowledgeExpectation = self.expectationWithDescription("confirm or cancel message")
 
         var transporterConversation : QredoConversation? = nil
 
-        var conversationDelegate = ConversationBlockDelegate()
+        let conversationDelegate = ConversationBlockDelegate()
         conversationDelegate.messageHandler = { (message:QredoConversationMessage) -> Void in
 
             switch message.dataType {

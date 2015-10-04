@@ -93,12 +93,12 @@ class QredoVaultConsolidationTests: XCTestCase {
                 summaryValues: [:]),
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         
-        var firstPutItemDescriptor: QredoVaultItemDescriptor?
+       // var firstPutItemDescriptor: QredoVaultItemDescriptor?
         expectation = expectationWithDescription("first put")
         vault.putItem(item1, completionHandler: { (itemMetadata, error) -> Void in
             XCTAssertNil(error, "must not get an error from first put")
             XCTAssertNotNil(itemMetadata, "we must get a metadata from first put")
-            firstPutItemDescriptor = itemMetadata.descriptor
+            //firstPutItemDescriptor = itemMetadata.descriptor
             expectation.fulfill()
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
@@ -149,12 +149,12 @@ class QredoVaultConsolidationTests: XCTestCase {
                 summaryValues: [:]),
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         
-        var thirdPutItemDescriptor: QredoVaultItemDescriptor?
+        //var thirdPutItemDescriptor: QredoVaultItemDescriptor?
         expectation = expectationWithDescription("third put, puting a new item")
         vault.putItem(item2, completionHandler: { (itemMetadata, error) -> Void in
             XCTAssertNil(error, "must not get an error from first put")
             XCTAssertNotNil(itemMetadata, "must get a metadata from first put")
-            thirdPutItemDescriptor = itemMetadata.descriptor
+            //thirdPutItemDescriptor = itemMetadata.descriptor
             expectation.fulfill()
         })
         waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
@@ -235,9 +235,9 @@ class QredoVaultConsolidationTests: XCTestCase {
         
         expectation = expectationWithDescription("an update put, update the second item twice")
         listener.expecation = expectation
-        let item2Updated = QredoVaultItem(
+        /*let item2Updated = QredoVaultItem(
             metadata: listener.receivedItemMetadata.first,
-            value: NSData.qtu_dataWithRandomBytesOfLength(1024))
+            value: NSData.qtu_dataWithRandomBytesOfLength(1024))*/
         
         vault.putItem(item1Updated, completionHandler: { (itemDescriptor, error) -> Void in
         })

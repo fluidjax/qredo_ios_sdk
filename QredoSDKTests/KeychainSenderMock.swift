@@ -67,7 +67,7 @@ class KeychainSenderMock : NSObject, QredoKeychainSenderDelegate {
 
         if self.shouldWaitForRendezvousTag {
             dispatch_semaphore_wait(discoverSemaphore, DISPATCH_TIME_FOREVER);
-            println("discovered tag \(self.shouldDiscoverTag)")
+            print("discovered tag \(self.shouldDiscoverTag)")
         }
 
         didVerifyTag = completionHandler(shouldDiscoverTag)

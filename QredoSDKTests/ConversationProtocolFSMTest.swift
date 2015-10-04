@@ -67,7 +67,7 @@ class ConversationProtocolFSMTest: XCTestCase {
         let conversationDelegate = ConversationBlockDelegate()
         var count = 0
         conversationDelegate.messageHandler = { message in
-            println("Received message \(message.dataType)")
+            print("Received message \(message.dataType)")
             count++
 
             XCTAssertEqual(message.dataType, "\(messageTypePrefix).\(count)")
@@ -104,7 +104,7 @@ class ConversationProtocolFSMTest: XCTestCase {
                 summaryValues: [:])
             let publishExpectation = expectationWithDescription("publish message \(messageIndex)")
             conversation.publishMessage(message, completionHandler: { (hwm, error) -> Void in
-                println("published message \(messageIndex)")
+                print("published message \(messageIndex)")
                 publishExpectation.fulfill()
             })
 
@@ -123,7 +123,7 @@ class ConversationProtocolFSMTest: XCTestCase {
             let index = stateIndex
             let state = QredoConversationProtocolExpectingState { (message) -> Bool in
                 let expectedMessageType = "\(messageTypePrefix).\(index)"
-                println("received message \(message.dataType), expecting \(expectedMessageType)")
+                print("received message \(message.dataType), expecting \(expectedMessageType)")
                 expectation.fulfill()
 
 
@@ -192,7 +192,7 @@ class ConversationProtocolFSMTest: XCTestCase {
         let publishExpectation = expectationWithDescription("publish message")
         conversationHelper.responderConversation.publishMessage(message, completionHandler:
             { (hwm, error) -> Void in
-                println("published message")
+                print("published message")
                 publishExpectation.fulfill()
             })
 
@@ -218,7 +218,7 @@ class ConversationProtocolFSMTest: XCTestCase {
         let conversationHelper = ConversationsHelper()
         conversationHelper.setUp(self)
 
-        let messageTypePrefix = "com.test"
+       // let messageTypePrefix = "com.test"
 
         let conversationProtocol = QredoConversationProtocolFSM(conversation: conversationHelper.creatorConversation)
         var states : [QredoConversationProtocolFSMState] = []
@@ -230,7 +230,7 @@ class ConversationProtocolFSMTest: XCTestCase {
             processExpectation.append(expectation)
 
             let state = QredoConversationProtocolProcessingState { state in
-                println("processing state \(stateIndex)")
+                print("processing state \(stateIndex)")
                 expectation.fulfill()
                 state.finishProcessing()
             }
@@ -275,7 +275,7 @@ class ConversationProtocolFSMTest: XCTestCase {
         let conversationProtocol = QredoConversationProtocolFSM(conversation: conversationHelper.creatorConversation)
         conversationProtocol.addStates([
             QredoConversationProtocolProcessingState { (state : QredoConversationProtocolProcessingState) -> Void in
-                println("calling failWithError")
+                print("calling failWithError")
                 state.failWithError(NSError(domain: errorDomain, code: 1, userInfo: nil))
             }
         ])
@@ -301,10 +301,10 @@ class ConversationProtocolFSMTest: XCTestCase {
         var receiveMessageExpectation : XCTestExpectation? = expectationWithDescription("received message")
         let conversationDelegate = ConversationBlockDelegate()
         conversationDelegate.messageHandler = { message in
-            println("Received message \(message.dataType)")
+            print("Received message \(message.dataType)")
 
             let stringValue = NSString(data: message.value, encoding: NSUTF8StringEncoding)
-            println("message value: \(stringValue)")
+            print("message value: \(stringValue)")
 
             receiveMessageExpectation?.fulfill()
         }
@@ -328,10 +328,10 @@ class ConversationProtocolFSMTest: XCTestCase {
         conversationProtocol.addStates([
             QredoConversationProtocolProcessingState { (state : QredoConversationProtocolProcessingState) -> Void in
                 var keepGoing = true
-                println("start processing")
+                print("start processing")
 
                 state.onInterrupted {
-                    println("interrupted")
+                    print("interrupted")
                     keepGoing = false
                 }
 
@@ -339,7 +339,7 @@ class ConversationProtocolFSMTest: XCTestCase {
                     NSThread.sleepForTimeInterval(0.1)
                 }
 
-                println("exit processing")
+                print("exit processing")
                 state.finishProcessing()
             }
             ])
@@ -369,10 +369,10 @@ class ConversationProtocolFSMTest: XCTestCase {
         var receiveMessageExpectation : XCTestExpectation? = expectationWithDescription("received message")
         let conversationDelegate = ConversationBlockDelegate()
         conversationDelegate.messageHandler = { message in
-            println("Received message \(message.dataType)")
+            print("Received message \(message.dataType)")
 
             let stringValue = NSString(data: message.value, encoding: NSUTF8StringEncoding)
-            println("message value: \(stringValue)")
+            print("message value: \(stringValue)")
 
             receiveMessageExpectation?.fulfill()
         }
@@ -396,10 +396,10 @@ class ConversationProtocolFSMTest: XCTestCase {
         conversationProtocol.addStates([
             QredoConversationProtocolProcessingState { (state : QredoConversationProtocolProcessingState) -> Void in
                 var keepGoing = true
-                println("start processing")
+                print("start processing")
 
                 state.onInterrupted {
-                    println("interrupted")
+                    print("interrupted")
                     keepGoing = false
                 }
 
@@ -407,7 +407,7 @@ class ConversationProtocolFSMTest: XCTestCase {
                     NSThread.sleepForTimeInterval(0.1)
                 }
 
-                println("exit processing")
+                print("exit processing")
                 state.finishProcessing()
             }
             ])
@@ -419,7 +419,7 @@ class ConversationProtocolFSMTest: XCTestCase {
         }
 
         protocolDelegate.onError = { error in
-            println("protocol.onError=\(error)")
+            print("protocol.onError=\(error)")
             protocolFailExpectation?.fulfill()
         }
         conversationProtocol.startWithDelegate(protocolDelegate)
@@ -427,11 +427,11 @@ class ConversationProtocolFSMTest: XCTestCase {
         // it should get to the state
         NSThread.sleepForTimeInterval(1.0)
 
-        println("sending cancel message")
+        print("sending cancel message")
         conversationHelper.responderConversation.publishMessage(
             QredoConversationMessage(value: nil, dataType: "com.qredo.cancel", summaryValues: [:]),
             completionHandler: { (hwm, error) -> Void in
-                println("sent cancel message")
+                print("sent cancel message")
                 XCTAssertNil(error, "failed to send cancel message")
             }
         )
@@ -449,7 +449,7 @@ class ConversationProtocolFSMTest: XCTestCase {
         let conversation : QredoConversation? = nil
         let conversationProtocol = QredoConversationProtocolFSM(conversation: conversation!)
 
-        var authenticationResult : QredoAuthenticationResult?
+       // var authenticationResult : QredoAuthenticationResult?
 
         let requestPresentations = QredoConversationProtocolPublishingState {
             QredoConversationMessage(value: nil, dataType: "presentation", summaryValues: [:])

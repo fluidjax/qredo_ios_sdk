@@ -28,7 +28,7 @@ class AuthenticationManualTest: XCTestCase {
         // TODO: DH - Suspect we're not responding to an X.509 authenticated rendezvous, so nil trustedRootPems/crlPems is okay for test
         client.respondWithTag(rendezvousTag, trustedRootPems:nil, crlPems:nil, completionHandler: { (conversation_, error) -> Void in
             if error != nil {
-                println("failed to respond: \(error)")
+                print("failed to respond: \(error)")
             }
             conversation = conversation_
             conversationExpectation.fulfill()
@@ -63,17 +63,17 @@ class AuthenticationManualTest: XCTestCase {
         let authenticationDelegate = AuthenticationProtocolBlockDelegate()
 
         authenticationDelegate.failureBlock = { error in
-            println("error: \(error)")
+            print("error: \(error)")
             finishExpectation.fulfill()
         }
 
         authenticationDelegate.successBlock = { response in
-            println("success: \(response)")
+            print("success: \(response)")
             finishExpectation.fulfill()
         }
 
         authenticationDelegate.sentClaimsBlock = {
-            println("sent claims")
+            print("sent claims")
         }
 
 

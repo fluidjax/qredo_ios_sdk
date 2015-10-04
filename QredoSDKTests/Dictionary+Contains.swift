@@ -7,7 +7,7 @@ import Foundation
 
 extension Dictionary {
     func contains<K, V where V : Equatable>(subdictionary:[K:V]) -> Bool {
-        for (key, value) in subdictionary {
+        for (key, _) in subdictionary {
             let selfValue : Value? = self[key as! Key]
 
             if let actualValue = selfValue {
