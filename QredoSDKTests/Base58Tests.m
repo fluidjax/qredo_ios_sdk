@@ -133,7 +133,7 @@ static inline NSString *createRandomEncodedValue() {
 {
     NSError *error = nil;
     
-    NSUInteger kIterations = 1000000;
+    NSUInteger kIterations = 10000;
     srand ( (int)time(NULL) );
     
     for (int i = 1; i <= kIterations; i++) {
@@ -162,7 +162,7 @@ static inline NSString *createRandomEncodedValue() {
 {
     NSError *error = nil;
     
-    NSUInteger kIterations = 1000000;
+    NSUInteger kIterations = 10000;
     srand ( (int)time(NULL) );
     
     for (int i = 1; i <= kIterations; i++) {
@@ -189,7 +189,7 @@ static inline NSString *createRandomEncodedValue() {
 
 - (void)test_0070_EncodingRandomInequality
 {
-    NSUInteger kIterations = 1000000;
+    NSUInteger kIterations = 10000;
     srand ( (int)time(NULL) );
     
     for (int i = 1; i <= kIterations; i++) {
@@ -220,7 +220,7 @@ static inline NSString *createRandomEncodedValue() {
 {
     NSError *error = nil;
     
-    NSUInteger kIterations = 1000000;
+    NSUInteger kIterations = 10000;
     srand ( (int)time(NULL) );
     
     for (int i = 1; i <= kIterations; i++) {
@@ -255,7 +255,7 @@ static inline NSString *createRandomEncodedValue() {
 
 - (void)test_0090_EncodingExpansionTest
 {
-    NSUInteger kIterations = 100000;
+    NSUInteger kIterations = 10000;
     
     // Confirm lengths of data that base58 encoding 32 bytes of random data produces (10m iterations showed 42 to 44 bytes)
     const NSUInteger lengthOfInputData = 32;

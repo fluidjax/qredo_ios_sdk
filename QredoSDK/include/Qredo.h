@@ -9,8 +9,6 @@
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
 #import "QredoErrorCodes.h"
-#import "QredoAttestationRelyingParty.h"
-#import "QredoClaimantAttestationSession.h"
 
 // Revision 1
 // See https://github.com/Qredo/ios-sdk/wiki/SDK-revisions
@@ -123,15 +121,5 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 Existing conversations established with this Rendezvous will still be available and are NOT closed
 New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again */
  - (void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void(^)(NSError *error))completionHandler;
-
-@end
-
-@interface QredoClient (Attestation)
-
-- (void)registerAttestationRelyingPartyWithTypes:(NSArray*)attestationTypes /* dob, photo */
-                               completionHandler:(void(^)(QredoAttestationRelyingParty *relyingParty, NSError *error))completionHandler;
-
-- (void)enumeratateAttestationRelyingPartiesWithBlock:(void(^)(QredoAttestationRelyingParty *relyingParty, BOOL *stop))block
-                                    completionHandler:(void(^)(NSError *error))completionHandler;
 
 @end
