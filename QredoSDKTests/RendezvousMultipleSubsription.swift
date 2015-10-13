@@ -103,7 +103,7 @@ class RendezvousMultipleSubsription: XCTestCase {
         var receivedResponse = false
         let createdRendezvousListener = RendezvousBlockObserver()
         createdRendezvousListener.responseHandler = { conversation in
-            println("createdRendezvousListener respond")
+            print("createdRendezvousListener respond")
             XCTAssertFalse(receivedResponse, "Already received one response")
 
             receivedResponse = true
@@ -135,7 +135,7 @@ class RendezvousMultipleSubsription: XCTestCase {
         var receiveResponseOnFetchedRendezvousExpectation : XCTestExpectation? = expectationWithDescription("response on fetched rendezvous")
         var receiveResponseOnFetchedRendezvous = false
         fetchedRendezvousListener.responseHandler = { conversation in
-            println("fetchedRendezvousListener respond")
+            print("fetchedRendezvousListener respond")
             XCTAssertFalse(receiveResponseOnFetchedRendezvous, "Already received one response")
 
             receiveResponseOnFetchedRendezvous = true
@@ -143,7 +143,7 @@ class RendezvousMultipleSubsription: XCTestCase {
         }
 
         fetchedRendezvousListener.errorHandler = { error in
-            println("fetchedRendezvousListener: error \(error)")
+            print("fetchedRendezvousListener: error \(error)")
             XCTFail("something failed in the listener \(error)")
         }
 

@@ -5,7 +5,6 @@ package
 # Cocoapods
 #
 Pods
-Podfile.lock
 
 
 # Xcode

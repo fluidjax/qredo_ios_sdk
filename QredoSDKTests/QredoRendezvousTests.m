@@ -132,6 +132,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 @property (nonatomic) NSArray *crlPems;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property (nonatomic, copy) NSString *publicKeyCertificateChainPem;
+@property  NSString *randomlyCreatedTag;
+
 
 @end
 
@@ -396,6 +398,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // Remove the listener, to avoid any possibilty of the listener being held/called after exiting
     [rendezvous removeRendezvousObserver:listener];
 }
+
+
+
 
 - (void)testCreateRendezvousAndGetResponses
 {
@@ -1373,5 +1378,577 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     [anotherClient closeSession];
 }
+
+-(QredoRendezvousRef*) createRendezvousWithDuration: (NSNumber*) testDuration
+
+{
+    
+    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc]
+                                                   initWithConversationType:kRendezvousTestConversationType
+                                                   durationSeconds:testDuration
+                                                   isUnlimitedResponseCount:FALSE];
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    __block QredoRendezvousRef *rendezvousRef = nil;
+    
+    NSLog(@"Creating rendezvous");
+    
+    [client createAnonymousRendezvousWithTag:randomTag
+                               configuration:configuration
+                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(rendezvous);
+                               
+                               XCTAssertNotNil(rendezvous.metadata);
+                               XCTAssertNotNil(rendezvous.metadata.rendezvousRef);
+                               
+                               rendezvousRef = rendezvous.metadata.rendezvousRef;
+                               
+                               [createExpectation fulfill];
+                           }];
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    self.randomlyCreatedTag = randomTag;
+    return rendezvousRef;
+    
+}
+
+
+- (void)testActivateExpiredRendezvous
+{
+
+
+    NSNumber *testDuration = [NSNumber numberWithLong: 1];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+    
+    
+    // now sleep until the rendezvous expires
+    [NSThread sleepForTimeInterval:2];
+    
+    
+    // check that it has expired
+    // responding to the expired rendezvous should fail
+    [client respondWithTag: self.randomlyCreatedTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        //
+        XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse);
+    }];
+
+    NSNumber *activateWithNewDuration =  [NSNumber numberWithLong: 1000];
+    
+    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+
+    
+    // now activate the rendezvous
+    [client activateRendezvousWithRef:rendezvousRef duration: activateWithNewDuration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+      
+        // check the responses
+        XCTAssertNil(error);
+        XCTAssertNotNil(rendezvous);
+        
+        XCTAssertNotNil(rendezvous.metadata);
+        XCTAssertNotNil(rendezvous.metadata.rendezvousRef);
+        XCTAssertNotNil(rendezvous.configuration);
+        
+        // ensure that the response count is unlimited and the duration is what we passed in
+        XCTAssertTrue(rendezvous.configuration.isUnlimitedResponseCount);
+        XCTAssert([rendezvous.configuration.durationSeconds isEqualToNumber:activateWithNewDuration]);
+        
+        XCTAssert([self.randomlyCreatedTag isEqualToString:rendezvous.metadata.tag]);
+        
+        [createActivateExpectation fulfill];
+    }];
+
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createActivateExpectation = nil;
+    }];
+    
+    
+ }
+
+
+- (void)testActivateExpiredRendezvousAndFetchFromNewRef
+{
+    
+    
+    NSNumber *testDuration = [NSNumber numberWithLong: 1];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+    
+    // now sleep until the rendezvous expires
+    [NSThread sleepForTimeInterval:2];
+    
+    // check that it has expired
+    // responding to the expired rendezvous should fail
+    [client respondWithTag: self.randomlyCreatedTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        //
+        XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse);
+    }];
+
+    
+    NSNumber *activateWithNewDuration =  [NSNumber numberWithLong: 1000];
+    
+    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+    
+    
+    // now activate the rendezvous
+    [client activateRendezvousWithRef:rendezvousRef duration: activateWithNewDuration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        
+        // check the responses
+        XCTAssertNil(error);
+        XCTAssertNotNil(rendezvous);
+        
+        XCTAssertNotNil(rendezvous.metadata);
+        XCTAssertNotNil(rendezvous.metadata.rendezvousRef);
+        QredoRendezvousRef *newRendezvousRef = rendezvous.metadata.rendezvousRef;
+        
+        NSLog(@"Fetching rendezvous with new ref");
+         
+        [client fetchRendezvousWithRef:newRendezvousRef completionHandler:^(QredoRendezvous *activatedRendezvous, NSError *error) {
+            //
+            XCTAssertNotNil(activatedRendezvous);
+            
+            XCTAssertNotNil(activatedRendezvous.metadata);
+            XCTAssertNotNil(activatedRendezvous.metadata.rendezvousRef);
+            XCTAssertNotNil(activatedRendezvous.configuration);
+            
+            XCTAssertTrue(activatedRendezvous.configuration.isUnlimitedResponseCount);
+            
+            XCTAssert([activatedRendezvous.configuration.durationSeconds isEqualToNumber:activateWithNewDuration]);
+
+            XCTAssert([self.randomlyCreatedTag isEqualToString:rendezvous.metadata.tag]);
+
+        
+        }];
+         
+        [createActivateExpectation fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createActivateExpectation = nil;
+    }];
+    
+    
+}
+
+
+- (void)testActivateUnexpiredRendezvous
+{
+    NSNumber *testDuration = [NSNumber numberWithLong: 20000];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+    
+
+    NSNumber *activateWithNewDuration =  [NSNumber numberWithLong: 1000];
+    
+    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+    
+    
+    // now activate the rendezvous
+    [client activateRendezvousWithRef:rendezvousRef duration: activateWithNewDuration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        
+        // check the responses
+        XCTAssertNil(error);
+        XCTAssertNotNil(rendezvous);
+        
+        XCTAssertNotNil(rendezvous.metadata);
+        XCTAssertNotNil(rendezvous.metadata.rendezvousRef);
+        XCTAssertNotNil(rendezvous.configuration);
+        
+        XCTAssertTrue(rendezvous.configuration.isUnlimitedResponseCount);
+        XCTAssert([rendezvous.configuration.durationSeconds isEqualToNumber:activateWithNewDuration]);
+        
+        XCTAssert([self.randomlyCreatedTag isEqualToString:rendezvous.metadata.tag]);
+
+        
+        [createActivateExpectation fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createActivateExpectation = nil;
+    }];
+    
+}
+
+- (void)testActivateUnknownRendezvous
+{
+    // create an invalid rendezvousRef
+    QredoRendezvousRef *rendezvousRef = [self createUnknownRendezvousRef];
+    XCTAssertNotNil(rendezvousRef);
+
+    
+    NSNumber *activateWithNewDuration =  [NSNumber numberWithLong: 1000];
+    
+    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+    
+        // now activate the rendezvous.
+        [client activateRendezvousWithRef:rendezvousRef duration: activateWithNewDuration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+            
+            // check the response. it should return an error since the rendezvous cannot be found
+            XCTAssertNotNil(error);
+            XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
+
+            [createActivateExpectation fulfill];
+        }];
+        
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createActivateExpectation = nil;
+    }];
+    
+}
+
+
+- (void)testActivateNilRendezvous
+{
+    QredoRendezvousRef *rendezvousRef = NULL;
+    
+    
+    NSNumber *activateWithNewDuration =  [NSNumber numberWithLong: 1000];
+    
+    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+    
+    
+    // now activate the rendezvous
+    [client activateRendezvousWithRef:rendezvousRef duration: activateWithNewDuration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        
+        // check the responses. we expect an error
+        XCTAssertNotNil(error);
+        XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
+        
+        [createActivateExpectation fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createActivateExpectation = nil;
+    }];
+    
+}
+
+
+- (void)testActivateUnexpiredRendezvousNilCompletionHandler
+{
+    NSNumber *testDuration = [NSNumber numberWithLong: 20000];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+    
+    
+    NSNumber *activateWithNewDuration =  [NSNumber numberWithLong: 1000];
+    
+    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+    
+    @try {
+    
+    // activate the rendezvous with a nil completion handler
+    [client activateRendezvousWithRef:rendezvousRef duration: activateWithNewDuration completionHandler: nil];
+        
+        
+    }
+    
+    @catch (NSException *e) {
+        
+        // we are expecting an error. check it's the right one
+        XCTAssert([e.reason isEqualToString:@"CompletionHandlerisNil"]);
+        [createActivateExpectation fulfill];
+
+    }
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createActivateExpectation = nil;
+    }];
+    
+}
+
+- (void)testActivateInvalidDuration
+
+{
+    
+    NSNumber *testDuration = [NSNumber numberWithLong: 20000];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+    
+    
+    NSNumber *activateWithNewDuration =  [NSNumber numberWithLong: -201];
+    
+    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+    
+    
+    // now activate the rendezvous
+    [client activateRendezvousWithRef:rendezvousRef duration: activateWithNewDuration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        
+        // check the responses
+        XCTAssertNotNil(error);
+        XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
+
+        [createActivateExpectation fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createActivateExpectation = nil;
+    }];
+
+    
+}
+
+
+- (void)testDeactivateRendezvous
+{
+    NSNumber *testDuration = [NSNumber numberWithLong: 20000];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+  
+    __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate rendezvous"];
+    
+    
+    // now deactivate the rendezvous
+    [client deactivateRendezvousWithRef:rendezvousRef completionHandler:^(NSError *error) {
+        //
+        // check the response. Should just complete with no error
+        XCTAssertNil(error);
+        
+        [deactivateExpectation fulfill];
+    
+      }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        deactivateExpectation = nil;
+    }];
+
+
+}
+
+- (void)testDeactivateExpiredRendezvous
+{
+    NSNumber *testDuration = [NSNumber numberWithLong: 1];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+    
+    // now sleep until the rendezvous expires
+    [NSThread sleepForTimeInterval:2];
+    
+    
+    // check that it has expired
+    // responding to the expired rendezvous should fail
+    [client respondWithTag: self.randomlyCreatedTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+        //
+        XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse);
+    }];
+
+    
+    __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate rendezvous"];
+    
+    
+    // now deactivate the rendezvous
+    [client deactivateRendezvousWithRef:rendezvousRef completionHandler:^(NSError *error) {
+        //
+        // check the response. Should just complete with no error
+        XCTAssertNil(error);
+        
+        [deactivateExpectation fulfill];
+        
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        deactivateExpectation = nil;
+    }];
+    
+    
+}
+
+
+
+- (void)testDeactivateAndRespondToRendezvous
+{
+    
+    
+    NSNumber *testDuration = [NSNumber numberWithLong: 300];
+    
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+
+    
+    // should not be able to respond to a deactivated rendezvous
+     __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate rendezvous"];
+    
+    
+     [client deactivateRendezvousWithRef:rendezvousRef completionHandler:^(NSError *error) {
+        //
+        // check the response. Should just complete with no error
+        XCTAssertNil(error);
+         
+         NSLog(@"Trying to respond to deactivated rendezvous");
+
+         // responding to the deactivated rendezvous should fail
+         [client respondWithTag: self.randomlyCreatedTag completionHandler:^(QredoConversation *conversation, NSError *error) {
+             //
+             XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse);
+         }];
+
+         [deactivateExpectation fulfill];
+        
+    }];
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        deactivateExpectation = nil;
+    }];
+    
+
+    
+}
+
+- (void)testDeactivateRendezvousNilCompletionHandler
+{
+    NSNumber *testDuration = [NSNumber numberWithLong: 20000];
+    
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:testDuration];
+    XCTAssertNotNil(rendezvousRef);
+    
+    __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate rendezvous nil completion handler"];
+    
+    @try {
+    
+    
+    // now deactivate the rendezvous
+    [client deactivateRendezvousWithRef:rendezvousRef completionHandler: nil ];
+    }
+    
+    @catch (NSException *e) {
+        
+        // we are expecting an error. check it's the right one
+        XCTAssert([e.reason isEqualToString:@"CompletionHandlerisNil"]);
+        [deactivateExpectation fulfill];
+        
+    }
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        deactivateExpectation = nil;
+    }];
+    
+    
+}
+
+- (void)testDeactivateNilRendezvous
+{
+    
+    QredoRendezvousRef *rendezvousRef = nil;
+    
+    __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate nil rendezvous"];
+    
+    
+    // now deactivate the rendezvous
+    [client deactivateRendezvousWithRef:rendezvousRef completionHandler:^(NSError *error) {
+        
+        // check the responses. we expect an error
+        XCTAssertNotNil(error);
+        XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
+        
+        [deactivateExpectation fulfill];
+        
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        deactivateExpectation = nil;
+    }];
+    
+    
+}
+
+
+
+- (void)testDeactivateUnknownRendezvous
+{
+    
+    QredoRendezvousRef *newRef = [self createUnknownRendezvousRef];
+    XCTAssertNotNil(newRef);
+
+    
+     __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate unknown rendezvous"];
+    
+
+       // now deactivate the rendezvous
+     [client deactivateRendezvousWithRef:newRef completionHandler:^(NSError *error) {
+         
+         // check the responses. we expect an error. for this test it will be QredoErrorCodeRendezvousInvalidData
+         XCTAssertNotNil(error);
+         XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
+         [deactivateExpectation fulfill];
+         
+     }];
+     
+  
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+         deactivateExpectation = nil;
+     }];
+
+    
+}
+
+
+- (QredoRendezvousRef*) createUnknownRendezvousRef
+
+{
+    
+    
+    QredoVault *vault = [client systemVault];
+    
+    NSDictionary *item1SummaryValues = @{@"name": @"Joe Bloggs"};
+    QredoVaultItem *item1 =
+    [QredoVaultItem vaultItemWithMetadata:
+     [QredoVaultItemMetadata
+      vaultItemMetadataWithDataType :@"com.qredo.test"
+      accessLevel:0
+      summaryValues:item1SummaryValues]
+                                    value:[@"item name" dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    __block XCTestExpectation *createRendezvousRefExpectation = [self expectationWithDescription:@"create rendezvous"];
+    
+    __block QredoRendezvousRef *rendezvousRef = nil;
+    
+    NSLog(@"Creating rendezvous ref");
+    
+    [vault putItem:item1 completionHandler:
+     ^(QredoVaultItemMetadata  *newVaultItemMetadata, NSError *error)
+     {
+         
+         rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:newVaultItemMetadata.descriptor
+                                                                    vault: vault];
+         
+         [createRendezvousRefExpectation fulfill];
+         
+       }];
+    
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createRendezvousRefExpectation = nil;
+    }];
+    
+    return rendezvousRef;
+    
+}
+
+
 
 @end

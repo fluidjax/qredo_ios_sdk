@@ -104,6 +104,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 // making the properties read/write for private use
 @property QredoRendezvousConfiguration *configuration;
+
 @property (readwrite, copy) NSString *tag;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 @property  QredoRendezvousMetadata *metadata;
@@ -353,6 +354,167 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
      }];
 }
 
+- (void)activateRendezvous: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler
+
+{
+    NSError *error = nil;
+    NSSet *durationSeconds  = [self maybe:duration];
+    
+    NSData *marshalledData = nil;
+    NSMutableData *payloadData = [NSMutableData data];
+    
+    
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:nil
+                                                        marshaller:^(id element, QredoWireFormatWriter *writer)
+                       {[writer writeQUID:_hashedTag];}
+                        includeHeader:NO];
+    [payloadData appendData:marshalledData];
+
+    
+    QredoMarshaller setMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]];
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:durationSeconds marshaller:setMarshaller includeHeader:NO];
+    [payloadData appendData:marshalledData];
+    
+    
+    QLFOwnershipSignature *ownershipSignature =
+    [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
+                                          operationType:[QLFOperationType operationCreate]
+                                         marshalledData:payloadData
+                                         error:&error];
+    
+    if (error) {
+        completionHandler(error);
+        return;
+    }
+  
+    
+       
+    [_rendezvous activateWithHashedTag:_hashedTag
+                       durationSeconds: durationSeconds
+                       signature:ownershipSignature
+                       completionHandler:^(QLFRendezvousActivated *result, NSError *error)
+     {
+         if (error) {
+             completionHandler(error);
+             return;
+         }
+        
+         [self updateRendezvousWithDuration: duration completionHandler:^(NSError *error) {
+             
+             completionHandler(error);
+         }];
+         
+      }];
+}
+
+- (void)updateRendezvousWithDuration: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler
+
+{
+    NSSet *durationSeconds = [self maybe:duration];
+    
+    // the response count will always be unlimited when we activate Rendezvous
+    QLFRendezvousResponseCountLimit *responseCount = [QLFRendezvousResponseCountLimit rendezvousUnlimitedResponses];
+    
+    // create a new QLFRendezvousDescriptor with the updated duration and response count
+    // the other values are unchanged
+    QLFRendezvousDescriptor *newDescriptor =
+    [QLFRendezvousDescriptor rendezvousDescriptorWithTag:_tag
+                                               hashedTag:_hashedTag
+                                        conversationType:_descriptor.conversationType
+                                      authenticationType:_descriptor.authenticationType
+                                         durationSeconds: durationSeconds
+                                      responseCountLimit: responseCount
+                                        requesterKeyPair:_descriptor.requesterKeyPair
+                                    accessControlKeyPair:_descriptor.accessControlKeyPair];
+    _descriptor = newDescriptor;
+    
+
+    // get the vault item metadata from the vaultitemdescriptor stored in the rendezvous ref
+    [_client.systemVault getItemMetadataWithDescriptor: self.metadata.rendezvousRef.vaultItemDescriptor
+     
+                             completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
+     {
+         
+         if (error) {
+             completionHandler(error);
+             return;
+         }
+         
+         // serialize the updated rendezvous descriptor into a NSData object
+         NSData* updatedRendezvousData = [QredoPrimitiveMarshallers marshalObject:_descriptor
+                                                                    marshaller:[QLFRendezvousDescriptor marshaller]];
+
+         QredoVaultItemMetadata *metadataCopy = [vaultItemMetadata mutableCopy];
+         
+         // create a new vault item with the same metadata and updated rendezvous data
+         QredoVaultItem *newVaultItem =
+         [QredoVaultItem vaultItemWithMetadata:metadataCopy value: updatedRendezvousData];
+         
+         // add the item to the Vault. This will be the same Rendezvous but will update the sequence value
+          [_client.systemVault strictlyUpdateItem: newVaultItem completionHandler: ^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+          {
+              if (error) {
+                  completionHandler(error);
+                  return;
+              }
+              
+              // the update will create new metadata so we need to update the rendezvous ref and metadata
+              // the actual vault item data will be the same, with just a new sequence value
+              if (newItemMetadata) {
+                  QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
+                                                                                                        vault:_client.systemVault];
+                  self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:self.tag
+                                                            authenticationType:self.authenticationType
+                                                            rendezvousRef:rendezvousRef];
+                  
+                  self.configuration = [[QredoRendezvousConfiguration alloc]  initWithConversationType:_descriptor.conversationType
+                                                                              durationSeconds: duration
+                                                                              isUnlimitedResponseCount:TRUE];
+                  
+              }
+              completionHandler(error);
+              
+          }];
+         
+     }];
+    
+}
+
+- (void)deactivateRendezvous: (void(^)(NSError* error))completionHandler
+{
+   NSError *error = nil;
+    
+    NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:nil
+                                                        marshaller:^(id element, QredoWireFormatWriter *writer)
+                           {
+                               [writer writeQUID:_hashedTag];
+                           }
+                                                     includeHeader:NO];
+    
+   QLFOwnershipSignature *ownershipSignature =
+    [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
+                                          operationType:[QLFOperationType operationDelete]
+                                         marshalledData:payloadData
+                                                  error:&error];
+    
+    if (error) {
+        completionHandler(error);
+        return;
+    }
+    
+    
+    [_rendezvous deactivateWithHashedTag:_hashedTag
+                     signature:ownershipSignature
+                     completionHandler:^(QLFRendezvousDeactivated *result, NSError *error)
+       {
+           completionHandler(error);
+       }
+     ];
+
+}
+
+
+
 @end
 
 @implementation QredoRendezvous
@@ -567,6 +729,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
          completionHandler(conversation, nil);
      }];
 }
+
+
 
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source

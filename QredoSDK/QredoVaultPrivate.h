@@ -60,6 +60,10 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 // public method doesn't allow to specify itemId
 - (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
+// update a vault item, update the modification date and sequence value
+- (void)strictlyUpdateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+
+
 // Cleans only cache. Vault object is still usable after that
 - (void)clearCache;
 

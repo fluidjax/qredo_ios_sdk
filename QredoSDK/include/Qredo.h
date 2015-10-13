@@ -111,4 +111,15 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 
 - (void)deleteConversationWithRef:(QredoConversationRef *)conversationRef completionHandler:(void(^)(NSError *error))completionHandler;
 
+/** Activates an existing Rendezvous. 
+ The duration is reset to the duration passed in. The response count is set to unlimited.
+ Note that the RendezvousRef will be updated. Use rendezvous.metadata.rendezvousRef to access the updated ref */
+- (void)activateRendezvousWithRef:(QredoRendezvousRef *)ref  duration:(NSNumber *)duration
+        completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+/** Deactivates a Rendezvous.
+Existing conversations established with this Rendezvous will still be available and are NOT closed
+New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again */
+ - (void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void(^)(NSError *error))completionHandler;
+
 @end

@@ -21,6 +21,7 @@
 
 @end
 
+
 @interface QredoRendezvous (Private)
 
 @property (readwrite) QredoRendezvousConfiguration *configuration;
@@ -39,6 +40,12 @@
                         crlPems:(NSArray *)crlPems
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)activateRendezvous: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler;
+- (void)updateRendezvousWithDuration: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler;
+- (void)deactivateRendezvous :(void (^)(NSError *error))completionHandler;
+
+
+
 
 @end
 

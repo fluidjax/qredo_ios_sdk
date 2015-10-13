@@ -721,6 +721,18 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 - (void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
+  // an unknown ref will throw an exception, but catch a nil ref here
+  if (ref == nil)
+   {
+        NSString *message = @"'The RendezvousRef must not be nil";
+        
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeRendezvousInvalidData
+                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
+        completionHandler(nil, error);
+        return;
+   }
+    
     [self fetchRendezvousWithVaultItemDescriptor:ref.vaultItemDescriptor completionHandler:completionHandler];
 }
 
@@ -780,6 +792,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     });
 }
 
+
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
                       completionHandler:(void (^)(NSError *))completionHandler
 {
@@ -823,6 +836,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
      }];
 }
 
+
 - (void)deleteConversationWithRef:(QredoConversationRef *)conversationRef
                completionHandler:(void(^)(NSError *error))completionHandler
 {
@@ -837,6 +851,99 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
          [conversation deleteConversationWithCompletionHandler:completionHandler];
      }];
 }
+
+
+- (void)activateRendezvousWithRef:(QredoRendezvousRef *)ref
+              duration:(NSNumber *)duration
+              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
+
+{
+    
+    if (completionHandler == nil) {
+        
+        NSException* myException = [NSException
+                                    exceptionWithName:@"NilCompletionHandler"
+                                    reason:@"CompletionHandlerisNil"
+                                    userInfo:nil];
+        @throw myException;
+        
+    }
+    
+    // validate that the duration is >= 0 and that the RendezvousRef is not nil
+      if ([duration longValue] < 0)
+
+    {
+        NSString *message =  @"'The Rendezvous duration must not be negative";
+
+        LogError(@"%@", message);
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeRendezvousInvalidData
+                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
+        completionHandler(nil, error);
+        return;
+    }
+    
+
+    // get the Rendezvous using the ref
+    [self fetchRendezvousWithRef: ref completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        
+        if (error) {
+            completionHandler(nil, error);
+            return ;
+        }
+        
+        
+      [rendezvous activateRendezvous:duration completionHandler:^(NSError *error)
+           {
+               if (error) {
+                   completionHandler(nil, error);
+               } else {
+                   completionHandler(rendezvous, nil);
+               }
+            }
+         ];
+        }
+     ];
+    
+    
+}
+
+
+- (void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref
+           completionHandler:(void (^)(NSError *))completionHandler
+
+{
+    
+    if (completionHandler == nil) {
+        
+        NSException* myException = [NSException
+                                    exceptionWithName:@"NilCompletionHandler"
+                                    reason:@"CompletionHandlerisNil"
+                                    userInfo:nil];
+        @throw myException;
+        
+    }
+
+    
+    // get the Rendezvous using the ref
+    [self fetchRendezvousWithRef: ref completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        
+        if (error) {
+            completionHandler(error);
+            return ;
+        }
+        
+    [rendezvous deactivateRendezvous:^(NSError *error) {
+        
+         completionHandler(error);
+      }];
+        
+          
+    }];
+
+    
+}
+
 
 #pragma mark -
 #pragma mark Private Methods

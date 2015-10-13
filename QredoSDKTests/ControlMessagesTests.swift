@@ -28,7 +28,7 @@ class ControlMessagesTests: BaseConversation {
 
     func commonDeleteControlMessage(conversationToBeDeleted : QredoConversation, listeningConversation : QredoConversation) {
         var listenerExpectation : XCTestExpectation? = expectationWithDescription("receive delete message responder")
-        var deleteCompletionExpectation = expectationWithDescription("delete completion")
+        let deleteCompletionExpectation = expectationWithDescription("delete completion")
 
         conversationToBeDeleted.deleteConversationWithCompletionHandler { error -> Void in
             XCTAssertNil(error, "failed to delete conversation")

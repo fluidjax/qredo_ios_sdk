@@ -73,7 +73,7 @@ class ConversationMessageStoreTests: BaseConversation {
         let responderStore = responderConversation.store()
         XCTAssertNotNil(responderStore, "store should not be nil")
 
-        let creatorStore = creatorConversation.store()
+        //  let creatorStore = creatorConversation.store()
         XCTAssertNotNil(creatorConversation, "store should not be nil")
 
 
@@ -89,7 +89,7 @@ class ConversationMessageStoreTests: BaseConversation {
                 }
             }
 
-            println(vaultItemMetadata.summaryValues)
+            print(vaultItemMetadata.summaryValues)
         }, completionHandler: { error in
             XCTAssertNil(error, "failed to enumerate store")
             responderStoreExpectation?.fulfill()
