@@ -5,7 +5,6 @@
 #import "QredoMainViewController.h"
 #import "QredoSettingsViewController.h"
 #import "QredoManagerAppRootViewController.h"
-#import "QredoKeychainSenderQR.h"
 #import "UIColor+Qredo.h"
 #import "QredoPrivate.h"
 
@@ -159,22 +158,6 @@ static NSString *QredoMainViewControllerDeviceCellIdentifier = @"QredoMainViewCo
 }
 
 - (void)addDeviceButtonPressed {
-    
-    UIViewController *presentingViewController = self.presentingViewController;
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-        QredoKeychainSenderQR *keychainQRSender = [[QredoKeychainSenderQR alloc] initWithDismissHandler:^{
-            if ([presentingViewController respondsToSelector:@selector(presentDefaultViewController)]) {
-                [presentingViewController performSelector:@selector(presentDefaultViewController)];
-            }
-        }];
-        
-        [presentingViewController
-         qredo_presentNavigationViewControllerWithViewController:keychainQRSender
-         animated:YES
-         completion:nil];
-        
-    }];
     
 }
 

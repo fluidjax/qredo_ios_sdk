@@ -15,8 +15,6 @@
 
 #import "QredoKeychain.h"
 #import "QredoKeychainArchiver.h"
-#import "QredoKeychainSender.h"
-#import "QredoKeychainReceiver.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoManagerAppRootViewController.h"
 #import "QredoCertificate.h"
