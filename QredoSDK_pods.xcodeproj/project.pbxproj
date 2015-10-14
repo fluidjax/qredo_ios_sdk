@@ -129,11 +129,7 @@
 		7894C4D81B0BF21F001267A4 /* CryptoImplV1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4C81B0BF21F001267A4 /* CryptoImplV1Tests.m */; };
 		7894C4D91B0BF21F001267A4 /* QredoCertificateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4C91B0BF21F001267A4 /* QredoCertificateUtilsTests.m */; };
 		7894C4DA1B0BF21F001267A4 /* QredoCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4CA1B0BF21F001267A4 /* QredoCryptoTests.m */; };
-		7894C4DB1B0BF21F001267A4 /* QredoDhPrivateKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4CB1B0BF21F001267A4 /* QredoDhPrivateKeyTests.m */; };
-		7894C4DC1B0BF21F001267A4 /* QredoDhPublicKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4CC1B0BF21F001267A4 /* QredoDhPublicKeyTests.m */; };
 		7894C4DD1B0BF21F001267A4 /* QredoEllipticCurvePointTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4CD1B0BF21F001267A4 /* QredoEllipticCurvePointTests.m */; };
-		7894C4DE1B0BF21F001267A4 /* QredoKeyPairTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4CE1B0BF21F001267A4 /* QredoKeyPairTests.m */; };
-		7894C4DF1B0BF21F001267A4 /* QredoKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4CF1B0BF21F001267A4 /* QredoKeyTests.m */; };
 		7894C4E01B0BF21F001267A4 /* QredoOpenSSLCertificateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4D01B0BF21F001267A4 /* QredoOpenSSLCertificateUtilsTests.m */; };
 		7894C4E11B0BF21F001267A4 /* QredoPSSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4D11B0BF21F001267A4 /* QredoPSSTests.m */; };
 		7894C4E21B0BF21F001267A4 /* QredoRsaBlindSignatureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7894C4D21B0BF21F001267A4 /* QredoRsaBlindSignatureTests.m */; };
@@ -473,11 +469,7 @@
 		7894C4C81B0BF21F001267A4 /* CryptoImplV1Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CryptoImplV1Tests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/CryptoImplV1Tests.m; sourceTree = "<group>"; };
 		7894C4C91B0BF21F001267A4 /* QredoCertificateUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoCertificateUtilsTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoCertificateUtilsTests.m; sourceTree = "<group>"; };
 		7894C4CA1B0BF21F001267A4 /* QredoCryptoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoCryptoTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoCryptoTests.m; sourceTree = "<group>"; };
-		7894C4CB1B0BF21F001267A4 /* QredoDhPrivateKeyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoDhPrivateKeyTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoDhPrivateKeyTests.m; sourceTree = "<group>"; };
-		7894C4CC1B0BF21F001267A4 /* QredoDhPublicKeyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoDhPublicKeyTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoDhPublicKeyTests.m; sourceTree = "<group>"; };
 		7894C4CD1B0BF21F001267A4 /* QredoEllipticCurvePointTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoEllipticCurvePointTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoEllipticCurvePointTests.m; sourceTree = "<group>"; };
-		7894C4CE1B0BF21F001267A4 /* QredoKeyPairTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoKeyPairTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoKeyPairTests.m; sourceTree = "<group>"; };
-		7894C4CF1B0BF21F001267A4 /* QredoKeyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoKeyTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoKeyTests.m; sourceTree = "<group>"; };
 		7894C4D01B0BF21F001267A4 /* QredoOpenSSLCertificateUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoOpenSSLCertificateUtilsTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoOpenSSLCertificateUtilsTests.m; sourceTree = "<group>"; };
 		7894C4D11B0BF21F001267A4 /* QredoPSSTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoPSSTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoPSSTests.m; sourceTree = "<group>"; };
 		7894C4D21B0BF21F001267A4 /* QredoRsaBlindSignatureTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoRsaBlindSignatureTests.m; path = ../../qredo_ios_crypto/QredoCryptoTests/QredoRsaBlindSignatureTests.m; sourceTree = "<group>"; };
@@ -813,11 +805,7 @@
 				7894C4C81B0BF21F001267A4 /* CryptoImplV1Tests.m */,
 				7894C4C91B0BF21F001267A4 /* QredoCertificateUtilsTests.m */,
 				7894C4CA1B0BF21F001267A4 /* QredoCryptoTests.m */,
-				7894C4CB1B0BF21F001267A4 /* QredoDhPrivateKeyTests.m */,
-				7894C4CC1B0BF21F001267A4 /* QredoDhPublicKeyTests.m */,
 				7894C4CD1B0BF21F001267A4 /* QredoEllipticCurvePointTests.m */,
-				7894C4CE1B0BF21F001267A4 /* QredoKeyPairTests.m */,
-				7894C4CF1B0BF21F001267A4 /* QredoKeyTests.m */,
 				7894C4D01B0BF21F001267A4 /* QredoOpenSSLCertificateUtilsTests.m */,
 				7894C4D11B0BF21F001267A4 /* QredoPSSTests.m */,
 				7894C4D21B0BF21F001267A4 /* QredoRsaBlindSignatureTests.m */,
@@ -1829,16 +1817,12 @@
 			files = (
 				7894C4E31B0BF21F001267A4 /* QredoRsaPrivateKeyTests.m in Sources */,
 				7894C4DD1B0BF21F001267A4 /* QredoEllipticCurvePointTests.m in Sources */,
-				7894C4DF1B0BF21F001267A4 /* QredoKeyTests.m in Sources */,
 				7894C4E11B0BF21F001267A4 /* QredoPSSTests.m in Sources */,
 				7894C4DA1B0BF21F001267A4 /* QredoCryptoTests.m in Sources */,
 				7894C4E21B0BF21F001267A4 /* QredoRsaBlindSignatureTests.m in Sources */,
-				7894C4DB1B0BF21F001267A4 /* QredoDhPrivateKeyTests.m in Sources */,
-				7894C4DC1B0BF21F001267A4 /* QredoDhPublicKeyTests.m in Sources */,
 				7894C4E61B0BF21F001267A4 /* TestCertificates.m in Sources */,
 				7894C4D81B0BF21F001267A4 /* CryptoImplV1Tests.m in Sources */,
 				7894C4E41B0BF21F001267A4 /* QredoRsaPublicKeyTests.m in Sources */,
-				7894C4DE1B0BF21F001267A4 /* QredoKeyPairTests.m in Sources */,
 				7894C4D91B0BF21F001267A4 /* QredoCertificateUtilsTests.m in Sources */,
 				7894C4E01B0BF21F001267A4 /* QredoOpenSSLCertificateUtilsTests.m in Sources */,
 				7894C4E51B0BF21F001267A4 /* QredoSecKeyRefPairTests.m in Sources */,
