@@ -53,7 +53,7 @@
     QLFVaultItemMetadata *metadata = [QLFVaultItemMetadata vaultItemMetadataWithDataType:dataType
                                                                                   values:indexableValues];
 
-    NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
+    [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
 
     QredoVaultCrypto *vaultCrypto
     = [QredoVaultCrypto vaultCryptoWithBulkKey:encryptionAndAuthKeys.encryptionKey
@@ -62,23 +62,20 @@
     QLFEncryptedVaultItemHeader *encryptedVaultItemHeader
     = [vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemRef metadata:metadata];
 
-    NSData *serializedEncryptedVaultItemHeader
-    = [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO];
+    [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO];
 
-    NSData *encryptedMetadataRaw
-    = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItemHeader.encryptedMetadata
+    [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItemHeader.encryptedMetadata
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
 
-    NSRange ivRange = NSMakeRange(0, 16);
+    NSMakeRange(0, 16);
     NSString *vaultItemBodyString = @"vault item body";
     NSData *vaultItemBody = [vaultItemBodyString dataUsingEncoding:NSUTF8StringEncoding];
 
     QLFEncryptedVaultItem *encryptedVaultItem
     = [vaultCrypto encryptVaultItemWithBody:vaultItemBody encryptedVaultItemHeader:encryptedVaultItemHeader];
 
-    NSData *encryptedBodyRaw
-    = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItem.encryptedBody
+    [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItem.encryptedBody
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
 }

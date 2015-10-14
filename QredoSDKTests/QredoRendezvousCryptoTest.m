@@ -70,16 +70,15 @@
                                                                conversationType:conversationType
                                                                        transCap:[NSSet set]];
 
-    NSData *marshalledResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
+    [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     
     NSData *encryptedResponderInfo = [rendezvousCrypto encryptResponderInfo:responderInfo encryptionKey:encKey];
-    NSData *encryptedResponderInfoRaw
-    = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderInfo
+    [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderInfo
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
-    NSRange ivRange = NSMakeRange(0, 16);
+    NSMakeRange(0, 16);
     
-    NSData *authenticationCode = [rendezvousCrypto authenticationCodeWithHashedTag:hashedTag
+    [rendezvousCrypto authenticationCodeWithHashedTag:hashedTag
                                                                  authenticationKey:authKey
                                                             encryptedResponderData:encryptedResponderInfo];
 }
