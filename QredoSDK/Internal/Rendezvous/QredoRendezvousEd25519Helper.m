@@ -302,8 +302,6 @@ static const NSUInteger kMaxEd25519AuthenticationTagLength = 44;
     }];
     
     BOOL signatureIsValid = [self.cryptoImpl qredoED25519VerifySignature:signatureData ofMessage:rendezvousData verifyKey:_vk error:error];
-    LogDebug(@"Ed25519 Authenticated Rendezvous signature valid: %@", signatureIsValid ? @"YES" : @"NO");
-
     return signatureIsValid;
 }
 

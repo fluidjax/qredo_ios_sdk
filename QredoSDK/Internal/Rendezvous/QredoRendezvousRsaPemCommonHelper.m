@@ -323,10 +323,6 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     
     BOOL signatureIsValid = [QredoCrypto rsaPssVerifySignature:signatureData forMessage:rendezvousData saltLength:kRsaAuthenticatedRendezvousSaltLength keyRef:_publicKeyRef];
     
-    LogDebug(@"RSA %lu-bit PEM Authenticated Rendezvous signature valid: %@",
-             (unsigned long)self.keySizeBits,
-             signatureIsValid ? @"YES" : @"NO");
-    
     return signatureIsValid;
 }
 

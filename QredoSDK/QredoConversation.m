@@ -355,8 +355,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                            crlPems:(NSArray *)crlPems
                  completionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"Responding to (hashed) tag: %@. TrustedRootPems count: %lul.", rendezvousTag, (unsigned long)trustedRootPems.count);
-    
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
     QLFRendezvous *_rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:self.client.serviceInvoker];
 
@@ -541,8 +539,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                userInfo:@{NSLocalizedDescriptionKey: @"Empty result"}]);
              return;
          }
-
-         LogDebug(@"Enumeration query returned %lu conversation items(s)", (unsigned long)result.items.count);
 
          // There are a few complications when asynchronosity is added
          // 1. We need to wait until the messages is stored before returning it to the user,
@@ -906,8 +902,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     [_conversationService subscribeWithQueueId:_inboundQueueId
                                      signature:ownershipSignature
                              completionHandler:^(QLFConversationItemWithSequenceValue *result, NSError *error) {
-        LogDebug(@"Conversation subscription completion handler called");
-
         if (error) {
             subscriptionTerminatedHandler(error);
             return;
@@ -939,7 +933,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     }];
 
-    LogDebug(@"Getting other conversation items since HWM");
     [self qredoUpdateListener:_updateListener pollWithCompletionHandler:^(NSError *error) {
         if (error) {
             subscriptionTerminatedHandler(error);
@@ -1030,16 +1023,12 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
     NSAssert([_observers count] > 0, @"Conversation observers should be added before starting listening for the updates");
 
-    LogDebug(@"Subscribing to new conversation items/messages.");
-
     // Subscribe to conversations newer than our highwatermark
     [self subscribeToMessagesWithBlock:^(QredoConversationMessage *message) {
         [_updateListener processSingleItem:message sequenceValue:message.highWatermark.sequenceValue];
     } subscriptionTerminatedHandler:^(NSError *error) {
         [_updateListener didTerminateSubscriptionWithError:error];
     } since:self.highWatermark highWatermarkHandler:^(QredoConversationHighWatermark *newWatermark) {
-        LogDebug(@"Conversation subscription returned new HighWatermark: %@", newWatermark);
-
         self->_highWatermark = newWatermark;
     }];
 
@@ -1049,7 +1038,6 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
     // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
-    LogDebug(@"NOTE: Cannot currently unsubscribe from Conversation items.  This request is ignored.");
 }
 
 #pragma mark Qredo Update Listener - Delegate

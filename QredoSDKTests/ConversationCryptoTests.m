@@ -36,9 +36,6 @@
     QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
     QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
 
-    NSLog(@"My private key: %@", myPrivateKeyData);
-    NSLog(@"Your public key: %@", yourPublicKeyData);
-
     NSData *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
                                                                      yourPublicKey:yourPublicKey];
 
@@ -71,30 +68,6 @@
     QredoQUID *conversationId
     = [_conversationCrypto conversationIdWithMasterKey:masterKey];
 
-
-    NSLog(@"Conversation master key: %@", masterKey);
-    NSLog(@"Conversation ID: %@", conversationId);
-
-    NSLog(@"Requester inbound:");
-    NSLog(@"Encryption key: %@", requesterInboundEncryptionKey);
-    NSLog(@"Authentication key: %@", requesterInboundAuthenticationKey);
-    NSLog(@"Queue seed: %@", requesterInboundQueueSeed);
-
-    NSLog(@"Onwership.public: %@", requesterOwnershipKeyPair.verifyKey.data);
-    NSLog(@"Onwership.private: %@", requesterOwnershipKeyPair.data);
-
-    NSLog(@"Queue ID: %@", requesterOwnershipKeyPair.verifyKey.data);
-
-
-    NSLog(@"Responder inbound:");
-    NSLog(@"Encryption key: %@", responderInboundEncryptionKey);
-    NSLog(@"Authentication key: %@", responderInboundAuthenticationKey);
-    NSLog(@"Queue seed: %@", responderInboundQueueSeed);
-
-    NSLog(@"Onwership.public: %@", responderOwnershipKeyPair.verifyKey.data);
-    NSLog(@"Onwership.private: %@", responderOwnershipKeyPair.data);
-
-    NSLog(@"Queue ID: %@", responderOwnershipKeyPair.verifyKey.data);
 }
 
 
@@ -214,21 +187,13 @@
     NSData *requesterInboundAuthenticationKey
     = [NSData dataWithHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
 
-    NSLog(@"Message id: %@", messageID);
-    NSLog(@"Message body: \"%@\"", messageBodyString);
-    NSLog(@"Encryption key: %@", requesterInboundEncryptionKey);
-    NSLog(@"Authentication key: %@", requesterInboundAuthenticationKey);
-
     QLFEncryptedConversationItem *encryptedMessage
     = [_conversationCrypto encryptMessage:clearMessage
                                   bulkKey:requesterInboundEncryptionKey
                                   authKey:requesterInboundAuthenticationKey];
 
     NSData *serializedMessage = [QredoPrimitiveMarshallers marshalObject:clearMessage includeHeader:NO];
-    NSLog(@"message: %@", serializedMessage);
     NSData *serializedEncryptedMessage = [QredoPrimitiveMarshallers marshalObject:encryptedMessage includeHeader:NO];
-    NSLog(@"encryptedMessage: %@", serializedEncryptedMessage);
-    NSLog(@"authCode: %@", encryptedMessage.authCode);
 
     XCTAssertNotNil(encryptedMessage);
     XCTAssertNotNil(encryptedMessage.authCode);

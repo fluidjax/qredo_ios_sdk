@@ -22,8 +22,6 @@
 
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error
 {
-    NSLog(@"Vault operation failed with error: %@", error);
-
     self.error = error;
     
     if (self.didFailWithErrorExpectation) {
@@ -33,8 +31,6 @@
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata
 {
-    NSLog(@"Received VaultItemMetadata");
-    
     if (!self.receivedItems) {
         self.receivedItems = [NSMutableArray array];
     }
@@ -536,8 +532,6 @@
         testExpectation = nil;
     }];
     XCTAssertNil(error);
-
-    NSLog(@"count: %d", count);
 }
 
 - (void)testEnumerationReturnsCreatedItem
@@ -551,8 +545,6 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
-    
-    NSLog(@"Item summary values for new item: %@", item1SummaryValues);
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
@@ -587,8 +579,6 @@
          XCTAssertEqualObjects(vaultItem.metadata.summaryValues[@"key3"], item1SummaryValues[@"key3"]);
          XCTAssert([vaultItem.value isEqualToData:item1Data]);
          
-         NSLog(@"Got item with summary values: %@", vaultItem.metadata.summaryValues);
-
          [getItemCompletedExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
@@ -605,17 +595,13 @@
         
         XCTAssertNotNil(vaultItemMetadata);
         
-        NSLog(@"Enumerated item %d summary values: %@", count, vaultItemMetadata.summaryValues);
-        
         if ([vaultItemMetadata.summaryValues[@"key1"] isEqual:item1SummaryValues[@"key1"]] &&
             [vaultItemMetadata.summaryValues[@"key2"] isEqual:item1SummaryValues[@"key2"]] &&
             [vaultItemMetadata.summaryValues[@"key3"] isEqual:item1SummaryValues[@"key3"]])
         {
             itemFound = YES;
-            NSLog(@"Item created earlier has been found (count = %d).", count);
         }
     } completionHandler:^(NSError *error) {
-        NSLog(@"Completion handler entered.");
         XCTAssertNil(error);
         [completionHandlerCalled fulfill];
     }];
@@ -633,8 +619,6 @@
     {
         XCTFail(@"Created item was not found and 50 items were enumerated. Likely failure was due to server only returning oldest 50 items.");
     }
-    
-    NSLog(@"count: %d", count);
 }
 
 - (void)testEnumerationAbortsOnStop
@@ -649,8 +633,6 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    NSLog(@"Item summary values for new item 1: %@", item1SummaryValues);
-    
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
@@ -660,8 +642,6 @@
     NSDictionary *item2SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
-    
-    NSLog(@"Item summary values for new item 2: %@", item2SummaryValues);
     
     QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
@@ -703,8 +683,6 @@
         
         XCTAssertNotNil(vaultItemMetadata);
         
-        NSLog(@"Enumerated item %d summary values: %@", count, vaultItemMetadata.summaryValues);
-        
         // If 1st item, then we set stop
         if (count == 1) {
             *stop = YES;
@@ -715,7 +693,6 @@
             XCTFail(@"Enumerated more than 1 item, but stop had been set after 1st item");
         }
     } completionHandler:^(NSError *error) {
-        NSLog(@"Completion handler entered.");
         XCTAssertNil(error);
         [completionHandlerCalled fulfill];
     }];
@@ -727,8 +704,6 @@
     
     XCTAssertTrue(stopWasSet, "Never set the 'stop' flag.");
     XCTAssertTrue(count == 1, "Enumerated more than 1 item, despite setting 'stop' after first item.");
-    
-    NSLog(@"count: %d", count);
 }
 
 - (void)testListener

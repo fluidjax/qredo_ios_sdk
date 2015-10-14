@@ -86,8 +86,6 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         [tempArray removeObjectAtIndex:0];
         chainPemCertificates = [tempArray copy];
     }
-
-    LogDebug(@"Certificate chain contains %lu intermediate certificates", (unsigned long)chainPemCertificates.count);
     
     // Validate chain using OpenSSL, but still need a SecKeyRef to allow use of existing RSA routines (e.g. signing)
     BOOL certificateIsValid = [QredoOpenSSLCertificateUtils validateCertificate:subjectPemCertificate
@@ -353,8 +351,6 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
     }
     
     BOOL signatureIsValid = [QredoCrypto rsaPssVerifySignature:signatureData forMessage:rendezvousData saltLength:kX509AuthenticatedRendezvousSaltLength keyRef:_publicKeyRef];
-    
-    LogDebug(@"X.509 Authenticated Rendezvous signature valid: %@", signatureIsValid ? @"YES" : @"NO");
     
     return signatureIsValid;
 }

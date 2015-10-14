@@ -220,8 +220,6 @@
     if (!sequenceStates) {
         sequenceStates = [NSMutableSet set];
     }
-    LogDebug(@"Watermark: %@", sinceWatermark.sequenceState);
-
 
     NSError *error = nil;
 
@@ -294,7 +292,7 @@
                          break;
                      }
                  } @catch (NSException *exception) {
-                     NSLog(@"Failed to decrypt a vault item: %@", exception);
+                     // Om nom nom.
                  }
              }
 

@@ -298,8 +298,6 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                      completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
 {
     // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
-    LogDebug(@"Authorising client for conversation types: %@. VaultDataTypes: %@. Options: %@.", conversationTypes, vaultDataTypes, options);
-
     if (!options) {
         options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     }
@@ -458,8 +456,6 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 - (void)closeSession
 {
-    LogDebug(@"Closing client session.  Will need to re-initialise/authorise client before further use.");
-
     // Need to terminate transport, which ends associated threads and subsriptions etc.
     [_serviceInvoker terminate];
 

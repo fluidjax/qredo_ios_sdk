@@ -52,12 +52,10 @@
     // If we support multi-response, then use it, otherwise poll
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self])
     {
-        LogDebug(@"Starting subscription to messages");
         [self startSubscribing];
     }
     else
     {
-        LogDebug(@"Starting polling for messages");
         _isPollingActive = YES;
         [self startPolling];
     }
@@ -86,7 +84,6 @@
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
     if (_subscribedToMessages) {
-        LogDebug(@"Already subscribed to messages, and cannot currently unsubscribe, so ignoring request.");
         return;
     }
 
@@ -104,8 +101,6 @@
                                       (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
             dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
                 @synchronized (self) {
-                    LogDebug(@"Conversation subscription renewal timer fired");
-
                     if (!_subscriptionRenewalTimer) {
                         return;
                     }
@@ -135,8 +130,6 @@
 {
     if (_subscribedToMessages) return ;
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
-
-    LogDebug(@"Subscribing to new conversation items/messages. self=%@", self);
 
     _subscribedToMessages = YES;
 
@@ -174,7 +167,6 @@
     // Need to stop the subsription renewal timer as well
     @synchronized (self) {
         if (_subscriptionRenewalTimer) {
-            LogDebug(@"Stoping conversation subscription renewal timer");
             dispatch_source_cancel(_subscriptionRenewalTimer);
             _subscriptionRenewalTimer = nil;
         }
@@ -225,10 +217,6 @@
 
 - (BOOL)isDuplicateOrOldItem:(id)item sequenceValue:(id)sequenceValue
 {
-    LogDebug(@"Checking for old/duplicate. Item: %@. SequenceValue: %@.", item, sequenceValue);
-
-    LogDebug(@"Conversation dedupe dictionary contains %lu items.", (unsigned long)_dedupeStore.count);
-
     BOOL itemIsDuplicate = NO;
 
     // TODO: DH - Store hashes, rather than actual values if those values are large?
@@ -237,11 +225,7 @@
     // A duplicate item is being taken to be a specific item which has the same sequence value
     @synchronized(_dedupeStore) {
         id fetchedSequenceValue = [_dedupeStore objectForKey:item];
-
-        if (!fetchedSequenceValue) {
-            LogDebug(@"Item was not found in dictionary.");
-        }
-
+        
         // TODO: DH - Find out if can improve this check - can conversation sequence values be greater/less than each other - or just non-comparable opaque values?
         if (fetchedSequenceValue && [sequenceValue isEqualToData:fetchedSequenceValue]) {
             // Found a duplicate item
@@ -249,18 +233,15 @@
         }
         else if (_queryAfterSubscribeComplete) {
             // We have completed processing the Query after Subscribe, and we have a non-duplicate Item - therefore we have passed the point where dedupe is required, so can empty the dedupe store
-            LogDebug(@"Query completed and have received a non-duplicate item. Passed point where dedupe required - emptying dedupe store and preventing further dedupe.");
             _dedupeNecessary = NO;
             [_dedupeStore removeAllObjects];
         }
         else {
             // Not a duplicate, and Query has not completed, so store this response/sequenceValue pair for later to prevent duplication
-            LogDebug(@"Storing item in dedupe store");
             [_dedupeStore setObject:sequenceValue forKey:item];
         }
     }
 
-    LogDebug(@"Item is duplicate: %@", itemIsDuplicate ? @"YES" : @"NO");
     return itemIsDuplicate;
 }
 

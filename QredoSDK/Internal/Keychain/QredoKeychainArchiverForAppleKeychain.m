@@ -108,8 +108,6 @@ static NSString *kCurrentService = @"CurrentService";
     [queryDictionary setObject:@YES forKey:(__bridge id<NSCopying>)(kSecReturnAttributes)];
     [queryDictionary setObject:@YES forKey:(__bridge id<NSCopying>)(kSecReturnData)];
     
-    LogDebug(@"loadQredoKeychainWithIdentifier is calling fixedSecItemCopyMatching for identifier: '%@'", identifier);
-
     CFDictionaryRef result = nil;
     OSStatus sanityCheck = fixedSecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary), (CFTypeRef *)&result);
     
@@ -195,8 +193,6 @@ static NSString *kCurrentService = @"CurrentService";
 
 - (OSStatus)hasQredoKeychainWithIdentifier:(NSString *)identifier {
     
-    LogDebug(@"hasQredoKeychainWithIdentifier is calling fixedSecItemCopyMatching for identifier: '%@'", identifier);
-
     NSMutableDictionary *queryDictionary = [[NSMutableDictionary alloc] init];
     [queryDictionary setObject: (__bridge id)kSecClassGenericPassword forKey: (__bridge id<NSCopying>)kSecClass];
     [queryDictionary setObject:kCurrentService forKey:(__bridge id<NSCopying>)kSecAttrService];

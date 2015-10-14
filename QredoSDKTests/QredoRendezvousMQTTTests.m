@@ -49,7 +49,6 @@
 
     for (int i = 0; i < 10; i++)
     {
-        NSLog(@"Test %d", i);
         [super testCreateAndRespondAnonymousRendezvous];
     }
 }

@@ -177,7 +177,6 @@ static const NSUInteger kRandomTagLength = 32;
 
 - (BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
 {
-    LogDebug(@"Anonymous Rendezvous - signature is always valid!");
     return YES;
 }
 

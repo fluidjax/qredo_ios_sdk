@@ -38,9 +38,7 @@
 
     for (int i = 0; i < 20; i++)
     {
-        NSLog(@"\n\n\n\n******** Start Test %d ********\n", i);
         [super testConversation];
-        NSLog(@"\n******** End Test %d ********\n\n\n\n", i);
     }
 }
 

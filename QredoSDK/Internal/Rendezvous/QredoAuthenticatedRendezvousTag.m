@@ -24,8 +24,6 @@
         }
         
         _fullTag = [fullTag copy];
-
-        LogDebug(@"Prefix: '%@'. Authentication Tag: '%@'. Full Tag: '%@'.", _prefix, _authenticationTag, _fullTag);
     }
     
     return self;
@@ -39,8 +37,6 @@
         _prefix = [prefix copy];
         _authenticationTag = [authenticationTag copy];
         _fullTag = [QredoAuthenticatedRendezvousTag getFullTagFromPrefix:_prefix authenticationTag:_authenticationTag];
-        
-        LogDebug(@"Prefix: '%@'. Authentication Tag: '%@'. Full Tag: '%@'.", _prefix, _authenticationTag, _fullTag);
     }
     
     return self;

@@ -200,9 +200,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
-    
-    // TODO: DH - write tests 
+    // TODO: DH - write tests
     // TODO: DH - validate that the configuration and tag formats match
     // TODO: DH - enforce non-nil trustedRootPems on X.509 PEM
     
@@ -236,8 +234,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFAuthenticationCode *authKey = [crypto authenticationKeyWithMasterKey:masterKey];
     _hashedTag  = [crypto hashedTagWithMasterKey:masterKey];
     NSData *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
-
-    LogDebug(@"Hashed tag: %@", _hashedTag);
 
     // Generate the rendezvous key pairs.
     QLFKeyPairLF *accessControlKeyPair = [crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];
@@ -345,7 +341,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
              QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
                                                                                                    vault:_client.systemVault];
 
-             LogDebug(@"Saved rendezvous into vault item: id=%@, seqId=%@, seqVal=%ld", newItemMetadata.descriptor.itemId, newItemMetadata.descriptor.sequenceId, (long)newItemMetadata.descriptor.sequenceValue);
              self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:self.tag
                                                        authenticationType:self.authenticationType
                                                             rendezvousRef:rendezvousRef];
@@ -629,8 +624,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
              return ;
          }
 
-         LogDebug(@"Enumerating %lu response(s)", (unsigned long)result.responses.count);
-
          [self processRendezvousResponseResult:result
                                  responseIndex:0
                        rendezvousResponseBlock:block
@@ -758,8 +751,6 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
     NSAssert([_observers count] > 0, @"There shoud be 1 or more rendezvous observers before starting listening for the updates");
 
-    LogDebug(@"Subscribing to new responses/conversations. self=%@", self);
-
     NSAssert(_subscriptionCorrelationId == nil, @"Already subscribed");
 
     // TODO: DH - look at blocks holding strong reference to self, and whether that's causing
@@ -791,8 +782,6 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
             completionHandler(error);
             return;
         }
-        LogDebug(@"Rendezvous subscription result handler called. Correlation id = %@", _subscriptionCorrelationId);
-
          [self createConversationAndStoreKeysForResponse:result.response
                                        completionHandler:^(QredoConversation *conversation, NSError *creationError)
           {
@@ -801,9 +790,6 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
                   return;
               }
 
-
-              LogDebug(@"Rendezvous subscription returned conversation: %@, self=%@, updateListener=%@", conversation, self, _updateListener);
-
               [_updateListener processSingleItem:conversation sequenceValue:@(result.sequenceValue)];
 
           }];
@@ -811,15 +797,12 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
          self->_highWatermark = result.sequenceValue;
      }
      ];
-    LogDebug(@"SUBSCRIBE correlation id=%@", _subscriptionCorrelationId);
 
 }
 
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
 unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
-    LogDebug(@"UNSUBSCRIBE correlation id=%@", _subscriptionCorrelationId);
-
     // TODO: ownership
 //    [_rendezvous unsubscribeWithCorrelationId:_subscriptionCorrelationId completionHandler:^(NSError *error) {
 //        _subscriptionCorrelationId = nil;

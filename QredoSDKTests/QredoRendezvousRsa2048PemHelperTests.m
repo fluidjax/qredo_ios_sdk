@@ -45,10 +45,8 @@
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyImport1";
     
     XCTAssertNotNil(publicKeyData);
-    NSLog(@"Public key (PKCS#1) data (%lu bytes): %@", (unsigned long)publicKeyData.length, [QredoLogging hexRepresentationOfNSData:publicKeyData]);
     
     XCTAssertNotNil(privateKeyData);
-    NSLog(@"Private key data (%lu bytes): %@", (unsigned long)privateKeyData.length, [QredoLogging hexRepresentationOfNSData:privateKeyData]);
     
     SecKeyRef publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyData
                                                keyLengthBits:keySizeBits

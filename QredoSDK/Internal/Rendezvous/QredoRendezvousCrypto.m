@@ -95,8 +95,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
 - (QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId {
     NSString *publicKeyId = [keyId stringByAppendingString:@".public"];
     NSString *privateKeyId = [keyId stringByAppendingString:@".private"];
-    
-    LogDebug(@"Attempting to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
 
     QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:2048
                                                          publicKeyIdentifier:publicKeyId

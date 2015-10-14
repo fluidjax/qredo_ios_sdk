@@ -475,7 +475,6 @@
 - (void)cancel
 {
     if (self.currentState == self.cancelState) {
-        LogInfo(@"Can't cancel the protocol because it is already being cancelled");
         return;
     }
     [self switchToState:self.cancelState withConfigBlock:^{}];

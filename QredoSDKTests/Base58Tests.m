@@ -151,10 +151,6 @@ static inline NSString *createRandomEncodedValue() {
                     dataToEncode, decodedData);
         }
         
-        if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests EncodingAndDecodingRandomEquality] iterations: %@k", @(i/1000));
-        }
-        
     }
 }
 
@@ -180,10 +176,6 @@ static inline NSString *createRandomEncodedValue() {
                     valueToDecode, encodedValue);
         }
         
-        if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests DecodingAndEncodingRandomEquality] iterations: %@k", @(i/1000));
-        }
-        
     }
 }
 
@@ -207,10 +199,6 @@ static inline NSString *createRandomEncodedValue() {
         if ([encodedValue1 isEqual:encodedValue2]) {
             XCTFail("Encoding of diffent data resulted in same encoded value. Data to encode 1: <%@>, data to encode 2: <%@>, endoded value: <%@>",
                     dataToEncode1, dataToEncode2, encodedValue1);
-        }
-        
-        if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests EncodingRandomInequality] iterations: %@k", @(i/1000));
         }
         
     }
@@ -246,10 +234,6 @@ static inline NSString *createRandomEncodedValue() {
                     valueToDecode1, valueToDecode2, decodedData1);
         }
         
-        if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests DecodingRandomInequality] iterations: %@k", @(i/1000));
-        }
-        
     }
 }
 
@@ -281,16 +265,7 @@ static inline NSString *createRandomEncodedValue() {
         XCTAssertTrue(encodedString.length <= expectedMaxLengthOfEncodedString);
         XCTAssertTrue(encodedString.length >= expectedMinLengthOfEncodedString);
 
-        if ((i % 10000) == 0) {
-            NSLog(@"[Base58Tests EncodingExpansionTest] iterations: %@k", @(i/1000));
-        }
     }
-    
-    NSLog(@"Encoded %lu random bytes %lu times. Min length to encode: %lu.  Max length to encode: %lu",
-          (unsigned long)lengthOfInputData,
-          (unsigned long)kIterations,
-          (unsigned long)minEncodedLength,
-          (unsigned long)maxEncodedLength);
 }
 
 @end

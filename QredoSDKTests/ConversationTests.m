@@ -35,7 +35,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 - (void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message
 {
-    NSLog(@"Received message: %@", [[NSString alloc] initWithData:message.value encoding:NSUTF8StringEncoding]);
     // Can't use XCTAsset, because this class is not XCTestCase
 
     self.failed |= (message == nil);
@@ -93,7 +92,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   client = clientArg;
-                                  NSLog(@"Authorize completion handler called.");
                                   [clientExpectation fulfill];
                               }];
     
@@ -118,7 +116,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [client createAnonymousRendezvousWithTag:randomTag
                                configuration:configuration
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               NSLog(@"Create rendezvous completion handler called.");
                                XCTAssertNil(error);
                                XCTAssertNotNil(_rendezvous);
                                
@@ -142,11 +139,9 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
-    NSLog(@"\nCreating rendezvous");
     [client createAnonymousRendezvousWithTag:randomTag
                                configuration:configuration
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               NSLog(@"\nRendezvous creation completion handler entered");
                                XCTAssertNil(error);
                                XCTAssertNotNil(_rendezvous);
                                
@@ -154,17 +149,14 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
                                
                                [createExpectation fulfill];
                            }];
-    NSLog(@"\nWaiting for creation expectations");
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         createExpectation = nil;
     }];
 
-    NSLog(@"\nStarting listening");
     [rendezvous addRendezvousObserver:self];
     
     // another client with a new vault
-    NSLog(@"\nCreating 2nd client");
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
     [QredoClient authorizeWithConversationTypes:@[self.conversationType]
@@ -187,28 +179,23 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
     
     __block QredoConversation *responderConversation = nil;
-    NSLog(@"\n2nd client responding to rendezvous");
     // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
     [anotherClient respondWithTag:randomTag
                   trustedRootPems:nil
                           crlPems:nil
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
-        NSLog(@"\nRendezvous respond completion handler entered");
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);
         
         responderConversation = conversation;
-        NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
         
         [didRespondExpectation fulfill];
     }];
     
-    NSLog(@"\nWaiting for responding expectations");
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         didRespondExpectation = nil;
     }];
 
-    NSLog(@"\nStopping listening");
     [rendezvous removeRendezvousObserver:self];
 
     [anotherClient closeSession];
@@ -224,11 +211,9 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
 
-    NSLog(@"Creating Rendezvous (with client 1)");
     [client createAnonymousRendezvousWithTag:randomTag
                                configuration:configuration
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               NSLog(@"Create rendezvous completion handler called.");
                                XCTAssertNil(error);
                                XCTAssertNotNil(_rendezvous);
                                
@@ -245,12 +230,10 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
 
-    NSLog(@"Creating client 2");
     [QredoClient authorizeWithConversationTypes:@[self.conversationType]
                                  vaultDataTypes:nil
                                         options:[self clientOptionsWithResetData:YES]
                               completionHandler:^(QredoClient *newClient, NSError *error) {
-                                  NSLog(@"Authorize client completion handler called");
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
                                   anotherClient = newClient;
@@ -268,10 +251,8 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
 
-    NSLog(@"Starting listening for rendezvous");
     [rendezvous addRendezvousObserver:self];
 
-    NSLog(@"Responding to Rendezvous");
     __block QredoConversation *responderConversation = nil;
     // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
     [anotherClient respondWithTag:randomTag
@@ -282,8 +263,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         XCTAssertNotNil(conversation);
 
         responderConversation = conversation;
-        NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
-
+    
         [didRespondExpectation fulfill];
     }];
 
@@ -291,14 +271,12 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         didRespondExpectation = nil;
     }];
 
-    NSLog(@"Stopping listening for rendezvous");
     [rendezvous removeRendezvousObserver:self];
     
     // Sending message
     XCTAssertNotNil(responderConversation);
 
-    NSLog(@"Creator conversation ID: %@", creatorConversation.metadata.conversationId);
-
+    
     __block XCTestExpectation *didPublishMessageExpectation = [self expectationWithDescription:@"published a message before listener started"];
 
     NSString *firstMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [NSDate date]];
@@ -307,10 +285,8 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
                                                                                   dataType:kMessageType
                                                                              summaryValues:nil];
 
-    NSLog(@"Publishing message (before setting up listener). Message: %@", firstMessageText);
     [responderConversation publishMessage:newMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-                            NSLog(@"Publish message (before setting up listener) completion handler called.");
                             XCTAssertNil(error);
                             XCTAssertNotNil(messageHighWatermark);
 
@@ -321,12 +297,10 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         didPublishMessageExpectation = nil;
     }];
 
-    NSLog(@"Setting up listener");
     ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
     listener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published before listening"];
     listener.expectedMessageValue = firstMessageText;
 
-    NSLog(@"Starting listening for conversation items");
     [creatorConversation addConversationObserver:listener];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
@@ -334,7 +308,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
     XCTAssertFalse(listener.failed);
 
-    NSLog(@"Setting up listener expectations again");
     NSString *secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [NSDate date]];
 
     listener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published after listening"];
@@ -343,10 +316,8 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     newMessage = [[QredoConversationMessage alloc] initWithValue:[secondMessageText dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
     didPublishMessageExpectation = [self expectationWithDescription:@"published a message after listener started"];
     
-    NSLog(@"Publishing second message (after listening started). Message: %@", secondMessageText);
     [responderConversation publishMessage:newMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-                            NSLog(@"Publish message (after listening started) completion handler called.");
                             XCTAssertNil(error);
                             XCTAssertNotNil(messageHighWatermark);
                             
@@ -357,7 +328,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         didPublishMessageExpectation = nil;
     }];
     
-    NSLog(@"Stopping listening for conversation items");
     [creatorConversation removeConversationObserver:listener];
 
     XCTAssert([responderConversation.metadata.conversationId isEqual:creatorConversation.metadata.conversationId],
@@ -367,14 +337,12 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block XCTestExpectation *didFindConversation = [self expectationWithDescription:@"find conversation in system vault"];
     __block QredoConversationMetadata *metadataFromEnumeration = nil;
     [client enumerateConversationsWithBlock:^(QredoConversationMetadata *metadata, BOOL *stop) {
-        NSLog(@"Enumerating conversations: conversation ID = %@", metadata.conversationId);
         if ([metadata.conversationId isEqual:responderConversation.metadata.conversationId]) {
             metadataFromEnumeration = metadata;
             *stop = YES;
 
         }
     } completionHandler:^(NSError *error) {
-        NSLog(@"Enumerate conversations completion handler called.");
         XCTAssertNil(error);
         [didFindConversation fulfill];
     }];
@@ -391,7 +359,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     __block QredoConversation *conversatoinFromVault = nil;
     [client fetchConversationWithRef:metadataFromEnumeration.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
-        NSLog(@"Fetch conversation completion handler called.");
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);
         conversatoinFromVault = conversation;
@@ -420,7 +387,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         XCTAssertNotNil(messageHighWatermark);
         XCTAssertNil(error);
 
-        NSLog(@"Message published. %@", messageHighWatermark);
         [didPublishAnotherMessage fulfill];
     }];
 
@@ -438,7 +404,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 // Rendezvous Delegate
 - (void)qredoRendezvous:(QredoRendezvous*)rendezvous didReceiveReponse:(QredoConversation *)conversation
 {
-    NSLog(@"Delegate received response (Conversation = %@) for rendezvous (%@)", conversation, rendezvous);
     creatorConversation = conversation;
     [didReceiveResponseExpectation fulfill];
 }
@@ -457,7 +422,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [client createAnonymousRendezvousWithTag:randomTag
                                configuration:configuration
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               NSLog(@"Create rendezvous completion handler called.");
                                XCTAssertNil(error);
                                XCTAssertNotNil(_rendezvous);
                                
@@ -508,7 +472,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         XCTAssertFalse(conversation.metadata.isPersistent);
         
         responderConversation = conversation;
-        NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
         
         [didRespondExpectation fulfill];
     }];
@@ -537,7 +500,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [client createAnonymousRendezvousWithTag:randomTag
                                configuration:configuration
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               NSLog(@"Create rendezvous completion handler called.");
                                XCTAssertNil(error);
                                XCTAssertNotNil(_rendezvous);
                                
@@ -586,7 +548,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
         XCTAssert(conversation.metadata.isPersistent);
         
         responderConversation = conversation;
-        NSLog(@"Responder conversation ID: %@", conversation.metadata.conversationId);
         
         [didRespondExpectation fulfill];
     }];

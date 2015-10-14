@@ -52,30 +52,18 @@
 
 
 - (void)common_TestVectorsWithTag:(NSString *)tag {
-    NSLog(@"============ BEGIN ============");
     NSData *masterKey = [rendezvousCrypto masterKeyWithTag:tag];
-    NSLog(@"Rendezvous tag: \"%@\"", tag);
-    NSLog(@"Master key: %@", masterKey);
-
+    
     QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKey];
-    NSLog(@"Hashed tag: %@", [hashedTag data]);
-
+    
     NSData *authKey = [rendezvousCrypto authenticationKeyWithMasterKey:masterKey];
-    NSLog(@"Authentication key: %@", authKey);
-
+    
     NSData *encKey = [rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
-    NSLog(@"Encryption key: %@", encKey);
-
+    
 
     QLFKeyPairLF *requesterKeyPair  = [rendezvousCrypto newRequesterKeyPair];
     NSData *requesterPublicKeyBytes = [[requesterKeyPair pubKey] bytes];
     NSString *conversationType      = @"com.qredo.chat";
-
-    NSLog(@"---");
-    NSLog(@"Responder Info:");
-    NSLog(@"Requester public key: %@", requesterPublicKeyBytes);
-    NSLog(@"Conversation type: \"%@\"", conversationType);
-
 
     QLFRendezvousResponderInfo *responderInfo
     = [QLFRendezvousResponderInfo rendezvousResponderInfoWithRequesterPublicKey:requesterPublicKeyBytes
@@ -83,24 +71,17 @@
                                                                        transCap:[NSSet set]];
 
     NSData *marshalledResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
-    NSLog(@"Marshalled responder info %@", marshalledResponderInfo);
-    NSLog(@"---");
-
+    
     NSData *encryptedResponderInfo = [rendezvousCrypto encryptResponderInfo:responderInfo encryptionKey:encKey];
     NSData *encryptedResponderInfoRaw
     = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderInfo
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
     NSRange ivRange = NSMakeRange(0, 16);
-    NSLog(@"IV = %@", [encryptedResponderInfoRaw subdataWithRange:ivRange]);
-    NSLog(@"Encrypted responder info with message header: %@", encryptedResponderInfo);
-
+    
     NSData *authenticationCode = [rendezvousCrypto authenticationCodeWithHashedTag:hashedTag
                                                                  authenticationKey:authKey
                                                             encryptedResponderData:encryptedResponderInfo];
-
-    NSLog(@"Authentication code: %@", authenticationCode);
-    NSLog(@"============ END ============");
 }
 
 - (void)testGenerateTestVectors
