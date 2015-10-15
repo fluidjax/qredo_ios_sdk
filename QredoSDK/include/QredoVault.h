@@ -39,11 +39,14 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @property (readonly) QredoVaultItemDescriptor *descriptor;
 @property (readonly, copy) NSString *dataType;
 @property (readonly) QredoAccessLevel accessLevel;
+@property (readonly, copy) NSDate* created;
 @property (readonly, copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
 
 // this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
-+ (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor dataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues;
++ (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor dataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel created: (NSDate*)created summaryValues:(NSDictionary *)summaryValues;
 /** this constructor to be used externally when creating a new vault item to be stored in Vault */
++ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel created: (NSDate*)created summaryValues:(NSDictionary *)summaryValues;
+
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues;
 
 @end
@@ -54,6 +57,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @property QredoVaultItemDescriptor *descriptor;
 @property (copy) NSString *dataType;
 @property QredoAccessLevel accessLevel;
+
 @property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
 
 - (void)setSummaryValue:(id)value forKey:(NSString *)key;

@@ -11,23 +11,36 @@
 
 + (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
                                        dataType:(NSString *)dataType
-                                    accessLevel:(QredoAccessLevel)accessLevel
+                                     accessLevel:(QredoAccessLevel)accessLevel
+                                        created:(NSDate*)created
                                   summaryValues:(NSDictionary *)summaryValues
 {
-    return [[self alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
+    return [[self alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
 }
 
 
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
                                   accessLevel:(QredoAccessLevel)accessLevel
+                                      created:(NSDate*)created
                                 summaryValues:(NSDictionary *)summaryValues
 {
-    return [self vaultItemMetadataWithDescriptor:nil dataType:dataType accessLevel:accessLevel summaryValues:summaryValues];
+    return [self vaultItemMetadataWithDescriptor:nil dataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
 }
+
++ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
+                                  accessLevel:(QredoAccessLevel)accessLevel
+                                 summaryValues:(NSDictionary *)summaryValues
+{
+   
+    NSDate* created = [NSDate date];
+    return [self vaultItemMetadataWithDataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
+}
+
 
 - (instancetype)initWithDescriptor:(QredoVaultItemDescriptor *)descriptor
                           dataType:(NSString *)dataType
                        accessLevel:(QredoAccessLevel)accessLevel
+                           created:(NSDate*)created
                      summaryValues:(NSDictionary *)summaryValues
 {
     self = [super init];
@@ -36,6 +49,7 @@
     _descriptor = descriptor;
     _dataType = dataType;
     _accessLevel = accessLevel;
+    _created = created;
     _summaryValues = summaryValues;
 
     return self;
@@ -46,6 +60,7 @@
     return [[QredoVaultItemMetadata allocWithZone:zone] initWithDescriptor:self.descriptor
                                                                   dataType:self.dataType
                                                                accessLevel:self.accessLevel
+                                                                   created:self.created
                                                              summaryValues:self.summaryValues];
 }
 
@@ -54,6 +69,7 @@
     return [[QredoMutableVaultItemMetadata allocWithZone:zone] initWithDescriptor:self.descriptor
                                                                          dataType:self.dataType
                                                                       accessLevel:self.accessLevel
+                                                                          created:self.created
                                                                     summaryValues:self.summaryValues];
 }
 

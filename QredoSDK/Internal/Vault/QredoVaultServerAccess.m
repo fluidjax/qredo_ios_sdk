@@ -147,6 +147,7 @@
 
 - (void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
                        itemId:(QredoQUID*)itemId dataType:(NSString *)dataType
+                      created:(NSDate*)created
                 summaryValues:(NSDictionary *)summaryValues
             completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, QLFEncryptedVaultItem *encryptedVaultItem, NSError *error))completionHandler
 {
@@ -160,9 +161,13 @@
                                   sequenceId:_sequenceId
                                sequenceValue:newSequenceValue
                                       itemId:itemId];
+    
+    QredoUTCDateTime* createdDate = [[QredoUTCDateTime alloc] initWithDate: created];
+
 
     QLFVaultItemMetadata *vaultItemMetaDataLF =
     [QLFVaultItemMetadata vaultItemMetadataWithDataType:dataType
+                                                created: createdDate
                                                  values:[summaryValues indexableSet]];
 
     QLFEncryptedVaultItemHeader *encryptedVaultItemHeader =
@@ -279,6 +284,7 @@
                      = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                       dataType:decryptedItem.dataType
                                                                    accessLevel:0
+                                                                       created:decryptedItem.created.asDate
                                                                  summaryValues:[decryptedItem.values dictionaryFromIndexableSet]];
 
                      if (handler) {

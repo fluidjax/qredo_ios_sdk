@@ -41,7 +41,7 @@
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler;
 - (void)activateRendezvous: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler;
-- (void)updateRendezvousWithDuration: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler;
+- (void)updateRendezvousWithDuration: (NSNumber *)duration expiresAt:(NSSet*)expiresAt completionHandler:(void (^)(NSError *error))completionHandler;
 - (void)deactivateRendezvous :(void (^)(NSError *error))completionHandler;
 
 

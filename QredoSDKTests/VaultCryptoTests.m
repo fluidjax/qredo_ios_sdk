@@ -50,7 +50,12 @@
                                      @"key_date": valueDate};
 
     NSSet *indexableValues = [metadataValues indexableSet];
+    
+    NSDate* created = [NSDate date];
+    
+    QredoUTCDateTime* createdDate = [[QredoUTCDateTime alloc] initWithDate: created];
     QLFVaultItemMetadata *metadata = [QLFVaultItemMetadata vaultItemMetadataWithDataType:dataType
+                                                                                 created:createdDate
                                                                                   values:indexableValues];
 
     [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
@@ -118,8 +123,10 @@
        @"b63d366a 815fc76d 8268aaa3 4e607e86 c2e964bd 9c445310 3ee696a5 e82b08de 24c6e666 40a6eb44 b7e1eaf6"
        @"d93bb0b3 32ce45cb f0d1a0f8 e1b9d8f2 ffb8ea20"];
 
+
     NSData *verifyingKeyExpected
     = [NSData dataWithHexString:@"24c6e666 40a6eb44 b7e1eaf6 d93bb0b3 32ce45cb f0d1a0f8 e1b9d8f2 ffb8ea20"];
+
 
     XCTAssertEqualObjects(ownershipKeyPair.data, signingKeyExpected);
     XCTAssertEqualObjects(ownershipKeyPair.verifyKey.data, verifyingKeyExpected);
@@ -165,7 +172,7 @@
 
     NSData *encryptedMetadataData
     = [NSData dataWithHexString:
-       @"28373a62 00000002 0000373a 62000000 02000035 31333a62 42143b53 c63ae5ab f54569b6 02cefd16 37bc39cb"
+       @"28313a43 00000002 0000373a 62000000 02000035 31333a62 42143b53 c63ae5ab f54569b6 02cefd16 37bc39cb"
        @"2b4d7ea9 d20b05b5 9c0d00d6 770cb338 76f7aeda f02b22a3 f7366d8e 34723dc7 177ee82f 3d940bc0 3783e3d5"
        @"5686c063 0923abc4 f33944fe 7e65bed8 2a378ad0 ce5b4b4d 18ca3a29 8fff5850 3b58c33d 165dbad6 98ce4bd4"
        @"9fd01f1f 33114429 7531ea31 cda62c5e 2bc28aea c2d0406c f68821ef 54a30bed 64bda17a b9a7f07f 32550a08"
@@ -178,7 +185,7 @@
        @"12f4e59d 1c833a27 6d37fb69 dbdb6fe1 0b39d5e7 42372fb7 dc755ab0 6dc48f9f a1803050 4941acc3 7ec97bfa"
        @"ebc06da4 704d9625 7f464a4e ca918d81 9a248c1d cf64e2af 7fe47835 76690237 3fd0311a 4492bda1 9dd1581b"
        @"c8b3d421 9fad2e47 29"];
-
+    
     NSData *encryptedVaultItemHeaderData
     = [NSData dataWithHexString:
        @"28313a43 32353a27 456e6372 79707465 64566175 6c744974 656d4865 61646572 28393a27 61757468 436f6465"
@@ -201,9 +208,10 @@
        @"4c5dac49 281e261a 3acccacb 314473bc 143ee24f 87c0a929 2831343a 27736571 75656e63 6556616c 7565393a"
        @"49000000 00000000 01292838 3a277661 756c7449 6433333a 5124c6e6 6640a6eb 44b7e1ea f6d93bb0 b332ce45"
        @"cbf0d1a0 f8e1b9d8 f2ffb8ea 20292929 29"];
-
+    
+    
     NSData *authCodeData
-    = [NSData dataWithHexString:@"233dde76 47497274 709d5628 4ab0d8a8 fe02ef92 7828350c 4e6ee3f9 9e82267a"];
+    = [NSData dataWithHexString:@"d4137137 e34f7786 d97832a9 e606f035 780c54d8 15480d0b 3afea0cd 11f0dedb"];
 
     QLFEncryptedVaultItemHeader *encryptedVaultItemHeaderParsed
     = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItemHeaderData

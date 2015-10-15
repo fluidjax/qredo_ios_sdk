@@ -85,11 +85,14 @@ class QredoVaultConsolidationTests: XCTestCase {
 
         let vault = qredo.defaultVault()
         
+        let created: NSDate = NSDate()
+        
         
         let item1 = QredoVaultItem(
             metadata: QredoVaultItemMetadata(
                 dataType: "blob",
                 accessLevel: 0,
+                created:created,
                 summaryValues: [:]),
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         
@@ -141,11 +144,11 @@ class QredoVaultConsolidationTests: XCTestCase {
         
         XCTAssertEqual(afterUpdateEnumerateResults.count, systemItemsCount + 1, "after update put, the vault must only have one item")
         
-        
         let item2 = QredoVaultItem(
             metadata: QredoVaultItemMetadata(
                 dataType: "blob",
                 accessLevel: 0,
+                created:created,
                 summaryValues: [:]),
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         
@@ -181,11 +184,13 @@ class QredoVaultConsolidationTests: XCTestCase {
         let listener = VaultListener()
         vault.addVaultObserver(listener)
         
+        let created: NSDate = NSDate()
         
         let item1 = QredoVaultItem(
             metadata: QredoVaultItemMetadata(
                 dataType: "blob",
                 accessLevel: 0,
+                created:created,
                 summaryValues: [:]),
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         
@@ -219,6 +224,7 @@ class QredoVaultConsolidationTests: XCTestCase {
             metadata: QredoVaultItemMetadata(
                 dataType: "blob",
                 accessLevel: 0,
+                created:created,
                 summaryValues: [:]),
             value: NSData.qtu_dataWithRandomBytesOfLength(1024))
         

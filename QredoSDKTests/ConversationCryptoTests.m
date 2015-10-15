@@ -150,10 +150,15 @@
     QredoQUID *messageID
     = [[QredoQUID alloc] initWithQUIDString:@"a774a903a9a7481a818fb2afae4aa5beb935120f29c0454681319964f129447a"];
 
+    NSDate* created = [NSDate date];
+    QredoUTCDateTime* createdDate = [[QredoUTCDateTime alloc] initWithDate: created];
+    
     QLFConversationMessageMetadata *metadata
     = [QLFConversationMessageMetadata conversationMessageMetadataWithID:messageID
                                                                parentId:[NSSet set]
                                                                sequence:nil
+                                                               sentByMe: true
+                                                               created: createdDate
                                                                dataType:@"blob"
                                                                  values:[NSSet set]];
 

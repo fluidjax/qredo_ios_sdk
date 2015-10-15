@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "CC0F03DF443E1DA241D00129999DA9AF19714E81",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "21ADF4FEA27E9926DE543596AF15E6C35563F907" : 0,
+    "224A09174E2A96433B222193E3463AD5E9E468E0" : 0,
+    "C2F7474132072213D362DB5165B29B6BCEF95490" : 0,
+    "CC0F03DF443E1DA241D00129999DA9AF19714E81" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C4A4EF5B-1CF3-4708-9670-716C9E08F915",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "21ADF4FEA27E9926DE543596AF15E6C35563F907" : "qredo_ios_crypto\/",
+    "224A09174E2A96433B222193E3463AD5E9E468E0" : "qredo_ios_common\/",
+    "C2F7474132072213D362DB5165B29B6BCEF95490" : "LinguaFranca\/",
+    "CC0F03DF443E1DA241D00129999DA9AF19714E81" : "qredo_ios_sdk\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "QredoSDK_pods",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "QredoSDK_pods.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Qredo\/qredo_ios_crypto",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "21ADF4FEA27E9926DE543596AF15E6C35563F907"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Qredo\/qredo_ios_common",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "224A09174E2A96433B222193E3463AD5E9E468E0"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Qredo\/LinguaFranca",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C2F7474132072213D362DB5165B29B6BCEF95490"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Qredo\/qredo_ios_sdk",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CC0F03DF443E1DA241D00129999DA9AF19714E81"
+    }
+  ]
+}

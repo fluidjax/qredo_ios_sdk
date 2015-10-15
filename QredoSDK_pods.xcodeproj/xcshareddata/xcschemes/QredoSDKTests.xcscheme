@@ -37,6 +37,17 @@
                BlueprintName = "QredoSDKTests"
                ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ControlMessagesTests">
+               </Test>
+               <Test
+                  Identifier = "ConversationMessageStoreTests">
+               </Test>
+               <Test
+                  Identifier = "ConversationProtocolFSMTest">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <AdditionalOptions>
