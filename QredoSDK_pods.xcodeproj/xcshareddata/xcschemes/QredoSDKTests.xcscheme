@@ -38,7 +38,36 @@
                ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0A6573DD1A2DEBA300D5502E"
+               BuildableName = "LinguaFrancaTests.xctest"
+               BlueprintName = "LinguaFrancaTests"
+               ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "0A6573B51A2DE88100D5502E"
+               BuildableName = "CryptoTests.xctest"
+               BlueprintName = "CryptoTests"
+               ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "0A16F8CA19C358B400639779"
+            BuildableName = "QredoSDKTests.xctest"
+            BlueprintName = "QredoSDKTests"
+            ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -70,6 +99,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "0A16F8CA19C358B400639779"
+            BuildableName = "QredoSDKTests.xctest"
+            BlueprintName = "QredoSDKTests"
+            ReferencedContainer = "container:QredoSDK_pods.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
