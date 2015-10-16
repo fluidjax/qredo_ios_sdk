@@ -38,7 +38,7 @@ NSString *const kQredoConversationVaultItemLabelTag = @"tag";
 NSString *const kQredoConversationVaultItemLabelHwm = @"hwm";
 NSString *const kQredoConversationVaultItemLabelType = @"type";
 
-NSString *const kQredoConversationMessageKeyCreated = @"_created";
+static NSString *const kQredoConversationMessageKeyCreated = @"_created";
 
 // Conversation message store
 NSString *const kQredoConversationSequenceId = @"_conv_sequenceid";
@@ -453,8 +453,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                       conversationType:_metadata.type
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
-                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                       initialTransCap:[NSSet set]];
+                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]];
 
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
@@ -465,9 +464,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                     kQredoConversationVaultItemLabelTag: _metadata.rendezvousTag,
                                     kQredoConversationVaultItemLabelType: _metadata.type
                                     };
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoConversationVaultItemType
-                                                                                 accessLevel:0
-                                                                               summaryValues:summaryValues];
+    
+    NSDate *created = [NSDate date];
+    QredoVaultItemMetadata *metadata =
+    [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoConversationVaultItemType
+                            accessLevel:0
+                            created: created
+                            summaryValues:summaryValues];
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
@@ -676,17 +679,22 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     NSMutableDictionary *summaryValues = [message.summaryValues mutableCopy];
 
     [summaryValues setObject:@(mine) forKey:kQredoConversationItemIsMine];
+    
+    // TO DO verify where this code is called from and how kQredoConversationItemDateSent and
+    // kQredoConversationMessageKeyCreated is used
 
-    id sentDate = [summaryValues objectForKey:kQredoConversationMessageKeyCreated];
+    NSDate *sentDate = [summaryValues objectForKey:kQredoConversationMessageKeyCreated];
     if (sentDate) {
         [summaryValues setObject:sentDate forKey:kQredoConversationItemDateSent];
     }
+    else sentDate = [NSDate date];
 
     // if there is '_created' in the vault item, it can be taken as not a new item
     [summaryValues removeObjectForKey:kQredoConversationMessageKeyCreated];
 
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:message.dataType
                                                                                  accessLevel:0
+                                                                                     created:sentDate
                                                                                summaryValues:summaryValues];
 
     QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:metadata value:message.value];

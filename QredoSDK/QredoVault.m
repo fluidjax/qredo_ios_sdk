@@ -143,6 +143,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 - (void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
                        itemId:(QredoQUID*)itemId
                      dataType:(NSString *)dataType
+                      created:(NSDate*)created
                 summaryValues:(NSDictionary *)summaryValues
             completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
 {
@@ -150,6 +151,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     [_vaultServerAccess putUpdateOrDeleteItem:vaultItem
                                        itemId:itemId
                                      dataType:dataType
+                                      created:created
                                 summaryValues:summaryValues
                             completionHandler:^(QredoVaultItemMetadata *newItemMetadata, QLFEncryptedVaultItem *encryptedVaultItem, NSError *error)
     {
@@ -174,10 +176,14 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoQUID *itemId = [QredoQUID QUID];
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
-    newSummaryValues[QredoVaultItemMetadataItemDateCreated] = [NSDate date];
+    
+    NSDate* created = [NSDate date];
+    // TO DO keep the creation date in the summary values for now since it's used elsewhere
+    newSummaryValues[QredoVaultItemMetadataItemDateCreated] = created;
     [self putUpdateOrDeleteItem:vaultItem
                          itemId:itemId
                        dataType:metadata.dataType
+                        created:created
                   summaryValues:newSummaryValues
               completionHandler:completionHandler];
 }
@@ -188,11 +194,15 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     QredoQUID *itemId = metadata.descriptor.itemId;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
-    newSummaryValues[QredoVaultItemMetadataItemDateModified] = [NSDate date];
+    NSDate *created = [NSDate date];
+    
+    //TO DO- keep the date in the summary values for now since it's used elsewhere
+    newSummaryValues[QredoVaultItemMetadataItemDateModified] = created;
     newSummaryValues[QredoVaultItemMetadataItemVersion] = @(metadata.descriptor.sequenceValue);
     [self putUpdateOrDeleteItem:vaultItem
                          itemId:itemId
                        dataType:metadata.dataType
+                        created:created
                   summaryValues:newSummaryValues
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
@@ -400,11 +410,15 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     QredoQUID *itemId = metadata.descriptor.itemId;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionary];
     newSummaryValues[QredoVaultItemMetadataItemDateCreated] = metadata.summaryValues[QredoVaultItemMetadataItemDateCreated];
-    newSummaryValues[QredoVaultItemMetadataItemDateModified] = [NSDate date];
+    
+    //TO DO modified not used any more so shouldn't be in summary values ?
+    NSDate* created = [NSDate date];
+    newSummaryValues[QredoVaultItemMetadataItemDateModified] = created;
     newSummaryValues[QredoVaultItemMetadataItemVersion] = @(metadata.descriptor.sequenceValue); // TODO: not working for int64
     [self putUpdateOrDeleteItem:[QredoVaultItem vaultItemWithMetadata:metadata value:[NSData data]]
                          itemId:itemId
                        dataType:QredoVaultItemMetadataItemTypeTombstone
+                        created:created
                   summaryValues:newSummaryValues
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {

@@ -26,6 +26,7 @@
 
 - (void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
                        itemId:(QredoQUID*)itemId dataType:(NSString *)dataType
+                      created:(NSDate*)created
                 summaryValues:(NSDictionary *)summaryValues
             completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, QLFEncryptedVaultItem *encryptedVaultItem, NSError *error))completionHandler;
 

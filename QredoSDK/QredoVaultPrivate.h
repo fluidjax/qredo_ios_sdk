@@ -39,9 +39,13 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 
 @property QredoVaultItemDescriptor *descriptor;
 @property (copy) NSString *dataType;
+@property NSDate *created;
 @property QredoAccessLevel accessLevel;
 @property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
 @property QredoVaultItemOrigin origin;
+
+// private method. the developer should not specify the date
++ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel created: (NSDate*)created summaryValues:(NSDictionary *)summaryValues;
 
 @end
 

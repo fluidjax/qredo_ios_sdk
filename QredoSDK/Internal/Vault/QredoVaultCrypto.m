@@ -251,6 +251,7 @@
     = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                      dataType:vaultItemLF.metadata.dataType
                                                   accessLevel:0
+                                                      created:vaultItemLF.metadata.created.asDate
                                                 summaryValues:summaryValues];
 
     metadata.origin = origin;
@@ -297,6 +298,7 @@
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                                       dataType:vaultItemMetadataLF.dataType
                                                                                    accessLevel:0
+                                                                                       created:vaultItemMetadataLF.created.asDate
                                                                                  summaryValues:summaryValues];
 
     metadata.origin = origin;

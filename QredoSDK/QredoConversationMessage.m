@@ -8,6 +8,7 @@
 #import "QredoConversationMessagePrivate.h"
 
 NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
+NSString *const kQredoConversationMessageKeyCreated = @"_created";
 
 @interface QredoConversationMessage ()
 
@@ -55,13 +56,20 @@ NSString *const kQredoConversationMessageTypeControl = @"Ctrl";
 {
     NSSet* summaryValuesSet = [self.summaryValues indexableSet];
 
+    // TO DO: this needs reviewing since we have a created date in the summary values
+    // and in the QLFConversationMessageMetadata
+    
+    QredoUTCDateTime* createdDate = [[QredoUTCDateTime alloc] initWithDate: self.summaryValues[kQredoConversationMessageKeyCreated]];
+    
     QLFConversationMessageMetadata *messageMetadata =
     [QLFConversationMessageMetadata conversationMessageMetadataWithID:[QredoQUID QUID]
                                                              parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
                                                              sequence:nil // TODO
+                                                             sentByMe: true
+                                                              created: createdDate
                                                              dataType:self.dataType
                                                                values:summaryValuesSet];
-
+    
     QLFConversationMessage *message = [[QLFConversationMessage alloc] initWithMetadata:messageMetadata body:self.value];
     return message;
 
