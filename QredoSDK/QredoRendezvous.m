@@ -327,14 +327,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 - (void)storeWithCompletionHandler:(void(^)(NSError* error))completionHandler
 {
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:_descriptor
-                                                                 marshaller:[QLFRendezvousDescriptor marshaller]];
-    NSDate* created = [NSDate date];
-   
+                                                                 marshaller:[QLFRendezvousDescriptor marshaller]];   
     QredoVaultItemMetadata *metadata
     = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
                                                 accessLevel:0
-                                                    created:created
-                                              summaryValues:@{
+                                               summaryValues:@{
                                                               kQredoRendezvousVaultItemLabelTag: self.tag,
                                                               kQredoRendezvousVaultItemLabelAuthenticationType:
                                                                   [NSNumber numberWithInt:self.authenticationType]

@@ -950,13 +950,10 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 - (void)addDeviceToVaultWithCompletionHandler:(void(^)(NSError *error))completionHandler {
     QredoVault *systemVault = [self systemVault];
     
-    NSDate* created = [NSDate date];
-
     QredoVaultItemMetadata *metadata
     = [QredoVaultItemMetadata vaultItemMetadataWithDataType:QredoVaultItemTypeKeychain
                                                 accessLevel:0
-                                                    created:created
-                                              summaryValues:
+                                                 summaryValues:
        @{
          QredoVaultItemSummaryKeyDeviceName : [self deviceName]
          }];

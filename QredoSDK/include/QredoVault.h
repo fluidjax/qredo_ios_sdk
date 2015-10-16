@@ -45,7 +45,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 // this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
 + (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor dataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel created: (NSDate*)created summaryValues:(NSDictionary *)summaryValues;
 /** this constructor to be used externally when creating a new vault item to be stored in Vault */
-+ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel created: (NSDate*)created summaryValues:(NSDictionary *)summaryValues;
 
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues;
 

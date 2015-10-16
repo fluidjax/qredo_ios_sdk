@@ -245,7 +245,6 @@
     QredoVault *vault = [client defaultVault];
     XCTAssertNotNil(vault);
     
-    NSDate* created = [NSDate date];
      NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2",
@@ -253,7 +252,7 @@
 
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
-                                                                                                                created:created               summaryValues:item1SummaryValues]
+                                                                                                                summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
