@@ -73,10 +73,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
     NSString *publicKeyId = [tag stringByAppendingString:@".public"];
 
     SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyId];
-    if (!keyReference) {
-        LogError(@"Nil SecKeyRef returned for public key ID: %@", publicKeyId);
-    }
-    
     return keyReference;
 }
 
@@ -85,10 +81,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
     NSString *privateKeyId = [tag stringByAppendingString:@".private"];
     
     SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];
-    if (!keyReference) {
-        LogError(@"Nil SecKeyRef returned for private key ID: '%@'", privateKeyId);
-    }
-
     return keyReference;
 }
 

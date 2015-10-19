@@ -1,7 +1,6 @@
 PODS:
-  - LinguaFranca (0.4):
+  - LinguaFranca (0.5):
     - QredoCommon (~> 0.1.0)
-    - QredoCrypto (~> 0.4.0)
     - QredoLibPaho (~> 0.0.1)
     - SocketRocket (~> 0.2.0-qredo)
   - PINCache (2.1)
@@ -35,7 +34,7 @@ EXTERNAL SOURCES:
     :path: "../qredo_ios_crypto/QredoCrypto.podspec"
 
 SPEC CHECKSUMS:
-  LinguaFranca: 169a75842c512c124578fbfb35bf0cf6b4298bfb
+  LinguaFranca: d8484678fec73999a70ab667816354261025d148
   PINCache: 0581b0a7578fc0bbc6c7a8b70b0615388bea064c
   QredoCommon: b32e7c1cebc829eeb8203d5d9c2ea00744e5f2b4
   QredoCrypto: 2caf85f5afb6a2b5da36061b7d17e26d5c5af1d3

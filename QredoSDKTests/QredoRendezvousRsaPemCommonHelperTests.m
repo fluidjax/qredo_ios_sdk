@@ -42,5 +42,4 @@
     XCTAssertEqual(abstractHelper.minimumAuthenticationTagLength, minimumAuthenticationTagLength);
 }
 
-
 @end

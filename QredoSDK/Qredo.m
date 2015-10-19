@@ -15,8 +15,6 @@
 
 #import "QredoKeychain.h"
 #import "QredoKeychainArchiver.h"
-#import "QredoKeychainSender.h"
-#import "QredoKeychainReceiver.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoManagerAppRootViewController.h"
 #import "QredoCertificate.h"
@@ -951,11 +949,11 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 - (void)addDeviceToVaultWithCompletionHandler:(void(^)(NSError *error))completionHandler {
     QredoVault *systemVault = [self systemVault];
-
+    
     QredoVaultItemMetadata *metadata
     = [QredoVaultItemMetadata vaultItemMetadataWithDataType:QredoVaultItemTypeKeychain
                                                 accessLevel:0
-                                              summaryValues:
+                                                 summaryValues:
        @{
          QredoVaultItemSummaryKeyDeviceName : [self deviceName]
          }];

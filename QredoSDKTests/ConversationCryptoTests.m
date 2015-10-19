@@ -39,34 +39,15 @@
     NSData *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
                                                                      yourPublicKey:yourPublicKey];
 
-    NSData *requesterInboundEncryptionKey
-    = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
-
-    NSData *requesterInboundAuthenticationKey
-    = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
-
-    NSData *requesterInboundQueueSeed
-    = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
-
-    QredoED25519SigningKey *requesterOwnershipKeyPair
-    = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
-
-
-    NSData *responderInboundEncryptionKey
-    = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
-
-    NSData *responderInboundAuthenticationKey
-    = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
-
-    NSData *responderInboundQueueSeed
-    = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
-
-    QredoED25519SigningKey *responderOwnershipKeyPair
-    = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
-
-
-    QredoQUID *conversationId
-    = [_conversationCrypto conversationIdWithMasterKey:masterKey];
+    [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
+    [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
+    NSData *requesterInboundQueueSeed = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
+    [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
+    [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
+    NSData *responderInboundQueueSeed = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
+    [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
+    [_conversationCrypto conversationIdWithMasterKey:masterKey];
 
 }
 
@@ -169,10 +150,15 @@
     QredoQUID *messageID
     = [[QredoQUID alloc] initWithQUIDString:@"a774a903a9a7481a818fb2afae4aa5beb935120f29c0454681319964f129447a"];
 
+    NSDate* created = [NSDate date];
+    QredoUTCDateTime* createdDate = [[QredoUTCDateTime alloc] initWithDate: created];
+    
     QLFConversationMessageMetadata *metadata
     = [QLFConversationMessageMetadata conversationMessageMetadataWithID:messageID
                                                                parentId:[NSSet set]
                                                                sequence:nil
+                                                               sentByMe: true
+                                                               created: createdDate
                                                                dataType:@"blob"
                                                                  values:[NSSet set]];
 
@@ -192,8 +178,8 @@
                                   bulkKey:requesterInboundEncryptionKey
                                   authKey:requesterInboundAuthenticationKey];
 
-    NSData *serializedMessage = [QredoPrimitiveMarshallers marshalObject:clearMessage includeHeader:NO];
-    NSData *serializedEncryptedMessage = [QredoPrimitiveMarshallers marshalObject:encryptedMessage includeHeader:NO];
+    [QredoPrimitiveMarshallers marshalObject:clearMessage includeHeader:NO];
+    [QredoPrimitiveMarshallers marshalObject:encryptedMessage includeHeader:NO];
 
     XCTAssertNotNil(encryptedMessage);
     XCTAssertNotNil(encryptedMessage.authCode);
