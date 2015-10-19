@@ -56,8 +56,7 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
 {
     NSSet* summaryValuesSet = [self.summaryValues indexableSet];
 
-    // TO DO: this needs reviewing since we have a created date in the summary values
-    // and in the QLFConversationMessageMetadata
+     // NOTE: QLFConversationMessageMetadata and QLFConversationMessage  will be removed in v0.52 of CommonDefs
     
     QredoUTCDateTime* createdDate = [[QredoUTCDateTime alloc] initWithDate: self.summaryValues[kQredoConversationMessageKeyCreated]];
     
