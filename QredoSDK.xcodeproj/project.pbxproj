@@ -45,6 +45,7 @@
 		0AE25AE51AB90B0200C10F02 /* QredoSigner.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AE25AE31AB90B0200C10F02 /* QredoSigner.h */; };
 		0AE25AE61AB90B0200C10F02 /* QredoSigner.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE25AE41AB90B0200C10F02 /* QredoSigner.m */; };
 		0AF69D4C1B3DA21700E6A584 /* QredoVaultServerAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF69D4B1B3DA21700E6A584 /* QredoVaultServerAccess.m */; };
+		5715305E4FF0207D6AD3493E /* libPods-QredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 13D1C27F2D3F7BB005DB333F /* libPods-QredoSDK.a */; };
 		6660599D1BD505FE00EC8D6C /* CryptoImplV1.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059721BD505FE00EC8D6C /* CryptoImplV1.m */; };
 		666059A01BD505FE00EC8D6C /* QredoCertificateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059751BD505FE00EC8D6C /* QredoCertificateUtils.m */; };
 		666059A21BD505FE00EC8D6C /* QredoCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059771BD505FE00EC8D6C /* QredoCrypto.m */; };
@@ -383,6 +384,7 @@
 		78AB956C1B220278006724E5 /* QredoObserverList.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AB956A1B220278006724E5 /* QredoObserverList.m */; };
 		78F868DA1A5F1A37009CAFFE /* QredoBase58.h in Headers */ = {isa = PBXBuildFile; fileRef = 78F868D81A5F1A37009CAFFE /* QredoBase58.h */; };
 		78F868DB1A5F1A37009CAFFE /* QredoBase58.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F868D91A5F1A37009CAFFE /* QredoBase58.m */; };
+		B13070191A4BE208DEA88FEC /* libPods-QredoSDKTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8E7AEE41CC0B09781AFD0A /* libPods-QredoSDKTests.a */; };
 		DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */; };
 		DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */; };
 		DCC22DB31A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DB11A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.h */; };
@@ -531,6 +533,8 @@
 		0AEE5C5F1A5C3B110018BE19 /* RendezvousBlockDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RendezvousBlockDelegate.swift; sourceTree = "<group>"; };
 		0AF69D4B1B3DA21700E6A584 /* QredoVaultServerAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultServerAccess.m; sourceTree = "<group>"; };
 		0AF69D4D1B3DA22A00E6A584 /* QredoVaultServerAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoVaultServerAccess.h; sourceTree = "<group>"; };
+		0D8E7AEE41CC0B09781AFD0A /* libPods-QredoSDKTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDKTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13D1C27F2D3F7BB005DB333F /* libPods-QredoSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C63C77E39187A7A77D67705 /* Pods-QredoSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDKTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests.release.xcconfig"; sourceTree = "<group>"; };
 		666059691BD5053500EC8D6C /* libsodium.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsodium.a; path = "QredoCrypto/External/libsodium-ios/libsodium.a"; sourceTree = "<group>"; };
 		666059701BD505FE00EC8D6C /* CryptoImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CryptoImpl.h; sourceTree = "<group>"; };
@@ -872,6 +876,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5715305E4FF0207D6AD3493E /* libPods-QredoSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -895,6 +900,7 @@
 				66E6F9001BD6711200319BC9 /* libcrypto.a in Frameworks */,
 				66605CC91BD640BC00EC8D6C /* libicucore.tbd in Frameworks */,
 				66605C951BD6402E00EC8D6C /* libqredosdk.a in Frameworks */,
+				B13070191A4BE208DEA88FEC /* libPods-QredoSDKTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1184,6 +1190,8 @@
 				666059C81BD5069E00EC8D6C /* libtommath.a */,
 				666059691BD5053500EC8D6C /* libsodium.a */,
 				C87E16460AC916F97E987172 /* libPods.a */,
+				13D1C27F2D3F7BB005DB333F /* libPods-QredoSDK.a */,
+				0D8E7AEE41CC0B09781AFD0A /* libPods-QredoSDKTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

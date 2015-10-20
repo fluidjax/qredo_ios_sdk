@@ -3,8 +3,6 @@ xcodeproj 'QredoSDK.xcodeproj/'
 source 'git@github.com:Qredo/qredo_cocoapods.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
-
-
 target 'QredoSDK' do
 
     pod 'PINCache'
