@@ -290,6 +290,8 @@
 		66E6F8F91BD66FAC00319BC9 /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66605A041BD506C200EC8D6C /* libsodium.a */; };
 		66E6F9001BD6711200319BC9 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66605BE11BD532E500EC8D6C /* libcrypto.a */; };
 		66E6F9011BD6715000319BC9 /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66605A041BD506C200EC8D6C /* libsodium.a */; };
+		66E6F9071BD679F600319BC9 /* libSocketRocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E6F9061BD679F600319BC9 /* libSocketRocket.a */; };
+		66E6F9091BD67A0E00319BC9 /* libSocketRocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E6F9081BD67A0E00319BC9 /* libSocketRocket.a */; };
 		66F774B21BD64AFC00F01A2C /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B4B1BD5266700EC8D6C /* TestCertificates.m */; };
 		66F774E01BD64CE200F01A2C /* NSArray+QredoArrayEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */; settings = {ASSET_TAGS = (); }; };
 		66F774E11BD64CE200F01A2C /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */; settings = {ASSET_TAGS = (); }; };
@@ -753,6 +755,8 @@
 		66E6F8CA1BD65AC600319BC9 /* MQttTxFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQttTxFlow.h; sourceTree = "<group>"; };
 		66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQttTxFlow.m; sourceTree = "<group>"; };
 		66E6F8CC1BD65AC600319BC9 /* MQTTTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTTypes.h; sourceTree = "<group>"; };
+		66E6F9061BD679F600319BC9 /* libSocketRocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSocketRocket.a; path = "Pods/../build/Debug-iphoneos/libSocketRocket.a"; sourceTree = "<group>"; };
+		66E6F9081BD67A0E00319BC9 /* libSocketRocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSocketRocket.a; path = "Pods/../build/Debug-iphoneos/libSocketRocket.a"; sourceTree = "<group>"; };
 		66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+QredoArrayEquality.h"; sourceTree = "<group>"; };
 		66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+QredoArrayEquality.m"; sourceTree = "<group>"; };
 		66F774B61BD64CE200F01A2C /* NSData+Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Conversion.h"; sourceTree = "<group>"; };
@@ -886,6 +890,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66E6F9071BD679F600319BC9 /* libSocketRocket.a in Frameworks */,
 				66E6F9011BD6715000319BC9 /* libsodium.a in Frameworks */,
 				66E6F9001BD6711200319BC9 /* libcrypto.a in Frameworks */,
 				66605CC91BD640BC00EC8D6C /* libicucore.tbd in Frameworks */,
@@ -897,6 +902,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66E6F9091BD67A0E00319BC9 /* libSocketRocket.a in Frameworks */,
 				66F775481BD6557F00F01A2C /* libqredosdk.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1169,6 +1175,8 @@
 		175760C0586442332A2DE17D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				66E6F9081BD67A0E00319BC9 /* libSocketRocket.a */,
+				66E6F9061BD679F600319BC9 /* libSocketRocket.a */,
 				66605CC81BD640BC00EC8D6C /* libicucore.tbd */,
 				66605BE11BD532E500EC8D6C /* libcrypto.a */,
 				66605BE21BD532E500EC8D6C /* libssl.a */,
