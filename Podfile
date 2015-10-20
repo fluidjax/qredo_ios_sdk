@@ -1,4 +1,4 @@
-xcodeproj 'QredoSDK_pods.xcodeproj/'
+xcodeproj 'QredoSDK.xcodeproj/'
 
 source 'git@github.com:Qredo/qredo_cocoapods.git'
 source 'https://github.com/CocoaPods/Specs.git'
@@ -7,39 +7,20 @@ source 'https://github.com/CocoaPods/Specs.git'
 
 target 'QredoSDK' do
 
-    pod "PINCache"
-    
-#	pod "LinguaFranca", "~> 0.3"
-#	pod "LinguaFranca", :git => "git@github.com:Qredo/LinguaFranca.git", :tag => "ios-0.3"
-#	pod "LinguaFranca", :git => "git@github.com:Qredo/LinguaFranca.git", :branch => "feature/pods"
-
-
-    # The QredoLibPaho dependency is only here for convenience during development. Relase builds
-    # should not have it here.
-    pod "QredoCommon", :path => "../qredo_ios_common/QredoCommon.podspec"
-    pod "QredoCrypto", :path => "../qredo_ios_crypto/QredoCrypto.podspec"
-    pod "LinguaFranca", :path => "../LinguaFranca/LinguaFranca.podspec"
-#   pod "QredoLibPaho", :path => "../qredo_ios_libpaho/QredoLibPaho.podspec"
-#   pod "SocketRocket", :path => "../SocketRocket/SocketRocket.podspec"
+    pod 'PINCache'
+    pod 'SocketRocket', '~> 0.2.0-qredo'
+    pod 'OpenSSL', '~> 1.0'
 
 end
 
-target 'CryptoTests' do
-    pod "QredoCommon", :path => "../qredo_ios_common/QredoCommon.podspec"
-    pod "QredoCrypto", :path => "../qredo_ios_crypto/QredoCrypto.podspec"
-end
+target 'QredoSDKTests' do
 
-target 'LinguaFrancaTests' do
-    pod "QredoCommon", :path => "../qredo_ios_common/QredoCommon.podspec"
-    pod "QredoCrypto", :path => "../qredo_ios_crypto/QredoCrypto.podspec"
-	pod "LinguaFranca", :path => "../LinguaFranca/LinguaFranca.podspec"
-end
+    pod 'PINCache'
 
-#target 'QredoSDKTests' do
-#end
+end
 
 post_install do |installer_representation|
-    
+
     puts "Processing post install steps"
     installer_representation.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
@@ -61,6 +42,5 @@ post_install do |installer_representation|
 
    end
     puts "Completed post install"
-    
-end
 
+end

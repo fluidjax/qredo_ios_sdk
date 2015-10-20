@@ -1,0 +1,9 @@
+V	250419141455Z		F41503B286254EFE	unknown	/C=UK/ST=England/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestRootCA
+V	180421141455Z		F41503B286254EFF	unknown	/C=UK/ST=England/L=London/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestIntermediateCA-1
+R	180421141456Z	150422141524Z	F41503B286254F00	unknown	/C=UK/ST=England/L=London/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestIntermediateCA-2
+V	180421141456Z		F41503B286254F01	unknown	/C=UK/ST=England/L=London/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestCert1 using Intermediate CA 1
+V	180421141456Z		F41503B286254F02	unknown	/C=UK/ST=England/L=London/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestCert2 using Intermediate CA 1
+V	180421141457Z		F41503B286254F03	unknown	/C=UK/ST=England/L=London/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestCert3 using Intermediate CA 1
+V	180421141523Z		F41503B286254F04	unknown	/C=UK/ST=England/L=London/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestCert4 using Intermediate CA 1
+R	180421141523Z	150422141524Z	F41503B286254F05	unknown	/C=UK/ST=England/L=London/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestCert5 using Intermediate CA 1
+V	180421141524Z		F41503B286254F06	unknown	/C=UK/ST=England/L=London/O=Qredo Ltd (Test)/OU=Dev Unit Test/CN=TestCert6 using Intermediate CA 2

@@ -97,8 +97,8 @@ Pod::Spec.new do |s|
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
 
-  s.dependency "QredoCommon", "~> 0.1.0"
-  s.dependency "QredoCrypto", "~> 0.4.0"
+  # s.dependency "QredoCommon", "~> 0.1.0"
+  # s.dependency "QredoCrypto", "~> 0.4.0"
   s.dependency "LinguaFranca", "~> 0.5"
   s.dependency "PINCache", "~> 2.0"
 

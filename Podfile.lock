@@ -1,44 +1,16 @@
 PODS:
-  - LinguaFranca (0.5):
-    - QredoCommon (~> 0.1.0)
-    - QredoLibPaho (~> 0.0.1)
-    - SocketRocket (~> 0.2.0-qredo)
+  - OpenSSL (1.0.204.1)
   - PINCache (2.1)
-  - QredoCommon (0.1.0)
-  - QredoCrypto (0.4.0):
-    - QredoCommon (~> 0.1.0)
-    - QredoCrypto/libsodium (= 0.4.0)
-    - QredoCrypto/libtomcrypt (= 0.4.0)
-    - QredoCrypto/openssl (= 0.4.0)
-  - QredoCrypto/libsodium (0.4.0):
-    - QredoCommon (~> 0.1.0)
-  - QredoCrypto/libtomcrypt (0.4.0):
-    - QredoCommon (~> 0.1.0)
-  - QredoCrypto/openssl (0.4.0):
-    - QredoCommon (~> 0.1.0)
-  - QredoLibPaho (0.0.1)
   - SocketRocket (0.2.0-qredo)
 
 DEPENDENCIES:
-  - LinguaFranca (from `../LinguaFranca/LinguaFranca.podspec`)
+  - OpenSSL (~> 1.0)
   - PINCache
-  - QredoCommon (from `../qredo_ios_common/QredoCommon.podspec`)
-  - QredoCrypto (from `../qredo_ios_crypto/QredoCrypto.podspec`)
-
-EXTERNAL SOURCES:
-  LinguaFranca:
-    :path: "../LinguaFranca/LinguaFranca.podspec"
-  QredoCommon:
-    :path: "../qredo_ios_common/QredoCommon.podspec"
-  QredoCrypto:
-    :path: "../qredo_ios_crypto/QredoCrypto.podspec"
+  - SocketRocket (~> 0.2.0-qredo)
 
 SPEC CHECKSUMS:
-  LinguaFranca: d8484678fec73999a70ab667816354261025d148
+  OpenSSL: 7f853fcada78e5162c2183b4d90ebbd0aa02f5ac
   PINCache: 0581b0a7578fc0bbc6c7a8b70b0615388bea064c
-  QredoCommon: b32e7c1cebc829eeb8203d5d9c2ea00744e5f2b4
-  QredoCrypto: 2caf85f5afb6a2b5da36061b7d17e26d5c5af1d3
-  QredoLibPaho: e42589b0d9827c9167048ffc9a4a309c33d7d921
   SocketRocket: ef41ebd342caa38b398ebb1ed485a6d0dbee806d
 
-COCOAPODS: 0.38.2
+COCOAPODS: 0.39.0

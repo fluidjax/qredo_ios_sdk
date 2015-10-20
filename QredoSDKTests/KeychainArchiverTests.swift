@@ -25,8 +25,8 @@ class KeychainArchiverTests: XCTestCase {
             name: "MyOperator",
             serviceUri: "http://example.com/",
             accountID: "1234567890",
-            currentServiceAccess: NSSet(),
-            nextServiceAccess: NSSet()
+            currentServiceAccess: NSSet() as Set<NSObject>,
+            nextServiceAccess: NSSet() as Set<NSObject>
         )
         
         let bulkKeyData = bulkKeyString.dataUsingEncoding(NSUTF8StringEncoding)
@@ -229,7 +229,7 @@ class KeychainArchiverForApplekeychainTests: KeychainArchiverTests {
     
     override func saveGarbageAsKeychainWithId(keychainIdentifier: String, noKeychainData: Bool = false) -> Bool {
         
-        var dictionary = NSMutableDictionary()
+        let dictionary = NSMutableDictionary()
         dictionary[kSecClass as NSString] = kSecClassGenericPassword as NSString
         dictionary[kSecAttrService as NSString] = "CurrentService"
         dictionary[kSecAttrAccount as NSString] = keychainIdentifier as NSString
@@ -248,7 +248,7 @@ class KeychainArchiverForApplekeychainTests: KeychainArchiverTests {
     
     override func deleteGarbageAsKeychainWithId(keychainIdentifier: String) -> Bool {
         
-        var dictionary = NSMutableDictionary()
+        let dictionary = NSMutableDictionary()
         dictionary[kSecClass as NSString] = kSecClassGenericPassword as NSString
         dictionary[kSecAttrService as NSString] = "CurrentService"
         dictionary[kSecAttrAccount as NSString] = keychainIdentifier as NSString
