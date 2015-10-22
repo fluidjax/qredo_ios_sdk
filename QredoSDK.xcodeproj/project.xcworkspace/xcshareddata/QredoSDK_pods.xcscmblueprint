@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "CC0F03DF443E1DA241D00129999DA9AF19714E81",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "C2F7474132072213D362DB5165B29B6BCEF95490" : 0,
+    "21ADF4FEA27E9926DE543596AF15E6C35563F907" : 0,
+    "CC0F03DF443E1DA241D00129999DA9AF19714E81" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "3A371918-DBC3-4F48-9609-BA6E66087F0E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "C2F7474132072213D362DB5165B29B6BCEF95490" : "LinguaFranca\/",
+    "21ADF4FEA27E9926DE543596AF15E6C35563F907" : "qredo_ios_crypto\/",
+    "CC0F03DF443E1DA241D00129999DA9AF19714E81" : "qredo_ios_sdk\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "QredoSDK_pods",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "QredoSDK_pods.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:Qredo\/qredo_ios_crypto.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "21ADF4FEA27E9926DE543596AF15E6C35563F907"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:Qredo\/LinguaFranca.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C2F7474132072213D362DB5165B29B6BCEF95490"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:Qredo\/qredo_ios_sdk.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CC0F03DF443E1DA241D00129999DA9AF19714E81"
+    }
+  ]
+}

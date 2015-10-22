@@ -46,7 +46,7 @@ class QredoVaultDescriptorTests: XCTestCase {
 
             XCTAssertNotNil(actualMetadata.descriptor, "Descriptor should not be nil")
 
-            if let actualDescriptor = actualMetadata.descriptor {
+            if let _ = actualMetadata.descriptor {
                 XCTAssertTrue(itemMetadata.descriptor.isEqual(self.itemDescriptor!), "Desriptor should be the same")
             }
         }
@@ -101,7 +101,7 @@ class QredoVaultDescriptorTests: XCTestCase {
 
             if let actualDescriptor = itemMetadata.descriptor {
                 if actualDescriptor == self.itemDescriptor {
-                    println("found")
+                    print("found")
                     found = true
                 }
             }
@@ -109,7 +109,7 @@ class QredoVaultDescriptorTests: XCTestCase {
         }, completionHandler: { error in
             XCTAssertNil(error, "failed")
 
-            finishEnumerationExpectation?.fulfill()
+            finishEnumerationExpectation.fulfill()
         })
 
         waitForExpectationsWithTimeout(5.0) { error in
