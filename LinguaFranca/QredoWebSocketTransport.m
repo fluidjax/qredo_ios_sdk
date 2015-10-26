@@ -63,7 +63,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 1.0; // 1 second 
 {
     self.shouldRestartWebSocket = YES;
     self.webSocket = [[SRWebSocket alloc] initWithURL:self.serviceURL];
-    _webSocket.trustValidator = webSocketTrustValidatorWithTrustedCert(self.pinnedCertificate.certificate);
+//    _webSocket.trustValidator = webSocketTrustValidatorWithTrustedCert(self.pinnedCertificate.certificate);
     [_webSocket setDelegateDispatchQueue:dispatch_queue_create("WebSocketDelegateDispatchQueue", DISPATCH_QUEUE_SERIAL)];
     _webSocket.delegate = self;
     [_webSocket open];

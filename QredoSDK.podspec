@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #  can feel like a chore to fill in it's definitely to your advantage. The
   #  summary should be tweet-length, and the description more in depth.
   #
-#  source 'QredoCocoapods'
+
 
   s.name         = "QredoSDK"
   s.version      = "0.2"
@@ -70,7 +70,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "git@github.com:Qredo/qredio_ios_sdk.git", :tag => "0.1" }
+  s.source       = { :git => "git@github.com:Qredo/qredo_ios_sdk.git", :submodules => true }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -80,10 +80,9 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "QredoSDK/**/*.{h,m,c}"
+  s.source_files  = "{QredoSDK,LinguaFranca,MQttClient,QredoCrypto,QredoCommon}/**/*.{h,m,c}"
 
-  s.public_header_files = "QredoSDK/include/*.h"
-
+  s.public_header_files = "{QredoSDK/include/*.h,LinguaFranca/*.h,QredoCrypto/**.h}"
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -97,13 +96,22 @@ Pod::Spec.new do |s|
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
 
-  s.dependency "PINCache", "~> 2.0"
+  s.dependency 'PINCache', '~> 2.0'
+  s.dependency 'SocketRocket'
+  s.dependency 'OpenSSL', '~> 1.0'
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
   #  If your library depends on compiler flags you can set them in the xcconfig hash
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
+
+  s .subspec 'libsodium' do |libsodium|
+    libsodium.source_files   = "src/libsodium/**/*.{c,h,data}", "builds/msvc/version.h"
+    libsodium.compiler_flags = "-DNATIVE_LITTLE_ENDIAN=1"
+    libsodium.public_header_files = "src/libsodium/include/*.h"
+    libsodium.requires_arc = false
+  end
 
   s.requires_arc = true
 
