@@ -98,7 +98,7 @@ Pod::Spec.new do |s|
   s.dependency 'SocketRocket'
   s.dependency 'OpenSSL', '~> 1.0'
 
-  s.prepare_command  =  "git submodule update --remote && cp libsodium/builds/msvc/version.h libsodium/src/libsodium/include/sodium/version.h"
+  s.prepare_command  =  "cp libsodium/builds/msvc/version.h libsodium/src/libsodium/include/sodium/version.h"
 
   s.subspec 'libsodium' do |libsodium|
 
