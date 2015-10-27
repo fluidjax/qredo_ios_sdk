@@ -1,3 +1,9 @@
 [submodule "libsodium"]
 	path = libsodium
 	url = git@github.com:jedisct1/libsodium.git
+[submodule "libtommath"]
+	path = libtommath
+	url = git@github.com:libtom/libtommath.git
+[submodule "libtomcrypt"]
+	path = libtomcrypt
+	url = git@github.com:libtom/libtomcrypt.git
