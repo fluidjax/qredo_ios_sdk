@@ -77,7 +77,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "{QredoSDK,LinguaFranca,MQttClient,QredoCrypto,QredoCommon}/**/*.{h,m,c}"
+  s.source_files  = "{QredoSDK,LinguaFranca,MQttClient,QredoCrypto,QredoCommon}/**/*.{h,m,c}", "libtomcrypt/src/headers/*.h", "libtommath/*.h"
   s.public_header_files = "{QredoSDK/include/*.h,LinguaFranca/*.h,QredoCrypto/**.h}"
 
   s.exclude_files = "QredoCrypto/External/*"
