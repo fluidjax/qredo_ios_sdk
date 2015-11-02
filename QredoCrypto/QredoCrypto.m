@@ -486,7 +486,7 @@
     
     if (result != errSecSuccess) {
         @throw [NSException exceptionWithName:@"QredoCryptoImportPublicKeyFailed"
-                                       reason:[NSString stringWithFormat:@"Error code: %d", result]
+                                       reason:[NSString stringWithFormat:@"Error code: %d", (int)result]
                                      userInfo:nil];
     } else if (!importedKeyRef) {
         @throw [NSException exceptionWithName:@"QredoCryptoImportPublicKeyInvalidFormat"
