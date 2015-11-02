@@ -143,18 +143,18 @@ typedef NS_ENUM(char, QredoMarker) {
 
 @end
 
-@interface QredoAccessToken : NSObject
+@interface QredoAppCredentials : NSObject
 
-@property (readonly) NSData *token;
-@property (readonly) NSNumber *keySlotNumber;
+@property (readonly) NSString *appId;
+@property (readonly) NSData   *appSecret;
 
-+ (QredoAccessToken *)empty;
++ (QredoAppCredentials *)empty;
 
-+ (QredoAccessToken *)accessTokenWithToken:(NSData *)token
-                             keySlotNumber:(NSNumber *)keySlotNumber;
++ (QredoAppCredentials *)appCredentialsWithAppId:(NSString *)appId
+                                       appSecret:(NSData *)appSecret;
 
 - (BOOL)isEqual:(id)other;
-- (BOOL)isEqualToAccessToken:(QredoAccessToken *)accessToken;
+- (BOOL)isEqualToAppCredentials:(QredoAppCredentials *)appCredentials;
 - (NSUInteger)hash;
 
 @end
@@ -234,7 +234,7 @@ typedef NS_ENUM(char, QredoMarker) {
 - (QredoMessageHeader *)readMessageHeader;
 - (QredoVersion *)readVersion;
 - (QredoInterchangeHeader *)readInterchangeHeader;
-- (QredoAccessToken *)readInvocationHeader;
+- (QredoAppCredentials *)readInvocationHeader;
 - (NSArray *)readErrorInfoItems;
 - (QredoResultHeader *)readResultStart;
 - (void)readSequenceStart;
@@ -273,7 +273,7 @@ typedef NS_ENUM(char, QredoMarker) {
 - (void)writeMessageHeader:(QredoMessageHeader *)messageHeader;
 - (void)writeVersion:(QredoVersion *)version;
 - (void)writeInterchangeHeader:(QredoInterchangeHeader *)interchangeHeader;
-- (void)writeInvocationHeader:(QredoAccessToken *)accessToken;
+- (void)writeInvocationHeader:(QredoAppCredentials *)appCredentials;
 - (void)writeErrorInfoItems:(NSArray *)errorInfoItems;
 - (void)writeResultStart:(QredoResultHeader *)status;
 - (void)writeSequenceStart;
