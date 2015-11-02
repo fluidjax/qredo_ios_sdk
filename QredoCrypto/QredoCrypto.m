@@ -5,7 +5,7 @@
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"
 #import <CommonCrypto/CommonCrypto.h>
-#import "tomcrypt.h"
+//#import "tomcrypt.h"
 #import "sodium.h"
 #import "QredoLogging.h"
 #import <Security/Security.h>

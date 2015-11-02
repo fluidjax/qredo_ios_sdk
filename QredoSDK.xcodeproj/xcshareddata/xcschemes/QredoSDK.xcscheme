@@ -79,6 +79,9 @@
                   Identifier = "ControlMessagesTests">
                </Test>
                <Test
+                  Identifier = "ConversationMQTTTests">
+               </Test>
+               <Test
                   Identifier = "ConversationMQTTTests/testConversationMultiple">
                </Test>
                <Test

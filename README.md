@@ -41,3 +41,25 @@ For now you need to:
 `open QredoSDK.xcworkspace`
 
 then `CMD + B` and `CMD + U`...
+
+---
+
+### Podspec
+
+```
+
+pod spec lint QredoSDK.podspec --use-libraries --allow-warnings --verbose --fail-fast --no-clean
+
+```
+
+---
+
+### CLI build
+
+```
+
+xcodebuild -workspace QredoSDK.xcworkspace -scheme QredoSDK -destination name="iPhone 6” build
+
+```
+
+---

@@ -6,7 +6,7 @@
 #define __QredoSDK__QredoRsaBlindSignature__
 
 #include <stdio.h>
-#include "tommath.h"
+//#include "tommath.h"
 
 // Result codes
 #define QREDO_BLINDING_INVALID_ARGUMENT -100
@@ -25,10 +25,10 @@
 
 #define QREDO_BLINDING_SUCCESS 1
 
-int blindMessage(unsigned char *publicModulus, size_t publicModulusLength, unsigned char *exponent, size_t exponentLength, unsigned char *message, size_t messageLength, unsigned char *blindingFactor, size_t *blindingFactorLength, unsigned char *blindedMessage, size_t *blindedMessageLength);
-int unblindSignature(unsigned char *publicModulus, size_t publicModulusLength, unsigned char *blindingFactor, size_t blindingFactorLength, unsigned char *blindedSignature, size_t blindedSignatureLength, unsigned char *unblindedSignature, size_t *unblindedSignatureLength);
-int generateRandomInteger(int bitCount, mp_int *randomInteger);
-int generateRandomIntegerLessThanAnother(mp_int *randomInteger, mp_int *otherInteger);
-int generateBlindingFactor(mp_int *modulus, mp_int *blindingFactor);
+//int blindMessage(unsigned char *publicModulus, size_t publicModulusLength, unsigned char *exponent, size_t exponentLength, unsigned char *message, size_t messageLength, unsigned char *blindingFactor, size_t *blindingFactorLength, unsigned char *blindedMessage, size_t *blindedMessageLength);
+//int unblindSignature(unsigned char *publicModulus, size_t publicModulusLength, unsigned char *blindingFactor, size_t blindingFactorLength, unsigned char *blindedSignature, size_t blindedSignatureLength, unsigned char *unblindedSignature, size_t *unblindedSignatureLength);
+//int generateRandomInteger(int bitCount, mp_int *randomInteger);
+//int generateRandomIntegerLessThanAnother(mp_int *randomInteger, mp_int *otherInteger);
+//int generateBlindingFactor(mp_int *modulus, mp_int *blindingFactor);
 
 #endif /* defined(__QredoSDK__QredoRsaBlindSignature__) */

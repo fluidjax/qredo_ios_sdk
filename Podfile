@@ -6,8 +6,6 @@ target 'QredoSDK' do
     pod 'SocketRocket'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :path => 'libsodium.podspec'
-    pod 'libtommath', :path => 'libtommath.podspec'
-    pod 'libtomcrypt', :path => 'libtomcrypt.podspec'
 
 end
 

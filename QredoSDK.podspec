@@ -78,9 +78,7 @@ Pod::Spec.new do |s|
   #
 
   s.source_files  = "{QredoSDK,LinguaFranca,MQttClient,QredoCrypto,QredoCommon}/**/*.{h,m,c}", "libtomcrypt/src/headers/*.h", "libtommath/*.h"
-  s.public_header_files = "{QredoSDK/include/*.h,LinguaFranca/*.h,QredoCrypto/**.h}"
-
-  s.exclude_files = "QredoCrypto/External/*"
+  s.public_header_files = "{QredoSDK/include/*.h,LinguaFranca/*.h,QredoCrypto/**.h}", "libtomcrypt/src/headers/*.h", "libtommath/*.h"
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
