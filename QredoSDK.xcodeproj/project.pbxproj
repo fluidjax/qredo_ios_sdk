@@ -66,89 +66,89 @@
 		666059C11BD505FE00EC8D6C /* QredoRsaPublicKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059961BD505FE00EC8D6C /* QredoRsaPublicKey.m */; };
 		666059C31BD505FE00EC8D6C /* QredoSecKeyRefPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059981BD505FE00EC8D6C /* QredoSecKeyRefPair.m */; };
 		666059C41BD505FE00EC8D6C /* rsapss.c in Sources */ = {isa = PBXBuildFile; fileRef = 666059991BD505FE00EC8D6C /* rsapss.c */; };
-		66605A6A1BD506C200EC8D6C /* core.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059CF1BD506C200EC8D6C /* core.h */; settings = {ASSET_TAGS = (); }; };
-		66605A6B1BD506C200EC8D6C /* crypto_aead_chacha20poly1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D01BD506C200EC8D6C /* crypto_aead_chacha20poly1305.h */; settings = {ASSET_TAGS = (); }; };
-		66605A6C1BD506C200EC8D6C /* crypto_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D11BD506C200EC8D6C /* crypto_auth.h */; settings = {ASSET_TAGS = (); }; };
-		66605A6D1BD506C200EC8D6C /* crypto_auth_hmacsha256.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D21BD506C200EC8D6C /* crypto_auth_hmacsha256.h */; settings = {ASSET_TAGS = (); }; };
-		66605A6E1BD506C200EC8D6C /* crypto_auth_hmacsha512.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D31BD506C200EC8D6C /* crypto_auth_hmacsha512.h */; settings = {ASSET_TAGS = (); }; };
-		66605A6F1BD506C200EC8D6C /* crypto_auth_hmacsha512256.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D41BD506C200EC8D6C /* crypto_auth_hmacsha512256.h */; settings = {ASSET_TAGS = (); }; };
-		66605A701BD506C200EC8D6C /* crypto_box.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D51BD506C200EC8D6C /* crypto_box.h */; settings = {ASSET_TAGS = (); }; };
-		66605A711BD506C200EC8D6C /* crypto_box_curve25519xsalsa20poly1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D61BD506C200EC8D6C /* crypto_box_curve25519xsalsa20poly1305.h */; settings = {ASSET_TAGS = (); }; };
-		66605A721BD506C200EC8D6C /* crypto_core_hsalsa20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D71BD506C200EC8D6C /* crypto_core_hsalsa20.h */; settings = {ASSET_TAGS = (); }; };
-		66605A731BD506C200EC8D6C /* crypto_core_salsa20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D81BD506C200EC8D6C /* crypto_core_salsa20.h */; settings = {ASSET_TAGS = (); }; };
-		66605A741BD506C200EC8D6C /* crypto_core_salsa2012.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D91BD506C200EC8D6C /* crypto_core_salsa2012.h */; settings = {ASSET_TAGS = (); }; };
-		66605A751BD506C200EC8D6C /* crypto_core_salsa208.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DA1BD506C200EC8D6C /* crypto_core_salsa208.h */; settings = {ASSET_TAGS = (); }; };
-		66605A761BD506C200EC8D6C /* crypto_generichash.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DB1BD506C200EC8D6C /* crypto_generichash.h */; settings = {ASSET_TAGS = (); }; };
-		66605A771BD506C200EC8D6C /* crypto_generichash_blake2b.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DC1BD506C200EC8D6C /* crypto_generichash_blake2b.h */; settings = {ASSET_TAGS = (); }; };
-		66605A781BD506C200EC8D6C /* crypto_hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DD1BD506C200EC8D6C /* crypto_hash.h */; settings = {ASSET_TAGS = (); }; };
-		66605A791BD506C200EC8D6C /* crypto_hash_sha256.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DE1BD506C200EC8D6C /* crypto_hash_sha256.h */; settings = {ASSET_TAGS = (); }; };
-		66605A7A1BD506C200EC8D6C /* crypto_hash_sha512.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DF1BD506C200EC8D6C /* crypto_hash_sha512.h */; settings = {ASSET_TAGS = (); }; };
-		66605A7B1BD506C200EC8D6C /* crypto_int32.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E01BD506C200EC8D6C /* crypto_int32.h */; settings = {ASSET_TAGS = (); }; };
-		66605A7C1BD506C200EC8D6C /* crypto_int64.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E11BD506C200EC8D6C /* crypto_int64.h */; settings = {ASSET_TAGS = (); }; };
-		66605A7D1BD506C200EC8D6C /* crypto_onetimeauth.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E21BD506C200EC8D6C /* crypto_onetimeauth.h */; settings = {ASSET_TAGS = (); }; };
-		66605A7E1BD506C200EC8D6C /* crypto_onetimeauth_poly1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E31BD506C200EC8D6C /* crypto_onetimeauth_poly1305.h */; settings = {ASSET_TAGS = (); }; };
-		66605A7F1BD506C200EC8D6C /* crypto_pwhash_scryptsalsa208sha256.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E41BD506C200EC8D6C /* crypto_pwhash_scryptsalsa208sha256.h */; settings = {ASSET_TAGS = (); }; };
-		66605A801BD506C200EC8D6C /* crypto_scalarmult.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E51BD506C200EC8D6C /* crypto_scalarmult.h */; settings = {ASSET_TAGS = (); }; };
-		66605A811BD506C200EC8D6C /* crypto_scalarmult_curve25519.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E61BD506C200EC8D6C /* crypto_scalarmult_curve25519.h */; settings = {ASSET_TAGS = (); }; };
-		66605A821BD506C200EC8D6C /* crypto_secretbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E71BD506C200EC8D6C /* crypto_secretbox.h */; settings = {ASSET_TAGS = (); }; };
-		66605A831BD506C200EC8D6C /* crypto_secretbox_xsalsa20poly1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E81BD506C200EC8D6C /* crypto_secretbox_xsalsa20poly1305.h */; settings = {ASSET_TAGS = (); }; };
-		66605A841BD506C200EC8D6C /* crypto_shorthash.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E91BD506C200EC8D6C /* crypto_shorthash.h */; settings = {ASSET_TAGS = (); }; };
-		66605A851BD506C200EC8D6C /* crypto_shorthash_siphash24.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EA1BD506C200EC8D6C /* crypto_shorthash_siphash24.h */; settings = {ASSET_TAGS = (); }; };
-		66605A861BD506C200EC8D6C /* crypto_sign.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EB1BD506C200EC8D6C /* crypto_sign.h */; settings = {ASSET_TAGS = (); }; };
-		66605A871BD506C200EC8D6C /* crypto_sign_ed25519.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EC1BD506C200EC8D6C /* crypto_sign_ed25519.h */; settings = {ASSET_TAGS = (); }; };
-		66605A881BD506C200EC8D6C /* crypto_sign_edwards25519sha512batch.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059ED1BD506C200EC8D6C /* crypto_sign_edwards25519sha512batch.h */; settings = {ASSET_TAGS = (); }; };
-		66605A891BD506C200EC8D6C /* crypto_stream.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EE1BD506C200EC8D6C /* crypto_stream.h */; settings = {ASSET_TAGS = (); }; };
-		66605A8A1BD506C200EC8D6C /* crypto_stream_aes128ctr.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EF1BD506C200EC8D6C /* crypto_stream_aes128ctr.h */; settings = {ASSET_TAGS = (); }; };
-		66605A8B1BD506C200EC8D6C /* crypto_stream_chacha20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F01BD506C200EC8D6C /* crypto_stream_chacha20.h */; settings = {ASSET_TAGS = (); }; };
-		66605A8C1BD506C200EC8D6C /* crypto_stream_salsa20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F11BD506C200EC8D6C /* crypto_stream_salsa20.h */; settings = {ASSET_TAGS = (); }; };
-		66605A8D1BD506C200EC8D6C /* crypto_stream_salsa2012.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F21BD506C200EC8D6C /* crypto_stream_salsa2012.h */; settings = {ASSET_TAGS = (); }; };
-		66605A8E1BD506C200EC8D6C /* crypto_stream_salsa208.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F31BD506C200EC8D6C /* crypto_stream_salsa208.h */; settings = {ASSET_TAGS = (); }; };
-		66605A8F1BD506C200EC8D6C /* crypto_stream_xsalsa20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F41BD506C200EC8D6C /* crypto_stream_xsalsa20.h */; settings = {ASSET_TAGS = (); }; };
-		66605A901BD506C200EC8D6C /* crypto_uint16.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F51BD506C200EC8D6C /* crypto_uint16.h */; settings = {ASSET_TAGS = (); }; };
-		66605A911BD506C200EC8D6C /* crypto_uint32.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F61BD506C200EC8D6C /* crypto_uint32.h */; settings = {ASSET_TAGS = (); }; };
-		66605A921BD506C200EC8D6C /* crypto_uint64.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F71BD506C200EC8D6C /* crypto_uint64.h */; settings = {ASSET_TAGS = (); }; };
-		66605A931BD506C200EC8D6C /* crypto_uint8.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F81BD506C200EC8D6C /* crypto_uint8.h */; settings = {ASSET_TAGS = (); }; };
-		66605A941BD506C200EC8D6C /* crypto_verify_16.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F91BD506C200EC8D6C /* crypto_verify_16.h */; settings = {ASSET_TAGS = (); }; };
-		66605A951BD506C200EC8D6C /* crypto_verify_32.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FA1BD506C200EC8D6C /* crypto_verify_32.h */; settings = {ASSET_TAGS = (); }; };
-		66605A961BD506C200EC8D6C /* crypto_verify_64.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FB1BD506C200EC8D6C /* crypto_verify_64.h */; settings = {ASSET_TAGS = (); }; };
-		66605A971BD506C200EC8D6C /* export.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FC1BD506C200EC8D6C /* export.h */; settings = {ASSET_TAGS = (); }; };
-		66605A981BD506C200EC8D6C /* randombytes.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FD1BD506C200EC8D6C /* randombytes.h */; settings = {ASSET_TAGS = (); }; };
-		66605A991BD506C200EC8D6C /* randombytes_salsa20_random.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FE1BD506C200EC8D6C /* randombytes_salsa20_random.h */; settings = {ASSET_TAGS = (); }; };
-		66605A9A1BD506C200EC8D6C /* randombytes_sysrandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FF1BD506C200EC8D6C /* randombytes_sysrandom.h */; settings = {ASSET_TAGS = (); }; };
-		66605A9B1BD506C200EC8D6C /* runtime.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A001BD506C200EC8D6C /* runtime.h */; settings = {ASSET_TAGS = (); }; };
-		66605A9C1BD506C200EC8D6C /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A011BD506C200EC8D6C /* utils.h */; settings = {ASSET_TAGS = (); }; };
-		66605A9D1BD506C200EC8D6C /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A021BD506C200EC8D6C /* version.h */; settings = {ASSET_TAGS = (); }; };
-		66605A9E1BD506C200EC8D6C /* sodium.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A031BD506C200EC8D6C /* sodium.h */; settings = {ASSET_TAGS = (); }; };
-		66605AA31BD506C200EC8D6C /* tomcrypt.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A071BD506C200EC8D6C /* tomcrypt.h */; settings = {ASSET_TAGS = (); }; };
-		66605AA41BD506C200EC8D6C /* tomcrypt_argchk.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A081BD506C200EC8D6C /* tomcrypt_argchk.h */; settings = {ASSET_TAGS = (); }; };
-		66605AA51BD506C200EC8D6C /* tomcrypt_cfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A091BD506C200EC8D6C /* tomcrypt_cfg.h */; settings = {ASSET_TAGS = (); }; };
-		66605AA61BD506C200EC8D6C /* tomcrypt_cipher.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0A1BD506C200EC8D6C /* tomcrypt_cipher.h */; settings = {ASSET_TAGS = (); }; };
-		66605AA71BD506C200EC8D6C /* tomcrypt_custom.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0B1BD506C200EC8D6C /* tomcrypt_custom.h */; settings = {ASSET_TAGS = (); }; };
-		66605AA81BD506C200EC8D6C /* tomcrypt_hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0C1BD506C200EC8D6C /* tomcrypt_hash.h */; settings = {ASSET_TAGS = (); }; };
-		66605AA91BD506C200EC8D6C /* tomcrypt_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0D1BD506C200EC8D6C /* tomcrypt_mac.h */; settings = {ASSET_TAGS = (); }; };
-		66605AAA1BD506C200EC8D6C /* tomcrypt_macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0E1BD506C200EC8D6C /* tomcrypt_macros.h */; settings = {ASSET_TAGS = (); }; };
-		66605AAB1BD506C200EC8D6C /* tomcrypt_math.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0F1BD506C200EC8D6C /* tomcrypt_math.h */; settings = {ASSET_TAGS = (); }; };
-		66605AAC1BD506C200EC8D6C /* tomcrypt_misc.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A101BD506C200EC8D6C /* tomcrypt_misc.h */; settings = {ASSET_TAGS = (); }; };
-		66605AAD1BD506C200EC8D6C /* tomcrypt_pk.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A111BD506C200EC8D6C /* tomcrypt_pk.h */; settings = {ASSET_TAGS = (); }; };
-		66605AAE1BD506C200EC8D6C /* tomcrypt_pkcs.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A121BD506C200EC8D6C /* tomcrypt_pkcs.h */; settings = {ASSET_TAGS = (); }; };
-		66605AAF1BD506C200EC8D6C /* tomcrypt_prng.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A131BD506C200EC8D6C /* tomcrypt_prng.h */; settings = {ASSET_TAGS = (); }; };
-		66605AB01BD506C200EC8D6C /* tomcrypt_test.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A141BD506C200EC8D6C /* tomcrypt_test.h */; settings = {ASSET_TAGS = (); }; };
-		66605AB11BD506C200EC8D6C /* tommath.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A151BD506C200EC8D6C /* tommath.h */; settings = {ASSET_TAGS = (); }; };
-		66605AB21BD506C200EC8D6C /* tommath_class.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A161BD506C200EC8D6C /* tommath_class.h */; settings = {ASSET_TAGS = (); }; };
-		66605AB31BD506C200EC8D6C /* tommath_superclass.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A171BD506C200EC8D6C /* tommath_superclass.h */; settings = {ASSET_TAGS = (); }; };
-		66605B1C1BD5073A00EC8D6C /* NSArray+QredoArrayEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B101BD5073A00EC8D6C /* NSArray+QredoArrayEquality.h */; settings = {ASSET_TAGS = (); }; };
-		66605B1D1BD5073A00EC8D6C /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B111BD5073A00EC8D6C /* NSArray+QredoArrayEquality.m */; settings = {ASSET_TAGS = (); }; };
-		66605B211BD5073A00EC8D6C /* NSData+Conversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B121BD5073A00EC8D6C /* NSData+Conversion.h */; settings = {ASSET_TAGS = (); }; };
-		66605B221BD5073A00EC8D6C /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B131BD5073A00EC8D6C /* NSData+Conversion.m */; settings = {ASSET_TAGS = (); }; };
-		66605B261BD5073A00EC8D6C /* NSData+QredoDataEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B141BD5073A00EC8D6C /* NSData+QredoDataEquality.h */; settings = {ASSET_TAGS = (); }; };
-		66605B271BD5073A00EC8D6C /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B151BD5073A00EC8D6C /* NSData+QredoDataEquality.m */; settings = {ASSET_TAGS = (); }; };
-		66605B2B1BD5073A00EC8D6C /* NSData+QredoRandomData.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B161BD5073A00EC8D6C /* NSData+QredoRandomData.h */; settings = {ASSET_TAGS = (); }; };
-		66605B2C1BD5073A00EC8D6C /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */; settings = {ASSET_TAGS = (); }; };
-		66605B301BD5073A00EC8D6C /* NSSet+QredoSetEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B181BD5073A00EC8D6C /* NSSet+QredoSetEquality.h */; settings = {ASSET_TAGS = (); }; };
-		66605B311BD5073A00EC8D6C /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */; settings = {ASSET_TAGS = (); }; };
-		66605B351BD5073A00EC8D6C /* QredoLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B1A1BD5073A00EC8D6C /* QredoLogging.h */; settings = {ASSET_TAGS = (); }; };
-		66605B361BD5073A00EC8D6C /* QredoLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B1B1BD5073A00EC8D6C /* QredoLogging.m */; settings = {ASSET_TAGS = (); }; };
-		66605C3C1BD55A9F00EC8D6C /* libqredosdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libqredosdk.a */; settings = {ASSET_TAGS = (); }; };
+		66605A6A1BD506C200EC8D6C /* core.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059CF1BD506C200EC8D6C /* core.h */; };
+		66605A6B1BD506C200EC8D6C /* crypto_aead_chacha20poly1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D01BD506C200EC8D6C /* crypto_aead_chacha20poly1305.h */; };
+		66605A6C1BD506C200EC8D6C /* crypto_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D11BD506C200EC8D6C /* crypto_auth.h */; };
+		66605A6D1BD506C200EC8D6C /* crypto_auth_hmacsha256.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D21BD506C200EC8D6C /* crypto_auth_hmacsha256.h */; };
+		66605A6E1BD506C200EC8D6C /* crypto_auth_hmacsha512.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D31BD506C200EC8D6C /* crypto_auth_hmacsha512.h */; };
+		66605A6F1BD506C200EC8D6C /* crypto_auth_hmacsha512256.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D41BD506C200EC8D6C /* crypto_auth_hmacsha512256.h */; };
+		66605A701BD506C200EC8D6C /* crypto_box.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D51BD506C200EC8D6C /* crypto_box.h */; };
+		66605A711BD506C200EC8D6C /* crypto_box_curve25519xsalsa20poly1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D61BD506C200EC8D6C /* crypto_box_curve25519xsalsa20poly1305.h */; };
+		66605A721BD506C200EC8D6C /* crypto_core_hsalsa20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D71BD506C200EC8D6C /* crypto_core_hsalsa20.h */; };
+		66605A731BD506C200EC8D6C /* crypto_core_salsa20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D81BD506C200EC8D6C /* crypto_core_salsa20.h */; };
+		66605A741BD506C200EC8D6C /* crypto_core_salsa2012.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059D91BD506C200EC8D6C /* crypto_core_salsa2012.h */; };
+		66605A751BD506C200EC8D6C /* crypto_core_salsa208.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DA1BD506C200EC8D6C /* crypto_core_salsa208.h */; };
+		66605A761BD506C200EC8D6C /* crypto_generichash.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DB1BD506C200EC8D6C /* crypto_generichash.h */; };
+		66605A771BD506C200EC8D6C /* crypto_generichash_blake2b.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DC1BD506C200EC8D6C /* crypto_generichash_blake2b.h */; };
+		66605A781BD506C200EC8D6C /* crypto_hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DD1BD506C200EC8D6C /* crypto_hash.h */; };
+		66605A791BD506C200EC8D6C /* crypto_hash_sha256.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DE1BD506C200EC8D6C /* crypto_hash_sha256.h */; };
+		66605A7A1BD506C200EC8D6C /* crypto_hash_sha512.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059DF1BD506C200EC8D6C /* crypto_hash_sha512.h */; };
+		66605A7B1BD506C200EC8D6C /* crypto_int32.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E01BD506C200EC8D6C /* crypto_int32.h */; };
+		66605A7C1BD506C200EC8D6C /* crypto_int64.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E11BD506C200EC8D6C /* crypto_int64.h */; };
+		66605A7D1BD506C200EC8D6C /* crypto_onetimeauth.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E21BD506C200EC8D6C /* crypto_onetimeauth.h */; };
+		66605A7E1BD506C200EC8D6C /* crypto_onetimeauth_poly1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E31BD506C200EC8D6C /* crypto_onetimeauth_poly1305.h */; };
+		66605A7F1BD506C200EC8D6C /* crypto_pwhash_scryptsalsa208sha256.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E41BD506C200EC8D6C /* crypto_pwhash_scryptsalsa208sha256.h */; };
+		66605A801BD506C200EC8D6C /* crypto_scalarmult.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E51BD506C200EC8D6C /* crypto_scalarmult.h */; };
+		66605A811BD506C200EC8D6C /* crypto_scalarmult_curve25519.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E61BD506C200EC8D6C /* crypto_scalarmult_curve25519.h */; };
+		66605A821BD506C200EC8D6C /* crypto_secretbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E71BD506C200EC8D6C /* crypto_secretbox.h */; };
+		66605A831BD506C200EC8D6C /* crypto_secretbox_xsalsa20poly1305.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E81BD506C200EC8D6C /* crypto_secretbox_xsalsa20poly1305.h */; };
+		66605A841BD506C200EC8D6C /* crypto_shorthash.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059E91BD506C200EC8D6C /* crypto_shorthash.h */; };
+		66605A851BD506C200EC8D6C /* crypto_shorthash_siphash24.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EA1BD506C200EC8D6C /* crypto_shorthash_siphash24.h */; };
+		66605A861BD506C200EC8D6C /* crypto_sign.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EB1BD506C200EC8D6C /* crypto_sign.h */; };
+		66605A871BD506C200EC8D6C /* crypto_sign_ed25519.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EC1BD506C200EC8D6C /* crypto_sign_ed25519.h */; };
+		66605A881BD506C200EC8D6C /* crypto_sign_edwards25519sha512batch.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059ED1BD506C200EC8D6C /* crypto_sign_edwards25519sha512batch.h */; };
+		66605A891BD506C200EC8D6C /* crypto_stream.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EE1BD506C200EC8D6C /* crypto_stream.h */; };
+		66605A8A1BD506C200EC8D6C /* crypto_stream_aes128ctr.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059EF1BD506C200EC8D6C /* crypto_stream_aes128ctr.h */; };
+		66605A8B1BD506C200EC8D6C /* crypto_stream_chacha20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F01BD506C200EC8D6C /* crypto_stream_chacha20.h */; };
+		66605A8C1BD506C200EC8D6C /* crypto_stream_salsa20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F11BD506C200EC8D6C /* crypto_stream_salsa20.h */; };
+		66605A8D1BD506C200EC8D6C /* crypto_stream_salsa2012.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F21BD506C200EC8D6C /* crypto_stream_salsa2012.h */; };
+		66605A8E1BD506C200EC8D6C /* crypto_stream_salsa208.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F31BD506C200EC8D6C /* crypto_stream_salsa208.h */; };
+		66605A8F1BD506C200EC8D6C /* crypto_stream_xsalsa20.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F41BD506C200EC8D6C /* crypto_stream_xsalsa20.h */; };
+		66605A901BD506C200EC8D6C /* crypto_uint16.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F51BD506C200EC8D6C /* crypto_uint16.h */; };
+		66605A911BD506C200EC8D6C /* crypto_uint32.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F61BD506C200EC8D6C /* crypto_uint32.h */; };
+		66605A921BD506C200EC8D6C /* crypto_uint64.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F71BD506C200EC8D6C /* crypto_uint64.h */; };
+		66605A931BD506C200EC8D6C /* crypto_uint8.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F81BD506C200EC8D6C /* crypto_uint8.h */; };
+		66605A941BD506C200EC8D6C /* crypto_verify_16.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059F91BD506C200EC8D6C /* crypto_verify_16.h */; };
+		66605A951BD506C200EC8D6C /* crypto_verify_32.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FA1BD506C200EC8D6C /* crypto_verify_32.h */; };
+		66605A961BD506C200EC8D6C /* crypto_verify_64.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FB1BD506C200EC8D6C /* crypto_verify_64.h */; };
+		66605A971BD506C200EC8D6C /* export.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FC1BD506C200EC8D6C /* export.h */; };
+		66605A981BD506C200EC8D6C /* randombytes.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FD1BD506C200EC8D6C /* randombytes.h */; };
+		66605A991BD506C200EC8D6C /* randombytes_salsa20_random.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FE1BD506C200EC8D6C /* randombytes_salsa20_random.h */; };
+		66605A9A1BD506C200EC8D6C /* randombytes_sysrandom.h in Headers */ = {isa = PBXBuildFile; fileRef = 666059FF1BD506C200EC8D6C /* randombytes_sysrandom.h */; };
+		66605A9B1BD506C200EC8D6C /* runtime.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A001BD506C200EC8D6C /* runtime.h */; };
+		66605A9C1BD506C200EC8D6C /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A011BD506C200EC8D6C /* utils.h */; };
+		66605A9D1BD506C200EC8D6C /* version.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A021BD506C200EC8D6C /* version.h */; };
+		66605A9E1BD506C200EC8D6C /* sodium.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A031BD506C200EC8D6C /* sodium.h */; };
+		66605AA31BD506C200EC8D6C /* tomcrypt.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A071BD506C200EC8D6C /* tomcrypt.h */; };
+		66605AA41BD506C200EC8D6C /* tomcrypt_argchk.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A081BD506C200EC8D6C /* tomcrypt_argchk.h */; };
+		66605AA51BD506C200EC8D6C /* tomcrypt_cfg.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A091BD506C200EC8D6C /* tomcrypt_cfg.h */; };
+		66605AA61BD506C200EC8D6C /* tomcrypt_cipher.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0A1BD506C200EC8D6C /* tomcrypt_cipher.h */; };
+		66605AA71BD506C200EC8D6C /* tomcrypt_custom.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0B1BD506C200EC8D6C /* tomcrypt_custom.h */; };
+		66605AA81BD506C200EC8D6C /* tomcrypt_hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0C1BD506C200EC8D6C /* tomcrypt_hash.h */; };
+		66605AA91BD506C200EC8D6C /* tomcrypt_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0D1BD506C200EC8D6C /* tomcrypt_mac.h */; };
+		66605AAA1BD506C200EC8D6C /* tomcrypt_macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0E1BD506C200EC8D6C /* tomcrypt_macros.h */; };
+		66605AAB1BD506C200EC8D6C /* tomcrypt_math.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A0F1BD506C200EC8D6C /* tomcrypt_math.h */; };
+		66605AAC1BD506C200EC8D6C /* tomcrypt_misc.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A101BD506C200EC8D6C /* tomcrypt_misc.h */; };
+		66605AAD1BD506C200EC8D6C /* tomcrypt_pk.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A111BD506C200EC8D6C /* tomcrypt_pk.h */; };
+		66605AAE1BD506C200EC8D6C /* tomcrypt_pkcs.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A121BD506C200EC8D6C /* tomcrypt_pkcs.h */; };
+		66605AAF1BD506C200EC8D6C /* tomcrypt_prng.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A131BD506C200EC8D6C /* tomcrypt_prng.h */; };
+		66605AB01BD506C200EC8D6C /* tomcrypt_test.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A141BD506C200EC8D6C /* tomcrypt_test.h */; };
+		66605AB11BD506C200EC8D6C /* tommath.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A151BD506C200EC8D6C /* tommath.h */; };
+		66605AB21BD506C200EC8D6C /* tommath_class.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A161BD506C200EC8D6C /* tommath_class.h */; };
+		66605AB31BD506C200EC8D6C /* tommath_superclass.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605A171BD506C200EC8D6C /* tommath_superclass.h */; };
+		66605B1C1BD5073A00EC8D6C /* NSArray+QredoArrayEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B101BD5073A00EC8D6C /* NSArray+QredoArrayEquality.h */; };
+		66605B1D1BD5073A00EC8D6C /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B111BD5073A00EC8D6C /* NSArray+QredoArrayEquality.m */; };
+		66605B211BD5073A00EC8D6C /* NSData+Conversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B121BD5073A00EC8D6C /* NSData+Conversion.h */; };
+		66605B221BD5073A00EC8D6C /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B131BD5073A00EC8D6C /* NSData+Conversion.m */; };
+		66605B261BD5073A00EC8D6C /* NSData+QredoDataEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B141BD5073A00EC8D6C /* NSData+QredoDataEquality.h */; };
+		66605B271BD5073A00EC8D6C /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B151BD5073A00EC8D6C /* NSData+QredoDataEquality.m */; };
+		66605B2B1BD5073A00EC8D6C /* NSData+QredoRandomData.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B161BD5073A00EC8D6C /* NSData+QredoRandomData.h */; };
+		66605B2C1BD5073A00EC8D6C /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */; };
+		66605B301BD5073A00EC8D6C /* NSSet+QredoSetEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B181BD5073A00EC8D6C /* NSSet+QredoSetEquality.h */; };
+		66605B311BD5073A00EC8D6C /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */; };
+		66605B351BD5073A00EC8D6C /* QredoLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = 66605B1A1BD5073A00EC8D6C /* QredoLogging.h */; };
+		66605B361BD5073A00EC8D6C /* QredoLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B1B1BD5073A00EC8D6C /* QredoLogging.m */; };
+		66605C3C1BD55A9F00EC8D6C /* libqredosdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libqredosdk.a */; };
 		66605C421BD55B2800EC8D6C /* CryptoImplV1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B3F1BD5266700EC8D6C /* CryptoImplV1Tests.m */; };
 		66605C431BD55B2800EC8D6C /* QredoCertificateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B411BD5266700EC8D6C /* QredoCertificateUtilsTests.m */; };
 		66605C441BD55B2800EC8D6C /* QredoCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B421BD5266700EC8D6C /* QredoCryptoTests.m */; };
@@ -222,7 +222,7 @@
 		66605C881BD55B5B00EC8D6C /* rootCAkey.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B941BD5266700EC8D6C /* rootCAkey.pem */; };
 		66605C891BD55B5B00EC8D6C /* rootCAcert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B951BD5266700EC8D6C /* rootCAcert.pem */; };
 		66605C8A1BD55B5B00EC8D6C /* rootCAreq.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B961BD5266700EC8D6C /* rootCAreq.pem */; };
-		66605C951BD6402E00EC8D6C /* libqredosdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libqredosdk.a */; settings = {ASSET_TAGS = (); }; };
+		66605C951BD6402E00EC8D6C /* libqredosdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A16F8C019C358B400639779 /* libqredosdk.a */; };
 		66605C9B1BD6408D00EC8D6C /* QredoRendezvousAnonymousHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */; };
 		66605C9C1BD6408D00EC8D6C /* RendezvousEd25519HelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 78B88F5D1A653E78009E3B01 /* RendezvousEd25519HelperTests.m */; };
 		66605C9D1BD6408D00EC8D6C /* QredoRendezvousRsa2048PemHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DB91A88F6CE0047AB18 /* QredoRendezvousRsa2048PemHelperTests.m */; };
@@ -265,27 +265,27 @@
 		66605CC61BD6408D00EC8D6C /* ConversationProtocolFSMTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EE79B1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift */; };
 		66605CC71BD6408D00EC8D6C /* ConversationsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABF743D1B0104340004B8BA /* ConversationsHelper.swift */; };
 		66605CC91BD640BC00EC8D6C /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 66605CC81BD640BC00EC8D6C /* libicucore.tbd */; };
-		66E6F8CD1BD65AC600319BC9 /* MQTTDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C21BD65AC600319BC9 /* MQTTDecoder.h */; settings = {ASSET_TAGS = (); }; };
-		66E6F8CE1BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8D01BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8D11BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8D21BD65AC600319BC9 /* MQTTEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C41BD65AC600319BC9 /* MQTTEncoder.h */; settings = {ASSET_TAGS = (); }; };
-		66E6F8D31BD65AC600319BC9 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8D51BD65AC600319BC9 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8D61BD65AC600319BC9 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8D71BD65AC600319BC9 /* MQTTMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C61BD65AC600319BC9 /* MQTTMessage.h */; settings = {ASSET_TAGS = (); }; };
-		66E6F8D81BD65AC600319BC9 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8DA1BD65AC600319BC9 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8DB1BD65AC600319BC9 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8DC1BD65AC600319BC9 /* MQTTSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C81BD65AC600319BC9 /* MQTTSession.h */; settings = {ASSET_TAGS = (); }; };
-		66E6F8DD1BD65AC600319BC9 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8DF1BD65AC600319BC9 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8E01BD65AC600319BC9 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8E11BD65AC600319BC9 /* MQttTxFlow.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8CA1BD65AC600319BC9 /* MQttTxFlow.h */; settings = {ASSET_TAGS = (); }; };
-		66E6F8E21BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8E41BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8E51BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; settings = {ASSET_TAGS = (); }; };
-		66E6F8E61BD65AC600319BC9 /* MQTTTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8CC1BD65AC600319BC9 /* MQTTTypes.h */; settings = {ASSET_TAGS = (); }; };
+		66E6F8CD1BD65AC600319BC9 /* MQTTDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C21BD65AC600319BC9 /* MQTTDecoder.h */; };
+		66E6F8CE1BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
+		66E6F8D01BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
+		66E6F8D11BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
+		66E6F8D21BD65AC600319BC9 /* MQTTEncoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C41BD65AC600319BC9 /* MQTTEncoder.h */; };
+		66E6F8D31BD65AC600319BC9 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
+		66E6F8D51BD65AC600319BC9 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
+		66E6F8D61BD65AC600319BC9 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
+		66E6F8D71BD65AC600319BC9 /* MQTTMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C61BD65AC600319BC9 /* MQTTMessage.h */; };
+		66E6F8D81BD65AC600319BC9 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; };
+		66E6F8DA1BD65AC600319BC9 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; };
+		66E6F8DB1BD65AC600319BC9 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; };
+		66E6F8DC1BD65AC600319BC9 /* MQTTSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C81BD65AC600319BC9 /* MQTTSession.h */; };
+		66E6F8DD1BD65AC600319BC9 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; };
+		66E6F8DF1BD65AC600319BC9 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; };
+		66E6F8E01BD65AC600319BC9 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; };
+		66E6F8E11BD65AC600319BC9 /* MQttTxFlow.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8CA1BD65AC600319BC9 /* MQttTxFlow.h */; };
+		66E6F8E21BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; };
+		66E6F8E41BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; };
+		66E6F8E51BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; };
+		66E6F8E61BD65AC600319BC9 /* MQTTTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8CC1BD65AC600319BC9 /* MQTTTypes.h */; };
 		66E6F8F51BD66F0100319BC9 /* libtommath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66605A191BD506C200EC8D6C /* libtommath.a */; };
 		66E6F8F81BD66F8500319BC9 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66605BE11BD532E500EC8D6C /* libcrypto.a */; };
 		66E6F8F91BD66FAC00319BC9 /* libsodium.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66605A041BD506C200EC8D6C /* libsodium.a */; };
@@ -294,50 +294,50 @@
 		66E6F9071BD679F600319BC9 /* libSocketRocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E6F9061BD679F600319BC9 /* libSocketRocket.a */; };
 		66E6F9091BD67A0E00319BC9 /* libSocketRocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E6F9081BD67A0E00319BC9 /* libSocketRocket.a */; };
 		66F774B21BD64AFC00F01A2C /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B4B1BD5266700EC8D6C /* TestCertificates.m */; };
-		66F774E01BD64CE200F01A2C /* NSArray+QredoArrayEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */; settings = {ASSET_TAGS = (); }; };
-		66F774E11BD64CE200F01A2C /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */; settings = {ASSET_TAGS = (); }; };
-		66F774E21BD64CE200F01A2C /* NSData+Conversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774B61BD64CE200F01A2C /* NSData+Conversion.h */; settings = {ASSET_TAGS = (); }; };
-		66F774E31BD64CE200F01A2C /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774B71BD64CE200F01A2C /* NSData+Conversion.m */; settings = {ASSET_TAGS = (); }; };
-		66F774E41BD64CE200F01A2C /* NSData+QredoDataEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774B81BD64CE200F01A2C /* NSData+QredoDataEquality.h */; settings = {ASSET_TAGS = (); }; };
-		66F774E51BD64CE200F01A2C /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774B91BD64CE200F01A2C /* NSData+QredoDataEquality.m */; settings = {ASSET_TAGS = (); }; };
-		66F774E61BD64CE200F01A2C /* NSData+QredoRandomData.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774BA1BD64CE200F01A2C /* NSData+QredoRandomData.h */; settings = {ASSET_TAGS = (); }; };
-		66F774E71BD64CE200F01A2C /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774BB1BD64CE200F01A2C /* NSData+QredoRandomData.m */; settings = {ASSET_TAGS = (); }; };
-		66F774E81BD64CE200F01A2C /* NSSet+QredoSetEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774BC1BD64CE200F01A2C /* NSSet+QredoSetEquality.h */; settings = {ASSET_TAGS = (); }; };
-		66F774E91BD64CE200F01A2C /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774BD1BD64CE200F01A2C /* NSSet+QredoSetEquality.m */; settings = {ASSET_TAGS = (); }; };
-		66F774EA1BD64CE200F01A2C /* QredoCertificate.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774BE1BD64CE200F01A2C /* QredoCertificate.h */; settings = {ASSET_TAGS = (); }; };
-		66F774EB1BD64CE200F01A2C /* QredoCertificate.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774BF1BD64CE200F01A2C /* QredoCertificate.m */; settings = {ASSET_TAGS = (); }; };
-		66F774EC1BD64CE200F01A2C /* QredoClientId.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C01BD64CE200F01A2C /* QredoClientId.h */; settings = {ASSET_TAGS = (); }; };
-		66F774ED1BD64CE200F01A2C /* QredoClientId.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C11BD64CE200F01A2C /* QredoClientId.m */; settings = {ASSET_TAGS = (); }; };
-		66F774EE1BD64CE200F01A2C /* QredoDateTime.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C21BD64CE200F01A2C /* QredoDateTime.h */; settings = {ASSET_TAGS = (); }; };
-		66F774EF1BD64CE200F01A2C /* QredoDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C31BD64CE200F01A2C /* QredoDateTime.m */; settings = {ASSET_TAGS = (); }; };
-		66F774F01BD64CE200F01A2C /* QredoHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C41BD64CE200F01A2C /* QredoHelpers.h */; settings = {ASSET_TAGS = (); }; };
-		66F774F11BD64CE200F01A2C /* QredoHttpTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C51BD64CE200F01A2C /* QredoHttpTransport.h */; settings = {ASSET_TAGS = (); }; };
-		66F774F21BD64CE200F01A2C /* QredoHttpTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C61BD64CE200F01A2C /* QredoHttpTransport.m */; settings = {ASSET_TAGS = (); }; };
-		66F774F31BD64CE200F01A2C /* QredoLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C71BD64CE200F01A2C /* QredoLogging.h */; settings = {ASSET_TAGS = (); }; };
-		66F774F41BD64CE200F01A2C /* QredoLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C81BD64CE200F01A2C /* QredoLogging.m */; settings = {ASSET_TAGS = (); }; };
-		66F774F51BD64CE200F01A2C /* QredoMarshallable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C91BD64CE200F01A2C /* QredoMarshallable.h */; settings = {ASSET_TAGS = (); }; };
-		66F774F61BD64CE200F01A2C /* QredoMqttTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774CA1BD64CE200F01A2C /* QredoMqttTransport.h */; settings = {ASSET_TAGS = (); }; };
-		66F774F71BD64CE200F01A2C /* QredoMqttTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CB1BD64CE200F01A2C /* QredoMqttTransport.m */; settings = {ASSET_TAGS = (); }; };
-		66F774F81BD64CE200F01A2C /* QredoPrimitiveMarshallers.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774CC1BD64CE200F01A2C /* QredoPrimitiveMarshallers.h */; settings = {ASSET_TAGS = (); }; };
-		66F774F91BD64CE200F01A2C /* QredoPrimitiveMarshallers.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CD1BD64CE200F01A2C /* QredoPrimitiveMarshallers.m */; settings = {ASSET_TAGS = (); }; };
-		66F774FA1BD64CE200F01A2C /* QredoQUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774CE1BD64CE200F01A2C /* QredoQUID.h */; settings = {ASSET_TAGS = (); }; };
-		66F774FB1BD64CE200F01A2C /* QredoQUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CF1BD64CE200F01A2C /* QredoQUID.m */; settings = {ASSET_TAGS = (); }; };
-		66F774FC1BD64CE200F01A2C /* QredoServiceInvoker.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D01BD64CE200F01A2C /* QredoServiceInvoker.h */; settings = {ASSET_TAGS = (); }; };
-		66F774FD1BD64CE200F01A2C /* QredoServiceInvoker.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D11BD64CE200F01A2C /* QredoServiceInvoker.m */; settings = {ASSET_TAGS = (); }; };
-		66F774FE1BD64CE200F01A2C /* QredoSExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D21BD64CE200F01A2C /* QredoSExpression.h */; settings = {ASSET_TAGS = (); }; };
-		66F774FF1BD64CE200F01A2C /* QredoSExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D31BD64CE200F01A2C /* QredoSExpression.m */; settings = {ASSET_TAGS = (); }; };
-		66F775001BD64CE200F01A2C /* QredoStreamExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D41BD64CE200F01A2C /* QredoStreamExtensions.h */; settings = {ASSET_TAGS = (); }; };
-		66F775011BD64CE200F01A2C /* QredoStreamExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D51BD64CE200F01A2C /* QredoStreamExtensions.m */; settings = {ASSET_TAGS = (); }; };
-		66F775021BD64CE200F01A2C /* QredoTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D61BD64CE200F01A2C /* QredoTransport.h */; settings = {ASSET_TAGS = (); }; };
-		66F775031BD64CE200F01A2C /* QredoTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D71BD64CE200F01A2C /* QredoTransport.m */; settings = {ASSET_TAGS = (); }; };
-		66F775041BD64CE200F01A2C /* QredoTransportErrorUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D81BD64CE200F01A2C /* QredoTransportErrorUtils.h */; settings = {ASSET_TAGS = (); }; };
-		66F775051BD64CE200F01A2C /* QredoTransportErrorUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D91BD64CE200F01A2C /* QredoTransportErrorUtils.m */; settings = {ASSET_TAGS = (); }; };
-		66F775061BD64CE200F01A2C /* QredoTransportSSLTrustUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DA1BD64CE200F01A2C /* QredoTransportSSLTrustUtils.h */; settings = {ASSET_TAGS = (); }; };
-		66F775071BD64CE200F01A2C /* QredoTransportSSLTrustUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DB1BD64CE200F01A2C /* QredoTransportSSLTrustUtils.m */; settings = {ASSET_TAGS = (); }; };
-		66F775081BD64CE200F01A2C /* QredoWebSocketTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DC1BD64CE200F01A2C /* QredoWebSocketTransport.h */; settings = {ASSET_TAGS = (); }; };
-		66F775091BD64CE200F01A2C /* QredoWebSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DD1BD64CE200F01A2C /* QredoWebSocketTransport.m */; settings = {ASSET_TAGS = (); }; };
-		66F7750A1BD64CE200F01A2C /* QredoWireFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DE1BD64CE200F01A2C /* QredoWireFormat.h */; settings = {ASSET_TAGS = (); }; };
-		66F7750B1BD64CE200F01A2C /* QredoWireFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DF1BD64CE200F01A2C /* QredoWireFormat.m */; settings = {ASSET_TAGS = (); }; };
+		66F774E01BD64CE200F01A2C /* NSArray+QredoArrayEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */; };
+		66F774E11BD64CE200F01A2C /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */; };
+		66F774E21BD64CE200F01A2C /* NSData+Conversion.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774B61BD64CE200F01A2C /* NSData+Conversion.h */; };
+		66F774E31BD64CE200F01A2C /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774B71BD64CE200F01A2C /* NSData+Conversion.m */; };
+		66F774E41BD64CE200F01A2C /* NSData+QredoDataEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774B81BD64CE200F01A2C /* NSData+QredoDataEquality.h */; };
+		66F774E51BD64CE200F01A2C /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774B91BD64CE200F01A2C /* NSData+QredoDataEquality.m */; };
+		66F774E61BD64CE200F01A2C /* NSData+QredoRandomData.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774BA1BD64CE200F01A2C /* NSData+QredoRandomData.h */; };
+		66F774E71BD64CE200F01A2C /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774BB1BD64CE200F01A2C /* NSData+QredoRandomData.m */; };
+		66F774E81BD64CE200F01A2C /* NSSet+QredoSetEquality.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774BC1BD64CE200F01A2C /* NSSet+QredoSetEquality.h */; };
+		66F774E91BD64CE200F01A2C /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774BD1BD64CE200F01A2C /* NSSet+QredoSetEquality.m */; };
+		66F774EA1BD64CE200F01A2C /* QredoCertificate.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774BE1BD64CE200F01A2C /* QredoCertificate.h */; };
+		66F774EB1BD64CE200F01A2C /* QredoCertificate.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774BF1BD64CE200F01A2C /* QredoCertificate.m */; };
+		66F774EC1BD64CE200F01A2C /* QredoClientId.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C01BD64CE200F01A2C /* QredoClientId.h */; };
+		66F774ED1BD64CE200F01A2C /* QredoClientId.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C11BD64CE200F01A2C /* QredoClientId.m */; };
+		66F774EE1BD64CE200F01A2C /* QredoDateTime.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C21BD64CE200F01A2C /* QredoDateTime.h */; };
+		66F774EF1BD64CE200F01A2C /* QredoDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C31BD64CE200F01A2C /* QredoDateTime.m */; };
+		66F774F01BD64CE200F01A2C /* QredoHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C41BD64CE200F01A2C /* QredoHelpers.h */; };
+		66F774F11BD64CE200F01A2C /* QredoHttpTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C51BD64CE200F01A2C /* QredoHttpTransport.h */; };
+		66F774F21BD64CE200F01A2C /* QredoHttpTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C61BD64CE200F01A2C /* QredoHttpTransport.m */; };
+		66F774F31BD64CE200F01A2C /* QredoLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C71BD64CE200F01A2C /* QredoLogging.h */; };
+		66F774F41BD64CE200F01A2C /* QredoLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C81BD64CE200F01A2C /* QredoLogging.m */; };
+		66F774F51BD64CE200F01A2C /* QredoMarshallable.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774C91BD64CE200F01A2C /* QredoMarshallable.h */; };
+		66F774F61BD64CE200F01A2C /* QredoMqttTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774CA1BD64CE200F01A2C /* QredoMqttTransport.h */; };
+		66F774F71BD64CE200F01A2C /* QredoMqttTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CB1BD64CE200F01A2C /* QredoMqttTransport.m */; };
+		66F774F81BD64CE200F01A2C /* QredoPrimitiveMarshallers.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774CC1BD64CE200F01A2C /* QredoPrimitiveMarshallers.h */; };
+		66F774F91BD64CE200F01A2C /* QredoPrimitiveMarshallers.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CD1BD64CE200F01A2C /* QredoPrimitiveMarshallers.m */; };
+		66F774FA1BD64CE200F01A2C /* QredoQUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774CE1BD64CE200F01A2C /* QredoQUID.h */; };
+		66F774FB1BD64CE200F01A2C /* QredoQUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CF1BD64CE200F01A2C /* QredoQUID.m */; };
+		66F774FC1BD64CE200F01A2C /* QredoServiceInvoker.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D01BD64CE200F01A2C /* QredoServiceInvoker.h */; };
+		66F774FD1BD64CE200F01A2C /* QredoServiceInvoker.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D11BD64CE200F01A2C /* QredoServiceInvoker.m */; };
+		66F774FE1BD64CE200F01A2C /* QredoSExpression.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D21BD64CE200F01A2C /* QredoSExpression.h */; };
+		66F774FF1BD64CE200F01A2C /* QredoSExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D31BD64CE200F01A2C /* QredoSExpression.m */; };
+		66F775001BD64CE200F01A2C /* QredoStreamExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D41BD64CE200F01A2C /* QredoStreamExtensions.h */; };
+		66F775011BD64CE200F01A2C /* QredoStreamExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D51BD64CE200F01A2C /* QredoStreamExtensions.m */; };
+		66F775021BD64CE200F01A2C /* QredoTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D61BD64CE200F01A2C /* QredoTransport.h */; };
+		66F775031BD64CE200F01A2C /* QredoTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D71BD64CE200F01A2C /* QredoTransport.m */; };
+		66F775041BD64CE200F01A2C /* QredoTransportErrorUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774D81BD64CE200F01A2C /* QredoTransportErrorUtils.h */; };
+		66F775051BD64CE200F01A2C /* QredoTransportErrorUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D91BD64CE200F01A2C /* QredoTransportErrorUtils.m */; };
+		66F775061BD64CE200F01A2C /* QredoTransportSSLTrustUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DA1BD64CE200F01A2C /* QredoTransportSSLTrustUtils.h */; };
+		66F775071BD64CE200F01A2C /* QredoTransportSSLTrustUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DB1BD64CE200F01A2C /* QredoTransportSSLTrustUtils.m */; };
+		66F775081BD64CE200F01A2C /* QredoWebSocketTransport.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DC1BD64CE200F01A2C /* QredoWebSocketTransport.h */; };
+		66F775091BD64CE200F01A2C /* QredoWebSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DD1BD64CE200F01A2C /* QredoWebSocketTransport.m */; };
+		66F7750A1BD64CE200F01A2C /* QredoWireFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DE1BD64CE200F01A2C /* QredoWireFormat.h */; };
+		66F7750B1BD64CE200F01A2C /* QredoWireFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DF1BD64CE200F01A2C /* QredoWireFormat.m */; };
 		66F775371BD653F800F01A2C /* QredoServiceInvokerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3A0FF31A6D313D003B4A73 /* QredoServiceInvokerTests.m */; };
 		66F775381BD653F800F01A2C /* QredoClientIdTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573E71A2DEC0500D5502E /* QredoClientIdTests.m */; };
 		66F775391BD653F800F01A2C /* QredoHttpTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573E81A2DEC0500D5502E /* QredoHttpTransportTests.m */; };
@@ -384,6 +384,53 @@
 		78AB956C1B220278006724E5 /* QredoObserverList.m in Sources */ = {isa = PBXBuildFile; fileRef = 78AB956A1B220278006724E5 /* QredoObserverList.m */; };
 		78F868DA1A5F1A37009CAFFE /* QredoBase58.h in Headers */ = {isa = PBXBuildFile; fileRef = 78F868D81A5F1A37009CAFFE /* QredoBase58.h */; };
 		78F868DB1A5F1A37009CAFFE /* QredoBase58.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F868D91A5F1A37009CAFFE /* QredoBase58.m */; };
+		83395E6F1BE7D670006028D0 /* rootCAcert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B951BD5266700EC8D6C /* rootCAcert.pem */; };
+		83395E701BE7D70D006028D0 /* rootCAcrlAfterRevoke.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B921BD5266700EC8D6C /* rootCAcrlAfterRevoke.pem */; };
+		83395E711BE7D715006028D0 /* rootCAcrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B911BD5266700EC8D6C /* rootCAcrl.pem */; };
+		83395E721BE7D71E006028D0 /* rootCAkey.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B941BD5266700EC8D6C /* rootCAkey.pem */; };
+		83395E731BE7D723006028D0 /* rootCAreq.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B961BD5266700EC8D6C /* rootCAreq.pem */; };
+		83395E741BE7D7BC006028D0 /* interCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6B1BD5266700EC8D6C /* interCA1cert.pem */; };
+		83395E751BE7D7BC006028D0 /* interCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6C1BD5266700EC8D6C /* interCA1req.pem */; };
+		83395E761BE7D7C1006028D0 /* createRoot2xIntermediateAndFinalCerts.sh in Resources */ = {isa = PBXBuildFile; fileRef = 66605B661BD5266700EC8D6C /* createRoot2xIntermediateAndFinalCerts.sh */; };
+		83395E771BE7D7C4006028D0 /* interCA1chainWithEmptyCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6F1BD5266700EC8D6C /* interCA1chainWithEmptyCrl.pem */; };
+		83395E781BE7D7C7006028D0 /* interCA1chainWithRevokedCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B701BD5266700EC8D6C /* interCA1chainWithRevokedCrl.pem */; };
+		83395E791BE7D7C9006028D0 /* interCA2chainWithEmptyCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B791BD5266700EC8D6C /* interCA2chainWithEmptyCrl.pem */; };
+		83395E7A1BE7D7CC006028D0 /* interCA2chainWithRevokedCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7A1BD5266700EC8D6C /* interCA2chainWithRevokedCrl.pem */; };
+		83395E7B1BE7D7E3006028D0 /* clientCert1.1024.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B4F1BD5266700EC8D6C /* clientCert1.1024.IntCA1cert.pem */; };
+		83395E7C1BE7D7E3006028D0 /* clientCert1.1024.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B501BD5266700EC8D6C /* clientCert1.1024.IntCA1key.pem */; };
+		83395E7D1BE7D7E3006028D0 /* clientCert1.1024.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B511BD5266700EC8D6C /* clientCert1.1024.IntCA1req.pem */; };
+		83395E7E1BE7D7E3006028D0 /* clientCert2.2048.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B531BD5266700EC8D6C /* clientCert2.2048.IntCA1cert.pem */; };
+		83395E7F1BE7D7E3006028D0 /* clientCert2.2048.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B541BD5266700EC8D6C /* clientCert2.2048.IntCA1key.pem */; };
+		83395E801BE7D7E3006028D0 /* clientCert2.2048.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B551BD5266700EC8D6C /* clientCert2.2048.IntCA1req.pem */; };
+		83395E811BE7D7E3006028D0 /* clientCert3.4096.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B571BD5266700EC8D6C /* clientCert3.4096.IntCA1cert.pem */; };
+		83395E821BE7D7E3006028D0 /* clientCert3.4096.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B581BD5266700EC8D6C /* clientCert3.4096.IntCA1key.pem */; };
+		83395E831BE7D7E3006028D0 /* clientCert3.4096.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B591BD5266700EC8D6C /* clientCert3.4096.IntCA1req.pem */; };
+		83395E841BE7D7E3006028D0 /* clientCert4.8192.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B5B1BD5266700EC8D6C /* clientCert4.8192.IntCA1cert.pem */; };
+		83395E851BE7D7E3006028D0 /* clientCert4.8192.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B5C1BD5266700EC8D6C /* clientCert4.8192.IntCA1key.pem */; };
+		83395E861BE7D7E3006028D0 /* clientCert4.8192.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B5D1BD5266700EC8D6C /* clientCert4.8192.IntCA1req.pem */; };
+		83395E871BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B5F1BD5266700EC8D6C /* clientCert5.2048.Revoked.IntCA1cert.pem */; };
+		83395E881BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B601BD5266700EC8D6C /* clientCert5.2048.Revoked.IntCA1key.pem */; };
+		83395E891BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B611BD5266700EC8D6C /* clientCert5.2048.Revoked.IntCA1req.pem */; };
+		83395E8A1BE7D7E3006028D0 /* clientCert6.2048.IntCA2cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B631BD5266700EC8D6C /* clientCert6.2048.IntCA2cert.pem */; };
+		83395E8B1BE7D7E3006028D0 /* clientCert6.2048.IntCA2key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B641BD5266700EC8D6C /* clientCert6.2048.IntCA2key.pem */; };
+		83395E8C1BE7D7E3006028D0 /* clientCert6.2048.IntCA2req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B651BD5266700EC8D6C /* clientCert6.2048.IntCA2req.pem */; };
+		83395E8D1BE7D7EC006028D0 /* interCA1crl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B691BD5266700EC8D6C /* interCA1crl.pem */; };
+		83395E8E1BE7D7EC006028D0 /* interCA1crlAfterRevoke.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6A1BD5266700EC8D6C /* interCA1crlAfterRevoke.pem */; };
+		83395E8F1BE7D7F4006028D0 /* interCA1key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6E1BD5266700EC8D6C /* interCA1key.pem */; };
+		83395E901BE7D7FA006028D0 /* interCA2crl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B731BD5266700EC8D6C /* interCA2crl.pem */; };
+		83395E911BE7D7FD006028D0 /* interCA2crlAfterRevoke.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B741BD5266700EC8D6C /* interCA2crlAfterRevoke.pem */; };
+		83395E921BE7D800006028D0 /* interCA2cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B751BD5266700EC8D6C /* interCA2cert.pem */; };
+		83395E931BE7D803006028D0 /* interCA2req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B761BD5266700EC8D6C /* interCA2req.pem */; };
+		83395E941BE7D806006028D0 /* interCA2key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B781BD5266700EC8D6C /* interCA2key.pem */; };
+		83395E951BE7D80D006028D0 /* F41503B286254EFE.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7E1BD5266700EC8D6C /* F41503B286254EFE.pem */; };
+		83395E961BE7D80D006028D0 /* F41503B286254EFF.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7F1BD5266700EC8D6C /* F41503B286254EFF.pem */; };
+		83395E971BE7D80D006028D0 /* F41503B286254F00.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B801BD5266700EC8D6C /* F41503B286254F00.pem */; };
+		83395E981BE7D80D006028D0 /* F41503B286254F01.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B811BD5266700EC8D6C /* F41503B286254F01.pem */; };
+		83395E991BE7D80D006028D0 /* F41503B286254F02.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B821BD5266700EC8D6C /* F41503B286254F02.pem */; };
+		83395E9A1BE7D80D006028D0 /* F41503B286254F03.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B831BD5266700EC8D6C /* F41503B286254F03.pem */; };
+		83395E9B1BE7D80D006028D0 /* F41503B286254F04.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B841BD5266700EC8D6C /* F41503B286254F04.pem */; };
+		83395E9C1BE7D80D006028D0 /* F41503B286254F05.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B851BD5266700EC8D6C /* F41503B286254F05.pem */; };
+		83395E9D1BE7D80D006028D0 /* F41503B286254F06.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B861BD5266700EC8D6C /* F41503B286254F06.pem */; };
 		B13070191A4BE208DEA88FEC /* libPods-QredoSDKTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D8E7AEE41CC0B09781AFD0A /* libPods-QredoSDKTests.a */; };
 		DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */; };
 		DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */; };
@@ -2073,6 +2120,53 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83395E8E1BE7D7EC006028D0 /* interCA1crlAfterRevoke.pem in Resources */,
+				83395E831BE7D7E3006028D0 /* clientCert3.4096.IntCA1req.pem in Resources */,
+				83395E791BE7D7C9006028D0 /* interCA2chainWithEmptyCrl.pem in Resources */,
+				83395E841BE7D7E3006028D0 /* clientCert4.8192.IntCA1cert.pem in Resources */,
+				83395E911BE7D7FD006028D0 /* interCA2crlAfterRevoke.pem in Resources */,
+				83395E891BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1req.pem in Resources */,
+				83395E971BE7D80D006028D0 /* F41503B286254F00.pem in Resources */,
+				83395E6F1BE7D670006028D0 /* rootCAcert.pem in Resources */,
+				83395E771BE7D7C4006028D0 /* interCA1chainWithEmptyCrl.pem in Resources */,
+				83395E9A1BE7D80D006028D0 /* F41503B286254F03.pem in Resources */,
+				83395E881BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1key.pem in Resources */,
+				83395E7A1BE7D7CC006028D0 /* interCA2chainWithRevokedCrl.pem in Resources */,
+				83395E921BE7D800006028D0 /* interCA2cert.pem in Resources */,
+				83395E711BE7D715006028D0 /* rootCAcrl.pem in Resources */,
+				83395E721BE7D71E006028D0 /* rootCAkey.pem in Resources */,
+				83395E851BE7D7E3006028D0 /* clientCert4.8192.IntCA1key.pem in Resources */,
+				83395E8D1BE7D7EC006028D0 /* interCA1crl.pem in Resources */,
+				83395E931BE7D803006028D0 /* interCA2req.pem in Resources */,
+				83395E7E1BE7D7E3006028D0 /* clientCert2.2048.IntCA1cert.pem in Resources */,
+				83395E9C1BE7D80D006028D0 /* F41503B286254F05.pem in Resources */,
+				83395E781BE7D7C7006028D0 /* interCA1chainWithRevokedCrl.pem in Resources */,
+				83395E811BE7D7E3006028D0 /* clientCert3.4096.IntCA1cert.pem in Resources */,
+				83395E701BE7D70D006028D0 /* rootCAcrlAfterRevoke.pem in Resources */,
+				83395E7F1BE7D7E3006028D0 /* clientCert2.2048.IntCA1key.pem in Resources */,
+				83395E951BE7D80D006028D0 /* F41503B286254EFE.pem in Resources */,
+				83395E9B1BE7D80D006028D0 /* F41503B286254F04.pem in Resources */,
+				83395E8F1BE7D7F4006028D0 /* interCA1key.pem in Resources */,
+				83395E761BE7D7C1006028D0 /* createRoot2xIntermediateAndFinalCerts.sh in Resources */,
+				83395E861BE7D7E3006028D0 /* clientCert4.8192.IntCA1req.pem in Resources */,
+				83395E7B1BE7D7E3006028D0 /* clientCert1.1024.IntCA1cert.pem in Resources */,
+				83395E8B1BE7D7E3006028D0 /* clientCert6.2048.IntCA2key.pem in Resources */,
+				83395E7C1BE7D7E3006028D0 /* clientCert1.1024.IntCA1key.pem in Resources */,
+				83395E9D1BE7D80D006028D0 /* F41503B286254F06.pem in Resources */,
+				83395E901BE7D7FA006028D0 /* interCA2crl.pem in Resources */,
+				83395E961BE7D80D006028D0 /* F41503B286254EFF.pem in Resources */,
+				83395E941BE7D806006028D0 /* interCA2key.pem in Resources */,
+				83395E821BE7D7E3006028D0 /* clientCert3.4096.IntCA1key.pem in Resources */,
+				83395E981BE7D80D006028D0 /* F41503B286254F01.pem in Resources */,
+				83395E871BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1cert.pem in Resources */,
+				83395E7D1BE7D7E3006028D0 /* clientCert1.1024.IntCA1req.pem in Resources */,
+				83395E8C1BE7D7E3006028D0 /* clientCert6.2048.IntCA2req.pem in Resources */,
+				83395E991BE7D80D006028D0 /* F41503B286254F02.pem in Resources */,
+				83395E731BE7D723006028D0 /* rootCAreq.pem in Resources */,
+				83395E741BE7D7BC006028D0 /* interCA1cert.pem in Resources */,
+				83395E751BE7D7BC006028D0 /* interCA1req.pem in Resources */,
+				83395E801BE7D7E3006028D0 /* clientCert2.2048.IntCA1req.pem in Resources */,
+				83395E8A1BE7D7E3006028D0 /* clientCert6.2048.IntCA2cert.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
