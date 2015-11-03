@@ -14,6 +14,6 @@ MQTTSessionTrustValidator trustValidatorWithTrustedCert(SecCertificateRef truste
 
 NSURLCredential *credentialForTrustUsingPinnedCertificate(SecTrustRef trust, SecCertificateRef trustedCert);
 
-SRWebSocketTrustValidator webSocketTrustValidatorWithTrustedCert(SecCertificateRef trustedCert);
+//SRWebSocketTrustValidator webSocketTrustValidatorWithTrustedCert(SecCertificateRef trustedCert);
 
 

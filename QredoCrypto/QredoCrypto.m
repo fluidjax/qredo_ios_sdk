@@ -5,7 +5,7 @@
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"
 #import <CommonCrypto/CommonCrypto.h>
-#import "tomcrypt.h"
+//#import "tomcrypt.h"
 #import "sodium.h"
 #import "QredoLogging.h"
 #import <Security/Security.h>
@@ -486,7 +486,7 @@
     
     if (result != errSecSuccess) {
         @throw [NSException exceptionWithName:@"QredoCryptoImportPublicKeyFailed"
-                                       reason:[NSString stringWithFormat:@"Error code: %d", result]
+                                       reason:[NSString stringWithFormat:@"Error code: %d", (int)result]
                                      userInfo:nil];
     } else if (!importedKeyRef) {
         @throw [NSException exceptionWithName:@"QredoCryptoImportPublicKeyInvalidFormat"

@@ -6,6 +6,8 @@
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
 #
 
+
+
 Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -15,9 +17,10 @@ Pod::Spec.new do |s|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  s.name         = "QredoSDK"
-  s.version      = "0.2"
-  s.summary      = "Qredo SDK library"
+
+  s.name         = "libsodium"
+  s.version      = "1.0.4"
+  s.summary      = "libsodium library"
 
   s.description  = <<-DESC
   					Vault, Rendezvous, Conversations
@@ -47,7 +50,7 @@ Pod::Spec.new do |s|
   #  profile URL.
   #
 
-  s.author             = "Qredo"
+  s.author             = "ASd"
 
   # ――― Platform Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -67,7 +70,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "git@github.com:Qredo/qredo_ios_sdk.git", :branch => "baptism-by-drowning", :submodules => true }
+  s.source       = { :git => "git@github.com:jedisct1/libsodium.git", :tag => "1.0.4" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -77,8 +80,12 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "{QredoSDK,LinguaFranca,MQttClient,QredoCrypto,QredoCommon}/**/*.{h,m,c}", "libtomcrypt/src/headers/*.h", "libtommath/*.h"
-  s.public_header_files = "{QredoSDK/include/*.h,LinguaFranca/*.h,QredoCrypto/**.h}", "libtomcrypt/src/headers/*.h", "libtommath/*.h"
+  s.prepare_command  =  "cp libsodium/builds/msvc/version.h libsodium/src/libsodium/include/sodium/version.h"
+
+  s.source_files   = "libsodium/src/libsodium/**/*.{c,h,data}"
+  s.compiler_flags = "-DNATIVE_LITTLE_ENDIAN=1 -DHAVE_MADVISE -DHAVE_MMAP -DHAVE_MPROTECT -DHAVE_POSIX_MEMALIGN -DHAVE_WEAK_SYMBOLS"
+  s.public_header_files = "libsodium/src/libsodium/include/**/*.h"
+  s.header_mappings_dir = "libsodium/src/libsodium/include"
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
@@ -92,27 +99,12 @@ Pod::Spec.new do |s|
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
 
-  s.dependency 'PINCache', '~> 2.0'
-  s.dependency 'SocketRocket'
-  s.dependency 'OpenSSL', '~> 1.0'
-
-  s.prepare_command  =  "cp libsodium/builds/msvc/version.h libsodium/src/libsodium/include/sodium/version.h"
-
-  s.subspec 'libsodium' do |libsodium|
-
-    libsodium.source_files   = "libsodium/src/libsodium/**/*.{c,h,data}", "libsodium/builds/msvc/version.h"
-    libsodium.compiler_flags = "-DNATIVE_LITTLE_ENDIAN=1 -DHAVE_MADVISE -DHAVE_MMAP -DHAVE_MPROTECT -DHAVE_POSIX_MEMALIGN -DHAVE_WEAK_SYMBOLS"
-    libsodium.public_header_files = "libsodium/src/libsodium/include/**.h"
-    libsodium.requires_arc = false
-
-  end
-
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
   #  If your library depends on compiler flags you can set them in the xcconfig hash
   #  where they will only apply to your library. If you depend on other Podspecs
   #  you can include multiple dependencies to ensure it works.
 
-  s.requires_arc = true
+  s.requires_arc = false
 
 end
