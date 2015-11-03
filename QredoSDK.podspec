@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "QredoSDK"
-  s.version      = "0.2"
+  s.version      = "0.3"
   s.summary      = "Qredo SDK library"
 
   s.description  = <<-DESC
@@ -67,7 +67,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "git@github.com:Qredo/qredo_ios_sdk.git", :branch => "baptism-by-drowning", :submodules => true }
+  s.source       = { :git => "git@github.com:Qredo/qredo_ios_sdk.git", :submodules => true }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
