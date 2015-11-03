@@ -249,9 +249,12 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
-
+    
+    NSDate* created = [NSDate date];
+  
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                             accessLevel:0
+                                                                                                                created: created
                                                                                                                 summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
@@ -263,6 +266,9 @@
          item1Descriptor = newItemMetadata.descriptor;
          [testExpectation fulfill];
      }];
+    
+    
+
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         testExpectation = nil;
@@ -273,7 +279,12 @@
      {
          XCTAssertNil(error);
          XCTAssertNotNil(vaultItem);
-
+         XCTAssertNotNil(vaultItem.metadata);
+         XCTAssertNotNil(vaultItem.metadata.created);
+         
+         // the milliseconds will not be precisely the same due to conversion to QredoUTCTime
+         NSTimeInterval timeInterval = [created timeIntervalSinceDate: vaultItem.metadata.created];
+         XCTAssertTrue (timeInterval < 1);
          XCTAssertTrue([vaultItem.metadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
              return [a isEqual:b];
          }]);
@@ -293,6 +304,9 @@
      {
          XCTAssertNil(error);
          XCTAssertNotNil(vaultItemMetadata);
+         
+         NSTimeInterval timeInterval = [created timeIntervalSinceDate: vaultItemMetadata.created];
+         XCTAssertTrue (timeInterval < 1);
 
          XCTAssertTrue([vaultItemMetadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
              return [a isEqual:b];
