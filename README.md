@@ -4,7 +4,7 @@
 
 This is for the internal testing of the SDK and development.
 
-`git clone --recursive git@github.com:Qredo/qredo_ios_sdk.git -b baptism-by-drowning`
+`git clone --recursive git@github.com:Qredo/qredo_ios_sdk.git`
 
 `cd qredo_ios_sdk`
 
@@ -18,7 +18,7 @@ then `CMD + B` and `CMD + U`...
 
 ```
 
-git clone --recursive git@github.com:Qredo/qredo_ios_sdk.git -b baptism-by-drowning && cd qredo_ios_sdk && pod install && open QredoSDK.xcworkspace
+git clone --recursive git@github.com:Qredo/qredo_ios_sdk.git && cd qredo_ios_sdk && pod install && open QredoSDK.xcworkspace
 
 ```
 
