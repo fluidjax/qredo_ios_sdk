@@ -58,6 +58,11 @@
                BlueprintName = "QredoCryptoTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "QredoCryptoTests/testGetKeyDataForIdentifier_ManyGenerates">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

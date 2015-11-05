@@ -588,6 +588,8 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
         if (identityIsTrusted) {
             // Create a copy of the dictionary to be returned
             returningIdentityDictionary = [NSDictionary dictionaryWithDictionary:(__bridge NSDictionary *)identityDictionary];
+        } else {
+            returningIdentityDictionary = @{};
         }
     }
     
