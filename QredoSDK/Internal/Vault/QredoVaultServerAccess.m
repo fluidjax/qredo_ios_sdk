@@ -195,10 +195,12 @@
           completionHandler:^void(BOOL result, NSError *error)
      {
          if (result && !error) {
-             [_vaultSequenceCache setItemSequence:itemId
+           
+             @synchronized(_vaultSequenceCache) {
+                 [_vaultSequenceCache setItemSequence:itemId
                                        sequenceId:_sequenceId
                                     sequenceValue:newSequenceValue];
-
+             }
              QredoMutableVaultItemMetadata *newMetadata = [metadata mutableCopy];
              newMetadata.origin = QredoVaultItemOriginServer;
              newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
