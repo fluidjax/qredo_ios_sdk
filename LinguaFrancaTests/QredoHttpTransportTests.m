@@ -61,7 +61,7 @@
 
 - (void)testSupportsMultiResponse
 {
-    NSURL *serviceURL = [NSURL URLWithString:@"http://dev.qredo.me:8080/services"];
+    NSURL *serviceURL = [NSURL URLWithString:@"http://early1.qredo.me:8080/services"];
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
     
     BOOL canHandle = [transport supportsMultiResponse];

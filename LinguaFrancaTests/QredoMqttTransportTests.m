@@ -193,7 +193,7 @@
 
 - (void)testSupportsMultiResponse
 {
-    NSURL *serviceURL = [NSURL URLWithString:@"tcp://dev.qredo.me"];
+    NSURL *serviceURL = [NSURL URLWithString:@"tcp://early1.qredo.me"];
     QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
     
     BOOL canHandle = [transport supportsMultiResponse];

@@ -5,7 +5,7 @@
 #ifndef QredoSDK_QredoTestConfiguration_h
 #define QredoSDK_QredoTestConfiguration_h
 
-#define QREDO_HTTP_SERVICE_URL @"http://dev.qredo.me:8080/services"
-#define QREDO_MQTT_SERVICE_URL @"tcp://dev.qredo.me:1883"
+#define QREDO_HTTP_SERVICE_URL @"http://early1.qredo.me:8080/services"
+#define QREDO_MQTT_SERVICE_URL @"tcp://early1.qredo.me:1883"
 
 #endif
