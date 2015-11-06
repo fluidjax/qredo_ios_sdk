@@ -871,7 +871,12 @@
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
-    [writer writeInvocationHeader:[QredoAccessToken empty]];
+    
+//    uint8_t secretArray[] = {0xca, 0xfe, 0xba, 0xbe};
+//    NSData *keyData = [NSData dataWithBytes:secretArray length:sizeof(secretArray) / sizeof(uint8_t)];
+//    QredoAppCredentials *qredoAppCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test" appSecret:keyData];
+//    [writer writeInvocationHeader:qredoAppCredentials];
+    
     [writer writeEnd];
     NSData *data = [out propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
     [out close];
