@@ -38,14 +38,16 @@
                BlueprintName = "LinguaFrancaTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "QredoServiceInvokerTests/testInvokeService_ConcurrentOperations_HTTPUrl">
-               </Test>
-               <Test
-                  Identifier = "QredoServiceInvokerTests/testInvokeService_ConcurrentOperations_MQTTUrl">
-               </Test>
-            </SkippedTests>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
+               BuildableName = "QredoSDKTests.xctest"
+               BlueprintName = "QredoSDKTests"
+               ReferencedContainer = "container:QredoSDK.xcodeproj">
+            </BuildableReference>
          </TestableReference>
          <TestableReference
             skipped = "NO">
@@ -58,79 +60,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "QredoCertificateUtilsTests/testCreateAndValidateIdentityFromPkcs12Data_DHTestCert">
-               </Test>
-               <Test
                   Identifier = "QredoCryptoTests/testGetKeyDataForIdentifier_ManyGenerates">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
-               BuildableName = "QredoSDKTests.xctest"
-               BlueprintName = "QredoSDKTests"
-               ReferencedContainer = "container:QredoSDK.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "ControlMessagesTests">
-               </Test>
-               <Test
-                  Identifier = "ConversationMQTTTests">
-               </Test>
-               <Test
-                  Identifier = "ConversationMQTTTests/testConversationMultiple">
-               </Test>
-               <Test
-                  Identifier = "ConversationMessageStoreTests/testStorage()">
-               </Test>
-               <Test
-                  Identifier = "ConversationProtocolFSMTest">
-               </Test>
-               <Test
-                  Identifier = "ConversationWebSocketTests/testConversationMultiple">
-               </Test>
-               <Test
-                  Identifier = "ConversationWebSocketTests/testMetadataOfEphemeralConversation">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousMQTTTests/testCreateRendezvousMultiple">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateRendezvousMultiple">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultMQTTTests/testMultipleListeners">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultMQTTTests/testMultipleRemovingListenerDurringNotification">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultMQTTTests/testPutItemMultiple">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultTests/testMultipleListeners">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultTests/testMultipleRemovingListenerDurringNotification">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultTests/testPutItemMultiple">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultWebSocketTests/testMultipleListeners">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultWebSocketTests/testMultipleRemovingListenerDurringNotification">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultWebSocketTests/testPutItemMultiple">
-               </Test>
-               <Test
-                  Identifier = "RendezvousMultipleSubsription">
                </Test>
             </SkippedTests>
          </TestableReference>

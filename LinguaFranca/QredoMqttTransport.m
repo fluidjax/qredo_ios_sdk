@@ -245,7 +245,6 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
                                      userInfo:nil];
         
     }
-    
     [self.mqttSession publishDataAtMostOnce:payload onTopic:topic retain:NO];
 }
 
@@ -316,6 +315,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
 
 - (void)disconnectFromServerUsingSession:(MQTTSession *)mqttSession
 {
+    [mqttSession setDelegate:nil];
     [mqttSession close];
     self.connectedAndReady = NO;
 }
