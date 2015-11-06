@@ -9,12 +9,9 @@
 #define QLFAuthCode NSData
 #define QLFAuthenticationCode NSData
 #define QLFAuthenticationKey256 NSData
-#define QLFBlindedToken QLFAnonymousToken1024
-#define QLFBlindingKey NSData
 #define QLFConversationSequenceValue NSData
 #define QLFEncryptionKey256 NSData
 #define QLFFetchSize int32_t
-#define QLFKeySlotNumber int32_t
 #define QLFNonce NSData
 #define QLFConversationId QredoQUID
 #define QLFConversationMessageId QredoQUID
@@ -25,9 +22,6 @@
 #define QLFRendezvousSequenceValue int64_t
 #define QLFRequesterPublicKey NSData
 #define QLFResponderPublicKey NSData
-#define QLFSignedBlindedToken QLFAnonymousToken1024
-#define QLFAccountCredential NSString
-#define QLFAccountId NSString
 #define QLFTimestamp int64_t
 #define QLFTransCap NSData
 #define QLFVaultId QredoQUID
@@ -289,47 +283,6 @@
 - (NSComparisonResult)compare:(QLFKeyPairLF *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToKeyPairLF:(QLFKeyPairLF *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFKeySlot : NSObject<QredoMarshallable>
-
-@property (readonly) QLFKeySlotNumber slotNumber;
-@property (readonly) QLFBlindingKey *blindingKey;
-@property (readonly) NSSet *nextBlindingKey;
-
-+ (QLFKeySlot *)keySlotWithSlotNumber:(QLFKeySlotNumber)slotNumber blindingKey:(QLFBlindingKey *)blindingKey nextBlindingKey:(NSSet *)nextBlindingKey;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithSlotNumber:(QLFKeySlotNumber)slotNumber blindingKey:(QLFBlindingKey *)blindingKey nextBlindingKey:(NSSet *)nextBlindingKey;
-- (NSComparisonResult)compare:(QLFKeySlot *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToKeySlot:(QLFKeySlot *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFGetKeySlotsResponse : NSObject<QredoMarshallable>
-
-@property (readonly) QLFKeySlotNumber currentKeySlotNumber;
-@property (readonly) NSSet *keySlots;
-
-+ (QLFGetKeySlotsResponse *)getKeySlotsResponseWithCurrentKeySlotNumber:(QLFKeySlotNumber)currentKeySlotNumber keySlots:(NSSet *)keySlots;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithCurrentKeySlotNumber:(QLFKeySlotNumber)currentKeySlotNumber keySlots:(NSSet *)keySlots;
-- (NSComparisonResult)compare:(QLFGetKeySlotsResponse *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToGetKeySlotsResponse:(QLFGetKeySlotsResponse *)other;
 - (NSUInteger)hash;
 
 @end
@@ -996,68 +949,6 @@
 - (NSComparisonResult)compare:(QLFServiceAccess *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToServiceAccess:(QLFServiceAccess *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFGetAccessTokenResponse : NSObject<QredoMarshallable>
-
-
-
-+ (QLFGetAccessTokenResponse *)accessGrantedWithSignedBlindedToken:(QLFSignedBlindedToken *)signedBlindedToken slotNumber:(QLFKeySlotNumber)slotNumber remainingSecondsUntilTokenExpires:(int64_t)remainingSecondsUntilTokenExpires remainingSecondsUntilNextTokenIsAvailable:(int64_t)remainingSecondsUntilNextTokenIsAvailable;
-
-+ (QLFGetAccessTokenResponse *)accessDenied;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (void)ifAccessGranted:(void (^)(QLFSignedBlindedToken *, QLFKeySlotNumber , int64_t , int64_t ))ifAccessGrantedBlock ifAccessDenied:(void (^)())ifAccessDeniedBlock;
-- (NSComparisonResult)compare:(QLFGetAccessTokenResponse *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToGetAccessTokenResponse:(QLFGetAccessTokenResponse *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFAccessGranted : QLFGetAccessTokenResponse
-
-@property (readonly) QLFSignedBlindedToken *signedBlindedToken;
-@property (readonly) QLFKeySlotNumber slotNumber;
-@property (readonly) int64_t remainingSecondsUntilTokenExpires;
-@property (readonly) int64_t remainingSecondsUntilNextTokenIsAvailable;
-
-+ (QLFGetAccessTokenResponse *)accessGrantedWithSignedBlindedToken:(QLFSignedBlindedToken *)signedBlindedToken slotNumber:(QLFKeySlotNumber)slotNumber remainingSecondsUntilTokenExpires:(int64_t)remainingSecondsUntilTokenExpires remainingSecondsUntilNextTokenIsAvailable:(int64_t)remainingSecondsUntilNextTokenIsAvailable;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)initWithSignedBlindedToken:(QLFSignedBlindedToken *)signedBlindedToken slotNumber:(QLFKeySlotNumber)slotNumber remainingSecondsUntilTokenExpires:(int64_t)remainingSecondsUntilTokenExpires remainingSecondsUntilNextTokenIsAvailable:(int64_t)remainingSecondsUntilNextTokenIsAvailable;
-- (NSComparisonResult)compare:(QLFAccessGranted *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToAccessGranted:(QLFAccessGranted *)other;
-- (NSUInteger)hash;
-
-@end
-
-
-@interface QLFAccessDenied : QLFGetAccessTokenResponse
-
-
-
-+ (QLFGetAccessTokenResponse *)accessDenied;
-
-+ (QredoMarshaller)marshaller;
-
-+ (QredoUnmarshaller)unmarshaller;
-
-- (instancetype)init;
-- (NSComparisonResult)compare:(QLFAccessDenied *)other;
-- (BOOL)isEqualTo:(id)other;
-- (BOOL)isEqualToAccessDenied:(QLFAccessDenied *)other;
 - (NSUInteger)hash;
 
 @end
@@ -1759,20 +1650,6 @@
 - (void)getResponsesWithHashedTag:(QLFRendezvousHashedTag *)hashedTag after:(QLFRendezvousSequenceValue)after signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousResponsesResult *result, NSError *error))completionHandler;
 - (void)subscribeToResponsesWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousResponseWithSequenceValue *result, NSError *error))completionHandler;
 - (void)deactivateWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousDeactivated *result, NSError *error))completionHandler;
-
-@end
-
-
-@interface QLFAccess : NSObject
-
-
-
-+ (QLFAccess *)accessWithServiceInvoker:(QredoServiceInvoker *)serviceInvoker;
-
-- (instancetype)initWithServiceInvoker:(QredoServiceInvoker *)serviceInvoker;
-- (void)getKeySlotsWithCompletionHandler:(void(^)(QLFGetKeySlotsResponse *result, NSError *error))completionHandler;
-- (void)getAccessTokenWithAccountId:(QLFAccountId *)accountId accountCredential:(QLFAccountCredential *)accountCredential blindedToken:(QLFBlindedToken *)blindedToken slotNumber:(QLFKeySlotNumber)slotNumber completionHandler:(void(^)(QLFGetAccessTokenResponse *result, NSError *error))completionHandler;
-- (void)getNextAccessTokenWithAccountId:(QLFAccountId *)accountId accountCredential:(QLFAccountCredential *)accountCredential blindedToken:(QLFBlindedToken *)blindedToken slotNumber:(QLFKeySlotNumber)slotNumber completionHandler:(void(^)(QLFGetAccessTokenResponse *result, NSError *error))completionHandler;
 
 @end
 
