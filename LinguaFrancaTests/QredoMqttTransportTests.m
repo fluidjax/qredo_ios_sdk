@@ -193,7 +193,7 @@
 
 - (void)testSupportsMultiResponse
 {
-    NSURL *serviceURL = [NSURL URLWithString:@"tcp://dev.qredo.me"];
+    NSURL *serviceURL = [NSURL URLWithString:@"tcp://early1.qredo.me"];
     QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
     
     BOOL canHandle = [transport supportsMultiResponse];
@@ -227,6 +227,8 @@
     
     QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
+    
+    [transport configureReceivedResponseBlock:^(NSData *data, id userData) {}];
     
     // Use a non-nil payload
     // TODO: DH - MQTT doesn't seem to return a LF error response if an invalid request

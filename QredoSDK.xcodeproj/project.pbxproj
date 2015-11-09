@@ -199,6 +199,9 @@
 		66605CC51BD6408D00EC8D6C /* ConversationCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A759D701AE15EE60032185D /* ConversationCryptoTests.m */; };
 		66605CC61BD6408D00EC8D6C /* ConversationProtocolFSMTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7EE79B1AFA70AE0094A703 /* ConversationProtocolFSMTest.swift */; };
 		66605CC71BD6408D00EC8D6C /* ConversationsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ABF743D1B0104340004B8BA /* ConversationsHelper.swift */; };
+		6692A5BA1BED0A480063C394 /* QredoStreamExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D51BD64CE200F01A2C /* QredoStreamExtensions.m */; };
+		6692A9561BF0C8A10063C394 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B131BD5073A00EC8D6C /* NSData+Conversion.m */; };
+		6692A9571BF0C9A00063C394 /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */; };
 		66E6F8CD1BD65AC600319BC9 /* MQTTDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 66E6F8C21BD65AC600319BC9 /* MQTTDecoder.h */; };
 		66E6F8CE1BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
 		66E6F8D01BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
@@ -2066,6 +2069,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6692A9571BF0C9A00063C394 /* NSData+QredoRandomData.m in Sources */,
+				6692A9561BF0C8A10063C394 /* NSData+Conversion.m in Sources */,
 				66605C421BD55B2800EC8D6C /* CryptoImplV1Tests.m in Sources */,
 				66E6F8E41BD65AC600319BC9 /* MQttTxFlow.m in Sources */,
 				66605C431BD55B2800EC8D6C /* QredoCertificateUtilsTests.m in Sources */,
@@ -2138,6 +2143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6692A5BA1BED0A480063C394 /* QredoStreamExtensions.m in Sources */,
 				66F775491BD655E400F01A2C /* QredoMqttTransport.m in Sources */,
 				66F7754A1BD655E400F01A2C /* QredoWebSocketTransport.m in Sources */,
 				66F775421BD6545200F01A2C /* NSArray+QredoArrayEquality.m in Sources */,
@@ -2448,7 +2454,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"\"${PODS_ROOT}/Headers/Public\"",
 					"\"${PODS_ROOT}/Headers/Public/SocketRocket\"",
@@ -2503,7 +2509,7 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"\"${PODS_ROOT}/Headers/Public\"",
 					"\"${PODS_ROOT}/Headers/Public/SocketRocket\"",
@@ -2563,7 +2569,8 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(PROJECT_DIR)/Pods/SocketRocket/SocketRocket\"",
@@ -2607,7 +2614,8 @@
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(PROJECT_DIR)/Pods/SocketRocket/SocketRocket\"",

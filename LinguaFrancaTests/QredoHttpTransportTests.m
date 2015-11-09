@@ -61,7 +61,7 @@
 
 - (void)testSupportsMultiResponse
 {
-    NSURL *serviceURL = [NSURL URLWithString:@"http://dev.qredo.me:8080/services"];
+    NSURL *serviceURL = [NSURL URLWithString:@"http://early1.qredo.me:8080/services"];
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
     
     BOOL canHandle = [transport supportsMultiResponse];
@@ -94,6 +94,8 @@
     
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
+    
+    [transport configureReceivedResponseBlock:^(NSData *data, id userData) {}];
     
     // Use a non-nil payload
     // TODO: DH - HTTP seems to return a LF error response if an invalid request
