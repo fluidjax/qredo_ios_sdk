@@ -203,8 +203,8 @@
     @try {
         QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:outputStream];
         if (includeHeader) {
-            [writer writeMessageHeader:[QredoMessageHeader messageHeaderWithProtocolVersion:[QredoVersion versionWithMajor:@0 minor:@2 patch:@0]
-                                                                             releaseVersion:[QredoVersion versionWithMajor:@0 minor:@2 patch:@0]]];
+            [writer writeMessageHeader:[QredoMessageHeader messageHeaderWithProtocolVersion:[QredoVersion versionWithMajor:@0 minor:@3 patch:@0]
+                                                                             releaseVersion:[QredoVersion versionWithMajor:@0 minor:@3 patch:@0]]];
         }
         marshaller(object, writer);
 

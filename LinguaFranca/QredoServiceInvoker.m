@@ -120,8 +120,8 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 
         QredoWireFormatWriter *wireFormatWriter = [QredoWireFormatWriter wireFormatWriterWithOutputStream:outputStream];
 
-        QredoVersion *protocolVersion = [QredoVersion versionWithMajor:@0 minor:@2 patch:@0];
-        QredoVersion *releaseVersion  = [QredoVersion versionWithMajor:@0 minor:@2 patch:@0];
+        QredoVersion *protocolVersion = [QredoVersion versionWithMajor:@0 minor:@3 patch:@0];
+        QredoVersion *releaseVersion  = [QredoVersion versionWithMajor:@0 minor:@3 patch:@0];
         QredoMessageHeader *messageHeader =
                 [QredoMessageHeader messageHeaderWithProtocolVersion:protocolVersion
                                                       releaseVersion:releaseVersion];
@@ -135,7 +135,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                                                                      serviceName:serviceName
                                                                    operationName:operationName];
             [wireFormatWriter writeInterchangeHeader:interchangeHeader];
-                    [wireFormatWriter writeInvocationHeader:[QredoAppCredentials empty]];
+                     [wireFormatWriter writeInvocationHeader:[QredoAppCredentials empty]];
                     requestWriter(wireFormatWriter);
                 [wireFormatWriter writeEnd];
             [wireFormatWriter writeEnd];
