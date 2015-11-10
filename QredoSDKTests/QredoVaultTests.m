@@ -118,9 +118,12 @@
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
     clientOptions.resetData = YES;
-    
+   
     [QredoClient authorizeWithConversationTypes:nil
                                  vaultDataTypes:@[@"blob"]
+                                      appSecret:@"abcd1234"                 //provided by qredo
+                                         userId:@"tutorialuser@test.com"    //user email or username etc
+                                     userSecret:@"!%usertutorialPassword"   //user entered password
                                         options:clientOptions
                               completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);

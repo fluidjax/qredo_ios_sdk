@@ -283,8 +283,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
                         vaultDataTypes:(NSArray*)vaultDataTypes
-                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
-{
+                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
     [self authorizeWithConversationTypes:conversationTypes
                           vaultDataTypes:vaultDataTypes
                                  options:nil
@@ -292,9 +291,29 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 }
 
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
-                        vaultDataTypes:(NSArray*)vaultDataTypes options:(QredoClientOptions*)options
-                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler
-{
+                        vaultDataTypes:(NSArray*)vaultDataTypes
+                               options:(QredoClientOptions*)options
+                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
+    [self authorizeWithConversationTypes:conversationTypes
+                          vaultDataTypes:vaultDataTypes
+                               appSecret:nil
+                                  userId:nil
+                              userSecret:nil
+                                 options:options
+                       completionHandler:completionHandler];
+    
+}
+    
+    
++ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
+                        vaultDataTypes:(NSArray*)vaultDataTypes
+                             appSecret:(NSString*)appSecret
+                                userId:(NSString*)userId
+                            userSecret:(NSString*)userSecret
+                               options:(QredoClientOptions*)options
+                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
+    
+    
     // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
     if (!options) {
         options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];

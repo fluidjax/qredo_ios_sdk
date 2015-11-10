@@ -418,7 +418,7 @@
         0x2d, 0x2d, 0x0a, 0x90, 0xcf, 0x1a, 0x5a, 0x4c, 0x5d, 0xb0, 0x2d, 0x56, 0xec, 0xc4, 0xc5, 0xbf
     };
     NSData *expectedOkmData = [NSData dataWithBytes:expectedOkmDataArray length:sizeof(expectedOkmDataArray) / sizeof(uint8_t)];
-
+    
     NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:keyData info:infoData outputLength:outputLength];
     
     XCTAssertNotNil(okm, @"OKM should not be nil.");

@@ -374,6 +374,7 @@
 		83395EAB1BE7DB9A006028D0 /* serial in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8D1BD5266700EC8D6C /* serial */; };
 		83395EAC1BE7DB9A006028D0 /* serial.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8E1BD5266700EC8D6C /* serial.old */; };
 		837FB2A41BED013700C66FC8 /* QredoServiceInvokerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66828EBC1BDFBB6B00067431 /* QredoServiceInvokerTests.m */; };
+		83F05A5E1BF108E100003FF2 /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
 		89B52C1D6C72AB1D44269817 /* libPods-QredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 11CB8D78775264A920FE4943 /* libPods-QredoSDK.a */; };
 		DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */; };
 		DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */; };
@@ -2067,6 +2068,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83F05A5E1BF108E100003FF2 /* NSData+ParseHex.m in Sources */,
 				66605C421BD55B2800EC8D6C /* CryptoImplV1Tests.m in Sources */,
 				66E6F8E41BD65AC600319BC9 /* MQttTxFlow.m in Sources */,
 				66605C431BD55B2800EC8D6C /* QredoCertificateUtilsTests.m in Sources */,
