@@ -18,6 +18,7 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoManagerAppRootViewController.h"
 #import "QredoCertificate.h"
+#import "QredoUserInitialization.h"
 
 // TEMP
 #import "QredoConversationProtocol.h"
@@ -319,6 +320,11 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     }
     
+    
+    NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+    [[QredoUserInitialization sharedInstance] setAppId:appID userId:userId userSecure:userSecret];
+    
+    
     NSURL *serviceURL = nil;
     switch (options.transportType) {
         case QredoClientOptionsTransportTypeHTTP:
@@ -369,7 +375,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         
         if ([error.domain isEqualToString:QredoErrorDomain] && error.code == QredoErrorCodeKeychainCouldNotBeFound) {
             
-            // TODO: [GR]: Show new device screen insted of creating the vault starit away.
+            // TODO: [GR]: Show new device screen insted of creating the vault straight away.
             error = nil;
             [client createSystemVaultWithCompletionHandler:^(NSError *error) {
                 if (!error) {
@@ -382,13 +388,13 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         } else {
             
             // TODO: [GR]: Show alert for corrupted keychain instead of the placeholder below.
-            // Also implement a way of recovering a keychian here.
+            // Also implement a way of recovering a keychain here.
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 UIAlertController *alertController
-                = [UIAlertController alertControllerWithTitle:@"Keychain is corrupted"
-                                                      message:@"The system vault keychain seems to be corrupted."
+                = [UIAlertController alertControllerWithTitle:@"Keychain is corrupt"
+                                                      message:@"The system vault keychain seems to be corrupt."
                                                preferredStyle:UIAlertControllerStyleAlert];
                 
                 [alertController addAction:
@@ -473,7 +479,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 - (void)closeSession
 {
-    // Need to terminate transport, which ends associated threads and subsriptions etc.
+    // Need to terminate transport, which ends associated threads and subscriptions etc.
     [_serviceInvoker terminate];
 
     // TODO: DH - somehow indicate that the client has been closed and therefore cannot be used again.

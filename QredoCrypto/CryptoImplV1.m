@@ -28,11 +28,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode, NSDict
 #define ED25519_SIGNATURE_LENGTH 64
 #define ED25519_SEED_LENGTH 32
 
-#define SALT_USER_UNLOCK [@"3aK3VkzxClECvyFW" dataUsingEncoding:NSASCIIStringEncoding]
-#define SALT_USER_MASTER [@"wjB9zA2l1Z4eiW5t" dataUsingEncoding:NSASCIIStringEncoding]
-#define INFO_USER_MASTER [@"QREDO_INFO_USER_MASTER" dataUsingEncoding:NSASCIIStringEncoding]
-#define PBKDF2_USERUNLOCK_KEY_ITERATIONS 1000
-
 
 - (instancetype)init
 {
@@ -52,62 +47,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode, NSDict
         instance = [[self alloc] init];
     });
     return instance;
-}
-
-
-- (NSData *)getUserUnlockKey:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure{
-    
-    if (!appId){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"appId cannot be nil"]
-                                     userInfo:nil];
-    }
-    if (!userId){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"userId cannot be nil"]
-                                     userInfo:nil];
-    }
-    if (!userSecure){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"userSecure cannot be nil"]
-                                     userInfo:nil];
-    }
-    
-    NSMutableData *concatenatedBytes = [[NSMutableData alloc] init];
-    [concatenatedBytes appendData:[self sha1:appId]];
-    [concatenatedBytes appendData:[self sha1:userId]];
-    [concatenatedBytes appendData:[self sha1:userSecure]];
-    
-    NSData *key = [QredoCrypto pbkdf2Sha256WithSalt:SALT_USER_UNLOCK
-                              bypassSaltLengthCheck:NO
-                                       passwordData:concatenatedBytes
-                             requiredKeyLengthBytes:PBKDF2_DERIVED_KEY_LENGTH_BYTES
-                                         iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
-    return key;
-}
-
-
--(NSData *)sha1:(NSString *)str{
-    NSMutableData *outputBytes = [NSMutableData dataWithLength:CC_SHA1_DIGEST_LENGTH];
-    NSData *inputBytes = [str dataUsingEncoding:NSUTF8StringEncoding];
-    CC_SHA1(inputBytes.bytes, (CC_LONG)inputBytes.length, outputBytes.mutableBytes);
-    return outputBytes;
-}
-
-
-
-
-- (NSData *)getMasterKey:(NSData*)userUnlockKey{
-    if (!userUnlockKey)
-    {
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"User unlockKey is nil"]
-                                     userInfo:nil];
-    }
-    
-    
-    NSData *masterKey = [QredoCrypto hkdfSha256WithSalt:SALT_USER_MASTER initialKeyMaterial:userUnlockKey info:INFO_USER_MASTER outputLength:256];
-    return masterKey;
 }
 
 

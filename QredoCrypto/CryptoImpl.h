@@ -25,11 +25,10 @@ typedef NS_ENUM(NSUInteger, QredoCryptoImplError) {
 @protocol CryptoImpl
 
 
-- (NSData *)getUserUnlockKey:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure;
-- (NSData *)getMasterKey:(NSData*)userUnlockKey;
+
 
 - (NSData*)encryptWithKey:(NSData*)secretKey data:(NSData*)data;
-- (NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv;
+- (NSData*)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv;
 - (NSData*)decryptWithKey:(NSData*)secretKey data:(NSData*)data;
 - (NSData*)getAuthCodeWithKey:(NSData*)authKey data:(NSData*)data;
 - (NSData*)getAuthCodeWithKey:(NSData*)authKey data:(NSData*)data length:(NSUInteger)length;
