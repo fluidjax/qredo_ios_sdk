@@ -29,23 +29,15 @@
 @implementation QredoUserInitialization
 
 
-+ (instancetype)sharedInstance{
-    static QredoUserInitialization *instance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [[self alloc] init];
-    });
-    return instance;
+- (instancetype)initWithAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure{
+    self = [super init];
+    if (self) {
+        _appId = appId;
+        _userId = userId;
+        _userSecure = userSecure;
+    }
+    return self;
 }
-
-
--(void)setAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure{
-    _appId = appId;
-    _userId = userId;
-    _userSecure = userSecure;
-}
-
-
 
 
 - (NSData *)userUnlockKey{

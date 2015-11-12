@@ -61,10 +61,10 @@
 }
 
 
-- (void)generateNewKeys
+- (void)generateNewKeys:(QredoUserInitialization*)userInitialization
 {
     _isInitialized = YES;
-    _masterKey = [[QredoUserInitialization sharedInstance] masterKey];
+    _masterKey = [userInitialization masterKey];
     [self deriveKeys];
 }
 

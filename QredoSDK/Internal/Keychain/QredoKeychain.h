@@ -30,7 +30,7 @@ NS_ENUM(NSInteger, QredoCredentialType) {
 - (instancetype)initWithData:(NSData *)serializedData;
 
 - (NSData *)data;
-- (void)generateNewKeys;
+- (void)generateNewKeys:(QredoUserInitialization*)userInitialization;
 
 
 

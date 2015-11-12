@@ -11,9 +11,8 @@
 
 @interface QredoUserInitialization : NSObject
 
-+(instancetype)sharedInstance;
 
--(void)setAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure;
+- (instancetype)initWithAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure;
 -(NSData*)userUnlockKey;
 -(NSData*)masterKey;
 
