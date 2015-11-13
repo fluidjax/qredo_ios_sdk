@@ -75,8 +75,7 @@ static NSString *QredoMainViewControllerDeviceCellIdentifier = @"QredoMainViewCo
     [super viewWillAppear:animated];
     [self.navigationController setToolbarHidden:NO];
     
-    [QredoClient
-     authorizeWithConversationTypes:nil
+    [QredoClient  authorizeWithConversationTypes:nil
      vaultDataTypes:@[QredoVaultItemTypeKeychain]
      completionHandler:^(QredoClient *client, NSError *error) {
          self.qredoClient = client;

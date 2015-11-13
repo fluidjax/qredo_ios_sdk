@@ -81,8 +81,13 @@
 
 -(NSData *)masterKey{
     NSData *userUnlockKey = [self userUnlockKey];
+    return [self masterKey:userUnlockKey];
+}
+
+-(NSData *)masterKey:(NSData *)userUnlockKey{
     NSData *masterKey = [QredoCrypto hkdfSha256WithSalt:SALT_USER_MASTER initialKeyMaterial:userUnlockKey info:INFO_USER_MASTER outputLength:256];
     return masterKey;
 }
+
 
 @end

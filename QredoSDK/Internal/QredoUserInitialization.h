@@ -14,6 +14,7 @@
 
 -(instancetype)initWithAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure;
 -(NSData*)userUnlockKey;
+-(NSData *)masterKey:(NSData *)userUnlockKey;
 -(NSData*)masterKey;
 
 @end
