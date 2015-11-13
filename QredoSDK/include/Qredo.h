@@ -57,6 +57,21 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 //                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
 
+
+//+ (void)initializeWithAppSecret:(NSString*)appSecret
+//                         userId:(NSString*)userId
+//                    userSecret:(NSString*)userSecret
+//             completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
+//
+//
+//+ (void)initializeWithAppSecret:(NSString*)appSecret
+//                         userId:(NSString*)userId
+//                     userSecret:(NSString*)userSecret
+//              completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
+
+
+
+
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
                         vaultDataTypes:(NSArray*)vaultDataTypes
                              appSecret:(NSString*)appSecret

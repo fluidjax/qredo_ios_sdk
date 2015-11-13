@@ -286,26 +286,19 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
                         vaultDataTypes:(NSArray*)vaultDataTypes
+                             appSecret:(NSString*)appSecret
+                                userId:(NSString*)userId
+                            userSecret:(NSString*)userSecret
                      completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
     [self authorizeWithConversationTypes:conversationTypes
                           vaultDataTypes:vaultDataTypes
+                               appSecret:appSecret
+                                  userId:userId
+                              userSecret:userSecret
                                  options:nil
                        completionHandler:completionHandler];
 }
 
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
-                        vaultDataTypes:(NSArray*)vaultDataTypes
-                               options:(QredoClientOptions*)options
-                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
-    [self authorizeWithConversationTypes:conversationTypes
-                          vaultDataTypes:vaultDataTypes
-                               appSecret:nil
-                                  userId:nil
-                              userSecret:nil
-                                 options:options
-                       completionHandler:completionHandler];
-    
-}
     
     
 + (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
@@ -324,6 +317,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     
     NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+    if (!appID)appID = @"com.qredo.undefinedAppId";
     QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] initWithAppId:appID userId:userId userSecure:userSecret];
     
     

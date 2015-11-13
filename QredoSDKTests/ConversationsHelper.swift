@@ -19,7 +19,13 @@ class ConversationsHelper: NSObject {
     func setUp(testCase: XCTestCase) {
         let creatorClientExpectation = testCase.expectationWithDescription("authorize creator client")
         let options = QredoClientOptions.qtu_clientOptionsWithTransportType(transportType, resetData: true)
-        QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], options: options) { authorizedClient, error in
+        
+        let appSecret = "abcd1234"                 //provided by qredo
+        let userId = "tutorialuser@test.com"    //user email or username etc
+        let userSecret = "!%usertutorialPassword"   //user entered password
+        
+        
+         QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "failed to authorize client")
 
             if let actualClient = authorizedClient {
@@ -30,7 +36,7 @@ class ConversationsHelper: NSObject {
         }
 
         let responderClientExpectation = testCase.expectationWithDescription("authorize responder client")
-        QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], options: options) { authorizedClient, error in
+        QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "failed to authorize client")
 
             if let actualClient = authorizedClient {

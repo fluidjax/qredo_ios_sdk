@@ -15,7 +15,11 @@ class TwoClientsHelper {
     func authorize(test : XCTestCase, options : QredoClientOptions!) {
         let authorizeExpectation1 = test.expectationWithDescription("authorize expectation")
 
-        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: options) { (authorizedClient, error) -> Void in
+        let appSecret = "abcd1234"                 //provided by qredo
+        let userId = "tutorialuser@test.com"    //user email or username etc
+        let userSecret = "!%usertutorialPassword"   //user entered password
+        
+        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "Failed to authorize client")
 
             self.firstClient = authorizedClient
@@ -25,7 +29,8 @@ class TwoClientsHelper {
 
 
         let authorizeExpectation2 = test.expectationWithDescription("authorize expectation")
-        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], options: options) { (authorizedClient, error) -> Void in
+        
+         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "Failed to authorize client")
 
             self.secondClient = authorizedClient
