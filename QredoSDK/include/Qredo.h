@@ -47,47 +47,20 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
  
  If the app calls any Vault, Rendezvous or Conversation API without an authorization, then those methods will return `QredoErrorCodeAppNotAuthorized` error immediately.
  */
-//+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
-//                        vaultDataTypes:(NSArray*)vaultDataTypes
-//                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
-//
-//+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
-//                        vaultDataTypes:(NSArray*)vaultDataTypes
-//                               options:(QredoClientOptions*)options
-//                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
+
+
++ (void)initializeWithAppSecret:(NSString*)appSecret
+                         userId:(NSString*)userId
+                     userSecret:(NSString*)userSecret
+             completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
 
 
-//+ (void)initializeWithAppSecret:(NSString*)appSecret
-//                         userId:(NSString*)userId
-//                    userSecret:(NSString*)userSecret
-//             completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
-//
-//
-//+ (void)initializeWithAppSecret:(NSString*)appSecret
-//                         userId:(NSString*)userId
-//                     userSecret:(NSString*)userSecret
-//              completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
-
-
-
-
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
-                        vaultDataTypes:(NSArray*)vaultDataTypes
-                             appSecret:(NSString*)appSecret
-                                userId:(NSString*)userId
-                            userSecret:(NSString*)userSecret
-                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
-
-
-
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
-                        vaultDataTypes:(NSArray*)vaultDataTypes
-                             appSecret:(NSString*)appSecret
-                                userId:(NSString*)userId
-                            userSecret:(NSString*)userSecret
-                               options:(QredoClientOptions*)options
-                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
++ (void)initializeWithAppSecret:(NSString*)appSecret
+                         userId:(NSString*)userId
+                     userSecret:(NSString*)userSecret
+                        options:(QredoClientOptions*)options
+              completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
 
 

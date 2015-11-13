@@ -19,7 +19,7 @@ class TwoClientsHelper {
         let userId = "tutorialuser@test.com"    //user email or username etc
         let userSecret = "!%usertutorialPassword"   //user entered password
         
-        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
+        QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "Failed to authorize client")
 
             self.firstClient = authorizedClient
@@ -30,7 +30,7 @@ class TwoClientsHelper {
 
         let authorizeExpectation2 = test.expectationWithDescription("authorize expectation")
         
-         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
+         QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "Failed to authorize client")
 
             self.secondClient = authorizedClient

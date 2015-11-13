@@ -25,7 +25,7 @@ class ConversationsHelper: NSObject {
         let userSecret = "!%usertutorialPassword"   //user entered password
         
         
-         QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
+         QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "failed to authorize client")
 
             if let actualClient = authorizedClient {
@@ -36,7 +36,7 @@ class ConversationsHelper: NSObject {
         }
 
         let responderClientExpectation = testCase.expectationWithDescription("authorize responder client")
-        QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
+        QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "failed to authorize client")
 
             if let actualClient = authorizedClient {

@@ -30,7 +30,7 @@ class BaseConversation: XCTestCase {
         let creatorClientExpectation = expectationWithDescription("authorize creator client")
         let options = QredoClientOptions.qtu_clientOptionsWithTransportType(transportType, resetData: true)
         
-        QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
+        QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             XCTAssertNil(error, "failed to authorize client")
             
             if let actualClient = authorizedClient {
@@ -41,7 +41,7 @@ class BaseConversation: XCTestCase {
         }
         
         let responderClientExpectation = expectationWithDescription("authorize responder client")
-         QredoClient.authorizeWithConversationTypes([conversationType], vaultDataTypes: [], appSecret: appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
+         QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             XCTAssertNil(error, "failed to authorize client")
 
             if let actualClient = authorizedClient {

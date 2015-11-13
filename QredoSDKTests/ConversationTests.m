@@ -85,13 +85,11 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
-                                 vaultDataTypes:nil
-                                      appSecret:@"abcd1234"                 //provided by qredo
-                                         userId:@"tutorialuser@test.com"    //user email or username etc
-                                     userSecret:@"!%usertutorialPassword"   //user entered password
-                                        options:[self clientOptionsWithResetData:YES]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
+                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                              userSecret:@"!%usertutorialPassword"   //user entered password
+                                 options:[self clientOptionsWithResetData:YES]
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   client = clientArg;
@@ -162,13 +160,11 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     // another client with a new vault
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
-    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
-                                 vaultDataTypes:nil
-                                      appSecret:@"abcd1234"                 //provided by qredo
-                                         userId:@"tutorialuser@test.com"    //user email or username etc
-                                     userSecret:@"!%usertutorialPassword"   //user entered password
-                                        options:[self clientOptionsWithResetData:YES]
-                              completionHandler:^(QredoClient *newClient, NSError *error) {
+    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
+                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                              userSecret:@"!%usertutorialPassword"   //user entered password
+                                 options:[self clientOptionsWithResetData:YES]
+                       completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
                                   anotherClient = newClient;
@@ -236,13 +232,11 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
 
-    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
-                                 vaultDataTypes:nil
-                                      appSecret:@"abcd1234"                 //provided by qredo
-                                         userId:@"tutorialuser@test.com"    //user email or username etc
-                                     userSecret:@"!%usertutorialPassword"   //user entered password
-                                        options:[self clientOptionsWithResetData:YES]
-                              completionHandler:^(QredoClient *newClient, NSError *error) {
+    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
+                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                              userSecret:@"!%usertutorialPassword"   //user entered password
+                                 options:[self clientOptionsWithResetData:YES]
+                       completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
                                   anotherClient = newClient;
@@ -447,13 +441,11 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
 
-    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
-                                 vaultDataTypes:nil
-                                      appSecret:@"abcd1234"                 //provided by qredo
-                                         userId:@"tutorialuser@test.com"    //user email or username etc
-                                     userSecret:@"!%usertutorialPassword"   //user entered password
-                                        options:[self clientOptionsWithResetData:YES]
-                              completionHandler:^(QredoClient *newClient, NSError *error) {
+    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
+                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                              userSecret:@"!%usertutorialPassword"   //user entered password
+                                 options:[self clientOptionsWithResetData:YES]
+                       completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
                                   anotherClient = newClient;
@@ -528,13 +520,11 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     __block QredoClient *anotherClient = nil;
     __block XCTestExpectation *anotherClientExpectation = [self expectationWithDescription:@"create a new client"];
 
-    [QredoClient authorizeWithConversationTypes:@[self.conversationType]
-                                 vaultDataTypes:nil
-                                      appSecret:@"abcd1234"                 //provided by qredo
-                                         userId:@"tutorialuser@test.com"    //user email or username etc
-                                     userSecret:@"!%usertutorialPassword"   //user entered password
-                                        options:[self clientOptionsWithResetData:YES]
-                              completionHandler:^(QredoClient *newClient, NSError *error) {
+    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
+                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                              userSecret:@"!%usertutorialPassword"   //user entered password
+                                 options:[self clientOptionsWithResetData:YES]
+                       completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
                                   anotherClient = newClient;

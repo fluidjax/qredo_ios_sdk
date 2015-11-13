@@ -284,28 +284,22 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     return _serviceInvoker;
 }
 
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
-                        vaultDataTypes:(NSArray*)vaultDataTypes
-                             appSecret:(NSString*)appSecret
-                                userId:(NSString*)userId
-                            userSecret:(NSString*)userSecret
-                     completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
-    [self authorizeWithConversationTypes:conversationTypes
-                          vaultDataTypes:vaultDataTypes
-                               appSecret:appSecret
-                                  userId:userId
-                              userSecret:userSecret
-                                 options:nil
-                       completionHandler:completionHandler];
++(void)initializeWithAppSecret:(NSString*)appSecret
+                        userId:(NSString*)userId
+                    userSecret:(NSString*)userSecret
+            completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
+    [self initializeWithAppSecret:appSecret
+                           userId:userId
+                       userSecret:userSecret
+                          options:nil
+                completionHandler:completionHandler];
 }
 
     
     
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes
-                        vaultDataTypes:(NSArray*)vaultDataTypes
-                             appSecret:(NSString*)appSecret
-                                userId:(NSString*)userId
-                            userSecret:(NSString*)userSecret
++(void)initializeWithAppSecret:(NSString*)appSecret
+                                 userId:(NSString*)userId
+                             userSecret:(NSString*)userSecret
                                options:(QredoClientOptions*)options
                      completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
     

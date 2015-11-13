@@ -62,7 +62,7 @@ class QredoVaultConsolidationTests: XCTestCase {
         let userId = "tutorialuser@test.com"    //user email or username etc
         let userSecret = "!%usertutorialPassword"   //user entered password
         
-        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: ["com.qredo.test"],appSecret: appSecret, userId: userId, userSecret: userSecret,
+        QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret,
             options: QredoClientOptions.qtu_clientOptionsWithTransportType(transportType, resetData: true),
             completionHandler: {client, error in
                 self.qredo = client
