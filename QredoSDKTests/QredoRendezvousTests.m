@@ -321,7 +321,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                                  userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
                                  options:[self clientOptionsWithResetData:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -685,7 +685,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                                  userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
                                  options:[self clientOptionsWithResetData:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -768,7 +768,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                                  userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
                                  options:[self clientOptionsWithResetData:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -870,7 +870,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                                  userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
                                  options:[self clientOptionsWithResetData:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -1282,7 +1282,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
+                                  userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
                                  options:[self clientOptionsWithResetData:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {

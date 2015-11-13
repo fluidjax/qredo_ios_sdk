@@ -30,7 +30,9 @@
     NSString *TEST_USER_ID          = @"TEST-USER-ID";
 
     
-    QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] initWithAppId:applicationId userId:TEST_USER_ID userSecure:TEST_USER_SECRET];
+    QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] initWithAppId:applicationId
+                                                                                          userId:TEST_USER_ID
+                                                                                      userSecure:TEST_USER_SECRET];
 
     
     NSData *TEST_UNLOCK_KEY = [NSData dataWithHexString:@"d54dce9e8746cb954b529134db880355882c4cc8791550673611d857c5c98184"];

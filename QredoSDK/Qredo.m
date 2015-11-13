@@ -295,8 +295,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                 completionHandler:completionHandler];
 }
 
-    
-    
+
 +(void)initializeWithAppSecret:(NSString*)appSecret
                                  userId:(NSString*)userId
                              userSecret:(NSString*)userSecret
@@ -312,6 +311,8 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
     if (!appID)appID = @"com.qredo.undefinedAppId";
+    
+    
     QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] initWithAppId:appID userId:userId userSecure:userSecret];
     
     

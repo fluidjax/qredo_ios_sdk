@@ -97,7 +97,7 @@
 
 
    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                userId:@"tutorialuser@test.com"    //user email or username etc
+                                userId:@"anotherClient@test.com"    //user email or username etc
                             userSecret:@"!%usertutorialPassword"   //user entered password
                                        options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
                              completionHandler:^(QredoClient *clientArg, NSError *error) {
