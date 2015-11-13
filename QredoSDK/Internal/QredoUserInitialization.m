@@ -18,7 +18,6 @@
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES 32
 
 
-
 @interface QredoUserInitialization ()
 @property (strong) NSString *appId;
 @property (strong) NSString *userId;
@@ -29,7 +28,7 @@
 @implementation QredoUserInitialization
 
 
-- (instancetype)initWithAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure{
+-(instancetype)initWithAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure{
     self = [super init];
     if (self) {
         _appId = appId;
@@ -40,7 +39,7 @@
 }
 
 
-- (NSData *)userUnlockKey{
+-(NSData *)userUnlockKey{
     
     if (!self.appId){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -78,8 +77,6 @@
     CC_SHA1(inputBytes.bytes, (CC_LONG)inputBytes.length, outputBytes.mutableBytes);
     return outputBytes;
 }
-
-
 
 
 -(NSData *)masterKey{

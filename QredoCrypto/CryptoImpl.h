@@ -26,7 +26,6 @@ typedef NS_ENUM(NSUInteger, QredoCryptoImplError) {
 
 
 
-
 - (NSData*)encryptWithKey:(NSData*)secretKey data:(NSData*)data;
 - (NSData*)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv;
 - (NSData*)decryptWithKey:(NSData*)secretKey data:(NSData*)data;

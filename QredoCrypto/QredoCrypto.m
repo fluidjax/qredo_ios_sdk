@@ -182,18 +182,13 @@
 
 
 
+
 +(NSData*)hkdfExpandSha256WithKey:(NSData*)key info:(NSData*)info outputLength:(NSUInteger)outputLength{
-    //defaults offset to 1
-    return [self hkdfExpandSha256WithKey:key info:info outputLength:outputLength offset:1];
-}
-
-
-+(NSData*)hkdfExpandSha256WithKey:(NSData*)key info:(NSData*)info outputLength:(NSUInteger)outputLength offset:(int)offset{
     int             iterations = (int)ceil((double)outputLength/(double)CC_SHA256_DIGEST_LENGTH);
     NSData          *mixin = [NSData data];
     NSMutableData   *results = [NSMutableData data];
     
-    for (int i=offset; i<(iterations+offset); i++) {
+    for (int i=1; i<(iterations+1); i++) {
         CCHmacContext ctx;
         CCHmacInit(&ctx, kCCHmacAlgSHA256, [key bytes], [key length]);
         CCHmacUpdate(&ctx, [mixin bytes], [mixin length]);
