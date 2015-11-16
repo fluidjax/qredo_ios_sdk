@@ -700,6 +700,29 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     }
 }
 
+
+-(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
+    QredoVault *vault = [self systemVault];
+    __block QredoRendezvousMetadata *matchedRendezvousMetadata;
+    
+    [self enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
+        if ([tag isEqualToString:rendezvousMetadata.tag]){
+            matchedRendezvousMetadata =rendezvousMetadata;
+            *stop = YES;
+        }
+    } completionHandler:^(NSError *error) {
+        if (error){
+            completionHandler(nil,error);
+        }else{
+            [self fetchRendezvousWithMetadata:matchedRendezvousMetadata completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                completionHandler(rendezvous, error);
+            }];
+        }
+    }];
+    
+}
+
+
 - (void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block
                    completionHandler:(void(^)(NSError *error))completionHandler
 {
