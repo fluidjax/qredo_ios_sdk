@@ -949,7 +949,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     }];
 }
 
-- (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+- (void)enumerateReceivedMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
                               since:(QredoConversationHighWatermark*)sinceWatermark
                   completionHandler:(void(^)(NSError *error))completionHandler
 {

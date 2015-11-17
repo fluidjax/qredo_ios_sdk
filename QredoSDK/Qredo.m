@@ -706,6 +706,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     __block QredoRendezvousMetadata *matchedRendezvousMetadata;
     
     [self enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
+        NSLog(@"Tag %@",rendezvousMetadata.tag);
         if ([tag isEqualToString:rendezvousMetadata.tag]){
             matchedRendezvousMetadata =rendezvousMetadata;
             *stop = YES;
@@ -1041,7 +1042,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     return [self deleteDefaultVaultKeychainWithError:error];
 }
 
-- (void)createSystemVaultWithUserInitialization:(QredoUserInitialization*)userInitialization  completionHandler:(void(^)(NSError *error))completionHandler{
+- (void)createSystemVaultWithUserInitialization:(QredoUserInitialization*)userInitialization completionHandler:(void(^)(NSError *error))completionHandler{
     [self deleteCurrentDataWithError:nil];
 
     [self createDefaultKeychain:userInitialization];
