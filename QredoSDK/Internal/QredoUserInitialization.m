@@ -90,4 +90,24 @@
 }
 
 
+-(NSString*)dataToHexString:(NSData*)data{
+    NSUInteger capacity = data.length * 2;
+    NSMutableString *sbuf = [NSMutableString stringWithCapacity:capacity];
+    const unsigned char *buf = data.bytes;
+    NSInteger i;
+    for (i=0; i<data.length; ++i) {
+        [sbuf appendFormat:@"%02X", (unsigned int)buf[i]];
+    }
+    return [sbuf copy];
+}
+
+
+-(NSString*)createSystemVaultIdentifier{
+    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@",self.appId,self.userId, self.userSecure];
+    NSData *sha1UserCredentials = [self sha1WithString:userCredentials];
+    NSString *sha1UserCredentialsString =  [self dataToHexString:sha1UserCredentials];
+    return [NSString stringWithFormat:@"com.qredo.system.vault.key-%@",sha1UserCredentialsString];
+}
+
+
 @end

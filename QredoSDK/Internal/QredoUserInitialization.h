@@ -19,4 +19,6 @@
 -(NSData *)masterKey:(NSData *)userUnlockKey;
 -(NSData*)masterKey;
 
+-(NSString*)createSystemVaultIdentifier;
+
 @end

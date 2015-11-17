@@ -315,6 +315,8 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] initWithAppId:appID userId:userId userSecure:userSecret];
     
+    systemVaultKeychainArchiveIdentifier = [userInitialization createSystemVaultIdentifier];
+    NSLog(@"systemVaultKeychainArchiveIdentifier %@",systemVaultKeychainArchiveIdentifier);
     
     NSURL *serviceURL = nil;
     switch (options.transportType) {
