@@ -11,6 +11,7 @@
 /** Points to the origin of the vault. If it is used in `[QredoVault enumerateVaultItemsUsingBlock:failureHandler:since:]`, then it will return all the items from the vault */
 extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
+@class QredoQUID;
 @class QredoVault;
 @class QredoVaultItemMetadata;
 

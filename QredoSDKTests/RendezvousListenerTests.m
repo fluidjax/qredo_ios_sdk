@@ -7,6 +7,7 @@
 #import "Qredo.h"
 #import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
+#import "QredoQUID.h"
 
 // The purpose of this test is to cover all edge cases in the rendezvous listener:
 // - receiving response

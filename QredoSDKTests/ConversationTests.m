@@ -8,7 +8,6 @@
 #import "QredoTestUtils.h"
 
 #import "QredoPrivate.h"
-#import "QredoVaultPrivate.h"
 #import "ConversationTests.h"
 
 // This test should has some commonalities with RendezvousListenerTests, however,
@@ -25,7 +24,7 @@ static NSString *const kMessageTestValue = @"(1)hello, world";
 static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 @interface ConversationMessageListener : NSObject <QredoConversationObserver>
-@property XCTestExpectation *didReceiveMessageExpectation;
+@property __weak XCTestExpectation *didReceiveMessageExpectation;
 @property NSString *expectedMessageValue;
 @property BOOL failed;
 

@@ -5,6 +5,7 @@
 #import "QredoTransport.h"
 #import "QredoLogging.h"
 #import "QredoCertificate.h"
+#import "NSData+ParseHex.h"
 
 NSString *const QredoLFErrorDomain = @"QredoLFError";
 
@@ -76,6 +77,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         
         // Closes down the transport threads. Requires re-initialisation.  Transport will trigger error handlers if attempted to be used after termination
         [self.transport close];
+        self.transport = nil;
     }
 }
 
@@ -135,7 +137,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                                                                      serviceName:serviceName
                                                                    operationName:operationName];
             [wireFormatWriter writeInterchangeHeader:interchangeHeader];
-                    [wireFormatWriter writeInvocationHeader:[QredoAppCredentials empty]];
+                    [wireFormatWriter writeInvocationHeader:[QredoAppCredentials appCredentialsWithAppId:@"test" appSecret:[NSData dataWithHexString:@"cafebabe"]]];
                     requestWriter(wireFormatWriter);
                 [wireFormatWriter writeEnd];
             [wireFormatWriter writeEnd];

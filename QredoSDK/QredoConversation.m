@@ -4,6 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Qredo.h"
+#import "QredoQUID.h"
 #import "QredoConversation.h"
 #import "QredoConversationPrivate.h"
 #import "QredoTypesPrivate.h"

@@ -5,7 +5,6 @@
 #import "QredoConversation.h"
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
-#import "QredoConversationMessage.h"
 #import "QredoClient.h"
 
 extern NSString *const kQredoConversationVaultItemLabelAmOwner;

@@ -3,7 +3,6 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "QredoQUID.h"
 #import "QredoConversation.h"
 #import "QredoTypes.h"
 #import "QredoVault.h"

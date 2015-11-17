@@ -2,7 +2,7 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#import "QredoQUID.h"
+#import <Foundation/Foundation.h>
 
 typedef int32_t QredoAccessLevel; // for now just an integer, but probably needs enum values
 

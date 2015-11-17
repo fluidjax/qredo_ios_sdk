@@ -4,7 +4,6 @@
 
 #import <Foundation/Foundation.h>
 #import "QredoVault.h"
-#import "QredoVaultPrivate.h"
 #import "Qredo.h"
 #import "QredoPrivate.h"
 #import "QredoVaultSequenceCache.h"

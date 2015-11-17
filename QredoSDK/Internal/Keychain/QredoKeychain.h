@@ -7,7 +7,7 @@
 #import "CryptoImpl.h"
 #import "QredoVaultCrypto.h"
 
-NS_ENUM(NSInteger, QredoCredentialType) {
+extern NS_ENUM(NSInteger, QredoCredentialType) {
     QredoCredentialTypeNoCredential = 0,
     QredoCredentialTypePIN = 1,
     QredoCredentialTypePattern = 2,

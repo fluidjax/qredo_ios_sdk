@@ -3,8 +3,8 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "QredoQUID.h"
 
+@class QredoQUID;
 @class QredoConversation;
 @class QredoConversationHighWatermark;
 

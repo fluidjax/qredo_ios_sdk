@@ -2,12 +2,11 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#import "QredoQUID.h"
 #import "QredoConversationMessage.h"
 #import "QredoTypes.h"
 
+@class QredoQUID;
 @class QredoVault;
-@class QredoConversation;
 
 extern NSString *const kQredoConversationVaultItemType;
 

@@ -9,7 +9,7 @@
 // This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
 // It shall be included only in the implementation files
 
-NSString *const QredoVaultItemMetadataItemTypeTombstone;
+extern NSString *const QredoVaultItemMetadataItemTypeTombstone;
 
 @class QredoClient, QredoKeychain, QredoVaultKeys;
 

@@ -35,6 +35,8 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 1.0; // 1 second 
     // Using case-insensitive comparison as apparently Apple has previously changed the case returned by NSURL.scheme method, breaking code
     if ([scheme caseInsensitiveCompare:@"wss"] == NSOrderedSame) {
         canHandle = YES;
+    } else if ([scheme caseInsensitiveCompare:@"ws"] == NSOrderedSame) {
+        canHandle = YES;
     }
     
     return canHandle;
