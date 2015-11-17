@@ -96,7 +96,7 @@ NSTimeInterval qtu_defaultTimeout = 30.0;
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = YES;
 
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < 3; i++)
     {        
         [self conversation];
     }
