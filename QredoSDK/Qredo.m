@@ -704,7 +704,6 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 
 -(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
-    QredoVault *vault = [self systemVault];
     __block QredoRendezvousMetadata *matchedRendezvousMetadata;
     
     [self enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
@@ -715,6 +714,11 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         }
     } completionHandler:^(NSError *error) {
         if (error){
+            completionHandler(nil,error);
+        }else if(!matchedRendezvousMetadata){
+            NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                                 code:QredoErrorCodeRendezvousNotFound
+                                             userInfo:@{ NSLocalizedDescriptionKey : @"Rendezvous was not found in vault" }];
             completionHandler(nil,error);
         }else{
             [self fetchRendezvousWithMetadata:matchedRendezvousMetadata completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {

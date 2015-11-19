@@ -101,7 +101,7 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 
 
 
-/** Getch previously created rendezvous that has been stored in the vault by tag */
+/** Fetch previously created rendezvous that has been stored in the vault by tag */
 -(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 /** Enumerates through the rendezvous that have been stored in the Vault
