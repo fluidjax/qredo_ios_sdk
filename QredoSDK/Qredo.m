@@ -45,7 +45,7 @@ static NSString *const QredoKeychainOperatorName = @"Qredo Mock Operator";
 static NSString *const QredoKeychainOperatorAccountId = @"1234567890";
 static NSString *const QredoKeychainPassword = @"Password123";
 
-
+NSString *systemVaultKeychainArchiveIdentifier;
 
 @implementation QredoClientOptions
 {
@@ -1082,7 +1082,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     _keychain = keychain;
 }
 
-NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
+
 
 - (QredoKeychain *)loadSystemVaultKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
                                                          error:(NSError **)error
