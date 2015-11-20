@@ -19,7 +19,7 @@
 #import "NSData+ParseHex.h"
 
 #import "QredoCertificate.h"
-#import "QredoUserInitialization.h"
+#import "QredoUserCredentials.h"
 
 // TEMP
 #import "QredoConversationProtocol.h"
@@ -252,7 +252,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     QredoVault *_defaultVault;
     QredoServiceInvoker *_serviceInvoker;
     QredoKeychain *_keychain;
-    QredoUserInitialization *_userInitialization;
+    QredoUserCredentials *_userCredentials;
     QredoAppCredentials *_appCredentials;
 
     dispatch_queue_t _rendezvousQueue;
@@ -315,14 +315,14 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     if (!appID)appID = @"com.qredo.undefinedAppId";
     
     
-    QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] initWithAppId:appID
+    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appID
                                                                                           userId:userId
                                                                                       userSecure:userSecret];
     
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appID
                                                                              appSecret:[NSData dataWithHexString:appSecret]];
     
-    systemVaultKeychainArchiveIdentifier = [userInitialization createSystemVaultIdentifier];
+    systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
     NSLog(@"systemVaultKeychainArchiveIdentifier %@",systemVaultKeychainArchiveIdentifier);
     
     NSURL *serviceURL = nil;
@@ -361,7 +361,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     if (options.resetData) {
         
-        [client createSystemVaultWithUserInitialization:userInitialization completionHandler:^(NSError *error) {
+        [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
             if (!error) {
                 [client saveStateWithError:&error];
             }
@@ -380,7 +380,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
             
             // TODO: [GR]: Show new device screen insted of creating the vault straight away.
             error = nil;
-            [client createSystemVaultWithUserInitialization:userInitialization completionHandler:^(NSError *error) {
+            [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
                 if (!error) {
                     [client saveStateWithError:&error];
                 }
@@ -413,7 +413,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                           style:UIAlertActionStyleDestructive
                                         handler:^(UIAlertAction *action)
                   {
-                      [client createSystemVaultWithUserInitialization:userInitialization completionHandler:^(NSError *error) {
+                      [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
                           if (!error) {
                               [client saveStateWithError:&error];
                           }
@@ -1050,10 +1050,10 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     return [self deleteDefaultVaultKeychainWithError:error];
 }
 
-- (void)createSystemVaultWithUserInitialization:(QredoUserInitialization*)userInitialization completionHandler:(void(^)(NSError *error))completionHandler{
+- (void)createSystemVaultWithUserCredentials:(QredoUserCredentials*)userCredentials completionHandler:(void(^)(NSError *error))completionHandler{
     [self deleteCurrentDataWithError:nil];
 
-    [self createDefaultKeychain:userInitialization];
+    [self createDefaultKeychain:userCredentials];
     [self initializeVaults];
 
     [self addDeviceToVaultWithCompletionHandler:completionHandler];
@@ -1069,7 +1069,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     return [QredoKeychainArchivers defaultQredoKeychainArchiver];
 }
 
-- (void)createDefaultKeychain:(QredoUserInitialization*)userInitialization
+- (void)createDefaultKeychain:(QredoUserCredentials*)userCredentials
 {
     QLFOperatorInfo *operatorInfo
     = [QLFOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
@@ -1079,7 +1079,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                             nextServiceAccess:[NSSet set]];
     
     QredoKeychain *keychain = [[QredoKeychain alloc] initWithOperatorInfo:operatorInfo];
-    [keychain generateNewKeys:userInitialization];
+    [keychain generateNewKeys:userCredentials];
 
     _keychain = keychain;
 }

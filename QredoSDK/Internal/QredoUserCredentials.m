@@ -1,12 +1,12 @@
 //
-//  QredoUserInitialization.m
+//  QredoUserCredentials.m
 //  QredoSDK
 //
 //  Created by Christopher Morris on 10/11/2015.
 //
 //
 
-#import "QredoUserInitialization.h"
+#import "QredoUserCredentials.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoCrypto.h"
 
@@ -18,14 +18,14 @@
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES 32
 
 
-@interface QredoUserInitialization ()
+@interface QredoUserCredentials ()
 @property (strong) NSString *appId;
 @property (strong) NSString *userId;
 @property (strong) NSString *userSecure;
 @end
 
 
-@implementation QredoUserInitialization
+@implementation QredoUserCredentials
 
 
 -(instancetype)initWithAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure{

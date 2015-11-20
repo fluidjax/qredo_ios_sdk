@@ -1,5 +1,5 @@
 //
-//  QredoUserInitializationTests.m
+//  QredoUserCredentials.m
 //  QredoSDK
 //
 //  Created by Christopher Morris on 13/11/2015.
@@ -7,14 +7,14 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "QredoUserInitialization.h"
+#import "QredoUserCredentials.h"
 #import "NSData+ParseHex.h"
 
-@interface QredoUserInitializationTests : XCTestCase
+@interface QredoUserCredentialsTests : XCTestCase
 
 @end
 
-@implementation QredoUserInitializationTests
+@implementation QredoUserCredentialsTests
 
 - (void)setUp {
     [super setUp];
@@ -30,7 +30,7 @@
     NSString *TEST_USER_ID          = @"TEST-USER-ID";
 
     
-    QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] initWithAppId:applicationId
+    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:applicationId
                                                                                           userId:TEST_USER_ID
                                                                                       userSecure:TEST_USER_SECRET];
 
@@ -45,8 +45,8 @@
                                "b4ec0fc04cf7a2f6d1b7d266f6d434a1cf27f41f7238711136d0d5d6ba67c7158e0a7a83a9b556a85"];
     
 
-    NSData *userUnlockKey = [userInitialization userUnlockKey];
-    NSData *masterKey = [userInitialization masterKey:userUnlockKey];
+    NSData *userUnlockKey = [userCredentials userUnlockKey];
+    NSData *masterKey = [userCredentials masterKey:userUnlockKey];
     
     XCTAssertTrue([userUnlockKey isEqualToData:TEST_UNLOCK_KEY], @"User Unlock Key not correctly derived");
     XCTAssertTrue([masterKey isEqualToData:expectedMaster], @"Master Key not correctly derived");
@@ -56,7 +56,7 @@
 
 
 -(void)testGetMasterFromUserUnlock{
-    QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] init];
+    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] init];
     
     
     NSData *userUnlockKey = [NSData dataWithHexString:@"d54dce9e8746cb954b529134db880355882c4cc8791550673611d857c5c98184"];
@@ -68,7 +68,7 @@
                                "86159a7c547ecb42e43d74657b39c56c7457d90c901b9397ead6b4c04dca2500fb9ebb8aa78fcdd54e17b207c062fa2da"
                                "b4ec0fc04cf7a2f6d1b7d266f6d434a1cf27f41f7238711136d0d5d6ba67c7158e0a7a83a9b556a85"];
     
-    NSData *masterKey = [userInitialization masterKey:userUnlockKey];
+    NSData *masterKey = [userCredentials masterKey:userUnlockKey];
     XCTAssertTrue([masterKey isEqualToData:expectedMaster], @"Master Key not correctly derived using HKDF from unlockKey");
     
 }

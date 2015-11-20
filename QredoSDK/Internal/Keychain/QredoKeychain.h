@@ -6,7 +6,7 @@
 #import "QredoClient.h"
 #import "CryptoImpl.h"
 #import "QredoVaultCrypto.h"
-#import "QredoUserInitialization.h"
+#import "QredoUserCredentials.h"
 
 
 NS_ENUM(NSInteger, QredoCredentialType) {
@@ -32,7 +32,7 @@ NS_ENUM(NSInteger, QredoCredentialType) {
 - (instancetype)initWithData:(NSData *)serializedData;
 
 - (NSData *)data;
-- (void)generateNewKeys:(QredoUserInitialization*)userInitialization;
+- (void)generateNewKeys:(QredoUserCredentials*)userCredentials;
 
 
 
