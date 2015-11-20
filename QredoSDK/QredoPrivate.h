@@ -24,7 +24,7 @@ extern NSString *const QredoVaultItemSummaryKeyDeviceName;
 - (void)createSystemVaultWithUserInitialization:(QredoUserInitialization*)userInitialization  completionHandler:(void(^)(NSError *error))completionHandler;
 - (BOOL)saveStateWithError:(NSError **)error;
 
-+ (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error;
+//+ (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error;
 
 - (BOOL)deleteCurrentDataWithError:(NSError **)error;
 @end

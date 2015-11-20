@@ -63,10 +63,6 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
               completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
 
-
-
-+ (void)openSettings;
-
 - (void)closeSession;
 - (BOOL)isClosed;
 

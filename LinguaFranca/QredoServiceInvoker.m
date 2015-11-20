@@ -31,17 +31,20 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 @property BOOL terminated;
 @property QredoTransport *transport;
 @property dispatch_queue_t callbacksDictionaryQueue;
+@property QredoAppCredentials *appCredentials;
 
 @end
 
 @implementation QredoServiceInvoker
 
 
-+ (instancetype)serviceInvokerWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate {
-    return [[self alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate];
++ (instancetype)serviceInvokerWithServiceURL:(NSURL *)serviceURL
+                           pinnedCertificate:(QredoCertificate *)certificate
+                              appCredentials:(QredoAppCredentials*)appCredentials{
+    return [[self alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate appCredentials:appCredentials];
 }
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate {
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials*)appCredentials{
     
     self = [super init];
     
@@ -55,6 +58,8 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         _callbacksDictionaryQueue = dispatch_queue_create("com.qredo.serviceInvoker.callbacks", DISPATCH_QUEUE_CONCURRENT);
 
         _transport = [QredoTransport transportForServiceURL:serviceURL pinnedCertificate:certificate];
+        _appCredentials = appCredentials;
+        
         
         // TODO: DH - if we ever start returning the same transport instance for a specific URL and there are simultaneous QredoServicInvoker instances talking to the same service URL, there may be problems where we overwrite another instance's delegate.
         _transport.responseDelegate = self;
@@ -135,7 +140,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                                                                      serviceName:serviceName
                                                                    operationName:operationName];
             [wireFormatWriter writeInterchangeHeader:interchangeHeader];
-                     [wireFormatWriter writeInvocationHeader:[QredoAppCredentials empty]];
+                     [wireFormatWriter writeInvocationHeader:self.appCredentials];
                     requestWriter(wireFormatWriter);
                 [wireFormatWriter writeEnd];
             [wireFormatWriter writeEnd];

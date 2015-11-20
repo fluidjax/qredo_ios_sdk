@@ -120,7 +120,7 @@
     clientOptions.transportType = self.transportType;
     clientOptions.resetData = YES;
    
-    NSString  *randomPass = [self randomStringWithLength:32];
+ //   NSString  *randomPass = [self randomStringWithLength:32];
     
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
