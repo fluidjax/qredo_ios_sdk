@@ -72,12 +72,10 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }
 }
 
-- (QredoClientOptions *)clientOptionsWithResetData:(BOOL)resetData
+- (QredoClientOptions *)clientOptions:(BOOL)resetData
 {
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
-    clientOptions.resetData = resetData;
-    
     return clientOptions;
 }
 
@@ -88,7 +86,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"tutorialuser@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -163,7 +161,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
@@ -235,7 +233,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
@@ -444,7 +442,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);
@@ -523,7 +521,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);

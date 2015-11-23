@@ -280,12 +280,10 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     XCTAssertNotNil(self.publicKeyCertificateChainPem);
 }
 
-- (QredoClientOptions *)clientOptionsWithResetData:(BOOL)resetData
+- (QredoClientOptions *)clientOptions:(BOOL)resetData
 {
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
-    clientOptions.resetData = resetData;
-    
     return clientOptions;
 }
 
@@ -296,7 +294,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"tutorialuser@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -323,7 +321,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -687,7 +685,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:nil
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -770,7 +768,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -872,7 +870,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -1284,7 +1282,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"anotherClient@test.com"    //user email or username etc
                               userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);

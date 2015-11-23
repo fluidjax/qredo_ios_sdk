@@ -48,6 +48,11 @@
                BlueprintName = "QredoSDKTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ConversationMQTTTests/testConversationMultiple">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">

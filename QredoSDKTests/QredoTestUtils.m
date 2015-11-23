@@ -26,7 +26,6 @@ NSTimeInterval qtu_defaultTimeout = 30.0; // TODO: DH - Investigating whether in
 + (instancetype)qtu_clientOptionsWithResetData:(BOOL)resetData
 {
     QredoClientOptions* clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-    clientOptions.resetData = resetData;
     return clientOptions;
 }
 

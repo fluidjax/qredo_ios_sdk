@@ -118,15 +118,14 @@
     
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
-    clientOptions.resetData = YES;
-   
+  
  //   NSString  *randomPass = [self randomStringWithLength:32];
     
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"tutorialuser@test.com"    //user email or username etc
                               userSecret:@"testUserSecret"                 //user entered password
-                                 options:nil
+                                 options:clientOptions
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -182,7 +181,7 @@
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"tutorialuser@test.com"    //user email or username etc
-                              userSecret:@"!%usertutorialPassword"   //user entered password
+                              userSecret:@"testUserSecret"   //user entered password
                                  options:clientOptions
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
