@@ -75,8 +75,28 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  @param block is called for every received message. If the block sets `stop` to `NO`, then it terminates the enumeration
  @param completionHandler is called when an error is occured during communication with the server
  */
-- (void)enumerateReceivedMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)enumerateReceivedMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                                      since:(QredoConversationHighWatermark*)sinceWatermark
+                          completionHandler:(void(^)(NSError *error))completionHandler;
 
-- (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block since:(QredoConversationHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                                  since:(QredoConversationHighWatermark*)sinceWatermark
+                      completionHandler:(void(^)(NSError *error))completionHandler;
+
+
+/**
+ @param Enumerating all sent/received messages automatically retieves all the pages of data
+ @param since he supplied highwater mark.
+ */
+
+- (void)enumerateAllSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                                     since:(QredoConversationHighWatermark*)sinceWatermark
+                         completionHandler:(void(^)(NSError *error))completionHandler;
+
+- (void)enumerateAllReceivedMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                                         since:(QredoConversationHighWatermark*)sinceWatermark
+                             completionHandler:(void(^)(NSError *error))completionHandler;
+
+
 
 @end

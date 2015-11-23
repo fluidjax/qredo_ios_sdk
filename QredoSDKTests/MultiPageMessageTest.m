@@ -9,11 +9,18 @@
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 
-@interface MultiPageMessageTest : XCTestCase
+@interface MultiPageMessageTest : XCTestCase <QredoRendezvousObserver>
 
 @end
 
 @implementation MultiPageMessageTest
+
+QredoConversation *incomingConversation;
+
+
+-(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation{
+    incomingConversation = conversation;
+}
 
 - (void)setUp {
     [super setUp];
@@ -44,6 +51,8 @@
     
     __block QredoClient *client1;
     __block QredoClient *client2;
+    static int MAXMESSAGES = 60;
+    
     
     //create client1
     __block XCTestExpectation *client1Expectation = [self expectationWithDescription:@"Create Client 1"];
@@ -101,6 +110,7 @@
         XCTAssertNotNil(rendezvous);
         testRendezvous = rendezvous;
         [createRendezvous1Expectation fulfill];
+        [testRendezvous addRendezvousObserver:self];
     }];
     
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
@@ -125,9 +135,9 @@
     
     
     
-    //static int MAXMESSAGES = 60;
     
-    for (int i=0;i<4;i++){
+    
+    for (int i=0;i<MAXMESSAGES;i++){
         NSString *message = [[NSString alloc] initWithFormat:@"test message %i",i];
         NSDictionary *messageSummaryValues = @{@"data": @"data"};
         
@@ -153,28 +163,87 @@
     
     
     
-    //retrieve messages to test paging
+    //Enumerate the message using the all in one (not paged method)
     __block XCTestExpectation *retrievePosts = [self expectationWithDescription:@"retrievePosts"];
+    __block int messageCount=0;
     
-    __block int count=0;
-    
-    [testConversation enumerateSentMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
-        count++;
+    [testConversation enumerateAllSentMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
         NSString *messageText = [[NSString alloc] initWithData: message.value encoding: NSUTF8StringEncoding];
-        NSLog(@"%i - %@",count, messageText);
+        NSLog(@"%@", messageText);
+        messageCount++;
     } since:nil completionHandler:^(NSError *error) {
+        NSLog(@"Retrieved all the messages");
         [retrievePosts fulfill];
     }];
-
+     
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
         retrievePosts = nil;
     }];
-
-    XCTAssertTrue(count==20,"Failure to retieve 20 messages");
     
+    XCTAssertTrue(messageCount==MAXMESSAGES,"Failure to retieve messages using Non Paged method - enumerateAllSentMessagesUsingBlock");
+    
+    
+    
+    //Enumerate the message using the paged methods
+    __block int count=0;
+    __block QredoConversationHighWatermark *highWater = QredoConversationHighWatermarkOrigin;
+    __block int pageSize=0;
+    int lastCount=0;
+    do{
+        lastCount=count;
+         __block XCTestExpectation *retrievePosts = [self expectationWithDescription:@"retrievePosts"];
+        
+        [testConversation enumerateSentMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
+                        count++;
+                        if (count>=pageSize)pageSize=count;
+                        NSString *messageText = [[NSString alloc] initWithData: message.value encoding: NSUTF8StringEncoding];
+                        NSLog(@"%i - %@",count, messageText);
+                        highWater = message.highWatermark;
+                    }
+                    since:highWater
+                    completionHandler:^(NSError *error) {
+                                    [retrievePosts fulfill];
+                    }];
+
+        [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+            retrievePosts = nil;
+        }];
+    }while (count!=lastCount);
+    XCTAssertTrue(count==MAXMESSAGES,"Failure to retieve messages using Paged method - enumerateSentMessagesUsingBlock");
+    
+    
+
+    //Enumerate the received message using the all in one (not paged method)
+    XCTAssertNotNil(incomingConversation,@"Primary client has no incoming conversation from client2's rendezvous publish");
+    
+    __block XCTestExpectation *recievedMessage = [self expectationWithDescription:@"recievedMessage"];
+    __block int messageCountReceived=0;
+    
+    [incomingConversation enumerateAllReceivedMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
+        NSString *messageText = [[NSString alloc] initWithData: message.value encoding: NSUTF8StringEncoding];
+        NSLog(@"%@", messageText);
+        messageCountReceived++;
+    } since:nil completionHandler:^(NSError *error) {
+        NSLog(@"Retrieved all the messages");
+        [recievedMessage fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        recievedMessage = nil;
+    }];
+    
+    XCTAssertTrue(messageCountReceived==MAXMESSAGES,"Failure to retieve recieved messages  using - enumerateAllSentMessagesUsingBlock");
     
     
 }
+
+
+
+
+
+
+
+
 
 - (void)testPerformanceExample {
     // This is an example of a performance test case.

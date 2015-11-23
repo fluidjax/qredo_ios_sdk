@@ -949,6 +949,31 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     }];
 }
 
+
+
+- (void)enumerateAllReceivedMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                                     since:(QredoConversationHighWatermark*)sinceWatermark
+                         completionHandler:(void(^)(NSError *error))completionHandler{
+    __block int messageCount =0;
+    __block QredoConversationHighWatermark *highWaterMark;
+    
+    [self enumerateReceivedMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
+        messageCount++;
+        block(message,stop);
+        highWaterMark = message.highWatermark;
+    } since:sinceWatermark completionHandler:^(NSError *error) {
+        if (messageCount>0){
+            //maybe some more messages - recurse
+            [self enumerateReceivedMessagesUsingBlock:block
+                                               since:highWaterMark
+                                   completionHandler:completionHandler];
+        }else{
+            completionHandler(error);
+        }
+    }];
+}
+
+
 - (void)enumerateReceivedMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
                               since:(QredoConversationHighWatermark*)sinceWatermark
                   completionHandler:(void(^)(NSError *error))completionHandler
@@ -973,6 +998,34 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 }
 
 
+
+
+- (void)enumerateAllSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
+                                     since:(QredoConversationHighWatermark*)sinceWatermark
+                         completionHandler:(void(^)(NSError *error))completionHandler{
+    
+        __block int messageCount =0;
+        __block QredoConversationHighWatermark *highWaterMark;
+    
+        [self enumerateSentMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
+            messageCount++;
+            block(message,stop);
+            highWaterMark = message.highWatermark;
+        } since:sinceWatermark completionHandler:^(NSError *error) {
+            if (messageCount>0){
+                //maybe some more messages - recurse
+                [self enumerateAllSentMessagesUsingBlock:block
+                                                   since:highWaterMark
+                                       completionHandler:completionHandler];
+            }else{
+                completionHandler(error);
+            }
+        }];
+}
+
+
+
+
 - (void)enumerateSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
                                   since:(QredoConversationHighWatermark*)sinceWatermark
                       completionHandler:(void(^)(NSError *error))completionHandler
@@ -982,8 +1035,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                excludeControlMessages:YES
                                 since:sinceWatermark
                     completionHandler:completionHandler
-                 highWatermarkHandler:nil
-];
+                 highWatermarkHandler:nil];
 }
 
 - (QredoVault*)store
