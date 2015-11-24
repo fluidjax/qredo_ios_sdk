@@ -9,7 +9,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "NSData+QredoRandomData.h"
 #import "QredoVaultCrypto.h"
-
+#import "QredoUserCredentials.h"
 
 @interface QredoKeychain ()
 {

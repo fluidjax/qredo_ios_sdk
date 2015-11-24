@@ -737,6 +737,37 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 }
 
 
+- (void)enumerateAllRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block
+                   completionHandler:(void(^)(NSError *error))completionHandler
+{
+    QredoVault *vault = [self systemVault];
+    
+    [vault enumerateAllVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+        if ([vaultItemMetadata.dataType isEqualToString:kQredoRendezvousVaultItemType]) {
+            
+            NSString *tag = [vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelTag];
+            QredoRendezvousAuthenticationType authenticationType  = [[vaultItemMetadata.summaryValues
+                                                                      objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
+            
+            QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor
+                                                                                                    vault:vault];
+            
+            QredoRendezvousMetadata *metadata = [[QredoRendezvousMetadata alloc] initWithTag:tag
+                                        authenticationType:authenticationType
+                                             rendezvousRef:rendezvousRef];
+            
+            BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
+            block(metadata, &stopObjectEnumeration);
+            *stopVaultEnumeration = stopObjectEnumeration;
+        }
+    } completionHandler:^(NSError *error) {
+        completionHandler(error);
+    }];
+}
+
+
+
+
 - (void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block
                    completionHandler:(void(^)(NSError *error))completionHandler
 {
@@ -842,8 +873,33 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 }
 
 
+- (void)enumerateAllConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
+                      completionHandler:(void (^)(NSError *error))completionHandler
+{
+    QredoVault *vault = [self systemVault];
+    
+    [vault enumerateAllVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+        if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
+            QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
+            // TODO: DH - populate metadata.rendezvousMetadata
+            metadata.conversationId = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelId];
+            metadata.amRendezvousOwner = [[vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelAmOwner] boolValue];
+            metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];
+            metadata.rendezvousTag = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelTag];
+            metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor vault:vault];
+            
+            BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
+            block(metadata, &stopObjectEnumeration);
+            *stopVaultEnumeration = stopObjectEnumeration;
+        }
+    } completionHandler:^(NSError *error) {
+        completionHandler(error);
+    }];
+}
+
+
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
-                      completionHandler:(void (^)(NSError *))completionHandler
+                      completionHandler:(void (^)(NSError *error))completionHandler
 {
     QredoVault *vault = [self systemVault];
 

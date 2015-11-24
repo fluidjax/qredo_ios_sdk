@@ -287,13 +287,25 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     return clientOptions;
 }
 
+-(NSString *)randomStringWithLength:(int)len {
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
+    for (int i=0; i<len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((int)[letters length])]];
+    }
+    return randomString;
+}
+
+
 - (void)authoriseClient
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
+     NSString  *randomPass = [self randomStringWithLength:32];
+    
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"tutorialuser@test.com"    //user email or username etc
-                              userSecret:@"!%usertutorialPassword"   //user entered password
+                              userSecret:randomPass   //user entered password
                                  options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
@@ -1887,6 +1899,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     return rendezvousRef;
     
 }
+
 
 
 

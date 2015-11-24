@@ -10,6 +10,9 @@
 @property (nonatomic) QredoClientOptionsTransportType transportType;
 
 - (void)authoriseClient;
+
+
+
 - (void)testCreateRendezvousAndGetResponses;
 
 - (void)testCreateAndFetchAnonymousRendezvous;

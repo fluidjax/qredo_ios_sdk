@@ -33,16 +33,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "66F7752B1BD6538D00F01A2C"
-               BuildableName = "LinguaFrancaTests.xctest"
-               BlueprintName = "LinguaFrancaTests"
-               ReferencedContainer = "container:QredoSDK.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
                BuildableName = "QredoSDKTests.xctest"
                BlueprintName = "QredoSDKTests"
@@ -50,22 +40,559 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "ConversationMQTTTests/testConversationMultiple">
+                  Identifier = "Base58Tests">
                </Test>
-            </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "66605C361BD55A9F00EC8D6C"
-               BuildableName = "QredoCryptoTests.xctest"
-               BlueprintName = "QredoCryptoTests"
-               ReferencedContainer = "container:QredoSDK.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
                <Test
-                  Identifier = "QredoCryptoTests/testGetKeyDataForIdentifier_ManyGenerates">
+                  Identifier = "BaseConversation">
+               </Test>
+               <Test
+                  Identifier = "ControlMessagesTests/testDeleteControlMessageOnCreatorSide()">
+               </Test>
+               <Test
+                  Identifier = "ControlMessagesTests/testDeleteControlMessageOnResponderSide()">
+               </Test>
+               <Test
+                  Identifier = "ControlMessagesTests/testJoinedControlMessage()">
+               </Test>
+               <Test
+                  Identifier = "ConversationCryptoTests/testEncryptDecrypt">
+               </Test>
+               <Test
+                  Identifier = "ConversationCryptoTests/testGenerateTestVectors">
+               </Test>
+               <Test
+                  Identifier = "ConversationCryptoTests/testVectors">
+               </Test>
+               <Test
+                  Identifier = "ConversationMQTTTests/testConversationCreation">
+               </Test>
+               <Test
+                  Identifier = "ConversationMQTTTests/testMetadataOfEphemeralConversation">
+               </Test>
+               <Test
+                  Identifier = "ConversationMQTTTests/testMetadataOfPersistentConversation">
+               </Test>
+               <Test
+                  Identifier = "ConversationMQTTTests/testRespondingToConversation">
+               </Test>
+               <Test
+                  Identifier = "ConversationMessageStoreTests">
+               </Test>
+               <Test
+                  Identifier = "ConversationProtocolFSMTest">
+               </Test>
+               <Test
+                  Identifier = "ConversationProtocolTest">
+               </Test>
+               <Test
+                  Identifier = "ConversationTests/testConversationCreation">
+               </Test>
+               <Test
+                  Identifier = "ConversationTests/testMetadataOfEphemeralConversation">
+               </Test>
+               <Test
+                  Identifier = "ConversationTests/testMetadataOfPersistentConversation">
+               </Test>
+               <Test
+                  Identifier = "ConversationTests/testRespondingToConversation">
+               </Test>
+               <Test
+                  Identifier = "ConversationWebSocketTests/testConversationCreation">
+               </Test>
+               <Test
+                  Identifier = "ConversationWebSocketTests/testMetadataOfEphemeralConversation">
+               </Test>
+               <Test
+                  Identifier = "ConversationWebSocketTests/testMetadataOfPersistentConversation">
+               </Test>
+               <Test
+                  Identifier = "ConversationWebSocketTests/testRespondingToConversation">
+               </Test>
+               <Test
+                  Identifier = "HighwatermarksTests">
+               </Test>
+               <Test
+                  Identifier = "MultiPageMessageTest">
+               </Test>
+               <Test
+                  Identifier = "OwnershipSignatureTests/testDeleteOperation">
+               </Test>
+               <Test
+                  Identifier = "OwnershipSignatureTests/testGetOperation">
+               </Test>
+               <Test
+                  Identifier = "OwnershipSignatureTests/testListOperation">
+               </Test>
+               <Test
+                  Identifier = "QredoAuthenticatedRendezvousTagTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousAnonymousHelperTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousCryptoTest">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testActivateExpiredRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testActivateExpiredRendezvousAndFetchFromNewRef">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testActivateInvalidDuration">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testActivateNilRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testActivateUnexpiredRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testActivateUnexpiredRendezvousNilCompletionHandler">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testActivateUnknownRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAnonymousRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateRendezvousAndGetResponses">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateRendezvousMultiple">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testDeactivateAndRespondToRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testDeactivateExpiredRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testDeactivateNilRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testDeactivateRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testDeactivateRendezvousNilCompletionHandler">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testDeactivateUnknownRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa2048PemHelperTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa4096PemHelperTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsaPemCommonHelperTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testActivateExpiredRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testActivateExpiredRendezvousAndFetchFromNewRef">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testActivateInvalidDuration">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testActivateNilRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testActivateUnexpiredRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testActivateUnexpiredRendezvousNilCompletionHandler">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testActivateUnknownRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAnonymousRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateRendezvousAndGetResponses">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testDeactivateAndRespondToRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testDeactivateExpiredRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testDeactivateNilRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testDeactivateRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testDeactivateRendezvousNilCompletionHandler">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testDeactivateUnknownRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAnonymousRendezvous">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateRendezvousAndGetResponses">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_ClientCertRevoked">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_ClientCertificateKeyTooShort">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_EmptyTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_ExternalKeysMissingSigningHandler">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_IntermediateCertRevoked">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_InternalKeys">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_InvalidPublicKeyCertChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_MissingAtFromStartOfAuthenticationTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_MissingCrlForIntermediate">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_MissingCrlForRoot">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_MissingCrypto">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_MultipleAtsInTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_NilTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_NoCrls">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_TooShortTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_UntrustedPublicKeyCertChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_UntrustedPublicKeyCertChainWithRootInChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_EmptyTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_InvalidPublicKeyCertChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_MissingAtFromStartOfAuthenticationTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_MissingCrypto">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_MultipleAtsInTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilTag">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_TooShortTag">
+               </Test>
+               <Test
+                  Identifier = "QredoSExpressionTests/testReadAhead">
+               </Test>
+               <Test
+                  Identifier = "QredoSExpressionTests/testReadWriteComplexStructure">
+               </Test>
+               <Test
+                  Identifier = "QredoSExpressionTests/testReadWriteEmptyList">
+               </Test>
+               <Test
+                  Identifier = "QredoSExpressionTests/testReadWriteListOfSingleAtom">
+               </Test>
+               <Test
+                  Identifier = "QredoSExpressionTests/testReadWriteMultipleAtomList">
+               </Test>
+               <Test
+                  Identifier = "QredoUserCredentialsTests">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testEnumeration">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testEnumerationAbortsOnStop">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testGettingItems">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testGettingItemsFromCache">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testListener">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testMultipleListeners">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testMultipleRemovingListenerDurringNotification">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testPersistanceVaultId">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testPutItem">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testPutItemMultiple">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testRemovingListenerDurringNotification">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testRemovingNotObservingListener">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests/testVaultItemMetadataAndMutableMetadata">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testEnumeration">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testEnumerationAbortsOnStop">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testEnumerationReturnsCreatedItem">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testGettingItems">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testGettingItemsFromCache">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testListener">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testMultipleEnumerationReturnsCreatedItem">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testMultipleListeners">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testMultipleRemovingListenerDurringNotification">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testPersistanceVaultId">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testPutDelete">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testPutItem">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testPutItemMultiple">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testRemovingListenerDurringNotification">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testRemovingNotObservingListener">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testVaultItemMetadataAndMutableMetadata">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultUpdateWebSocketTests/testGettingItems">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testEnumeration">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testEnumerationAbortsOnStop">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testGettingItems">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testGettingItemsFromCache">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testListener">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testMultipleListeners">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testMultipleRemovingListenerDurringNotification">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testPersistanceVaultId">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testPutItem">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testPutItemMultiple">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testRemovingListenerDurringNotification">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testRemovingNotObservingListener">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testVaultItemMetadataAndMutableMetadata">
+               </Test>
+               <Test
+                  Identifier = "RendezvousEd25519HelperTests">
+               </Test>
+               <Test
+                  Identifier = "RendezvousListenerTests">
+               </Test>
+               <Test
+                  Identifier = "VaultCryptoTests">
                </Test>
             </SkippedTests>
          </TestableReference>

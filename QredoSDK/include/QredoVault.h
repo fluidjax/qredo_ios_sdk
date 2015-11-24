@@ -111,10 +111,27 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
  @discussion The method name is aligned with `[NSArray enumerateObjectsUsingBlock:]`, however, in our case this method may go to server to request the items
  */
-- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                    completionHandler:(void(^)(NSError *error))completionHandler;
 
 /** Returns meta data of items starting from the specific high watermark. See `enumerateVaultItemsUsingBlock:failureHandler:` for more details. */
-- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block since:(QredoVaultHighWatermark*)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                since:(QredoVaultHighWatermark*)sinceWatermark
+                    completionHandler:(void(^)(NSError *error))completionHandler;
+
+
+/** Same as enumerateVaultItemsUsingBlock except will return all values and not pages of values
+  */
+
+- (void)enumerateAllVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                    completionHandler:(void(^)(NSError *error))completionHandler;
+
+- (void)enumerateAllVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                   since:(QredoVaultHighWatermark*)sinceWatermark
+                       completionHandler:(void(^)(NSError *error))completionHandler;
+
+
+
 
 /** Deletes a vault item and returns it's metadata */
 - (void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;

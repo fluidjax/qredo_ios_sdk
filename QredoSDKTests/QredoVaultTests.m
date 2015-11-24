@@ -119,12 +119,12 @@
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
   
- //   NSString  *randomPass = [self randomStringWithLength:32];
+    NSString  *randomPass = [self randomStringWithLength:32];
     
     
     [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
                                   userId:@"tutorialuser@test.com"    //user email or username etc
-                              userSecret:@"testUserSecret"                 //user entered password
+                              userSecret:randomPass                 //user entered password
                                  options:clientOptions
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
@@ -722,6 +722,14 @@
     XCTAssertNil(error);
 }
 
+
+-(void)testMultipleEnumerationReturnsCreatedItem{
+    for (int i=0;i<100;i++){
+        NSLog(@"Iteration %i",i);
+        [self testEnumerationReturnsCreatedItem];
+    }
+}
+
 - (void)testEnumerationReturnsCreatedItem
 {
     XCTAssertNotNil(client);
@@ -778,11 +786,14 @@
     __block int count = 0;
     __block BOOL itemFound = NO;
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+
+    
+    [vault enumerateAllVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
         XCTAssertNotNil(vaultItemMetadata);
         
+        NSLog(@"Found an item %i %@ - %@",count,vaultItemMetadata.summaryValues[@"key1"],item1SummaryValues[@"key1"] );
         if ([vaultItemMetadata.summaryValues[@"key1"] isEqual:item1SummaryValues[@"key1"]] &&
             [vaultItemMetadata.summaryValues[@"key2"] isEqual:item1SummaryValues[@"key2"]] &&
             [vaultItemMetadata.summaryValues[@"key3"] isEqual:item1SummaryValues[@"key3"]])

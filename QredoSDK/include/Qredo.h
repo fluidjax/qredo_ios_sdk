@@ -104,6 +104,13 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
  @discussion assign YES to *stop to break the enumeration */
 - (void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
 
+
+/** Enumerates through the rendezvous that have been stored in the Vault
+ @discussion assign YES to *stop to break the enumeration */
+- (void)enumerateAllRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
+
+
+
 /** Fetches previously created rendezvous that has been stored in the vault */
 - (void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
@@ -123,6 +130,7 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 /** Enumerates through the conversations that have been stored in the Vault
  @discussion assign YES to *stop to break the enumeration */
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
+- (void)enumerateAllConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block completionHandler:(void (^)(NSError *error))completionHandler;
 
 - (void)fetchConversationWithRef:(QredoConversationRef *)conversationRef completionHandler:(void(^)(QredoConversation* conversation, NSError *error))completionHandler;
 

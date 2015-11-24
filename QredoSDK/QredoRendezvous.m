@@ -639,6 +639,83 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 }
 
+
+- (void)enumerateAllConversationsWithBlock:(void(^)(QredoConversation *conversation, BOOL *stop))block
+                      completionHandler:(void (^)(NSError *))completionHandler
+{
+    [self enumerateAllConversationsWithBlock:block since:QredoRendezvousHighWatermarkOrigin completionHandler:completionHandler];
+}
+
+- (void)enumerateAllConversationsWithBlock:(void(^)(QredoConversation *conversation, BOOL *stop))block
+                                  since:(QredoRendezvousHighWatermark)sinceWatermark
+                      completionHandler:(void(^)(NSError *error))completionHandler
+{
+    [self enumerateAllConversationsWithBlock:block completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:nil];
+}
+
+- (void)enumerateAllConversationsWithBlock:(void(^)(QredoConversation *conversation, BOOL *stop))block
+                      completionHandler:(void(^)(NSError *error))completionHandler
+                                  since:(QredoRendezvousHighWatermark)sinceWatermark
+                   highWatermarkHandler:(void(^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler{
+    
+    [self enumerateAllResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop){
+         block(conversation, stop);
+     }              completionHandler:completionHandler
+                                since:sinceWatermark
+                 highWatermarkHandler:highWatermarkHandler];
+    
+    
+    
+}
+
+
+- (void)enumerateAllResponsesWithBlock:(void(^)(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop))block
+                  completionHandler:(void(^)(NSError *error))completionHandler
+                              since:(QredoRendezvousHighWatermark)sinceWatermark
+               highWatermarkHandler:(void(^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler
+{
+    NSError *error = nil;
+    
+    NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:nil
+                                                        marshaller:^(id element, QredoWireFormatWriter *writer)
+                           {
+                               [writer writeQUID:_hashedTag];
+                               [writer writeInt64:@(sinceWatermark)];
+                           }
+                                                     includeHeader:NO];
+    
+    QLFOwnershipSignature *ownershipSignature =
+    [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
+                                          operationType:[QLFOperationType operationList]
+                                         marshalledData:payloadData
+                                                  error:&error];
+    
+    if (error) {
+        completionHandler(error);
+        return;
+    }
+    
+    [_rendezvous getResponsesWithHashedTag:_hashedTag
+                                     after:sinceWatermark
+                                 signature:ownershipSignature
+                         completionHandler:^(QLFRendezvousResponsesResult *result, NSError *error)
+     {
+         if (error) {
+             completionHandler(error);
+             return ;
+         }
+         
+         [self processRendezvousResponseResult:result
+                                 responseIndex:0
+                       rendezvousResponseBlock:block
+                          highWatermarkHandler:highWatermarkHandler
+                             completionHandler:completionHandler];
+         
+     }];
+    
+}
+
+
 - (void)processRendezvousResponseResult:(QLFRendezvousResponsesResult *)result
                           responseIndex:(NSUInteger)responseIndex
                 rendezvousResponseBlock:(void(^)(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop))rendezvousResponseBlock

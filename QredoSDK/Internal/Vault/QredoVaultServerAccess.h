@@ -38,4 +38,11 @@
                  consolidatingResults:(BOOL)shouldConsolidateResults;
 
 
+- (void)enumerateAllVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                    completionHandler:(void(^)(NSError *error))completionHandler
+                     watermarkHandler:(void(^)(QredoVaultHighWatermark*))watermarkHandler
+                                since:(QredoVaultHighWatermark*)sinceWatermark
+                    consolidatingResults:(BOOL)shouldConsolidateResults;
+
+
 @end
