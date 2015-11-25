@@ -44,9 +44,9 @@
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
-                              userSecret:@"!%usertutorialPassword"   //user entered password
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
                                  options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);

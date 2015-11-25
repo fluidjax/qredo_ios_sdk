@@ -84,19 +84,5 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
                       completionHandler:(void(^)(NSError *error))completionHandler;
 
 
-/**
- @param Enumerating all sent/received messages automatically retieves all the pages of data
- @param since he supplied highwater mark.
- */
-
-- (void)enumerateAllSentMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
-                                     since:(QredoConversationHighWatermark*)sinceWatermark
-                         completionHandler:(void(^)(NSError *error))completionHandler;
-
-- (void)enumerateAllReceivedMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
-                                         since:(QredoConversationHighWatermark*)sinceWatermark
-                             completionHandler:(void(^)(NSError *error))completionHandler;
-
-
 
 @end

@@ -58,9 +58,10 @@ class QredoVaultConsolidationTests: XCTestCase {
         super.setUp()
         let createExpectation = self.expectationWithDescription("create client")
         
-        let appSecret = "abcd1234"                 //provided by qredo
-        let userId = "tutorialuser@test.com"    //user email or username etc
-        let userSecret = "!%usertutorialPassword"   //user entered password
+        let appSecret = "cafebabe"
+        let userId = "testUserId"
+        let userSecret = "randompassword"
+
         
         QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret,
             options: QredoClientOptions.qtu_clientOptionsWithTransportType(transportType, resetData: true),

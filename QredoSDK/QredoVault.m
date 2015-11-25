@@ -390,34 +390,17 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     }
 }
 
+
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                       completionHandler:(void(^)(NSError *error))completionHandler
-{
+                    completionHandler:(void(^)(NSError *error))completionHandler{
     [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
 }
 
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                                 since:(QredoVaultHighWatermark*)sinceWatermark
-                    completionHandler:(void(^)(NSError *error))completionHandler
-{
+                    completionHandler:(void(^)(NSError *error))completionHandler{
     dispatch_async(_queue, ^{
         [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
-        
-    });
-}
-
-
-
-- (void)enumerateAllVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                    completionHandler:(void(^)(NSError *error))completionHandler{
-    [self enumerateAllVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
-}
-
-- (void)enumerateAllVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                                since:(QredoVaultHighWatermark*)sinceWatermark
-                    completionHandler:(void(^)(NSError *error))completionHandler{
-    dispatch_async(_queue, ^{
-        [_vaultServerAccess enumerateAllVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
         
     });
 }

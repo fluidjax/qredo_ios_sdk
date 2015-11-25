@@ -15,9 +15,9 @@ class TwoClientsHelper {
     func authorize(test : XCTestCase, options : QredoClientOptions!) {
         let authorizeExpectation1 = test.expectationWithDescription("authorize expectation")
 
-        var appSecret = "abcd1234"                 //provided by qredo
-        var userId = "tutorialuser@test.com"    //user email or username etc
-        var userSecret = "!%usertutorialPassword"   //user entered password
+        var appSecret   = "cafebabe"
+        var userId      = "testUserId"
+        var userSecret  = QredoTestUtils.randomPassword()
         
         QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "Failed to authorize client")
@@ -29,11 +29,10 @@ class TwoClientsHelper {
 
 
         let authorizeExpectation2 = test.expectationWithDescription("authorize expectation")
-        appSecret = "abcd1234"                 //provided by qredo
-        userId = "anotherclient@test.com"    //user email or username etc
-        userSecret = "!%usertutorialPassword"   //user entered password
         
-        
+        appSecret   = "cafebabe"
+        userId      = "testUserId"
+        userSecret  = QredoTestUtils.randomPassword()
         
          QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
             assert(error == nil, "Failed to authorize client")
@@ -44,7 +43,7 @@ class TwoClientsHelper {
         test.waitForExpectationsWithTimeout(qtu_defaultTimeout, handler: nil)
 
         assert(firstClient != nil, "failed to authorized first client")
-        assert(secondClient != nil, "failed to authorized first client")
+        assert(secondClient != nil, "failed to authorized second client")
     }
 
     func tearDown() {

@@ -85,10 +85,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 /** Enumerates the conversations (responses) that were created for this rendezvous since the specified high watermark */
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block since:(QredoRendezvousHighWatermark)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
 
-/** Enumerates all the conversations (responses) that were created for this rendezvous */
-- (void)enumerateAllConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
-/** Enumerates the conversations (responses) that were created for this rendezvous since the specified high watermark */
-- (void)enumerateAllConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block since:(QredoRendezvousHighWatermark)sinceWatermark completionHandler:(void(^)(NSError *error))completionHandler;
 
 
 

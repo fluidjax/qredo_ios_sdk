@@ -17,6 +17,7 @@
 @property NSMutableArray *receivedItems;
 @property NSError *error;
 
+
 @end
 
 @implementation QredoVaultListener
@@ -93,6 +94,7 @@
 @interface QredoVaultTests ()
 {
     QredoClient *client;
+    NSString *savedPassword;
 }
 
 @end
@@ -119,12 +121,11 @@
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
   
-    NSString  *randomPass = [self randomStringWithLength:32];
+    savedPassword =[QredoTestUtils randomPassword];
     
-    
-    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
-                              userSecret:randomPass                 //user entered password
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:savedPassword
                                  options:clientOptions
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
@@ -148,15 +149,6 @@
 }
 
 
--(NSString *)randomStringWithLength:(int)len {
-    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
-    for (int i=0; i<len; i++) {
-        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((int)[letters length])]];
-    }
-    return randomString;
-}
-
 - (void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
 
@@ -175,13 +167,9 @@
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
     
-    
-    
-    
-    
-    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
-                              userSecret:@"testUserSecret"   //user entered password
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:savedPassword
                                  options:clientOptions
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
@@ -723,12 +711,7 @@
 }
 
 
--(void)testMultipleEnumerationReturnsCreatedItem{
-    for (int i=0;i<100;i++){
-        NSLog(@"Iteration %i",i);
-        [self testEnumerationReturnsCreatedItem];
-    }
-}
+
 
 - (void)testEnumerationReturnsCreatedItem
 {
@@ -788,7 +771,7 @@
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
 
     
-    [vault enumerateAllVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
         XCTAssertNotNil(vaultItemMetadata);

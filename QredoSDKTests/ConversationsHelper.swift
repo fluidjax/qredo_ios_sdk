@@ -20,9 +20,10 @@ class ConversationsHelper: NSObject {
         let creatorClientExpectation = testCase.expectationWithDescription("authorize creator client")
         let options = QredoClientOptions.qtu_clientOptionsWithTransportType(transportType, resetData: true)
         
-        let appSecret = "abcd1234"                 //provided by qredo
-        let userId = "tutorialuser@test.com"    //user email or username etc
-        let userSecret = "!%usertutorialPassword"   //user entered password
+        let appSecret = "cafebabe"
+        let userId = "testUserId"
+        let userSecret = "randompassword"
+
         
         
          QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret, options: options) { authorizedClient, error in
