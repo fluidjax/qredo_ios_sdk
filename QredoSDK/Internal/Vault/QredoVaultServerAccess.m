@@ -230,7 +230,7 @@
     } completionHandler:^(NSError *error) {
         if (vaultItemCount>0){
             //maybe some more vault items - recurse
-            [self enumerateVaultItemsUsingBlock:block
+            [self enumerateAllVaultItemsUsingBlock:block
                               completionHandler:completionHandler
                                watermarkHandler:watermarkHandler
                                           since:highWaterMark consolidatingResults:shouldConsolidateResults];

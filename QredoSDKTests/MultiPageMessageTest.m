@@ -4,13 +4,11 @@
 //
 //  Created by Christopher Morris on 20/11/2015.
 //
-//
 
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 
 @interface MultiPageMessageTest : XCTestCase <QredoRendezvousObserver>
-
 @end
 
 @implementation MultiPageMessageTest
@@ -19,12 +17,19 @@ QredoClient *client1;
 QredoClient *client2;
 XCTestExpectation *incomingConversationExpectation;
 QredoConversation *incomingConversation;
-static int PAGING_SIZE = 5;
+static int PAGING_SIZE = 2;  //server is set to 2, but 1 control message means only 1 actual data record returned
+static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerations bigger than a page
+static int CONTROL_MESSAGE =1;
+
 
 
 
 /* 
  Summary of enumerate methods
+ 
+    You should only run these tests when the server has a restricted number for the page size (eg.<5)
+    The default page size is 50
+ 
  
  Source Files of methods                             Status/notes                                   Which method tests functionality
  ----------------------------------------------------------------------------------------------------------------------------------
@@ -72,13 +77,13 @@ QredoVaulServerAccess
          respondeToConversation1 = nil;
     }];
     
-    
-    for (int i=0;i<PAGING_SIZE;i++){
+    for (int i=0;i<PAGING_SIZE+PAGING_SIZE_MODIFIER;i++){
         NSString *message = [[NSString alloc] initWithFormat:@"test message %i",i];
         NSDictionary *messageSummaryValues = @{@"data": @"data"};
-        QredoConversationMessage *conversationMessage = [[QredoConversationMessage alloc] initWithValue:[message dataUsingEncoding:NSUTF8StringEncoding]
-                                                                                           dataType: @"com.qredo.plaintext"
-                                                                                      summaryValues: messageSummaryValues];
+        QredoConversationMessage *conversationMessage = [[QredoConversationMessage alloc]
+                                                         initWithValue:[message dataUsingEncoding:NSUTF8StringEncoding]
+                                                              dataType: @"com.qredo.plaintext"
+                                                         summaryValues: messageSummaryValues];
     
         __block XCTestExpectation *postExpectation = [self expectationWithDescription:@"post message"];
         [testConversation publishMessage: conversationMessage completionHandler: ^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
@@ -94,95 +99,94 @@ QredoVaulServerAccess
     
     
     //Enumerate the message using the all in one (not paged method)
-    __block XCTestExpectation *retrievePosts = [self expectationWithDescription:@"retrievePosts"];
-    __block int messageCount=0;
+    __block XCTestExpectation *retrievePosts1 = [self expectationWithDescription:@"retrievePosts"];
+    __block int messageCount1=0;
     [testConversation enumerateAllSentMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
         NSString *messageText = [[NSString alloc] initWithData: message.value encoding: NSUTF8StringEncoding];
         NSLog(@"%@", messageText);
-        messageCount++;
+        messageCount1++;
     } since:nil completionHandler:^(NSError *error) {
         NSLog(@"Retrieved all the messages");
-        [retrievePosts fulfill];
+        [retrievePosts1 fulfill];
     }];
      
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
-        retrievePosts = nil;
+        retrievePosts1 = nil;
     }];
     
-    XCTAssertTrue(messageCount==PAGING_SIZE,"Failure to retieve messages using Non Paged method - enumerateAllSentMessagesUsingBlock");
-    
-    //Enumerate the messages using the paged methods
-    __block int count=0;
-    __block QredoConversationHighWatermark *highWater = QredoConversationHighWatermarkOrigin;
-    __block int pageSize=0;
-    int lastCount=0;
-    do{
-        lastCount=count;
-         __block XCTestExpectation *retrievePosts = [self expectationWithDescription:@"retrievePosts"];
-        
-        [testConversation enumerateSentMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
-                        count++;
-                        if (count>=pageSize)pageSize=count;
-                        NSString *messageText = [[NSString alloc] initWithData: message.value encoding: NSUTF8StringEncoding];
-                        NSLog(@"%i - %@",count, messageText);
-                        highWater = message.highWatermark;
-                    }
-                    since:highWater
-                    completionHandler:^(NSError *error) {
-                                    [retrievePosts fulfill];
-                    }];
+    XCTAssertTrue(messageCount1==PAGING_SIZE+PAGING_SIZE_MODIFIER,"Failure to retieve messages using Non Paged method - enumerateAllSentMessagesUsingBlock");
 
-        [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
-            retrievePosts = nil;
-        }];
-    }while (count!=lastCount);
-    XCTAssertTrue(count==PAGING_SIZE,"Failure to retieve messages using Paged method - enumerateSentMessagesUsingBlock");
     
-    //Enumerate the received message using the all in one (not paged method)
-    XCTAssertNotNil(incomingConversation,@"Primary client has no incoming conversation from client2's rendezvous publish");
-    __block XCTestExpectation *recievedMessage = [self expectationWithDescription:@"recievedMessage"];
-    __block int messageCountReceived=0;
     
-    [incomingConversation enumerateAllReceivedMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
+    //Enumerate the message using the page method
+    __block XCTestExpectation *retrievePosts2 = [self expectationWithDescription:@"retrievePosts"];
+    __block int messageCount2=0;
+    [testConversation enumerateSentMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
         NSString *messageText = [[NSString alloc] initWithData: message.value encoding: NSUTF8StringEncoding];
         NSLog(@"%@", messageText);
-        messageCountReceived++;
+        messageCount2++;
     } since:nil completionHandler:^(NSError *error) {
         NSLog(@"Retrieved all the messages");
-        [recievedMessage fulfill];
+        [retrievePosts2 fulfill];
     }];
     
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
-        recievedMessage = nil;
+        retrievePosts2 = nil;
     }];
     
-    XCTAssertTrue(messageCountReceived==PAGING_SIZE,"Failure to retieve recieved messages  using - enumerateAllSentMessagesUsingBlock");
+    XCTAssertTrue(messageCount2==PAGING_SIZE-CONTROL_MESSAGE,"Failure to retieve messages using Paged method - enumerateSentMessagesUsingBlock");
+
+
 }
 
+
 -(void)testPagedRendezvous{
-    for (int i=0;i<PAGING_SIZE;i++){
+    
+    for (int i=0;i<PAGING_SIZE+PAGING_SIZE_MODIFIER;i++){
         NSLog(@"Create rendezvous %i",i);
         NSString *randomTag = [[QredoQUID QUID] QUIDString];
         [self createRendezvousOnClient:client1 withTag:randomTag];
     }
     
-    //enumerate the rendezvous
-    __block XCTestExpectation *didEnumerateComplete = [self expectationWithDescription:@"didEnumerateComplete"];
-    __block int count = 0;
+    //enumerate the rendezvous using PAGED
+    __block XCTestExpectation *didEnumerateComplete1 = [self expectationWithDescription:@"didEnumerateComplete"];
+    __block int count1 = 0;
     
-    [client1 enumerateAllRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
+    [client1 enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
         XCTAssertNotNil(rendezvousMetadata.rendezvousRef);
-        count++;
+        count1++;
     } completionHandler:^(NSError *error) {
         XCTAssertNil(error);
-        XCTAssertEqual(count, PAGING_SIZE);
-        NSLog(@"Enumerated %i rendezvous", PAGING_SIZE);
-        [didEnumerateComplete fulfill];
+        [didEnumerateComplete1 fulfill];
     }];
     
     [self waitForExpectationsWithTimeout:30.0 handler:^(NSError *error) {
-        didEnumerateComplete = nil;
+        didEnumerateComplete1 = nil;
     }];
+    XCTAssertTrue(count1==PAGING_SIZE-CONTROL_MESSAGE,"Failure to retrieve correct number of rendezvous using Paged Method - enumerateRendezvousWithBlock");
+    
+    //enumerate the rendezvous using ALL
+    __block XCTestExpectation *didEnumerateComplete2 = [self expectationWithDescription:@"didEnumerateComplete2"];
+    __block int count2 = 0;
+    
+    [client1 enumerateAllRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
+        XCTAssertNotNil(rendezvousMetadata.rendezvousRef);
+        NSLog(@"TAG = %@",rendezvousMetadata.tag);
+        count2++;
+    } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+        [didEnumerateComplete2 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:30.0 handler:^(NSError *error) {
+        didEnumerateComplete2 = nil;
+    }];
+    
+
+    
+    XCTAssertTrue(count2==PAGING_SIZE+PAGING_SIZE_MODIFIER,"Failure to retrieve correct number of rendezvous using Non Paged Method - enumerateAllRendezvousWithBlock");
+    
+    
 }
 
 
@@ -190,122 +194,133 @@ QredoVaulServerAccess
     XCTAssertNotNil(client1);
     XCTAssertNotNil(client2);
 
-    for (int i=0;i<PAGING_SIZE;i++){
-        //create conversations
-        NSLog(@"Iteration %i",i);
-        
-        NSString *tagName = [self randomStringWithLength:32];
+    NSString *tagName = [self randomStringWithLength:32];
+    [self createRendezvousOnClient:client1 withTag:tagName];
+    
+    
+    for (int i=0;i<PAGING_SIZE+PAGING_SIZE_MODIFIER;i++){
         incomingConversation = nil;
         QredoConversation *newConversation=nil;
-        
-        [self createRendezvousOnClient:client1 withTag:tagName];
         newConversation = [self createConversationOnClient:client2 withTag:tagName];
-        
-        if (newConversation){
-           [self createMessageOnConversation:incomingConversation];
-           [self createMessageOnConversation:newConversation];
-        }else{
-            NSLog(@"Failed to get a conversation");
-        }
+        [self createMessageOnConversation:newConversation];
     }
     
-    //enumerate all conversations on client
-    __block int count =0;
-    __block XCTestExpectation *enumeateConv = [self expectationWithDescription:@"Enumerate conversations on client"];
+    //enumerate conversations on client
+    __block int count1 =0;
+    __block XCTestExpectation *enumeateConv1 = [self expectationWithDescription:@"Enumerate conversations on client"];
     
-    [client1 enumerateAllConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
-        count++;
+    [client2 enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        count1++;
     } completionHandler:^(NSError *error) {
-        NSLog(@"Enumerated %i conversations", count);
-        [enumeateConv fulfill];
+        NSLog(@"Enumerated %i conversations", count1);
+        [enumeateConv1 fulfill];
     }];
     
     
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
-        enumeateConv = nil;
+        enumeateConv1 = nil;
     }];
-    XCTAssertTrue(count==PAGING_SIZE,@"Failed to enumerate all the new messages");
+    XCTAssertTrue(count1==PAGING_SIZE-CONTROL_MESSAGE,@"Failed to enumerate all the new messages");
+    
+    
+    
+    //enumerate all conversations on client
+    __block int count2 =0;
+    __block XCTestExpectation *enumeateConv2 = [self expectationWithDescription:@"Enumerate conversations on client"];
+    
+    [client2 enumerateAllConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        count2++;
+    } completionHandler:^(NSError *error) {
+        NSLog(@"Enumerated %i conversations", count2);
+        [enumeateConv2 fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        enumeateConv2 = nil;
+    }];
+    XCTAssertTrue(count2==PAGING_SIZE+PAGING_SIZE_MODIFIER,@"Failed to enumerate all the new messages");
+    
 }
 
 
 -(void)testPagedVaultItems{
-    for (int i=0;i<110;i++){
-        NSLog(@"Iteration %i",i);
-        [self enumerateVaultItems:i];
-    }
-}
-
-
-- (void)enumerateVaultItems:(int)i{
-    XCTAssertNotNil(client1);
     QredoVault *vault = [client1 defaultVault];
     XCTAssertNotNil(vault);
+
+
+   for (int i=0;i<PAGING_SIZE+PAGING_SIZE_MODIFIER;i++){
     
     // Create an item and store in vault
-    NSString *testString = [NSString stringWithFormat:@"DATA %i",i];
-    NSString *keyValue = [NSString stringWithFormat:@"KEYVALUE %i",i];
-    
-    NSData* item1Data = [testString dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *item1SummaryValues = @{@"key1": keyValue,
-                                         @"key2": @"value2",
-                                         @"key3": @"value3"};
-    
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
-                                                                                                                  value:item1Data];
-    __block QredoVaultItemDescriptor *item1Descriptor = nil;
-    __block XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
-    
-    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
-         XCTAssertNil(error, @"Error occurred during PutItem");
-         item1Descriptor = newItemMetadata.descriptor;
-         [putItemCompletedExpectation fulfill];
-    }];
-    
-    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        putItemCompletedExpectation = nil;
-    }];
-    XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
-    
-    // Confirm the item is found in the vault
-    __block XCTestExpectation *getItemCompletedExpectation = [self expectationWithDescription:@"GetItem completion handler called"];
-    __block int getCount =0;
-    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error){
-         getCount++;
-         XCTAssertNil(error);
-         XCTAssertNotNil(vaultItem);
-         XCTAssert([vaultItem.value isEqualToData:item1Data]);
-         [getItemCompletedExpectation fulfill];
-    }];
-    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
-        getItemCompletedExpectation = nil;
-    }];
+        NSString *testString = [NSString stringWithFormat:@"DATA %i",i];
+        NSString *keyValue = [NSString stringWithFormat:@"KEYVALUE %i",i];
+        
+        NSData* item1Data = [testString dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *item1SummaryValues = @{@"key1": keyValue,
+                                             @"key2": @"value2",
+                                             @"key3": @"value3"};
+        
+        QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                                accessLevel:0
+                                                                                                              summaryValues:item1SummaryValues]
+                                                                                                                      value:item1Data];
+        __block QredoVaultItemDescriptor *item1Descriptor = nil;
+        __block XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+        
+        [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+             XCTAssertNil(error, @"Error occurred during PutItem");
+             item1Descriptor = newItemMetadata.descriptor;
+             [putItemCompletedExpectation fulfill];
+        }];
+        
+        [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+            // avoiding exception when 'fulfill' is called after timeout
+            putItemCompletedExpectation = nil;
+        }];
+        XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
+   }
     
     // Confirm enumerate finds item we added
-    __block BOOL itemFound = NO;
+    __block int count1 =0;
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     
     
     [vault enumerateAllVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
-        XCTAssertNotNil(vaultItemMetadata);
-        if ([vaultItemMetadata.summaryValues[@"key1"] isEqual:keyValue]){
-            itemFound = YES;
-        }
+        count1++;
     } completionHandler:^(NSError *error) {
         XCTAssertNil(error);
         [completionHandlerCalled fulfill];
     }];
     
-    // Note: May need a longer timeout if there's lots of items to enumerate. May depend on how many items added since test last run.
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
         completionHandlerCalled = nil;
     }];
+
+    XCTAssertTrue(count1==PAGING_SIZE+PAGING_SIZE_MODIFIER,@"Failed to enumerate ALL the vault items");
     
-    XCTAssertTrue(itemFound, "Item just created was not found during enumeration.");
+    
+    // Confirm enumerate finds item we added
+    __block int count2 =0;
+    __block XCTestExpectation *completionHandlerCalled2 = [self expectationWithDescription:@"EnumerateVaultItems completion handler called without paging"];
+    
+    
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        count2++;
+    } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+        [completionHandlerCalled2 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        completionHandlerCalled2 = nil;
+    }];
+    
+    //Vault doesnt use control message - so quantity is the same as page size
+    XCTAssertTrue(count2==PAGING_SIZE,@"Failed to enumerate all the vault items using PAGING");
+    
+    
 }
 
 
@@ -313,12 +328,14 @@ QredoVaulServerAccess
 #pragma mark Utility Methods
 
 -(void)authoriseClient{
+    //Create two clients each with their own new random vaults
+    
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
     NSString  *randomPass = [self randomStringWithLength:32];
     
-    [QredoClient initializeWithAppSecret:@"testAppSecret"                 //provided by qredo
-                                  userId:@"testUserId"    //user email or username etc
-                              userSecret:randomPass   //user entered password
+    [QredoClient initializeWithAppSecret:@"cafebabe"
+                                  userId:@"testUserId"
+                              userSecret:randomPass
                                  options:nil
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -328,17 +345,15 @@ QredoVaulServerAccess
                        }];
     
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];
-    
     
     __block XCTestExpectation *client2Expectation = [self expectationWithDescription:@"create client2"];
     NSString  *randomPass2 = [self randomStringWithLength:32];
     
-    [QredoClient initializeWithAppSecret:@"testAppSecret"                 //provided by qredo
-                                  userId:@"testUserId"    //user email or username etc
-                              userSecret:randomPass2   //user entered password
+    [QredoClient initializeWithAppSecret:@"cafebabe"
+                                  userId:@"testUserId"
+                              userSecret:randomPass2
                                  options:nil
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -351,30 +366,21 @@ QredoVaulServerAccess
         // avoiding exception when 'fulfill' is called after timeout
         client2Expectation = nil;
     }];
-    
-    
 }
-
 
 
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"Incoming conversation");
-        incomingConversation = conversation;
-        [incomingConversationExpectation fulfill];
-    });
-    
-    
+//        incomingConversation = conversation;
+//        [incomingConversationExpectation fulfill];
 }
+
 
 - (void)setUp {
     [super setUp];
     [self authoriseClient];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
@@ -389,6 +395,7 @@ QredoVaulServerAccess
                completionHandler:^(QredoConversation *conversation, NSError *error) {
                    XCTAssertNotNil(conversation);
                    newConversation = conversation;
+                   [incomingConversationExpectation fulfill];
                }];
     
     [self waitForExpectationsWithTimeout:30 handler:^(NSError * _Nullable error) {
@@ -430,11 +437,10 @@ QredoVaulServerAccess
 
 -(QredoRendezvous*)createRendezvousOnClient:(QredoClient*)qredoClient withTag:(NSString*)tagName{
     //create rendezvous
-    QredoRendezvousConfiguration *rendezvousConfiguration =
-    [[QredoRendezvousConfiguration alloc] initWithConversationType: @"com.qredo.epiq"
-                                                   durationSeconds: 0
-                                          isUnlimitedResponseCount: true ];
-    
+    QredoRendezvousConfiguration *rendezvousConfiguration =  [[QredoRendezvousConfiguration alloc]
+                                                              initWithConversationType:@"com.qredo.epiq"
+                                                                       durationSeconds:0
+                                                              isUnlimitedResponseCount:true];
     
     __block XCTestExpectation *createRendezvous1Expectation = [self expectationWithDescription:@"Create rendezvous 1"];
     __block QredoRendezvous *newRendezvous = nil;
