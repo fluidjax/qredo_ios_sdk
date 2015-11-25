@@ -28,32 +28,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     You should only run these tests when the server has a restricted number for the page size (eg.<5)
     The default page size is 50
  
- 
- Source Files of methods                             Status/notes                                   Which method tests functionality
- ----------------------------------------------------------------------------------------------------------------------------------
- 
- Qredo.h - QredoClient
-        enumerateAllRendezvousWithBlock         DONE uses enumerateAllVaultItemsUsingBlock      test Method testPagedRendezvous
- 
- Qredo.h - QredoClient (Rendezvous)
-        enumerateAllConversationsWithBlock      DONE uses enumerateAllVaultItemsUsingBlock
- 
- QredoConversation - QredoConversation
-        enumerateAllReceivedMessagesUsingBlock  DONE                                            test testPagedMessages
-        enumerateAllSentMessagesUsingBlock      DONE                                            test testPagedMessages
- 
- QredoRendezvous -
-        enumerateConversationsWithBlock
-        enumerateConversationsWithBlock         enumerateAllConversationsWithBlock              test testPagedConversations
- 
-QredoVault
-        2x enumerateAllVaultItemsUsingBlock     DONE - user vaultServerAccess (below)           test testMultiplePagedVaultItems
-
-QredoVaulServerAccess
-        enumerateAllVaultItemsUsingBlock        DONE
-
  */
- 
 
 
 
@@ -112,7 +87,7 @@ QredoVaulServerAccess
         retrievePosts1 = nil;
     }];
     
-    XCTAssertTrue(messageCount1==PAGING_SIZE+PAGING_SIZE_MODIFIER,"Failure to retieve messages using Non Paged method - enumerateAllSentMessagesUsingBlock");
+    XCTAssertTrue(messageCount1==PAGING_SIZE+PAGING_SIZE_MODIFIER,"Failure to retieve messages using Non Paged method - enumerateSentMessagesUsingBlock");
 
 
 }
@@ -143,7 +118,7 @@ QredoVaulServerAccess
         didEnumerateComplete2 = nil;
     }];
     
-    XCTAssertTrue(count2==PAGING_SIZE+PAGING_SIZE_MODIFIER,"Failure to retrieve correct number of rendezvous using Non Paged Method - enumerateAllRendezvousWithBlock");
+    XCTAssertTrue(count2==PAGING_SIZE+PAGING_SIZE_MODIFIER,"Failure to retrieve correct number of rendezvous using Non Paged Method - enumerateRendezvousWithBlock");
     
     
 }
