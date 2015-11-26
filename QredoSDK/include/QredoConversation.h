@@ -4,8 +4,8 @@
 
 #import "QredoConversationMessage.h"
 #import "QredoTypes.h"
+#import "QredoQUID.h"
 
-@class QredoQUID;
 @class QredoVault;
 
 extern NSString *const kQredoConversationVaultItemType;
