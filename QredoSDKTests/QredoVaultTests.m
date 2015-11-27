@@ -287,7 +287,7 @@
     // Note: DH - Apparently server returns 50 items, so once 50 items created this test will fail.  Looks like it returns first 50 items, rather than latest 50 items.
     if (!itemFound && count == 50)
     {
-        XCTFail(@"Created item was not found and 50 items were enumerated. Likely failure was due to server only returning oldest 50 items.");
+        XCTFail(@"Created item was not found and 50 items were enumerated. Likely failure was due to server only returning oldest 50 items."); // this has been fixed and the client enumerates all items not just pages of 50
     }
 
 

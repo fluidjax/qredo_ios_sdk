@@ -23,4 +23,11 @@
 
     return self;
 }
+
+-(NSString*)description{
+    NSMutableString *desc = [[NSMutableString alloc] init];
+    [desc appendFormat:@"%@", self.metadata];
+    return [desc copy];
+}
+
 @end
