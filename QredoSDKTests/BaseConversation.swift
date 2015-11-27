@@ -22,9 +22,9 @@ class BaseConversation: XCTestCase {
         super.setUp()
 
         
-        let appSecret = "abcd1234"                 //provided by qredo
-        let userId = "tutorialuser@test.com"    //user email or username etc
-        let userSecret = "!%usertutorialPassword"   //user entered password
+        let appSecret = "cafebabe"
+        let userId = "testUserId"
+        let userSecret = "randompassword"
         
         
         let creatorClientExpectation = expectationWithDescription("authorize creator client")

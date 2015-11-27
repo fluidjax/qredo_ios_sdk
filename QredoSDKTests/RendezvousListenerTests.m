@@ -40,9 +40,9 @@
 
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
-    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
-                              userSecret:@"!%usertutorialPassword"   //user entered password
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
                                  options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
@@ -97,9 +97,9 @@
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
 
-   [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                userId:@"anotherClient@test.com"    //user email or username etc
-                            userSecret:@"!%usertutorialPassword"   //user entered password
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
                                        options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
                              completionHandler:^(QredoClient *clientArg, NSError *error) {
                                  XCTAssertNil(error);

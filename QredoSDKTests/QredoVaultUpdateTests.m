@@ -34,12 +34,10 @@
     }
 }
 
-- (QredoClientOptions *)clientOptionsWithResetData:(BOOL)resetData
+- (QredoClientOptions *)clientOptions:(BOOL)resetData
 {
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
-    clientOptions.resetData = resetData;
-    
     return clientOptions;
 }
 
@@ -47,10 +45,10 @@
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppSecret:@"abcd1234"                 //provided by qredo
-                                  userId:@"tutorialuser@test.com"    //user email or username etc
-                              userSecret:@"!%usertutorialPassword"   //user entered password
-                                 options:[self clientOptionsWithResetData:YES]
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -208,6 +206,7 @@
         // avoiding exception when 'fulfill' is called after timeout
         testExpectation = nil;
     }];
+   
     
     NSDate *afterFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
     

@@ -16,9 +16,10 @@
 #import "QredoKeychain.h"
 #import "QredoKeychainArchiver.h"
 #import "NSData+QredoRandomData.h"
-#import "QredoManagerAppRootViewController.h"
+#import "NSData+ParseHex.h"
+
 #import "QredoCertificate.h"
-#import "QredoUserInitialization.h"
+#import "QredoUserCredentials.h"
 
 // TEMP
 #import "QredoConversationProtocol.h"
@@ -34,9 +35,14 @@ NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
 NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
+//static NSString *const QredoClientDefaultServiceURL = @"https://ltd.qredo.me:443/services";
+//static NSString *const QredoClientMQTTServiceURL = @"ssl://ltd.qredo.me:8883";
+//static NSString *const QredoClientWebSocketsServiceURL = @"wss://ltd.qredo.me:443/services";
+
 static NSString *const QredoClientDefaultServiceURL = @"https://early1.qredo.me:443/services";
 static NSString *const QredoClientMQTTServiceURL = @"ssl://early1.qredo.me:8883";
 static NSString *const QredoClientWebSocketsServiceURL = @"wss://early1.qredo.me:443/services";
+
 
 NSString *const QredoRendezvousURIProtocol = @"qrp:";
 
@@ -45,7 +51,7 @@ static NSString *const QredoKeychainOperatorName = @"Qredo Mock Operator";
 static NSString *const QredoKeychainOperatorAccountId = @"1234567890";
 static NSString *const QredoKeychainPassword = @"Password123";
 
-
+NSString *systemVaultKeychainArchiveIdentifier;
 
 @implementation QredoClientOptions
 {
@@ -251,7 +257,8 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     QredoVault *_defaultVault;
     QredoServiceInvoker *_serviceInvoker;
     QredoKeychain *_keychain;
-    QredoUserInitialization *_userInitialization;
+    QredoUserCredentials *_userCredentials;
+    QredoAppCredentials *_appCredentials;
 
     dispatch_queue_t _rendezvousQueue;
 }
@@ -262,7 +269,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 /** Creates instance of qredo client
  @param serviceURL Root URL for Qredo services
  */
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL;
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL  appCredentials:(QredoAppCredentials *)appCredentials;
 
 
 @end
@@ -310,11 +317,18 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     
     NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-    if (!appID)appID = @"com.qredo.undefinedAppId";
+    if (!appID)appID = @"test";
     
     
-    QredoUserInitialization *userInitialization = [[QredoUserInitialization alloc] initWithAppId:appID userId:userId userSecure:userSecret];
+    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appID
+                                                                                          userId:userId
+                                                                                      userSecure:userSecret];
     
+    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appID
+                                                                             appSecret:[NSData dataWithHexString:appSecret]];
+    
+    systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
+    NSLog(@"systemVaultKeychainArchiveIdentifier %@",systemVaultKeychainArchiveIdentifier);
     
     NSURL *serviceURL = nil;
     switch (options.transportType) {
@@ -331,8 +345,9 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     __block NSError *error = nil;
     
-    __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL pinnedCertificate:options.certificate];
-    
+    __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL
+                                                        pinnedCertificate:options.certificate
+                                                           appCredentials:appCredentials];
     
     
     void(^completeAuthorization)() = ^() {
@@ -351,7 +366,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     if (options.resetData) {
         
-        [client createSystemVaultWithUserInitialization:userInitialization completionHandler:^(NSError *error) {
+        [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
             if (!error) {
                 [client saveStateWithError:&error];
             }
@@ -370,7 +385,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
             
             // TODO: [GR]: Show new device screen insted of creating the vault straight away.
             error = nil;
-            [client createSystemVaultWithUserInitialization:userInitialization completionHandler:^(NSError *error) {
+            [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
                 if (!error) {
                     [client saveStateWithError:&error];
                 }
@@ -403,7 +418,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                           style:UIAlertActionStyleDestructive
                                         handler:^(UIAlertAction *action)
                   {
-                      [client createSystemVaultWithUserInitialization:userInitialization completionHandler:^(NSError *error) {
+                      [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
                           if (!error) {
                               [client saveStateWithError:&error];
                           }
@@ -426,26 +441,20 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
 }
 
-+ (void)openSettings
+
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL appCredentials:(QredoAppCredentials *)appCredentials
 {
-    QredoManagerAppRootViewController *managerAppRootViewController = [[QredoManagerAppRootViewController alloc] init];
-    [managerAppRootViewController show];
+    return [self initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials];
 }
 
-
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL
-{
-    return [self initWithServiceURL:serviceURL pinnedCertificate:nil];
-}
-
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials *)appCredentials
 {
     self = [self init];
     if (!self) return nil;
 
     _serviceURL = serviceURL;
     if (_serviceURL) {
-        _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL pinnedCertificate:certificate];
+        _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL pinnedCertificate:certificate appCredentials:appCredentials];
     }
 
     _rendezvousQueue = dispatch_queue_create("com.qredo.rendezvous", nil);
@@ -700,27 +709,53 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     }
 }
 
+
+-(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
+    __block QredoRendezvousMetadata *matchedRendezvousMetadata;
+    
+    [self enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
+        NSLog(@"Tag %@",rendezvousMetadata.tag);
+        if ([tag isEqualToString:rendezvousMetadata.tag]){
+            matchedRendezvousMetadata =rendezvousMetadata;
+            *stop = YES;
+        }
+    } completionHandler:^(NSError *error) {
+        if (error){
+            completionHandler(nil,error);
+        }else if(!matchedRendezvousMetadata){
+            NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                                 code:QredoErrorCodeRendezvousNotFound
+                                             userInfo:@{ NSLocalizedDescriptionKey : @"Rendezvous was not found in vault" }];
+            completionHandler(nil,error);
+        }else{
+            [self fetchRendezvousWithMetadata:matchedRendezvousMetadata completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                completionHandler(rendezvous, error);
+            }];
+        }
+    }];
+    
+}
+
+
 - (void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block
                    completionHandler:(void(^)(NSError *error))completionHandler
 {
     QredoVault *vault = [self systemVault];
-
+    
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoRendezvousVaultItemType]) {
-
+            
             NSString *tag = [vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelTag];
-            QredoRendezvousAuthenticationType authenticationType
-            = [[vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
-
-            QredoRendezvousRef *rendezvousRef
-            = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor
-                                                                vault:vault];
-
-            QredoRendezvousMetadata *metadata
-            = [[QredoRendezvousMetadata alloc] initWithTag:tag
+            QredoRendezvousAuthenticationType authenticationType  = [[vaultItemMetadata.summaryValues
+                                                                      objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
+            
+            QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor
+                                                                                                    vault:vault];
+            
+            QredoRendezvousMetadata *metadata = [[QredoRendezvousMetadata alloc] initWithTag:tag
                                         authenticationType:authenticationType
                                              rendezvousRef:rendezvousRef];
-
+            
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
             block(metadata, &stopObjectEnumeration);
             *stopVaultEnumeration = stopObjectEnumeration;
@@ -729,6 +764,9 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         completionHandler(error);
     }];
 }
+
+
+
 
 - (void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
@@ -805,8 +843,9 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 }
 
 
+
 - (void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
-                      completionHandler:(void (^)(NSError *))completionHandler
+                      completionHandler:(void (^)(NSError *error))completionHandler
 {
     QredoVault *vault = [self systemVault];
 
@@ -1018,10 +1057,10 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     return [self deleteDefaultVaultKeychainWithError:error];
 }
 
-- (void)createSystemVaultWithUserInitialization:(QredoUserInitialization*)userInitialization  completionHandler:(void(^)(NSError *error))completionHandler{
+- (void)createSystemVaultWithUserCredentials:(QredoUserCredentials*)userCredentials completionHandler:(void(^)(NSError *error))completionHandler{
     [self deleteCurrentDataWithError:nil];
 
-    [self createDefaultKeychain:userInitialization];
+    [self createDefaultKeychain:userCredentials];
     [self initializeVaults];
 
     [self addDeviceToVaultWithCompletionHandler:completionHandler];
@@ -1037,7 +1076,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     return [QredoKeychainArchivers defaultQredoKeychainArchiver];
 }
 
-- (void)createDefaultKeychain:(QredoUserInitialization*)userInitialization
+- (void)createDefaultKeychain:(QredoUserCredentials*)userCredentials
 {
     QLFOperatorInfo *operatorInfo
     = [QLFOperatorInfo operatorInfoWithName:QredoKeychainOperatorName
@@ -1047,12 +1086,12 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                             nextServiceAccess:[NSSet set]];
     
     QredoKeychain *keychain = [[QredoKeychain alloc] initWithOperatorInfo:operatorInfo];
-    [keychain generateNewKeys:userInitialization];
+    [keychain generateNewKeys:userCredentials];
 
     _keychain = keychain;
 }
 
-NSString *systemVaultKeychainArchiveIdentifier = @"com.qredo.system.vault.key";
+
 
 - (QredoKeychain *)loadSystemVaultKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
                                                          error:(NSError **)error
@@ -1085,7 +1124,8 @@ withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
                                           error:error];
 
     QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:
-                              [NSURL URLWithString:keychain.operatorInfo.serviceUri]];
+                              [NSURL URLWithString:keychain.operatorInfo.serviceUri]
+                              appCredentials:_appCredentials];
     [newClient loadStateWithError:error];
     [newClient addDeviceToVaultWithCompletionHandler:nil];
 

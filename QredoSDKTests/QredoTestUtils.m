@@ -8,7 +8,35 @@
 //NSTimeInterval qtu_defaultTimeout = 10.0;
 NSTimeInterval qtu_defaultTimeout = 30.0; // TODO: DH - Investigating whether increasing timeout improves test reliability. Orig 10s, RSA 4096 key gen can take 10+ seconds, so upping to 30 seconds for safety
 
+NSString *k_APPSECRET     = @"cafebabe";
+NSString *k_USERID        = @"testUserId";
+
+
+
+@implementation QredoTestUtils
+
++(NSString*)randomPassword{
+    return [QredoTestUtils randomStringWithLength:32];
+}
+
++(NSString *)randomStringWithLength:(int)len {
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
+    for (int i=0; i<len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((int)[letters length])]];
+    }
+    return randomString;
+}
+
+@end
+
+
 @implementation NSData (QredoTestUtils)
+
+
+
+
+
 
 + (NSData*)qtu_dataWithRandomBytesOfLength:(int)length {
     NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
@@ -26,7 +54,6 @@ NSTimeInterval qtu_defaultTimeout = 30.0; // TODO: DH - Investigating whether in
 + (instancetype)qtu_clientOptionsWithResetData:(BOOL)resetData
 {
     QredoClientOptions* clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-    clientOptions.resetData = resetData;
     return clientOptions;
 }
 

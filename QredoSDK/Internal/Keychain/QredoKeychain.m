@@ -9,7 +9,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "NSData+QredoRandomData.h"
 #import "QredoVaultCrypto.h"
-
+#import "QredoUserCredentials.h"
 
 @interface QredoKeychain ()
 {
@@ -61,10 +61,10 @@
 }
 
 
-- (void)generateNewKeys:(QredoUserInitialization*)userInitialization
+- (void)generateNewKeys:(QredoUserCredentials*)userCredentials
 {
     _isInitialized = YES;
-    _masterKey = [userInitialization masterKey];
+    _masterKey = [userCredentials masterKey];
     [self deriveKeys];
 }
 

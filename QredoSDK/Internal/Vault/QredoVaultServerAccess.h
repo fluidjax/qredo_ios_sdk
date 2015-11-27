@@ -35,7 +35,7 @@
                     completionHandler:(void(^)(NSError *error))completionHandler
                      watermarkHandler:(void(^)(QredoVaultHighWatermark*))watermarkHandler
                                 since:(QredoVaultHighWatermark*)sinceWatermark
-                 consolidatingResults:(BOOL)shouldConsolidateResults;
+                    consolidatingResults:(BOOL)shouldConsolidateResults;
 
 
 @end

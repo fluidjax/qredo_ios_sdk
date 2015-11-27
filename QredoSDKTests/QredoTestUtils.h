@@ -6,6 +6,9 @@
 #import "Qredo.h"
 
 extern NSTimeInterval qtu_defaultTimeout;
+extern NSString *k_APPSECRET;
+extern NSString *k_USERID;
+
 
 @interface NSData (QredoTestUtils)
 
@@ -19,6 +22,14 @@ extern NSTimeInterval qtu_defaultTimeout;
 
 + (instancetype)qtu_clientOptionsWithTransportType:(QredoClientOptionsTransportType)transportType
                                          resetData:(BOOL)resetData;
+
+
+@end
+
+
+@interface QredoTestUtils:NSObject
+
++(NSString*)randomPassword;
 
 @end
 

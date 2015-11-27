@@ -1,12 +1,12 @@
 //
-//  QredoUserInitialization.m
+//  QredoUserCredentials.m
 //  QredoSDK
 //
 //  Created by Christopher Morris on 10/11/2015.
 //
 //
 
-#import "QredoUserInitialization.h"
+#import "QredoUserCredentials.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoCrypto.h"
 
@@ -18,14 +18,14 @@
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES 32
 
 
-@interface QredoUserInitialization ()
+@interface QredoUserCredentials ()
 @property (strong) NSString *appId;
 @property (strong) NSString *userId;
 @property (strong) NSString *userSecure;
 @end
 
 
-@implementation QredoUserInitialization
+@implementation QredoUserCredentials
 
 
 -(instancetype)initWithAppId:(NSString*)appId userId:(NSString*)userId userSecure:(NSString*)userSecure{
@@ -87,6 +87,26 @@
 -(NSData *)masterKey:(NSData *)userUnlockKey{
     NSData *masterKey = [QredoCrypto hkdfSha256WithSalt:SALT_USER_MASTER initialKeyMaterial:userUnlockKey info:INFO_USER_MASTER outputLength:256];
     return masterKey;
+}
+
+
+-(NSString*)dataToHexString:(NSData*)data{
+    NSUInteger capacity = data.length * 2;
+    NSMutableString *sbuf = [NSMutableString stringWithCapacity:capacity];
+    const unsigned char *buf = data.bytes;
+    NSInteger i;
+    for (i=0; i<data.length; ++i) {
+        [sbuf appendFormat:@"%02X", (unsigned int)buf[i]];
+    }
+    return [sbuf copy];
+}
+
+
+-(NSString*)createSystemVaultIdentifier{
+    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@",self.appId,self.userId, self.userSecure];
+    NSData *sha1UserCredentials = [self sha1WithString:userCredentials];
+    NSString *sha1UserCredentialsString =  [self dataToHexString:sha1UserCredentials];
+    return [NSString stringWithFormat:@"com.qredo.system.vault.key-%@",sha1UserCredentialsString];
 }
 
 

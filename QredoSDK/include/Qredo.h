@@ -62,10 +62,6 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
               completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
 
-
-
-+ (void)openSettings;
-
 - (void)closeSession;
 - (BOOL)isClosed;
 
@@ -96,9 +92,19 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
+
+
+
+
+/** Fetch previously created rendezvous that has been stored in the vault by tag */
+-(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+
 /** Enumerates through the rendezvous that have been stored in the Vault
  @discussion assign YES to *stop to break the enumeration */
 - (void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
+
+
 
 /** Fetches previously created rendezvous that has been stored in the vault */
 - (void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;

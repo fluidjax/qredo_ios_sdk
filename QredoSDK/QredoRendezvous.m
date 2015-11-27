@@ -639,6 +639,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 }
 
+
+
+
+
+
 - (void)processRendezvousResponseResult:(QLFRendezvousResponsesResult *)result
                           responseIndex:(NSUInteger)responseIndex
                 rendezvousResponseBlock:(void(^)(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop))rendezvousResponseBlock
