@@ -871,7 +871,9 @@
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
-    [writer writeInvocationHeader:[QredoAppCredentials empty]];
+    
+
+    
     [writer writeEnd];
     NSData *data = [out propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
     [out close];

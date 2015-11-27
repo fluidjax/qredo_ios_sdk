@@ -1,6 +1,8 @@
 xcodeproj 'QredoSDK.xcodeproj/'
 
-platform :ios, '9.0'
+platform :ios, '9.1'
+
+inhibit_all_warnings!
 
 target 'QredoSDK' do
 
@@ -34,7 +36,7 @@ target 'ConversationRespondTests' do
 
 end
 
-target 'Qredo' do
+target 'QredoXDK' do
 
     pod 'libsodium', :path => 'libsodium.podspec'
     pod 'OpenSSL-for-iOS', '1.0.2.d.1'

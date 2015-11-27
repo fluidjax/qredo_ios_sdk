@@ -137,7 +137,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                                                                      serviceName:serviceName
                                                                    operationName:operationName];
             [wireFormatWriter writeInterchangeHeader:interchangeHeader];
-                    [wireFormatWriter writeInvocationHeader:[QredoAppCredentials appCredentialsWithAppId:@"test" appSecret:[NSData dataWithHexString:@"cafebabe"]]];
+                     [wireFormatWriter writeInvocationHeader:[QredoAppCredentials empty]];
                     requestWriter(wireFormatWriter);
                 [wireFormatWriter writeEnd];
             [wireFormatWriter writeEnd];
