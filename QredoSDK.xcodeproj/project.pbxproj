@@ -1300,6 +1300,8 @@
 				0A74FC051B18C40500529F60 /* QredoTypesPrivate.h */,
 				78AB95691B220278006724E5 /* QredoObserverList.h */,
 				78AB956A1B220278006724E5 /* QredoObserverList.m */,
+				83E710B21BF251280048BFEE /* QredoUserInitialization.h */,
+				83E710B31BF251280048BFEE /* QredoUserInitialization.m */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -1871,6 +1873,7 @@
 				66605B301BD5073A00EC8D6C /* NSSet+QredoSetEquality.h in Headers */,
 				78A2F1F51A4320AF00974EFB /* QredoMainViewController.h in Headers */,
 				66E6F8E61BD65AC600319BC9 /* MQTTTypes.h in Headers */,
+				83E710B41BF251280048BFEE /* QredoUserInitialization.h in Headers */,
 				786DF4E91A5D76FB000B4164 /* QredoRendezvousEd25519Helper.h in Headers */,
 				66E6F8D71BD65AC600319BC9 /* MQTTMessage.h in Headers */,
 				0A10352B1A389DFD002479D9 /* QredoKeychain.h in Headers */,
@@ -2619,6 +2622,7 @@
 				66605B361BD5073A00EC8D6C /* QredoLogging.m in Sources */,
 				66F774FB1BD64CE200F01A2C /* QredoQUID.m in Sources */,
 				66F774EF1BD64CE200F01A2C /* QredoDateTime.m in Sources */,
+				83E710B51BF251280048BFEE /* QredoUserInitialization.m in Sources */,
 				0A85E6E719FAA95200775115 /* QredoRendezvous.m in Sources */,
 				0AF69D4C1B3DA21700E6A584 /* QredoVaultServerAccess.m in Sources */,
 				66F774E91BD64CE200F01A2C /* NSSet+QredoSetEquality.m in Sources */,
@@ -2854,6 +2858,7 @@
 				66F775401BD6543C00F01A2C /* NSData+QredoRandomData.m in Sources */,
 				66F775411BD6543C00F01A2C /* QredoLogging.m in Sources */,
 				66E6F8DB1BD65AC600319BC9 /* MQTTMessage.m in Sources */,
+				837FB2A41BED013700C66FC8 /* QredoServiceInvokerTests.m in Sources */,
 				66E6F8D61BD65AC600319BC9 /* MQTTEncoder.m in Sources */,
 				66F775381BD653F800F01A2C /* QredoClientIdTests.m in Sources */,
 				66E6F8E51BD65AC600319BC9 /* MQttTxFlow.m in Sources */,

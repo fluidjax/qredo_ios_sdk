@@ -10,6 +10,7 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoVaultCrypto.h"
 
+
 @interface QredoKeychain ()
 {
     BOOL _isInitialized;
@@ -60,14 +61,10 @@
 }
 
 
-- (void)generateNewKeys
+- (void)generateNewKeys:(QredoUserInitialization*)userInitialization
 {
     _isInitialized = YES;
-
-    _masterKey = [QredoCrypto secureRandomWithSize:32];
-
-    // Uncomment this line for testing cross-platform vault without keychain transporter
-//    _masterKey = [@"12345678901234567890123456789012" dataUsingEncoding:NSUTF8StringEncoding];
+    _masterKey = [userInitialization masterKey];
     [self deriveKeys];
 }
 

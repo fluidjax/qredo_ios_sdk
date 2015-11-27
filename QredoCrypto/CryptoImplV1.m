@@ -28,6 +28,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode, NSDict
 #define ED25519_SIGNATURE_LENGTH 64
 #define ED25519_SEED_LENGTH 32
 
+
 - (instancetype)init
 {
     self = [super init];
@@ -47,6 +48,8 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode, NSDict
     });
     return instance;
 }
+
+
 
 // This method will encrypt the data with a random IV using AES and prepend the IV onto the result
 - (NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data

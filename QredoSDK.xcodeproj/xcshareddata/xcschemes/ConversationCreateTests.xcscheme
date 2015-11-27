@@ -37,6 +37,11 @@
                BlueprintName = "ConversationCreateTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "BaseConversation">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

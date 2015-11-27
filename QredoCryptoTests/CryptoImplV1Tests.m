@@ -9,12 +9,29 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoDhPublicKey.h"
 #import "QredoDhPrivateKey.h"
+#import "NSData+ParseHex.h"
 
 @interface CryptoImplV1Tests : XCTestCase
 
 @end
 
 @implementation CryptoImplV1Tests
+
+
+
+-(void)testPBKDF2short{
+    NSData *password  = [@"passwordPASSWORDpassword"  dataUsingEncoding:NSASCIIStringEncoding];
+    NSData *salt      = [@"saltSALTsaltSALTsaltSALTsaltSALTsalt"  dataUsingEncoding:NSASCIIStringEncoding] ;
+    int rounds = 4096;
+    int keyLen = 40;
+    NSData *key =[QredoCrypto pbkdf2Sha256WithSalt:salt bypassSaltLengthCheck:NO passwordData:password requiredKeyLengthBytes:keyLen iterations:rounds];
+    
+    NSData *expectedResult = [NSData dataWithHexString:@"348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9"];
+    XCTAssertTrue([key isEqualToData:expectedResult],@"not expected result");
+    
+}
+
+
 
 - (void)testEncryptWithKey
 {
