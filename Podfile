@@ -38,10 +38,10 @@ end
 
 target 'QredoXDK' do
 
-    pod 'libsodium', :path => 'libsodium.podspec'
-    pod 'OpenSSL-for-iOS', '1.0.2.d.1'
     pod 'PINCache'
     pod 'SocketRocket'
+    pod 'OpenSSL-for-iOS', '1.0.2.d.1'
+    pod 'libsodium', :path => 'libsodium.podspec'
 
 end
 

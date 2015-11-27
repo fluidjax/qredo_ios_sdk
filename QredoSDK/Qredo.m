@@ -1144,17 +1144,4 @@ withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
     return [self hasSystemVaultKeychainWithKeychainArchiver:keychainArchiver error:error];
 }
 
-
-+ (BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error
-{
-    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:nil];
-    return [newClient deleteDefaultVaultKeychainWithError:error];
-}
-
-+ (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error
-{
-    QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:nil];
-    return [newClient hasDefaultVaultKeychainWithError:error];
-}
-
 @end
