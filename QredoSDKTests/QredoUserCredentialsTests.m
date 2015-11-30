@@ -26,11 +26,11 @@
 -(void)testGetMasterUnlockKey{
     
     NSString *TEST_USER_SECRET      = @"This is a secret";
-    NSString *applicationId         = @"test";
+    NSString *APPLICATION_ID         = @"test";
     NSString *TEST_USER_ID          = @"TEST-USER-ID";
 
     
-    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:applicationId
+    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:APPLICATION_ID
                                                                                           userId:TEST_USER_ID
                                                                                       userSecure:TEST_USER_SECRET];
 
@@ -53,6 +53,15 @@
     
     
 }
+
+
+-(void)testDataToHexString{
+    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] init];
+    NSData *dataInput = [NSData dataWithHexString:@"cafebabe"];
+    NSString *hexOutput =[userCredentials dataToHexString:dataInput];
+    XCTAssertTrue([hexOutput isEqualToString:@"CAFEBABE"]);
+}
+
 
 
 -(void)testGetMasterFromUserUnlock{

@@ -6,6 +6,7 @@
 #import "QredoLogging.h"
 #import "QredoCertificate.h"
 #import "NSData+ParseHex.h"
+#import "QredoHelpers.h"
 
 NSString *const QredoLFErrorDomain = @"QredoLFError";
 
@@ -41,11 +42,11 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 
 + (instancetype)serviceInvokerWithServiceURL:(NSURL *)serviceURL
                            pinnedCertificate:(QredoCertificate *)certificate
-                              appCredentials:(QredoAppCredentials*)appCredentials{
+                              appCredentials:(QredoAppCredentials *)appCredentials{
     return [[self alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate appCredentials:appCredentials];
 }
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials*)appCredentials{
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials *)appCredentials{
     
     self = [super init];
     
@@ -127,8 +128,13 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 
         QredoWireFormatWriter *wireFormatWriter = [QredoWireFormatWriter wireFormatWriterWithOutputStream:outputStream];
 
-        QredoVersion *protocolVersion = [QredoVersion versionWithMajor:@0 minor:@3 patch:@0];
-        QredoVersion *releaseVersion  = [QredoVersion versionWithMajor:@0 minor:@3 patch:@0];
+        QredoVersion *protocolVersion = [QredoVersion versionWithMajor:QREDO_MAJOR_PROTOCOL_VERSION
+                                                                 minor:QREDO_MINOR_PROTOCOL_VERSION
+                                                                 patch:QREDO_PATCH_PROTOCOL_VERSION];
+        
+        QredoVersion *releaseVersion  = [QredoVersion versionWithMajor:QREDO_MAJOR_RELEASE_VERSION
+                                                                 minor:QREDO_MINOR_RELEASE_VERSION
+                                                                 patch:QREDO_PATCH_RELEASE_VERSION];
         QredoMessageHeader *messageHeader =
                 [QredoMessageHeader messageHeaderWithProtocolVersion:protocolVersion
                                                       releaseVersion:releaseVersion];

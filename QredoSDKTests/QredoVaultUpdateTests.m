@@ -391,8 +391,14 @@
     XCTAssertNil(fetchedMetadata);
     
     
+    
+    QredoVaultItemDescriptor *item1DescriptorWithoutSequenceNumber = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:item1Descriptor.sequenceId
+                                                                                                     itemId:item1Descriptor.itemId];
+    
+    
+    
     testExpectation = [self expectationWithDescription:@"get metadata of a deleted item"];
-    [vault getItemMetadataWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+    [vault getItemMetadataWithDescriptor:item1DescriptorWithoutSequenceNumber completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
         XCTAssertNil(vaultItemMetadata);
         XCTAssertNotNil(error);
         XCTAssertEqualObjects(error.domain, QredoErrorDomain);
@@ -406,11 +412,11 @@
     
     
     testExpectation = [self expectationWithDescription:@"get a deleted item"];
-    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+    [vault getItemWithDescriptor:item1DescriptorWithoutSequenceNumber completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
         XCTAssertNil(vaultItem);
         XCTAssertNotNil(error);
         XCTAssertEqualObjects(error.domain, QredoErrorDomain);
-        XCTAssertEqual(error.code, QredoErrorCodeVaultItemHasBeenDeleted);
+        XCTAssertEqual(error.code, QredoErrorCodeVaultItemNotFound);
         [testExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {

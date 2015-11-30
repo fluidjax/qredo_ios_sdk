@@ -278,16 +278,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
      }];
 }
 
-- (void)removeHeaderFromCacheWithVaultItemDescriptor:(QredoVaultItemDescriptor *)descriptor
-                                 completionHandler:(void (^)(NSError *error))completionHandler
-{
-    [_cacheHeaders removeObjectForKey:descriptor.cacheKey
-                              block:^(PINCache *cache, NSString *key, id __nullable object)
-     {
-         completionHandler(nil);
-     }];
-}
-
 
 
 @end
@@ -427,9 +417,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 
 - (void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
 {
-    
-    
-    NSLog(@"Original Sequence is %lld",metadata.descriptor.sequenceValue);
+
     QredoQUID *itemId = metadata.descriptor.itemId;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionary];
     newSummaryValues[QredoVaultItemMetadataItemDateCreated] = metadata.summaryValues[QredoVaultItemMetadataItemDateCreated];
@@ -443,22 +431,16 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
                        dataType:QredoVaultItemMetadataItemTypeTombstone
                         created:created
                   summaryValues:newSummaryValues
-              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
-     {
-         if (newItemMetadata) {
-              NSLog(@"New Sequence is %lld",newItemMetadata.descriptor.sequenceValue);
-             NSLog(@"Deleting %@",metadata.descriptor.cacheKey);
-             [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
-                                            completionHandler:^(NSError *cacheError){
-                   [self removeHeaderFromCacheWithVaultItemDescriptor:metadata.descriptor
-                                                    completionHandler:^(NSError *cacheError) {
-                      completionHandler(newItemMetadata.descriptor, error);
+              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+              if (newItemMetadata) {
+                  [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
+                                                 completionHandler:^(NSError *cacheError)
+                   {
+                       completionHandler(newItemMetadata.descriptor, error);
                    }];
-                  
-              }];
-         } else {
-             completionHandler(nil, error);
-         }
+              } else {
+                  completionHandler(nil, error);
+              }
      }];
 }
 

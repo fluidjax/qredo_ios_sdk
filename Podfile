@@ -37,13 +37,23 @@ target 'ConversationRespondTests' do
 end
 
 target 'QredoXDK' do
-
     pod 'PINCache'
     pod 'SocketRocket'
     pod 'OpenSSL-for-iOS', '1.0.2.d.1'
     pod 'libsodium', :path => 'libsodium.podspec'
 
 end
+
+
+target 'QredoCryptoTests' do
+    pod 'PINCache'
+    pod 'SocketRocket'
+    pod 'OpenSSL-for-iOS', '1.0.2.d.1'
+    pod 'libsodium', :path => 'libsodium.podspec'
+    
+end
+
+
 
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|

@@ -16,7 +16,10 @@
 #define INFO_USER_MASTER [@"QREDO_INFO_USER_MASTER" dataUsingEncoding:NSUTF8StringEncoding]
 #define PBKDF2_USERUNLOCK_KEY_ITERATIONS 1000
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES 32
-
+#define CHECK_ARG(expr, msg) if (expr){@throw [NSException exceptionWithName:NSInvalidArgumentException\
+                                                                reason:[NSString stringWithFormat:msg]\
+                                                                userInfo:nil];\
+                                                                }\
 
 @interface QredoUserCredentials ()
 @property (strong) NSString *appId;
@@ -41,21 +44,10 @@
 
 -(NSData *)userUnlockKey{
     
-    if (!self.appId){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"appId cannot be nil"]
-                                     userInfo:nil];
-    }
-    if (!self.userId){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"userId cannot be nil"]
-                                     userInfo:nil];
-    }
-    if (!self.userSecure){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"userSecure cannot be nil"]
-                                     userInfo:nil];
-    }
+    CHECK_ARG(!self.appId,      @"appId cannot be nil");
+    CHECK_ARG(!self.userId,     @"userId cannot be nil");
+    CHECK_ARG(!self.userSecure, @"userSecure cannot be nil");
+    
     
     NSMutableData *concatenatedBytes = [[NSMutableData alloc] init];
     [concatenatedBytes appendData:[self sha1WithString:self.appId]];
@@ -94,8 +86,7 @@
     NSUInteger capacity = data.length * 2;
     NSMutableString *sbuf = [NSMutableString stringWithCapacity:capacity];
     const unsigned char *buf = data.bytes;
-    NSInteger i;
-    for (i=0; i<data.length; ++i) {
+    for (int i=0; i<data.length; i++) {
         [sbuf appendFormat:@"%02X", (unsigned int)buf[i]];
     }
     return [sbuf copy];

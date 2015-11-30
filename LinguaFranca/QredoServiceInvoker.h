@@ -15,9 +15,9 @@ typedef NS_ENUM(NSInteger, QredoLFError) {
 
 @interface QredoServiceInvoker : NSObject <QredoTransportDelegate>
 
-+ (instancetype)serviceInvokerWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials*)appCredentials;
++ (instancetype)serviceInvokerWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials *)appCredentials;
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials*)appCredentials;
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials *)appCredentials;
 
 - (void)terminate;
 
