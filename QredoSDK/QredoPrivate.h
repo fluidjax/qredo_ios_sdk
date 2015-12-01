@@ -7,6 +7,7 @@
 
 #import "Qredo.h"
 #import "QredoServiceInvoker.h"
+#import "QredoUserCredentials.h"
 
 extern NSString *const QredoVaultItemTypeKeychain;
 extern NSString *const QredoVaultItemTypeKeychainAttempt;
@@ -20,13 +21,9 @@ extern NSString *const QredoVaultItemSummaryKeyDeviceName;
 - (QredoVault *)systemVault;
 - (QredoKeychain *)keychain;
 
-- (void)createSystemVaultWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+- (void)createSystemVaultWithUserCredentials:(QredoUserCredentials*)userCredentials  completionHandler:(void(^)(NSError *error))completionHandler;
 - (BOOL)saveStateWithError:(NSError **)error;
-
-+ (BOOL)hasDefaultVaultKeychainWithError:(NSError **)error;
-
 - (BOOL)deleteCurrentDataWithError:(NSError **)error;
 @end
-
 
 #endif

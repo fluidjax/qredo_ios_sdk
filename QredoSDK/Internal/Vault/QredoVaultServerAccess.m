@@ -214,8 +214,42 @@
      }];
 }
 
-// this is private method that also returns highWatermark. Used in the polling data
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                    completionHandler:(void(^)(NSError *error))completionHandler
+                     watermarkHandler:(void(^)(QredoVaultHighWatermark*))watermarkHandler
+                                since:(QredoVaultHighWatermark*)sinceWatermark
+                 consolidatingResults:(BOOL)shouldConsolidateResults{
+    
+    __block int vaultItemCount =0;
+    __block QredoVaultHighWatermark *highWaterMark;
+
+    [self enumerateVaultItemsPagedUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        vaultItemCount++;
+        if (block)block(vaultItemMetadata, stop);
+       
+    } completionHandler:^(NSError *error) {
+        if (vaultItemCount>0){
+            //maybe some more vault items - recurse
+            [self enumerateVaultItemsUsingBlock:block
+                              completionHandler:completionHandler
+                               watermarkHandler:watermarkHandler
+                                          since:highWaterMark consolidatingResults:shouldConsolidateResults];
+        }else{
+            if (completionHandler)completionHandler(error);
+        }
+
+    } watermarkHandler:^(QredoVaultHighWatermark *vaultHighWaterMark){
+        highWaterMark =vaultHighWaterMark;
+        if (watermarkHandler)watermarkHandler(vaultHighWaterMark);
+    } since:sinceWatermark consolidatingResults:shouldConsolidateResults];
+    
+}
+
+
+
+
+// this is private method that also returns highWatermark. Used in the polling data
+- (void)enumerateVaultItemsPagedUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                     completionHandler:(void(^)(NSError *error))completionHandler
                      watermarkHandler:(void(^)(QredoVaultHighWatermark*))watermarkHandler
                                 since:(QredoVaultHighWatermark*)sinceWatermark
@@ -389,7 +423,7 @@
 
          if (discoveredNewSequence) {
              dispatch_async(_queue, ^{
-                 [self enumerateVaultItemsUsingBlock:block
+                 [self enumerateVaultItemsPagedUsingBlock:block
                                    completionHandler:completionHandler
                                     watermarkHandler:watermarkHandler
                                                since:newWatermark

@@ -4,6 +4,7 @@
 
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
+#import "QredoQUID.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultUpdateTests.h"
 #import "NSDictionary+Contains.h"
@@ -33,12 +34,10 @@
     }
 }
 
-- (QredoClientOptions *)clientOptionsWithResetData:(BOOL)resetData
+- (QredoClientOptions *)clientOptions:(BOOL)resetData
 {
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
-    clientOptions.resetData = resetData;
-    
     return clientOptions;
 }
 
@@ -46,10 +45,11 @@
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[self clientOptionsWithResetData:YES]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[self clientOptions:YES]
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   client = clientArg;
@@ -206,6 +206,7 @@
         // avoiding exception when 'fulfill' is called after timeout
         testExpectation = nil;
     }];
+   
     
     NSDate *afterFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
     
@@ -390,8 +391,14 @@
     XCTAssertNil(fetchedMetadata);
     
     
+    
+    QredoVaultItemDescriptor *item1DescriptorWithoutSequenceNumber = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:item1Descriptor.sequenceId
+                                                                                                     itemId:item1Descriptor.itemId];
+    
+    
+    
     testExpectation = [self expectationWithDescription:@"get metadata of a deleted item"];
-    [vault getItemMetadataWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+    [vault getItemMetadataWithDescriptor:item1DescriptorWithoutSequenceNumber completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
         XCTAssertNil(vaultItemMetadata);
         XCTAssertNotNil(error);
         XCTAssertEqualObjects(error.domain, QredoErrorDomain);
@@ -405,11 +412,11 @@
     
     
     testExpectation = [self expectationWithDescription:@"get a deleted item"];
-    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+    [vault getItemWithDescriptor:item1DescriptorWithoutSequenceNumber completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
         XCTAssertNil(vaultItem);
         XCTAssertNotNil(error);
         XCTAssertEqualObjects(error.domain, QredoErrorDomain);
-        XCTAssertEqual(error.code, QredoErrorCodeVaultItemHasBeenDeleted);
+        XCTAssertEqual(error.code, QredoErrorCodeVaultItemNotFound);
         [testExpectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {

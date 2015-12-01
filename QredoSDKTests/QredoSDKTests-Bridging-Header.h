@@ -4,6 +4,8 @@
 
 #import "Qredo.h"
 #import "NSDictionary+Contains.h"
+#import "QredoVault.h"
+#import "QredoTypes.h"
 #import "QredoTestUtils.h"
 
 #import "QredoKeychain.h"

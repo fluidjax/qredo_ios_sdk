@@ -6,7 +6,6 @@
 #import <XCTest/XCTest.h>
 
 #import "QredoVaultCrypto.h"
-#import "QredoVaultPrivate.h"
 #import "NSData+QredoRandomData.h"
 #import "NSDictionary+IndexableSet.h"
 #import "NSData+ParseHex.h"

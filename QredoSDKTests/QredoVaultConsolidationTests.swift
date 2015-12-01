@@ -56,9 +56,14 @@ class QredoVaultConsolidationTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-
         let createExpectation = self.expectationWithDescription("create client")
-        QredoClient.authorizeWithConversationTypes([], vaultDataTypes: ["com.qredo.test"],
+        
+        let appSecret = "cafebabe"
+        let userId = "testUserId"
+        let userSecret = "randompassword"
+
+        
+        QredoClient.initializeWithAppSecret(appSecret, userId: userId, userSecret: userSecret,
             options: QredoClientOptions.qtu_clientOptionsWithTransportType(transportType, resetData: true),
             completionHandler: {client, error in
                 self.qredo = client

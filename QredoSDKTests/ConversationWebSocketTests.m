@@ -1,8 +1,4 @@
-#import "ConversationTests.h"
-
-@interface ConversationWebSocketTests : ConversationTests
-
-@end
+#import "ConversationWebSocketTests.h"
 
 @implementation ConversationWebSocketTests
 

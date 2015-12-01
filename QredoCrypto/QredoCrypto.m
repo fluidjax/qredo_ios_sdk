@@ -180,71 +180,46 @@
     return prk;
 }
 
-+ (NSData *)hkdfExpandSha256WithKey:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength
-{
-    // RFC 5869 says 'a pseudorandom key of at least HashLen octets'
-    if (!key)
-    {
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (key.length <  CC_SHA256_DIGEST_LENGTH)
-    {
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key provided (%lu bytes, %lu bits) is not a valid length for HKDF Expand with SHA256. Requires at least %d bytes.", (unsigned long)key.length, (unsigned long)key.length * 8, CC_SHA256_DIGEST_LENGTH]
-                                     userInfo:nil];
-    }
-    
-    // HKDF-Expand gets output keying material (OKM) from the pseudo random key (PRK) and info (optional context/app specific info)
-    //    N = ceil(L/HashLen)
-    //    T = T(1) | T(2) | T(3) | ... | T(N)
-    //    OKM = first L octets of T
-    //    
-    //where:
-    //    T(0) = empty string (zero length)
-    //    T(1) = HMAC-Hash(PRK, T(0) | info | 0x01)
-    //    T(2) = HMAC-Hash(PRK, T(1) | info | 0x02)
-    //    T(3) = HMAC-Hash(PRK, T(2) | info | 0x03)
-    //    ...
-    //    
-    //    (where the constant concatenated to the end of each T(n) is a
-    //     single octet.)
-    
-    // Info is optional, but length is required later
-    NSUInteger infoLength = 0;
-    if (info != nil)
-    {
-        infoLength = info.length;
-    }
-    
-    // NOTE: As a shortcut, we only implemented the special case where
-    // HashLen = L (output length), so only 1 round of hashing is implemented.
-    // Any other lengths will be invalid for this method.
-    NSAssert(outputLength == CC_SHA256_DIGEST_LENGTH, @"Unsupported output length provided.");
-    
-    // HKDF-Expand
-    NSMutableData *okm = [NSMutableData dataWithLength:outputLength];
-    
-    // In our 1 round hashing shortcut, data to hash will be 'info' concatenated with 0x01
-    NSMutableData *t = [[NSMutableData alloc] init];
-    [t setData:info];
-    [t increaseLengthBy:1];
-    ((uint8_t*)t.mutableBytes)[infoLength] = 0x01;
 
-    CCHmac(kCCHmacAlgSHA256, key.bytes, key.length, t.bytes, t.length, okm.mutableBytes);
 
-    return okm;
+
++(NSData*)hkdfExpandSha256WithKey:(NSData*)key info:(NSData*)info outputLength:(NSUInteger)outputLength{
+    int             iterations = (int)ceil((double)outputLength/(double)CC_SHA256_DIGEST_LENGTH);
+    NSData          *mixin = [NSData data];
+    NSMutableData   *results = [NSMutableData data];
+    
+    for (int i=0; i<iterations; i++) {
+        CCHmacContext ctx;
+        CCHmacInit(&ctx, kCCHmacAlgSHA256, [key bytes], [key length]);
+        CCHmacUpdate(&ctx, [mixin bytes], [mixin length]);
+        if (info != nil) {
+            CCHmacUpdate(&ctx, [info bytes], [info length]);
+        }
+        unsigned char c = i+1;
+        CCHmacUpdate(&ctx, &c, 1);
+        unsigned char T[CC_SHA256_DIGEST_LENGTH];
+        CCHmacFinal(&ctx, T);
+        NSData *stepResult = [NSData dataWithBytes:T length:CC_SHA256_DIGEST_LENGTH];
+        [results appendData:stepResult];
+        mixin = [stepResult copy];
+    }
+    
+    return [[NSData dataWithData:results] subdataWithRange:NSMakeRange(0, outputLength)];
 }
+
+
 
 + (NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info
 {
-    // Input validation is left to the called methods.
-    
+    //default to CC_SHA256_DIGEST_LENGTH
+    return [self hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:CC_SHA256_DIGEST_LENGTH];
+}
+
+
++ (NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength
+{
     NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:salt initialKeyMaterial:ikm];
-    NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:prk info:info outputLength:CC_SHA256_DIGEST_LENGTH];
-    
+    NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:prk info:info outputLength:outputLength];
     return okm;
 }
 

@@ -530,23 +530,24 @@
 
 @end
 
-@implementation QredoAccessToken
+@implementation QredoAppCredentials
 
-+ (QredoAccessToken *)empty {
-    NSData *emptyData = [NSData data];
-    return [[self alloc] initWithToken:emptyData keySlotNumber:@-1];
++ (QredoAppCredentials *)empty {
+    NSString *emptyAppId   = @"";
+    NSData *emptyAppSecret = [NSData data];
+    return [[self alloc] initWithAppId:emptyAppId appSecret:emptyAppSecret];
 }
 
-+ (QredoAccessToken *)accessTokenWithToken:(NSData *)token
-                             keySlotNumber:(NSNumber *)keySlotNumber {
-    return [[self alloc] initWithToken:token keySlotNumber:keySlotNumber];
++ (QredoAppCredentials *)appCredentialsWithAppId:(NSString *)appId
+                                       appSecret:(NSData *)appSecret{
+    return [[self alloc] initWithAppId:appId appSecret:appSecret];
 }
 
-- (QredoAccessToken *)initWithToken:(NSData *)token
-                      keySlotNumber:(NSNumber *)keySlotNumber {
+- (QredoAppCredentials *)initWithAppId:(NSString *)appId
+                             appSecret:(NSData *)appSecret {
     self = [super init];
-    _token = token;
-    _keySlotNumber = keySlotNumber;
+    _appId     = appId;
+    _appSecret = appSecret;
     return self;
 }
 
@@ -556,24 +557,24 @@
     if (!other || ![[other class] isEqual:[self class]])
         return NO;
 
-    return [self isEqualToAccessToken:other];
+    return [self isEqualToAppCredentials:other];
 }
 
-- (BOOL)isEqualToAccessToken:(QredoAccessToken *)accessToken {
-    if (self == accessToken)
+- (BOOL)isEqualToAppCredentials:(QredoAppCredentials *)appCredentials {
+    if (self == appCredentials)
         return YES;
-    if (accessToken == nil)
+    if (appCredentials == nil)
         return NO;
-    if (self.token != accessToken.token && ![self.token isEqualToData:accessToken.token])
+    if (self.appId != appCredentials.appId && ![self.appId isEqualToString:appCredentials.appId])
         return NO;
-    if (self.keySlotNumber != accessToken.keySlotNumber && ![self.keySlotNumber isEqualToNumber:accessToken.keySlotNumber])
+    if (self.appSecret != appCredentials.appSecret && ![self.appSecret isEqualToData:appCredentials.appSecret])
         return NO;
     return YES;
 }
 
 - (NSUInteger)hash {
-    NSUInteger hash = [self.token hash];
-    hash = hash * 31u + [self.keySlotNumber hash];
+    NSUInteger hash = [self.appId hash];
+    hash = hash * 31u + [self.appSecret hash];
     return hash;
 }
 
@@ -806,11 +807,11 @@
     
 }
 
-- (QredoAccessToken *)readInvocationHeader {
+- (QredoAppCredentials *)readInvocationHeader {
     [self expectMarkedListWithMarker:QredoMarkerOperationInvocation];
-    NSData           *token = [self readByteSequence];
-    NSNumber *keySlotNumber = [self readInt32];
-    return [QredoAccessToken accessTokenWithToken:token keySlotNumber:keySlotNumber];
+    NSString *appId   = [self readString];
+    NSData *appSecret = [self readByteSequence];
+    return [QredoAppCredentials appCredentialsWithAppId:appId appSecret:appSecret];
 }
 
 - (NSArray *)readErrorInfoItems {
@@ -999,10 +1000,10 @@
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithSymbol:[interchangeHeader operationName]] asData]];
 }
 
-- (void)writeInvocationHeader:(QredoAccessToken *)accessToken {
+- (void)writeInvocationHeader:(QredoAppCredentials *)appCredentials {
     [self writeMarkedListWithMarker:QredoMarkerOperationInvocation];
-    [self writeByteSequence:accessToken.token];
-    [self writeInt32:accessToken.keySlotNumber];
+    [self writeString:appCredentials.appId];
+    [self writeByteSequence:appCredentials.appSecret];
 }
 
 - (void)writeErrorInfoItems:(NSArray *)errorInfoItems {

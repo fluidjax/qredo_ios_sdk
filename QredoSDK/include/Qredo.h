@@ -3,7 +3,6 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "QredoQUID.h"
 #import "QredoConversation.h"
 #import "QredoTypes.h"
 #import "QredoVault.h"
@@ -47,11 +46,21 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
  
  If the app calls any Vault, Rendezvous or Conversation API without an authorization, then those methods will return `QredoErrorCodeAppNotAuthorized` error immediately.
  */
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
-+ (void)authorizeWithConversationTypes:(NSArray*)conversationTypes vaultDataTypes:(NSArray*)vaultDataTypes options:(QredoClientOptions*)options completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
-+ (void)openSettings;
++ (void)initializeWithAppSecret:(NSString*)appSecret
+                         userId:(NSString*)userId
+                     userSecret:(NSString*)userSecret
+             completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
+
+
+
++ (void)initializeWithAppSecret:(NSString*)appSecret
+                         userId:(NSString*)userId
+                     userSecret:(NSString*)userSecret
+                        options:(QredoClientOptions*)options
+              completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
+
 
 - (void)closeSession;
 - (BOOL)isClosed;
@@ -83,9 +92,19 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
                                  signingHandler:(signDataBlock)signingHandler
                               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
+
+
+
+
+/** Fetch previously created rendezvous that has been stored in the vault by tag */
+-(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+
 /** Enumerates through the rendezvous that have been stored in the Vault
  @discussion assign YES to *stop to break the enumeration */
 - (void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
+
+
 
 /** Fetches previously created rendezvous that has been stored in the vault */
 - (void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;

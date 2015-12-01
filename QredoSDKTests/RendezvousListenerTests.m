@@ -7,6 +7,7 @@
 #import "Qredo.h"
 #import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
+#import "QredoQUID.h"
 
 // The purpose of this test is to cover all edge cases in the rendezvous listener:
 // - receiving response
@@ -39,10 +40,11 @@
 
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   client = clientArg;
@@ -94,15 +96,21 @@
 
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
 
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
-                                  XCTAssertNil(error);
-                                  XCTAssertNotNil(clientArg);
-                                  anotherClient = clientArg;
-                                  [clientExpectation fulfill];
-                              }];
+
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                       options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
+                             completionHandler:^(QredoClient *clientArg, NSError *error) {
+                                 XCTAssertNil(error);
+                                 XCTAssertNotNil(clientArg);
+                                 anotherClient = clientArg;
+                                 [clientExpectation fulfill];
+                             }];
+    
+                           
+                           
+                           
 
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout

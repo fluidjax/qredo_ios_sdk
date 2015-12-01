@@ -5,6 +5,8 @@
 #import "QredoTransport.h"
 #import "QredoLogging.h"
 #import "QredoCertificate.h"
+#import "NSData+ParseHex.h"
+#import "QredoHelpers.h"
 
 NSString *const QredoLFErrorDomain = @"QredoLFError";
 
@@ -31,17 +33,20 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 @property BOOL terminated;
 @property QredoTransport *transport;
 @property dispatch_queue_t callbacksDictionaryQueue;
+@property QredoAppCredentials *appCredentials;
 
 @end
 
 @implementation QredoServiceInvoker
 
 
-+ (instancetype)serviceInvokerWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate {
-    return [[self alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate];
++ (instancetype)serviceInvokerWithServiceURL:(NSURL *)serviceURL
+                           pinnedCertificate:(QredoCertificate *)certificate
+                              appCredentials:(QredoAppCredentials *)appCredentials{
+    return [[self alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate appCredentials:appCredentials];
 }
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate {
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials *)appCredentials{
     
     self = [super init];
     
@@ -55,6 +60,8 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         _callbacksDictionaryQueue = dispatch_queue_create("com.qredo.serviceInvoker.callbacks", DISPATCH_QUEUE_CONCURRENT);
 
         _transport = [QredoTransport transportForServiceURL:serviceURL pinnedCertificate:certificate];
+        _appCredentials = appCredentials;
+        
         
         // TODO: DH - if we ever start returning the same transport instance for a specific URL and there are simultaneous QredoServicInvoker instances talking to the same service URL, there may be problems where we overwrite another instance's delegate.
         _transport.responseDelegate = self;
@@ -76,6 +83,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         
         // Closes down the transport threads. Requires re-initialisation.  Transport will trigger error handlers if attempted to be used after termination
         [self.transport close];
+        self.transport = nil;
     }
 }
 
@@ -120,8 +128,13 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 
         QredoWireFormatWriter *wireFormatWriter = [QredoWireFormatWriter wireFormatWriterWithOutputStream:outputStream];
 
-        QredoVersion *protocolVersion = [QredoVersion versionWithMajor:@0 minor:@2 patch:@0];
-        QredoVersion *releaseVersion  = [QredoVersion versionWithMajor:@0 minor:@2 patch:@0];
+        QredoVersion *protocolVersion = [QredoVersion versionWithMajor:QREDO_MAJOR_PROTOCOL_VERSION
+                                                                 minor:QREDO_MINOR_PROTOCOL_VERSION
+                                                                 patch:QREDO_PATCH_PROTOCOL_VERSION];
+        
+        QredoVersion *releaseVersion  = [QredoVersion versionWithMajor:QREDO_MAJOR_RELEASE_VERSION
+                                                                 minor:QREDO_MINOR_RELEASE_VERSION
+                                                                 patch:QREDO_PATCH_RELEASE_VERSION];
         QredoMessageHeader *messageHeader =
                 [QredoMessageHeader messageHeaderWithProtocolVersion:protocolVersion
                                                       releaseVersion:releaseVersion];
@@ -135,7 +148,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                                                                      serviceName:serviceName
                                                                    operationName:operationName];
             [wireFormatWriter writeInterchangeHeader:interchangeHeader];
-                    [wireFormatWriter writeInvocationHeader:[QredoAccessToken empty]];
+                     [wireFormatWriter writeInvocationHeader:self.appCredentials];
                     requestWriter(wireFormatWriter);
                 [wireFormatWriter writeEnd];
             [wireFormatWriter writeEnd];

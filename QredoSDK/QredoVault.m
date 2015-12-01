@@ -4,7 +4,6 @@
 
 #import <Foundation/Foundation.h>
 #import "QredoVault.h"
-#import "QredoVaultPrivate.h"
 #import "Qredo.h"
 #import "QredoPrivate.h"
 #import "QredoVaultSequenceCache.h"
@@ -279,6 +278,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
      }];
 }
 
+
+
 @end
 
 @implementation QredoVault
@@ -390,23 +391,33 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     }
 }
 
+
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                       completionHandler:(void(^)(NSError *error))completionHandler
-{
+                    completionHandler:(void(^)(NSError *error))completionHandler{
     [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
 }
 
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                                 since:(QredoVaultHighWatermark*)sinceWatermark
-                    completionHandler:(void(^)(NSError *error))completionHandler
-{
+                    completionHandler:(void(^)(NSError *error))completionHandler{
     dispatch_async(_queue, ^{
         [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
+        
     });
 }
 
+
+
+
+
+
+
+
+
+
 - (void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
 {
+
     QredoQUID *itemId = metadata.descriptor.itemId;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionary];
     newSummaryValues[QredoVaultItemMetadataItemDateCreated] = metadata.summaryValues[QredoVaultItemMetadataItemDateCreated];
@@ -420,17 +431,16 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
                        dataType:QredoVaultItemMetadataItemTypeTombstone
                         created:created
                   summaryValues:newSummaryValues
-              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
-     {
-         if (newItemMetadata) {
-             [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
-                                            completionHandler:^(NSError *cacheError)
-              {
-                  completionHandler(newItemMetadata.descriptor, error);
-              }];
-         } else {
-             completionHandler(nil, error);
-         }
+              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+              if (newItemMetadata) {
+                  [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
+                                                 completionHandler:^(NSError *cacheError)
+                   {
+                       completionHandler(newItemMetadata.descriptor, error);
+                   }];
+              } else {
+                  completionHandler(nil, error);
+              }
      }];
 }
 

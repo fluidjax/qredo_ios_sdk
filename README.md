@@ -58,7 +58,7 @@ pod spec lint QredoSDK.podspec --use-libraries --allow-warnings --verbose --fail
 
 ```
 
-xcodebuild -workspace QredoSDK.xcworkspace -scheme QredoSDK -destination name="iPhone 6” build
+xcodebuild -workspace QredoSDK.xcworkspace -scheme QredoSDK -destination name="iPhone 6" build
 
 ```
 

@@ -13,7 +13,7 @@ class QredoVaultDescriptorTests: XCTestCase {
 
         let createExpectation = self.expectationWithDescription("create client")
         QredoClient.authorizeWithConversationTypes([], vaultDataTypes: ["com.qredo.test"],
-            options: QredoClientOptions(MQTT: useMQTT, resetData: true),
+            options: QredoClientOptions.qtu_clientOptionsWithTransportType(QredoClientOptionsTransportType.HTTP, resetData: true),
             completionHandler: {client, error in
                 self.client = client
                 createExpectation.fulfill()

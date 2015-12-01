@@ -26,19 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "66F7752B1BD6538D00F01A2C"
-               BuildableName = "LinguaFrancaTests.xctest"
-               BlueprintName = "LinguaFrancaTests"
-               ReferencedContainer = "container:QredoSDK.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -53,16 +42,11 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "66605C361BD55A9F00EC8D6C"
-               BuildableName = "QredoCryptoTests.xctest"
-               BlueprintName = "QredoCryptoTests"
+               BlueprintIdentifier = "66F7752B1BD6538D00F01A2C"
+               BuildableName = "LinguaFrancaTests.xctest"
+               BlueprintName = "LinguaFrancaTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "QredoCryptoTests/testGetKeyDataForIdentifier_ManyGenerates">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

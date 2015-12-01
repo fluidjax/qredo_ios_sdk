@@ -280,23 +280,31 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     XCTAssertNotNil(self.publicKeyCertificateChainPem);
 }
 
-- (QredoClientOptions *)clientOptionsWithResetData:(BOOL)resetData
+- (QredoClientOptions *)clientOptions:(BOOL)resetData
 {
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
-    clientOptions.resetData = resetData;
-    
     return clientOptions;
 }
+
+-(NSString *)randomStringWithLength:(int)len {
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
+    for (int i=0; i<len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((int)[letters length])]];
+    }
+    return randomString;
+}
+
 
 - (void)authoriseClient
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[self clientOptionsWithResetData:YES]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]                                 options:[self clientOptions:YES]
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   client = clientArg;
@@ -318,10 +326,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block QredoClient *anotherClient = nil;
 
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[self clientOptionsWithResetData:YES]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+    
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[self clientOptions:YES]
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   anotherClient = clientArg;
@@ -680,10 +690,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block QredoClient *anotherClient = nil;
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[self clientOptionsWithResetData:NO]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
+    
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:nil
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   anotherClient = clientArg;
@@ -761,11 +773,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block QredoClient *anotherClient = nil;
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[self clientOptionsWithResetData:NO]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
-                                  
+    
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[self clientOptions:YES]
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   anotherClient = clientArg;
@@ -862,11 +875,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block QredoClient *anotherClient = nil;
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[self clientOptionsWithResetData:NO]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
-                                  
+    
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[self clientOptions:YES]
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   anotherClient = clientArg;
@@ -1273,11 +1287,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block QredoClient *anotherClient = nil;
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
-    [QredoClient authorizeWithConversationTypes:nil
-                                 vaultDataTypes:@[@"blob"]
-                                        options:[self clientOptionsWithResetData:NO]
-                              completionHandler:^(QredoClient *clientArg, NSError *error) {
-                                  
+    
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[self clientOptions:YES]
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
                                   anotherClient = clientArg;
@@ -1881,6 +1896,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     return rendezvousRef;
     
 }
+
 
 
 
