@@ -6,6 +6,7 @@
 const struct QredoIndexSummaryValuesAttributes QredoIndexSummaryValuesAttributes = {
 	.key = @"key",
 	.value = @"value",
+	.valueType = @"valueType",
 };
 
 const struct QredoIndexSummaryValuesRelationships QredoIndexSummaryValuesRelationships = {
@@ -38,12 +39,38 @@ const struct QredoIndexSummaryValuesRelationships QredoIndexSummaryValuesRelatio
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 
+	if ([key isEqualToString:@"valueTypeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"valueType"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+
 	return keyPaths;
 }
 
 @dynamic key;
 
 @dynamic value;
+
+@dynamic valueType;
+
+- (int16_t)valueTypeValue {
+	NSNumber *result = [self valueType];
+	return [result shortValue];
+}
+
+- (void)setValueTypeValue:(int16_t)value_ {
+	[self setValueType:@(value_)];
+}
+
+- (int16_t)primitiveValueTypeValue {
+	NSNumber *result = [self primitiveValueType];
+	return [result shortValue];
+}
+
+- (void)setPrimitiveValueTypeValue:(int16_t)value_ {
+	[self setPrimitiveValueType:@(value_)];
+}
 
 @dynamic vaultMetadata;
 

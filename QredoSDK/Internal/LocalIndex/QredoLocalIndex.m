@@ -14,12 +14,11 @@
 #import "QredoIndexVaultItemMetadata.h"
 
 
-
 @import CoreData;
 
 
 @interface QredoLocalIndex ()
-@property NSManagedObjectContext *managedObjectContext;
+@property (readwrite) NSManagedObjectContext *managedObjectContext;
 @property NSManagedObjectContext *privateContext;
 
 @end
@@ -40,38 +39,47 @@
 
 
 
-+(id)sharedQredoLocalIndexTEST:(NSURL*)url {
-    static QredoLocalIndex *sharedLocalIndex = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedLocalIndex = [[self alloc] init];
-        [sharedLocalIndex initializeCoreDataWithURL:url];
-    });
-    return sharedLocalIndex;
-}
+//+(id)sharedQredoLocalIndexTEST:(NSURL*)url {
+//    static QredoLocalIndex *sharedLocalIndex = nil;
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        sharedLocalIndex = [[self alloc] init];
+//        [sharedLocalIndex initializeCoreDataWithURL:url];
+//    });
+//    return sharedLocalIndex;
+//}
 
 
-- (void)initializeCoreDataWithURL:(NSURL*)url{
-    if ([self managedObjectContext]) return;
-    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];
-    NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
-    NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
-    NSAssert(coordinator, @"Failed to initialize coordinator");
-    [self setManagedObjectContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType]];
-    [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
-    [[self privateContext] setPersistentStoreCoordinator:coordinator];
-    [[self managedObjectContext] setParentContext:[self privateContext]];
-
-}
+//- (void)initializeCoreDataWithURL:(NSURL*)url{
+//    
+//    
+//    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+//    NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
+//    
+//    if ([self managedObjectContext]) return;
+//    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];
+//    NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
+//    NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
+//    NSAssert(coordinator, @"Failed to initialize coordinator");
+//    [self setManagedObjectContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType]];
+//    [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
+//    [[self privateContext] setPersistentStoreCoordinator:coordinator];
+//    [[self managedObjectContext] setParentContext:[self privateContext]];
+//
+//}
 
 
 - (void)initializeCoreData{
     if ([self managedObjectContext]) return;
-//    NSManagedObjectModel *mom = [NSManagedObjectModel  mergedModelFromBundles:nil];
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
+
     
-        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-        NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"momd"];
-        NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    //    NSManagedObjectModel *mom = [NSManagedObjectModel  mergedModelFromBundles:nil];
+    
+//        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+//        NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"momd"];
+    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
     
     NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
@@ -117,12 +125,20 @@
 
 
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)metadata{
-    [QredoIndexVaultItemMetadata createOrUpdateWith:metadata inManageObjectContext:self.managedObjectContext];
+    [self.managedObjectContext performBlockAndWait:^{
+        [QredoIndexVaultItemMetadata createOrUpdateWith:metadata inManageObjectContext:self.managedObjectContext];
+    }];
+
 }
 
 
 -(QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor{
-    return nil;
+    __block QredoVaultItemMetadata* retrievedMetadata = nil;
+    [self.managedObjectContext performBlockAndWait:^{
+        retrievedMetadata = [QredoIndexVaultItemMetadata get:vaultItemDescriptor inManageObjectContext:self.managedObjectContext];
+        
+    }];
+    return retrievedMetadata;
 }
 
 

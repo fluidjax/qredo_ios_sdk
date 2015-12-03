@@ -8,7 +8,7 @@
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
 #import "QredoErrorCodes.h"
-
+@import CoreData;
 
 // Revision 1
 // See https://github.com/Qredo/ios-sdk/wiki/SDK-revisions
@@ -145,13 +145,15 @@ New responses to the Rendezvous will fail. To accept new responses, activate the
 @end
 
 @interface QredoLocalIndex : NSObject
+
+@property (readonly) NSManagedObjectContext *managedObjectContext;
+
 +(id)sharedQredoLocalIndex;
-+(id)sharedQredoLocalIndexTEST:(NSURL*)url;
+//+(id)sharedQredoLocalIndexTEST:(NSURL*)url;
 
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)metadata;
 -(void)putItem:(QredoVaultItem *)vaultItem;
-//
-//-(QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+-(QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 //-(void)delete:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 //-(void)find:(NSPredicate *)predicate withBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
 //

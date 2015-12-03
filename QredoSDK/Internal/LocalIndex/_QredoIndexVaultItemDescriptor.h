@@ -6,6 +6,7 @@
 extern const struct QredoIndexVaultItemDescriptorAttributes {
 	__unsafe_unretained NSString *itemId;
 	__unsafe_unretained NSString *sequenceId;
+	__unsafe_unretained NSString *sequenceValue;
 } QredoIndexVaultItemDescriptorAttributes;
 
 extern const struct QredoIndexVaultItemDescriptorRelationships {
@@ -31,6 +32,14 @@ extern const struct QredoIndexVaultItemDescriptorRelationships {
 
 //- (BOOL)validateSequenceId:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSNumber* sequenceValue;
+
+@property (atomic) int64_t sequenceValueValue;
+- (int64_t)sequenceValueValue;
+- (void)setSequenceValueValue:(int64_t)value_;
+
+//- (BOOL)validateSequenceValue:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) QredoIndexVaultItemMetadata *metataData;
 
 //- (BOOL)validateMetataData:(id*)value_ error:(NSError**)error_;
@@ -44,6 +53,12 @@ extern const struct QredoIndexVaultItemDescriptorRelationships {
 
 - (NSData*)primitiveSequenceId;
 - (void)setPrimitiveSequenceId:(NSData*)value;
+
+- (NSNumber*)primitiveSequenceValue;
+- (void)setPrimitiveSequenceValue:(NSNumber*)value;
+
+- (int64_t)primitiveSequenceValueValue;
+- (void)setPrimitiveSequenceValueValue:(int64_t)value_;
 
 - (QredoIndexVaultItemMetadata*)primitiveMetataData;
 - (void)setPrimitiveMetataData:(QredoIndexVaultItemMetadata*)value;

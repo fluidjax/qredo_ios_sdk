@@ -4,6 +4,8 @@
 @import CoreData;
 
 extern const struct QredoIndexVaultItemMetadataAttributes {
+	__unsafe_unretained NSString *accessLevel;
+	__unsafe_unretained NSString *created;
 	__unsafe_unretained NSString *dataType;
 } QredoIndexVaultItemMetadataAttributes;
 
@@ -25,6 +27,18 @@ extern const struct QredoIndexVaultItemMetadataRelationships {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) QredoIndexVaultItemMetadataID* objectID;
+
+@property (nonatomic, strong) NSNumber* accessLevel;
+
+@property (atomic) int16_t accessLevelValue;
+- (int16_t)accessLevelValue;
+- (void)setAccessLevelValue:(int16_t)value_;
+
+//- (BOOL)validateAccessLevel:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSDate* created;
+
+//- (BOOL)validateCreated:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* dataType;
 
@@ -53,6 +67,15 @@ extern const struct QredoIndexVaultItemMetadataRelationships {
 @end
 
 @interface _QredoIndexVaultItemMetadata (CoreDataGeneratedPrimitiveAccessors)
+
+- (NSNumber*)primitiveAccessLevel;
+- (void)setPrimitiveAccessLevel:(NSNumber*)value;
+
+- (int16_t)primitiveAccessLevelValue;
+- (void)setPrimitiveAccessLevelValue:(int16_t)value_;
+
+- (NSDate*)primitiveCreated;
+- (void)setPrimitiveCreated:(NSDate*)value;
 
 - (NSString*)primitiveDataType;
 - (void)setPrimitiveDataType:(NSString*)value;

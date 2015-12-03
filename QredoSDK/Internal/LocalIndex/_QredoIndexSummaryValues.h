@@ -6,6 +6,7 @@
 extern const struct QredoIndexSummaryValuesAttributes {
 	__unsafe_unretained NSString *key;
 	__unsafe_unretained NSString *value;
+	__unsafe_unretained NSString *valueType;
 } QredoIndexSummaryValuesAttributes;
 
 extern const struct QredoIndexSummaryValuesRelationships {
@@ -23,13 +24,21 @@ extern const struct QredoIndexSummaryValuesRelationships {
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) QredoIndexSummaryValuesID* objectID;
 
-@property (nonatomic, strong) NSData* key;
+@property (nonatomic, strong) NSString* key;
 
 //- (BOOL)validateKey:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSData* value;
 
 //- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* valueType;
+
+@property (atomic) int16_t valueTypeValue;
+- (int16_t)valueTypeValue;
+- (void)setValueTypeValue:(int16_t)value_;
+
+//- (BOOL)validateValueType:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) QredoIndexVaultItemMetadata *vaultMetadata;
 
@@ -39,11 +48,17 @@ extern const struct QredoIndexSummaryValuesRelationships {
 
 @interface _QredoIndexSummaryValues (CoreDataGeneratedPrimitiveAccessors)
 
-- (NSData*)primitiveKey;
-- (void)setPrimitiveKey:(NSData*)value;
+- (NSString*)primitiveKey;
+- (void)setPrimitiveKey:(NSString*)value;
 
 - (NSData*)primitiveValue;
 - (void)setPrimitiveValue:(NSData*)value;
+
+- (NSNumber*)primitiveValueType;
+- (void)setPrimitiveValueType:(NSNumber*)value;
+
+- (int16_t)primitiveValueTypeValue;
+- (void)setPrimitiveValueTypeValue:(int16_t)value_;
 
 - (QredoIndexVaultItemMetadata*)primitiveVaultMetadata;
 - (void)setPrimitiveVaultMetadata:(QredoIndexVaultItemMetadata*)value;
