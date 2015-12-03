@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="14F1021" minimumToolsVersion="Xcode 7.0">
+    <entity name="QredoIndexSummaryValues" representedClassName="QredoIndexSummaryValues" syncable="YES">
+        <attribute name="key" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <attribute name="value" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="vaultMetadata" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVaultItemMetadata" inverseName="summaryValues" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
+    </entity>
+    <entity name="QredoIndexVaultItem" representedClassName="QredoIndexVaultItem" syncable="YES">
+        <attribute name="value" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="metadata" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemMetadata" inverseName="vaultItem" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
+    </entity>
+    <entity name="QredoIndexVaultItemDescriptor" representedClassName="QredoIndexVaultItemDescriptor" syncable="YES">
+        <attribute name="itemId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <attribute name="sequenceId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <relationship name="metataData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVaultItemMetadata" inverseName="descriptor" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
+    </entity>
+    <entity name="QredoIndexVaultItemMetadata" representedClassName="QredoIndexVaultItemMetadata" syncable="YES">
+        <attribute name="dataType" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="descriptor" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemDescriptor" inverseName="metataData" inverseEntity="QredoIndexVaultItemDescriptor" syncable="YES"/>
+        <relationship name="summaryValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="QredoIndexSummaryValues" inverseName="vaultMetadata" inverseEntity="QredoIndexSummaryValues" syncable="YES"/>
+        <relationship name="vaultItem" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItem" inverseName="metadata" inverseEntity="QredoIndexVaultItem" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="QredoIndexSummaryValues" positionX="-27" positionY="18" width="128" height="90"/>
+        <element name="QredoIndexVaultItemMetadata" positionX="18" positionY="63" width="128" height="105"/>
+        <element name="QredoIndexVaultItem" positionX="54" positionY="99" width="128" height="75"/>
+        <element name="QredoIndexVaultItemDescriptor" positionX="18" positionY="63" width="128" height="90"/>
+    </elements>
+</model>
