@@ -5,7 +5,8 @@
 
 extern const struct QredoIndexSummaryValuesAttributes {
 	__unsafe_unretained NSString *key;
-	__unsafe_unretained NSString *value;
+	__unsafe_unretained NSString *value.date;
+	__unsafe_unretained NSString *value.string;
 	__unsafe_unretained NSString *valueType;
 } QredoIndexSummaryValuesAttributes;
 
@@ -28,9 +29,13 @@ extern const struct QredoIndexSummaryValuesRelationships {
 
 //- (BOOL)validateKey:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSData* value;
+@property (nonatomic, strong) NSDate* value.date;
 
-//- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateValue.date:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSString* value.string;
+
+//- (BOOL)validateValue.string:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSNumber* valueType;
 
@@ -51,8 +56,11 @@ extern const struct QredoIndexSummaryValuesRelationships {
 - (NSString*)primitiveKey;
 - (void)setPrimitiveKey:(NSString*)value;
 
-- (NSData*)primitiveValue;
-- (void)setPrimitiveValue:(NSData*)value;
+- (NSDate*)primitiveValue.date;
+- (void)setPrimitiveValue.date:(NSDate*)value;
+
+- (NSString*)primitiveValue.string;
+- (void)setPrimitiveValue.string:(NSString*)value;
 
 - (NSNumber*)primitiveValueType;
 - (void)setPrimitiveValueType:(NSNumber*)value;

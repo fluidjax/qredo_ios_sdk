@@ -115,7 +115,6 @@ NSNumber *testNumber;
          XCTAssertNil(error);
          XCTAssertNotNil(newItemMetadata);
          createdItemMetaData = newItemMetadata;
-         NSLog(@"Update item itemId %@  SequenceId %lld", newItemMetadata.descriptor.itemId, newItemMetadata.descriptor.sequenceValue);
          [testExpectation fulfill];
      }];
     
@@ -128,12 +127,12 @@ NSNumber *testNumber;
     return createdItemMetaData;
 }
 
--(QredoVaultItemMetadata *)createTestItemInVault:(QredoVault *)vault{
+-(QredoVaultItemMetadata *)createTestItemInVault:(QredoVault *)vault key1Value:(NSString*)key1Value{
     
 
     
     NSData *item1Data = [self randomDataWithLength:1024];
-    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+    NSDictionary *item1SummaryValues = @{@"key1": key1Value,
                                          @"key2": @"value2",
                                          @"key3": testNumber,
                                          @"key4": myTestDate
@@ -179,17 +178,17 @@ NSNumber *testNumber;
     QredoVault *vault = [client1 defaultVault];
     XCTAssertNotNil(vault);
     
-    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault];
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
     [qredoLocalIndex putItemWithMetadata:junk1];
     
-    QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault];
+    QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault key1Value:@"value1"];
     QredoVaultItem *item1 = [self getItemWithDescriptor:meta1 inVault:vault];
     [qredoLocalIndex putItemWithMetadata:meta1];
     
- //   QredoVaultItemMetadata *meta2 = [self updateItem:item1 inVault:vault];
- //   [qredoLocalIndex putItemWithMetadata:meta2];
+    QredoVaultItemMetadata *meta2 = [self updateItem:item1 inVault:vault];
+    [qredoLocalIndex putItemWithMetadata:meta2];
     
-    QredoVaultItemMetadata *junk2 = [self createTestItemInVault:vault];
+    QredoVaultItemMetadata *junk2 = [self createTestItemInVault:vault key1Value:@"value1"];
     [qredoLocalIndex putItemWithMetadata:junk2];
 
     
@@ -199,7 +198,40 @@ NSNumber *testNumber;
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key1"] isEqualToString:@"value1"],@"Summary data is incorrect");
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key2"] isEqualToString:@"value2"],@"Summary data is incorrect");
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key3"] isEqual:testNumber],@"Summary data is correct");
-    XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key4"] isEqualToDate:myTestDate]);
+ //   XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key4"] isEqualToDate:myTestDate]);
+  
+    
+    
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value==%@", @"value1"];
+    
+    
+    __block int count =0;
+    [qredoLocalIndex enumerateCurrentSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
+        count++;
+    } completionHandler:^(NSError *error) {
+        
+        NSLog(@"Current Values = %i",count);
+    }];
+    
+    
+    
+    count =0;
+    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
+        count++;
+    } completionHandler:^(NSError *error) {
+        
+        NSLog(@"All Values = %i",count);
+    }];
+    
+    
+    
+    
+    
+    
+   // NSLog(@"******** ******** retireved %@",searchRes);
+    
     
 }
 

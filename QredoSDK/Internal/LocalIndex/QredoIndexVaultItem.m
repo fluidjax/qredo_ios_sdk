@@ -13,7 +13,7 @@
 
 +(QredoIndexVaultItem *)searchForIndexWithMetata:(QredoVaultItemMetadata *)metadata  inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@",metadata.descriptor.itemId];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@",metadata.descriptor.itemId.data];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchLimit:1];
     NSError *error = nil;
@@ -24,15 +24,14 @@
 
 -(void)addVersion:(QredoVaultItemMetadata *)metadata{
     QredoIndexVaultItemMetadata *indexMetadata = [QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:self.managedObjectContext];
-
-    long long latestSequenceValue = self.latest.descriptor.sequenceValueValue;
+    
+    long long currentSequenceValue = self.latest.descriptor.sequenceValueValue;
     long long newSequenceValue    = indexMetadata.descriptor.sequenceValueValue;
-
-    if (newSequenceValue>latestSequenceValue){
+    QredoIndexVaultItemMetadata *currentLatest = self.latest;
+    if (newSequenceValue>currentSequenceValue){
         //replace this new version as the latest
         self.latest = indexMetadata;
     }
-    
     [self addAllVersionsObject:indexMetadata];
     
 }

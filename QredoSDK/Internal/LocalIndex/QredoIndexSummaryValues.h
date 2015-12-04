@@ -15,3 +15,10 @@ typedef NS_ENUM(NSInteger, IndexSummaryValueDataType) {
 -(NSObject*)retrieveValue;
 
 @end
+
+
+
+
+@interface SummaryValue : NSValueTransformer
+
+@end

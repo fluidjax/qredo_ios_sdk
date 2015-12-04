@@ -18,13 +18,20 @@
 -(void)putItem:(QredoVaultItem *)vaultItem;
 -(QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
+-(void)enumerateSearch:(NSPredicate *)predicate
+              withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+      completionHandler:(void(^)(NSError *error))completionHandler;
+
+
+- (void)enumerateCurrentSearch:(NSPredicate *)predicate
+                     withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+             completionHandler:(void(^)(NSError *error))completionHandler;
+
 
 -(void)delete:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
--(NSArray *)find:(NSPredicate *)predicate;
 
 
--(void)enumerateAllItems;
 -(void)sync;
 -(void)purge;
 -(void)addListener;

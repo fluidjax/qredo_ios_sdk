@@ -42,9 +42,7 @@
     if ([self managedObjectContext]) return;
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
-    
 
-    NSLog(@"Model URL: %@", modelURL);
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
     NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
@@ -58,7 +56,7 @@
     NSError *error;
     NSFileManager *fileMgr = [NSFileManager defaultManager];
     NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    NSLog(@"Documents directory: %@", [fileMgr contentsOfDirectoryAtPath:documentsDirectory error:&error]);
+    //NSLog(@"Documents directory: %@", [fileMgr contentsOfDirectoryAtPath:documentsDirectory error:&error]);
 }
 
 
@@ -74,6 +72,7 @@
         QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexWithMetata:metadata inManageObjectContext:self.managedObjectContext];
         
         if (indexedItem){
+            //update
             [indexedItem addVersion:metadata];
             
         }else{
@@ -104,10 +103,7 @@
         fetchRequest.fetchLimit = 1;
         NSError *error = nil;
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        
         QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [results lastObject];
-        
-        NSLog(@"Cache Retrieved Sequence Number is %@ count=%i",qredoIndexVaultItemMetadata.descriptor.sequenceValue, (int)[results count]);
         retrievedMetadata = [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
     }];
     return retrievedMetadata;
@@ -120,46 +116,62 @@
 }
 
 
--(NSArray*)find:(NSPredicate *)predicate{
-    __block NSArray* returnArray = nil;
+
+
+- (void)enumerateCurrentSearch:(NSPredicate *)predicate
+              withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+      completionHandler:(void(^)(NSError *error))completionHandler{
+    
     [self.managedObjectContext performBlockAndWait:^{
-//      
-//        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
-//        
-//        
-//        NSExpression *maxSequenceValueKeyPathExpression = [NSExpression expressionForKeyPath:@"descriptor.sequenceValue"];
-//        NSExpression *maxSequenceValueExpression = [NSExpression expressionForFunction:@"max:" arguments:@[maxSequenceValueKeyPathExpression]];
-//        
-//        NSExpressionDescription *maxSequenceExpressionDescription = [[NSExpressionDescription alloc] init];
-//        maxSequenceExpressionDescription.name = @"maxSequenceNumber";
-//        maxSequenceExpressionDescription.expression = maxSequenceValueExpression;
-//        maxSequenceExpressionDescription.expressionResultType = NSInteger64AttributeType;
-//        fetchRequest.propertiesToFetch = @[maxSequenceExpressionDescription];
-//        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"descriptor.itemId==%@",descriptor.itemId.data];
-//        fetchRequest.fetchLimit = 1;
-//        NSError *error = nil;
-//        NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-//        
-//        QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [results lastObject];
-//        
-//        NSLog(@"Cache Retrieved Sequence Number is %@ count=%i",qredoIndexVaultItemMetadata.descriptor.sequenceValue, (int)[results count]);
-//        return [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
-//
-//        
-//        
-//        
-//        
-//        
-//        
-//        returnArray = [QredoIndexVaultItemMetadata find:predicate
-//                                  inManageObjectContext:self.managedObjectContext];
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
+        
+        NSPredicate *restrictToLatest = [NSPredicate predicateWithFormat:@"vaultMetadata.latest != nil"];
+        NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToLatest]];
+        
+        
+        fetchRequest.predicate = compoundPredicate;
+        NSError *error = nil;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        
+        
+        
+        BOOL stop=NO;
+        
+        for (QredoIndexSummaryValues *summaryValue in results){
+            QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = summaryValue.vaultMetadata;
+            QredoVaultItemMetadata *qredoVaultItemMetadata= [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
+            if (block)block(qredoVaultItemMetadata,&stop);
+            if (stop)break;
+        }
+        if (completionHandler)completionHandler(error);
     }];
-    return returnArray;
+    
 }
 
 
--(void)enumerateAllItems{
+- (void)enumerateSearch:(NSPredicate *)predicate
+              withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+      completionHandler:(void(^)(NSError *error))completionHandler{
+    
+    [self.managedObjectContext performBlockAndWait:^{
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
+        fetchRequest.predicate = predicate;
+        NSError *error = nil;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        BOOL stop=NO;
+        
+        for (QredoIndexSummaryValues *summaryValue in results){
+            QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = summaryValue.vaultMetadata;
+            QredoVaultItemMetadata *qredoVaultItemMetadata= [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
+            if (block)block(qredoVaultItemMetadata,&stop);
+            if (stop)break;
+        }
+        if (completionHandler)completionHandler(error);
+    }];
+    
 }
+
+
 
 
 -(void)sync{

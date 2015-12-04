@@ -77,11 +77,9 @@
 -(NSDictionary*)buildSummaryDictionary{
     //loop through all the SummaryValues nsmanagedobjects and create a dictionary
     NSMutableDictionary *returnDictionary = [[NSMutableDictionary alloc] init];
-
     for (QredoIndexSummaryValues *qredoIndexSummaryValue in self.summaryValues){
         [returnDictionary setObject:[qredoIndexSummaryValue retrieveValue] forKey:qredoIndexSummaryValue.key];
     }
-    NSLog(@"%@",returnDictionary);
     return returnDictionary;
     
 }

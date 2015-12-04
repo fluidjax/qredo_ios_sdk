@@ -5,7 +5,8 @@
 
 const struct QredoIndexSummaryValuesAttributes QredoIndexSummaryValuesAttributes = {
 	.key = @"key",
-	.value = @"value",
+	.value.date = @"value.date",
+	.value.string = @"value.string",
 	.valueType = @"valueType",
 };
 
@@ -50,7 +51,9 @@ const struct QredoIndexSummaryValuesRelationships QredoIndexSummaryValuesRelatio
 
 @dynamic key;
 
-@dynamic value;
+@dynamic value.date;
+
+@dynamic value.string;
 
 @dynamic valueType;
 

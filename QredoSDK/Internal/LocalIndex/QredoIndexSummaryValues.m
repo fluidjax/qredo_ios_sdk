@@ -22,6 +22,10 @@
 
 
 -(void)assignValue:(NSObject*)value{
+    
+    self.(date)value = nil;
+    
+    
     if ([value isKindOfClass:[NSString class]]){
         self.value = [(NSString*)value dataUsingEncoding:NSUTF8StringEncoding];
         self.valueTypeValue = IndexSummaryValueDataType_NSString;
