@@ -19,6 +19,7 @@
 @interface QredoLocalIndex ()
 @property (readwrite) NSManagedObjectContext *managedObjectContext;
 @property NSManagedObjectContext *privateContext;
+@property NSPersistentStoreCoordinator *storeCoordinator;;
 
 @end
 
@@ -38,23 +39,87 @@
 
 
 - (void)initializeCoreData{
+    
     if ([self managedObjectContext]) return;
+    
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
-
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
+    
     NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     NSAssert(coordinator, @"Failed to initialize coordinator");
+    
     [self setManagedObjectContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType]];
+    
     [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
     [[self privateContext] setPersistentStoreCoordinator:coordinator];
     [[self managedObjectContext] setParentContext:[self privateContext]];
-   
-    NSError *error;
-    NSFileManager *fileMgr = [NSFileManager defaultManager];
-    NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+    
+
+    NSPersistentStoreCoordinator *psc = [[self privateContext] persistentStoreCoordinator];
+    NSMutableDictionary *options = [NSMutableDictionary dictionary];
+    options[NSMigratePersistentStoresAutomaticallyOption] = @YES;
+    options[NSInferMappingModelAutomaticallyOption] = @YES;
+    options[NSSQLitePragmasOption] = @{ @"journal_mode":@"DELETE" };
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *storeURL = [documentsURL URLByAppendingPathComponent:@"DataModel.sqlite"];
+    
+    NSError *error = nil;
+    NSAssert([psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error], @"Error initializing PSC: %@\n%@", [error localizedDescription], [error userInfo]);
+
+    
+    self.storeCoordinator = psc;
+    
+    
+    
+    
+    
+    //
+//    if ([self managedObjectContext]) return;
+//    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+//    NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
+//    
+//    NSString * appDocsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES) lastObject];
+//    
+//    NSURL *storeUrl = [NSURL fileURLWithPath:[appDocsDir  stringByAppendingPathComponent: @"QredoLocalIndex.sqllite"]];
+//    
+//    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+//    NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
+//    self.storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
+//    
+//    
+//    NSError *error = nil;
+//    [self.storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error];
+//    NSAssert(self.storeCoordinator, @"Failed to initialize coordinator");
+//    
+//    [self setManagedObjectContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType]];
+//    [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
+//    [[self privateContext] setPersistentStoreCoordinator:self.storeCoordinator];
+//    [[self managedObjectContext] setParentContext:[self privateContext]];
+//   
+//    
+//
+//    NSFileManager *fileMgr = [NSFileManager defaultManager];
+//    NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
     //NSLog(@"Documents directory: %@", [fileMgr contentsOfDirectoryAtPath:documentsDirectory error:&error]);
+}
+
+- (void)save{
+    if (![[self privateContext] hasChanges] && ![[self managedObjectContext] hasChanges]) return;
+    
+    [[self managedObjectContext] performBlockAndWait:^{
+        NSError *error = nil;
+        
+        NSAssert([[self managedObjectContext] save:&error], @"Failed to save main context: %@\n%@", [error localizedDescription], [error userInfo]);
+        
+        [[self privateContext] performBlock:^{
+            NSError *privateError = nil;
+            NSAssert([[self privateContext] save:&privateError], @"Error saving private context: %@\n%@", [privateError localizedDescription], [privateError userInfo]);
+        }];
+    }];
 }
 
 
@@ -129,8 +194,32 @@
 
 
 -(void)purge{
+    [self.managedObjectContext performBlockAndWait:^{
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
+        NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+        NSError *deleteError = nil;
+        [self.storeCoordinator executeRequest:delete withContext:self.managedObjectContext error:&deleteError];
+        if (deleteError){
+            NSLog(@"%@",deleteError);
+        }
+    }];
 }
 
+
+
+- (void)deleteAllObjects: (NSString *) entityDescription  {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:entityDescription inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    NSError *error;
+    NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    for (NSManagedObject *managedObject in items) {
+        [self.managedObjectContext deleteObject:managedObject];
+    }
+    [self save];
+}
 
 -(void)addListener{
 }

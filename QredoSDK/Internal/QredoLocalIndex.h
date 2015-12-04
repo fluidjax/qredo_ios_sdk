@@ -51,11 +51,11 @@
 -(void)delete:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
 
-
+-(void)save;
 -(void)sync;
 -(void)purge;
 -(void)addListener;
 -(void)removeListener;
-
+- (void) deleteAllObjects: (NSString *) entityDescription ;
 
 @end

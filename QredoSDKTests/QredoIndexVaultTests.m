@@ -171,6 +171,52 @@ NSNumber *testNumber;
     }
 }
 
+
+
+-(void)testPurge{
+    XCTAssertNotNil(client1);
+    QredoVault *vault = [client1 defaultVault];
+    XCTAssertNotNil(vault);
+    
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
+    [qredoLocalIndex putItemWithMetadata:junk1];
+    QredoVaultItemMetadata *junk2 = [self createTestItemInVault:vault key1Value:@"value1"];
+    [qredoLocalIndex putItemWithMetadata:junk2];
+    QredoVaultItemMetadata *junk3 = [self createTestItemInVault:vault key1Value:@"value1"];
+    [qredoLocalIndex putItemWithMetadata:junk3];
+ 
+    
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key=='key1'"];
+    
+    
+    __block int count =0;
+
+    [qredoLocalIndex enumerateCurrentSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
+        count++;
+    } completionHandler:^(NSError *error) {
+        XCTAssert(count==3,@"Failed to retrieve 3 items");
+    }];
+
+
+
+    [qredoLocalIndex save];
+    [qredoLocalIndex deleteAllObjects:@"QredoIndexSummaryValues"];
+    [qredoLocalIndex save];
+    
+    count=0;
+    
+    [qredoLocalIndex enumerateCurrentSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
+        count++;
+    } completionHandler:^(NSError *error) {
+        XCTAssert(count==0,@"Failed to delete items, found %i items", count);
+    }];
+    
+    
+    
+}
+
 -(void)testIndexPutGet{
     
     XCTAssertNotNil(client1);
@@ -227,15 +273,6 @@ NSNumber *testNumber;
         
         NSLog(@"All Values = %i",count);
     }];
-    
-    
-    
-    
-    
-    
-   // NSLog(@"******** ******** retireved %@",searchRes);
-    
-    
 }
 
 
