@@ -25,7 +25,6 @@
 @implementation QredoLocalIndex
 
 
-
 +(id)sharedQredoLocalIndex {
     static QredoLocalIndex *sharedLocalIndex = nil;
     static dispatch_once_t onceToken;
@@ -51,7 +50,6 @@
     [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
     [[self privateContext] setPersistentStoreCoordinator:coordinator];
     [[self managedObjectContext] setParentContext:[self privateContext]];
-    
    
     NSError *error;
     NSFileManager *fileMgr = [NSFileManager defaultManager];
@@ -60,29 +58,17 @@
 }
 
 
-
--(void)putItem:(QredoVaultItem *)vaultItem{
-    
-}
-
-
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)metadata{
     [self.managedObjectContext performBlockAndWait:^{
         //find any existing itemId in the Index
         QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexWithMetata:metadata inManageObjectContext:self.managedObjectContext];
-        
         if (indexedItem){
-            //update
             [indexedItem addVersion:metadata];
-            
         }else{
             [QredoIndexVaultItem create:metadata inManageObjectContext:self.managedObjectContext];
         }
     }];
-
 }
-
-
 
 
 
@@ -116,61 +102,25 @@
 }
 
 
-
-
-- (void)enumerateCurrentSearch:(NSPredicate *)predicate
-              withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
-      completionHandler:(void(^)(NSError *error))completionHandler{
-    
+- (void)enumerateCurrentSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler{
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
-        
         NSPredicate *restrictToLatest = [NSPredicate predicateWithFormat:@"vaultMetadata.latest != nil"];
         NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToLatest]];
-        
-        
         fetchRequest.predicate = compoundPredicate;
-        NSError *error = nil;
-        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        
-        
-        
-        BOOL stop=NO;
-        
-        for (QredoIndexSummaryValues *summaryValue in results){
-            QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = summaryValue.vaultMetadata;
-            QredoVaultItemMetadata *qredoVaultItemMetadata= [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
-            if (block)block(qredoVaultItemMetadata,&stop);
-            if (stop)break;
-        }
-        if (completionHandler)completionHandler(error);
+        [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
     }];
     
 }
 
 
-- (void)enumerateSearch:(NSPredicate *)predicate
-              withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
-      completionHandler:(void(^)(NSError *error))completionHandler{
-    
+- (void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler{
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
         fetchRequest.predicate = predicate;
-        NSError *error = nil;
-        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        BOOL stop=NO;
-        
-        for (QredoIndexSummaryValues *summaryValue in results){
-            QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = summaryValue.vaultMetadata;
-            QredoVaultItemMetadata *qredoVaultItemMetadata= [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
-            if (block)block(qredoVaultItemMetadata,&stop);
-            if (stop)break;
-        }
-        if (completionHandler)completionHandler(error);
+        [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
     }];
-    
 }
-
 
 
 
@@ -187,9 +137,24 @@
 
 
 -(void)removeListener{
-    
 }
 
+
+#pragma mark -
+#pragma mark Private Methods
+
+- (void)enumerateQuery:(NSFetchRequest *)fetchRequest block:(void (^)(QredoVaultItemMetadata *, BOOL *))block completionHandler:(void (^)(NSError *))completionHandler{
+    NSError *error = nil;
+    NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    BOOL stop=NO;
+    for (QredoIndexSummaryValues *summaryValue in results){
+        QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = summaryValue.vaultMetadata;
+        QredoVaultItemMetadata *qredoVaultItemMetadata= [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
+        if (block)block(qredoVaultItemMetadata,&stop);
+        if (stop)break;
+    }
+    if (completionHandler)completionHandler(error);
+}
 
 
 @end

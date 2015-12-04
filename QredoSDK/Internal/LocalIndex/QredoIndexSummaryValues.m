@@ -1,4 +1,5 @@
 #import "QredoIndexSummaryValues.h"
+#import "QredoIndexVariableValue.h"
 #import "QredoQUID.h"
 @interface QredoIndexSummaryValues ()
 
@@ -22,24 +23,24 @@
 
 
 -(void)assignValue:(NSObject*)value{
-    
-    self.(date)value = nil;
+    QredoIndexVariableValue *qredoVariableValue = [QredoIndexVariableValue insertInManagedObjectContext:self.managedObjectContext];
+    self.value = qredoVariableValue;
     
     
     if ([value isKindOfClass:[NSString class]]){
-        self.value = [(NSString*)value dataUsingEncoding:NSUTF8StringEncoding];
+        qredoVariableValue.string = (NSString*)value;
         self.valueTypeValue = IndexSummaryValueDataType_NSString;
         
     }else if ([value isKindOfClass:[NSNumber class]]){
-       self.value = [NSKeyedArchiver archivedDataWithRootObject:value];
+       qredoVariableValue.number = (NSNumber*)value;
        self.valueTypeValue = IndexSummaryValueDataType_NSNumber;
         
-    }else if ([value isKindOfClass:[NSString class]]){
-        self.value = [(QredoQUID*)value data];
+    }else if ([value isKindOfClass:[QredoQUID class]]){
+        qredoVariableValue.qredoQUID = [(QredoQUID*)value data];
         self.valueTypeValue = IndexSummaryValueDataType_QredoQUID;
 
     }else if ([value isKindOfClass:[NSDate class]]){
-        self.value = [NSKeyedArchiver archivedDataWithRootObject:value];
+        qredoVariableValue.date = (NSDate*)value;
         self.valueTypeValue = IndexSummaryValueDataType_NSDate;
         
     }else{
@@ -51,16 +52,16 @@
 -(NSObject*)retrieveValue{
     switch (self.valueTypeValue) {
         case IndexSummaryValueDataType_NSString:
-            return [[NSString alloc] initWithData:self.value encoding:NSUTF8StringEncoding];
+            return self.value.string;
             break;
         case IndexSummaryValueDataType_NSNumber:
-            return [NSKeyedUnarchiver unarchiveObjectWithData:self.value];
+            return self.value.number;
             break;
         case IndexSummaryValueDataType_QredoQUID:
-            return [[QredoQUID alloc] initWithQUIDData:self.value];
+            return [[QredoQUID alloc] initWithQUIDData:self.value.qredoQUID];
             break;
         case IndexSummaryValueDataType_NSDate:
-            return [NSKeyedUnarchiver unarchiveObjectWithData:self.value];
+            return self.value.date;
             break;
         default:
             @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type retrieving value from index" userInfo:nil];

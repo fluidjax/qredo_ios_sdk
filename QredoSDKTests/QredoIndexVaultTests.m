@@ -29,11 +29,9 @@ NSNumber *testNumber;
     [self authoriseClient];
     
     
-    NSString *dateString = @"25-Nov-68 00:00:00";
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = @"dd-MMM-yy hh:mm:ss";
-
-    myTestDate = [dateFormatter dateFromString:dateString];
+    
+    myTestDate = [NSDate date];
+    NSLog(@"**************%@",myTestDate);
     testNumber = [NSNumber numberWithInt:3];
     
     qredoLocalIndex = [QredoLocalIndex sharedQredoLocalIndex];
@@ -174,6 +172,7 @@ NSNumber *testNumber;
 }
 
 -(void)testIndexPutGet{
+    
     XCTAssertNotNil(client1);
     QredoVault *vault = [client1 defaultVault];
     XCTAssertNotNil(vault);
@@ -181,7 +180,7 @@ NSNumber *testNumber;
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
     [qredoLocalIndex putItemWithMetadata:junk1];
     
-    QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault key1Value:@"value1"];
+    QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault key1Value:@"chris"];
     QredoVaultItem *item1 = [self getItemWithDescriptor:meta1 inVault:vault];
     [qredoLocalIndex putItemWithMetadata:meta1];
     
@@ -195,14 +194,18 @@ NSNumber *testNumber;
     QredoVaultItemDescriptor *searchDescriptorWithOnlyItemId =  [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:nil itemId:meta1.descriptor.itemId];
     QredoVaultItemMetadata *retrievedFromCacheMetatadata =      [qredoLocalIndex get:searchDescriptorWithOnlyItemId];
 
-    XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key1"] isEqualToString:@"value1"],@"Summary data is incorrect");
+    XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key1"] isEqualToString:@"chris"],@"Summary data is incorrect");
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key2"] isEqualToString:@"value2"],@"Summary data is incorrect");
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key3"] isEqual:testNumber],@"Summary data is correct");
- //   XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key4"] isEqualToDate:myTestDate]);
+    
+    NSDate *ret =(NSDate*)[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key4"];
+    
+    XCTAssertTrue([ret isEqualToDate:myTestDate], @"Dates dont match %@ %@",[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key4"], myTestDate);
   
     
     
-    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value==%@", @"value1"];
+//    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key=%@ && value.string==%@", @"key1", @"chris"];
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key like %@ && value.date==%@", @"key*", myTestDate];
     
     
     __block int count =0;

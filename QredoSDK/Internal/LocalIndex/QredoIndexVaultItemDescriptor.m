@@ -25,7 +25,6 @@
 }
 
 
-
 +(instancetype)searchForDescriptor:(QredoVaultItemDescriptor*)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@ && sequenceId==%@",descriptor.itemId,descriptor.sequenceId];
@@ -43,7 +42,6 @@
                                                          sequenceValue:self.sequenceValueValue
                                                                 itemId:[[QredoQUID alloc]initWithQUIDData:self.itemId]];
 }
-
 
 
 @end

@@ -5,12 +5,11 @@
 
 const struct QredoIndexSummaryValuesAttributes QredoIndexSummaryValuesAttributes = {
 	.key = @"key",
-	.value.date = @"value.date",
-	.value.string = @"value.string",
 	.valueType = @"valueType",
 };
 
 const struct QredoIndexSummaryValuesRelationships QredoIndexSummaryValuesRelationships = {
+	.value = @"value",
 	.vaultMetadata = @"vaultMetadata",
 };
 
@@ -51,10 +50,6 @@ const struct QredoIndexSummaryValuesRelationships QredoIndexSummaryValuesRelatio
 
 @dynamic key;
 
-@dynamic value.date;
-
-@dynamic value.string;
-
 @dynamic valueType;
 
 - (int16_t)valueTypeValue {
@@ -74,6 +69,8 @@ const struct QredoIndexSummaryValuesRelationships QredoIndexSummaryValuesRelatio
 - (void)setPrimitiveValueTypeValue:(int16_t)value_ {
 	[self setPrimitiveValueType:@(value_)];
 }
+
+@dynamic value;
 
 @dynamic vaultMetadata;
 

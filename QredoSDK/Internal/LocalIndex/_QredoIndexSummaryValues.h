@@ -5,15 +5,15 @@
 
 extern const struct QredoIndexSummaryValuesAttributes {
 	__unsafe_unretained NSString *key;
-	__unsafe_unretained NSString *value.date;
-	__unsafe_unretained NSString *value.string;
 	__unsafe_unretained NSString *valueType;
 } QredoIndexSummaryValuesAttributes;
 
 extern const struct QredoIndexSummaryValuesRelationships {
+	__unsafe_unretained NSString *value;
 	__unsafe_unretained NSString *vaultMetadata;
 } QredoIndexSummaryValuesRelationships;
 
+@class QredoIndexVariableValue;
 @class QredoIndexVaultItemMetadata;
 
 @interface QredoIndexSummaryValuesID : NSManagedObjectID {}
@@ -29,14 +29,6 @@ extern const struct QredoIndexSummaryValuesRelationships {
 
 //- (BOOL)validateKey:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSDate* value.date;
-
-//- (BOOL)validateValue.date:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSString* value.string;
-
-//- (BOOL)validateValue.string:(id*)value_ error:(NSError**)error_;
-
 @property (nonatomic, strong) NSNumber* valueType;
 
 @property (atomic) int16_t valueTypeValue;
@@ -44,6 +36,10 @@ extern const struct QredoIndexSummaryValuesRelationships {
 - (void)setValueTypeValue:(int16_t)value_;
 
 //- (BOOL)validateValueType:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) QredoIndexVariableValue *value;
+
+//- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) QredoIndexVaultItemMetadata *vaultMetadata;
 
@@ -56,17 +52,14 @@ extern const struct QredoIndexSummaryValuesRelationships {
 - (NSString*)primitiveKey;
 - (void)setPrimitiveKey:(NSString*)value;
 
-- (NSDate*)primitiveValue.date;
-- (void)setPrimitiveValue.date:(NSDate*)value;
-
-- (NSString*)primitiveValue.string;
-- (void)setPrimitiveValue.string:(NSString*)value;
-
 - (NSNumber*)primitiveValueType;
 - (void)setPrimitiveValueType:(NSNumber*)value;
 
 - (int16_t)primitiveValueTypeValue;
 - (void)setPrimitiveValueTypeValue:(int16_t)value_;
+
+- (QredoIndexVariableValue*)primitiveValue;
+- (void)setPrimitiveValue:(QredoIndexVariableValue*)value;
 
 - (QredoIndexVaultItemMetadata*)primitiveVaultMetadata;
 - (void)setPrimitiveVaultMetadata:(QredoIndexVaultItemMetadata*)value;
