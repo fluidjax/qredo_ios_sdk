@@ -26,7 +26,7 @@
 
 
 
-+(instancetype)objectForDescriptor:(QredoVaultItemDescriptor*)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
++(instancetype)searchForDescriptor:(QredoVaultItemDescriptor*)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@ && sequenceId==%@",descriptor.itemId,descriptor.sequenceId];
     [fetchRequest setPredicate:predicate];

@@ -5,7 +5,6 @@
 
 @interface QredoIndexVaultItemMetadata : _QredoIndexVaultItemMetadata {}
 
-
-+(instancetype)createOrUpdateWith:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
-+(QredoVaultItemMetadata*)get:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
++(instancetype)createWithMetadata:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
+-(QredoVaultItemMetadata *)buildQredoVaultItemMetadata;
 @end

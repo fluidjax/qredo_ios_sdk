@@ -10,9 +10,10 @@ const struct QredoIndexVaultItemMetadataAttributes QredoIndexVaultItemMetadataAt
 };
 
 const struct QredoIndexVaultItemMetadataRelationships QredoIndexVaultItemMetadataRelationships = {
+	.allVersions = @"allVersions",
 	.descriptor = @"descriptor",
+	.latest = @"latest",
 	.summaryValues = @"summaryValues",
-	.vaultItem = @"vaultItem",
 };
 
 @implementation QredoIndexVaultItemMetadataID
@@ -74,7 +75,11 @@ const struct QredoIndexVaultItemMetadataRelationships QredoIndexVaultItemMetadat
 
 @dynamic dataType;
 
+@dynamic allVersions;
+
 @dynamic descriptor;
+
+@dynamic latest;
 
 @dynamic summaryValues;
 
@@ -86,8 +91,6 @@ const struct QredoIndexVaultItemMetadataRelationships QredoIndexVaultItemMetadat
 	[self didAccessValueForKey:@"summaryValues"];
 	return result;
 }
-
-@dynamic vaultItem;
 
 @end
 

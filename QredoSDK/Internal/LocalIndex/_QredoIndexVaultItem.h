@@ -4,13 +4,15 @@
 @import CoreData;
 
 extern const struct QredoIndexVaultItemAttributes {
-	__unsafe_unretained NSString *value;
+	__unsafe_unretained NSString *itemId;
 } QredoIndexVaultItemAttributes;
 
 extern const struct QredoIndexVaultItemRelationships {
-	__unsafe_unretained NSString *metadata;
+	__unsafe_unretained NSString *allVersions;
+	__unsafe_unretained NSString *latest;
 } QredoIndexVaultItemRelationships;
 
+@class QredoIndexVaultItemMetadata;
 @class QredoIndexVaultItemMetadata;
 
 @interface QredoIndexVaultItemID : NSManagedObjectID {}
@@ -22,22 +24,37 @@ extern const struct QredoIndexVaultItemRelationships {
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) QredoIndexVaultItemID* objectID;
 
-@property (nonatomic, strong) NSData* value;
+@property (nonatomic, strong) NSData* itemId;
 
-//- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateItemId:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) QredoIndexVaultItemMetadata *metadata;
+@property (nonatomic, strong) NSSet *allVersions;
 
-//- (BOOL)validateMetadata:(id*)value_ error:(NSError**)error_;
+- (NSMutableSet*)allVersionsSet;
+
+@property (nonatomic, strong) QredoIndexVaultItemMetadata *latest;
+
+//- (BOOL)validateLatest:(id*)value_ error:(NSError**)error_;
+
+@end
+
+@interface _QredoIndexVaultItem (AllVersionsCoreDataGeneratedAccessors)
+- (void)addAllVersions:(NSSet*)value_;
+- (void)removeAllVersions:(NSSet*)value_;
+- (void)addAllVersionsObject:(QredoIndexVaultItemMetadata*)value_;
+- (void)removeAllVersionsObject:(QredoIndexVaultItemMetadata*)value_;
 
 @end
 
 @interface _QredoIndexVaultItem (CoreDataGeneratedPrimitiveAccessors)
 
-- (NSData*)primitiveValue;
-- (void)setPrimitiveValue:(NSData*)value;
+- (NSData*)primitiveItemId;
+- (void)setPrimitiveItemId:(NSData*)value;
 
-- (QredoIndexVaultItemMetadata*)primitiveMetadata;
-- (void)setPrimitiveMetadata:(QredoIndexVaultItemMetadata*)value;
+- (NSMutableSet*)primitiveAllVersions;
+- (void)setPrimitiveAllVersions:(NSMutableSet*)value;
+
+- (QredoIndexVaultItemMetadata*)primitiveLatest;
+- (void)setPrimitiveLatest:(QredoIndexVaultItemMetadata*)value;
 
 @end

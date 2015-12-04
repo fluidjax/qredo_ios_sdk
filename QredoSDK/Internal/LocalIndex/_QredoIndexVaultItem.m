@@ -4,11 +4,12 @@
 #import "_QredoIndexVaultItem.h"
 
 const struct QredoIndexVaultItemAttributes QredoIndexVaultItemAttributes = {
-	.value = @"value",
+	.itemId = @"itemId",
 };
 
 const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships = {
-	.metadata = @"metadata",
+	.allVersions = @"allVersions",
+	.latest = @"latest",
 };
 
 @implementation QredoIndexVaultItemID
@@ -40,9 +41,20 @@ const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships =
 	return keyPaths;
 }
 
-@dynamic value;
+@dynamic itemId;
 
-@dynamic metadata;
+@dynamic allVersions;
+
+- (NSMutableSet*)allVersionsSet {
+	[self willAccessValueForKey:@"allVersions"];
+
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"allVersions"];
+
+	[self didAccessValueForKey:@"allVersions"];
+	return result;
+}
+
+@dynamic latest;
 
 @end
 

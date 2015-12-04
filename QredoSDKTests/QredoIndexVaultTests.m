@@ -10,6 +10,7 @@
 #import "Qredo.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultPrivate.h"
+#import "QredoLocalIndex.h"
 //#import "PDDebugger.h"
 
 @interface QredoIndexVaultTests : XCTestCase

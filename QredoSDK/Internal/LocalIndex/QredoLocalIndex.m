@@ -5,14 +5,13 @@
 //  Created by Christopher Morris on 02/12/2015.
 //
 //
-#import "Qredo.h"
+#import "QredoLocalIndex.h"
 
 
 #import "QredoIndexSummaryValues.h"
 #import "QredoIndexVaultItem.h"
 #import "QredoIndexVaultItemDescriptor.h"
 #import "QredoIndexVaultItemMetadata.h"
-
 
 @import CoreData;
 
@@ -39,49 +38,14 @@
 
 
 
-//+(id)sharedQredoLocalIndexTEST:(NSURL*)url {
-//    static QredoLocalIndex *sharedLocalIndex = nil;
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
-//        sharedLocalIndex = [[self alloc] init];
-//        [sharedLocalIndex initializeCoreDataWithURL:url];
-//    });
-//    return sharedLocalIndex;
-//}
-
-
-//- (void)initializeCoreDataWithURL:(NSURL*)url{
-//    
-//    
-//    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-//    NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
-//    
-//    if ([self managedObjectContext]) return;
-//    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];
-//    NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
-//    NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
-//    NSAssert(coordinator, @"Failed to initialize coordinator");
-//    [self setManagedObjectContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType]];
-//    [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
-//    [[self privateContext] setPersistentStoreCoordinator:coordinator];
-//    [[self managedObjectContext] setParentContext:[self privateContext]];
-//
-//}
-
-
 - (void)initializeCoreData{
     if ([self managedObjectContext]) return;
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
+    
 
-    
-    //    NSManagedObjectModel *mom = [NSManagedObjectModel  mergedModelFromBundles:nil];
-    
-//        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-//        NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"momd"];
+    NSLog(@"Model URL: %@", modelURL);
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    
-    
     NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
     NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     NSAssert(coordinator, @"Failed to initialize coordinator");
@@ -98,48 +62,57 @@
 }
 
 
-+ (BOOL)areWeBeingUnitTested {
-    BOOL answer = NO;
-    Class testProbeClass;
-#if GTM_USING_XCTEST // you may need to change this to reflect which framework are you using
-    testProbeClass = NSClassFromString(@"XCTestProbe");
-#else
-    testProbeClass = NSClassFromString(@"SenTestProbe");
-#endif
-    if (testProbeClass != Nil) {
-        // Doing this little dance so we don't actually have to link
-        // SenTestingKit in
-        SEL selector = NSSelectorFromString(@"isTesting");
-        NSMethodSignature *sig = [testProbeClass methodSignatureForSelector:selector];
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:sig];
-        [invocation setSelector:selector];
-        [invocation invokeWithTarget:testProbeClass];
-        [invocation getReturnValue:&answer];
-    }
-    return answer;
-}
-
 
 -(void)putItem:(QredoVaultItem *)vaultItem{
+    
 }
 
 
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)metadata{
     [self.managedObjectContext performBlockAndWait:^{
-        [QredoIndexVaultItemMetadata createOrUpdateWith:metadata inManageObjectContext:self.managedObjectContext];
+        //find any existing itemId in the Index
+        QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexWithMetata:metadata inManageObjectContext:self.managedObjectContext];
+        
+        if (indexedItem){
+            [indexedItem addVersion:metadata];
+            
+        }else{
+            [QredoIndexVaultItem create:metadata inManageObjectContext:self.managedObjectContext];
+        }
     }];
 
 }
+
+
+
 
 
 -(QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor{
     __block QredoVaultItemMetadata* retrievedMetadata = nil;
     [self.managedObjectContext performBlockAndWait:^{
-        retrievedMetadata = [QredoIndexVaultItemMetadata get:vaultItemDescriptor inManageObjectContext:self.managedObjectContext];
+
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
+        NSExpression *maxSequenceValueKeyPathExpression = [NSExpression expressionForKeyPath:@"descriptor.sequenceValue"];
+        NSExpression *maxSequenceValueExpression = [NSExpression expressionForFunction:@"max:" arguments:@[maxSequenceValueKeyPathExpression]];
         
+        NSExpressionDescription *maxSequenceExpressionDescription = [[NSExpressionDescription alloc] init];
+        maxSequenceExpressionDescription.name = @"maxSequenceNumber";
+        maxSequenceExpressionDescription.expression = maxSequenceValueExpression;
+        maxSequenceExpressionDescription.expressionResultType = NSInteger64AttributeType;
+        fetchRequest.propertiesToFetch = @[maxSequenceExpressionDescription];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"descriptor.itemId==%@",vaultItemDescriptor.itemId.data];
+        fetchRequest.fetchLimit = 1;
+        NSError *error = nil;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        
+        QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [results lastObject];
+        
+        NSLog(@"Cache Retrieved Sequence Number is %@ count=%i",qredoIndexVaultItemMetadata.descriptor.sequenceValue, (int)[results count]);
+        retrievedMetadata = [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
     }];
     return retrievedMetadata;
 }
+
 
 
 -(void)delete:(QredoVaultItemDescriptor *)vaultItemDescriptor{
@@ -147,9 +120,64 @@
 }
 
 
--(void)find:(NSPredicate *)predicate withBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler{
+-(NSArray*)find:(NSPredicate *)predicate{
+    __block NSArray* returnArray = nil;
+    [self.managedObjectContext performBlockAndWait:^{
+//      
+//        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
+//        
+//        
+//        NSExpression *maxSequenceValueKeyPathExpression = [NSExpression expressionForKeyPath:@"descriptor.sequenceValue"];
+//        NSExpression *maxSequenceValueExpression = [NSExpression expressionForFunction:@"max:" arguments:@[maxSequenceValueKeyPathExpression]];
+//        
+//        NSExpressionDescription *maxSequenceExpressionDescription = [[NSExpressionDescription alloc] init];
+//        maxSequenceExpressionDescription.name = @"maxSequenceNumber";
+//        maxSequenceExpressionDescription.expression = maxSequenceValueExpression;
+//        maxSequenceExpressionDescription.expressionResultType = NSInteger64AttributeType;
+//        fetchRequest.propertiesToFetch = @[maxSequenceExpressionDescription];
+//        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"descriptor.itemId==%@",descriptor.itemId.data];
+//        fetchRequest.fetchLimit = 1;
+//        NSError *error = nil;
+//        NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+//        
+//        QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [results lastObject];
+//        
+//        NSLog(@"Cache Retrieved Sequence Number is %@ count=%i",qredoIndexVaultItemMetadata.descriptor.sequenceValue, (int)[results count]);
+//        return [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
+//
+//        
+//        
+//        
+//        
+//        
+//        
+//        returnArray = [QredoIndexVaultItemMetadata find:predicate
+//                                  inManageObjectContext:self.managedObjectContext];
+    }];
+    return returnArray;
+}
+
+
+-(void)enumerateAllItems{
+}
+
+
+-(void)sync{
+}
+
+
+-(void)purge{
+}
+
+
+-(void)addListener{
+}
+
+
+-(void)removeListener{
     
 }
+
 
 
 @end
