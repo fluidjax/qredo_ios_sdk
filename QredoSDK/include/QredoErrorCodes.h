@@ -50,6 +50,12 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     QredoErrorCodeKeychainCouldNotBeSaved,
     QredoErrorCodeKeychainCouldNotBeDelete,
     
+    
+    //LocalIndex errors
+    QredoErrorCodeIndexErrorUnknown = 7000,
+    QredoErrorCodeIndexItemNotFound,
+    
+    
 };
 
 

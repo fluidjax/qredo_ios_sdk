@@ -55,9 +55,15 @@ NSNumber *testNumber;
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
     
+    
+//    static NSString *password = [QredoTestUtils randomPassword];
+    static NSString *k_PASSWORD = @"DeterministicPassword00001";
+    
+    
+    
     [QredoClient initializeWithAppSecret:k_APPSECRET
                                   userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]
+                              userSecret:k_PASSWORD
                                  options:nil
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -173,49 +179,68 @@ NSNumber *testNumber;
 
 
 
--(void)testPurge{
+
+
+-(void)testSimplePut{
+    XCTAssertNotNil(client1);
+    QredoVault *vault = [client1 defaultVault];
+    XCTAssertNotNil(vault);
+
+    NSInteger before = [qredoLocalIndex count];
+    
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
+    [qredoLocalIndex putItemWithMetadata:junk1];
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before + 1,@"Failed to put new LocalIndex item");
+}
+
+
+-(void)testVersionDelete{
     XCTAssertNotNil(client1);
     QredoVault *vault = [client1 defaultVault];
     XCTAssertNotNil(vault);
     
+    NSInteger before = [qredoLocalIndex count];
+    
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
     [qredoLocalIndex putItemWithMetadata:junk1];
-    QredoVaultItemMetadata *junk2 = [self createTestItemInVault:vault key1Value:@"value1"];
-    [qredoLocalIndex putItemWithMetadata:junk2];
-    QredoVaultItemMetadata *junk3 = [self createTestItemInVault:vault key1Value:@"value1"];
-    [qredoLocalIndex putItemWithMetadata:junk3];
- 
     
-    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key=='key1'"];
+    NSInteger afterPut = [qredoLocalIndex count];
+    XCTAssert(afterPut == before + 1,@"Failed to put new LocalIndex item");
     
-    
-    __block int count =0;
 
-    [qredoLocalIndex enumerateCurrentSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
-        //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
-        count++;
-    } completionHandler:^(NSError *error) {
-        XCTAssert(count==3,@"Failed to retrieve 3 items");
-    }];
-
-
-
-    [qredoLocalIndex save];
-    [qredoLocalIndex deleteAllObjects:@"QredoIndexSummaryValues"];
-    [qredoLocalIndex save];
-    
-    count=0;
-    
-    [qredoLocalIndex enumerateCurrentSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
-        //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
-        count++;
-    } completionHandler:^(NSError *error) {
-        XCTAssert(count==0,@"Failed to delete items, found %i items", count);
-    }];
-    
-    
-    
+    [qredoLocalIndex deleteVersion:junk1.descriptor];
+    NSInteger afterDelete = [qredoLocalIndex count];
+    XCTAssert(afterDelete == before ,@"Failed to delete new LocalIndex item");
 }
+
+
+
+-(void)testItemDelete{
+    XCTAssertNotNil(client1);
+    QredoVault *vault = [client1 defaultVault];
+    XCTAssertNotNil(vault);
+    
+    NSInteger before = [qredoLocalIndex count];
+    
+    QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault key1Value:@"chris"];
+    
+    QredoVaultItem *item1 = [self getItemWithDescriptor:meta1 inVault:vault];
+    [qredoLocalIndex putItemWithMetadata:meta1];
+    
+    QredoVaultItemMetadata *meta2 = [self updateItem:item1 inVault:vault];
+    [qredoLocalIndex putItemWithMetadata:meta2];
+    
+    NSInteger afterPut = [qredoLocalIndex count];
+    XCTAssert(afterPut == before + 2,@"Failed to put new LocalIndex item");
+    
+    
+    [qredoLocalIndex deleteItem:meta1.descriptor];
+    
+    NSInteger afterDelete = [qredoLocalIndex count];
+    XCTAssert(afterDelete == before ,@"Failed to delete LocalIndex item");
+}
+
 
 -(void)testIndexPutGet{
     
@@ -247,22 +272,18 @@ NSNumber *testNumber;
     NSDate *ret =(NSDate*)[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key4"];
     
     XCTAssertTrue([ret isEqualToDate:myTestDate], @"Dates dont match %@ %@",[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key4"], myTestDate);
-  
     
     
 //    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key=%@ && value.string==%@", @"key1", @"chris"];
     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key like %@ && value.date==%@", @"key*", myTestDate];
-    
-    
+
     __block int count =0;
     [qredoLocalIndex enumerateCurrentSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
         //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
         count++;
     } completionHandler:^(NSError *error) {
-        
         NSLog(@"Current Values = %i",count);
     }];
-    
     
     
     count =0;
@@ -276,6 +297,36 @@ NSNumber *testNumber;
 }
 
 
+-(void)testPurge{
+    XCTAssertNotNil(client1);
+    QredoVault *vault = [client1 defaultVault];
+    XCTAssertNotNil(vault);
+    
+    NSInteger before = [qredoLocalIndex count];
+    
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
+    [qredoLocalIndex putItemWithMetadata:junk1];
+    
+    QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault key1Value:@"chris"];
+    QredoVaultItem *item1 = [self getItemWithDescriptor:meta1 inVault:vault];
+    [qredoLocalIndex putItemWithMetadata:meta1];
+    
+    QredoVaultItemMetadata *meta2 = [self updateItem:item1 inVault:vault];
+    [qredoLocalIndex putItemWithMetadata:meta2];
+    
+    QredoVaultItemMetadata *junk2 = [self createTestItemInVault:vault key1Value:@"value1"];
+    [qredoLocalIndex putItemWithMetadata:junk2];
+
+    NSInteger after = [qredoLocalIndex count];
+    
+    XCTAssert(after == before + 4 ,@"Failed to add new items");
+    
+    [qredoLocalIndex purge];
+    
+    NSInteger afterPurge = [qredoLocalIndex count];
+    XCTAssert([qredoLocalIndex count] == 0 ,@"Failed to add new items");
+
+}
 
 
 

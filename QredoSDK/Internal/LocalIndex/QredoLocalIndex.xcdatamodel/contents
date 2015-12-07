@@ -4,14 +4,14 @@
         <attribute name="key" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="valueType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="value" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVariableValue" inverseName="summaryValue" inverseEntity="QredoIndexVariableValue" syncable="YES"/>
-        <relationship name="vaultMetadata" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemMetadata" inverseName="summaryValues" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
+        <relationship name="vaultMetadata" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVaultItemMetadata" inverseName="summaryValues" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
     </entity>
     <entity name="QredoIndexVariableValue" representedClassName="QredoIndexVariableValue" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="number" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="qredoQUID" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="string" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="summaryValue" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexSummaryValues" inverseName="value" inverseEntity="QredoIndexSummaryValues" syncable="YES"/>
+        <relationship name="summaryValue" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexSummaryValues" inverseName="value" inverseEntity="QredoIndexSummaryValues" syncable="YES"/>
     </entity>
     <entity name="QredoIndexVaultItem" representedClassName="QredoIndexVaultItem" syncable="YES">
         <attribute name="itemId" optional="YES" attributeType="Binary" syncable="YES"/>
@@ -22,7 +22,7 @@
         <attribute name="itemId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
         <attribute name="sequenceId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
         <attribute name="sequenceValue" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <relationship name="metataData" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemMetadata" inverseName="descriptor" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
+        <relationship name="metataData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVaultItemMetadata" inverseName="descriptor" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
     </entity>
     <entity name="QredoIndexVaultItemMetadata" representedClassName="QredoIndexVaultItemMetadata" syncable="YES">
         <attribute name="accessLevel" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -34,10 +34,10 @@
         <relationship name="summaryValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="QredoIndexSummaryValues" inverseName="vaultMetadata" inverseEntity="QredoIndexSummaryValues" syncable="YES"/>
     </entity>
     <elements>
-        <element name="QredoIndexSummaryValues" positionX="-2457" positionY="-4239" width="216" height="103"/>
-        <element name="QredoIndexVaultItem" positionX="-3096" positionY="-4302" width="270" height="88"/>
+        <element name="QredoIndexSummaryValues" positionX="-2466" positionY="-4180" width="216" height="103"/>
+        <element name="QredoIndexVariableValue" positionX="-2189" positionY="-4212" width="128" height="118"/>
+        <element name="QredoIndexVaultItem" positionX="-3204" positionY="-4246" width="270" height="88"/>
         <element name="QredoIndexVaultItemDescriptor" positionX="-2466" positionY="-4365" width="225" height="103"/>
-        <element name="QredoIndexVaultItemMetadata" positionX="-2772" positionY="-4293" width="234" height="103"/>
-        <element name="QredoIndexVariableValue" positionX="-2205" positionY="-4269" width="128" height="118"/>
+        <element name="QredoIndexVaultItemMetadata" positionX="-2826" positionY="-4248" width="234" height="103"/>
     </elements>
 </model>

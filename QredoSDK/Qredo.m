@@ -317,7 +317,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     
     NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-    if (!appID)appID = @"test";
+    if (!appID)appID = @"com.qredo.unspecified";
     
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appID

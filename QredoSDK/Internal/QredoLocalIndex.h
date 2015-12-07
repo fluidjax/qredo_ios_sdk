@@ -48,14 +48,17 @@
              completionHandler:(void(^)(NSError *error))completionHandler;
 
 
--(void)delete:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
 
--(void)save;
+-(BOOL)save;
 -(void)sync;
+-(NSInteger)count;
 -(void)purge;
 -(void)addListener;
 -(void)removeListener;
-- (void) deleteAllObjects: (NSString *) entityDescription ;
+-(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+-(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
+-(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+-(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
 
 @end
