@@ -31,6 +31,14 @@
 }
 
 
+-(BOOL)isSameVersion:(QredoVaultItemMetadata*)metadata{
+    if ([metadata.descriptor.itemId.data isEqualToData:self.descriptor.itemId] &&
+        metadata.descriptor.sequenceValue == self.descriptor.sequenceValueValue){
+        return YES;
+    }
+    return NO;
+}
+
 -(void)createSummaryValues:(NSDictionary *)summaryValues inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     for (NSObject *key in [summaryValues allKeys]){
         QredoIndexSummaryValues *qredoIndexSummaryValues = [QredoIndexSummaryValues createWithKey:key value:[summaryValues objectForKey:key]

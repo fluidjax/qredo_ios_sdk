@@ -6,17 +6,19 @@
 //
 //
 #import "Qredo.h"
+#import "QredoVault.h"
 
 
-@interface QredoLocalIndex : NSObject
+@interface QredoLocalIndex : NSObject <QredoVaultObserver>
+
 
 @property (readonly) NSManagedObjectContext *managedObjectContext;
 
 /** Returns the  Local Index singleton */
-+(id)sharedQredoLocalIndex;
++(id)sharedQredoLocalIndexWithVault:(QredoVault*)vault;
 
 /** Put a metadata item into the local Index */
--(void)putItemWithMetadata:(QredoVaultItemMetadata *)metadata;
+-(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata;
 
 /** Get a the most recent metadata item (most recent based on sequence number) */
 -(QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor;
@@ -42,23 +44,26 @@
       completionHandler:(void(^)(NSError *error))completionHandler;
 
 
-/** Enumerates through the most recent (based on SequenceValue) vault items in the local index that match the predicate */
-- (void)enumerateCurrentSearch:(NSPredicate *)predicate
-                     withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
-             completionHandler:(void(^)(NSError *error))completionHandler;
+
+/** Synchronize the local Index with all items on the server */
+-(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion;
 
 
 
+/** Synchronize the local Index with all items on the server since highwater mark */
+-(void)syncIndexSince:(QredoVaultHighWatermark*)sinceWatermark withCompletion:(void(^)(NSError *error))completion;
 
--(BOOL)save;
--(void)sync;
+/** Count of how many metadata items in the index */
 -(NSInteger)count;
+
+/** Delete all items in the cache */
 -(void)purge;
--(void)addListener;
--(void)removeListener;
+
 -(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 -(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
 -(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 -(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
+
+-(void)dump:(NSString*)message;
 
 @end

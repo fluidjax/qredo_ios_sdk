@@ -317,7 +317,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     
     NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-    if (!appID)appID = @"com.qredo.unspecified";
+    if (!appID)appID = @"test";
     
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appID
@@ -326,6 +326,9 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appID
                                                                              appSecret:[NSData dataWithHexString:appSecret]];
+    
+    
+    NSLog(@"Create App credentials %@:%@",appID,appSecret);
     
     systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
     NSLog(@"systemVaultKeychainArchiveIdentifier %@",systemVaultKeychainArchiveIdentifier);

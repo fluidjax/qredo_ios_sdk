@@ -7,4 +7,5 @@
 
 +(instancetype)createWithMetadata:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 -(QredoVaultItemMetadata *)buildQredoVaultItemMetadata;
+-(BOOL)isSameVersion:(QredoVaultItemMetadata*)metadata;
 @end

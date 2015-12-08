@@ -12,38 +12,62 @@
 #import "QredoIndexVaultItem.h"
 #import "QredoIndexVaultItemDescriptor.h"
 #import "QredoIndexVaultItemMetadata.h"
-
+#import "QredoIndexVault.h"
+#import "QredoVaultPrivate.h"
 @import CoreData;
 
 
 @interface QredoLocalIndex ()
-//@property (readwrite) NSManagedObjectContext *managedObjectContext;
-//@property NSManagedObjectContext *privateContext;
-//@property NSPersistentStoreCoordinator *storeCoordinator;;
-
 @property (strong, readwrite) NSManagedObjectContext *managedObjectContext;
 @property (strong) NSManagedObjectContext *privateContext;
-
+@property (strong) QredoVault *qredoVault;
+@property (strong) QredoIndexVault *qredoIndexVault;
 
 @end
+
 
 @implementation QredoLocalIndex
 
 
-+(id)sharedQredoLocalIndex {
++(id)sharedQredoLocalIndexWithVault:(QredoVault*)vault{
     static QredoLocalIndex *sharedLocalIndex = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedLocalIndex = [[self alloc] init];
-        [sharedLocalIndex initializeCoreData];
+        sharedLocalIndex = [[self alloc] initWithVault:vault];
+
     });
     return sharedLocalIndex;
 }
 
 
-- (void)initializeCoreData
-{
-    if ([self managedObjectContext]) return;
+- (instancetype)initWithVault:(QredoVault*)vault{
+    self = [super init];
+    if (self) {
+        self.qredoVault = vault;
+        [vault addVaultObserver:self];
+        [self initializeCoreData];
+        [self retrieveQredoIndexVault];
+    }
+    return self;
+}
+
+
+
+-(void)retrieveQredoIndexVault{
+    //set the QredoVaultIndex
+    [self.managedObjectContext performBlockAndWait:^{
+        NSData *dataVaultId = self.qredoVault.vaultId.data;
+        self.qredoIndexVault = [QredoIndexVault searchForVaultIndexWithId:dataVaultId inManageObjectContext:self.managedObjectContext];
+        if (!self.qredoIndexVault){
+            self.qredoIndexVault = [QredoIndexVault create:self.qredoVault inManageObjectContext:self.managedObjectContext];
+        }
+        [self save];
+    }];
+}
+
+
+- (void)initializeCoreData{
+    if (self.managedObjectContext) return;
     
     
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
@@ -54,11 +78,11 @@
     NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     NSAssert(coordinator, @"Failed to initialize coordinator");
     
-    [self setManagedObjectContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType]];
+    self.managedObjectContext=[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     
     [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
     [[self privateContext] setPersistentStoreCoordinator:coordinator];
-    [[self managedObjectContext] setParentContext:[self privateContext]];
+    [self.managedObjectContext setParentContext:[self privateContext]];
     NSPersistentStoreCoordinator *psc = [[self privateContext] persistentStoreCoordinator];
     NSMutableDictionary *options = [NSMutableDictionary dictionary];
     options[NSMigratePersistentStoresAutomaticallyOption] = @YES;
@@ -74,97 +98,21 @@
     
     
     NSLog(@"Store URL %@",storeURL);
+    NSLog(@"Model URL %@",modelURL);
+    
     
     return;
 }
-        
-
-
-- (BOOL)save{
-    __block BOOL success = NO;
-    
-    if (![[self privateContext] hasChanges] && ![[self managedObjectContext] hasChanges]) return YES;
-    
-    [[self managedObjectContext] performBlockAndWait:^{
-        NSError *error = nil;
-        
-        NSAssert([[self managedObjectContext] save:&error], @"Failed to save main context: %@\n%@", [error localizedDescription], [error userInfo]);
-        
-        [[self privateContext] performBlock:^{
-            NSError *privateError = nil;
-            NSAssert([[self privateContext] save:&privateError], @"Error saving private context: %@\n%@", [privateError localizedDescription], [privateError userInfo]);
-        }];
-        
-        if (error==nil)success=YES;
-    }];
-    return  success;
-}
-
-
-//- (void)initializeCoreData{
-//    
-//    if ([self managedObjectContext]) return;
-//    
-//    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-//    NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
-//    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-//    NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
-//    
-//    NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
-//    NSAssert(coordinator, @"Failed to initialize coordinator");
-//    
-//    [self setManagedObjectContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType]];
-//    
-//    [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
-//    [[self privateContext] setPersistentStoreCoordinator:coordinator];
-//    [[self managedObjectContext] setParentContext:[self privateContext]];
-//    
-//
-//    NSPersistentStoreCoordinator *psc = [[self privateContext] persistentStoreCoordinator];
-//    NSMutableDictionary *options = [NSMutableDictionary dictionary];
-//    options[NSMigratePersistentStoresAutomaticallyOption] = @YES;
-//    options[NSInferMappingModelAutomaticallyOption] = @YES;
-//    options[NSSQLitePragmasOption] = @{ @"journal_mode":@"DELETE" };
-//    
-//    NSFileManager *fileManager = [NSFileManager defaultManager];
-//    NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-//    NSURL *storeURL = [documentsURL URLByAppendingPathComponent:@"DataModel.sqlite"];
-//    
-//    
-//    NSLog(@"Store URL %@", storeURL);
-//    NSLog(@"ModelURL URL %@", modelURL);
-//    
-//    NSError *error = nil;
-//    NSAssert([psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error], @"Error initializing PSC: %@\n%@", [error localizedDescription], [error userInfo]);
-//
-//    
-//    self.storeCoordinator = psc;
-//    
-//
-//}
-//
-//- (void)save{
-//    if (![[self privateContext] hasChanges] && ![[self managedObjectContext] hasChanges]) return;
-//    
-//    [[self managedObjectContext] performBlockAndWait:^{
-//        NSError *error = nil;
-//        
-//        NSAssert([[self managedObjectContext] save:&error], @"Failed to save main context: %@\n%@", [error localizedDescription], [error userInfo]);
-//        
-//        [[self privateContext] performBlock:^{
-//            NSError *privateError = nil;
-//            NSAssert([[self privateContext] save:&privateError], @"Error saving private context: %@\n%@", [privateError localizedDescription], [privateError userInfo]);
-//        }];
-//    }];
-//}
-
 
 
 -(NSInteger)count{
     __block NSInteger count =0;
     [self.managedObjectContext performBlockAndWait:^{
-        
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
+        
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"latest.vault.vaultId = %@", self.qredoIndexVault.vaultId];
+        
+        
         NSError *error = nil;
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         count = [results count];
@@ -173,16 +121,39 @@
     
 }
 
--(void)putItemWithMetadata:(QredoVaultItemMetadata *)metadata{
-    [self.managedObjectContext performBlockAndWait:^{
-        //find any existing itemId in the Index
-        QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexWithMetata:metadata inManageObjectContext:self.managedObjectContext];
-        if (indexedItem){
-            [indexedItem addVersion:metadata];
-        }else{
-            [QredoIndexVaultItem create:metadata inManageObjectContext:self.managedObjectContext];
-        }
-        [self save];
+
+-(void)dump:(NSString*)message{
+    for (QredoIndexVaultItem *vaultItem in self.qredoIndexVault.vaultItems){
+        NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,  vaultItem.latest.descriptor.itemId, vaultItem.latest.descriptor.sequenceValueValue);
+    }
+}
+
+
+-(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata{
+    [self putItemWithMetadata:newMetadata inManagedObjectContext:self.managedObjectContext];
+}
+
+-(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext{
+    [managedObjectContext performBlockAndWait:^{
+            NSLog(@"Putting into core data %@ - %lld",newMetadata.descriptor.itemId, newMetadata.descriptor.sequenceValue);
+            
+            QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithMetadata:newMetadata inManageObjectContext:self.managedObjectContext];
+            QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
+            
+            if ([latestIndexedMetadata isSameVersion:newMetadata]){
+                NSLog(@"same version");
+                return;
+            }
+            
+            if (indexedItem){
+                [indexedItem addNewVersion:newMetadata];
+                [latestIndexedMetadata isSameVersion:newMetadata];
+                NSLog(@"new version");
+            }else{
+                QredoIndexVaultItem *newIndeVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
+                newIndeVaultItem.vault = self.qredoIndexVault;
+                NSLog(@"New item is %@",newIndeVaultItem.latest.descriptor.itemId);
+            }
     }];
 }
 
@@ -193,15 +164,6 @@
     [self.managedObjectContext performBlockAndWait:^{
 
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
-        
-        NSExpression *maxSequenceValueKeyPathExpression = [NSExpression expressionForKeyPath:@"descriptor.sequenceValue"];
-        NSExpression *maxSequenceValueExpression = [NSExpression expressionForFunction:@"max:" arguments:@[maxSequenceValueKeyPathExpression]];
-        
-//        NSExpressionDescription *maxSequenceExpressionDescription = [[NSExpressionDescription alloc] init];
-//        maxSequenceExpressionDescription.name = @"maxSequenceNumber";
-//        maxSequenceExpressionDescription.expression = maxSequenceValueExpression;
-//        maxSequenceExpressionDescription.expressionResultType = NSInteger64AttributeType;
-//        fetchRequest.propertiesToFetch = @[maxSequenceExpressionDescription];
         fetchRequest.predicate = [NSPredicate predicateWithFormat:@"descriptor.itemId==%@",vaultItemDescriptor.itemId.data];
         fetchRequest.fetchLimit = 1;
         NSError *error = nil;
@@ -228,31 +190,21 @@
         fetchRequest.predicate = searchByItemId;
         NSError *error = nil;
         NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        
-        
         if (error){
             blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexErrorUnknown userInfo:@{ NSLocalizedDescriptionKey : @"Failed to retrieve item to delete" }];
         }else if ([items count]==0){
             blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexItemNotFound userInfo:@{ NSLocalizedDescriptionKey : @"Item not found in cache" }];
         }else{
             //delete the parent of the found item -
-
             QredoIndexVaultItemMetadata *itemMetadata = [items lastObject];
-            QredoIndexVaultItem *vaultItem = itemMetadata.allVersions;
+            QredoIndexVaultItem *vaultItem = itemMetadata.latest;
             
             [self.managedObjectContext deleteObject:vaultItem];
         }
-        
         if ([self save])hasDeletedObject = YES;
-        
-        
     }];
-    
     if (returnError)returnError = blockError;
-    
-    
     return hasDeletedObject;
-
 }
 
 
@@ -262,7 +214,6 @@
 
 -(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError{
      //deletes item using sequenceId in passed vaultDescriptor
-    
     __block BOOL hasDeletedObject = NO;
     __block NSError *blockError = nil;
     
@@ -273,33 +224,25 @@
         NSError *error = nil;
         NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         
-        
         if (error){
             blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexErrorUnknown userInfo:@{ NSLocalizedDescriptionKey : @"Failed to retrieve item to delete" }];
         }else if ([items count]!=1){
             blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexItemNotFound userInfo:@{ NSLocalizedDescriptionKey : @"Item not found in cache" }];
         }else{
-            //delete the item
             [self.managedObjectContext deleteObject:[items lastObject]];
         }
-        
         if ([self save])hasDeletedObject = YES;
-        
-        
     }];
-    
     if (returnError)returnError = blockError;
-    
-
     return hasDeletedObject;
 }
 
 
-- (void)enumerateCurrentSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler{
+- (void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler{
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
-        NSPredicate *restrictToLatest = [NSPredicate predicateWithFormat:@"vaultMetadata.latest != nil"];
-        NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToLatest]];
+        NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.latest.vault.vaultId = %@",self.qredoIndexVault.vaultId ];
+        NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToCurrentVault]];
         fetchRequest.predicate = compoundPredicate;
         [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
     }];
@@ -307,36 +250,64 @@
 }
 
 
-- (void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler{
-    [self.managedObjectContext performBlockAndWait:^{
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
-        fetchRequest.predicate = predicate;
-        [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
+
+-(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion{
+    __block int count=0;
+    __block NSMutableArray *itemArray = [[NSMutableArray alloc] init];
+    
+    
+    [self.qredoVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        count++;
+
+        NSManagedObjectContext *temporaryContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        temporaryContext.parentContext = self.managedObjectContext;
+        
+          [self putItemWithMetadata:vaultItemMetadata inManagedObjectContext:temporaryContext];
+        
+        NSError *error;
+        if (![temporaryContext save:&error])        {
+            // handle error
+        }
+                                                                      
+                                                                      
+                                                                      
+                                                                      
+//        dispatch_sync(dispatch_get_main_queue(), ^{
+//            [self putItemWithMetadata:vaultItemMetadata];
+//            [self save];
+        //});
+    } completionHandler:^(NSError *error) {
+        completion(count, error);
+        dispatch_sync(dispatch_get_main_queue(), ^{
+           [self dump:@"inside the sync"];
+        });
     }];
+
 }
 
 
-
--(void)sync{
+-(void)syncIndexSince:(QredoVaultHighWatermark*)sinceWatermark withCompletion:(void(^)(NSError *error))completion{
+    [self.qredoVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        [self putItemWithMetadata:vaultItemMetadata];
+    } since:sinceWatermark completionHandler:^(NSError *error) {
+        completion(error);
+    }];
 }
 
 
 -(void)purge{
     [self.managedObjectContext performBlockAndWait:^{
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexVaultItem class] entityName]];
-        NSError *error = nil;
-        NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        
-        if (error){
-            NSLog(@"Coredata Error in Local Index - Failed to retrieve items");
-        }else{
-            for (QredoIndexVaultItem *indexVaultItem in items){
-                [self.managedObjectContext deleteObject:indexVaultItem];
-            }
-        }
+        if (self.qredoIndexVault)[self.managedObjectContext deleteObject:self.qredoIndexVault];
+        //rebuild the vault references after deleting the old version
+        [self.qredoVault removeVaultObserver:self];
+        [self retrieveQredoIndexVault];
+        [self.qredoVault resetWatermark];
+        [self save];
+        [self.qredoVault addVaultObserver:self];
     }];
+    
+    
 }
-
 
 
 - (void)deleteAllObjects: (NSString *) entityDescription  {
@@ -353,12 +324,8 @@
     [self save];
 }
 
--(void)addListener{
-}
 
 
--(void)removeListener{
-}
 
 
 #pragma mark -
@@ -376,6 +343,38 @@
     }
     if (completionHandler)completionHandler(error);
 }
+
+
+- (BOOL)save{
+    __block BOOL success = NO;
+    if (![[self privateContext] hasChanges] && ![[self managedObjectContext] hasChanges]) return YES;
+    [[self managedObjectContext] performBlockAndWait:^{
+        NSError *error = nil;
+        NSAssert([[self managedObjectContext] save:&error], @"Failed to save main context: %@\n%@", [error localizedDescription], [error userInfo]);
+        [[self privateContext] performBlock:^{
+            NSError *privateError = nil;
+            NSAssert([[self privateContext] save:&privateError], @"Error saving private context: %@\n%@", [privateError localizedDescription], [privateError userInfo]);
+        }];
+        if (error==nil)success=YES;
+    }];
+    return  success;
+}
+
+
+
+#pragma mark
+#pragma QredoVaultObserver Methods
+-(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata{
+    NSLog(@"Incoming Data: %@ - %lld",itemMetadata.descriptor.itemId.data,itemMetadata.descriptor.sequenceValue );
+    [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
+}
+
+
+-(void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error{
+    NSLog(@"Qredo Vault did fail with error %@",error);
+}
+
+
 
 
 @end

@@ -2,6 +2,7 @@
 #import "Qredo.h"
 #import "QredoIndexVaultItemMetadata.h"
 #import "QredoIndexVaultItemDescriptor.h"
+#import "QredoVaultPrivate.h"
 
 @interface QredoIndexVaultItem ()
 
@@ -11,7 +12,7 @@
 
 @implementation QredoIndexVaultItem
 
-+(QredoIndexVaultItem *)searchForIndexWithMetata:(QredoVaultItemMetadata *)metadata  inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
++(QredoIndexVaultItem *)searchForIndexByItemIdWithMetadata:(QredoVaultItemMetadata *)metadata  inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@",metadata.descriptor.itemId.data];
     [fetchRequest setPredicate:predicate];
@@ -22,25 +23,21 @@
 }
 
 
--(void)addVersion:(QredoVaultItemMetadata *)metadata{
-    QredoIndexVaultItemMetadata *indexMetadata = [QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:self.managedObjectContext];
-    
+-(void)addNewVersion:(QredoVaultItemMetadata *)metadata{
     long long currentSequenceValue = self.latest.descriptor.sequenceValueValue;
-    long long newSequenceValue    = indexMetadata.descriptor.sequenceValueValue;
+    long long newSequenceValue    = metadata.descriptor.sequenceValue;
     QredoIndexVaultItemMetadata *currentLatest = self.latest;
     if (newSequenceValue>currentSequenceValue){
-        //replace this new version as the latest
-        self.latest = indexMetadata;
+        if (self.latest)[self.managedObjectContext deleteObject:self.latest];
+        self.latest = [QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:self.managedObjectContext];
     }
-    [self addAllVersionsObject:indexMetadata];
-    
 }
 
 
 +(QredoIndexVaultItem *)create:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     QredoIndexVaultItem *newVaultItem =  [[self class] insertInManagedObjectContext:managedObjectContext];
-    newVaultItem.itemId = metadata.descriptor.itemId.data;
-    [newVaultItem addVersion:metadata];
+    newVaultItem.itemId = [metadata.descriptor.itemId.data copy];
+    [newVaultItem addNewVersion:metadata];
     return newVaultItem;
 }
 

@@ -8,8 +8,8 @@ const struct QredoIndexVaultItemAttributes QredoIndexVaultItemAttributes = {
 };
 
 const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships = {
-	.allVersions = @"allVersions",
 	.latest = @"latest",
+	.vault = @"vault",
 };
 
 @implementation QredoIndexVaultItemID
@@ -43,18 +43,9 @@ const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships =
 
 @dynamic itemId;
 
-@dynamic allVersions;
-
-- (NSMutableSet*)allVersionsSet {
-	[self willAccessValueForKey:@"allVersions"];
-
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"allVersions"];
-
-	[self didAccessValueForKey:@"allVersions"];
-	return result;
-}
-
 @dynamic latest;
+
+@dynamic vault;
 
 @end
 

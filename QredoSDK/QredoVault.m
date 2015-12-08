@@ -357,7 +357,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoUpdateListener *updateListener = _updateListener;
     QredoObserverList *observers = _observers;
     [_observers removeObserver:observer];
-    if ([observers count] < 1 && !_updateListener.isListening) {
+    if ([observers count] < 1 && _updateListener.isListening) {
         [updateListener stopListening];
     }
 }

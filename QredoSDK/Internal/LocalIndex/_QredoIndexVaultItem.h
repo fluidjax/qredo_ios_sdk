@@ -8,12 +8,12 @@ extern const struct QredoIndexVaultItemAttributes {
 } QredoIndexVaultItemAttributes;
 
 extern const struct QredoIndexVaultItemRelationships {
-	__unsafe_unretained NSString *allVersions;
 	__unsafe_unretained NSString *latest;
+	__unsafe_unretained NSString *vault;
 } QredoIndexVaultItemRelationships;
 
 @class QredoIndexVaultItemMetadata;
-@class QredoIndexVaultItemMetadata;
+@class QredoIndexVault;
 
 @interface QredoIndexVaultItemID : NSManagedObjectID {}
 @end
@@ -28,21 +28,13 @@ extern const struct QredoIndexVaultItemRelationships {
 
 //- (BOOL)validateItemId:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSSet *allVersions;
-
-- (NSMutableSet*)allVersionsSet;
-
 @property (nonatomic, strong) QredoIndexVaultItemMetadata *latest;
 
 //- (BOOL)validateLatest:(id*)value_ error:(NSError**)error_;
 
-@end
+@property (nonatomic, strong) QredoIndexVault *vault;
 
-@interface _QredoIndexVaultItem (AllVersionsCoreDataGeneratedAccessors)
-- (void)addAllVersions:(NSSet*)value_;
-- (void)removeAllVersions:(NSSet*)value_;
-- (void)addAllVersionsObject:(QredoIndexVaultItemMetadata*)value_;
-- (void)removeAllVersionsObject:(QredoIndexVaultItemMetadata*)value_;
+//- (BOOL)validateVault:(id*)value_ error:(NSError**)error_;
 
 @end
 
@@ -51,10 +43,10 @@ extern const struct QredoIndexVaultItemRelationships {
 - (NSData*)primitiveItemId;
 - (void)setPrimitiveItemId:(NSData*)value;
 
-- (NSMutableSet*)primitiveAllVersions;
-- (void)setPrimitiveAllVersions:(NSMutableSet*)value;
-
 - (QredoIndexVaultItemMetadata*)primitiveLatest;
 - (void)setPrimitiveLatest:(QredoIndexVaultItemMetadata*)value;
+
+- (QredoIndexVault*)primitiveVault;
+- (void)setPrimitiveVault:(QredoIndexVault*)value;
 
 @end
