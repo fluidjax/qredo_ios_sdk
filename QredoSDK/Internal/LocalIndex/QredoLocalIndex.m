@@ -124,7 +124,7 @@
 
 -(void)dump:(NSString*)message{
     for (QredoIndexVaultItem *vaultItem in self.qredoIndexVault.vaultItems){
-        NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,  vaultItem.latest.descriptor.itemId, vaultItem.latest.descriptor.sequenceValueValue);
+        //NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,  vaultItem.latest.descriptor.itemId, vaultItem.latest.descriptor.sequenceValueValue);
     }
 }
 
@@ -135,24 +135,28 @@
 
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext{
     [managedObjectContext performBlockAndWait:^{
-            NSLog(@"Putting into core data %@ - %lld",newMetadata.descriptor.itemId, newMetadata.descriptor.sequenceValue);
-            
+            //NSLog(@"Putting into core data %@ - %lld",newMetadata.descriptor.itemId, newMetadata.descriptor.sequenceValue);
+        
             QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithMetadata:newMetadata inManageObjectContext:self.managedObjectContext];
             QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
             
             if ([latestIndexedMetadata isSameVersion:newMetadata]){
-                NSLog(@"same version");
+                //the version is the same as the existing version in core data - do nothing
+                //NSLog(@"same version");
                 return;
             }
             
             if (indexedItem){
+                //an existing version exists in coredata, update with this potential new version
                 [indexedItem addNewVersion:newMetadata];
                 [latestIndexedMetadata isSameVersion:newMetadata];
-                NSLog(@"new version");
+                //NSLog(@"new version");
             }else{
                 QredoIndexVaultItem *newIndeVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
                 newIndeVaultItem.vault = self.qredoIndexVault;
-                NSLog(@"New item is %@",newIndeVaultItem.latest.descriptor.itemId);
+                //NSLog(@"****1 new item %@ ",newMetadata.descriptor.itemId.data);
+                //NSLog(@"****2 new item %@ ",newIndeVaultItem.latest.descriptor.itemId);
+                //NSLog(@"****3 new item %@ ",newIndeVaultItem.itemId);
             }
     }];
 }
@@ -365,7 +369,7 @@
 #pragma mark
 #pragma QredoVaultObserver Methods
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata{
-    NSLog(@"Incoming Data: %@ - %lld",itemMetadata.descriptor.itemId.data,itemMetadata.descriptor.sequenceValue );
+    //NSLog(@"Incoming Data: %@ - %lld",itemMetadata.descriptor.itemId.data,itemMetadata.descriptor.sequenceValue );
     [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
 }
 

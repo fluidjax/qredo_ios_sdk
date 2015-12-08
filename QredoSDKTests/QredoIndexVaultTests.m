@@ -459,9 +459,9 @@ NSNumber *testNumber;
 
 
 -(void)testLargeIndexSyncMultiple{
-    for (int i=0;i<100;i++){
+    for (int i=0;i<2;i++){
         [self testLargeIndexSync];
-        
+        sleep(5);
         NSLog(@"******************************************************************************************************************");
         
     }
@@ -477,8 +477,8 @@ NSNumber *testNumber;
     XCTAssertNotNil(vault);
     
     [qredoLocalIndex purge];
-    NSLog(@"START - Purge 1");
-    [qredoLocalIndex dump:@"Start After purge 1"];
+    //NSLog(@"START - Purge 1");
+    //[qredoLocalIndex dump:@"Start After purge 1"];
     
     NSInteger before1 = [qredoLocalIndex count];
     
@@ -491,13 +491,13 @@ NSNumber *testNumber;
     
     NSInteger after1 = [qredoLocalIndex count];
     XCTAssert(after1 == before1+itemCount1 ,@"Failed to add LocalIndex item");
-    [qredoLocalIndex dump:[NSString stringWithFormat:@"Added %i", itemCount1]];
+    //[qredoLocalIndex dump:[NSString stringWithFormat:@"Added %i", itemCount1]];
     
     __block XCTestExpectation *testExpectation1 = [self expectationWithDescription:@"put item 1"];
     __block int reportedSyncCount1 =0;
     
     [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
-        NSLog(@"Sync'd #1 %i items", syncCount);
+        //NSLog(@"Sync'd #1 %i items", syncCount);
         reportedSyncCount1 = syncCount;
         [testExpectation1 fulfill];
     }];
@@ -508,13 +508,13 @@ NSNumber *testNumber;
     XCTAssertEqual(after1-before1, reportedSyncCount1,"The added new items doesn't match the actual increase");
     NSInteger afterSync1 = [qredoLocalIndex count];
 
-    [qredoLocalIndex dump:@"After 1st Sync"];
+    //[qredoLocalIndex dump:@"After 1st Sync"];
     
     //do it again
-    NSLog(@"purge2");
+    //NSLog(@"purge2");
     [qredoLocalIndex purge];
-    [qredoLocalIndex dump:@"After purge 2"];
-    NSLog(@"after purge2");
+    //[qredoLocalIndex dump:@"After purge 2"];
+    //NSLog(@"after purge2");
     
     NSInteger before2 = [qredoLocalIndex count];
     
@@ -525,14 +525,14 @@ NSNumber *testNumber;
         [qredoLocalIndex putItemWithMetadata:junk1];
     }
 
-    NSLog(@"after add 3 items");
+    //NSLog(@"after add 3 items");
     NSInteger after2 = [qredoLocalIndex count];
     
     __block  XCTestExpectation *testExpectation2 = [self expectationWithDescription:@"put item 2"];
     __block int reportedSyncCount2 =0;
     
     [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
-        NSLog(@"Sync'd #2 %i items", syncCount);
+        //NSLog(@"Sync'd #2 %i items", syncCount);
         reportedSyncCount2 = syncCount;
         [testExpectation2 fulfill];
     }];
@@ -542,7 +542,7 @@ NSNumber *testNumber;
     
     XCTAssertEqual(itemCount1+itemCount2, reportedSyncCount2,"The added new items doesn't match the actual increase");
     NSInteger afterSync2 = [qredoLocalIndex count];
-    [qredoLocalIndex dump:@"after sync #2"];
+    //[qredoLocalIndex dump:@"after sync #2"];
     
     //sync again just for kicks
     
@@ -550,7 +550,7 @@ NSNumber *testNumber;
     __block int reportedSyncCount3 =0;
     
     [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
-        NSLog(@"Sync'd #4 %i items", syncCount);
+        //NSLog(@"Sync'd #4 %i items", syncCount);
          [qredoLocalIndex dump:@"after sync #4"];
         reportedSyncCount3 = syncCount;
         [testExpectation3 fulfill];
@@ -563,8 +563,8 @@ NSNumber *testNumber;
     
     XCTAssertEqual(afterSync3, itemCount1+itemCount2,"The added new items doesn't match the actual increase");
 
-    sleep(10);
-    [qredoLocalIndex dump:@"The End"];
+   
+    //[qredoLocalIndex dump:@"The End"];
     
 
     
