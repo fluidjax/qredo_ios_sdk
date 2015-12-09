@@ -131,7 +131,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     _cacheItems = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".items"]];
     _cacheHeaders = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".headers"]];
-    _localIndex = (localIndexing)?[QredoLocalIndex sharedQredoLocalIndexWithVault:self]:nil;
+    _localIndex = (localIndexing)?[[QredoLocalIndex alloc] initWithVault:self]:nil;
     
     return self;
 }

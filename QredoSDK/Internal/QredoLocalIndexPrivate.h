@@ -12,8 +12,7 @@
 
 @property (readonly) NSManagedObjectContext *managedObjectContext;
 
-/** Returns the  Local Index singleton */
-+(id)sharedQredoLocalIndexWithVault:(QredoVault*)vault;
+- (instancetype)initWithVault:(QredoVault*)vault;
 
 /** Put a metadata item into the local Index */
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata;

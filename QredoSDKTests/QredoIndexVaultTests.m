@@ -24,8 +24,48 @@
 QredoClient *client1;
 QredoVault *vault;
 QredoLocalIndex *qredoLocalIndex;
+
+QredoClient *client2;
+QredoVault *vault2;
+QredoLocalIndex *qredoLocalIndex2;
+
+
+
 NSDate *myTestDate;
 NSNumber *testNumber;
+
+
+
+
+-(void)testMultipleClientsAndVaults{
+    [self authoriseSecondClient:[QredoTestUtils randomPassword]];
+    
+    
+    XCTAssertNotEqual(client1, client2,@"Error creating clients");
+    XCTAssertNotEqual(vault, vault2,@"Error creating vaults");
+    XCTAssertNotEqual(qredoLocalIndex, qredoLocalIndex2,@"Error creating localIndexes");
+    
+    NSInteger client1count1 = [qredoLocalIndex count];
+    NSInteger client2count1 = [qredoLocalIndex2 count];
+    
+    [self createTestItemInVault:vault key1Value:[QredoTestUtils randomStringWithLength:32]];
+
+    NSInteger client1count2 = [qredoLocalIndex count];
+    NSInteger client2count2 = [qredoLocalIndex2 count];
+    
+    XCTAssertTrue(client1count2 == client1count1+1,@"failed to insert new item");
+    XCTAssertTrue(client2count1 == client2count2  ,@"incorrectly added new item to the wrong client");
+    
+    
+    [self createTestItemInVault:vault2 key1Value:[QredoTestUtils randomStringWithLength:32]];
+    
+    NSInteger client1count3 = [qredoLocalIndex count];
+    NSInteger client2count3 = [qredoLocalIndex2 count];
+
+    XCTAssertTrue(client1count3 == client1count2,@"incorrectly added new item to the wrong client");
+        XCTAssertTrue(client2count3 == client2count2+1  ,@"failed to insert new item");
+    
+}
 
 
 -(void)testSimplePut{
@@ -49,10 +89,6 @@ NSNumber *testNumber;
     XCTAssert(after == before + addCount,@"Failed to put new LocalIndex item");
      NSLog(@"testMultiplePut Before %ld After %ld", (long)before, (long)after);
 }
-
-
-
-
 
 
 -(void)testEnumerateRandomClient{
@@ -346,6 +382,38 @@ NSNumber *testNumber;
     
     
 }
+
+
+-(void)authoriseSecondClient:(NSString*)password{
+    
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client2"];
+    
+    
+    [QredoClient initializeWithAppSecret:k_APPSECRET
+                                  userId:k_USERID
+                              userSecret:password
+                                 options:nil
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
+                           XCTAssertNil(error);
+                           XCTAssertNotNil(clientArg);
+                           client2 = clientArg;
+                           [clientExpectation fulfill];
+                       }];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        clientExpectation = nil;
+    }];
+    vault2 = client2.defaultVault;
+    qredoLocalIndex2 = client2.defaultVault.localIndex;
+    
+    
+    XCTAssertNotNil(client2);
+    XCTAssertNotNil(vault2);
+    XCTAssertNotNil(qredoLocalIndex2);
+    
+    
+}
+
 
 - (NSData*)randomDataWithLength:(int)length {
     NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
