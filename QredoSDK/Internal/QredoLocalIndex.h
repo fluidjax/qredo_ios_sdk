@@ -58,6 +58,7 @@
 
 /** Delete all items in the cache */
 -(void)purge;
+-(void)purgeAllVaults;
 
 -(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 -(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;

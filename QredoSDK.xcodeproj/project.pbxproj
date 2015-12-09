@@ -423,6 +423,7 @@
 		78F868DA1A5F1A37009CAFFE /* QredoBase58.h in Headers */ = {isa = PBXBuildFile; fileRef = 78F868D81A5F1A37009CAFFE /* QredoBase58.h */; };
 		78F868DB1A5F1A37009CAFFE /* QredoBase58.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F868D91A5F1A37009CAFFE /* QredoBase58.m */; };
 		830A3EF01BFF38EC002CE210 /* MultiPageMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A3EEF1BFF38EC002CE210 /* MultiPageMessageTest.m */; };
+		831164C51C18630400661D7C /* QredoIndexPerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 831164BE1C184A4E00661D7C /* QredoIndexPerformanceTests.m */; };
 		83227B811C15CEA5006CAD75 /* _QredoIndexVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */; };
 		83227B821C15CEB2006CAD75 /* _QredoIndexVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */; };
 		83227B871C15CECB006CAD75 /* QredoIndexVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 83227B841C15CECB006CAD75 /* QredoIndexVault.m */; };
@@ -1004,6 +1005,7 @@
 		78F868D81A5F1A37009CAFFE /* QredoBase58.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoBase58.h; sourceTree = "<group>"; };
 		78F868D91A5F1A37009CAFFE /* QredoBase58.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoBase58.m; sourceTree = "<group>"; };
 		830A3EEF1BFF38EC002CE210 /* MultiPageMessageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiPageMessageTest.m; sourceTree = "<group>"; };
+		831164BE1C184A4E00661D7C /* QredoIndexPerformanceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexPerformanceTests.m; path = QredoSDKTests/QredoIndexPerformanceTests.m; sourceTree = SOURCE_ROOT; };
 		83227B7E1C15CEA5006CAD75 /* _QredoIndexVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _QredoIndexVault.h; path = LocalIndex/_QredoIndexVault.h; sourceTree = "<group>"; };
 		83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _QredoIndexVault.m; path = LocalIndex/_QredoIndexVault.m; sourceTree = "<group>"; };
 		83227B831C15CECB006CAD75 /* QredoIndexVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVault.h; path = LocalIndex/QredoIndexVault.h; sourceTree = "<group>"; };
@@ -1028,7 +1030,7 @@
 		837526A21C0F377C004DDDB2 /* QredoIndexVaultItemDescriptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexVaultItemDescriptor.m; path = LocalIndex/QredoIndexVaultItemDescriptor.m; sourceTree = "<group>"; };
 		837526A31C0F377C004DDDB2 /* QredoIndexVaultItemMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVaultItemMetadata.h; path = LocalIndex/QredoIndexVaultItemMetadata.h; sourceTree = "<group>"; };
 		837526A41C0F377C004DDDB2 /* QredoIndexVaultItemMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexVaultItemMetadata.m; path = LocalIndex/QredoIndexVaultItemMetadata.m; sourceTree = "<group>"; };
-		837526AD1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexVaultTests.m; path = ../../QredoSDKTests/QredoIndexVaultTests.m; sourceTree = "<group>"; };
+		837526AD1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoIndexVaultTests.m; sourceTree = "<group>"; };
 		83A2A2991C11950A00B1C8AC /* _QredoIndexVaultIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _QredoIndexVaultIndex.h; path = LocalIndex/_QredoIndexVaultIndex.h; sourceTree = "<group>"; };
 		83A2A29A1C11950A00B1C8AC /* _QredoIndexVaultIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _QredoIndexVaultIndex.m; path = LocalIndex/_QredoIndexVaultIndex.m; sourceTree = "<group>"; };
 		83AF3A3C1C11DEE5003B258F /* _QredoIndexVariableValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _QredoIndexVariableValue.h; path = LocalIndex/_QredoIndexVariableValue.h; sourceTree = "<group>"; };
@@ -1826,13 +1828,21 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
+		831164C41C1862F300661D7C /* LocalIndex */ = {
+			isa = PBXGroup;
+			children = (
+				837526AD1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m */,
+				831164BE1C184A4E00661D7C /* QredoIndexPerformanceTests.m */,
+			);
+			name = LocalIndex;
+			sourceTree = "<group>";
+		};
 		837526601C0F2B0E004DDDB2 /* LocalIndex */ = {
 			isa = PBXGroup;
 			children = (
 				8375266C1C0F3580004DDDB2 /* human files */,
 				8375266B1C0F3576004DDDB2 /* machine files */,
 				837526671C0F3477004DDDB2 /* QredoLocalIndex.m */,
-				837526AD1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m */,
 				83F4E86D1C0F606900A99431 /* QredoLocalIndex.xcdatamodel */,
 				833FB2BE1C10A8CE0092E05A /* QredoLocalIndex.h */,
 			);
@@ -1901,6 +1911,7 @@
 		DC1B55131A81244400D2F8B1 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				831164C41C1862F300661D7C /* LocalIndex */,
 				DC1B55141A81245100D2F8B1 /* Rendezvous */,
 			);
 			name = Internal;
@@ -3009,6 +3020,7 @@
 				66605CC31BD6408D00EC8D6C /* OwnershipSignatureTests.m in Sources */,
 				66605CC41BD6408D00EC8D6C /* VaultCryptoTests.m in Sources */,
 				66605CC51BD6408D00EC8D6C /* ConversationCryptoTests.m in Sources */,
+				831164C51C18630400661D7C /* QredoIndexPerformanceTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3592,6 +3604,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "QredoSDKTests/QredoSDKTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TEST_HOST = "";
 			};
 			name = Debug;
 		};

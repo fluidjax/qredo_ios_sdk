@@ -560,17 +560,28 @@ NSNumber *testNumber;
     }];
     
     NSInteger afterSync3 = [qredoLocalIndex count];
-    
     XCTAssertEqual(afterSync3, itemCount1+itemCount2,"The added new items doesn't match the actual increase");
-
-   
     //[qredoLocalIndex dump:@"The End"];
     
-
-    
-    
-    
 }
+
+
+-(void)summaryValueTestSearch:(int)expectedMatches{
+    //this search term returns each 100th item
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key=%@ && value.string CONTAINS %@", @"key1", @"99"];
+    
+    __block int count =0;
+    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        count++;
+    } completionHandler:^(NSError *error) {
+        XCTAssert(expectedMatches==count,@"Did not match the correct number of expected matches");
+        NSLog(@"Search Matched %i items",count);
+    }];
+   
+}
+
+
+
 
 
 @end
