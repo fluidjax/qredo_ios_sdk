@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoLocalIndex.h"
+#import "QredoLocalIndexPrivate.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultPrivate.h"
 
@@ -23,19 +23,6 @@ QredoLocalIndex *qredoLocalIndex;
 NSDate *myTestDate;
 NSNumber *testNumber;
 
-- (void)setUp {
-    [super setUp];
-    
-    myTestDate = [NSDate date];
-    NSLog(@"**************%@",myTestDate);
-    testNumber = [NSNumber numberWithInt:3];
-    
-    self.continueAfterFailure = YES;
-}
-
-- (void)tearDown {
-    [super tearDown];
-}
 
 
 
@@ -162,9 +149,22 @@ NSNumber *testNumber;
 
 
 
-
-#pragma Private methods
 #pragma mark
+#pragma Private methods
+
+
+- (void)setUp {
+    [super setUp];
+    myTestDate = [NSDate date];
+    NSLog(@"**************%@",myTestDate);
+    testNumber = [NSNumber numberWithInt:3];
+    self.continueAfterFailure = YES;
+}
+
+
+- (void)tearDown {
+    [super tearDown];
+}
 
 
 -(void)authoriseClient:(NSString*)password{

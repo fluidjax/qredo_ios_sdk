@@ -5,7 +5,7 @@
 //  Created by Christopher Morris on 02/12/2015.
 //
 //
-#import "QredoLocalIndex.h"
+#import "QredoLocalIndexPrivate.h"
 #import "QredoErrorCodes.h"
 
 #import "QredoIndexSummaryValues.h"
@@ -44,6 +44,7 @@
     self = [super init];
     if (self) {
         self.qredoVault = vault;
+        NSLog(@"QredoVault %@",self.qredoVault);
         [vault addVaultObserver:self];
         [self initializeCoreData];
         [self retrieveQredoIndexVault];
@@ -208,36 +209,6 @@
 }
 
 
--(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor{
-    return [self deleteVersion:vaultItemDescriptor error:nil];
-}
-
--(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError{
-     //deletes item using sequenceId in passed vaultDescriptor
-    __block BOOL hasDeletedObject = NO;
-    __block NSError *blockError = nil;
-    
-    [self.managedObjectContext performBlockAndWait:^{
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexVaultItemMetadata class] entityName]];
-        NSPredicate *searchBySequenceId = [NSPredicate predicateWithFormat:@"descriptor.sequenceId == %@", vaultItemDescriptor.sequenceId.data];
-        fetchRequest.predicate = searchBySequenceId;
-        NSError *error = nil;
-        NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        
-        if (error){
-            blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexErrorUnknown userInfo:@{ NSLocalizedDescriptionKey : @"Failed to retrieve item to delete" }];
-        }else if ([items count]!=1){
-            blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexItemNotFound userInfo:@{ NSLocalizedDescriptionKey : @"Item not found in cache" }];
-        }else{
-            [self.managedObjectContext deleteObject:[items lastObject]];
-        }
-        if ([self save])hasDeletedObject = YES;
-    }];
-    if (returnError)returnError = blockError;
-    return hasDeletedObject;
-}
-
-
 - (void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler{
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
@@ -261,8 +232,7 @@
 
 -(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion{
     __block int count=0;
-    __block NSMutableArray *itemArray = [[NSMutableArray alloc] init];
-    
+   
     [self.qredoVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         [self putItemWithMetadata:vaultItemMetadata];
@@ -272,26 +242,16 @@
 }
 
 
--(void)syncIndexSince:(QredoVaultHighWatermark*)sinceWatermark withCompletion:(void(^)(NSError *error))completion{
-    [self.qredoVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
-        [self putItemWithMetadata:vaultItemMetadata];
-    } since:sinceWatermark completionHandler:^(NSError *error) {
-        completion(error);
-    }];
-}
-
-
-
-
 -(void)purge{
     [self.managedObjectContext performBlockAndWait:^{
         if (self.qredoIndexVault)[self.managedObjectContext deleteObject:self.qredoIndexVault];
         //rebuild the vault references after deleting the old version
         [self.qredoVault removeVaultObserver:self];
-        [self retrieveQredoIndexVault];
         [self.qredoVault resetWatermark];
-        [self save];
+        [self retrieveQredoIndexVault];
         [self.qredoVault addVaultObserver:self];
+        [self save];
+        
     }];
     
     
@@ -368,7 +328,7 @@
 #pragma QredoVaultObserver Methods
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata{
     //NSLog(@"Incoming Data: %@ - %lld",itemMetadata.descriptor.itemId.data,itemMetadata.descriptor.sequenceValue );
-    [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
+  //  [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
 }
 
 

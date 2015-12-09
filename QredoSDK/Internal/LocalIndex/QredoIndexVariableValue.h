@@ -3,6 +3,5 @@
 
 @interface QredoIndexVariableValue : _QredoIndexVariableValue {}
 
-+(instancetype)createInManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 @end

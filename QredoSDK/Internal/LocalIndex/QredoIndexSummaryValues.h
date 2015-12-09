@@ -17,8 +17,3 @@ typedef NS_ENUM(NSInteger, IndexSummaryValueDataType) {
 @end
 
 
-
-
-@interface SummaryValue : NSValueTransformer
-
-@end

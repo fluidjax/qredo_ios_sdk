@@ -39,18 +39,15 @@
     return NO;
 }
 
+
 -(void)createSummaryValues:(NSDictionary *)summaryValues inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     for (NSObject *key in [summaryValues allKeys]){
         QredoIndexSummaryValues *qredoIndexSummaryValues = [QredoIndexSummaryValues createWithKey:key value:[summaryValues objectForKey:key]
                                                              inManageObjectContext:managedObjectContext];
-
         qredoIndexSummaryValues.vaultMetadata = self;
     }
-    
 }
 
-
-     
 
 +(instancetype)createOrUpdateWith:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     QredoIndexVaultItemMetadata *indexedVaultItemMetadata;
@@ -81,7 +78,6 @@
 }
 
 
-
 -(NSDictionary*)buildSummaryDictionary{
     //loop through all the SummaryValues nsmanagedobjects and create a dictionary
     NSMutableDictionary *returnDictionary = [[NSMutableDictionary alloc] init];
@@ -89,14 +85,7 @@
         [returnDictionary setObject:[qredoIndexSummaryValue retrieveValue] forKey:qredoIndexSummaryValue.key];
     }
     return returnDictionary;
-    
 }
-
-
-
-
-
-
 
 
 @end

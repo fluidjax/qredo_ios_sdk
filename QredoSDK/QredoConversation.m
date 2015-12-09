@@ -1048,7 +1048,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     NSData *vaultKey = [QredoVaultCrypto vaultKeyWithVaultMasterKey:_client.systemVault.vaultKeys.vaultKey
                                                            infoData:_inboundQueueId.data];
     QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKey:vaultKey];
-    _store = [[QredoVault alloc] initWithClient:_client vaultKeys:keys];
+    _store = [[QredoVault alloc] initWithClient:_client vaultKeys:keys withLocalIndex:NO];
 
     return _store;
 }

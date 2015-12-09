@@ -1,12 +1,10 @@
-//
-//  QredoLocalIndex.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 03/12/2015.
-//
-//
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
+
 #import "Qredo.h"
-#import "QredoVault.h"
+
 
 
 @interface QredoLocalIndex : NSObject <QredoVaultObserver>
@@ -45,13 +43,9 @@
 
 
 
-/** Synchronize the local Index with all items on the server */
+/** Synchronize the local Index with all items on the server 
+ returns a count of how many items were imported */
 -(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion;
-
-
-
-/** Synchronize the local Index with all items on the server since highwater mark */
--(void)syncIndexSince:(QredoVaultHighWatermark*)sinceWatermark withCompletion:(void(^)(NSError *error))completion;
 
 /** Count of how many metadata items in the index */
 -(NSInteger)count;
@@ -60,8 +54,6 @@
 -(void)purge;
 -(void)purgeAllVaults;
 
--(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor;
--(BOOL)deleteVersion:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
 -(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 -(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
 

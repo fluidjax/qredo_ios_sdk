@@ -37,7 +37,6 @@
 
 
 -(QredoVaultItemDescriptor *)buildQredoVaultItemDescriptor{
-    
     return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[[QredoQUID alloc]initWithQUIDData:self.sequenceId]
                                                          sequenceValue:self.sequenceValueValue
                                                                 itemId:[[QredoQUID alloc]initWithQUIDData:self.itemId]];

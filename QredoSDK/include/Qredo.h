@@ -142,6 +142,9 @@ Existing conversations established with this Rendezvous will still be available 
 New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again */
  - (void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void(^)(NSError *error))completionHandler;
 
+
 @end
+
+
 
 

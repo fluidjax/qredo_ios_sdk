@@ -327,11 +327,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appID
                                                                              appSecret:[NSData dataWithHexString:appSecret]];
     
-    
-    NSLog(@"Create App credentials %@:%@",appID,appSecret);
-    
     systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
-    NSLog(@"systemVaultKeychainArchiveIdentifier %@",systemVaultKeychainArchiveIdentifier);
     
     NSURL *serviceURL = nil;
     switch (options.transportType) {
@@ -1070,8 +1066,9 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 }
 
 - (void)initializeVaults {
-    _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys];
-    _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys];
+    _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys  withLocalIndex:NO];
+    _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:YES];
+    
 }
 
 - (id<QredoKeychainArchiver>)qredoKeychainArchiver

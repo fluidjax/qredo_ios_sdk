@@ -11,7 +11,6 @@
 @implementation QredoIndexVault
 
 
-
 +(QredoIndexVault *)searchForVaultIndexWithId:(NSData *)vaultId inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"vaultId==%@",vaultId];

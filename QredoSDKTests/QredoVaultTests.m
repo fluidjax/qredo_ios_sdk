@@ -114,8 +114,7 @@
     }
 }
 
-- (void)authoriseClient
-{
+- (void)authoriseClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];

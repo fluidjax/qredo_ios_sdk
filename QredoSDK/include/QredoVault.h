@@ -131,4 +131,36 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 /** If for some reason the client application needs to receive all items in the delegate after calling `startListening`, then this method can be called. */
 - (void)resetWatermark;
+
+
+/** Enumerates through all vault items in the local index that match the predicate
+ The predicate search is performed on the QredoIndexSummaryValues object.
+ 
+ eg. [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
+ [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
+ 
+ Value is matched against a sub field depending on specified type.
+ Valid types are
+ value.string    (an NSString)
+ value.date      (as NSDate)
+ value.number    (an NSNumber)
+ value.data      (an NSData)
+ 
+ */
+-(void)enumerateIndexUsingPredicate:(NSPredicate *)predicate
+             withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+     completionHandler:(void(^)(NSError *error))completionHandler;
+
+
+/** Synchronize the local Index with all items on the server
+ returns a count of how many items were imported 
+ When a number of items have already been entered put into a vault, and a further device connects to the
+ same vault, the previous values can be synchronized to the new device's index using this method call.
+ 
+ */
+-(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion;
+
+
 @end
+
+

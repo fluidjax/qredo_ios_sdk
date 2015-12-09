@@ -1010,7 +1010,7 @@
 		83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _QredoIndexVault.m; path = LocalIndex/_QredoIndexVault.m; sourceTree = "<group>"; };
 		83227B831C15CECB006CAD75 /* QredoIndexVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVault.h; path = LocalIndex/QredoIndexVault.h; sourceTree = "<group>"; };
 		83227B841C15CECB006CAD75 /* QredoIndexVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexVault.m; path = LocalIndex/QredoIndexVault.m; sourceTree = "<group>"; };
-		833FB2BE1C10A8CE0092E05A /* QredoLocalIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoLocalIndex.h; sourceTree = "<group>"; };
+		833FB2BE1C10A8CE0092E05A /* QredoLocalIndexPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoLocalIndexPrivate.h; sourceTree = "<group>"; };
 		8344CC25676CC24DB1E44FD7 /* Pods-QredoSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDKTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
 		83627B941BF5F59F0062AB4E /* QredoUserCredentialsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUserCredentialsTests.m; sourceTree = "<group>"; };
 		837526671C0F3477004DDDB2 /* QredoLocalIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoLocalIndex.m; path = LocalIndex/QredoLocalIndex.m; sourceTree = "<group>"; };
@@ -1844,7 +1844,7 @@
 				8375266B1C0F3576004DDDB2 /* machine files */,
 				837526671C0F3477004DDDB2 /* QredoLocalIndex.m */,
 				83F4E86D1C0F606900A99431 /* QredoLocalIndex.xcdatamodel */,
-				833FB2BE1C10A8CE0092E05A /* QredoLocalIndex.h */,
+				833FB2BE1C10A8CE0092E05A /* QredoLocalIndexPrivate.h */,
 			);
 			name = LocalIndex;
 			sourceTree = "<group>";

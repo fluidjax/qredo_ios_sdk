@@ -6,8 +6,4 @@
 
 @implementation QredoIndexVariableValue
 
-+(instancetype)createInManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
-    return [[self class] insertInManagedObjectContext:managedObjectContext];
-}
-
 @end

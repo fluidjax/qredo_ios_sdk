@@ -10,7 +10,7 @@
 @implementation QredoIndexSummaryValues
 
 
-// VALUES ARE:     string -> string | NSNumber | QredoQUID
+// Possible values are   string -> string | NSNumber | QredoQUID | NSDate
 
 
 +(instancetype)createWithKey:(NSString *)key value:(NSObject *)value inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
@@ -25,8 +25,7 @@
 -(void)assignValue:(NSObject*)value{
     QredoIndexVariableValue *qredoVariableValue = [QredoIndexVariableValue insertInManagedObjectContext:self.managedObjectContext];
     self.value = qredoVariableValue;
-    
-    
+        
     if ([value isKindOfClass:[NSString class]]){
         qredoVariableValue.string = (NSString*)value;
         self.valueTypeValue = IndexSummaryValueDataType_NSString;

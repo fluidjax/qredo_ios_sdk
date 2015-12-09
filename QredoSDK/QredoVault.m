@@ -7,6 +7,7 @@
 #import "Qredo.h"
 #import "QredoPrivate.h"
 #import "QredoVaultSequenceCache.h"
+#import "QredoLocalIndexPrivate.h"
 
 #import "NSDictionary+QUIDSerialization.h"
 #import "NSDictionary+IndexableSet.h"
@@ -64,6 +65,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     PINCache *_cacheItems;
     PINCache *_cacheHeaders;
+    
+    QredoLocalIndex *_localIndex;
 }
 
 - (void)saveState;
@@ -73,6 +76,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 @end
 
 @implementation QredoVault (Private)
+
+
+- (QredoLocalIndex *)localIndex{
+    return _localIndex;
+}
 
 - (QredoVaultKeys *)vaultKeys
 {
@@ -84,7 +92,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     return _sequenceId;
 }
 
-- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys
+- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing
 {
     if (!client || !vaultKeys) return nil;
     self = [super init];
@@ -123,6 +131,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     _cacheItems = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".items"]];
     _cacheHeaders = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".headers"]];
+    _localIndex = (localIndexing)?[QredoLocalIndex sharedQredoLocalIndexWithVault:self]:nil;
     
     return self;
 }
@@ -146,7 +155,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                 summaryValues:(NSDictionary *)summaryValues
             completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
 {
-
+    
     [_vaultServerAccess putUpdateOrDeleteItem:vaultItem
                                        itemId:itemId
                                      dataType:dataType
@@ -159,6 +168,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
                                                                                sequenceValue:newItemMetadata.descriptor.sequenceValue
                                                                                       itemId:itemId];
+
 
         [self cacheEncryptedVaultItem:encryptedVaultItem
                        itemDescriptor:newMetadata.descriptor
@@ -184,8 +194,15 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                        dataType:metadata.dataType
                         created:created
                   summaryValues:newSummaryValues
-              completionHandler:completionHandler];
+                    completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+                        
+                        
+                        if(self.localIndex)[self.localIndex putItemWithMetadata:newItemMetadata];
+                        
+                        completionHandler(newItemMetadata, error);
+                    }];
 }
+
 
 - (void)strictlyUpdateItem:(QredoVaultItem *)vaultItem
          completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
@@ -206,6 +223,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
          if (newItemMetadata) {
+             
+             if(self.localIndex)[self.localIndex putItemWithMetadata:newItemMetadata];
+             
              [self removeBodyFromCacheWithVaultItemDescriptor:vaultItem.metadata.descriptor
                                             completionHandler:^(NSError *error)
              {
@@ -288,6 +308,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 {
     return _vaultKeys.vaultId;
 }
+
 
 - (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
             completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
@@ -407,14 +428,6 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 }
 
 
-
-
-
-
-
-
-
-
 - (void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
 {
 
@@ -433,11 +446,14 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
                   summaryValues:newSummaryValues
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
               if (newItemMetadata) {
+                  
+                  if (self.localIndex)[self.localIndex deleteItem:newItemMetadata.descriptor];
+                  
                   [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
-                                                 completionHandler:^(NSError *cacheError)
-                   {
+                                                 completionHandler:^(NSError *cacheError){
                        completionHandler(newItemMetadata.descriptor, error);
                    }];
+                  
               } else {
                   completionHandler(nil, error);
               }
@@ -499,6 +515,23 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
         _highwatermark = nil;
     }
 }
+
+
+#pragma mark -
+#pragma QredoLocalIndex methods
+
+-(void)enumerateIndexUsingPredicate:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *, BOOL *))block
+                  completionHandler:(void (^)(NSError *))completionHandler{
+    [self.localIndex enumerateSearch:predicate withBlock:block completionHandler:completionHandler];
+}
+
+
+-(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion{
+    [self.localIndex syncIndexWithCompletion:completion];
+}
+
+
+
 
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source

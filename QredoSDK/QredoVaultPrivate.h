@@ -11,7 +11,7 @@
 
 extern NSString *const QredoVaultItemMetadataItemTypeTombstone;
 
-@class QredoClient, QredoKeychain, QredoVaultKeys;
+@class QredoClient, QredoKeychain, QredoVaultKeys, QredoLocalIndex;
 
 @interface QredoVaultItemDescriptor()<NSCopying>
 @property (readonly) QLFVaultSequenceValue sequenceValue;
@@ -52,10 +52,11 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 
 @interface QredoVault (Private)
 
+- (QredoLocalIndex *)localIndex;
 - (QredoQUID *)sequenceId;
 - (QredoVaultKeys *)vaultKeys;
 
-- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys;
+- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing;
 
 - (QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
 - (QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;
