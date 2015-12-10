@@ -78,6 +78,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  */
 @interface QredoVault : NSObject
 
+
+-(void)saveHWM;
+-(void)restoreHWM;
+
 - (QredoQUID *)vaultId;
 
 - (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
@@ -121,6 +125,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
                        completionHandler:(void(^)(NSError *error))completionHandler;
 
 
+- (void)enumerateVaultItemsPagedForSyncUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                            since:(QredoVaultHighWatermark*)sinceWatermark
+                                 watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
+                                completionHandler:(void(^)(NSError *error))completionHandler;
 
 
 /** Deletes a vault item and returns it's metadata */

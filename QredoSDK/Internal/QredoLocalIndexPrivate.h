@@ -7,6 +7,9 @@
 
 
 
+
+
+
 @interface QredoLocalIndex : NSObject <QredoVaultObserver>
 
 
@@ -42,9 +45,13 @@
 
 
 
+
+
 /** Synchronize the local Index with all items on the server 
  returns a count of how many items were imported */
 -(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion;
+
+
 
 /** Count of how many metadata items in the index */
 -(NSInteger)count;

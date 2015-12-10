@@ -33,9 +33,14 @@
 
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                     completionHandler:(void(^)(NSError *error))completionHandler
-                     watermarkHandler:(void(^)(QredoVaultHighWatermark*))watermarkHandler
+                     watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
                                 since:(QredoVaultHighWatermark*)sinceWatermark
                     consolidatingResults:(BOOL)shouldConsolidateResults;
 
+-(void)enumerateVaultItemsPagedForSyncUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                               completionHandler:(void(^)(NSError *error))completionHandler
+                                watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
+                                           since:(QredoVaultHighWatermark*)sinceWatermark
+                            consolidatingResults:(BOOL)shouldConsolidateResults;
 
 @end

@@ -33,7 +33,7 @@
     self = [super init];
     if (self) {
         self.qredoVault = vault;
-        [vault addVaultObserver:self];
+//        [vault addVaultObserver:self];
         [self initializeCoreData];
         [self retrieveQredoIndexVault];
     }
@@ -87,7 +87,7 @@
 
 -(void)dump:(NSString*)message{
     for (QredoIndexVaultItem *vaultItem in self.qredoIndexVault.vaultItems){
-        //NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,  vaultItem.latest.descriptor.itemId, vaultItem.latest.descriptor.sequenceValueValue);
+        NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,  vaultItem.latest.descriptor.itemId, vaultItem.latest.descriptor.sequenceValueValue);
     }
 }
 
@@ -189,16 +189,63 @@
 
 
 
--(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion{
+//-(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion{
+//    __block int count=0;
+//   
+//    [self.qredoVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+//        count++;
+//        [self putItemWithMetadata:vaultItemMetadata];
+//    } completionHandler:^(NSError *error) {
+//        completion(count, error);
+//    }];
+//}
+
+
+
+
+-(void)syncIndexPagedWithCompletionWithHWM:(void(^)(int syncCount, NSError *error))completion{
     __block int count=0;
-   
-    [self.qredoVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    __block QredoVaultHighWatermark *endOfPageHighWaterMark;
+    
+    [self.qredoVault enumerateVaultItemsPagedForSyncUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
-        [self putItemWithMetadata:vaultItemMetadata];
+        //NSLog(@"Enumerated Seq & Seq %@ - %lld",vaultItemMetadata.descriptor.sequenceId,vaultItemMetadata.descriptor.sequenceValue );
+        //NSLog(@"Enumerated HWM %@",self.qredoVault.highWatermark);
+    } since:nil watermarkHandler:^(QredoVaultHighWatermark *watermark) {
+        endOfPageHighWaterMark = watermark;
+        NSLog(@"**** INCOMGIN HIGH WATER MARK - SAVE TO OBJECT MODEL ONLY %@",watermark);
     } completionHandler:^(NSError *error) {
+        NSLog(@"Sync'd %i",count);
         completion(count, error);
     }];
 }
+
+
+-(void)syncIndexWith:(int)incomingGrandTotal completion:(void(^)(int syncCount, NSError *error))completion{
+    __block int vaultItemCount =0;
+    __block int grandTotal = incomingGrandTotal;
+    
+    [self syncIndexPagedWithCompletionWithHWM:^(int syncCount, NSError *error) {
+        vaultItemCount = syncCount;
+        grandTotal += syncCount;
+        if (vaultItemCount>0){
+            //maybe some more. recurse
+            [self syncIndexWith:grandTotal completion:completion];
+        }else{
+            if (completion)completion(grandTotal, error);
+        }
+    }];
+}
+     
+
+-(void)syncIndexWithCompletion:(void (^)(int syncCount, NSError *error))completion{
+    [self syncIndexWith:0 completion:completion];
+}
+
+
+
+
+
 
 
 -(void)purge{
@@ -277,8 +324,8 @@
 #pragma mark
 #pragma QredoVaultObserver Methods
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata{
-    //NSLog(@"Incoming Data: %@ - %lld",itemMetadata.descriptor.itemId.data,itemMetadata.descriptor.sequenceValue );
-  //  [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
+    NSLog(@"Incoming Data: %@ - %lld",itemMetadata.descriptor.itemId.data,itemMetadata.descriptor.sequenceValue );
+    [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
 }
 
 

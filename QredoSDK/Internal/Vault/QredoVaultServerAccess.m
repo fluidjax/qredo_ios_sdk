@@ -214,9 +214,29 @@
      }];
 }
 
+
+
+
+-(void)enumerateVaultItemsPagedForSyncUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                     completionHandler:(void(^)(NSError *error))completionHandler
+                      watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
+                                 since:(QredoVaultHighWatermark*)sinceWatermark
+                  consolidatingResults:(BOOL)shouldConsolidateResults{
+    [self enumerateVaultItemsPagedUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        if (block)block(vaultItemMetadata,stop);
+    } completionHandler:^(NSError *error) {
+        if (completionHandler)completionHandler(error);
+    } watermarkHandler:^(QredoVaultHighWatermark *watermark) {
+        //No effect on the API highwatermark
+        if (watermarkHandler)watermarkHandler(watermark);
+    } since:sinceWatermark consolidatingResults:shouldConsolidateResults];
+}
+
+
+
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                     completionHandler:(void(^)(NSError *error))completionHandler
-                     watermarkHandler:(void(^)(QredoVaultHighWatermark*))watermarkHandler
+                     watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
                                 since:(QredoVaultHighWatermark*)sinceWatermark
                  consolidatingResults:(BOOL)shouldConsolidateResults{
     

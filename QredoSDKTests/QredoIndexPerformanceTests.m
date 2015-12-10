@@ -33,11 +33,12 @@ NSNumber *testNumber;
     //    NSString *clientPass = @"100";  //has 100 item ID's
     //    NSString *clientPass = @"1000"; //has 1000 item ID's
     //    NSString *clientPass = @"10000";//has 10000 item ID's
-    //
-    //    [self authoriseClient:clientPass];
-    //    XCTAssertNotNil(client1);
-    //    [qredoLocalIndex purge];
-    //    [self addTestItems:10000];
+        NSString *clientPass = @"2";//has 10000 item ID's
+    
+        [self authoriseClient:clientPass];
+        XCTAssertNotNil(client1);
+        [qredoLocalIndex purge];
+        [self addTestItems:2];
 }
 
 
@@ -54,6 +55,33 @@ NSNumber *testNumber;
     10000 Records Search meta data for a unique record = 0.02
  */
 
+
+-(void)testDebug{
+    int testSize = 100;
+    NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
+    [self authoriseClient:clientPass];
+    qredoLocalIndex = [[QredoLocalIndex alloc] initWithVault:client1.defaultVault];
+    
+//    [qredoLocalIndex purgeAllVaults];
+    XCTAssertNotNil(client1);
+    int waitTime = (6*testSize)/100;
+    if (waitTime<10)waitTime=100;
+    
+    __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
+    
+    NSLog(@"API HIGHWATER BEFORE %@",client1.defaultVault.highWatermark);
+    
+    [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
+        [syncwait fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:waitTime handler:^(NSError * _Nullable error) {
+        syncwait=nil;
+    }];
+    
+     NSLog(@"API HIGHWATER AFTER %@",client1.defaultVault.highWatermark);
+
+}
 
 
 
@@ -171,11 +199,13 @@ NSNumber *testNumber;
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
     
+    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+    clientOptions.resetData = YES;
     
     [QredoClient initializeWithAppSecret:k_APPSECRET
                                   userId:k_USERID
                               userSecret:password
-                                 options:nil
+                                 options:clientOptions
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);

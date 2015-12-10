@@ -48,6 +48,13 @@
     if (self) {
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
+
+        
+//        NSURL *modelURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"QredoLocalIndex" withExtension:@"momd"];
+        
+//        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"separate_bundle" ofType:@"bundle"];
+//        NSURL *modelURL = [[NSBundle bundleWithPath:bundlePath] URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
+
         
         
         NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];

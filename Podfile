@@ -13,10 +13,16 @@ target 'QredoSDK' do
 
 end
 
+
+target 'LinguaFrancaTests' do
+    pod 'SocketRocket'
+end
+
 target 'QredoSDKTests' do
 
     pod 'PINCache'
     pod 'libsodium', :path => 'libsodium.podspec'
+
 
 end
 

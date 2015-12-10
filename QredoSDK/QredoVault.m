@@ -67,6 +67,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     PINCache *_cacheHeaders;
     
     QredoLocalIndex *_localIndex;
+    QredoVaultHighWatermark *_savedHighWaterMark;;
+
 }
 
 - (void)saveState;
@@ -76,6 +78,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 @end
 
 @implementation QredoVault (Private)
+
+
+
+
+
 
 
 - (QredoLocalIndex *)localIndex{
@@ -131,7 +138,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     _cacheItems = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".items"]];
     _cacheHeaders = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".headers"]];
-    _localIndex = (localIndexing)?[[QredoLocalIndex alloc] initWithVault:self]:nil;
+//    _localIndex = (localIndexing)?[[QredoLocalIndex alloc] initWithVault:self]:nil;
+    _localIndex = nil;
     
     return self;
 }
@@ -304,6 +312,18 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 @implementation QredoVault
 
+
+
+-(void)saveHWM{
+    _savedHighWaterMark = _highwatermark;
+}
+
+-(void)restoreHWM{
+    _highwatermark = _savedHighWaterMark;
+    
+}
+
+
 - (QredoQUID *)vaultId
 {
     return _vaultKeys.vaultId;
@@ -411,6 +431,23 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
         [self strictlyUpdateItem:vaultItem completionHandler:completionHandler];
     }
 }
+
+
+- (void)enumerateVaultItemsPagedForSyncUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                since:(QredoVaultHighWatermark*)sinceWatermark
+                            watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
+                    completionHandler:(void(^)(NSError *error))completionHandler{
+    
+    dispatch_async(_queue, ^{
+        [_vaultServerAccess enumerateVaultItemsPagedForSyncUsingBlock:block completionHandler:completionHandler watermarkHandler:watermarkHandler since:sinceWatermark consolidatingResults:NO];
+        
+//        [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:watermarkHandler since:sinceWatermark consolidatingResults:YES];
+        
+    });
+}
+
+
+
 
 
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block

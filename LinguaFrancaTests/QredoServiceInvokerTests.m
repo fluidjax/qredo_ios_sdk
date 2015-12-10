@@ -8,6 +8,7 @@
 #import "QredoTestConfiguration.h"
 #import "QredoClient.h"
 #import "NSData+QredoRandomData.h"
+#import "NSData+ParseHex.h"
 
 @interface QredoServiceInvokerTests : XCTestCase
 
@@ -52,7 +53,9 @@
 
 - (QredoServiceInvoker *)commonTestInit:(NSURL *)serviceURL
 {
-    QredoServiceInvoker *serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test~" appSecret:[NSData dataWithHexString:@"cafebabe"]];
+   
+    QredoServiceInvoker *serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials];
     XCTAssertNotNil(serviceInvoker);
     
     // Give time for any threading needed to setup transport etc
@@ -107,7 +110,12 @@
     NSURL *serviceURL = nil;
     XCTAssertNil(serviceURL);
 
-    XCTAssertThrowsSpecificNamed([[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil],
+    
+    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test~" appSecret:[NSData dataWithHexString:@"cafebabe"]];
+    
+
+    
+    XCTAssertThrowsSpecificNamed( [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials],
                                  NSException,
                                  NSInvalidArgumentException,
                                  @"Nil NSURL but NSInvalidArgumentException not thrown.");
@@ -148,14 +156,14 @@
                        BOOL result = [[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
                        XCTAssertTrue(result);
                        
-                       [self incrementPingSuccessResponseCount];
+//                       [self incrementPingSuccessResponseCount];
                        
                        [readerCompletedExpectation fulfill];
                    }
                      errorHandler:^(NSError *error) {
                          XCTFail(@"Error should not have occurred.");
 
-                         [self incrementPingErrorResponseCount];
+//                         [self incrementPingErrorResponseCount];
                      }];
 }
 
