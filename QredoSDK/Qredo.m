@@ -328,7 +328,6 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                                                              appSecret:[NSData dataWithHexString:appSecret]];
     
     systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
-    NSLog(@"systemVaultKeychainArchiveIdentifier %@",systemVaultKeychainArchiveIdentifier);
     
     NSURL *serviceURL = nil;
     switch (options.transportType) {
@@ -350,7 +349,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                                            appCredentials:appCredentials];
     
     
-    void(^completeAuthorization)() = ^() {
+    void(^completeAuthorization)(NSError *) = ^void(NSError *error) {
         
         if (error) {
             if (completionHandler) completionHandler(nil, error);
@@ -371,7 +370,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                 [client saveStateWithError:&error];
             }
 
-            completeAuthorization();
+            completeAuthorization(error);
         }];
 
         return;
@@ -390,7 +389,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                     [client saveStateWithError:&error];
                 }
 
-                completeAuthorization();
+                completeAuthorization(error);
             }];
 
         } else {
@@ -410,7 +409,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                           style:UIAlertActionStyleDefault
                                         handler:^(UIAlertAction *action)
                   {
-                      completeAuthorization();
+                      completeAuthorization(error);
                   }]];
                 
                 [alertController addAction:
@@ -423,7 +422,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                               [client saveStateWithError:&error];
                           }
                           
-                          completeAuthorization();
+                          completeAuthorization(error);
                       }];
                   }]];
                 
@@ -437,7 +436,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         
     }
     
-    completeAuthorization();
+    completeAuthorization(error);
     
 }
 
