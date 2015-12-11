@@ -154,18 +154,23 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                 summaryValues:summaryValues
                             completionHandler:^(QredoVaultItemMetadata *newItemMetadata, QLFEncryptedVaultItem *encryptedVaultItem, NSError *error)
     {
-        QredoMutableVaultItemMetadata *newMetadata = [vaultItem.metadata mutableCopy];
-        newMetadata.origin = QredoVaultItemOriginServer;
-        newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
-                                                                               sequenceValue:newItemMetadata.descriptor.sequenceValue
-                                                                                      itemId:itemId];
+        
+        if (error){
+            completionHandler(nil, error);
+        }else{
+            QredoMutableVaultItemMetadata *newMetadata = [vaultItem.metadata mutableCopy];
+            newMetadata.origin = QredoVaultItemOriginServer;
+            newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
+                                                                                   sequenceValue:newItemMetadata.descriptor.sequenceValue
+                                                                                          itemId:itemId];
 
-        [self cacheEncryptedVaultItem:encryptedVaultItem
-                       itemDescriptor:newMetadata.descriptor
-                    completionHandler:^(NSError *error)
-         {
-             completionHandler(newMetadata, nil);
-         }];
+            [self cacheEncryptedVaultItem:encryptedVaultItem
+                           itemDescriptor:newMetadata.descriptor
+                        completionHandler:^(NSError *error)
+             {
+                 completionHandler(newMetadata, nil);
+             }];
+        }
     }];
 }
 
