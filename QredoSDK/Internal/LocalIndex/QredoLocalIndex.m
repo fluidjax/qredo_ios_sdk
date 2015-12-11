@@ -23,6 +23,7 @@
 @property (strong) QredoVault *qredoVault;
 @property (strong) QredoIndexVault *qredoIndexVault;
 
+
 @end
 
 
@@ -203,34 +204,36 @@
 
 
 
--(void)syncIndexPagedWithCompletionWithHWM:(void(^)(int syncCount, NSError *error))completion{
+-(void)syncIndexPagedWithCompletionWithHWM:(QredoVaultHighWatermark *)startHighWaterMark completion:(void(^)(QredoVaultHighWatermark *startHighWaterMark, int syncCount, NSError *error))completion{
     __block int count=0;
     __block QredoVaultHighWatermark *endOfPageHighWaterMark;
     
     [self.qredoVault enumerateVaultItemsPagedForSyncUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
+        [self putItemWithMetadata:vaultItemMetadata];
+        //NSLog(@"Record count %i",count);
         //NSLog(@"Enumerated Seq & Seq %@ - %lld",vaultItemMetadata.descriptor.sequenceId,vaultItemMetadata.descriptor.sequenceValue );
         //NSLog(@"Enumerated HWM %@",self.qredoVault.highWatermark);
-    } since:nil watermarkHandler:^(QredoVaultHighWatermark *watermark) {
+    } since:startHighWaterMark watermarkHandler:^(QredoVaultHighWatermark *watermark) {
         endOfPageHighWaterMark = watermark;
-        NSLog(@"**** INCOMGIN HIGH WATER MARK - SAVE TO OBJECT MODEL ONLY %@",watermark);
+        //NSLog(@"**** INCOMGIN HIGH WATER MARK - SAVE TO OBJECT MODEL ONLY %@",watermark);
     } completionHandler:^(NSError *error) {
-        NSLog(@"Sync'd %i",count);
-        completion(count, error);
+        //NSLog(@"Sync'd %i",count);
+        completion(endOfPageHighWaterMark, count, error);
     }];
 }
 
 
--(void)syncIndexWith:(int)incomingGrandTotal completion:(void(^)(int syncCount, NSError *error))completion{
+-(void)syncIndexWith:(int)incomingGrandTotal startHighWatermark:(QredoVaultHighWatermark *)nextStartHighWaterMark completion:(void(^)(int syncCount, NSError *error))completion{
     __block int vaultItemCount =0;
     __block int grandTotal = incomingGrandTotal;
     
-    [self syncIndexPagedWithCompletionWithHWM:^(int syncCount, NSError *error) {
+    [self syncIndexPagedWithCompletionWithHWM:nextStartHighWaterMark completion:^(QredoVaultHighWatermark *nextStartHighWaterMark, int syncCount, NSError *error) {
         vaultItemCount = syncCount;
         grandTotal += syncCount;
         if (vaultItemCount>0){
             //maybe some more. recurse
-            [self syncIndexWith:grandTotal completion:completion];
+            [self syncIndexWith:grandTotal startHighWatermark:nextStartHighWaterMark completion:completion];
         }else{
             if (completion)completion(grandTotal, error);
         }
@@ -239,9 +242,14 @@
      
 
 -(void)syncIndexWithCompletion:(void (^)(int syncCount, NSError *error))completion{
-    [self syncIndexWith:0 completion:completion];
+    [self syncIndexWith:0  startHighWatermark:nil completion:^(int syncCount, NSError *error) {
+        //import complete now we can register as a observer
+        NSLog(@"Completed meta data sync - imported %i",syncCount);
+        [self.qredoVault addVaultObserver:self];
+        completion(syncCount, error);
+    }];
+    
 }
-
 
 
 

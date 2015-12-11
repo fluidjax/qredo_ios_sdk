@@ -62,24 +62,31 @@ NSNumber *testNumber;
     [self authoriseClient:clientPass];
     qredoLocalIndex = [[QredoLocalIndex alloc] initWithVault:client1.defaultVault];
     
-//    [qredoLocalIndex purgeAllVaults];
+    [qredoLocalIndex purgeAllVaults];
     XCTAssertNotNil(client1);
     int waitTime = (6*testSize)/100;
     if (waitTime<10)waitTime=100;
     
     __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
     
-    NSLog(@"API HIGHWATER BEFORE %@",client1.defaultVault.highWatermark);
+  //  NSLog(@"API HIGHWATER BEFORE %@",client1.defaultVault.highWatermark);
+    [qredoLocalIndex purgeAllVaults];
+    NSInteger countBefore = [qredoLocalIndex count];
+    
     
     [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
         [syncwait fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:waitTime handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:100000 handler:^(NSError * _Nullable error) {
         syncwait=nil;
     }];
+
     
-     NSLog(@"API HIGHWATER AFTER %@",client1.defaultVault.highWatermark);
+    NSInteger countAfter = [qredoLocalIndex count];
+ //   NSLog(@"API HIGHWATER AFTER %@",client1.defaultVault.highWatermark);
+    NSLog(@"Count of Metadata items in coredata =  %ld",(long)countAfter-countBefore);
+    
 
 }
 
