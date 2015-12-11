@@ -1,4 +1,4 @@
-Ixcodeproj 'QredoSDK.xcodeproj/'
+xcodeproj 'QredoSDK.xcodeproj/'
 
 platform :ios, '9.1'
 
