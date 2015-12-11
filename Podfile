@@ -1,4 +1,4 @@
-xcodeproj 'QredoSDK.xcodeproj/'
+Ixcodeproj 'QredoSDK.xcodeproj/'
 
 platform :ios, '9.1'
 
@@ -8,7 +8,7 @@ target 'QredoSDK' do
 
     pod 'PINCache'
     pod 'SocketRocket'
-    pod 'OpenSSL-for-iOS', '1.0.2.d.1'
+    pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :path => 'libsodium.podspec'
 
 end
@@ -39,21 +39,24 @@ end
 target 'QredoXDK' do
     pod 'PINCache'
     pod 'SocketRocket'
-    pod 'OpenSSL-for-iOS', '1.0.2.d.1'
+    pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :path => 'libsodium.podspec'
 
 end
-
 
 target 'QredoCryptoTests' do
     pod 'PINCache'
     pod 'SocketRocket'
-    pod 'OpenSSL-for-iOS', '1.0.2.d.1'
+    pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :path => 'libsodium.podspec'
     
 end
 
-
+target 'LinguaFrancaTests' do
+    
+    pod 'SocketRocket'
+    
+end
 
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
