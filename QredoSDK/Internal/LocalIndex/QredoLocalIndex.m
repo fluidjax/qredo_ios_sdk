@@ -6,6 +6,7 @@
 //  Manages the Coredata local Metadata index. There are no direct API public methods
 //
 @import CoreData;
+@import UIKit;
 #import "QredoLocalIndexPrivate.h"
 #import "QredoErrorCodes.h"
 #import "QredoLocalIndexDataStore.h"
@@ -15,6 +16,7 @@
 #import "QredoIndexVaultItemMetadata.h"
 #import "QredoIndexVault.h"
 #import "QredoVaultPrivate.h"
+
 
 @interface QredoLocalIndex ()
 @property (strong, readwrite) NSManagedObjectContext *managedObjectContext;
@@ -32,7 +34,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 #pragma mark -
 #pragma mark Private Methods
 
-- (instancetype)initWithVault:(QredoVault*)vault{
+- (instancetype)initWithVault:(QredoVault *)vault{
     self = [super init];
     if (self) {
         self.qredoVault = vault;
@@ -58,6 +60,8 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 -(void)dealloc{
     [self save];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     [self.qredoVault removeVaultObserver:self];
 }
 
@@ -65,6 +69,12 @@ IncomingMetadataBlock incomingMetadatBlock;
 - (void)initializeCoreData{
     QredoLocalIndexDataStore *lids = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
     self.managedObjectContext = lids.managedObjectContext;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:)
+                                                 name:UIApplicationWillTerminateNotification
+                                               object:nil];
     return;
 }
 
@@ -83,7 +93,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
--(void)dump:(NSString*)message{
+-(void)dump:(NSString *)message{
     for (QredoIndexVaultItem *vaultItem in self.qredoIndexVault.vaultItems){
         NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,  vaultItem.latest.descriptor.itemId, vaultItem.latest.descriptor.sequenceValueValue);
     }
@@ -170,14 +180,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
         
         NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.latest.vault.vaultId = %@",self.qredoIndexVault.vaultId ];
-        NSCompoundPredicate *searchPredicate;
-        
-        if (predicate==nil){
-            searchPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[restrictToCurrentVault]];
-        }else{
-            searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToCurrentVault]];
-        }
-        
+        NSCompoundPredicate *searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToCurrentVault]];
         fetchRequest.predicate = searchPredicate;
         [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
     }];
@@ -197,8 +200,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 -(void)purge{
     [self.managedObjectContext performBlockAndWait:^{
-      //  [self.qredoVault removeVaultObserver:self];
-
         QredoIndexVault *indexVaultToDelete = self.qredoIndexVault;
         self.qredoIndexVault = nil;
         if (indexVaultToDelete)[self.managedObjectContext deleteObject:indexVaultToDelete];
@@ -237,14 +238,15 @@ IncomingMetadataBlock incomingMetadatBlock;
     [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:NO];
 }
 
+
 -(void)saveAndWait{
     [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:YES];
 }
 
 
-
 #pragma mark
 #pragma QredoVaultObserver Methods
+
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata{
     NSLog(@"Incoming data");
     [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
@@ -257,6 +259,19 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
+#pragma mark
+#pragma App Notifications - used to ensure the main MOC is written out to disk
+
+-(void)appWillResignActive:(NSNotification*)note{
+    [self saveAndWait];
+    
+}
+-(void)appWillTerminate:(NSNotification*)note{
+    [self saveAndWait];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
+    
+}
 
 
 @end

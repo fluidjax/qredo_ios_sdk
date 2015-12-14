@@ -14,13 +14,13 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 
 
-- (instancetype)initWithVault:(QredoVault*)vault;
+- (instancetype)initWithVault:(QredoVault *)vault;
 
 /** Put a metadata item into the local Index */
--(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata;
+- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata;
 
 /** Get a the most recent metadata item (most recent based on sequence number) */
--(QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+- (QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
 
 
@@ -38,21 +38,21 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
             value.data      (an NSData)
  
 */
--(void)enumerateSearch:(NSPredicate *)predicate
+- (void)enumerateSearch:(NSPredicate *)predicate
               withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
       completionHandler:(void(^)(NSError *error))completionHandler;
 
 /** Count of how many metadata items in the index */
--(int)count;
+- (int)count;
 
 /** Delete all items in the cache */
--(void)purge;
--(void)enableSync;
--(void)enableSyncWithBlock:(IncomingMetadataBlock)block;
+- (void)purge;
+- (void)enableSync;
+- (void)enableSyncWithBlock:(IncomingMetadataBlock)block;
 
--(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
--(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
+- (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+- (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
 
--(void)dump:(NSString*)message;
+- (void)dump:(NSString *)message;
 
 @end
