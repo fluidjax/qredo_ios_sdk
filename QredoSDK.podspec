@@ -77,9 +77,11 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "{QredoSDK,LinguaFranca,MQttClient,QredoCrypto,QredoCommon}/**/*.{h,m,c}", "libtomcrypt/src/headers/*.h", "libtommath/*.h"
+  s.source_files  = "{QredoSDK,LinguaFranca,MQttClient,QredoCrypto,QredoCommon}/**/*.{h,m,c}", "libtomcrypt/src/headers/*.h", "libtommath/*.h",  "QredoLocalIndex.xcdatamodel"
   s.public_header_files = "{QredoSDK/include/*.h,LinguaFranca/*.h,QredoCrypto/**.h}", "libtomcrypt/src/headers/*.h", "libtommath/*.h"
-
+  s.resource = [ "QredoLocalIndex.xcdatamodel"]
+  
+  
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
   #  Link your library with frameworks, or libraries. Libraries do not include
@@ -106,6 +108,7 @@ Pod::Spec.new do |s|
     libsodium.requires_arc = false
 
   end
+
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
