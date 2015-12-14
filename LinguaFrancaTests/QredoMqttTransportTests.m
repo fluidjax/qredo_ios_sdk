@@ -337,8 +337,8 @@
 
 - (void)testClose_Delegate
 {
-    const double POLL_INTERVAL = 0.5;
-    const double MAX_POLL_DURATION = 2.0;
+    const double POLL_INTERVAL = 1.5;
+    const double MAX_POLL_DURATION = 20.0;
     
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
     QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];

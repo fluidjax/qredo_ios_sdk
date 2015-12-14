@@ -355,20 +355,23 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 - (void)addVaultObserver:(id<QredoVaultObserver>)observer
 {
-    QredoUpdateListener *updateListener = _updateListener;
     [_observers addObserver:observer];
-    if (!updateListener.isListening) {
-        [updateListener startListening];
+    
+    if (!_updateListener.isListening) {
+        [_updateListener startListening];
     }
 }
 
 - (void)removeVaultObserver:(id<QredoVaultObserver>)observer
 {
-    QredoUpdateListener *updateListener = _updateListener;
     QredoObserverList *observers = _observers;
     [_observers removeObserver:observer];
-    if ([observers count] < 1 && !_updateListener.isListening) {
-        [updateListener stopListening];
+    
+    NSLog(@"removeVaultObserver: [_observers count]: %@, _updateListener.isListening: %@", @([_observers count]), _updateListener.isListening ? @"YES" : @"NO");
+    NSLog(@"_observers: %@", _observers);
+
+    if ([observers count] < 1 && _updateListener.isListening) {
+        [_updateListener stopListening];
     }
 }
 
@@ -538,6 +541,12 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
         self->_highwatermark = watermark;
         [self saveState];
     } since:self.highWatermark consolidatingResults:NO];
+}
+
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
+    NSLog(@"QredoVault: unsubscribeWithCompletionHandler"); // <- not called
 }
 
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item

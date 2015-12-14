@@ -756,6 +756,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                    signature:ownershipSignature
                            completionHandler:^(QLFConversationPublishResult *result, NSError *error)
      {
+         NSLog(@"didPublishWIthQueueId: error: %@", error);
+         
          if (error) {
              completionHandler(QredoConversationHighWatermarkOrigin, error);
              return;
@@ -797,6 +799,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
     if (!self.metadata.isPersistent || [message isControlMessage]) {
+        NSLog(@"not storing, control message: %@", [message isControlMessage] ? @"YES" : @"NO");
+        
         [self sendMessageWithoutStoring:modifiedMessage completionHandler:completionHandler];
 
         return;
@@ -807,6 +811,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                 isMine:YES
      completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
     {
+        NSLog(@"storing, control message: NO");
         if (error) {
             completionHandler(nil, error);
             return ;
@@ -830,17 +835,22 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)addConversationObserver:(id<QredoConversationObserver>)observer
 {
     [_observers addObserver:observer];
+    
     if (!_updateListener.isListening) {
-    [_updateListener startListening];
-}
+        [_updateListener startListening];
+    }
 }
 
 - (void)removeConversationObserver:(id<QredoConversationObserver>)observer
 {
     [_observers removeObserver:observer];
-    if ([_observers count] < 1 && !_updateListener.isListening) {
-    [_updateListener stopListening];
-}
+    
+    NSLog(@"removeConversationObserver: [_observers count]: %@, _updateListener.isListening: %@", @([_observers count]), _updateListener.isListening ? @"YES" : @"NO");
+    NSLog(@"_observers: %@", _observers);
+    
+    if ([_observers count] < 1 && _updateListener.isListening) {
+        [_updateListener stopListening];
+    }
 }
 
 - (void)notifyObservers:(void(^)(id<QredoConversationObserver> observer))notificationBlock
@@ -903,6 +913,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     error:&error];
 
     if (error) {
+        NSLog(@"subscribeToMessagesWithBlock: ownershipSignatureError: %@", error);
         subscriptionTerminatedHandler(error);
         return;
     }
@@ -912,11 +923,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                      signature:ownershipSignature
                              completionHandler:^(QLFConversationItemWithSequenceValue *result, NSError *error) {
         if (error) {
+            NSLog(@"subscribeToMessagesWithBlock: subscribeWithQueueIdError: %@", error);
             subscriptionTerminatedHandler(error);
             return;
         }
 
         if (!result) {
+            NSLog(@"subscribeToMessagesWithBlock: subscribeWithQueueId: !result");
             return ;
         }
 
@@ -944,6 +957,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     [self qredoUpdateListener:_updateListener pollWithCompletionHandler:^(NSError *error) {
         if (error) {
+            NSLog(@"subscribeToMessagesWithBlock: pollWithCompletionHandlerError: %@", error);
             subscriptionTerminatedHandler(error);
             return;
         }
@@ -1063,6 +1077,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
   pollWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
+    NSLog(@"pollWithCompletionHandler");
+    
     void (^block)(QredoConversationMessage *message, BOOL *stop) = ^(QredoConversationMessage *message, BOOL *stop) {
         [self->_updateListener processSingleItem:message sequenceValue:message.highWatermark.sequenceValue];
     };
@@ -1082,7 +1098,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
 subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
-    NSAssert([_observers count] > 0, @"Conversation observers should be added before starting listening for the updates");
+    NSLog(@"subscribeWithCompletionHandler");
+    
+    if ([_observers count] == 0) {
+        NSLog(@"Conversation observers should be added before starting listening for the updates");
+        //    NSAssert([_observers count] > 0, @"Conversation observers should be added before starting listening for the updates");
+        return;
+    }
 
     // Subscribe to conversations newer than our highwatermark
     [self subscribeToMessagesWithBlock:^(QredoConversationMessage *message) {
@@ -1099,6 +1121,10 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
     // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
+    NSLog(@"QrecoConversation: unsubscribeWithCompletionHandler"); // <- not called
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:updateListener name:@"resubscribe" object:nil];
+//    updateListener = nil;
 }
 
 #pragma mark Qredo Update Listener - Delegate

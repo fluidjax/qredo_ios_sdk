@@ -93,12 +93,15 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 1.0; // 1 second 
     
     [self closeWebSocket];
     
+    NSLog(@"restarting...");
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
                                  (int64_t)(self.reconectionDelay * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^
     {
         _isResartingWebSocket = NO;
         [self startWebSocket];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"resubscribe" object:self];
     });
     
     _reconectionDelay *= 2.0;
@@ -144,6 +147,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 1.0; // 1 second 
         }
     }
 
+//    NSLog(@"payloadOut: %@", payload);
     [_webSocket send:payload];
 }
 
@@ -165,6 +169,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 1.0; // 1 second 
         return;
     }
     
+//    NSLog(@"payloadIn: %@", message);
     [self notifyListenerOfResponseData:message userData:nil];
 }
 
@@ -182,6 +187,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 1.0; // 1 second 
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
 {
+    NSLog(@"didCloseWithCode: %@, wasClean: %@", @(code), wasClean ? @"YES" : @"NO");
     _webSocketOpen = NO;
     [self notifyListenerOfErrorCode:QredoTransportErrorConnectionClosed userData:nil];
     [self restartWebSocketWithExponentialDelay];

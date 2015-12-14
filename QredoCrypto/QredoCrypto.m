@@ -456,19 +456,20 @@
     keyAttributes[(__bridge id) kSecAttrCanUnwrap] = (__bridge id) kCFBooleanFalse;
     keyAttributes[(__bridge id) kSecReturnRef] = (__bridge id) kCFBooleanTrue;
     
-    CFTypeRef importedKeyRef = nil;
-    OSStatus result = SecItemAdd((__bridge CFDictionaryRef) keyAttributes, &importedKeyRef);
+    SecKeyRef secKeyRef = nil;
     
-    if (result != errSecSuccess) {
+    OSStatus status = SecItemAdd((__bridge CFDictionaryRef) keyAttributes, (CFTypeRef *)&secKeyRef);
+    
+    if (status != errSecSuccess) {
         @throw [NSException exceptionWithName:@"QredoCryptoImportPublicKeyFailed"
-                                       reason:[NSString stringWithFormat:@"Error code: %d", (int)result]
+                                       reason:[NSString stringWithFormat:@"Error code: %d", (int)status]
                                      userInfo:nil];
-    } else if (!importedKeyRef) {
+    } else if (!secKeyRef) {
         @throw [NSException exceptionWithName:@"QredoCryptoImportPublicKeyInvalidFormat"
                                        reason:@"No imported key ref returned. Check key format is PKCS#1 ASN.1 DER."
                                      userInfo:nil];
     } else {
-        return (SecKeyRef)importedKeyRef;
+        return (SecKeyRef)secKeyRef;
     }
     
 }
@@ -708,8 +709,7 @@
                                        reason:[NSString stringWithFormat:@"Key identifier argument is nil"]
                                      userInfo:nil];
     }
-    
-    SecKeyRef keyRef;
+
     NSMutableDictionary *queryKey = [[NSMutableDictionary alloc] init];
     
     NSData* tag = [keyIdentifier dataUsingEncoding:NSUTF8StringEncoding];
@@ -718,27 +718,29 @@
     queryKey[(__bridge id) kSecClass] = (__bridge id) kSecClassKey;
     queryKey[(__bridge id) kSecAttrApplicationTag] = tag;
     queryKey[(__bridge id) kSecAttrKeyType] = (__bridge id) kSecAttrKeyTypeRSA;
-    queryKey[(__bridge id) kSecReturnRef] = @YES;
+    queryKey[(__bridge id) kSecReturnRef] = (__bridge id) kCFBooleanTrue;
     
     // Get the key reference.
-    OSStatus result = fixedSecItemCopyMatching((__bridge CFDictionaryRef)queryKey, (CFTypeRef *)&keyRef);
-    if (result != errSecSuccess) {
-        if (result == errSecItemNotFound) {
+    SecKeyRef secKeyRef;
+    
+    OSStatus status = fixedSecItemCopyMatching((__bridge CFDictionaryRef)queryKey, (CFTypeRef *)&secKeyRef);
+    if (status != errSecSuccess) {
+        if (status == errSecItemNotFound) {
             @throw [NSException exceptionWithName:@"QredoKeyIdentifierNotFound"
                                            reason:[NSString stringWithFormat:@"fixedSecItemCopyMatching reported key with identifier '%@' could not be found.", keyIdentifier]
                                          userInfo:nil];
         } else {
             @throw [NSException exceptionWithName:@"QredoKeyIdentifierFailure"
-                                           reason:[NSString stringWithFormat:@"fixedSecItemCopyMatching returned error: %@.", [QredoLogging stringFromOSStatus:result]]
+                                           reason:[NSString stringWithFormat:@"fixedSecItemCopyMatching returned error: %@.", [QredoLogging stringFromOSStatus:status]]
                                          userInfo:nil];
         }
-    } else if (keyRef == nil) {
+    } else if (secKeyRef == nil) {
         @throw [NSException exceptionWithName:@"QredoKeyIdentifierNotReturned"
                                        reason:@"Key ref came back nil despite success."
                                      userInfo:nil];
     }
     
-    return keyRef;
+    return secKeyRef;
 }
 
 + (NSData*)getKeyDataForIdentifier:(NSString*)keyIdentifier

@@ -855,8 +855,31 @@
     XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil private key ref returned).");
     
     // Confirm keys are NOT present
-    [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier];
-    [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier];
+    
+    NSData *publicKeyData;
+    NSData *privateKeyData;
+    
+    @try {
+        publicKeyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Error happened or keys are persisted.");
+    }
+    @finally {
+        XCTAssertNil(publicKeyData, @"Public key data should be nil.");
+    }
+    
+    @try {
+        privateKeyData = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Error happened or keys are persisted.");
+    }
+    @finally {
+        XCTAssertNil(privateKeyData, @"Private key data should be nil.");
+    }
 }
 
 - (void)testRsaKeyGenEncryptOaepAndDecrypt
@@ -1369,20 +1392,20 @@
     NSString *publicKeyIdentifier1 = @"com.qredo.TestPublicKeyDelete1";
     NSString *privateKeyIdentifier1 = @"com.qredo.TestPrivateKeyDelete1";
     NSInteger keySizeBits = 1024;
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier1 privateKeyIdentifier:privateKeyIdentifier1 persistInAppleKeychain:YES];
-    XCTAssertNotNil(keyPairRef, "RSA key generation failed (nil object returned).");
-    XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil public key ref returned).");
-    XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil private key ref returned).");
+    QredoSecKeyRefPair *keyPairRef1 = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier1 privateKeyIdentifier:privateKeyIdentifier1 persistInAppleKeychain:YES];
+    XCTAssertNotNil(keyPairRef1, "RSA key generation failed (nil object returned).");
+    XCTAssertNotNil((__bridge id)keyPairRef1.publicKeyRef, "RSA key generation failed (nil public key ref returned).");
+    XCTAssertNotNil((__bridge id)keyPairRef1.privateKeyRef, "RSA key generation failed (nil private key ref returned).");
     
     NSData *keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier1];
     keyData = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier1];
     
     NSString *publicKeyIdentifier2 = @"com.qredo.TestPublicKeyDelete2";
     NSString *privateKeyIdentifier2 = @"com.qredo.TestPrivateKeyDelete2";
-    keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier2 privateKeyIdentifier:privateKeyIdentifier2 persistInAppleKeychain:YES];
-    XCTAssertNotNil(keyPairRef, "RSA key generation failed (nil object returned).");
-    XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil public key ref returned).");
-    XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil private key ref returned).");
+    QredoSecKeyRefPair *keyPairRef2 = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier2 privateKeyIdentifier:privateKeyIdentifier2 persistInAppleKeychain:YES];
+    XCTAssertNotNil(keyPairRef2, "RSA key generation failed (nil object returned).");
+    XCTAssertNotNil((__bridge id)keyPairRef2.publicKeyRef, "RSA key generation failed (nil public key ref returned).");
+    XCTAssertNotNil((__bridge id)keyPairRef2.privateKeyRef, "RSA key generation failed (nil private key ref returned).");
     
     keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier2];
     XCTAssertNotNil(keyData, @"Public key data 2 should not be nil.");
@@ -1394,14 +1417,55 @@
     XCTAssertTrue(success == expectedSuccess, @"Delete keys should not have failed.");
 
     // Now confirm neither key data is found
-    keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier1];
-    XCTAssertNil(keyData, @"Public key data 1 should be nil.");
-    keyData = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier1];
-    XCTAssertNil(keyData, @"Private key data 1 should be nil.");
-    keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier2];
-    XCTAssertNil(keyData, @"Public key data 2 should be nil.");
-    keyData = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier2];
-    XCTAssertNil(keyData, @"Private key data 2 should be nil.");
+    
+    NSData *publicKeyData1;
+    NSData *privateKeyData1;
+    NSData *publicKeyData2;
+    NSData *privateKeyData2;
+    
+    @try {
+        publicKeyData1 = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier1];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Error happened or keys are persisted.");
+    }
+    @finally {
+        XCTAssertNil(publicKeyData1, @"Public key data 1 should be nil.");
+    }
+    
+    @try {
+        privateKeyData1 = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier1];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Error happened or keys are persisted.");
+    }
+    @finally {
+        XCTAssertNil(privateKeyData1, @"Private key data 1 should be nil.");
+    }
+    
+    @try {
+        publicKeyData2 = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier2];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Error happened or keys are persisted.");
+    }
+    @finally {
+        XCTAssertNil(publicKeyData2, @"Public key data 2 should be nil.");
+    }
+    
+    @try {
+        privateKeyData2 = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier2];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Error happened or keys are persisted.");
+    }
+    @finally {
+        XCTAssertNil(privateKeyData2, @"Private key data 2 should be nil.");
+    }
 }
 
 - (void)testDeleteAllKeysInAppleKeychain_NoKeysPresent
@@ -1420,20 +1484,20 @@
     NSString *publicKeyIdentifier1 = @"com.qredo.TestPublicKeyDelete1";
     NSString *privateKeyIdentifier1 = @"com.qredo.TestPrivateKeyDelete1";
     NSInteger keySizeBits = 1024;
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier1 privateKeyIdentifier:privateKeyIdentifier1 persistInAppleKeychain:YES];
-    XCTAssertNotNil(keyPairRef, "RSA key generation failed (nil object returned).");
-    XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil public key ref returned).");
-    XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil private key ref returned).");
+    QredoSecKeyRefPair *keyPairRef1 = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier1 privateKeyIdentifier:privateKeyIdentifier1 persistInAppleKeychain:YES];
+    XCTAssertNotNil(keyPairRef1, "RSA key generation failed (nil object returned).");
+    XCTAssertNotNil((__bridge id)keyPairRef1.publicKeyRef, "RSA key generation failed (nil public key ref returned).");
+    XCTAssertNotNil((__bridge id)keyPairRef1.privateKeyRef, "RSA key generation failed (nil private key ref returned).");
     
     NSData *keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier1];
     keyData = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier1];
     
     NSString *publicKeyIdentifier2 = @"com.qredo.TestPublicKeyDelete2";
     NSString *privateKeyIdentifier2 = @"com.qredo.TestPrivateKeyDelete2";
-    keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier2 privateKeyIdentifier:privateKeyIdentifier2 persistInAppleKeychain:YES];
-    XCTAssertNotNil(keyPairRef, "RSA key generation failed (nil object returned).");
-    XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil public key ref returned).");
-    XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation failed (nil private key ref returned).");
+    QredoSecKeyRefPair *keyPairRef2 = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier2 privateKeyIdentifier:privateKeyIdentifier2 persistInAppleKeychain:YES];
+    XCTAssertNotNil(keyPairRef2, "RSA key generation failed (nil object returned).");
+    XCTAssertNotNil((__bridge id)keyPairRef2.publicKeyRef, "RSA key generation failed (nil public key ref returned).");
+    XCTAssertNotNil((__bridge id)keyPairRef2.privateKeyRef, "RSA key generation failed (nil private key ref returned).");
     
     keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier2];
     XCTAssertNotNil(keyData, @"Public key data 2 should not be nil.");
@@ -1450,9 +1514,20 @@
     keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier1];
     XCTAssertNotNil(keyData, @"Public key data 1 should not be nil.");
     keyData = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier1];
-    XCTAssertNotNil(keyData, @"Private key data 1 should not be nil.");
-    keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier2];
-    XCTAssertNil(keyData, @"Public key data 2 should be nil (should have been deleted).");
+    
+    NSData *publicKeyData2;
+    
+    @try {
+        publicKeyData2 = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier2];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Error happened or keys are persisted.");
+    }
+    @finally {
+        XCTAssertNil(publicKeyData2, @"Public key data 2 should be nil.");
+    }
+    
     keyData = [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier2];
     XCTAssertNotNil(keyData, @"Private key data 2 should not be nil.");
 }
@@ -1503,8 +1578,9 @@
     NSInteger keySizeBits = 1024;
     QredoSecKeyRefPair *keyPairRef = nil;
     
-    for (int generateCounter = 0; generateCounter < 99999; generateCounter++) {
-        
+//    for (int generateCounter = 0; generateCounter < 99999; generateCounter++) {
+    for (int generateCounter = 0; generateCounter < 10; generateCounter++) {
+    
         NSString *publicKeyIdentifier = [NSString stringWithFormat:@"%@%d%@", prefix, generateCounter, publicSuffix];
         NSString *privateKeyIdentifier = [NSString stringWithFormat:@"%@%d%@", prefix, generateCounter, privateSuffix];
         keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier privateKeyIdentifier:privateKeyIdentifier persistInAppleKeychain:YES];
@@ -1512,7 +1588,8 @@
         XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation %d failed (nil public key ref returned).", generateCounter);
         XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef, "RSA key generation %d failed (nil private key ref returned).", generateCounter);
         
-        for (int getCounter = 0; getCounter < 1000; getCounter++) {
+//        for (int getCounter = 0; getCounter < 1000; getCounter++) {
+        for (int getCounter = 0; getCounter < 10; getCounter++) {
             [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier];
             [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier];
         }
@@ -1574,17 +1651,182 @@
     }];
 }
 
+- (NSData *)stripPublicKeyHeader:(NSData *)d_key
+{
+    // Skip ASN.1 public key header
+    if (d_key == nil) return(nil);
+    
+    unsigned long len = [d_key length];
+    if (!len) return(nil);
+    
+    unsigned char *c_key = (unsigned char *)[d_key bytes];
+    unsigned int  idx    = 0;
+    
+    if (c_key[idx++] != 0x30) return(nil);
+    
+    if (c_key[idx] > 0x80) idx += c_key[idx] - 0x80 + 1;
+    else idx++;
+    
+    // PKCS #1 rsaEncryption szOID_RSA_RSA
+    static unsigned char seqiod[] =
+    { 0x30,   0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01,
+        0x01, 0x05, 0x00 };
+    if (memcmp(&c_key[idx], seqiod, 15)) return(nil);
+    
+    idx += 15;
+    
+    if (c_key[idx++] != 0x03) return(nil);
+    
+    if (c_key[idx] > 0x80) idx += c_key[idx] - 0x80 + 1;
+    else idx++;
+    
+    if (c_key[idx++] != '\0') return(nil);
+    
+    // Now make a new NSData from this buffer
+    return([NSData dataWithBytes:&c_key[idx] length:len - idx]);
+}
+
 - (void)testImportPublicKey
 {
     // NOTE: This test will fail if the key has already been imported (even with different identifier)
+    
+    // http://blog.flirble.org/2011/01/05/rsa-public-key-openssl-ios/
+    // and
+    // http://stackoverflow.com/questions/17623046/secitemcopymatching-returns-nil-value-without-any-error
+    
+    // Important note:
+    //      iOS wants PKCS#1 ASN.1 DER encoded key with stripped header.. Otherwise you'll not get kSecReturnRef as a result
+    //
+    // Steps to generate key:
+
+    // $ openssl genrsa -out test_private.pem 1024
+    //     Generating RSA private key, 1024 bit long modulus
+    //     ......................++++++
+    //     ......................................++++++
+    //     e is 65537 (0x10001)
+    
+    // $ cat test_private.pem
+    //     -----BEGIN RSA PRIVATE KEY-----
+    //     MIICXQIBAAKBgQDNBNMX4RsVupfeApqgic4+Sua99Scdu86n/t9g2jexub4Y9ALG
+    //     KocqB37VYUFN64wBfqw0HUW5JOaRlYveah4Wrt8xNMhlEllp4hgm31XjO8cHXNQ4
+    //     m2/TZ/YHd4B0spkRdENoEEIHlZD1qp5G7R0qeoqYDzSeWaqLKT6N276K0QIDAQAB
+    //     AoGBAMfbbyi1IWEiP8+FvFTJYctp2tvMszASF9e+5uUUdPyE9CKBJH8nkBHRsruy
+    //     DiY2e4otgRNggcqFhVrgbLQJwH9fmC1o8iM5zUxnbbliroLXtYzHfrp3VeKIWw7e
+    //     El+duSb3Hr+aOaXVARK/Ji7kIEwTLCX1JcXV5UOzTDXTDtENAkEA5lMMsq+0oTwA
+    //     BgYDew5OTL6jRP1K4m6VSkHzurDbEbSq1NGlawJ5xcFjaN1NDyehuH5Ko3jRUjDI
+    //     sp07k3Br+wJBAOPfnCakCeBBzQo0K8wD414JApfBYPMqiDW7QsnAuRyXbiKPn0Zw
+    //     mrU6b98KMGwPrv7h8GlTkJ6vqx2tbiiZPqMCQQCMJeDGIdAhg+bnw2T+zderLx0d
+    //     75pPacaBptvtr4u9nFeOo/qpwJnkUSZyOqaXICBxqLc1/WAxSOn2dWI49uFdAkAu
+    //     AuuzvbGkz4SIR+qEAlD5ntYgMFLUJsVkHBCrTjfSdx0s61Uc0wXaDBeksJkAaNZL
+    //     7vEtQ0tTT2M81dUFa5QDAkASFPisNywNgTcUdr3CojoUGd4hl0zs/4/Tg+FtwMpO
+    //     BnFNTc7HMBuyYeGKXMDdvoa6CuPmLN1ZiceFMOJquRgX
+    //     -----END RSA PRIVATE KEY-----
+    
+    // // Not necessary
+    // // $ openssl rsa -in test_private.pem -pubout > test_public.pem
+    // //    writing RSA key
+    // //
+    // // $ cat test_public.pem
+    // //    -----BEGIN PUBLIC KEY-----
+    // //    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNBNMX4RsVupfeApqgic4+Sua9
+    // //    9Scdu86n/t9g2jexub4Y9ALGKocqB37VYUFN64wBfqw0HUW5JOaRlYveah4Wrt8x
+    // //    NMhlEllp4hgm31XjO8cHXNQ4m2/TZ/YHd4B0spkRdENoEEIHlZD1qp5G7R0qeoqY
+    // //    DzSeWaqLKT6N276K0QIDAQAB
+    // //    -----END PUBLIC KEY-----
+    
+    // $ openssl rsa -outform der -in test_private.pem -out test_private.der
+    //     writing RSA key
+    
+    // $ cat test_private.der
+    //     0?]???????????>J??'?Χ??`?7?????*?*~?aAM?~?4E?$摕??j??14?eYi?&?U?;?\?8?o?g?w?t??tChB?????F?*z??4?Y??)>?۾??????o(?!a"?υ?T?a?i??̳0׾??t???"?$'?Ѳ??&6A?S?`?ʅ?Z?l? ?_?-h?#9?Lgm?b??׵??~?wU?[?_??&???9???&.? L,%?%???C?L5??
+    //    ????<{NL??D?J?n?JA?????ѥky??ch?M'??~J?x?R0Ȳ?;?pk?A?ߜ&?   ?A?
+    //     4+??^   ??`?*?5?B????n"??Fp??:o?
+    //     0l????iS?????n(?>?A?%??!?!????d??׫/?OiƁ???????W???????Q&r:??  q??5?`1H??ub8??]@.볽??τ?G?P??? 0R?&?d?N7?w,?U??
+    //     ?7v?¢:?!?L???Ӄ?m??NqMM??0a?\?ݾ??                                                                             ???h?K??-CKSOc<??k?@??7,
+    //     ??,?Y?ǅ0?j?
+    
+    //         3082 025d 0201 0002 8181 00cd 04d3 17e1
+    //         1b15 ba97 de02 9aa0 89ce 3e4a e6bd f527
+    //         1dbb cea7 fedf 60da 37b1 b9be 18f4 02c6
+    //         2a87 2a07 7ed5 6141 4deb 8c01 7eac 341d
+    //         45b9 24e6 9195 8bde 6a1e 16ae df31 34c8
+    //         6512 5969 e218 26df 55e3 3bc7 075c d438
+    //         9b6f d367 f607 7780 74b2 9911 7443 6810
+    //         4207 9590 f5aa 9e46 ed1d 2a7a 8a98 0f34
+    //         9e59 aa8b 293e 8ddb be8a d102 0301 0001
+    //         0281 8100 c7db 6f28 b521 6122 3fcf 85bc
+    //         54c9 61cb 69da dbcc b330 1217 d7be e6e5
+    //         1474 fc84 f422 8124 7f27 9011 d1b2 bbb2
+    //         0e26 367b 8a2d 8113 6081 ca85 855a e06c
+    //         b409 c07f 5f98 2d68 f223 39cd 4c67 6db9
+    //         62ae 82d7 b58c c77e ba77 55e2 885b 0ede
+    //         125f 9db9 26f7 1ebf 9a39 a5d5 0112 bf26
+    //         2ee4 204c 132c 25f5 25c5 d5e5 43b3 4c35
+    //         d30e d10d 0241 00e6 530c b2af b4a1 3c00
+    //         0606 037b 0e4e 4cbe a344 fd4a e26e 954a
+    //         41f3 bab0 db11 b4aa d4d1 a56b 0279 c5c1
+    //         6368 dd4d 0f27 a1b8 7e4a a378 d152 30c8
+    //         b29d 3b93 706b fb02 4100 e3df 9c26 a409
+    //         e041 cd0a 342b cc03 e35e 0902 97c1 60f3
+    //         2a88 35bb 42c9 c0b9 1c97 6e22 8f9f 4670
+    //         9ab5 3a6f df0a 306c 0fae fee1 f069 5390
+    //         9eaf ab1d ad6e 2899 3ea3 0241 008c 25e0
+    //         c621 d021 83e6 e7c3 64fe cdd7 ab2f 1d1d
+    //         ef9a 4f69 c681 a6db edaf 8bbd 9c57 8ea3
+    //         faa9 c099 e451 2672 3aa6 9720 2071 a8b7
+    //         35fd 6031 48e9 f675 6238 f6e1 5d02 402e
+    //         02eb b3bd b1a4 cf84 8847 ea84 0250 f99e
+    //         d620 3052 d426 c564 1c10 ab4e 37d2 771d
+    //         2ceb 551c d305 da0c 17a4 b099 0068 d64b
+    //         eef1 2d43 4b53 4f63 3cd5 d505 6b94 0302
+    //         4012 14f8 ac37 2c0d 8137 1476 bdc2 a23a
+    //         1419 de21 974c ecff 8fd3 83e1 6dc0 ca4e
+    //         0671 4d4d cec7 301b b261 e18a 5cc0 ddbe
+    //         86ba 0ae3 e62c dd59 89c7 8530 e26a b918
+    //         17
+    
+    // $ openssl rsa -outform der -in test_private.pem -pubout > test_public.der
+    //     writing RSA key
+    
+    // $ cat test_public.der
+    //     ??0?????????????>J??'?Χ??`?7?????*?*~?aAM?~?4E?$摕??j??14?eYi?&?U?;?\?8?o?g?w?t??tChB?????F?*z??4?Y??)>?۾??
+    
+    //         3081 9f30 0d06 092a 8648 86f7 0d01 0101
+    //         0500 0381 8d00 3081 8902 8181 00cd 04d3
+    //         17e1 1b15 ba97 de02 9aa0 89ce 3e4a e6bd
+    //         f527 1dbb cea7 fedf 60da 37b1 b9be 18f4
+    //         02c6 2a87 2a07 7ed5 6141 4deb 8c01 7eac
+    //         341d 45b9 24e6 9195 8bde 6a1e 16ae df31
+    //         34c8 6512 5969 e218 26df 55e3 3bc7 075c
+    //         d438 9b6f d367 f607 7780 74b2 9911 7443
+    //         6810 4207 9590 f5aa 9e46 ed1d 2a7a 8a98
+    //         0f34 9e59 aa8b 293e 8ddb be8a d102 0301
+    //         0001 
+
+
+    
     NSString *keyIdentifier = @"com.qredo.TestPublicKeyImport1";
     NSInteger keySizeBits = 1024;
     BOOL isPrivate = NO;
-
-    uint8_t keyDataArray[] = {0x30,0x81,0x88,0x02,0x81,0x80,0x9C,0x59,0xCE,0xDB,0xAD,0x8B,0x9A,0x7F,0xAD,0xC2,0xD6,0x1F,0x06,0x3D,0x17,0x5C,0x1D,0x10,0x1C,0x62,0x57,0x10,0xC9,0xB6,0xA6,0x49,0xBE,0x0C,0xF0,0x89,0x66,0x1B,0xA1,0xBB,0x48,0xC2,0x5A,0xAB,0x92,0xDB,0x6F,0x1A,0x2F,0x80,0x74,0x1D,0xDD,0xCC,0x80,0xF3,0x01,0x59,0x4E,0xB5,0x6F,0x2A,0x7E,0x63,0x1F,0xE4,0xFB,0xA1,0xEB,0x98,0xB3,0x32,0xBA,0x1C,0xA7,0x23,0x49,0x7F,0xCD,0xAE,0x32,0x88,0xF5,0x55,0xC4,0x96,0x64,0xC8,0x32,0x5F,0x31,0x83,0x43,0x5B,0x4C,0xB2,0x1C,0xC6,0x3C,0x50,0xB2,0x35,0xF2,0xF5,0x08,0x0D,0x77,0xDB,0x14,0x8C,0xA1,0xAE,0x3A,0x5B,0x80,0x5C,0x04,0x10,0x5E,0xD9,0x5C,0x73,0xC6,0xAC,0xAA,0x30,0xFC,0x75,0x85,0x64,0x58,0x08,0x70,0xC9,0x02,0x03,0x01,0x00,0x01};
+    
+    // From that $ cat test_public.der
+    uint8_t keyDataArray[] = {
+        0x30, 0x81, 0x9f, 0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01,
+        0x05, 0x00, 0x03, 0x81, 0x8d, 0x00, 0x30, 0x81, 0x89, 0x02, 0x81, 0x81, 0x00, 0xcd, 0x04, 0xd3,
+        0x17, 0xe1, 0x1b, 0x15, 0xba, 0x97, 0xde, 0x02, 0x9a, 0xa0, 0x89, 0xce, 0x3e, 0x4a, 0xe6, 0xbd,
+        0xf5, 0x27, 0x1d, 0xbb, 0xce, 0xa7, 0xfe, 0xdf, 0x60, 0xda, 0x37, 0xb1, 0xb9, 0xbe, 0x18, 0xf4,
+        0x02, 0xc6, 0x2a, 0x87, 0x2a, 0x07, 0x7e, 0xd5, 0x61, 0x41, 0x4d, 0xeb, 0x8c, 0x01, 0x7e, 0xac,
+        0x34, 0x1d, 0x45, 0xb9, 0x24, 0xe6, 0x91, 0x95, 0x8b, 0xde, 0x6a, 0x1e, 0x16, 0xae, 0xdf, 0x31,
+        0x34, 0xc8, 0x65, 0x12, 0x59, 0x69, 0xe2, 0x18, 0x26, 0xdf, 0x55, 0xe3, 0x3b, 0xc7, 0x07, 0x5c,
+        0xd4, 0x38, 0x9b, 0x6f, 0xd3, 0x67, 0xf6, 0x07, 0x77, 0x80, 0x74, 0xb2, 0x99, 0x11, 0x74, 0x43,
+        0x68, 0x10, 0x42, 0x07, 0x95, 0x90, 0xf5, 0xaa, 0x9e, 0x46, 0xed, 0x1d, 0x2a, 0x7a, 0x8a, 0x98,
+        0x0f, 0x34, 0x9e, 0x59, 0xaa, 0x8b, 0x29, 0x3e, 0x8d, 0xdb, 0xbe, 0x8a, 0xd1, 0x02, 0x03, 0x01,
+        0x00, 0x01
+    };
+    
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
     
-    [QredoCrypto importPkcs1KeyData:keyData
+    [QredoCrypto importPkcs1KeyData:[self stripPublicKeyHeader:keyData]
                       keyLengthBits:keySizeBits
                       keyIdentifier:keyIdentifier
                           isPrivate:isPrivate];
@@ -1645,10 +1887,24 @@
     NSInteger keySizeBits = 1024;
     BOOL isPrivate = NO;
     
-    uint8_t keyDataArray[] = {0x30,0x81,0x88,0x02,0x81,0x80,0x9C,0x59,0xCE,0xDB,0xAD,0x8B,0x9A,0x7F,0xAD,0xC2,0xD6,0x1F,0x06,0x3D,0x17,0x5C,0x1D,0x10,0x1C,0x62,0x57,0x10,0xC9,0xB6,0xA6,0x49,0xBE,0x0C,0xF0,0x89,0x66,0x1B,0xA1,0xBB,0x48,0xC2,0x5A,0xAB,0x92,0xDB,0x6F,0x1A,0x2F,0x80,0x74,0x1D,0xDD,0xCC,0x80,0xF3,0x01,0x59,0x4E,0xB5,0x6F,0x2A,0x7E,0x63,0x1F,0xE4,0xFB,0xA1,0xEB,0x98,0xB3,0x32,0xBA,0x1C,0xA7,0x23,0x49,0x7F,0xCD,0xAE,0x32,0x88,0xF5,0x55,0xC4,0x96,0x64,0xC8,0x32,0x5F,0x31,0x83,0x43,0x5B,0x4C,0xB2,0x1C,0xC6,0x3C,0x50,0xB2,0x35,0xF2,0xF5,0x08,0x0D,0x77,0xDB,0x14,0x8C,0xA1,0xAE,0x3A,0x5B,0x80,0x5C,0x04,0x10,0x5E,0xD9,0x5C,0x73,0xC6,0xAC,0xAA,0x30,0xFC,0x75,0x85,0x64,0x58,0x08,0x70,0xC9,0x02,0x03,0x01,0x00,0x01};
+    // From that $ cat test_public.der
+    uint8_t keyDataArray[] = {
+        0x30, 0x81, 0x9f, 0x30, 0x0d, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01,
+        0x05, 0x00, 0x03, 0x81, 0x8d, 0x00, 0x30, 0x81, 0x89, 0x02, 0x81, 0x81, 0x00, 0xcd, 0x04, 0xd3,
+        0x17, 0xe1, 0x1b, 0x15, 0xba, 0x97, 0xde, 0x02, 0x9a, 0xa0, 0x89, 0xce, 0x3e, 0x4a, 0xe6, 0xbd,
+        0xf5, 0x27, 0x1d, 0xbb, 0xce, 0xa7, 0xfe, 0xdf, 0x60, 0xda, 0x37, 0xb1, 0xb9, 0xbe, 0x18, 0xf4,
+        0x02, 0xc6, 0x2a, 0x87, 0x2a, 0x07, 0x7e, 0xd5, 0x61, 0x41, 0x4d, 0xeb, 0x8c, 0x01, 0x7e, 0xac,
+        0x34, 0x1d, 0x45, 0xb9, 0x24, 0xe6, 0x91, 0x95, 0x8b, 0xde, 0x6a, 0x1e, 0x16, 0xae, 0xdf, 0x31,
+        0x34, 0xc8, 0x65, 0x12, 0x59, 0x69, 0xe2, 0x18, 0x26, 0xdf, 0x55, 0xe3, 0x3b, 0xc7, 0x07, 0x5c,
+        0xd4, 0x38, 0x9b, 0x6f, 0xd3, 0x67, 0xf6, 0x07, 0x77, 0x80, 0x74, 0xb2, 0x99, 0x11, 0x74, 0x43,
+        0x68, 0x10, 0x42, 0x07, 0x95, 0x90, 0xf5, 0xaa, 0x9e, 0x46, 0xed, 0x1d, 0x2a, 0x7a, 0x8a, 0x98,
+        0x0f, 0x34, 0x9e, 0x59, 0xaa, 0x8b, 0x29, 0x3e, 0x8d, 0xdb, 0xbe, 0x8a, 0xd1, 0x02, 0x03, 0x01,
+        0x00, 0x01
+    };
+    
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
     
-    SecKeyRef importKeyRef = [QredoCrypto importPkcs1KeyData:keyData
+    SecKeyRef importKeyRef = [QredoCrypto importPkcs1KeyData:[self stripPublicKeyHeader:keyData]
                                                keyLengthBits:keySizeBits
                                                keyIdentifier:keyIdentifier
                                                    isPrivate:isPrivate];
@@ -1687,12 +1943,15 @@
 - (void)testGetPrivateKeyRefFromIdentityRef
 {
     // Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    
+    NSError *error = nil;
+    
+    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert2.2048.IntCA1" error:&error];
+    
     NSString *pkcs12Password = @"password";
     
     // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
+    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
     
     // Setup
     NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
@@ -1715,12 +1974,15 @@
 - (void)testGetPublicKeyRefFromIdentityRef
 {
     // Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    
+    NSError *error = nil;
+    
+    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert2.2048.IntCA1" error:&error];
+    
     NSString *pkcs12Password = @"password";
     
     // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
+    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
     
     // Setup
     NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];

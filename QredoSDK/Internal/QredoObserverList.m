@@ -99,9 +99,16 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     
     @synchronized(self) {
         
-        QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
-        if (!observerProxy) {
+        QredoObserverProxy *observerProxy;
+        if (!_observerProxies.count) {
             observerProxy = [QredoObserverProxy observerProxyWithObserver:observer];
+            [self setProxy:observerProxy forObserver:observer];
+        } else {
+            observerProxy = [self proxyForObserver:observer];
+            if (!observerProxy) {
+                observerProxy = [QredoObserverProxy observerProxyWithObserver:observer];
+                [self setProxy:observerProxy forObserver:observer];
+            }
         }
         
         NSAssert1(![_observerProxies containsObject:observerProxy],
@@ -116,9 +123,9 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 {
     NSAssert(observer, @"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
     
-    QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
-    
     @synchronized(self) {
+        
+        QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
         
         if (observerProxy) {
             [_observerProxies removeObject:observerProxy];
@@ -131,7 +138,11 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 {
     @synchronized(self) {
         
+        NSLog(@"notifyObserver: _oberverProxies: %@", _observerProxies);
+        
         for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
+            
+            // perhaps some check here, if all observers are properly set up
             
             if (!observerProxy.observer) {
                 [_observerProxies removeObject:observerProxy];

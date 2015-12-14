@@ -30,7 +30,6 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 }
 
 @property BOOL terminated;
-@property QredoTransport *transport;
 @property dispatch_queue_t callbacksDictionaryQueue;
 @property QredoAppCredentials *appCredentials;
 
@@ -82,7 +81,6 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         
         // Closes down the transport threads. Requires re-initialisation.  Transport will trigger error handlers if attempted to be used after termination
         [self.transport close];
-        self.transport = nil;
     }
 }
 

@@ -44,17 +44,15 @@
 		0AE25AE51AB90B0200C10F02 /* QredoSigner.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AE25AE31AB90B0200C10F02 /* QredoSigner.h */; };
 		0AE25AE61AB90B0200C10F02 /* QredoSigner.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AE25AE41AB90B0200C10F02 /* QredoSigner.m */; };
 		0AF69D4C1B3DA21700E6A584 /* QredoVaultServerAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF69D4B1B3DA21700E6A584 /* QredoVaultServerAccess.m */; };
-		25F88C5DD1A03F0288E454F1 /* libPods-ConversationCreateTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4BD9C827271031FB3AF8ED /* libPods-ConversationCreateTests.a */; };
+		1536BE07F13C8028E8D6CB54 /* libPods-LinguaFrancaTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 97B713E5E14C637A75E2792C /* libPods-LinguaFrancaTests.a */; };
 		3410824B4EDF0A1A8AF21041 /* libPods-QredoXDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 11936DD5D5BD6963C8F176CC /* libPods-QredoXDK.a */; };
-		661BA5BF1BF645BF00FDAD29 /* QredoXDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665148EB1BF6037E003491CA /* QredoXDK.framework */; };
+		4DF85CB76FB64CD8B4D4F0A5 /* libPods-QredoCryptoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE664EF839D5C965C8B15BC1 /* libPods-QredoCryptoTests.a */; };
+		66023CDA1C189C06008B18AD /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */; };
+		66023CDB1C189C06008B18AD /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B131BD5073A00EC8D6C /* NSData+Conversion.m */; };
 		661BA5C11BF6465500FDAD29 /* QredoXDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665148EB1BF6037E003491CA /* QredoXDK.framework */; };
 		661BA5C41BF6467A00FDAD29 /* QredoXDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665148EB1BF6037E003491CA /* QredoXDK.framework */; };
 		662CFB661BE397BD005BBF0C /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 662CFB651BE397BD005BBF0C /* libicucore.tbd */; };
 		663A0F791BF37E1C00C61279 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 662CFB651BE397BD005BBF0C /* libicucore.tbd */; };
-		665148E21BF4ED09003491CA /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
-		665148E31BF4ED34003491CA /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
-		665148E41BF4FF5A003491CA /* ConversationWebSocketCreateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 665148A81BF4C978003491CA /* ConversationWebSocketCreateTests.m */; };
-		665148E51BF4FF62003491CA /* ConversationWebSocketRespondTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 665148AE1BF4D08C003491CA /* ConversationWebSocketRespondTests.m */; };
 		665149001BF6037E003491CA /* QredoXDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665148EB1BF6037E003491CA /* QredoXDK.framework */; };
 		665149091BF60432003491CA /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
 		6651490A1BF60432003491CA /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
@@ -158,7 +156,6 @@
 		6651496D1BF6064C003491CA /* QredoRendezvous.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6651496E1BF6064C003491CA /* QredoConversation.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A9DDDFA19EC2F2700B4248C /* QredoConversation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6651496F1BF6064C003491CA /* QredoConversationMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A68F7501A77B2AC0045D21D /* QredoConversationMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6657B9E61BF637C400BB8580 /* QredoXDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665148EB1BF6037E003491CA /* QredoXDK.framework */; };
 		6660599D1BD505FE00EC8D6C /* CryptoImplV1.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059721BD505FE00EC8D6C /* CryptoImplV1.m */; };
 		666059A01BD505FE00EC8D6C /* QredoCertificateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059751BD505FE00EC8D6C /* QredoCertificateUtils.m */; };
 		666059A21BD505FE00EC8D6C /* QredoCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059771BD505FE00EC8D6C /* QredoCrypto.m */; };
@@ -226,7 +223,6 @@
 		66605C621BD55B5B00EC8D6C /* clientCert6.2048.IntCA2cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B631BD5266700EC8D6C /* clientCert6.2048.IntCA2cert.pem */; };
 		66605C631BD55B5B00EC8D6C /* clientCert6.2048.IntCA2key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B641BD5266700EC8D6C /* clientCert6.2048.IntCA2key.pem */; };
 		66605C641BD55B5B00EC8D6C /* clientCert6.2048.IntCA2req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B651BD5266700EC8D6C /* clientCert6.2048.IntCA2req.pem */; };
-		66605C651BD55B5B00EC8D6C /* createRoot2xIntermediateAndFinalCerts.sh in Resources */ = {isa = PBXBuildFile; fileRef = 66605B661BD5266700EC8D6C /* createRoot2xIntermediateAndFinalCerts.sh */; };
 		66605C661BD55B5B00EC8D6C /* interCA1crl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B691BD5266700EC8D6C /* interCA1crl.pem */; };
 		66605C671BD55B5B00EC8D6C /* interCA1crlAfterRevoke.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6A1BD5266700EC8D6C /* interCA1crlAfterRevoke.pem */; };
 		66605C681BD55B5B00EC8D6C /* interCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6B1BD5266700EC8D6C /* interCA1cert.pem */; };
@@ -241,24 +237,6 @@
 		66605C711BD55B5B00EC8D6C /* interCA2key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B781BD5266700EC8D6C /* interCA2key.pem */; };
 		66605C721BD55B5B00EC8D6C /* interCA2chainWithEmptyCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B791BD5266700EC8D6C /* interCA2chainWithEmptyCrl.pem */; };
 		66605C731BD55B5B00EC8D6C /* interCA2chainWithRevokedCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7A1BD5266700EC8D6C /* interCA2chainWithRevokedCrl.pem */; };
-		66605C741BD55B5B00EC8D6C /* openssl.cnf in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7B1BD5266700EC8D6C /* openssl.cnf */; };
-		66605C751BD55B5B00EC8D6C /* F41503B286254EFE.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7E1BD5266700EC8D6C /* F41503B286254EFE.pem */; };
-		66605C761BD55B5B00EC8D6C /* F41503B286254EFF.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7F1BD5266700EC8D6C /* F41503B286254EFF.pem */; };
-		66605C771BD55B5B00EC8D6C /* F41503B286254F00.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B801BD5266700EC8D6C /* F41503B286254F00.pem */; };
-		66605C781BD55B5B00EC8D6C /* F41503B286254F01.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B811BD5266700EC8D6C /* F41503B286254F01.pem */; };
-		66605C791BD55B5B00EC8D6C /* F41503B286254F02.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B821BD5266700EC8D6C /* F41503B286254F02.pem */; };
-		66605C7A1BD55B5B00EC8D6C /* F41503B286254F03.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B831BD5266700EC8D6C /* F41503B286254F03.pem */; };
-		66605C7B1BD55B5B00EC8D6C /* F41503B286254F04.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B841BD5266700EC8D6C /* F41503B286254F04.pem */; };
-		66605C7C1BD55B5B00EC8D6C /* F41503B286254F05.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B851BD5266700EC8D6C /* F41503B286254F05.pem */; };
-		66605C7D1BD55B5B00EC8D6C /* F41503B286254F06.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B861BD5266700EC8D6C /* F41503B286254F06.pem */; };
-		66605C7E1BD55B5B00EC8D6C /* crlnumber in Resources */ = {isa = PBXBuildFile; fileRef = 66605B871BD5266700EC8D6C /* crlnumber */; };
-		66605C7F1BD55B5B00EC8D6C /* crlnumber.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B881BD5266700EC8D6C /* crlnumber.old */; };
-		66605C801BD55B5B00EC8D6C /* index.txt in Resources */ = {isa = PBXBuildFile; fileRef = 66605B891BD5266700EC8D6C /* index.txt */; };
-		66605C811BD55B5B00EC8D6C /* index.txt.attr in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8A1BD5266700EC8D6C /* index.txt.attr */; };
-		66605C821BD55B5B00EC8D6C /* index.txt.attr.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8B1BD5266700EC8D6C /* index.txt.attr.old */; };
-		66605C831BD55B5B00EC8D6C /* index.txt.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8C1BD5266700EC8D6C /* index.txt.old */; };
-		66605C841BD55B5B00EC8D6C /* serial in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8D1BD5266700EC8D6C /* serial */; };
-		66605C851BD55B5B00EC8D6C /* serial.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8E1BD5266700EC8D6C /* serial.old */; };
 		66605C861BD55B5B00EC8D6C /* rootCAcrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B911BD5266700EC8D6C /* rootCAcrl.pem */; };
 		66605C871BD55B5B00EC8D6C /* rootCAcrlAfterRevoke.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B921BD5266700EC8D6C /* rootCAcrlAfterRevoke.pem */; };
 		66605C881BD55B5B00EC8D6C /* rootCAkey.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B941BD5266700EC8D6C /* rootCAkey.pem */; };
@@ -314,8 +292,6 @@
 		6664CC5D1C0888710036F7D8 /* QredoUserCredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E710B31BF251280048BFEE /* QredoUserCredentials.m */; };
 		6688AA731BF61D80002E82EA /* QredoOpenSSLCertificateUtils_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 6660598A1BD505FE00EC8D6C /* QredoOpenSSLCertificateUtils_Private.h */; };
 		6692A5BA1BED0A480063C394 /* QredoStreamExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D51BD64CE200F01A2C /* QredoStreamExtensions.m */; };
-		6692A9561BF0C8A10063C394 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B131BD5073A00EC8D6C /* NSData+Conversion.m */; };
-		6692A9571BF0C9A00063C394 /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */; };
 		66BE627B1BF632D000FA15F7 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B131BD5073A00EC8D6C /* NSData+Conversion.m */; };
 		66BE627F1BF634B800FA15F7 /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
 		66D11F861BF37A1E0015E293 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D11F851BF37A1E0015E293 /* main.m */; };
@@ -404,6 +380,10 @@
 		66F775441BD6545200F01A2C /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */; };
 		66F775491BD655E400F01A2C /* QredoMqttTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CB1BD64CE200F01A2C /* QredoMqttTransport.m */; };
 		66F7754A1BD655E400F01A2C /* QredoWebSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DD1BD64CE200F01A2C /* QredoWebSocketTransport.m */; };
+		66FCEC141C1848C200C865FE /* QredoTransportSSLTrustUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DA1BD64CE200F01A2C /* QredoTransportSSLTrustUtils.h */; };
+		66FCEC151C18674900C865FE /* QredoRendezvousCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A16F98A19C6F62200639779 /* QredoRendezvousCrypto.h */; };
+		66FCEC161C18674D00C865FE /* QredoRendezvousCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A16F98A19C6F62200639779 /* QredoRendezvousCrypto.h */; };
+		66FCEC171C18677B00C865FE /* QredoRendezvousPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = DCDBA2B71A80B64A00C295D6 /* QredoRendezvousPrivate.h */; };
 		7816B8EC1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 7816B8EA1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.h */; };
 		7816B8ED1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 7816B8EB1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.m */; };
 		78375E2B1A80F08D009CDFC2 /* QredoConversationProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 78375E2A1A80F08D009CDFC2 /* QredoConversationProtocol.m */; };
@@ -430,7 +410,6 @@
 		83395E731BE7D723006028D0 /* rootCAreq.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B961BD5266700EC8D6C /* rootCAreq.pem */; };
 		83395E741BE7D7BC006028D0 /* interCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6B1BD5266700EC8D6C /* interCA1cert.pem */; };
 		83395E751BE7D7BC006028D0 /* interCA1req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6C1BD5266700EC8D6C /* interCA1req.pem */; };
-		83395E761BE7D7C1006028D0 /* createRoot2xIntermediateAndFinalCerts.sh in Resources */ = {isa = PBXBuildFile; fileRef = 66605B661BD5266700EC8D6C /* createRoot2xIntermediateAndFinalCerts.sh */; };
 		83395E771BE7D7C4006028D0 /* interCA1chainWithEmptyCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B6F1BD5266700EC8D6C /* interCA1chainWithEmptyCrl.pem */; };
 		83395E781BE7D7C7006028D0 /* interCA1chainWithRevokedCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B701BD5266700EC8D6C /* interCA1chainWithRevokedCrl.pem */; };
 		83395E791BE7D7C9006028D0 /* interCA2chainWithEmptyCrl.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B791BD5266700EC8D6C /* interCA2chainWithEmptyCrl.pem */; };
@@ -461,38 +440,21 @@
 		83395E921BE7D800006028D0 /* interCA2cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B751BD5266700EC8D6C /* interCA2cert.pem */; };
 		83395E931BE7D803006028D0 /* interCA2req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B761BD5266700EC8D6C /* interCA2req.pem */; };
 		83395E941BE7D806006028D0 /* interCA2key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B781BD5266700EC8D6C /* interCA2key.pem */; };
-		83395E951BE7D80D006028D0 /* F41503B286254EFE.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7E1BD5266700EC8D6C /* F41503B286254EFE.pem */; };
-		83395E961BE7D80D006028D0 /* F41503B286254EFF.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7F1BD5266700EC8D6C /* F41503B286254EFF.pem */; };
-		83395E971BE7D80D006028D0 /* F41503B286254F00.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B801BD5266700EC8D6C /* F41503B286254F00.pem */; };
-		83395E981BE7D80D006028D0 /* F41503B286254F01.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B811BD5266700EC8D6C /* F41503B286254F01.pem */; };
-		83395E991BE7D80D006028D0 /* F41503B286254F02.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B821BD5266700EC8D6C /* F41503B286254F02.pem */; };
-		83395E9A1BE7D80D006028D0 /* F41503B286254F03.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B831BD5266700EC8D6C /* F41503B286254F03.pem */; };
-		83395E9B1BE7D80D006028D0 /* F41503B286254F04.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B841BD5266700EC8D6C /* F41503B286254F04.pem */; };
-		83395E9C1BE7D80D006028D0 /* F41503B286254F05.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B851BD5266700EC8D6C /* F41503B286254F05.pem */; };
-		83395E9D1BE7D80D006028D0 /* F41503B286254F06.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B861BD5266700EC8D6C /* F41503B286254F06.pem */; };
 		83395E9E1BE7DB6D006028D0 /* clientCert1.1024.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = 66605B4E1BD5266700EC8D6C /* clientCert1.1024.IntCA1.pfx */; };
 		83395E9F1BE7DB6D006028D0 /* clientCert2.2048.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = 66605B521BD5266700EC8D6C /* clientCert2.2048.IntCA1.pfx */; };
 		83395EA01BE7DB6D006028D0 /* clientCert3.4096.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = 66605B561BD5266700EC8D6C /* clientCert3.4096.IntCA1.pfx */; };
 		83395EA11BE7DB6D006028D0 /* clientCert4.8192.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = 66605B5A1BD5266700EC8D6C /* clientCert4.8192.IntCA1.pfx */; };
 		83395EA21BE7DB6D006028D0 /* clientCert5.2048.Revoked.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = 66605B5E1BD5266700EC8D6C /* clientCert5.2048.Revoked.IntCA1.pfx */; };
 		83395EA31BE7DB6D006028D0 /* clientCert6.2048.IntCA2.pfx in Resources */ = {isa = PBXBuildFile; fileRef = 66605B621BD5266700EC8D6C /* clientCert6.2048.IntCA2.pfx */; };
-		83395EA41BE7DB95006028D0 /* openssl.cnf in Resources */ = {isa = PBXBuildFile; fileRef = 66605B7B1BD5266700EC8D6C /* openssl.cnf */; };
-		83395EA51BE7DB9A006028D0 /* crlnumber in Resources */ = {isa = PBXBuildFile; fileRef = 66605B871BD5266700EC8D6C /* crlnumber */; };
 		83395EA61BE7DB9A006028D0 /* crlnumber.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B881BD5266700EC8D6C /* crlnumber.old */; };
-		83395EA71BE7DB9A006028D0 /* index.txt in Resources */ = {isa = PBXBuildFile; fileRef = 66605B891BD5266700EC8D6C /* index.txt */; };
 		83395EA81BE7DB9A006028D0 /* index.txt.attr in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8A1BD5266700EC8D6C /* index.txt.attr */; };
-		83395EA91BE7DB9A006028D0 /* index.txt.attr.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8B1BD5266700EC8D6C /* index.txt.attr.old */; };
 		83395EAA1BE7DB9A006028D0 /* index.txt.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8C1BD5266700EC8D6C /* index.txt.old */; };
-		83395EAB1BE7DB9A006028D0 /* serial in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8D1BD5266700EC8D6C /* serial */; };
-		83395EAC1BE7DB9A006028D0 /* serial.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8E1BD5266700EC8D6C /* serial.old */; };
 		8339A50F1C049F0C00B87D75 /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
-		83627B951BF5F59F0062AB4E /* QredoUserCredentialsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83627B941BF5F59F0062AB4E /* QredoUserCredentialsTests.m */; };
 		837FB2A41BED013700C66FC8 /* QredoServiceInvokerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66828EBC1BDFBB6B00067431 /* QredoServiceInvokerTests.m */; };
 		83E710B41BF251280048BFEE /* QredoUserCredentials.h in Headers */ = {isa = PBXBuildFile; fileRef = 83E710B21BF251280048BFEE /* QredoUserCredentials.h */; };
 		83E710B51BF251280048BFEE /* QredoUserCredentials.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E710B31BF251280048BFEE /* QredoUserCredentials.m */; };
 		83F05A5E1BF108E100003FF2 /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
 		8BC91CD0033B396B6CA2A4D2 /* libPods-QredoSDKTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2178501494CC17032696D4D8 /* libPods-QredoSDKTests.a */; };
-		B3115B98998A466782E05DED /* libPods-ConversationRespondTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B532D64D414B66444C799B06 /* libPods-ConversationRespondTests.a */; };
 		C70FBCFE3BD76A611A8B7943 /* libPods-QredoSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 842A50DC8AF5E8D94371BCEC /* libPods-QredoSDK.a */; };
 		DCC22DAB1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */; };
 		DCC22DAC1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */; };
@@ -502,19 +464,11 @@
 		DCC22DB81A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DB61A88F6910047AB18 /* QredoRendezvousRsa4096PemHelper.m */; };
 		DCC22DBF1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC22DBD1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.h */; };
 		DCC22DC01A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC22DBE1A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m */; };
-		DCDBA2B81A80B64A00C295D6 /* QredoRendezvousPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = DCDBA2B71A80B64A00C295D6 /* QredoRendezvousPrivate.h */; };
 		DCE378EA1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = DCE378E81A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.h */; };
 		DCE378EB1A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE378E91A77FF3C00CA5035 /* QredoRendezvousX509PemHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		661BA5BB1BF640F900FDAD29 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 665148EA1BF6037E003491CA;
-			remoteInfo = Qredo;
-		};
 		661BA5C21BF6466B00FDAD29 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
@@ -522,33 +476,12 @@
 			remoteGlobalIDString = 665148EA1BF6037E003491CA;
 			remoteInfo = Qredo;
 		};
-		663A0FB41BF3838900C61279 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0A16F8BF19C358B400639779;
-			remoteInfo = QredoSDK;
-		};
-		665148DB1BF4EAD2003491CA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0A16F8BF19C358B400639779;
-			remoteInfo = QredoSDK;
-		};
 		665148FE1BF6037E003491CA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 665148EA1BF6037E003491CA;
 			remoteInfo = QSDK;
-		};
-		66605C961BD6402E00EC8D6C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0A16F8BF19C358B400639779;
-			remoteInfo = QredoSDK;
 		};
 		6664C01E1C0731B40036F7D8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -563,34 +496,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 665148EA1BF6037E003491CA;
 			remoteInfo = QredoXDK;
-		};
-		6664C0221C0731C30036F7D8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0A16F8BF19C358B400639779;
-			remoteInfo = QredoSDK;
-		};
-		6664C0241C0731CC0036F7D8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0A16F8BF19C358B400639779;
-			remoteInfo = QredoSDK;
-		};
-		6664C0261C0731D30036F7D8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 665148EA1BF6037E003491CA;
-			remoteInfo = QredoXDK;
-		};
-		66F775321BD6538D00F01A2C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0A16F88719C3566B00639779 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0A16F8BF19C358B400639779;
-			remoteInfo = QredoSDK;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -613,15 +518,6 @@
 			files = (
 			);
 			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6657B9F91BF63C1200BB8580 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -714,6 +610,7 @@
 		0AF69D4D1B3DA22A00E6A584 /* QredoVaultServerAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoVaultServerAccess.h; sourceTree = "<group>"; };
 		11936DD5D5BD6963C8F176CC /* libPods-QredoXDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoXDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2178501494CC17032696D4D8 /* libPods-QredoSDKTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDKTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		342455F0DDD482190E605AC6 /* Pods-LinguaFrancaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LinguaFrancaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests.release.xcconfig"; sourceTree = "<group>"; };
 		432B953801A4C9B24A35B1A3 /* Pods-ConversationCreateTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConversationCreateTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ConversationCreateTests/Pods-ConversationCreateTests.release.xcconfig"; sourceTree = "<group>"; };
 		5851E34B2CD258443714288E /* Pods-QredoSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.debug.xcconfig"; sourceTree = "<group>"; };
 		662CFB651BE397BD005BBF0C /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk/usr/lib/libicucore.tbd; sourceTree = DEVELOPER_DIR; };
@@ -721,9 +618,7 @@
 		665148AA1BF4C988003491CA /* ConversationWebSocketCreateTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConversationWebSocketCreateTests.h; path = ../QredoSDKTests/ConversationWebSocketCreateTests.h; sourceTree = "<group>"; };
 		665148AE1BF4D08C003491CA /* ConversationWebSocketRespondTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConversationWebSocketRespondTests.m; path = ../QredoSDKTests/ConversationWebSocketRespondTests.m; sourceTree = "<group>"; };
 		665148B01BF4D09B003491CA /* ConversationWebSocketRespondTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConversationWebSocketRespondTests.h; path = ../QredoSDKTests/ConversationWebSocketRespondTests.h; sourceTree = "<group>"; };
-		665148B51BF4E802003491CA /* ConversationCreateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConversationCreateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		665148B91BF4E802003491CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		665148D51BF4EAD2003491CA /* ConversationRespondTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConversationRespondTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		665148D91BF4EAD2003491CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		665148EB1BF6037E003491CA /* QredoXDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QredoXDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		665148EF1BF6037E003491CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = QredoXDK/Info.plist; sourceTree = "<group>"; };
@@ -966,11 +861,16 @@
 		83E710B21BF251280048BFEE /* QredoUserCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoUserCredentials.h; sourceTree = "<group>"; };
 		83E710B31BF251280048BFEE /* QredoUserCredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUserCredentials.m; sourceTree = "<group>"; };
 		842A50DC8AF5E8D94371BCEC /* libPods-QredoSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		89D0109EC4AD96F3C3DE594A /* Pods-QredoCryptoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoCryptoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoCryptoTests/Pods-QredoCryptoTests.release.xcconfig"; sourceTree = "<group>"; };
+		97B713E5E14C637A75E2792C /* libPods-LinguaFrancaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LinguaFrancaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AF957589761FAE2D48C484D /* Pods-ConversationRespondTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConversationRespondTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ConversationRespondTests/Pods-ConversationRespondTests.debug.xcconfig"; sourceTree = "<group>"; };
+		AE664EF839D5C965C8B15BC1 /* libPods-QredoCryptoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoCryptoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1D6367F148327F3401623A5 /* Pods-LinguaFrancaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LinguaFrancaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B532D64D414B66444C799B06 /* libPods-ConversationRespondTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ConversationRespondTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC344084A53FA4D2146AA6B4 /* Pods-QredoSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.release.xcconfig"; sourceTree = "<group>"; };
 		BF4BD9C827271031FB3AF8ED /* libPods-ConversationCreateTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ConversationCreateTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFED70E803BDDDFAA77E8790 /* Pods-ConversationRespondTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConversationRespondTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ConversationRespondTests/Pods-ConversationRespondTests.release.xcconfig"; sourceTree = "<group>"; };
+		D16B671CD7420AA35EDC4411 /* Pods-QredoCryptoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoCryptoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoCryptoTests/Pods-QredoCryptoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		DC1B55151A8124CB00D2F8B1 /* QredoRendezvousX509PemHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousX509PemHelperTests.m; sourceTree = "<group>"; };
 		DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoAuthenticatedRendezvousTag.h; sourceTree = "<group>"; };
 		DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoAuthenticatedRendezvousTag.m; sourceTree = "<group>"; };
@@ -1000,24 +900,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		665148B21BF4E802003491CA /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				661BA5BF1BF645BF00FDAD29 /* QredoXDK.framework in Frameworks */,
-				25F88C5DD1A03F0288E454F1 /* libPods-ConversationCreateTests.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		665148D21BF4EAD2003491CA /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6657B9E61BF637C400BB8580 /* QredoXDK.framework in Frameworks */,
-				B3115B98998A466782E05DED /* libPods-ConversationRespondTests.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		665148E71BF6037E003491CA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1031,6 +913,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				661BA5C11BF6465500FDAD29 /* QredoXDK.framework in Frameworks */,
+				4DF85CB76FB64CD8B4D4F0A5 /* libPods-QredoCryptoTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1058,6 +941,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				661BA5C41BF6467A00FDAD29 /* QredoXDK.framework in Frameworks */,
+				1536BE07F13C8028E8D6CB54 /* libPods-LinguaFrancaTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1147,8 +1031,6 @@
 				66605C901BD6402E00EC8D6C /* QredoSDKTests.xctest */,
 				66F7752C1BD6538D00F01A2C /* LinguaFrancaTests.xctest */,
 				66D11F821BF37A1E0015E293 /* Test.app */,
-				665148B51BF4E802003491CA /* ConversationCreateTests.xctest */,
-				665148D51BF4EAD2003491CA /* ConversationRespondTests.xctest */,
 				665148EB1BF6037E003491CA /* QredoXDK.framework */,
 			);
 			name = Products;
@@ -1332,6 +1214,8 @@
 				842A50DC8AF5E8D94371BCEC /* libPods-QredoSDK.a */,
 				2178501494CC17032696D4D8 /* libPods-QredoSDKTests.a */,
 				11936DD5D5BD6963C8F176CC /* libPods-QredoXDK.a */,
+				97B713E5E14C637A75E2792C /* libPods-LinguaFrancaTests.a */,
+				AE664EF839D5C965C8B15BC1 /* libPods-QredoCryptoTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1759,6 +1643,10 @@
 				77E2AB06185B7BAE12E47687 /* Pods-QredoSDKTests.release.xcconfig */,
 				6664CC5B1C08882E0036F7D8 /* Pods-QredoXDK.debug.xcconfig */,
 				6664CC5C1C08882E0036F7D8 /* Pods-QredoXDK.release.xcconfig */,
+				B1D6367F148327F3401623A5 /* Pods-LinguaFrancaTests.debug.xcconfig */,
+				342455F0DDD482190E605AC6 /* Pods-LinguaFrancaTests.release.xcconfig */,
+				D16B671CD7420AA35EDC4411 /* Pods-QredoCryptoTests.debug.xcconfig */,
+				89D0109EC4AD96F3C3DE594A /* Pods-QredoCryptoTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1805,6 +1693,7 @@
 				66F774FE1BD64CE200F01A2C /* QredoSExpression.h in Headers */,
 				66F774F31BD64CE200F01A2C /* QredoLogging.h in Headers */,
 				66605B1C1BD5073A00EC8D6C /* NSArray+QredoArrayEquality.h in Headers */,
+				66FCEC171C18677B00C865FE /* QredoRendezvousPrivate.h in Headers */,
 				66F7750A1BD64CE200F01A2C /* QredoWireFormat.h in Headers */,
 				66F775061BD64CE200F01A2C /* QredoTransportSSLTrustUtils.h in Headers */,
 				0A519B641A9E483100182499 /* QredoUpdateListener.h in Headers */,
@@ -1824,7 +1713,6 @@
 				66605B351BD5073A00EC8D6C /* QredoLogging.h in Headers */,
 				66E6F8D21BD65AC600319BC9 /* MQTTEncoder.h in Headers */,
 				DCC22DB31A88F6790047AB18 /* QredoRendezvousRsa2048PemHelper.h in Headers */,
-				DCDBA2B81A80B64A00C295D6 /* QredoRendezvousPrivate.h in Headers */,
 				0AADB0841A15848C00CFD014 /* QredoRendezvous.h in Headers */,
 				66F774E61BD64CE200F01A2C /* NSData+QredoRandomData.h in Headers */,
 				66F774FC1BD64CE200F01A2C /* QredoServiceInvoker.h in Headers */,
@@ -1865,7 +1753,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66FCEC141C1848C200C865FE /* QredoTransportSSLTrustUtils.h in Headers */,
 				6664C04E1C07348F0036F7D8 /* QredoXDK.h in Headers */,
+				66FCEC161C18674D00C865FE /* QredoRendezvousCrypto.h in Headers */,
 				665149691BF6064C003491CA /* QredoErrorCodes.h in Headers */,
 				6651496A1BF6064C003491CA /* Qredo.h in Headers */,
 				6664C0111C0618E10036F7D8 /* QredoKeychain.h in Headers */,
@@ -1883,6 +1773,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66FCEC151C18674900C865FE /* QredoRendezvousCrypto.h in Headers */,
 				6664C0091C06182A0036F7D8 /* Qredo.h in Headers */,
 				6664C0081C0618230036F7D8 /* QredoErrorCodes.h in Headers */,
 				6664C0101C0618D90036F7D8 /* QredoKeychain.h in Headers */,
@@ -1918,51 +1809,6 @@
 			productReference = 0A16F8C019C358B400639779 /* libqredosdk.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		665148B41BF4E802003491CA /* ConversationCreateTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 665148BD1BF4E802003491CA /* Build configuration list for PBXNativeTarget "ConversationCreateTests" */;
-			buildPhases = (
-				0A2DBF6C952A8B1CD9525E2A /* Check Pods Manifest.lock */,
-				665148B11BF4E802003491CA /* Sources */,
-				665148B21BF4E802003491CA /* Frameworks */,
-				665148B31BF4E802003491CA /* Resources */,
-				15C6A639BFA62ED5D739BAC7 /* Embed Pods Frameworks */,
-				32BC03FD685AE904AFE160FE /* Copy Pods Resources */,
-				6657B9F91BF63C1200BB8580 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6664C0251C0731CC0036F7D8 /* PBXTargetDependency */,
-				661BA5BC1BF640F900FDAD29 /* PBXTargetDependency */,
-			);
-			name = ConversationCreateTests;
-			productName = ConversationCreateTests;
-			productReference = 665148B51BF4E802003491CA /* ConversationCreateTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		665148D41BF4EAD2003491CA /* ConversationRespondTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 665148DD1BF4EAD2003491CA /* Build configuration list for PBXNativeTarget "ConversationRespondTests" */;
-			buildPhases = (
-				A3D6157F8948E892B2F837BC /* Check Pods Manifest.lock */,
-				665148D11BF4EAD2003491CA /* Sources */,
-				665148D21BF4EAD2003491CA /* Frameworks */,
-				665148D31BF4EAD2003491CA /* Resources */,
-				AF3DA9BAA0A37334D9CDB5B3 /* Embed Pods Frameworks */,
-				47A2CDEFD67D515FF5F13A45 /* Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				6664C0271C0731D30036F7D8 /* PBXTargetDependency */,
-				665148DC1BF4EAD2003491CA /* PBXTargetDependency */,
-			);
-			name = ConversationRespondTests;
-			productName = ConversationRespondTests;
-			productReference = 665148D51BF4EAD2003491CA /* ConversationRespondTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		665148EA1BF6037E003491CA /* QredoXDK */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 665149021BF6037E003491CA /* Build configuration list for PBXNativeTarget "QredoXDK" */;
@@ -1987,14 +1833,16 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 66605C3F1BD55A9F00EC8D6C /* Build configuration list for PBXNativeTarget "QredoCryptoTests" */;
 			buildPhases = (
+				D4C6BFC527E93F33F751AC76 /* Check Pods Manifest.lock */,
 				66605C331BD55A9F00EC8D6C /* Sources */,
 				66605C341BD55A9F00EC8D6C /* Frameworks */,
 				66605C351BD55A9F00EC8D6C /* Resources */,
+				6BFC122C270C320813238E79 /* Embed Pods Frameworks */,
+				287F75CCF2AAE91FCB0B3F41 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				6664C0231C0731C30036F7D8 /* PBXTargetDependency */,
 				661BA5C31BF6466B00FDAD29 /* PBXTargetDependency */,
 			);
 			name = QredoCryptoTests;
@@ -2018,7 +1866,6 @@
 			);
 			dependencies = (
 				6664C01F1C0731B40036F7D8 /* PBXTargetDependency */,
-				66605C971BD6402E00EC8D6C /* PBXTargetDependency */,
 			);
 			name = QredoSDKTests;
 			productName = Tests2;
@@ -2037,7 +1884,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				663A0FB51BF3838900C61279 /* PBXTargetDependency */,
 				665148FF1BF6037E003491CA /* PBXTargetDependency */,
 			);
 			name = Test;
@@ -2049,15 +1895,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 66F775341BD6538D00F01A2C /* Build configuration list for PBXNativeTarget "LinguaFrancaTests" */;
 			buildPhases = (
+				99328E361F8DC436A368FFFD /* Check Pods Manifest.lock */,
 				66F775281BD6538D00F01A2C /* Sources */,
 				66F775291BD6538D00F01A2C /* Frameworks */,
 				66F7752A1BD6538D00F01A2C /* Resources */,
+				CBA75D913237FADD3F825DD2 /* Embed Pods Frameworks */,
+				11B94EAC38A28D90CAD77770 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				6664C0211C0731BE0036F7D8 /* PBXTargetDependency */,
-				66F775331BD6538D00F01A2C /* PBXTargetDependency */,
 			);
 			name = LinguaFrancaTests;
 			productName = Tests4;
@@ -2075,12 +1923,6 @@
 				TargetAttributes = {
 					0A16F8BF19C358B400639779 = {
 						CreatedOnToolsVersion = 6.0;
-					};
-					665148B41BF4E802003491CA = {
-						CreatedOnToolsVersion = 7.1.1;
-					};
-					665148D41BF4EAD2003491CA = {
-						CreatedOnToolsVersion = 7.1.1;
 					};
 					665148EA1BF6037E003491CA = {
 						CreatedOnToolsVersion = 7.1.1;
@@ -2119,28 +1961,12 @@
 				66605C361BD55A9F00EC8D6C /* QredoCryptoTests */,
 				66F7752B1BD6538D00F01A2C /* LinguaFrancaTests */,
 				66D11F811BF37A1E0015E293 /* Test */,
-				665148B41BF4E802003491CA /* ConversationCreateTests */,
-				665148D41BF4EAD2003491CA /* ConversationRespondTests */,
 				665148EA1BF6037E003491CA /* QredoXDK */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		665148B31BF4E802003491CA /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		665148D31BF4EAD2003491CA /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		665148E91BF6037E003491CA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2176,7 +2002,6 @@
 				66605C621BD55B5B00EC8D6C /* clientCert6.2048.IntCA2cert.pem in Resources */,
 				66605C631BD55B5B00EC8D6C /* clientCert6.2048.IntCA2key.pem in Resources */,
 				66605C641BD55B5B00EC8D6C /* clientCert6.2048.IntCA2req.pem in Resources */,
-				66605C651BD55B5B00EC8D6C /* createRoot2xIntermediateAndFinalCerts.sh in Resources */,
 				66605C661BD55B5B00EC8D6C /* interCA1crl.pem in Resources */,
 				66605C671BD55B5B00EC8D6C /* interCA1crlAfterRevoke.pem in Resources */,
 				66605C681BD55B5B00EC8D6C /* interCA1cert.pem in Resources */,
@@ -2191,24 +2016,6 @@
 				66605C711BD55B5B00EC8D6C /* interCA2key.pem in Resources */,
 				66605C721BD55B5B00EC8D6C /* interCA2chainWithEmptyCrl.pem in Resources */,
 				66605C731BD55B5B00EC8D6C /* interCA2chainWithRevokedCrl.pem in Resources */,
-				66605C741BD55B5B00EC8D6C /* openssl.cnf in Resources */,
-				66605C751BD55B5B00EC8D6C /* F41503B286254EFE.pem in Resources */,
-				66605C761BD55B5B00EC8D6C /* F41503B286254EFF.pem in Resources */,
-				66605C771BD55B5B00EC8D6C /* F41503B286254F00.pem in Resources */,
-				66605C781BD55B5B00EC8D6C /* F41503B286254F01.pem in Resources */,
-				66605C791BD55B5B00EC8D6C /* F41503B286254F02.pem in Resources */,
-				66605C7A1BD55B5B00EC8D6C /* F41503B286254F03.pem in Resources */,
-				66605C7B1BD55B5B00EC8D6C /* F41503B286254F04.pem in Resources */,
-				66605C7C1BD55B5B00EC8D6C /* F41503B286254F05.pem in Resources */,
-				66605C7D1BD55B5B00EC8D6C /* F41503B286254F06.pem in Resources */,
-				66605C7E1BD55B5B00EC8D6C /* crlnumber in Resources */,
-				66605C7F1BD55B5B00EC8D6C /* crlnumber.old in Resources */,
-				66605C801BD55B5B00EC8D6C /* index.txt in Resources */,
-				66605C811BD55B5B00EC8D6C /* index.txt.attr in Resources */,
-				66605C821BD55B5B00EC8D6C /* index.txt.attr.old in Resources */,
-				66605C831BD55B5B00EC8D6C /* index.txt.old in Resources */,
-				66605C841BD55B5B00EC8D6C /* serial in Resources */,
-				66605C851BD55B5B00EC8D6C /* serial.old in Resources */,
 				66605C861BD55B5B00EC8D6C /* rootCAcrl.pem in Resources */,
 				66605C871BD55B5B00EC8D6C /* rootCAcrlAfterRevoke.pem in Resources */,
 				66605C881BD55B5B00EC8D6C /* rootCAkey.pem in Resources */,
@@ -2222,22 +2029,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				83395E8E1BE7D7EC006028D0 /* interCA1crlAfterRevoke.pem in Resources */,
-				83395EAC1BE7DB9A006028D0 /* serial.old in Resources */,
 				83395E831BE7D7E3006028D0 /* clientCert3.4096.IntCA1req.pem in Resources */,
 				83395E791BE7D7C9006028D0 /* interCA2chainWithEmptyCrl.pem in Resources */,
 				83395E841BE7D7E3006028D0 /* clientCert4.8192.IntCA1cert.pem in Resources */,
 				83395E911BE7D7FD006028D0 /* interCA2crlAfterRevoke.pem in Resources */,
 				83395E891BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1req.pem in Resources */,
-				83395E971BE7D80D006028D0 /* F41503B286254F00.pem in Resources */,
 				83395E6F1BE7D670006028D0 /* rootCAcert.pem in Resources */,
 				83395E771BE7D7C4006028D0 /* interCA1chainWithEmptyCrl.pem in Resources */,
-				83395E9A1BE7D80D006028D0 /* F41503B286254F03.pem in Resources */,
 				83395E881BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1key.pem in Resources */,
 				83395E7A1BE7D7CC006028D0 /* interCA2chainWithRevokedCrl.pem in Resources */,
 				83395E921BE7D800006028D0 /* interCA2cert.pem in Resources */,
 				83395E711BE7D715006028D0 /* rootCAcrl.pem in Resources */,
-				83395EA51BE7DB9A006028D0 /* crlnumber in Resources */,
-				83395EA91BE7DB9A006028D0 /* index.txt.attr.old in Resources */,
 				83395E721BE7D71E006028D0 /* rootCAkey.pem in Resources */,
 				83395E851BE7D7E3006028D0 /* clientCert4.8192.IntCA1key.pem in Resources */,
 				83395E8D1BE7D7EC006028D0 /* interCA1crl.pem in Resources */,
@@ -2245,7 +2047,6 @@
 				83395E7E1BE7D7E3006028D0 /* clientCert2.2048.IntCA1cert.pem in Resources */,
 				83395EA61BE7DB9A006028D0 /* crlnumber.old in Resources */,
 				83395EA81BE7DB9A006028D0 /* index.txt.attr in Resources */,
-				83395E9C1BE7D80D006028D0 /* F41503B286254F05.pem in Resources */,
 				83395E781BE7D7C7006028D0 /* interCA1chainWithRevokedCrl.pem in Resources */,
 				83395E811BE7D7E3006028D0 /* clientCert3.4096.IntCA1cert.pem in Resources */,
 				83395E701BE7D70D006028D0 /* rootCAcrlAfterRevoke.pem in Resources */,
@@ -2253,31 +2054,21 @@
 				83395EAA1BE7DB9A006028D0 /* index.txt.old in Resources */,
 				83395EA01BE7DB6D006028D0 /* clientCert3.4096.IntCA1.pfx in Resources */,
 				83395E9E1BE7DB6D006028D0 /* clientCert1.1024.IntCA1.pfx in Resources */,
-				83395E951BE7D80D006028D0 /* F41503B286254EFE.pem in Resources */,
-				83395E9B1BE7D80D006028D0 /* F41503B286254F04.pem in Resources */,
 				83395E8F1BE7D7F4006028D0 /* interCA1key.pem in Resources */,
-				83395E761BE7D7C1006028D0 /* createRoot2xIntermediateAndFinalCerts.sh in Resources */,
-				83395EA71BE7DB9A006028D0 /* index.txt in Resources */,
 				83395E861BE7D7E3006028D0 /* clientCert4.8192.IntCA1req.pem in Resources */,
 				83395E9F1BE7DB6D006028D0 /* clientCert2.2048.IntCA1.pfx in Resources */,
 				83395E7B1BE7D7E3006028D0 /* clientCert1.1024.IntCA1cert.pem in Resources */,
 				83395E8B1BE7D7E3006028D0 /* clientCert6.2048.IntCA2key.pem in Resources */,
 				83395EA31BE7DB6D006028D0 /* clientCert6.2048.IntCA2.pfx in Resources */,
 				83395E7C1BE7D7E3006028D0 /* clientCert1.1024.IntCA1key.pem in Resources */,
-				83395E9D1BE7D80D006028D0 /* F41503B286254F06.pem in Resources */,
 				83395EA11BE7DB6D006028D0 /* clientCert4.8192.IntCA1.pfx in Resources */,
 				83395EA21BE7DB6D006028D0 /* clientCert5.2048.Revoked.IntCA1.pfx in Resources */,
-				83395EAB1BE7DB9A006028D0 /* serial in Resources */,
 				83395E901BE7D7FA006028D0 /* interCA2crl.pem in Resources */,
-				83395E961BE7D80D006028D0 /* F41503B286254EFF.pem in Resources */,
 				83395E941BE7D806006028D0 /* interCA2key.pem in Resources */,
-				83395EA41BE7DB95006028D0 /* openssl.cnf in Resources */,
 				83395E821BE7D7E3006028D0 /* clientCert3.4096.IntCA1key.pem in Resources */,
-				83395E981BE7D80D006028D0 /* F41503B286254F01.pem in Resources */,
 				83395E871BE7D7E3006028D0 /* clientCert5.2048.Revoked.IntCA1cert.pem in Resources */,
 				83395E7D1BE7D7E3006028D0 /* clientCert1.1024.IntCA1req.pem in Resources */,
 				83395E8C1BE7D7E3006028D0 /* clientCert6.2048.IntCA2req.pem in Resources */,
-				83395E991BE7D80D006028D0 /* F41503B286254F02.pem in Resources */,
 				83395E731BE7D723006028D0 /* rootCAreq.pem in Resources */,
 				83395E741BE7D7BC006028D0 /* interCA1cert.pem in Resources */,
 				83395E751BE7D7BC006028D0 /* interCA1req.pem in Resources */,
@@ -2321,34 +2112,34 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		0A2DBF6C952A8B1CD9525E2A /* Check Pods Manifest.lock */ = {
+		11B94EAC38A28D90CAD77770 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		15C6A639BFA62ED5D739BAC7 /* Embed Pods Frameworks */ = {
+		287F75CCF2AAE91FCB0B3F41 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ConversationCreateTests/Pods-ConversationCreateTests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoCryptoTests/Pods-QredoCryptoTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		30C7014700980EB5900FA297 /* Check Pods Manifest.lock */ = {
@@ -2366,34 +2157,34 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		32BC03FD685AE904AFE160FE /* Copy Pods Resources */ = {
+		6BFC122C270C320813238E79 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ConversationCreateTests/Pods-ConversationCreateTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoCryptoTests/Pods-QredoCryptoTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		47A2CDEFD67D515FF5F13A45 /* Copy Pods Resources */ = {
+		99328E361F8DC436A368FFFD /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ConversationRespondTests/Pods-ConversationRespondTests-resources.sh\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		A0B5DCD8E2BDCAE7CD6BA21F /* Embed Pods Frameworks */ = {
@@ -2411,21 +2202,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A3D6157F8948E892B2F837BC /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		AA58C3B105EAED327A1C7BE1 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2439,21 +2215,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		AF3DA9BAA0A37334D9CDB5B3 /* Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ConversationRespondTests/Pods-ConversationRespondTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		BA19E561BA05C99F877C9FF0 /* Copy Pods Resources */ = {
@@ -2471,6 +2232,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoXDK/Pods-QredoXDK-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		CBA75D913237FADD3F825DD2 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		D34E3E51471FBD758E14A93F /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2484,6 +2260,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D4C6BFC527E93F33F751AC76 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D96ACAF60F58F3BF51AF38E8 /* Check Pods Manifest.lock */ = {
@@ -2604,24 +2395,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		665148B11BF4E802003491CA /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				665148E41BF4FF5A003491CA /* ConversationWebSocketCreateTests.m in Sources */,
-				665148E21BF4ED09003491CA /* NSData+ParseHex.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		665148D11BF4EAD2003491CA /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				665148E51BF4FF62003491CA /* ConversationWebSocketRespondTests.m in Sources */,
-				665148E31BF4ED34003491CA /* NSData+ParseHex.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		665148E61BF6037E003491CA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2731,8 +2504,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6692A9571BF0C9A00063C394 /* NSData+QredoRandomData.m in Sources */,
-				6692A9561BF0C8A10063C394 /* NSData+Conversion.m in Sources */,
+				66023CDA1C189C06008B18AD /* NSData+QredoRandomData.m in Sources */,
+				66023CDB1C189C06008B18AD /* NSData+Conversion.m in Sources */,
 				66605C421BD55B2800EC8D6C /* CryptoImplV1Tests.m in Sources */,
 				66E6F8E41BD65AC600319BC9 /* MQttTxFlow.m in Sources */,
 				66605C431BD55B2800EC8D6C /* QredoCertificateUtilsTests.m in Sources */,
@@ -2745,8 +2518,6 @@
 				66E6F8DF1BD65AC600319BC9 /* MQTTSession.m in Sources */,
 				66605C491BD55B2800EC8D6C /* QredoRsaPrivateKeyTests.m in Sources */,
 				83F05A5E1BF108E100003FF2 /* NSData+ParseHex.m in Sources */,
-				6692A9571BF0C9A00063C394 /* NSData+QredoRandomData.m in Sources */,
-				6692A9561BF0C8A10063C394 /* NSData+Conversion.m in Sources */,
 				66E6F8D01BD65AC600319BC9 /* MQTTDecoder.m in Sources */,
 				66E6F8D51BD65AC600319BC9 /* MQTTEncoder.m in Sources */,
 				66605C4A1BD55B2800EC8D6C /* QredoRsaPublicKeyTests.m in Sources */,
@@ -2767,8 +2538,6 @@
 				66605C9F1BD6408D00EC8D6C /* QredoRendezvousRsaPemCommonHelperTests.m in Sources */,
 				66605CA01BD6408D00EC8D6C /* QredoRendezvousX509PemHelperTests.m in Sources */,
 				66605CA11BD6408D00EC8D6C /* QredoAuthenticatedRendezvousTagTests.m in Sources */,
-				83627B951BF5F59F0062AB4E /* QredoUserCredentialsTests.m in Sources */,
-				83627B951BF5F59F0062AB4E /* QredoUserCredentialsTests.m in Sources */,
 				66605CA31BD6408D00EC8D6C /* NSDictionary+Contains.m in Sources */,
 				66605CA41BD6408D00EC8D6C /* NSData+ParseHex.m in Sources */,
 				66605CA71BD6408D00EC8D6C /* QredoRendezvousCryptoTest.m in Sources */,
@@ -2838,35 +2607,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		661BA5BC1BF640F900FDAD29 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 665148EA1BF6037E003491CA /* QredoXDK */;
-			targetProxy = 661BA5BB1BF640F900FDAD29 /* PBXContainerItemProxy */;
-		};
 		661BA5C31BF6466B00FDAD29 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 665148EA1BF6037E003491CA /* QredoXDK */;
 			targetProxy = 661BA5C21BF6466B00FDAD29 /* PBXContainerItemProxy */;
 		};
-		663A0FB51BF3838900C61279 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0A16F8BF19C358B400639779 /* QredoSDK */;
-			targetProxy = 663A0FB41BF3838900C61279 /* PBXContainerItemProxy */;
-		};
-		665148DC1BF4EAD2003491CA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0A16F8BF19C358B400639779 /* QredoSDK */;
-			targetProxy = 665148DB1BF4EAD2003491CA /* PBXContainerItemProxy */;
-		};
 		665148FF1BF6037E003491CA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 665148EA1BF6037E003491CA /* QredoXDK */;
 			targetProxy = 665148FE1BF6037E003491CA /* PBXContainerItemProxy */;
-		};
-		66605C971BD6402E00EC8D6C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0A16F8BF19C358B400639779 /* QredoSDK */;
-			targetProxy = 66605C961BD6402E00EC8D6C /* PBXContainerItemProxy */;
 		};
 		6664C01F1C0731B40036F7D8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2877,26 +2626,6 @@
 			isa = PBXTargetDependency;
 			target = 665148EA1BF6037E003491CA /* QredoXDK */;
 			targetProxy = 6664C0201C0731BE0036F7D8 /* PBXContainerItemProxy */;
-		};
-		6664C0231C0731C30036F7D8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0A16F8BF19C358B400639779 /* QredoSDK */;
-			targetProxy = 6664C0221C0731C30036F7D8 /* PBXContainerItemProxy */;
-		};
-		6664C0251C0731CC0036F7D8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0A16F8BF19C358B400639779 /* QredoSDK */;
-			targetProxy = 6664C0241C0731CC0036F7D8 /* PBXContainerItemProxy */;
-		};
-		6664C0271C0731D30036F7D8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 665148EA1BF6037E003491CA /* QredoXDK */;
-			targetProxy = 6664C0261C0731D30036F7D8 /* PBXContainerItemProxy */;
-		};
-		66F775331BD6538D00F01A2C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0A16F8BF19C358B400639779 /* QredoSDK */;
-			targetProxy = 66F775321BD6538D00F01A2C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2924,6 +2653,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					QREDO_LOG_ERROR,
 					QREDO_LOG_INFO,
@@ -2992,158 +2722,6 @@
 				PRODUCT_NAME = qredosdk;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		665148BE1BF4E802003491CA /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = F04F56DA41D1EBCA0E31EF6A /* Pods-ConversationCreateTests.debug.xcconfig */;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ConversationCreateTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.ConversationCreateTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-			};
-			name = Debug;
-		};
-		665148BF1BF4E802003491CA /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 432B953801A4C9B24A35B1A3 /* Pods-ConversationCreateTests.release.xcconfig */;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ConversationCreateTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.ConversationCreateTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-			};
-			name = Release;
-		};
-		665148DE1BF4EAD2003491CA /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9AF957589761FAE2D48C484D /* Pods-ConversationRespondTests.debug.xcconfig */;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ConversationCreateTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.ConversationRespondTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-			};
-			name = Debug;
-		};
-		665148DF1BF4EAD2003491CA /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CFED70E803BDDDFAA77E8790 /* Pods-ConversationRespondTests.release.xcconfig */;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ConversationCreateTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.ConversationRespondTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
@@ -3246,6 +2824,7 @@
 		};
 		66605C401BD55A9F00EC8D6C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D16B671CD7420AA35EDC4411 /* Pods-QredoCryptoTests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3287,6 +2866,7 @@
 		};
 		66605C411BD55A9F00EC8D6C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 89D0109EC4AD96F3C3DE594A /* Pods-QredoCryptoTests.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3494,6 +3074,7 @@
 		};
 		66F775351BD6538D00F01A2C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B1D6367F148327F3401623A5 /* Pods-LinguaFrancaTests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3534,6 +3115,7 @@
 		};
 		66F775361BD6538D00F01A2C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 342455F0DDD482190E605AC6 /* Pods-LinguaFrancaTests.release.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3585,24 +3167,6 @@
 			buildConfigurations = (
 				0A16F8D019C358B400639779 /* Debug */,
 				0A16F8D119C358B400639779 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		665148BD1BF4E802003491CA /* Build configuration list for PBXNativeTarget "ConversationCreateTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				665148BE1BF4E802003491CA /* Debug */,
-				665148BF1BF4E802003491CA /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		665148DD1BF4EAD2003491CA /* Build configuration list for PBXNativeTarget "ConversationRespondTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				665148DE1BF4EAD2003491CA /* Debug */,
-				665148DF1BF4EAD2003491CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

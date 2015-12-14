@@ -52,6 +52,9 @@
     // If we support multi-response, then use it, otherwise poll
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self])
     {
+        if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")])
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resubscribeWithCompletionHandler:) name:@"resubscribe" object:nil];
+
         [self startSubscribing];
     }
     else
@@ -66,6 +69,7 @@
 - (void)stopListening
 {
     _isListening = NO;
+    NSLog(@"stopListening %@", self.dataSource);
 
     // If we support multi-response, then use it, otherwise poll
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self])
@@ -83,38 +87,40 @@
 {
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
-    if (_subscribedToMessages) {
-        return;
-    }
+//    if (_subscribedToMessages) {
+//        return;
+//    }
 
     // Setup re-subscribe timer first
-    @synchronized (self) {
-        if (_subscriptionRenewalTimer) return;
-
-        _subscriptionRenewalTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _subscriptionRenewalQueue);
-        if (_subscriptionRenewalTimer)
-        {
-            dispatch_source_set_timer(_subscriptionRenewalTimer,
-                                      dispatch_time(DISPATCH_TIME_NOW,
-                                                    self.renewSubscriptionInterval * NSEC_PER_SEC), // start
-                                                    self.renewSubscriptionInterval * NSEC_PER_SEC, // interval
-                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
-            dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
-                @synchronized (self) {
-                    if (!_subscriptionRenewalTimer) {
-                        return;
-                    }
-
-                    // Should be able to keep subscribing without any side effects, but try to unsubscribing first
-                    [self unsubscribeWithCompletionHandler:^(NSError *error) {
-                        [self subscribeWithCompletionHandler:nil];
-                    }];
-
-                }
-            });
-            dispatch_resume(_subscriptionRenewalTimer);
-        }
-    }
+//    @synchronized (self) {
+//        if (_subscriptionRenewalTimer) return;
+//
+//        _subscriptionRenewalTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _subscriptionRenewalQueue);
+//        if (_subscriptionRenewalTimer)
+//        {
+//            dispatch_source_set_timer(_subscriptionRenewalTimer,
+//                                      dispatch_time(DISPATCH_TIME_NOW,
+//                                                    self.renewSubscriptionInterval * NSEC_PER_SEC), // start
+//                                                    self.renewSubscriptionInterval * NSEC_PER_SEC, // interval
+//                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
+//            dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
+//                @synchronized (self) {
+//                    if (!_subscriptionRenewalTimer) {
+//                        return;
+//                    }
+//                    
+//                    NSLog(@"QUL SS: unsubscribeWithCompletionHandler");
+//
+//                    // Should be able to keep subscribing without any side effects, but try to unsubscribing first
+//                    [self unsubscribeWithCompletionHandler:^(NSError *error) {
+//                        [self subscribeWithCompletionHandler:nil];
+//                    }];
+//
+//                }
+//            });
+//            dispatch_resume(_subscriptionRenewalTimer);
+//        }
+//    }
 
     // Start first subscription
     [self subscribeWithCompletionHandler:nil];
@@ -122,7 +128,7 @@
 
 - (void)didTerminateSubscriptionWithError:(NSError *)error
 {
-    LogError(@"Conversation subscription terminated with error: %@", error);
+    NSLog(@"Conversation subscription terminated with error: %@", error);
     _subscribedToMessages = NO;
 }
 
@@ -151,10 +157,47 @@
              if (completionHandler) completionHandler(error);
          }
     }];
+    
+    NSLog(@"started subscription: %@", self.dataSource);
+}
+
+- (void)resubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
+{
+//    if (_subscribedToMessages) return ;
+//    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
+    NSLog(@"resubscription %@", self.dataSource);
+    
+    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")]) {
+    
+        _subscribedToMessages = YES;
+        
+        /*
+         Dedupe is necessary when setting up, as requires both Subscribe and Query. Both could return the same
+         Response, so need dedupe. Once Query has completed, Subscribe takes over and dedupe no longer required.
+         */
+        _dedupeNecessary = YES;
+        _queryAfterSubscribeComplete = NO;
+        
+        [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
+            _queryAfterSubscribeComplete = YES;
+            
+            if (!error) {
+                [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error) {
+                    if (completionHandler)
+                        completionHandler(error);
+                }];
+            } else {
+                if (completionHandler)
+                    completionHandler(error);
+        }}];
+        
+        NSLog(@"started resubscription");
+    }
 }
 
 - (void)unsubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
+    NSLog(@"unsubscribeWithCompletionHandler"); // <- not called
     [self.dataSource qredoUpdateListener:self unsubscribeWithCompletionHandler:^(NSError *error) {
         _subscribedToMessages = NO;
         if (completionHandler) completionHandler(error);
@@ -164,6 +207,7 @@
 // This method disables subscription (push) for responses to rendezvous
 - (void)stopSubscribing
 {
+    NSLog(@"stopSubscribing"); // <- not called
     // Need to stop the subsription renewal timer as well
     @synchronized (self) {
         if (_subscriptionRenewalTimer) {
@@ -177,6 +221,7 @@
 
 - (BOOL)processSingleItem:(id)item sequenceValue:(id)sequenceValue
 {
+    NSLog(@"processSingleItem:(id)item sequenceValue:(id)sequenceValue");
     if (_dedupeNecessary) {
         if ([self isDuplicateOrOldItem:item sequenceValue:sequenceValue]) {
             return NO;
@@ -209,6 +254,7 @@
 
 - (void)stopPolling
 {
+    NSLog(@"stopPolling"); // <- not called
     @synchronized (self) {
         _isPollingActive = NO;
     }

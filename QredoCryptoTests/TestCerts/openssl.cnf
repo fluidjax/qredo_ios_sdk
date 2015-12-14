@@ -199,3 +199,4 @@ basicConstraints = CA:true
 #subjectAltName=email:move
 # Copy issuer details
 #issuerAltName=issuer:copy
+subjectAltName = DNS:qredo.com

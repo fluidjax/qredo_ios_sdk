@@ -2,12 +2,12 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-#import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoServiceInvoker.h"
 #import "QredoTestConfiguration.h"
 #import "QredoClient.h"
 #import "NSData+QredoRandomData.h"
+#import "NSData+ParseHex.h"
 
 @interface QredoServiceInvokerTests : XCTestCase
 
@@ -52,7 +52,9 @@
 
 - (QredoServiceInvoker *)commonTestInit:(NSURL *)serviceURL
 {
-    QredoServiceInvoker *serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test"                                                                             appSecret:[NSData dataWithHexString:@"cafebabe"]];
+    
+    QredoServiceInvoker *serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials];
     XCTAssertNotNil(serviceInvoker);
     
     // Give time for any threading needed to setup transport etc
@@ -87,6 +89,8 @@
     
     // HTTP doesn't support multi-response
     XCTAssertFalse(serviceInvoker.supportsMultiResponse);
+    
+    serviceInvoker = nil;
 }
 
 - (void)testInit_MQTTUrl
@@ -100,17 +104,23 @@
     
     // MQTT supports multi-response
     XCTAssertTrue(serviceInvoker.supportsMultiResponse);
+    
+    serviceInvoker = nil;
 }
 
 - (void)testInit_NilUrl
 {
     NSURL *serviceURL = nil;
     XCTAssertNil(serviceURL);
+    
+    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test~"                                                                             appSecret:[NSData dataWithHexString:@"cafebabe"]];
 
-    XCTAssertThrowsSpecificNamed([[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil],
+    XCTAssertThrowsSpecificNamed([[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials],
                                  NSException,
                                  NSInvalidArgumentException,
                                  @"Nil NSURL but NSInvalidArgumentException not thrown.");
+    
+    appCredentials = nil;
 }
 
 - (void)testTerminate_HTTPUrl
@@ -156,7 +166,7 @@
                          XCTFail(@"Error should not have occurred.");
 
                          [self incrementPingErrorResponseCount];
-                     }];
+                     }] ;
 }
 
 - (void)testInvokeService_Ping_HTTPUrl
@@ -168,7 +178,7 @@
     QredoServiceInvoker *serviceInvoker = [self commonTestInit:serviceURL];
     XCTAssertNotNil(serviceInvoker);
 
-    __block XCTestExpectation *readerCompletedExpectation = [self expectationWithDescription:@"Reader completed"];
+    __block XCTestExpectation *readerCompletedExpectation = [self expectationWithDescription:@"HTTP Reader completed"];
     [self commonInvokeService_Ping:serviceInvoker readerCompletedExpectation:readerCompletedExpectation];
     
     // Allow 10 seconds for the operation to return
@@ -233,6 +243,7 @@
     
     waitTime = 2; // 2 seconds to terminate transports
     [NSThread sleepForTimeInterval:waitTime];
+    serviceInvoker = nil;
 
     XCTAssertEqual(self.pingSuccessResponseCount + self.pingErrorResponseCount, expectedPingResponseCount);
     XCTAssertFalse(self.pingErrorResponseCount);
@@ -245,7 +256,7 @@
 
     // Give time for the process to complete (for HTTP, 0.09 seconds per iteration appears enough time,
     // otherwise will terminate/close transport whilst still in use and trigger errors)
-    NSTimeInterval interval = 0.09;
+    NSTimeInterval interval = 0.9;
 
     [self commonInvokeService_ConcurrentOperationsWithServiceURL:[NSURL URLWithString:QREDO_HTTP_SERVICE_URL]
                                                       iterations:requiredIterations
@@ -257,9 +268,9 @@
     // Note: 7500 iterations takes long time, but had previously caused hangs before transport concurrency issues resolved
     const int requiredIterations = 50;
     
-    // Give time for the process to complete (for MQTT, 0.09 seconds per iteration appears enough time,
+    // Give time for the process to complete (for MQTT, 0.09 seconds per iteration appears enough time, // more like 0.9...
     // otherwise will terminate/close transport whilst still in use and trigger errors)
-    NSTimeInterval interval = 0.09;
+    NSTimeInterval interval = 0.9;
     
     [self commonInvokeService_ConcurrentOperationsWithServiceURL:[NSURL URLWithString:QREDO_MQTT_SERVICE_URL]
                                                       iterations:requiredIterations
