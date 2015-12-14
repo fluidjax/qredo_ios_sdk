@@ -3,6 +3,7 @@
 //  QredoSDK
 //
 //  Created by Christopher Morris on 09/12/2015.
+//  A singleton that handles the Coredata LocalIndex initialization and persisentent store.
 //
 //
 
@@ -27,68 +28,83 @@
 }
 
 
--(BOOL)save{
-    __block BOOL success = NO;
-    if (![[self privateContext] hasChanges] && ![[self managedObjectContext] hasChanges]) return YES;
-    [[self managedObjectContext] performBlockAndWait:^{
-        NSError *error = nil;
-        NSAssert([[self managedObjectContext] save:&error], @"Failed to save main context: %@\n%@", [error localizedDescription], [error userInfo]);
-        [[self privateContext] performBlock:^{
-            NSError *privateError = nil;
-            NSAssert([[self privateContext] save:&privateError], @"Error saving private context: %@\n%@", [privateError localizedDescription], [privateError userInfo]);
+
+
+-(void)saveContext:(BOOL)wait{
+    NSManagedObjectContext *moc = [self managedObjectContext];
+    NSManagedObjectContext *privateContext = [self privateContext];
+    if (!moc)return;
+    if ([moc hasChanges]){
+        [moc performBlockAndWait:^{
+            NSError *error = nil;
+            [moc save:&error];
+            NSAssert(error==nil, @"Error saving MOC :%@\n%@",[error localizedDescription],[error userInfo]);
         }];
-        if (error==nil)success=YES;
-    }];
-    return  success;
+    }
+    
+    void (^savePrivate) (void) = ^{
+        NSError *error = nil;
+        NSAssert([privateContext save:&error], @"Error saving Private MOC :%@\n%@",[error localizedDescription],[error userInfo]);
+    };
+    
+    
+    if ([privateContext hasChanges]){
+        if (wait){
+            [privateContext performBlockAndWait:savePrivate];
+        }else{
+            [privateContext performBlock:savePrivate];
+        }
+    }
 }
 
 
 -(instancetype)init{
     self = [super init];
     if (self) {
+        //Model
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
-
-        
-//        NSURL *modelURL = [[NSBundle bundleForClass:[self class]] URLForResource:@"QredoLocalIndex" withExtension:@"momd"];
-        
-//        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"separate_bundle" ofType:@"bundle"];
-//        NSURL *modelURL = [[NSBundle bundleWithPath:bundlePath] URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
-
-        
-        
         NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-        NSAssert(mom, @"%@:%@ No model to generate a store from", [self class], NSStringFromSelector(_cmd));
-        NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
+        
+        //Persistent Store Coordinator
+        NSPersistentStoreCoordinator *psc = nil;
+        psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
+        NSAssert(psc, @"Failed to initialize coordinator");
         
         
-        NSAssert(coordinator, @"Failed to initialize coordinator");
+        //Private ManagedObject Context
+        NSManagedObjectContext *privateMoc = nil;
+        privateMoc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        [privateMoc setPersistentStoreCoordinator:psc];
         
-        self.managedObjectContext=[[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         
-        [self setPrivateContext:[[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType]];
-        [[self privateContext] setPersistentStoreCoordinator:coordinator];
-        [self.managedObjectContext setParentContext:[self privateContext]];
-        NSPersistentStoreCoordinator *psc = [[self privateContext] persistentStoreCoordinator];
+        //Persistent Store
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
         options[NSMigratePersistentStoresAutomaticallyOption] = @YES;
         options[NSInferMappingModelAutomaticallyOption] = @YES;
         options[NSSQLitePragmasOption] = @{ @"journal_mode":@"DELETE" };
         options[NSPersistentStoreFileProtectionKey] = NSFileProtectionComplete;
 
-        
         NSFileManager *fileManager = [NSFileManager defaultManager];
         NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-        NSURL *storeURL = [documentsURL URLByAppendingPathComponent:@"DataModel.sqlite"];
-        
+        NSURL *storeURL = [documentsURL URLByAppendingPathComponent:@"QredoLocalIndex.sqlite"];
         NSError *error = nil;
-        NSAssert([psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error], @"Error initializing PSC: %@\n%@", [error localizedDescription], [error userInfo]);
+        [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error];
+        NSAssert(psc,@"Error initializing PSC: %@\n%@", [error localizedDescription], [error userInfo]);
         
-        NSLog(@"Store URL %@",storeURL);
-        NSLog(@"Model URL %@",modelURL);
-    }
+        NSManagedObjectContext *moc = nil;
+        moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        [moc setParentContext:privateMoc];
+        
+        [self setPrivateContext:privateMoc];
+        [self setManagedObjectContext:moc];
+        
+        //NSLog(@"Store URL %@",storeURL);
+        //NSLog(@"Model URL %@",modelURL);
+
+        
+     }
     return self;
-        
 }
 
 

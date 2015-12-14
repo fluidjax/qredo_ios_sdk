@@ -6,14 +6,13 @@
 #import "Qredo.h"
 
 
-
-
-
-
 @interface QredoLocalIndex : NSObject <QredoVaultObserver>
 
+typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 @property (readonly) NSManagedObjectContext *managedObjectContext;
+
+
 
 - (instancetype)initWithVault:(QredoVault*)vault;
 
@@ -47,18 +46,14 @@
 
 
 
-/** Synchronize the local Index with all items on the server 
- returns a count of how many items were imported */
--(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion;
-
-
-
 /** Count of how many metadata items in the index */
--(NSInteger)count;
+-(int)count;
 
 /** Delete all items in the cache */
 -(void)purge;
--(void)purgeAllVaults;
+//-(void)purgeAllVaults;
+-(void)enableSync;
+-(void)enableSyncWithBlock:(IncomingMetadataBlock)block;
 
 -(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 -(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;

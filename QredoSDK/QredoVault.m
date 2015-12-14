@@ -82,9 +82,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 
-
-
-
 - (QredoLocalIndex *)localIndex{
     return _localIndex;
 }
@@ -138,8 +135,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     _cacheItems = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".items"]];
     _cacheHeaders = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".headers"]];
-//    _localIndex = (localIndexing)?[[QredoLocalIndex alloc] initWithVault:self]:nil;
-    _localIndex = nil;
+    _localIndex = (localIndexing)?[[QredoLocalIndex alloc] initWithVault:self]:nil;
+    
     
     return self;
 }
@@ -384,24 +381,37 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
      }];
 }
 
+
+
 - (void)addVaultObserver:(id<QredoVaultObserver>)observer
 {
+    
     QredoUpdateListener *updateListener = _updateListener;
     [_observers addObserver:observer];
+    
     if (!updateListener.isListening) {
         [updateListener startListening];
     }
+
+    //if not already listening add localIndex observer
+    if (![_observers contains:_localIndex])[_observers addObserver:_localIndex];
+   
 }
 
-- (void)removeVaultObserver:(id<QredoVaultObserver>)observer
-{
+- (void)removeVaultObserver:(id<QredoVaultObserver>)observer{
     QredoUpdateListener *updateListener = _updateListener;
     QredoObserverList *observers = _observers;
+    
     [_observers removeObserver:observer];
+
+    //If we have just removed a listener and the  only listener left is the localIndex - remove it.
+    if ([observers count]==1 && [_observers contains:_localIndex])[_observers removeObserver:_localIndex];
+    
     if ([observers count] < 1 && _updateListener.isListening) {
         [updateListener stopListening];
     }
 }
+
 
 - (void)notifyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock
 {
@@ -560,11 +570,6 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 -(void)enumerateIndexUsingPredicate:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *, BOOL *))block
                   completionHandler:(void (^)(NSError *))completionHandler{
     [self.localIndex enumerateSearch:predicate withBlock:block completionHandler:completionHandler];
-}
-
-
--(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion{
-    [self.localIndex syncIndexWithCompletion:completion];
 }
 
 

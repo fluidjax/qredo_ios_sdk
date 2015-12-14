@@ -160,14 +160,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
      completionHandler:(void(^)(NSError *error))completionHandler;
 
 
-/** Synchronize the local Index with all items on the server
- returns a count of how many items were imported 
- When a number of items have already been entered put into a vault, and a further device connects to the
- same vault, the previous values can be synchronized to the new device's index using this method call.
- 
- */
--(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion;
-
 
 @end
 

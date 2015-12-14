@@ -102,7 +102,9 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
         QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
         if (!observerProxy) {
             observerProxy = [QredoObserverProxy observerProxyWithObserver:observer];
+            [self setProxy:observerProxy forObserver:observer];
         }
+        
         
         NSAssert1(![_observerProxies containsObject:observerProxy],
                   @"The %@ is already added to the QredoObserverList", observer);
@@ -146,6 +148,15 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
         
     }
 }
+
+
+
+- (BOOL)contains:(id)observer{
+    if ([self proxyForObserver:observer])return YES;
+    return NO;
+    
+}
+
 
 
 #pragma mark Misc utils

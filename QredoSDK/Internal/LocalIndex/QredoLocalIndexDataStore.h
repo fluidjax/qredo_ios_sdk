@@ -14,6 +14,6 @@
 @property (strong, readwrite) NSManagedObjectContext *managedObjectContext;
 
 +(id)sharedQredoLocalIndexDataStore;
--(BOOL)save;
+-(void)saveContext:(BOOL)wait;
 
 @end

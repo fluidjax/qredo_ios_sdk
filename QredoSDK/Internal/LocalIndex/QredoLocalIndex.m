@@ -5,6 +5,7 @@
 //  Created by Christopher Morris on 02/12/2015.
 //
 //
+@import CoreData;
 #import "QredoLocalIndexPrivate.h"
 #import "QredoErrorCodes.h"
 #import "QredoLocalIndexDataStore.h"
@@ -14,33 +15,28 @@
 #import "QredoIndexVaultItemMetadata.h"
 #import "QredoIndexVault.h"
 #import "QredoVaultPrivate.h"
-@import CoreData;
-
 
 @interface QredoLocalIndex ()
 @property (strong, readwrite) NSManagedObjectContext *managedObjectContext;
-@property (strong) NSManagedObjectContext *privateContext;
 @property (strong) QredoVault *qredoVault;
 @property (strong) QredoIndexVault *qredoIndexVault;
-
 
 @end
 
 
 @implementation QredoLocalIndex
 
+IncomingMetadataBlock incomingMetadatBlock;
 
 - (instancetype)initWithVault:(QredoVault*)vault{
     self = [super init];
     if (self) {
         self.qredoVault = vault;
-//        [vault addVaultObserver:self];
         [self initializeCoreData];
         [self retrieveQredoIndexVault];
     }
     return self;
 }
-
 
 
 -(void)retrieveQredoIndexVault{
@@ -59,8 +55,8 @@
 -(void)dealloc{
     [self save];
     [self.qredoVault removeVaultObserver:self];
-
 }
+
 
 - (void)initializeCoreData{
     QredoLocalIndexDataStore *lids = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
@@ -69,7 +65,7 @@
 }
 
 
--(NSInteger)count{
+-(int)count{
     __block NSInteger count =0;
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
@@ -81,7 +77,7 @@
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         count = [results count];
     }];
-    return count;
+    return (int)count;
     
 }
 
@@ -98,7 +94,7 @@
 }
 
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext{
-    [managedObjectContext performBlockAndWait:^{
+    [self.managedObjectContext performBlockAndWait:^{
             QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithMetadata:newMetadata inManageObjectContext:self.managedObjectContext];
             QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
             if ([latestIndexedMetadata isSameVersion:newMetadata]){
@@ -107,7 +103,6 @@
             }
             
             if (indexedItem){
-                //an existing version exists in coredata, update with this potential new version
                 [indexedItem addNewVersion:newMetadata];
                 [latestIndexedMetadata isSameVersion:newMetadata];
             }else{
@@ -123,7 +118,6 @@
 -(QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor{
     __block QredoVaultItemMetadata* retrievedMetadata = nil;
     [self.managedObjectContext performBlockAndWait:^{
-
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
         fetchRequest.predicate = [NSPredicate predicateWithFormat:@"descriptor.itemId==%@",vaultItemDescriptor.itemId.data];
         fetchRequest.fetchLimit = 1;
@@ -162,7 +156,8 @@
             
             [self.managedObjectContext deleteObject:vaultItem];
         }
-        if ([self save])hasDeletedObject = YES;
+        [self save];
+        hasDeletedObject = YES;
     }];
     if (returnError)returnError = blockError;
     return hasDeletedObject;
@@ -189,117 +184,31 @@
 }
 
 
-
-//-(void)syncIndexWithCompletion:(void(^)(int syncCount, NSError *error))completion{
-//    __block int count=0;
-//   
-//    [self.qredoVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
-//        count++;
-//        [self putItemWithMetadata:vaultItemMetadata];
-//    } completionHandler:^(NSError *error) {
-//        completion(count, error);
-//    }];
-//}
-
-
-
-
--(void)syncIndexPagedWithCompletionWithHWM:(QredoVaultHighWatermark *)startHighWaterMark completion:(void(^)(QredoVaultHighWatermark *startHighWaterMark, int syncCount, NSError *error))completion{
-    __block int count=0;
-    __block QredoVaultHighWatermark *endOfPageHighWaterMark;
-    
-    [self.qredoVault enumerateVaultItemsPagedForSyncUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
-        count++;
-        [self putItemWithMetadata:vaultItemMetadata];
-        //NSLog(@"Record count %i",count);
-        //NSLog(@"Enumerated Seq & Seq %@ - %lld",vaultItemMetadata.descriptor.sequenceId,vaultItemMetadata.descriptor.sequenceValue );
-        //NSLog(@"Enumerated HWM %@",self.qredoVault.highWatermark);
-    } since:startHighWaterMark watermarkHandler:^(QredoVaultHighWatermark *watermark) {
-        endOfPageHighWaterMark = watermark;
-        //NSLog(@"**** INCOMGIN HIGH WATER MARK - SAVE TO OBJECT MODEL ONLY %@",watermark);
-    } completionHandler:^(NSError *error) {
-        //NSLog(@"Sync'd %i",count);
-        completion(endOfPageHighWaterMark, count, error);
-    }];
+-(void)enableSync{
+    [self.qredoVault addVaultObserver:self];
 }
 
 
--(void)syncIndexWith:(int)incomingGrandTotal startHighWatermark:(QredoVaultHighWatermark *)nextStartHighWaterMark completion:(void(^)(int syncCount, NSError *error))completion{
-    __block int vaultItemCount =0;
-    __block int grandTotal = incomingGrandTotal;
-    
-    [self syncIndexPagedWithCompletionWithHWM:nextStartHighWaterMark completion:^(QredoVaultHighWatermark *nextStartHighWaterMark, int syncCount, NSError *error) {
-        vaultItemCount = syncCount;
-        grandTotal += syncCount;
-        if (vaultItemCount>0){
-            //maybe some more. recurse
-            [self syncIndexWith:grandTotal startHighWatermark:nextStartHighWaterMark completion:completion];
-        }else{
-            if (completion)completion(grandTotal, error);
-        }
-    }];
+-(void)enableSyncWithBlock:(IncomingMetadataBlock)block{
+    incomingMetadatBlock = block;
+    [self.qredoVault addVaultObserver:self];
 }
-     
-
--(void)syncIndexWithCompletion:(void (^)(int syncCount, NSError *error))completion{
-    [self syncIndexWith:0  startHighWatermark:nil completion:^(int syncCount, NSError *error) {
-        //import complete now we can register as a observer
-        NSLog(@"Completed meta data sync - imported %i",syncCount);
-        [self.qredoVault addVaultObserver:self];
-        completion(syncCount, error);
-    }];
-    
-}
-
-
-
-
 
 
 -(void)purge{
     [self.managedObjectContext performBlockAndWait:^{
-        if (self.qredoIndexVault)[self.managedObjectContext deleteObject:self.qredoIndexVault];
+      //  [self.qredoVault removeVaultObserver:self];
+
+        QredoIndexVault *indexVaultToDelete = self.qredoIndexVault;
+        self.qredoIndexVault = nil;
+        if (indexVaultToDelete)[self.managedObjectContext deleteObject:indexVaultToDelete];
         //rebuild the vault references after deleting the old version
-        [self.qredoVault removeVaultObserver:self];
-        [self.qredoVault resetWatermark];
         [self retrieveQredoIndexVault];
-        [self.qredoVault addVaultObserver:self];
-        [self save];
         
+        [self.qredoVault resetWatermark];
+        [self saveAndWait];
     }];
-    
-    
 }
-
--(void)purgeAllVaults{
-     [self.managedObjectContext performBlockAndWait:^{
-         [self deleteAllObjects:@"QredoIndexVault"];
-         
-         [self.qredoVault removeVaultObserver:self];
-         [self retrieveQredoIndexVault];
-         [self.qredoVault resetWatermark];
-         [self save];
-         [self.qredoVault addVaultObserver:self];
-     }];
-    [self save];
-}
-
-
-- (void)deleteAllObjects: (NSString *) entityDescription  {
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:entityDescription inManagedObjectContext:self.managedObjectContext];
-    [fetchRequest setEntity:entity];
-    
-    NSError *error;
-    NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    
-    for (NSManagedObject *managedObject in items) {
-        [self.managedObjectContext deleteObject:managedObject];
-    }
-    [self save];
-}
-
 
 
 
@@ -321,9 +230,15 @@
 }
 
 
--(BOOL)save{
-    return [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] save];
+-(void)save{
+    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:NO];
 }
+
+-(void)saveAndWait{
+    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:YES];
+}
+
+
 
 
 
@@ -332,8 +247,9 @@
 #pragma mark
 #pragma QredoVaultObserver Methods
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata{
-    NSLog(@"Incoming Data: %@ - %lld",itemMetadata.descriptor.itemId.data,itemMetadata.descriptor.sequenceValue );
+    NSLog(@"Incoming data");
     [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
+    incomingMetadatBlock(itemMetadata);
 }
 
 

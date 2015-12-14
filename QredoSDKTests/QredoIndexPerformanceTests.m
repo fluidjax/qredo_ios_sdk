@@ -33,12 +33,11 @@ NSNumber *testNumber;
     //    NSString *clientPass = @"100";  //has 100 item ID's
     //    NSString *clientPass = @"1000"; //has 1000 item ID's
     //    NSString *clientPass = @"10000";//has 10000 item ID's
-        NSString *clientPass = @"2";//has 10000 item ID's
     
-        [self authoriseClient:clientPass];
-        XCTAssertNotNil(client1);
-        [qredoLocalIndex purge];
-        [self addTestItems:2];
+//        NSString *clientPass = @"1000";//has 10000 item ID's
+//        [self authoriseClient:clientPass];
+//        XCTAssertNotNil(client1);
+//        [self addTestItems:1000];
 }
 
 
@@ -56,132 +55,78 @@ NSNumber *testNumber;
  */
 
 
--(void)testDebug{
+
+-(void)testAllSizes{
+    [self importTest:10];
+//    [self importTest:100];
+//    [self importTest:259];
+//    [self importTest:1000];
+}
+
+
+-(void)importTest:(int)testSize{
+    NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
+    [self authoriseClient:clientPass];
+    qredoLocalIndex = client1.defaultVault.localIndex;
+    
+    [qredoLocalIndex purge];
+
+    int afterPurge = [qredoLocalIndex count];
+    
+    XCTAssertNotNil(client1);
+    
+    __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
+    __block int importCount =0;
+    int countBefore = [qredoLocalIndex count];
+    
+    [qredoLocalIndex purge];
+    
+    [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
+        importCount++;
+        if (importCount==testSize)[syncwait fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        syncwait=nil;
+    }];
+    
+    int countAfter = [qredoLocalIndex count];
+
+    XCTAssertTrue(testSize == importCount,@"Failing to import %i items", testSize);
+    XCTAssertTrue(testSize == countAfter-countBefore,@"Failing to import %i items", testSize);
+    
+    NSLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
+    
+}
+
+
+
+
+
+
+-(void)testStartClientAndSync{
     int testSize = 100;
     NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
     [self authoriseClient:clientPass];
     qredoLocalIndex = [[QredoLocalIndex alloc] initWithVault:client1.defaultVault];
+   // [qredoLocalIndex purgeAllVaults];
     
-    [qredoLocalIndex purgeAllVaults];
     XCTAssertNotNil(client1);
-    int waitTime = (6*testSize)/100;
-    if (waitTime<10)waitTime=100;
     
     __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
-    
-  //  NSLog(@"API HIGHWATER BEFORE %@",client1.defaultVault.highWatermark);
-    [qredoLocalIndex purgeAllVaults];
     NSInteger countBefore = [qredoLocalIndex count];
-    
-    
-    [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
-        [syncwait fulfill];
-    }];
-    
-    [self waitForExpectationsWithTimeout:100000 handler:^(NSError * _Nullable error) {
+   
+//    [qredoLocalIndex enableSyncWithBlock:(
+//     
+//     
+//     )];
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
         syncwait=nil;
     }];
-
     
     NSInteger countAfter = [qredoLocalIndex count];
- //   NSLog(@"API HIGHWATER AFTER %@",client1.defaultVault.highWatermark);
-    NSLog(@"Count of Metadata items in coredata =  %ld",(long)countAfter-countBefore);
-    
-
+    XCTAssertEqual(countAfter-countBefore, 100, @"Didn't import 100 meta items into coredata");
 }
-
-
-
--(void)testPerfomance100{
-    int testSize = 100;
-    NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
-    [self authoriseClient:clientPass];
-    qredoLocalIndex = [[QredoLocalIndex alloc] initWithVault:client1.defaultVault];
-    [qredoLocalIndex purgeAllVaults];
-    XCTAssertNotNil(client1);
-    int waitTime = (6*testSize)/100;
-    __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
-    
-    
-    NSLog(@"Sync Start");
-    [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
-        NSLog(@"Sync Complete - imported %i",syncCount);
-         [syncwait fulfill];
-    }];
-    
-    [self waitForExpectationsWithTimeout:waitTime handler:^(NSError * _Nullable error) {
-        syncwait=nil;
-    }];
-    
-    [self measureBlock:^{
-        [self summaryValueTestSearch:1];
-    }];
-}
-
-
--(void)testPerfomance1000{
-    int testSize = 1000;
-    NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
-    [self authoriseClient:clientPass];
-    qredoLocalIndex = [[QredoLocalIndex alloc] initWithVault:client1.defaultVault];
-    [qredoLocalIndex purgeAllVaults];
-    XCTAssertNotNil(client1);
-    int waitTime = (6*testSize)/100;
-    __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
-    
-    NSLog(@"Sync Start");
-    [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
-        NSLog(@"Sync Complete - imported %i",syncCount);
-        [syncwait fulfill];
-    }];
-    
-    [self waitForExpectationsWithTimeout:waitTime handler:^(NSError * _Nullable error) {
-        syncwait=nil;
-    }];
-    
-    [self measureBlock:^{
-        [self summaryValueTestSearch:1];
-    }];
-}
-
--(void)testPerfomance10000{
-    int testSize = 10000;
-    NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
-    [self authoriseClient:clientPass];
-    qredoLocalIndex = [[QredoLocalIndex alloc] initWithVault:client1.defaultVault];
-    [qredoLocalIndex purgeAllVaults];
-    XCTAssertNotNil(client1);
-    int waitTime = (6*testSize)/100;
-    __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
-    
-     NSLog(@"Sync Start");
-    [qredoLocalIndex syncIndexWithCompletion:^(int syncCount, NSError *error) {
-        NSLog(@"Sync Complete - imported %i",syncCount);
-        [syncwait fulfill];
-    }];
-    
-    [self waitForExpectationsWithTimeout:waitTime handler:^(NSError * _Nullable error) {
-        syncwait=nil;
-    }];
-    
-    [self measureBlock:^{
-        [self summaryValueTestSearch:1];
-    }];
-}
-
--(void)testPerfomance10000noLoad{
-    int testSize = 10000;
-    NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
-    [self authoriseClient:clientPass];
-    qredoLocalIndex = [[QredoLocalIndex alloc] initWithVault:client1.defaultVault];
-    XCTAssertNotNil(client1);
-    
-    
-    [self measureBlock:^{
-        [self summaryValueTestSearch:1];
-    }];
-}
-
 
 
 #pragma mark
