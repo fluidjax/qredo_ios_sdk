@@ -101,34 +101,6 @@ NSNumber *testNumber;
 
 
 
-
-
-
--(void)testStartClientAndSync{
-    int testSize = 100;
-    NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
-    [self authoriseClient:clientPass];
-    qredoLocalIndex = [[QredoLocalIndex alloc] initWithVault:client1.defaultVault];
-   // [qredoLocalIndex purgeAllVaults];
-    
-    XCTAssertNotNil(client1);
-    
-    __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
-    NSInteger countBefore = [qredoLocalIndex count];
-   
-//    [qredoLocalIndex enableSyncWithBlock:(
-//     
-//     
-//     )];
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
-        syncwait=nil;
-    }];
-    
-    NSInteger countAfter = [qredoLocalIndex count];
-    XCTAssertEqual(countAfter-countBefore, 100, @"Didn't import 100 meta items into coredata");
-}
-
-
 #pragma mark
 #pragma Private methods
 

@@ -580,6 +580,11 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 }
 
 
+-(int)indexSize{
+  return [self.localIndex count];
+}
+
+
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source
 

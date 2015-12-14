@@ -54,6 +54,7 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     //LocalIndex errors
     QredoErrorCodeIndexErrorUnknown = 7000,
     QredoErrorCodeIndexItemNotFound,
+   
     
     
 };

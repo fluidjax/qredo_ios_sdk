@@ -37,6 +37,35 @@ NSNumber *testNumber;
 
 
 
+-(void)testEmptyPredicate{
+    NSInteger before = [qredoLocalIndex count];
+    NSLog(@"Count before %ld", (long)before);
+    NSString * randomTag = [QredoTestUtils randomStringWithLength:32];
+    
+    QredoVaultItemMetadata *item1 = [self createTestItemInVault:vault key1Value:randomTag];
+    QredoVaultItemMetadata *item2 = [self createTestItemInVault:vault key1Value:randomTag];
+    QredoVaultItemMetadata *item3 = [self createTestItemInVault:vault key1Value:@"value2"];
+    
+    NSInteger after = [qredoLocalIndex count];
+    NSLog(@"Count after %ld", (long)after);
+    
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomTag];
+    
+    __block int count =0;
+    
+    [qredoLocalIndex enumerateSearch:nil withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        count++;
+    } completionHandler:^(NSError *error) {
+        NSLog(@"Found %i matches",count);
+    }];
+    
+    
+  
+    XCTAssert(count == 2 ,@"Failed to find 2 matches in search Found %i", count);
+}
+
+
+
 -(void)testMultipleClientsAndVaults{
     [self authoriseSecondClient:[QredoTestUtils randomPassword]];
     

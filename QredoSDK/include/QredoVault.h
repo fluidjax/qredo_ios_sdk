@@ -167,6 +167,9 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  */
 -(void)registerMetaIndexObserver;
 
+/** Return the number of Metadata entries in the local Metadata index
+ */
+-(int)indexSize;
 
 @end
 

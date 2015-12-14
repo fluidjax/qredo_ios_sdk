@@ -36,13 +36,13 @@
         [moc performBlockAndWait:^{
             NSError *error = nil;
             [moc save:&error];
-            NSAssert(error==nil, @"Error saving MOC :%@\n%@",[error localizedDescription],[error userInfo]);
+            NSAssert(error==nil, @"MetadataIndex: Error saving MOC :%@\n%@",[error localizedDescription],[error userInfo]);
         }];
     }
     
     void (^savePrivate) (void) = ^{
         NSError *error = nil;
-        NSAssert([privateContext save:&error], @"Error saving Private MOC :%@\n%@",[error localizedDescription],[error userInfo]);
+        NSAssert([privateContext save:&error], @"MetadataIndex: Error saving Private MOC :%@\n%@",[error localizedDescription],[error userInfo]);
     };
     
     if ([privateContext hasChanges]){
@@ -66,7 +66,7 @@
         //Persistent Store Coordinator
         NSPersistentStoreCoordinator *psc = nil;
         psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
-        NSAssert(psc, @"Failed to initialize coordinator");
+        NSAssert(psc, @"MetadataIndex: Failed to initialize NSPersistentStoreCoordinator");
         
         //Private ManagedObject Context
         NSManagedObjectContext *privateMoc = nil;
@@ -86,7 +86,7 @@
         NSURL *storeURL = [documentsURL URLByAppendingPathComponent:@"QredoLocalIndex.sqlite"];
         NSError *error = nil;
         [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error];
-        NSAssert(psc,@"Error initializing PSC: %@\n%@", [error localizedDescription], [error userInfo]);
+        NSAssert(psc,@"MetadataIndex: Failed to initialize NSPersistentStoreCoordinator: %@\n%@", [error localizedDescription], [error userInfo]);
         
         NSManagedObjectContext *moc = nil;
         moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];

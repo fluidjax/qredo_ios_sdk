@@ -212,6 +212,14 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)enumerateQuery:(NSFetchRequest *)fetchRequest block:(void (^)(QredoVaultItemMetadata *, BOOL *))block completionHandler:(void (^)(NSError *))completionHandler{
+    if (!fetchRequest){
+        NSString * message = @"Predicate can not be NIL";
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexErrorUnknown
+                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
+        if (completionHandler)completionHandler(error);
+        return;
+    }
+    
     NSError *error = nil;
     NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
     BOOL stop=NO;
@@ -240,7 +248,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata{
     NSLog(@"Incoming data");
     [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
-    incomingMetadatBlock(itemMetadata);
+    if (incomingMetadatBlock)incomingMetadatBlock(itemMetadata);
 }
 
 
