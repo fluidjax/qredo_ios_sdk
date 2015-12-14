@@ -1,6 +1,7 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoWireFormat.h"
 #import "QredoMarshallable.h"
+#import "QredoHelpers.h"
 
 @implementation QredoPrimitiveMarshallers
 
@@ -203,8 +204,12 @@
     @try {
         QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:outputStream];
         if (includeHeader) {
-            [writer writeMessageHeader:[QredoMessageHeader messageHeaderWithProtocolVersion:[QredoVersion versionWithMajor:@0 minor:@3 patch:@0]
-                                                                             releaseVersion:[QredoVersion versionWithMajor:@0 minor:@3 patch:@0]]];
+            [writer writeMessageHeader:[QredoMessageHeader messageHeaderWithProtocolVersion:[QredoVersion versionWithMajor:QREDO_MAJOR_PROTOCOL_VERSION
+                                                                                                                     minor:QREDO_MINOR_PROTOCOL_VERSION
+                                                                                                                     patch:QREDO_PATCH_PROTOCOL_VERSION]
+                                                                             releaseVersion:[QredoVersion versionWithMajor:QREDO_MAJOR_RELEASE_VERSION
+                                                                                                                     minor:QREDO_MINOR_RELEASE_VERSION
+                                                                                                                     patch:QREDO_PATCH_RELEASE_VERSION]]];
         }
         marshaller(object, writer);
 

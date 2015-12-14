@@ -20,5 +20,5 @@
 -(NSData *)masterKey:(NSData *)userUnlockKey;
 -(NSData*)masterKey;
 -(NSString*)createSystemVaultIdentifier;
-
+-(NSString*)dataToHexString:(NSData*)data;
 @end

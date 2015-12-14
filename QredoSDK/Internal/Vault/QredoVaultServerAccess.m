@@ -63,7 +63,7 @@
             completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
 {
     QLFVaultSequenceId   *sequenceId    = itemDescriptor.sequenceId;
-    QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
+    QLFVaultSequenceValue sequenceValue = itemDescriptor.sequenceValue;
 
     NSError *error = nil;
 
@@ -74,10 +74,6 @@
                                                      vaultItemDescriptor:itemDescriptor
                                                  vaultItemSequenceValues:sequenceValues
                                                                    error:&error];
-    
-    
-    
-    
     if (error) {
         completionHandler(nil, error);
         return;

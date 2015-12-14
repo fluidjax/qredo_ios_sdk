@@ -37,6 +37,122 @@
                BlueprintName = "QredoSDKTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ConversationMQTTTests/testConversationMultiple">
+               </Test>
+               <Test
+                  Identifier = "ConversationWebSocketTests/testConversationMultiple">
+               </Test>
+               <Test
+                  Identifier = "OwnershipSignatureTests/testCreateOperation">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa2048PemHelperTests/testCreateHelperSigning_Invalid_ExternalKeysSignerReturnsNil">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa2048PemHelperTests/testCreateHelper_Invalid_ExternalKeysMissingSigningHandler">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa2048PemHelperTests/testSignatureAndVerification_ExternalKeys">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa2048PemHelperTests/testSignatureAndVerification_ExternalKeys_BadSigning">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa2048PemHelperTests/testSignatureAndVerification_ExternalKeys_MultiUse">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa4096PemHelperTests/testCreateHelperSigning_Invalid_ExternalKeysSignerReturnsNil">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa4096PemHelperTests/testCreateHelper_Invalid_ExternalKeysMissingSigningHandler">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa4096PemHelperTests/testSignatureAndVerification_ExternalKeys">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa4096PemHelperTests/testSignatureAndVerification_ExternalKeys_BadSigning">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousRsa4096PemHelperTests/testSignatureAndVerification_ExternalKeys_MultiUse">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelperSigning_Invalid_ExternalKeysSignerReturnsNil">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelper_Invalid_ExternalKeysMissingSigningHandler">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_BadSigning">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_IncludeUnnecessaryPemCerts">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_MultiUse">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_OutOfOrderPemChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_RootIncludedInPemCertChain">
+               </Test>
+               <Test
+                  Identifier = "RendezvousEd25519HelperTests/testCreateHelper_Invalid_ExternalKeysMissingSigningHandler">
+               </Test>
+               <Test
+                  Identifier = "RendezvousEd25519HelperTests/testSignatureAndVerification_ExternalKeys">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

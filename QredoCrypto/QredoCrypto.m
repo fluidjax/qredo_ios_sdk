@@ -188,18 +188,18 @@
     NSData          *mixin = [NSData data];
     NSMutableData   *results = [NSMutableData data];
     
-    for (int i=1; i<(iterations+1); i++) {
+    for (int i=0; i<iterations; i++) {
         CCHmacContext ctx;
         CCHmacInit(&ctx, kCCHmacAlgSHA256, [key bytes], [key length]);
         CCHmacUpdate(&ctx, [mixin bytes], [mixin length]);
         if (info != nil) {
             CCHmacUpdate(&ctx, [info bytes], [info length]);
         }
-        unsigned char c = i;
+        unsigned char c = i+1;
         CCHmacUpdate(&ctx, &c, 1);
         unsigned char T[CC_SHA256_DIGEST_LENGTH];
         CCHmacFinal(&ctx, T);
-        NSData *stepResult = [NSData dataWithBytes:T length:sizeof(T)];
+        NSData *stepResult = [NSData dataWithBytes:T length:CC_SHA256_DIGEST_LENGTH];
         [results appendData:stepResult];
         mixin = [stepResult copy];
     }
