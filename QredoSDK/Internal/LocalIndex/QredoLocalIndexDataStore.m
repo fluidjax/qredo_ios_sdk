@@ -28,8 +28,6 @@
 }
 
 
-
-
 -(void)saveContext:(BOOL)wait{
     NSManagedObjectContext *moc = [self managedObjectContext];
     NSManagedObjectContext *privateContext = [self privateContext];
@@ -46,7 +44,6 @@
         NSError *error = nil;
         NSAssert([privateContext save:&error], @"Error saving Private MOC :%@\n%@",[error localizedDescription],[error userInfo]);
     };
-    
     
     if ([privateContext hasChanges]){
         if (wait){
@@ -70,7 +67,6 @@
         NSPersistentStoreCoordinator *psc = nil;
         psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
         NSAssert(psc, @"Failed to initialize coordinator");
-        
         
         //Private ManagedObject Context
         NSManagedObjectContext *privateMoc = nil;
@@ -101,12 +97,9 @@
         
         //NSLog(@"Store URL %@",storeURL);
         //NSLog(@"Model URL %@",modelURL);
-
-        
      }
     return self;
 }
-
 
 
 @end

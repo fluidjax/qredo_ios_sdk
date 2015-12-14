@@ -575,6 +575,11 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 
 
 
+-(void)registerMetaIndexObserver{
+    [self.localIndex enableSync];
+}
+
+
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source
 

@@ -42,16 +42,11 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
               withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
       completionHandler:(void(^)(NSError *error))completionHandler;
 
-
-
-
-
 /** Count of how many metadata items in the index */
 -(int)count;
 
 /** Delete all items in the cache */
 -(void)purge;
-//-(void)purgeAllVaults;
 -(void)enableSync;
 -(void)enableSyncWithBlock:(IncomingMetadataBlock)block;
 

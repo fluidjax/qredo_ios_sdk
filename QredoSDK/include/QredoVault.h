@@ -145,7 +145,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  The predicate search is performed on the QredoIndexSummaryValues object.
  
  eg. [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
- [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
+ [NSPredicate predicateWithFormat:@"key=='name' && value.string=='John'"];
  
  Value is matched against a sub field depending on specified type.
  Valid types are
@@ -159,6 +159,13 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
              withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
      completionHandler:(void(^)(NSError *error))completionHandler;
 
+
+
+/** Registers the Metadata index database as a listener
+    This needs to be called if the App doesn't call addVaultObserver and the metadata index needs to be updated, so
+    it can be searched.
+ */
+-(void)registerMetaIndexObserver;
 
 
 @end

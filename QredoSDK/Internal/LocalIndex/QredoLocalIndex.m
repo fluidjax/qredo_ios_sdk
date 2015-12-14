@@ -3,7 +3,7 @@
 //  QredoSDK
 //
 //  Created by Christopher Morris on 02/12/2015.
-//
+//  Manages the Coredata local Metadata index. There are no direct API public methods
 //
 @import CoreData;
 #import "QredoLocalIndexPrivate.h"
@@ -27,6 +27,10 @@
 @implementation QredoLocalIndex
 
 IncomingMetadataBlock incomingMetadatBlock;
+
+
+#pragma mark -
+#pragma mark Private Methods
 
 - (instancetype)initWithVault:(QredoVault*)vault{
     self = [super init];
@@ -69,10 +73,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     __block NSInteger count =0;
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
-        
         fetchRequest.predicate = [NSPredicate predicateWithFormat:@"latest.vault.vaultId = %@", self.qredoIndexVault.vaultId];
-        
-        
         NSError *error = nil;
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         count = [results count];
@@ -180,7 +181,6 @@ IncomingMetadataBlock incomingMetadatBlock;
         fetchRequest.predicate = searchPredicate;
         [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
     }];
-    
 }
 
 
@@ -211,11 +211,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-
-
-#pragma mark -
-#pragma mark Private Methods
-
 - (void)enumerateQuery:(NSFetchRequest *)fetchRequest block:(void (^)(QredoVaultItemMetadata *, BOOL *))block completionHandler:(void (^)(NSError *))completionHandler{
     NSError *error = nil;
     NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -237,10 +232,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 -(void)saveAndWait{
     [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:YES];
 }
-
-
-
-
 
 
 

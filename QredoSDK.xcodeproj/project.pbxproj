@@ -505,8 +505,6 @@
 		837526AE1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 837526AD1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m */; };
 		837D39501C0C9B600095562A /* QredoUserCredentialsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83627B941BF5F59F0062AB4E /* QredoUserCredentialsTests.m */; };
 		837FB2A41BED013700C66FC8 /* QredoServiceInvokerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66828EBC1BDFBB6B00067431 /* QredoServiceInvokerTests.m */; };
-		83A2A29E1C11950A00B1C8AC /* _QredoIndexVaultIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A2A29A1C11950A00B1C8AC /* _QredoIndexVaultIndex.m */; };
-		83A2A2A01C11950A00B1C8AC /* _QredoIndexVaultIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A2A29A1C11950A00B1C8AC /* _QredoIndexVaultIndex.m */; };
 		83AF3A401C11DEE5003B258F /* _QredoIndexVariableValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AF3A3D1C11DEE5003B258F /* _QredoIndexVariableValue.m */; };
 		83AF3A411C11DEE5003B258F /* _QredoIndexVariableValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AF3A3D1C11DEE5003B258F /* _QredoIndexVariableValue.m */; };
 		83AF3A461C11DEFF003B258F /* QredoIndexVariableValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AF3A431C11DEFF003B258F /* QredoIndexVariableValue.m */; };
@@ -1039,8 +1037,6 @@
 		837526A31C0F377C004DDDB2 /* QredoIndexVaultItemMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVaultItemMetadata.h; path = LocalIndex/QredoIndexVaultItemMetadata.h; sourceTree = "<group>"; };
 		837526A41C0F377C004DDDB2 /* QredoIndexVaultItemMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexVaultItemMetadata.m; path = LocalIndex/QredoIndexVaultItemMetadata.m; sourceTree = "<group>"; };
 		837526AD1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoIndexVaultTests.m; sourceTree = "<group>"; };
-		83A2A2991C11950A00B1C8AC /* _QredoIndexVaultIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _QredoIndexVaultIndex.h; path = LocalIndex/_QredoIndexVaultIndex.h; sourceTree = "<group>"; };
-		83A2A29A1C11950A00B1C8AC /* _QredoIndexVaultIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _QredoIndexVaultIndex.m; path = LocalIndex/_QredoIndexVaultIndex.m; sourceTree = "<group>"; };
 		83AF3A3C1C11DEE5003B258F /* _QredoIndexVariableValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _QredoIndexVariableValue.h; path = LocalIndex/_QredoIndexVariableValue.h; sourceTree = "<group>"; };
 		83AF3A3D1C11DEE5003B258F /* _QredoIndexVariableValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _QredoIndexVariableValue.m; path = LocalIndex/_QredoIndexVariableValue.m; sourceTree = "<group>"; };
 		83AF3A421C11DEFF003B258F /* QredoIndexVariableValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVariableValue.h; path = LocalIndex/QredoIndexVariableValue.h; sourceTree = "<group>"; };
@@ -1866,8 +1862,6 @@
 			children = (
 				83227B7E1C15CEA5006CAD75 /* _QredoIndexVault.h */,
 				83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */,
-				83A2A2991C11950A00B1C8AC /* _QredoIndexVaultIndex.h */,
-				83A2A29A1C11950A00B1C8AC /* _QredoIndexVaultIndex.m */,
 				8375268D1C0F376C004DDDB2 /* _QredoIndexSummaryValues.h */,
 				8375268E1C0F376C004DDDB2 /* _QredoIndexSummaryValues.m */,
 				8375268F1C0F376C004DDDB2 /* _QredoIndexVaultItem.h */,
@@ -2811,7 +2805,6 @@
 				7816B8ED1A40B69C00245BF7 /* QredoKeychainArchiverForAppleKeychain.m in Sources */,
 				0A177A621B31C96E004B7DFE /* QredoVaultItem.m in Sources */,
 				66E6F8CE1BD65AC600319BC9 /* MQTTDecoder.m in Sources */,
-				83A2A29E1C11950A00B1C8AC /* _QredoIndexVaultIndex.m in Sources */,
 				78375E2B1A80F08D009CDFC2 /* QredoConversationProtocol.m in Sources */,
 				0A16F8DE19C3591700639779 /* QredoVaultCrypto.m in Sources */,
 				786DF4E21A5D5358000B4164 /* QredoRendezvousHelper.m in Sources */,
@@ -2955,7 +2948,6 @@
 				665149351BF60432003491CA /* QredoRendezvousCrypto.m in Sources */,
 				83F4E8701C0F606900A99431 /* QredoLocalIndex.xcdatamodel in Sources */,
 				665149361BF60432003491CA /* QredoConversationCrypto.m in Sources */,
-				83A2A2A01C11950A00B1C8AC /* _QredoIndexVaultIndex.m in Sources */,
 				665149371BF60432003491CA /* QredoRendezvousHelpers.m in Sources */,
 				83227B881C15CECB006CAD75 /* QredoIndexVault.m in Sources */,
 				665149381BF60432003491CA /* QredoRendezvousHelper.m in Sources */,
