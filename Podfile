@@ -18,7 +18,7 @@ end
 
 target 'QredoCryptoTests' do
 
-    pod 'OpenSSL-for-iOS', '1.0.2.d.1'
+    pod 'OpenSSL', '~> 1.0'
 
 end
 
@@ -26,7 +26,7 @@ target 'QredoXDK' do
 
     pod 'PINCache'
     pod 'SocketRocket'
-    pod 'OpenSSL-for-iOS', '1.0.2.d.1'
+    pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :path => 'libsodium.podspec'
 
 end
