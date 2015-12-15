@@ -23,15 +23,11 @@ target 'QredoCryptoTests' do
 end
 
 target 'QredoXDK' do
-
-target 'QredoCryptoTests' do
     pod 'PINCache'
     pod 'SocketRocket'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :path => 'libsodium.podspec'
     
-end
-
 end
 
 post_install do |installer_representation|
