@@ -17,6 +17,7 @@
 #import "TestCertificates.h"
 #import "QredoCertificateUtils.h"
 #import "QredoLogging.h"
+#import "QredoPrivate.h"
 
 #import <objc/runtime.h>
 
@@ -725,6 +726,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     // Give time for the subscribe/getResponses process to process - they could internally produce duplicates which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
 //    [NSThread sleepForTimeInterval:5];
+    
+    NSLog(@"transport: %@", client.serviceInvoker.transport);
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         respondExpectation = nil;

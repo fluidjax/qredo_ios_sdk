@@ -85,6 +85,8 @@
 // This method enables subscription (push) for conversation items, and creates new messages from them. Will regularly re-send subsription request as subscriptions can fail silently
 - (void)startSubscribing
 {
+    NSLog(@"startSubscribing");
+    
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
     if (_subscribedToMessages) {
@@ -112,9 +114,7 @@
                     NSLog(@"periodic resubscribtion");
 
                     // Should be able to keep subscribing without any side effects, but try to unsubscribing first
-                    [self resubscribeWithCompletionHandler:^(NSError *error) {
-                        NSLog(@"periodic resubscription completed");
-                    }];
+                    [self resubscribeWithCompletionHandler:nil];
 
                 }
             });
