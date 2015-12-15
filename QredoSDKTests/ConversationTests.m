@@ -401,7 +401,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
                             [didPublishMessageExpectation fulfill];
                         }];
     
-    [self waitForExpectationsWithTimeout:400 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         didPublishMessageExpectation = nil;
         
         @synchronized(listener) {

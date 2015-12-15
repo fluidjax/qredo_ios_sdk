@@ -40,7 +40,7 @@
 
     self.pollInterval = 1.0;
     self.pollIntervalDuringSubscribe = 10.0;
-    self.renewSubscriptionInterval = 300.0;
+    self.renewSubscriptionInterval = 15.0;
 
     return self;
 }
@@ -87,40 +87,40 @@
 {
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
-//    if (_subscribedToMessages) {
-//        return;
-//    }
+    if (_subscribedToMessages) {
+        return;
+    }
 
     // Setup re-subscribe timer first
-//    @synchronized (self) {
-//        if (_subscriptionRenewalTimer) return;
-//
-//        _subscriptionRenewalTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _subscriptionRenewalQueue);
-//        if (_subscriptionRenewalTimer)
-//        {
-//            dispatch_source_set_timer(_subscriptionRenewalTimer,
-//                                      dispatch_time(DISPATCH_TIME_NOW,
-//                                                    self.renewSubscriptionInterval * NSEC_PER_SEC), // start
-//                                                    self.renewSubscriptionInterval * NSEC_PER_SEC, // interval
-//                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
-//            dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
-//                @synchronized (self) {
-//                    if (!_subscriptionRenewalTimer) {
-//                        return;
-//                    }
-//                    
-//                    NSLog(@"QUL SS: unsubscribeWithCompletionHandler");
-//
-//                    // Should be able to keep subscribing without any side effects, but try to unsubscribing first
-//                    [self unsubscribeWithCompletionHandler:^(NSError *error) {
-//                        [self subscribeWithCompletionHandler:nil];
-//                    }];
-//
-//                }
-//            });
-//            dispatch_resume(_subscriptionRenewalTimer);
-//        }
-//    }
+    @synchronized (self) {
+        if (_subscriptionRenewalTimer) return;
+
+        _subscriptionRenewalTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, _subscriptionRenewalQueue);
+        if (_subscriptionRenewalTimer)
+        {
+            dispatch_source_set_timer(_subscriptionRenewalTimer,
+                                      dispatch_time(DISPATCH_TIME_NOW,
+                                                    self.renewSubscriptionInterval * NSEC_PER_SEC), // start
+                                                    self.renewSubscriptionInterval * NSEC_PER_SEC, // interval
+                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
+            dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
+                @synchronized (self) {
+                    if (!_subscriptionRenewalTimer) {
+                        return;
+                    }
+                    
+                    NSLog(@"periodic resubscribtion");
+
+                    // Should be able to keep subscribing without any side effects, but try to unsubscribing first
+                    [self resubscribeWithCompletionHandler:^(NSError *error) {
+                        NSLog(@"periodic resubscription completed");
+                    }];
+
+                }
+            });
+            dispatch_resume(_subscriptionRenewalTimer);
+        }
+    }
 
     // Start first subscription
     [self subscribeWithCompletionHandler:nil];
@@ -167,7 +167,7 @@
 //    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
     NSLog(@"resubscription %@", self.dataSource);
     
-    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")]) {
+    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")]) {
     
         _subscribedToMessages = YES;
         

@@ -290,6 +290,8 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         [NSThread sleepForTimeInterval:self.reconnectionDelay];
         
         [self connectToServerUsingSession:mqttSession];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"resubscribe" object:self];
     }
 }
 
@@ -326,6 +328,8 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     
     // Note: All events other than MQTTSessionEventConnected result in an invalidated session,
     // therefore for these events we must always reconnect before using the session again
+    
+    NSLog(@"session: %@, handleEvent: %ld", sender, (long)eventCode);
     
     switch (eventCode) {
         case MQTTSessionEventConnected:
