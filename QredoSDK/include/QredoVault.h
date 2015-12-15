@@ -165,7 +165,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
     This needs to be called if the App doesn't call addVaultObserver and the metadata index needs to be updated, so
     it can be searched.
  */
--(void)registerMetaIndexObserver;
+-(void)registerMetadataIndexObserver;
 
 /** Return the number of Metadata entries in the local Metadata index
  */

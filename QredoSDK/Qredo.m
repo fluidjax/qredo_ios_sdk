@@ -259,12 +259,13 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     QredoKeychain *_keychain;
     QredoUserCredentials *_userCredentials;
     QredoAppCredentials *_appCredentials;
+    
 
     dispatch_queue_t _rendezvousQueue;
 }
 
 @property NSURL *serviceURL;
-
+@property QredoClientOptions *clientOptions;
 
 /** Creates instance of qredo client
  @param serviceURL Root URL for Qredo services
@@ -310,11 +311,12 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                      completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
     
     
+    
     // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
     if (!options) {
         options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     }
-    
+
     
     NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
     if (!appID)appID = @"test";
@@ -348,6 +350,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                                         pinnedCertificate:options.certificate
                                                            appCredentials:appCredentials];
     
+    client.clientOptions = options;
     
     void(^completeAuthorization)() = ^() {
         
@@ -1067,7 +1070,12 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 - (void)initializeVaults {
     _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys  withLocalIndex:NO];
-    _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:YES];
+
+    if (self.clientOptions.disableMetadataIndex==YES){
+        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:NO];
+    }else{
+        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:YES];
+    }
     
 }
 

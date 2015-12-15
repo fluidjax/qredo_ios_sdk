@@ -30,9 +30,9 @@
 
 IncomingMetadataBlock incomingMetadatBlock;
 
-
 #pragma mark -
 #pragma mark Private Methods
+
 
 - (instancetype)initWithVault:(QredoVault *)vault{
     self = [super init];
@@ -43,6 +43,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     }
     return self;
 }
+
 
 
 -(void)retrieveQredoIndexVault{
@@ -114,9 +115,11 @@ IncomingMetadataBlock incomingMetadatBlock;
             }
             
             if (indexedItem){
+                //this is a new version, substitue this one for the old one
                 [indexedItem addNewVersion:newMetadata];
                 [latestIndexedMetadata isSameVersion:newMetadata];
             }else{
+                //Create a new item in the index
                 QredoIndexVaultItem *newIndeVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
                 newIndeVaultItem.vault = self.qredoIndexVault;
             }
@@ -248,7 +251,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 #pragma QredoVaultObserver Methods
 
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata{
-    NSLog(@"Incoming data");
     [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
     if (incomingMetadatBlock)incomingMetadatBlock(itemMetadata);
 }
@@ -260,7 +262,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 #pragma mark
-#pragma App Notifications - used to ensure the main MOC is written out to disk
+#pragma App Notifications
 
 -(void)appWillResignActive:(NSNotification*)note{
     [self saveAndWait];

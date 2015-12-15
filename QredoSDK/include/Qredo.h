@@ -33,6 +33,8 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 
 @property (nonatomic) QredoClientOptionsTransportType transportType;
 @property BOOL resetData;
+@property BOOL disableMetadataIndex;
+
 
 - (instancetype)initWithDefaultTrustedRoots;
 - (instancetype)initDefaultPinnnedCertificate;

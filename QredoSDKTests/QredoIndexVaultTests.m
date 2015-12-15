@@ -36,6 +36,15 @@ NSNumber *testNumber;
 
 
 
+-(void)testSearch{
+    for (int i=0;i<300;i++){
+        [self createTestItemInVault:vault key1Value:[NSString stringWithFormat:@"some value continaing %i",i]];
+    }
+    
+    [self summaryValueTestSearch:3];
+    
+}
+
 
 -(void)testEmptyPredicate{
     NSInteger before = [qredoLocalIndex count];
@@ -58,7 +67,6 @@ NSNumber *testNumber;
     } completionHandler:^(NSError *error) {
         NSLog(@"Found %i matches",count);
     }];
-    
     
   
     XCTAssert(count == 2 ,@"Failed to find 2 matches in search Found %i", count);

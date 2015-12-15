@@ -393,8 +393,10 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         [updateListener startListening];
     }
 
-    //if not already listening add localIndex observer
-    if (![_observers contains:_localIndex])[_observers addObserver:_localIndex];
+    //if _localIndex is active and the localIndex is not already listening to updates, add the localIndex as an observer
+    if (_localIndex &&  ![_observers contains:_localIndex]){
+        [_observers addObserver:_localIndex];
+    }
    
 }
 
@@ -493,9 +495,6 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
                   summaryValues:newSummaryValues
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
               if (newItemMetadata) {
-                  
-                  if (self.localIndex)[self.localIndex deleteItem:newItemMetadata.descriptor];
-                  
                   [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
                                                  completionHandler:^(NSError *cacheError){
                        completionHandler(newItemMetadata.descriptor, error);
@@ -575,7 +574,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 
 
 
--(void)registerMetaIndexObserver{
+-(void)registerMetadataIndexObserver{
     [self.localIndex enableSync];
 }
 
