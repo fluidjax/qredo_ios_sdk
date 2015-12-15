@@ -611,12 +611,10 @@
 		0AF69D4B1B3DA21700E6A584 /* QredoVaultServerAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultServerAccess.m; sourceTree = "<group>"; };
 		0AF69D4D1B3DA22A00E6A584 /* QredoVaultServerAccess.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoVaultServerAccess.h; sourceTree = "<group>"; };
 		11936DD5D5BD6963C8F176CC /* libPods-QredoXDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoXDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1C1ACAFFA5AD03CD0FA2F059 /* libPods-QredoCryptoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoCryptoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2178501494CC17032696D4D8 /* libPods-QredoSDKTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDKTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		342455F0DDD482190E605AC6 /* Pods-LinguaFrancaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LinguaFrancaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests.release.xcconfig"; sourceTree = "<group>"; };
 		432B953801A4C9B24A35B1A3 /* Pods-ConversationCreateTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConversationCreateTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ConversationCreateTests/Pods-ConversationCreateTests.release.xcconfig"; sourceTree = "<group>"; };
 		5851E34B2CD258443714288E /* Pods-QredoSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDK/Pods-QredoSDK.debug.xcconfig"; sourceTree = "<group>"; };
-		6058D0D3C575F3B4501CF8EF /* Pods-QredoCryptoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoCryptoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoCryptoTests/Pods-QredoCryptoTests.release.xcconfig"; sourceTree = "<group>"; };
 		662CFB651BE397BD005BBF0C /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk/usr/lib/libicucore.tbd; sourceTree = DEVELOPER_DIR; };
 		665148A81BF4C978003491CA /* ConversationWebSocketCreateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConversationWebSocketCreateTests.m; path = ../QredoSDKTests/ConversationWebSocketCreateTests.m; sourceTree = "<group>"; };
 		665148AA1BF4C988003491CA /* ConversationWebSocketCreateTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConversationWebSocketCreateTests.h; path = ../QredoSDKTests/ConversationWebSocketCreateTests.h; sourceTree = "<group>"; };
@@ -2750,8 +2748,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2778,7 +2774,6 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.QredoXDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -2802,8 +2797,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2826,7 +2819,6 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.QredoXDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -3041,7 +3033,6 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.Test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -3079,7 +3070,6 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.Test;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Release;
