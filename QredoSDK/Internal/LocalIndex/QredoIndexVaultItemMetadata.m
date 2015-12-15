@@ -15,76 +15,75 @@
 
 
 
-+(instancetype)createWithMetadata:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
-    QredoIndexVaultItemMetadata *qredoIndexMetadata = [[self class] insertInManagedObjectContext:managedObjectContext];
-    QredoIndexVaultItemDescriptor *qredoIndexDescriptor = [QredoIndexVaultItemDescriptor createWithDescriptor:metadata.descriptor
-                                                                                        inManageObjectContext:(NSManagedObjectContext *)managedObjectContext];
-    qredoIndexMetadata.descriptor = qredoIndexDescriptor;
-    qredoIndexMetadata.created    = metadata.created;
-    qredoIndexMetadata.dataType   = metadata.dataType;
-    qredoIndexMetadata.accessLevel= [NSNumber numberWithInteger:metadata.accessLevel];
- 
-    [qredoIndexMetadata createSummaryValues:metadata.summaryValues inManageObjectContext:managedObjectContext];
-    
-    return qredoIndexMetadata;
-    
++(instancetype)createWithMetadata:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
+	QredoIndexVaultItemMetadata *qredoIndexMetadata = [[self class] insertInManagedObjectContext:managedObjectContext];
+	QredoIndexVaultItemDescriptor *qredoIndexDescriptor = [QredoIndexVaultItemDescriptor createWithDescriptor:metadata.descriptor
+	                                                       inManageObjectContext:(NSManagedObjectContext *)managedObjectContext];
+	qredoIndexMetadata.descriptor = qredoIndexDescriptor;
+	qredoIndexMetadata.created    = metadata.created;
+	qredoIndexMetadata.dataType   = metadata.dataType;
+	qredoIndexMetadata.accessLevel= [NSNumber numberWithInteger:metadata.accessLevel];
+
+	[qredoIndexMetadata createSummaryValues:metadata.summaryValues inManageObjectContext:managedObjectContext];
+
+	return qredoIndexMetadata;
+
 }
 
 
--(BOOL)isSameVersion:(QredoVaultItemMetadata*)metadata{
-    if ([metadata.descriptor.itemId.data isEqualToData:self.descriptor.itemId] &&
-        metadata.descriptor.sequenceValue == self.descriptor.sequenceValueValue){
-        return YES;
-    }
-    return NO;
+-(BOOL)isSameVersion:(QredoVaultItemMetadata*)metadata {
+	if ([metadata.descriptor.itemId.data isEqualToData:self.descriptor.itemId] &&
+	    metadata.descriptor.sequenceValue == self.descriptor.sequenceValueValue) {
+		return YES;
+	}
+	return NO;
 }
 
 
--(void)createSummaryValues:(NSDictionary *)summaryValues inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
-    for (NSObject *key in [summaryValues allKeys]){
-        QredoIndexSummaryValues *qredoIndexSummaryValues = [QredoIndexSummaryValues createWithKey:key value:[summaryValues objectForKey:key]
-                                                             inManageObjectContext:managedObjectContext];
-        qredoIndexSummaryValues.vaultMetadata = self;
-    }
+-(void)createSummaryValues:(NSDictionary *)summaryValues inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
+	for (NSObject *key in [summaryValues allKeys]) {
+		QredoIndexSummaryValues *qredoIndexSummaryValues = [QredoIndexSummaryValues createWithKey:key value:[summaryValues objectForKey:key]
+		                                                    inManageObjectContext:managedObjectContext];
+		qredoIndexSummaryValues.vaultMetadata = self;
+	}
 }
 
 
-+(instancetype)createOrUpdateWith:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
-    QredoIndexVaultItemMetadata *indexedVaultItemMetadata;
-    
-    QredoIndexVaultItemDescriptor *indexedVaultDescriptor =  [QredoIndexVaultItemDescriptor searchForDescriptor:metadata.descriptor
-                                                                                          inManageObjectContext:managedObjectContext];
++(instancetype)createOrUpdateWith:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
+	QredoIndexVaultItemMetadata *indexedVaultItemMetadata;
 
-    if (indexedVaultDescriptor){
-        //existing record found
-        indexedVaultItemMetadata = indexedVaultDescriptor.metataData;
-    }else{
-        //create a new record
-        [QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:managedObjectContext];
-    }
-    return indexedVaultItemMetadata;
+	QredoIndexVaultItemDescriptor *indexedVaultDescriptor =  [QredoIndexVaultItemDescriptor searchForDescriptor:metadata.descriptor
+	                                                          inManageObjectContext:managedObjectContext];
+
+	if (indexedVaultDescriptor) {
+		//existing record found
+		indexedVaultItemMetadata = indexedVaultDescriptor.metataData;
+	}else{
+		//create a new record
+		[QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:managedObjectContext];
+	}
+	return indexedVaultItemMetadata;
 }
 
 
-
--(QredoVaultItemMetadata *)buildQredoVaultItemMetadata{
-    //constructs a new QredoItemMetadata from a cached QredoIndexItemMetadata, and all its sub objects
-    return   [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:[self.descriptor buildQredoVaultItemDescriptor]
-                                                            dataType:self.dataType
-                                                         accessLevel:self.accessLevelValue
-                                                             created:self.created
-                                                       summaryValues:[self buildSummaryDictionary]
-                                         ];
+-(QredoVaultItemMetadata *)buildQredoVaultItemMetadata {
+	//constructs a new QredoItemMetadata from a cached QredoIndexItemMetadata, and all its sub objects
+	return [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:[self.descriptor buildQredoVaultItemDescriptor]
+	        dataType:self.dataType
+	        accessLevel:self.accessLevelValue
+	        created:self.created
+	        summaryValues:[self buildSummaryDictionary]
+	];
 }
 
 
--(NSDictionary*)buildSummaryDictionary{
-    //loop through all the SummaryValues nsmanagedobjects and create a dictionary
-    NSMutableDictionary *returnDictionary = [[NSMutableDictionary alloc] init];
-    for (QredoIndexSummaryValues *qredoIndexSummaryValue in self.summaryValues){
-        [returnDictionary setObject:[qredoIndexSummaryValue retrieveValue] forKey:qredoIndexSummaryValue.key];
-    }
-    return returnDictionary;
+-(NSDictionary*)buildSummaryDictionary {
+	//loop through all the SummaryValues nsmanagedobjects and create a dictionary
+	NSMutableDictionary *returnDictionary = [[NSMutableDictionary alloc] init];
+	for (QredoIndexSummaryValues *qredoIndexSummaryValue in self.summaryValues) {
+		[returnDictionary setObject:[qredoIndexSummaryValue retrieveValue] forKey:qredoIndexSummaryValue.key];
+	}
+	return returnDictionary;
 }
 
 

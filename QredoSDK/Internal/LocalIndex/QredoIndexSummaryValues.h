@@ -1,10 +1,10 @@
 #import "_QredoIndexSummaryValues.h"
 
-typedef NS_ENUM(NSInteger, IndexSummaryValueDataType) {
-    IndexSummaryValueDataType_NSString   = 0,
-    IndexSummaryValueDataType_NSNumber   = 1,
-    IndexSummaryValueDataType_QredoQUID  = 2,
-    IndexSummaryValueDataType_NSDate     = 3
+typedef NS_ENUM (NSInteger, IndexSummaryValueDataType) {
+	IndexSummaryValueDataType_NSString   = 0,
+	IndexSummaryValueDataType_NSNumber   = 1,
+	IndexSummaryValueDataType_QredoQUID  = 2,
+	IndexSummaryValueDataType_NSDate     = 3
 };
 
 

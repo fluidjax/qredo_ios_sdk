@@ -8,7 +8,7 @@
 
 @interface QredoLocalIndex : NSObject <QredoVaultObserver>
 
-typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
+	typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 @property (readonly) NSManagedObjectContext *managedObjectContext;
 
@@ -24,23 +24,23 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 
 
-/** Enumerates through all vault items in the local index that match the predicate 
+/** Enumerates through all vault items in the local index that match the predicate
     The predicate search is performed on the QredoIndexSummaryValues object.
 
     eg. [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
         [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
-    
+
     Value is matched against a sub field depending on specified type.
     Valid types are
             value.string    (an NSString)
             value.date      (as NSDate)
             value.number    (an NSNumber)
             value.data      (an NSData)
- 
-*/
+
+ */
 - (void)enumerateSearch:(NSPredicate *)predicate
-              withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
-      completionHandler:(void(^)(NSError *error))completionHandler;
+        withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+        completionHandler:(void (^)(NSError *error))completionHandler;
 
 /** Count of how many metadata items in the index */
 - (int)count;

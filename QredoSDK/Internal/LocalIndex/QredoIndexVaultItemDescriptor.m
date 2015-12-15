@@ -13,33 +13,33 @@
 @implementation QredoIndexVaultItemDescriptor
 
 
-+(instancetype)createWithDescriptor:(QredoVaultItemDescriptor*)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
-    QredoIndexVaultItemDescriptor *qredoIndexVaultDescriptor = [[self class] insertInManagedObjectContext:managedObjectContext];
-    qredoIndexVaultDescriptor.itemId            = [[descriptor.itemId data] copy];
-    qredoIndexVaultDescriptor.sequenceId        = [descriptor.sequenceId data];
++(instancetype)createWithDescriptor:(QredoVaultItemDescriptor*)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
+	QredoIndexVaultItemDescriptor *qredoIndexVaultDescriptor = [[self class] insertInManagedObjectContext:managedObjectContext];
+	qredoIndexVaultDescriptor.itemId            = [[descriptor.itemId data] copy];
+	qredoIndexVaultDescriptor.sequenceId        = [descriptor.sequenceId data];
 
-    QLFVaultSequenceValue sequenceValue = descriptor.sequenceValue;
-    qredoIndexVaultDescriptor.sequenceValue = [NSNumber numberWithLongLong:sequenceValue];
-    
-    return qredoIndexVaultDescriptor;
+	QLFVaultSequenceValue sequenceValue = descriptor.sequenceValue;
+	qredoIndexVaultDescriptor.sequenceValue = [NSNumber numberWithLongLong:sequenceValue];
+
+	return qredoIndexVaultDescriptor;
 }
 
 
-+(instancetype)searchForDescriptor:(QredoVaultItemDescriptor*)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext{
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@ && sequenceId==%@",descriptor.itemId,descriptor.sequenceId];
-    [fetchRequest setPredicate:predicate];
-    [fetchRequest setFetchLimit:1];
-    NSError *error = nil;
-    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    return [results lastObject];
++(instancetype)searchForDescriptor:(QredoVaultItemDescriptor*)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
+	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@ && sequenceId==%@",descriptor.itemId,descriptor.sequenceId];
+	[fetchRequest setPredicate:predicate];
+	[fetchRequest setFetchLimit:1];
+	NSError *error = nil;
+	NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+	return [results lastObject];
 }
 
 
--(QredoVaultItemDescriptor *)buildQredoVaultItemDescriptor{
-    return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[[QredoQUID alloc]initWithQUIDData:self.sequenceId]
-                                                         sequenceValue:self.sequenceValueValue
-                                                                itemId:[[QredoQUID alloc]initWithQUIDData:self.itemId]];
+-(QredoVaultItemDescriptor *)buildQredoVaultItemDescriptor {
+	return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[[QredoQUID alloc]initWithQUIDData:self.sequenceId]
+	        sequenceValue:self.sequenceValueValue
+	        itemId:[[QredoQUID alloc]initWithQUIDData:self.itemId]];
 }
 
 
