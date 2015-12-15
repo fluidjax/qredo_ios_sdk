@@ -39,6 +39,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     if (self) {
         self.qredoVault = vault;
         [self initializeCoreData];
+        [self addAppObservers];
         [self retrieveQredoIndexVault];
     }
     return self;
@@ -67,15 +68,19 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-- (void)initializeCoreData{
-    QredoLocalIndexDataStore *lids = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
-    self.managedObjectContext = lids.managedObjectContext;
+-(void)addAppObservers{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:)
                                                  name:UIApplicationWillResignActiveNotification
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:)
                                                  name:UIApplicationWillTerminateNotification
                                                object:nil];
+}
+
+
+- (void)initializeCoreData{
+    QredoLocalIndexDataStore *lids = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
+    self.managedObjectContext = lids.managedObjectContext;
     return;
 }
 
@@ -179,6 +184,14 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler{
+    if (predicate==nil){
+        NSString *message = @"Predicate can not be nil";
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexErrorUnknown
+                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
+        if (completionHandler)completionHandler(error);
+        return;
+    }
+
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
         
@@ -272,7 +285,6 @@ IncomingMetadataBlock incomingMetadatBlock;
     [self saveAndWait];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
-    
 }
 
 

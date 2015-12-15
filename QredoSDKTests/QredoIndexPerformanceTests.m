@@ -25,42 +25,43 @@ NSNumber *testNumber;
 
 
 
+/* Instructions for running 
+ 
+ Once the vaults contains the required values
+ 
+ 
+ */
+
+
 
 //Performance Tests
 -(void)testAddDummryRecords{
+    
+    
+    
     //adding 1K records on Mac takes 160secs
     //do not run this on the current vaules that have 100,1000,10000 records - as they are already initialized
     //    NSString *clientPass = @"100";  //has 100 item ID's
     //    NSString *clientPass = @"1000"; //has 1000 item ID's
-    //    NSString *clientPass = @"10000";//has 10000 item ID's
+        NSString *clientPass = @"10";//has 10000 item ID's
     
 //        NSString *clientPass = @"1000";//has 10000 item ID's
-//        [self authoriseClient:clientPass];
-//        XCTAssertNotNil(client1);
-//        [self addTestItems:1000];
+        [self authoriseClient:clientPass];
+        XCTAssertNotNil(client1);
+        [self addTestItems:10];
 }
 
 
 
 
-/**
-
- Mac OSX
-    100 Records Complete Sync of Metadata from server into empty local index - 1.5 seconds
-    100 Records Search meta data for a unique record = 0.001
-    1000 Records Complete Sync of Metadata from server into empty local index - 13 seconds
-    1000 Records Search meta data for a unique record = 0.002
-    10000 Records Complete Sync of Metadata from server into empty local index - 240 seconds
-    10000 Records Search meta data for a unique record = 0.02
- */
 
 
 
 -(void)testAllSizes{
     [self importTest:10];
-//    [self importTest:100];
-//    [self importTest:259];
-//    [self importTest:1000];
+  //  [self importTest:100];
+  //  [self importTest:259];
+  //    [self importTest:10000];
 }
 
 
@@ -83,10 +84,11 @@ NSNumber *testNumber;
     
     [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
         importCount++;
+        NSLog(@"importing %i",importCount);
         if (importCount==testSize)[syncwait fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:5000 handler:^(NSError * _Nullable error) {
         syncwait=nil;
     }];
     

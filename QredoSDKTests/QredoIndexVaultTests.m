@@ -65,11 +65,12 @@ NSNumber *testNumber;
     [qredoLocalIndex enumerateSearch:nil withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
         count++;
     } completionHandler:^(NSError *error) {
+        XCTAssertNotNil(error);
+        XCTAssert(count==0,@"Count should be zero for nil predicate");
+        
         NSLog(@"Found %i matches",count);
     }];
-    
   
-    XCTAssert(count == 2 ,@"Failed to find 2 matches in search Found %i", count);
 }
 
 

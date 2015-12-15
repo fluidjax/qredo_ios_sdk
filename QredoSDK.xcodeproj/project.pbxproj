@@ -55,7 +55,6 @@
 		665148E31BF4ED34003491CA /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
 		665148E41BF4FF5A003491CA /* ConversationWebSocketCreateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 665148A81BF4C978003491CA /* ConversationWebSocketCreateTests.m */; };
 		665148E51BF4FF62003491CA /* ConversationWebSocketRespondTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 665148AE1BF4D08C003491CA /* ConversationWebSocketRespondTests.m */; };
-		665149001BF6037E003491CA /* QredoXDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665148EB1BF6037E003491CA /* QredoXDK.framework */; };
 		665149091BF60432003491CA /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
 		6651490A1BF60432003491CA /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
 		6651490B1BF60432003491CA /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; };
@@ -1131,7 +1130,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				663A0F791BF37E1C00C61279 /* libicucore.tbd in Frameworks */,
-				665149001BF6037E003491CA /* QredoXDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2254,7 +2252,7 @@
 					};
 					66D11F811BF37A1E0015E293 = {
 						CreatedOnToolsVersion = 7.1;
-						DevelopmentTeam = Q96K7383V4;
+						DevelopmentTeam = 9W2U485A5G;
 					};
 					66F7752B1BD6538D00F01A2C = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -3721,6 +3719,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -3763,6 +3763,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
