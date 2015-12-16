@@ -716,6 +716,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
+    
     [anotherClient respondWithTag:randomTag
                   trustedRootPems:nil // Anonymous rendezvous, so technically not needed
                           crlPems:nil // Anonymous rendezvous, so technically not needed

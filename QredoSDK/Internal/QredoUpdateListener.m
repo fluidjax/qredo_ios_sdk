@@ -40,7 +40,7 @@
 
     self.pollInterval = 1.0;
     self.pollIntervalDuringSubscribe = 10.0;
-    self.renewSubscriptionInterval = 15.0;
+    self.renewSubscriptionInterval = 5.0;
 
     return self;
 }
@@ -102,10 +102,12 @@
         {
             dispatch_source_set_timer(_subscriptionRenewalTimer,
                                       dispatch_time(DISPATCH_TIME_NOW,
-                                                    self.renewSubscriptionInterval * NSEC_PER_SEC), // start
-                                                    self.renewSubscriptionInterval * NSEC_PER_SEC, // interval
+                                                    5ull * NSEC_PER_SEC), // start
+                                                    5ull * NSEC_PER_SEC, // interval
                                       (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
             dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
+                NSLog(@"pre periodic resubscribtion");
+                
                 @synchronized (self) {
                     if (!_subscriptionRenewalTimer) {
                         return;
@@ -144,7 +146,7 @@
      Response, so need dedupe. Once Query has completed, Subscribe takes over and dedupe no longer required.
      */
     _dedupeNecessary = YES;
-    _queryAfterSubscribeComplete = NO;
+    _queryAfterSubscribeComplete = YES;
 
     [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
         _queryAfterSubscribeComplete = YES;
@@ -167,7 +169,7 @@
 //    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
     NSLog(@"resubscription %@", self.dataSource);
     
-    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")]) {
+    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
     
         _subscribedToMessages = YES;
         
@@ -176,7 +178,7 @@
          Response, so need dedupe. Once Query has completed, Subscribe takes over and dedupe no longer required.
          */
         _dedupeNecessary = YES;
-        _queryAfterSubscribeComplete = NO;
+        _queryAfterSubscribeComplete = YES;
         
         [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
             _queryAfterSubscribeComplete = YES;
