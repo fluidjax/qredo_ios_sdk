@@ -39,7 +39,7 @@ static const int DefaultMqttPort = 1883;
 static const int DefaultMqttSslPort = 8883;
 static const NSTimeInterval MqttInitialReconnectionDelaySeconds = 1; // 1 second delay
 static const NSTimeInterval MqttMaxReconnectionDelaySeconds = 60 * 5; // 5 mins maximum delay
-static const NSTimeInterval MqttSendCheckConnectedDelay = 1.0; // 1 second delay when waiting to see if connected
+static const NSTimeInterval MqttSendCheckConnectedDelay = 5.0; // 1 second delay when waiting to see if connected
 static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to check whether MQTT thread has been cancelled
 
 #pragma mark - QredoTransport override methods
@@ -96,6 +96,8 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         self.transportClosed = NO;
     }
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reconnectWithExponentialDelay:) name:@"reconnect" object:nil];
+    
     return self;
 }
 
@@ -104,6 +106,8 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     if (!_transportClosed) {
         [self close];
     }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"reconnect" object:nil];
 }
 
 -(void)setTransportClosed:(BOOL)transportClosed {
@@ -165,12 +169,16 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     
     if (!self.connectedAndReady)
     {
+        NSLog(@"!self.connectedAndReady");
+        
         // This could happen on the first send, as the connection/subscription setup runs in the background and may not be ready yet.
         // If occurs, then wait a bit and retry.  If still not ready, give up.
         [NSThread sleepForTimeInterval:MqttSendCheckConnectedDelay];
         
         if (!self.connectedAndReady)
         {
+            NSLog(@"still !self.connectedAndReady .. canceling");
+            
             LogError(@"%@: After waiting and retrying, still not connected/ready. Aborting send, returning error.", [self getHexClientID]);
             
             [self notifyListenerOfErrorCode:QredoTransportErrorSendWhilstNotReady userData:userData];
@@ -269,6 +277,12 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     return lastWillTestamentChannelTopic;
 }
 
+- (void)reconnectWithExponentialDelay:(id)sender
+{
+    NSLog(@"reconnectWithExponentialDelay");
+    [self reconnectWithExponentialDelayForSession:self.mqttSession];
+}
+
 - (void)reconnectWithExponentialDelayForSession:(MQTTSession *)mqttSession
 {
     if (self.connectedAndReady)
@@ -291,7 +305,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         
         [self connectToServerUsingSession:mqttSession];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"resubscribe" object:self];
+        NSLog(@"restarting......");
     }
 }
 

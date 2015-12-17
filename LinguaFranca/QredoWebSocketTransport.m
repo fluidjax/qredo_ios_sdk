@@ -10,7 +10,7 @@
 #import "QredoLogging.h"
 
 static const NSUInteger WebSocketSendCheckConnectedCount = 10;
-static const NSTimeInterval WebSocketSendCheckConnectedDelay = 1.0; // 1 second delay when waiting to see if connected
+static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second delay when waiting to see if connected
 
 @interface QredoWebSocketTransport ()<SRWebSocketDelegate>
 {

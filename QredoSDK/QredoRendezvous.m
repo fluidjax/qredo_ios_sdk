@@ -766,6 +766,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
 subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
+    NSLog(@"Rendezvous: subscribeWithCompletionHandler");
     NSAssert([_observers count] > 0, @"There shoud be 1 or more rendezvous observers before starting listening for the updates");
 
     NSAssert(_subscriptionCorrelationId == nil, @"Already subscribed");

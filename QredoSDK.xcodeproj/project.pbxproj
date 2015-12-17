@@ -441,12 +441,6 @@
 		3FD74A2B57B8ACC705406170 /* libPods-LinguaFrancaTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LinguaFrancaTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		52DA17A0BF6C5E876C7AF26B /* libPods-QredoSDKTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoSDKTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AC9954C5F197BE4C7BF2DBB /* Pods-QredoXDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoXDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoXDK/Pods-QredoXDK.release.xcconfig"; sourceTree = "<group>"; };
-		665148A81BF4C978003491CA /* ConversationWebSocketCreateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConversationWebSocketCreateTests.m; path = ../QredoSDKTests/ConversationWebSocketCreateTests.m; sourceTree = "<group>"; };
-		665148AA1BF4C988003491CA /* ConversationWebSocketCreateTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConversationWebSocketCreateTests.h; path = ../QredoSDKTests/ConversationWebSocketCreateTests.h; sourceTree = "<group>"; };
-		665148AE1BF4D08C003491CA /* ConversationWebSocketRespondTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConversationWebSocketRespondTests.m; path = ../QredoSDKTests/ConversationWebSocketRespondTests.m; sourceTree = "<group>"; };
-		665148B01BF4D09B003491CA /* ConversationWebSocketRespondTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConversationWebSocketRespondTests.h; path = ../QredoSDKTests/ConversationWebSocketRespondTests.h; sourceTree = "<group>"; };
-		665148B91BF4E802003491CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		665148D91BF4EAD2003491CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		665148EB1BF6037E003491CA /* QredoXDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QredoXDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		665148EF1BF6037E003491CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = QredoXDK/Info.plist; sourceTree = "<group>"; };
 		666059701BD505FE00EC8D6C /* CryptoImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CryptoImpl.h; sourceTree = "<group>"; };
@@ -783,8 +777,6 @@
 				66F774B31BD64CE100F01A2C /* LinguaFranca */,
 				0A6573DF1A2DEBA300D5502E /* LinguaFrancaTests */,
 				66D11F831BF37A1E0015E293 /* Test */,
-				665148B61BF4E802003491CA /* ConversationCreateTests */,
-				665148D61BF4EAD2003491CA /* ConversationRespondTests */,
 				665148EC1BF6037E003491CA /* QredoXDK */,
 				0A16F8C119C358B400639779 /* Products */,
 				175760C0586442332A2DE17D /* Frameworks */,
@@ -1024,26 +1016,6 @@
 				86D4F2E28EAE4BAE05046FE8 /* libPods-QredoXDK.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		665148B61BF4E802003491CA /* ConversationCreateTests */ = {
-			isa = PBXGroup;
-			children = (
-				665148A81BF4C978003491CA /* ConversationWebSocketCreateTests.m */,
-				665148AA1BF4C988003491CA /* ConversationWebSocketCreateTests.h */,
-				665148B91BF4E802003491CA /* Info.plist */,
-			);
-			path = ConversationCreateTests;
-			sourceTree = "<group>";
-		};
-		665148D61BF4EAD2003491CA /* ConversationRespondTests */ = {
-			isa = PBXGroup;
-			children = (
-				665148AE1BF4D08C003491CA /* ConversationWebSocketRespondTests.m */,
-				665148B01BF4D09B003491CA /* ConversationWebSocketRespondTests.h */,
-				665148D91BF4EAD2003491CA /* Info.plist */,
-			);
-			path = ConversationRespondTests;
 			sourceTree = "<group>";
 		};
 		665148EC1BF6037E003491CA /* QredoXDK */ = {
@@ -2228,6 +2200,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Horacek (H965LZ6656)";
 				ENABLE_TESTABILITY = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					QREDO_LOG_ERROR,
@@ -2245,6 +2218,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Horacek (H965LZ6656)";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				TARGETED_DEVICE_FAMILY = "1,2";

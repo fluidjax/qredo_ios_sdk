@@ -1098,20 +1098,24 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
 subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
-    NSLog(@"subscribeWithCompletionHandler");
+    NSLog(@"subscribeWithCompletionHandler: since: %@", self.highWatermark);
     
     if ([_observers count] == 0) {
         NSLog(@"Conversation observers should be added before starting listening for the updates");
         //    NSAssert([_observers count] > 0, @"Conversation observers should be added before starting listening for the updates");
         return;
     }
+    
+//    NSLog(@"message.highWatermark.sequenceValue: %@", message.highWatermark.sequenceValue.bytes);
 
     // Subscribe to conversations newer than our highwatermark
     [self subscribeToMessagesWithBlock:^(QredoConversationMessage *message) {
         [_updateListener processSingleItem:message sequenceValue:message.highWatermark.sequenceValue];
+
     } subscriptionTerminatedHandler:^(NSError *error) {
         [_updateListener didTerminateSubscriptionWithError:error];
     } since:self.highWatermark highWatermarkHandler:^(QredoConversationHighWatermark *newWatermark) {
+        NSLog(@"self->_highWatermark: %@ = newWatermark: %@", self.highWatermark, newWatermark);
         self->_highWatermark = newWatermark;
     }];
 

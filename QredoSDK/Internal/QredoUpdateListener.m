@@ -5,6 +5,10 @@
 #import "QredoUpdateListener.h"
 #import "QredoLogging.h"
 
+#import "QredoConversationPrivate.h"
+#import "QredoRendezvous.h"
+//#import "QredoPrivate.h"
+
 @interface QredoUpdateListener ()
 {
     dispatch_queue_t _queue;
@@ -94,6 +98,10 @@
     }
 
     // Setup re-subscribe timer first
+    
+    // NOTE: Only for MQTT. Check for transport type (MQTT) needs to be made accessible first..
+    
+    
     @synchronized (self) {
         if (_subscriptionRenewalTimer) return;
 
@@ -102,21 +110,40 @@
         {
             dispatch_source_set_timer(_subscriptionRenewalTimer,
                                       dispatch_time(DISPATCH_TIME_NOW,
-                                                    5ull * NSEC_PER_SEC), // start
-                                                    5ull * NSEC_PER_SEC, // interval
-                                      (1ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
+                                                    15ull * NSEC_PER_SEC), // start
+                                                    15ull * NSEC_PER_SEC, // interval
+                                      (5ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
             dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
-                NSLog(@"pre periodic resubscribtion");
+                NSLog(@"pre periodic reconnection");
                 
                 @synchronized (self) {
                     if (!_subscriptionRenewalTimer) {
                         return;
                     }
                     
-                    NSLog(@"periodic resubscribtion");
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"reconnect" object:nil];
+                    
+                    NSLog(@"periodic reconnection");
+                    
+//                    [NSThread sleepForTimeInterval:5];
 
                     // Should be able to keep subscribing without any side effects, but try to unsubscribing first
-                    [self resubscribeWithCompletionHandler:nil];
+//                    [self resubscribeWithCompletionHandler:nil];
+                    
+//                    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
+//                        QredoRendezvous *rendezvous = self.dataSource;
+//                        
+//                        if ([rendezvous.client.serviceInvoker.transport isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
+//                                
+//                        }
+//                    }
+                    
+                    
+                    
+                    
+//                    if (self.dataSource.tr)
+//                        [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]
+                    
 
                 }
             });
@@ -179,6 +206,16 @@
          */
         _dedupeNecessary = YES;
         _queryAfterSubscribeComplete = YES;
+        
+        completionHandler = nil;
+        
+//        if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")]) {
+//            QredoConversation *conversation = self.dataSource;
+//            [conversation resetHighWatermark];
+//        } else if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
+//            QredoRendezvous *rendezvous = self.dataSource;
+//            [rendezvous resetHighWatermark];
+//        }
         
         [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
             _queryAfterSubscribeComplete = YES;
