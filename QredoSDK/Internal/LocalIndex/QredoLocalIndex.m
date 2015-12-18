@@ -39,23 +39,12 @@ IncomingMetadataBlock incomingMetadatBlock;
         self.qredoVault = vault;
         [self initializeCoreData];
         [self addAppObservers];
-        [self retrieveQredoIndexVault];
+        //[self retrieveQredoIndexVault];
+        self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:vault inManageObjectContext:self.managedObjectContext];
     }
     return self;
 }
 
-
-- (void)retrieveQredoIndexVault {
-    //set the QredoVaultIndex
-    [self.managedObjectContext performBlockAndWait:^{
-        NSData *dataVaultId = self.qredoVault.vaultId.data;
-        self.qredoIndexVault = [QredoIndexVault searchForVaultIndexWithId:dataVaultId inManageObjectContext:self.managedObjectContext];
-        if (!self.qredoIndexVault) {
-            self.qredoIndexVault = [QredoIndexVault create:self.qredoVault inManageObjectContext:self.managedObjectContext];
-        }
-        [self save];
-    }];
-}
 
 
 - (void)dealloc {
@@ -236,7 +225,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         self.qredoIndexVault = nil;
         if (indexVaultToDelete) [self.managedObjectContext deleteObject:indexVaultToDelete];
         //rebuild the vault references after deleting the old version
-        [self retrieveQredoIndexVault];
+        self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:self.qredoVault inManageObjectContext:self.managedObjectContext];
         
         [self.qredoVault resetWatermark];
         [self saveAndWait];
@@ -281,7 +270,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
     NSLog(@"Incoming %@",itemMetadata.summaryValues);
-    
     [self putItemWithMetadata:itemMetadata];
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);
 }

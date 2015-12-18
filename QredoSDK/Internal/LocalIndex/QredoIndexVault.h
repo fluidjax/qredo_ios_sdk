@@ -3,8 +3,7 @@
 
 @interface QredoIndexVault : _QredoIndexVault {}
 
-+(QredoIndexVault *)searchForVaultIndexWithId:(NSData *)vaultId inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
-+(QredoIndexVault *)create:(QredoVault *)qredoVault inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
++(QredoIndexVault *)fetchOrCreateWith:(QredoVault *)vault inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 
 @end

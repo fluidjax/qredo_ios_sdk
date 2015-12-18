@@ -10,6 +10,23 @@
 
 @implementation QredoIndexVault
 
++(QredoIndexVault *)fetchOrCreateWith:(QredoVault *)vault inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
+    __block QredoIndexVault *qredoIndexVault;
+    [managedObjectContext performBlockAndWait:^{
+        NSData *dataVaultId = vault.vaultId.data;
+        qredoIndexVault = [QredoIndexVault searchForVaultIndexWithId:dataVaultId inManageObjectContext:managedObjectContext];
+        if (!qredoIndexVault) {
+            qredoIndexVault = [QredoIndexVault create:vault inManageObjectContext:managedObjectContext];
+        }
+    }];
+    return qredoIndexVault;
+    
+}
+
+
+#pragma mark
+#pragma private methods
+
 
 +(QredoIndexVault *)searchForVaultIndexWithId:(NSData *)vaultId inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
 	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
@@ -20,6 +37,8 @@
 	NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
 	return [results lastObject];
 }
+
+
 
 
 +(QredoIndexVault *)create:(QredoVault *)qredoVault inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
