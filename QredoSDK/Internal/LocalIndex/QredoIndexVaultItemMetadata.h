@@ -7,6 +7,10 @@
 
 +(instancetype)createWithMetadata:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 -(QredoVaultItemMetadata *)buildQredoVaultItemMetadata;
--(BOOL)isSameVersion:(QredoVaultItemMetadata*)metadata;
+
+
+-(BOOL)hasSameSequenceIdAs:(QredoVaultItemMetadata*)metadata;
+-(BOOL)hasSmallerSequenceNumberThan:(QredoVaultItemMetadata*)metadata;
+-(BOOL)hasCreatedTimeStampBefore:(QredoVaultItemMetadata*)metadata;
 
 @end

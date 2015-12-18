@@ -14,6 +14,8 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @class QredoQUID;
 @class QredoVault;
 @class QredoVaultItemMetadata;
+@class QredoIndexSummaryValues;
+@class NSManagedObjectContext;
 
 @protocol QredoVaultObserver <NSObject>
 
@@ -29,6 +31,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 // sequenceValue is not used, because in rev.1 there is no version control, then itemId should be enough for pointing to the correct vault item
 + (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId;
+//csm crap
+- (instancetype)initWithSequenceId:(QredoQUID *)sequenceId
+                     sequenceValue:(int64_t)sequenceValue
+                            itemId:(QredoQUID *)itemId;
 
 - (BOOL)isEqual:(id)object;
 @end
@@ -48,6 +54,9 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 /** this constructor to be used externally when creating a new vault item to be stored in Vault */
 
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues;
+
+/** Converts an index coredata summaryValue object retrieved by an index search predicate into a QredoVaultItemMetadata */
++(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue;
 
 @end
 
@@ -78,9 +87,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  */
 @interface QredoVault : NSObject
 
-
--(void)saveHWM;
--(void)restoreHWM;
 
 - (QredoQUID *)vaultId;
 
@@ -125,12 +131,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
                        completionHandler:(void(^)(NSError *error))completionHandler;
 
 
-- (void)enumerateVaultItemsPagedForSyncUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                                            since:(QredoVaultHighWatermark*)sinceWatermark
-                                 watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
-                                completionHandler:(void(^)(NSError *error))completionHandler;
-
-
 /** Deletes a vault item and returns it's metadata */
 - (void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
 
@@ -140,6 +140,16 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 /** If for some reason the client application needs to receive all items in the delegate after calling `startListening`, then this method can be called. */
 - (void)resetWatermark;
 
+
+
+@end
+
+
+
+
+@interface QredoVault (LocalIndex)
+
+typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 /** Enumerates through all vault items in the local index that match the predicate
  The predicate search is performed on the QredoIndexSummaryValues object.
@@ -161,15 +171,17 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 
 
-/** Registers the Metadata index database as a listener
-    This needs to be called if the App doesn't call addVaultObserver and the metadata index needs to be updated, so
-    it can be searched.
+/** Registers & removes the Metadata index database as a listener to incoming vault items
  */
--(void)registerMetadataIndexObserver;
+
+-(void)addMetadataIndexObserver;
+-(void)addMetadataIndexObserver:(IncomingMetadataBlock)block;
+-(void)removeMetadataIndexObserver;
 
 /** Return the number of Metadata entries in the local Metadata index
  */
 -(int)indexSize;
+-(NSManagedObjectContext*)indexManagedObjectContext;
 
 @end
 

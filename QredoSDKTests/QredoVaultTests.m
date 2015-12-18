@@ -400,6 +400,75 @@
     }
 }
 
+
+
+-(void)testMenualGet{
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    
+    NSDate* created = [NSDate date];
+    
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                                            accessLevel:0
+                                                                                                                created: created
+                                                                                                          summaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error);
+         item1Descriptor = newItemMetadata.descriptor;
+         [testExpectation fulfill];
+     }];
+    
+    
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+
+    QredoVaultItemDescriptor *qvid = [[QredoVaultItemDescriptor alloc] initWithSequenceId:nil
+                                                                            sequenceValue:0
+                                                                                   itemId:item1Descriptor.itemId];
+    
+
+    
+    
+    testExpectation = [self expectationWithDescription:@"get item 1 with descriptor"];
+    [vault getItemWithDescriptor:qvid completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+     {
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItem);
+         XCTAssertNotNil(vaultItem.metadata);
+         XCTAssertNotNil(vaultItem.metadata.created);
+         
+         // the milliseconds will not be precisely the same due to conversion to QredoUTCTime
+         NSTimeInterval timeInterval = [created timeIntervalSinceDate: vaultItem.metadata.created];
+         XCTAssertTrue (timeInterval < 1);
+         XCTAssertTrue([vaultItem.metadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
+             return [a isEqual:b];
+         }]);
+         
+         XCTAssert([vaultItem.value isEqualToData:item1Data]);
+         
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+
+}
+
 - (void)testGettingItems
 {
     XCTAssertNotNil(client);

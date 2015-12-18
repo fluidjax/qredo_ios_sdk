@@ -19,6 +19,9 @@
 	[qredoIndexSummaryValues assignValue:value];
 
 	return qredoIndexSummaryValues;
+    
+
+    
 }
 
 

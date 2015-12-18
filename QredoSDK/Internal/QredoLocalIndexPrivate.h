@@ -4,15 +4,13 @@
 
 
 #import "Qredo.h"
+#import "QredoIndexSummaryValues.h"
+#import "QredoIndexVaultItemMetadata.h"
 
 
 @interface QredoLocalIndex : NSObject <QredoVaultObserver>
 
-	typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
-
 @property (readonly) NSManagedObjectContext *managedObjectContext;
-
-
 
 - (instancetype)initWithVault:(QredoVault *)vault;
 
@@ -21,7 +19,6 @@
 
 /** Get a the most recent metadata item (most recent based on sequence number) */
 - (QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor;
-
 
 
 /** Enumerates through all vault items in the local index that match the predicate
@@ -47,12 +44,16 @@
 
 /** Delete all items in the cache */
 - (void)purge;
+
+
+/** Adds the LocalIndex as an observer to new/updated vault ID's sent from the server
+    Block is called after each incoming item
+ */
 - (void)enableSync;
 - (void)enableSyncWithBlock:(IncomingMetadataBlock)block;
-
+- (void)removeIndexObserver;
 - (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 - (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
-
 - (void)dump:(NSString *)message;
 
 @end

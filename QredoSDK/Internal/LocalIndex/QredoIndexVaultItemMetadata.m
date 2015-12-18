@@ -25,18 +25,24 @@
 	qredoIndexMetadata.accessLevel= [NSNumber numberWithInteger:metadata.accessLevel];
 
 	[qredoIndexMetadata createSummaryValues:metadata.summaryValues inManageObjectContext:managedObjectContext];
-
 	return qredoIndexMetadata;
-
+    
 }
 
 
--(BOOL)isSameVersion:(QredoVaultItemMetadata*)metadata {
-	if ([metadata.descriptor.itemId.data isEqualToData:self.descriptor.itemId] &&
-	    metadata.descriptor.sequenceValue == self.descriptor.sequenceValueValue) {
-		return YES;
-	}
-	return NO;
+
+-(BOOL)hasSameSequenceIdAs:(QredoVaultItemMetadata*)metadata{
+    return ([metadata.descriptor.sequenceId.data isEqualToData:self.descriptor.sequenceId]);
+}
+
+
+-(BOOL)hasSmallerSequenceNumberThan:(QredoVaultItemMetadata*)metadata{
+    return (self.descriptor.sequenceValueValue < metadata.descriptor.sequenceValue);
+}
+
+
+-(BOOL)hasCreatedTimeStampBefore:(QredoVaultItemMetadata*)metadata{
+    return ([self.created timeIntervalSinceReferenceDate] < [metadata.created timeIntervalSinceReferenceDate]);
 }
 
 

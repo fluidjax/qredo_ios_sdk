@@ -36,9 +36,6 @@ NSNumber *testNumber;
 
 //Performance Tests
 -(void)testAddDummryRecords{
-    
-    
-    
     //adding 1K records on Mac takes 160secs
     //do not run this on the current vaules that have 100,1000,10000 records - as they are already initialized
     //    NSString *clientPass = @"100";  //has 100 item ID's
@@ -50,11 +47,6 @@ NSNumber *testNumber;
         XCTAssertNotNil(client1);
         [self addTestItems:10];
 }
-
-
-
-
-
 
 
 -(void)testAllSizes{

@@ -7,15 +7,14 @@
 //
 @import CoreData;
 @import UIKit;
+
 #import "QredoLocalIndexPrivate.h"
-#import "QredoErrorCodes.h"
+#import "QredoVaultPrivate.h"
+
 #import "QredoLocalIndexDataStore.h"
-#import "QredoIndexSummaryValues.h"
+#import "QredoIndexVault.h"
 #import "QredoIndexVaultItem.h"
 #import "QredoIndexVaultItemDescriptor.h"
-#import "QredoIndexVaultItemMetadata.h"
-#import "QredoIndexVault.h"
-#import "QredoVaultPrivate.h"
 
 
 @interface QredoLocalIndex ()
@@ -105,30 +104,44 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata {
-    [self putItemWithMetadata:newMetadata inManagedObjectContext:self.managedObjectContext];
+- (void)addNewVaultItem:(QredoVaultItemMetadata *)newMetadata {
+    //There is nothing in coredata so add this new item
+    QredoIndexVaultItem *newIndeVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
+    newIndeVaultItem.vault = self.qredoIndexVault;
+    [self save];
 }
 
 
-- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata inManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
+- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata{
     [self.managedObjectContext performBlockAndWait:^{
         QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithMetadata:newMetadata inManageObjectContext:self.managedObjectContext];
         QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
-        if ([latestIndexedMetadata isSameVersion:newMetadata]) {
-            //the version is the same as the existing version in core data - do nothing
+        
+        
+        //New item
+        if (!indexedItem) {
+            [self addNewVaultItem:newMetadata];
             return;
         }
         
-        if (indexedItem) {
-            //this is a new version, substitue this one for the old one
+        
+        //There is already a version in the index with same sequence ID and previous sequence Number
+        if ([latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasSmallerSequenceNumberThan:newMetadata]) {
             [indexedItem addNewVersion:newMetadata];
-            [latestIndexedMetadata isSameVersion:newMetadata];
-        }else{
-            //Create a new item in the index
-            QredoIndexVaultItem *newIndeVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
-            newIndeVaultItem.vault = self.qredoIndexVault;
+            [self save];
+            return;
         }
-        [self save];
+        
+        
+        //The new version comes from  a different SequenceID - and therefore another device
+        //The only way to guess the newest one is to compare created Date stamps (which are set by the device, so not 100% reliable)
+        if (![latestIndexedMetadata hasSameSequenceIdAs:newMetadata] &&
+            [latestIndexedMetadata hasCreatedTimeStampBefore:newMetadata]) {
+            [indexedItem addNewVersion:newMetadata];
+            [self save];
+            return;
+        }
+        
     }];
 }
 
@@ -202,6 +215,10 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
+-(void)removeIndexObserver{
+    [self.qredoVault removeVaultObserver:self];
+}
+
 - (void)enableSync {
     [self.qredoVault addVaultObserver:self];
 }
@@ -263,7 +280,9 @@ IncomingMetadataBlock incomingMetadatBlock;
 #pragma QredoVaultObserver Methods
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
-    [self putItemWithMetadata:itemMetadata inManagedObjectContext:self.managedObjectContext];
+    NSLog(@"Incoming %@",itemMetadata.summaryValues);
+    
+    [self putItemWithMetadata:itemMetadata];
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);
 }
 

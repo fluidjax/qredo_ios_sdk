@@ -24,13 +24,10 @@
 
 
 -(void)addNewVersion:(QredoVaultItemMetadata *)metadata {
-	long long currentSequenceValue = self.latest.descriptor.sequenceValueValue;
-	long long newSequenceValue    = metadata.descriptor.sequenceValue;
 	QredoIndexVaultItemMetadata *currentLatest = self.latest;
-	if (newSequenceValue>currentSequenceValue) {
-		if (self.latest) [self.managedObjectContext deleteObject:self.latest];
-		self.latest = [QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:self.managedObjectContext];
-	}
+    self.latest = nil;
+    if (currentLatest) [self.managedObjectContext deleteObject:currentLatest];
+	self.latest = [QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:self.managedObjectContext];
 }
 
 

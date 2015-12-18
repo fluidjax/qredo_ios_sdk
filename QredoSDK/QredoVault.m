@@ -21,6 +21,7 @@
 #import "QredoObserverList.h"
 
 #import "QredoVaultServerAccess.h"
+#import "QredoLocalIndexDataStore.h"
 
 // Cache
 #import <PINCache/PINCache.h>
@@ -185,9 +186,13 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 - (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem
-         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
-{
-    QredoQUID *itemId = [QredoQUID QUID];
+         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
+    QredoQUID *itemId;
+    if (vaultItem.metadata.descriptor.itemId){
+     itemId = vaultItem.metadata.descriptor.itemId;
+    }else{
+        itemId = [QredoQUID QUID];
+    }
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
     
@@ -311,16 +316,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 
--(void)saveHWM{
-    _savedHighWaterMark = _highwatermark;
-}
-
--(void)restoreHWM{
-    _highwatermark = _savedHighWaterMark;
-    
-}
-
-
 - (QredoQUID *)vaultId
 {
     return _vaultKeys.vaultId;
@@ -434,7 +429,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     BOOL isNewItemFromDateCreated = vaultItem.metadata.summaryValues[QredoVaultItemMetadataItemDateCreated] == nil;
     BOOL isNewItemFromDescriptor = vaultItem.metadata.descriptor == nil;
     
-    NSAssert(isNewItemFromDateCreated == isNewItemFromDescriptor, @"Can not determine whether the item is newely created or not.");
+ //   NSAssert(isNewItemFromDateCreated == isNewItemFromDescriptor, @"Can not determine whether the item is newely created or not.");
     
     if (isNewItemFromDateCreated) {
         [self strictlyPutNewItem:vaultItem completionHandler:completionHandler];
@@ -443,22 +438,6 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
         [self strictlyUpdateItem:vaultItem completionHandler:completionHandler];
     }
 }
-
-
-- (void)enumerateVaultItemsPagedForSyncUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                                since:(QredoVaultHighWatermark*)sinceWatermark
-                            watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
-                    completionHandler:(void(^)(NSError *error))completionHandler{
-    
-    dispatch_async(_queue, ^{
-        [_vaultServerAccess enumerateVaultItemsPagedForSyncUsingBlock:block completionHandler:completionHandler watermarkHandler:watermarkHandler since:sinceWatermark consolidatingResults:NO];
-        
-//        [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:watermarkHandler since:sinceWatermark consolidatingResults:YES];
-        
-    });
-}
-
-
 
 
 
@@ -572,17 +551,27 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 }
 
 
-
-
--(void)registerMetadataIndexObserver{
+-(void)addMetadataIndexObserver{
     [self.localIndex enableSync];
 }
 
+-(void)addMetadataIndexObserver:(IncomingMetadataBlock)block{
+    [self.localIndex enableSyncWithBlock:block];
+}
+
+
+-(void)removeMetadataIndexObserver{
+    [self.localIndex removeIndexObserver];
+}
 
 -(int)indexSize{
   return [self.localIndex count];
 }
 
+
+-(NSManagedObjectContext*)indexManagedObjectContext{
+    return [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] managedObjectContext];
+}
 
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source

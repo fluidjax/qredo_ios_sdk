@@ -6,6 +6,7 @@
 #import "Qredo.h"
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
+#import "QredoLocalIndexPrivate.h"
 
 @implementation QredoVaultItemMetadata
 
@@ -35,6 +36,15 @@
     NSDate* created = [NSDate date];
     return [self vaultItemMetadataWithDataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
 }
+
+
+
++(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue{
+    
+    QredoIndexVaultItemMetadata *indexMetadata = summaryValue.vaultMetadata;
+    return  [indexMetadata buildQredoVaultItemMetadata];
+}
+
 
 
 - (instancetype)initWithDescriptor:(QredoVaultItemDescriptor *)descriptor
