@@ -94,7 +94,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'PINCache', '~> 2.0'
   s.dependency 'SocketRocket'
-  s.dependency 'OpenSSL-for-iOS', '1.0.2.d.1'
+  s.dependency 'OpenSSL', '~> 1.0'
 
   s.prepare_command  =  "cp libsodium/builds/msvc/version.h libsodium/src/libsodium/include/sodium/version.h"
 
