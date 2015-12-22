@@ -1,17 +1,13 @@
-//
-//  QredoLocalIndexDataStore.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 09/12/2015.
-//
-//
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
 
 #import <Foundation/Foundation.h>
 @import CoreData;
 
 @interface QredoLocalIndexDataStore : NSObject
 
-@property (strong, readwrite) NSManagedObjectContext *managedObjectContext;
+@property (strong, readonly) NSManagedObjectContext *managedObjectContext;
 
 +(id)sharedQredoLocalIndexDataStore;
 -(void)saveContext:(BOOL)wait;

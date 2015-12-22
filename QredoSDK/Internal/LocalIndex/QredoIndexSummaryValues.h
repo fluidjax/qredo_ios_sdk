@@ -1,3 +1,8 @@
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
+
 #import "_QredoIndexSummaryValues.h"
 
 typedef NS_ENUM (NSInteger, IndexSummaryValueDataType) {
@@ -10,8 +15,8 @@ typedef NS_ENUM (NSInteger, IndexSummaryValueDataType) {
 
 @interface QredoIndexSummaryValues : _QredoIndexSummaryValues {}
 
-
 +(instancetype)createWithKey:(NSObject *)key value:(NSObject *)value inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
 -(NSObject*)retrieveValue;
 
 @end

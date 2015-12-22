@@ -587,6 +587,7 @@
 {
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
+    [vault addMetadataIndexObserver];
     XCTAssertNotNil(vault);
 
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -613,6 +614,7 @@
         testExpectation = nil;
     }];
 
+    
     testExpectation = [self expectationWithDescription:@"get item 1 with descriptor"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
@@ -683,7 +685,7 @@
          XCTAssertNil(error);
          XCTAssertNotNil(vaultItemMetadata);
 
-         XCTAssertEqual(vaultItemMetadata.origin, QredoVaultItemOriginCache);
+         XCTAssertEqual(vaultItemMetadata.origin, QredoVaultItemOriginServer);
 
          XCTAssertTrue([vaultItemMetadata.summaryValues containsDictionary:item1SummaryValues comparison:^BOOL(id a, id b) {
              return [a isEqual:b];

@@ -1,1 +1,1 @@
-mogenerator --v2 --model QredoLocalIndex.xcdatamodel 
+mogenerator --v2 --model ../../../QredoLocalIndex.xcdatamodel 

@@ -182,7 +182,7 @@ NSNumber *testNumber;
     QredoVaultItemMetadata *junk2 = [self createTestItemInVault:vault key1Value:@"value1"];
     
     QredoVaultItemDescriptor *searchDescriptorWithOnlyItemId =  [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:nil itemId:meta1.descriptor.itemId];
-    QredoVaultItemMetadata *retrievedFromCacheMetatadata =      [qredoLocalIndex get:searchDescriptorWithOnlyItemId];
+    QredoVaultItemMetadata *retrievedFromCacheMetatadata =      [qredoLocalIndex getMetadataFromIndexWithDescriptor:searchDescriptorWithOnlyItemId];
 
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key1"] isEqualToString:@"chris"],@"Summary data is incorrect");
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key2"] isEqualToString:@"value2"],@"Summary data is incorrect");
