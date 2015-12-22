@@ -28,7 +28,7 @@
     <entity name="QredoIndexVaultItemDescriptor" representedClassName="QredoIndexVaultItemDescriptor" syncable="YES">
         <attribute name="itemId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
         <attribute name="sequenceId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
-        <attribute name="sequenceValue" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="sequenceValue" optional="YES" attributeType="Integer 64" defaultValueString="0" indexed="YES" syncable="YES"/>
         <relationship name="metataData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVaultItemMetadata" inverseName="descriptor" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
     </entity>
     <entity name="QredoIndexVaultItemMetadata" representedClassName="QredoIndexVaultItemMetadata" syncable="YES">
@@ -42,9 +42,9 @@
     <elements>
         <element name="QredoIndexSummaryValues" positionX="-2772" positionY="-4149" width="216" height="103"/>
         <element name="QredoIndexVariableValue" positionX="-2486" positionY="-4158" width="128" height="118"/>
-        <element name="QredoIndexVault" positionX="-3708" positionY="-4219" width="128" height="88"/>
+        <element name="QredoIndexVault" positionX="-3701" positionY="-4219" width="128" height="88"/>
         <element name="QredoIndexVaultItem" positionX="-3519" positionY="-4212" width="270" height="118"/>
-        <element name="QredoIndexVaultItemDescriptor" positionX="-2754" positionY="-4293" width="225" height="105"/>
-        <element name="QredoIndexVaultItemMetadata" positionX="-3177" positionY="-4255" width="234" height="133"/>
+        <element name="QredoIndexVaultItemDescriptor" positionX="-2754" positionY="-4293" width="225" height="103"/>
+        <element name="QredoIndexVaultItemMetadata" positionX="-3177" positionY="-4246" width="234" height="133"/>
     </elements>
 </model>

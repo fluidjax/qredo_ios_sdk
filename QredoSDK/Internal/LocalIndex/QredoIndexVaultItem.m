@@ -1,3 +1,8 @@
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
+
 #import "QredoIndexVaultItem.h"
 #import "Qredo.h"
 #import "QredoIndexVaultItemMetadata.h"
@@ -15,13 +20,11 @@
 
 -(void)setVaultValue:(NSData *)data hasVaultItemValue:(BOOL)hasVaultItemValue{
     self.hasValueValue = hasVaultItemValue;
-    
     if (hasVaultItemValue==YES){
         self.value = [data copy];
     }else{
         self.value = nil;
     }
-    
 }
 
 
@@ -48,7 +51,6 @@
 -(void)addNewVersion:(QredoVaultItemMetadata *)metadata {
 	QredoIndexVaultItemMetadata *currentLatest = self.latest;
     NSDate *existingCreateDate = self.latest.created;
-    
     self.latest = nil;
     if (currentLatest) [self.managedObjectContext deleteObject:currentLatest];
 	self.latest = [QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:self.managedObjectContext];

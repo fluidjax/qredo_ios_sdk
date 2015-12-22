@@ -1,10 +1,13 @@
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
 #import "QredoIndexSummaryValues.h"
 #import "QredoIndexVariableValue.h"
 #import "QredoQUID.h"
+
+
 @interface QredoIndexSummaryValues ()
-
-// Private interface goes here.
-
 @end
 
 @implementation QredoIndexSummaryValues
@@ -17,11 +20,7 @@
 	QredoIndexSummaryValues *qredoIndexSummaryValues = [[self class] insertInManagedObjectContext:managedObjectContext];
 	qredoIndexSummaryValues.key = key;
 	[qredoIndexSummaryValues assignValue:value];
-
 	return qredoIndexSummaryValues;
-    
-
-    
 }
 
 

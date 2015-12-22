@@ -15,9 +15,8 @@
 #import "QredoIndexVaultItem.h"
 #import "QredoIndexVaultItemDescriptor.h"
 
-
 @interface QredoLocalIndex ()
-@property (strong, readwrite) NSManagedObjectContext *managedObjectContext;
+@property (strong) NSManagedObjectContext *managedObjectContext;
 @property (strong) QredoVault *qredoVault;
 @property (strong) QredoIndexVault *qredoIndexVault;
 
@@ -28,8 +27,9 @@
 
 IncomingMetadataBlock incomingMetadatBlock;
 
+
 #pragma mark -
-#pragma mark Private Methods
+#pragma mark Public Methods
 
 
 - (instancetype)initWithVault:(QredoVault *)vault {
@@ -38,65 +38,9 @@ IncomingMetadataBlock incomingMetadatBlock;
         self.qredoVault = vault;
         [self initializeCoreData];
         [self addAppObservers];
-        //[self retrieveQredoIndexVault];
         self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:vault inManageObjectContext:self.managedObjectContext];
     }
     return self;
-}
-
-
-- (void)dealloc {
-    [self save];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
-    [self.qredoVault removeVaultObserver:self];
-}
-
-
-- (void)addAppObservers {
-    //Ensure coredata is saved on app resign/termination
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:)
-                                                 name:UIApplicationWillResignActiveNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:)
-                                                 name:UIApplicationWillTerminateNotification
-                                               object:nil];
-}
-
-
-- (void)initializeCoreData {
-    QredoLocalIndexDataStore *lids = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
-    self.managedObjectContext = lids.managedObjectContext;
-    return;
-}
-
-
-- (int)count {
-    __block NSInteger count =0;
-    [self.managedObjectContext performBlockAndWait:^{
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"latest.vault.vaultId = %@", self.qredoIndexVault.vaultId];
-        NSError *error = nil;
-        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        count = [results count];
-    }];
-    return (int)count;
-    
-}
-
-
-- (void)dump:(NSString *)message {
-    for (QredoIndexVaultItem *vaultItem in self.qredoIndexVault.vaultItems) {
-        NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,  vaultItem.latest.descriptor.itemId, vaultItem.latest.descriptor.sequenceValueValue);
-    }
-}
-
-
-- (QredoIndexVaultItem *)addNewVaultItem:(QredoVaultItemMetadata *)newMetadata {
-    //There is nothing in coredata so add this new item
-    QredoIndexVaultItem *newIndeVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
-    newIndeVaultItem.vault = self.qredoIndexVault;
-    return newIndeVaultItem;
 }
 
 
@@ -110,46 +54,10 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata vaultItem:(QredoVaultItem *)vaultItem hasVaultItemValue:(BOOL)hasVaultItemValue {
-    [self.managedObjectContext performBlockAndWait:^{
-        QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithDescriptor:newMetadata.descriptor inManageObjectContext:self.managedObjectContext];
-        QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
-        
-        //New item
-        if (!indexedItem) {
-            QredoIndexVaultItem *vaultIndexItem = [self addNewVaultItem:newMetadata];
-            [vaultIndexItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
-            [self save];
-            return;
-        }
-        
-        //There is already a version in the index with same sequence ID and previous sequence Number
-        if ([latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasSmallerSequenceNumberThan:newMetadata]) {
-            [indexedItem addNewVersion:newMetadata];
-            [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
-            [self save];
-            return;
-        }
-        
-        //The new version comes from  a different SequenceID - and therefore another device
-        //The only way to guess the newest one is to compare created Date stamps (which are set by the device, so not 100% reliable)
-        if (![latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasCreatedTimeStampBefore:newMetadata]) {
-            [indexedItem addNewVersion:newMetadata];
-            [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
-            [self save];
-            return;
-        }
-        
-    }];
-}
-
-
 - (QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     __block QredoVaultItem* retrievedVaultItem = nil;
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItem entityName]];
-        
-        
         NSCompoundPredicate *searchPredicate;
         NSPredicate *itemIdPredicate = [NSPredicate predicateWithFormat:@"itemId == %@",vaultItemDescriptor.itemId.data];
         NSPredicate *vaultIdPredicate = [NSPredicate predicateWithFormat:@"vault.vaultId == %@",self.qredoIndexVault.vaultId];
@@ -183,8 +91,6 @@ IncomingMetadataBlock incomingMetadatBlock;
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
         NSCompoundPredicate *searchPredicate;
-        
-        
         NSPredicate *itemIdPredicate = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@",vaultItemDescriptor.itemId.data];
         NSPredicate *vaultIdPredicate = [NSPredicate predicateWithFormat:@"latest.vault.vaultId == %@",self.qredoIndexVault.vaultId];
         
@@ -204,6 +110,50 @@ IncomingMetadataBlock incomingMetadatBlock;
         retrievedMetadata = [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
     }];
     return retrievedMetadata;
+}
+
+
+- (int)count {
+    __block NSInteger count =0;
+    [self.managedObjectContext performBlockAndWait:^{
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"latest.vault.vaultId = %@", self.qredoIndexVault.vaultId];
+        NSError *error = nil;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        count = [results count];
+    }];
+    return (int)count;
+    
+}
+
+
+- (void)purge {
+    [self.managedObjectContext performBlockAndWait:^{
+        QredoIndexVault *indexVaultToDelete = self.qredoIndexVault;
+        self.qredoIndexVault = nil;
+        if (indexVaultToDelete) [self.managedObjectContext deleteObject:indexVaultToDelete];
+        //rebuild the vault references after deleting the old version
+        self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:self.qredoVault inManageObjectContext:self.managedObjectContext];
+        
+        [self.qredoVault resetWatermark];
+        [self saveAndWait];
+    }];
+}
+
+
+- (void)enableSync {
+    [self.qredoVault addVaultObserver:self];
+}
+
+
+- (void)enableSyncWithBlock:(IncomingMetadataBlock)block {
+    incomingMetadatBlock = block;
+    [self.qredoVault addVaultObserver:self];
+}
+
+
+- (void)removeIndexObserver {
+    [self.qredoVault removeVaultObserver:self];
 }
 
 
@@ -242,6 +192,86 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
+- (void)dump:(NSString *)message {
+    for (QredoIndexVaultItem *vaultItem in self.qredoIndexVault.vaultItems) {
+        NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,  vaultItem.latest.descriptor.itemId, vaultItem.latest.descriptor.sequenceValueValue);
+    }
+}
+
+
+#pragma mark -
+#pragma mark Private Methods
+
+
+- (void)dealloc {
+    [self save];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
+    [self.qredoVault removeVaultObserver:self];
+}
+
+
+- (void)addAppObservers {
+    //Ensure coredata is saved on app resign/termination
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:)
+                                                 name:UIApplicationWillTerminateNotification
+                                               object:nil];
+}
+
+
+- (void)initializeCoreData {
+    QredoLocalIndexDataStore *qredoLocalIndexDataStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
+    self.managedObjectContext = qredoLocalIndexDataStore.managedObjectContext;
+    return;
+}
+
+
+
+- (QredoIndexVaultItem *)addNewVaultItem:(QredoVaultItemMetadata *)newMetadata {
+    //There is nothing in coredata so add this new item
+    QredoIndexVaultItem *newIndeVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
+    newIndeVaultItem.vault = self.qredoIndexVault;
+    return newIndeVaultItem;
+}
+
+
+- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata vaultItem:(QredoVaultItem *)vaultItem hasVaultItemValue:(BOOL)hasVaultItemValue {
+    [self.managedObjectContext performBlockAndWait:^{
+        QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithDescriptor:newMetadata.descriptor
+                                                                               inManageObjectContext:self.managedObjectContext];
+        QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
+        
+        //New item
+        if (!indexedItem) {
+            QredoIndexVaultItem *vaultIndexItem = [self addNewVaultItem:newMetadata];
+            [vaultIndexItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
+            [self save];
+            return;
+        }
+        
+        //There is already a version in the index with same sequence ID and previous sequence Number
+        if ([latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasSmallerSequenceNumberThan:newMetadata]) {
+            [indexedItem addNewVersion:newMetadata];
+            [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
+            [self save];
+            return;
+        }
+        
+        //The new version comes from  a different SequenceID - and therefore another device
+        //The only way to guess the newest one is to compare created Date stamps (which are set by the device, so not 100% reliable)
+        if (![latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasCreatedTimeStampBefore:newMetadata]) {
+            [indexedItem addNewVersion:newMetadata];
+            [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
+            [self save];
+            return;
+        }
+    }];
+}
+
+
 - (void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void (^)(NSError *error))completionHandler {
     if (predicate==nil) {
         NSString *message = @"Predicate can not be nil";
@@ -261,35 +291,6 @@ IncomingMetadataBlock incomingMetadatBlock;
     }];
 }
 
-
-- (void)removeIndexObserver {
-    [self.qredoVault removeVaultObserver:self];
-}
-
-
-- (void)enableSync {
-    [self.qredoVault addVaultObserver:self];
-}
-
-
-- (void)enableSyncWithBlock:(IncomingMetadataBlock)block {
-    incomingMetadatBlock = block;
-    [self.qredoVault addVaultObserver:self];
-}
-
-
-- (void)purge {
-    [self.managedObjectContext performBlockAndWait:^{
-        QredoIndexVault *indexVaultToDelete = self.qredoIndexVault;
-        self.qredoIndexVault = nil;
-        if (indexVaultToDelete) [self.managedObjectContext deleteObject:indexVaultToDelete];
-        //rebuild the vault references after deleting the old version
-        self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:self.qredoVault inManageObjectContext:self.managedObjectContext];
-        
-        [self.qredoVault resetWatermark];
-        [self saveAndWait];
-    }];
-}
 
 
 - (void)enumerateQuery:(NSFetchRequest *)fetchRequest block:(void (^)(QredoVaultItemMetadata *, BOOL *))block completionHandler:(void (^)(NSError *))completionHandler {
@@ -324,11 +325,10 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-#pragma mark
-#pragma QredoVaultObserver Methods
+#pragma mark -
+#pragma mark QredoVaultObserver Methods
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
-    NSLog(@"Incoming %@",itemMetadata.summaryValues);
     [self putMetadata:itemMetadata];
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);
 }
@@ -339,8 +339,8 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-#pragma mark
-#pragma App Notifications
+#pragma mark -
+#pragma mark App Notifications
 
 - (void)appWillResignActive:(NSNotification*)note {
     [self saveAndWait];

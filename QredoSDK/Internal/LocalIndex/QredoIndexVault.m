@@ -1,10 +1,13 @@
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
+
 #import "QredoIndexVault.h"
 #import "QredoVault.h"
 #import "QredoQUID.h"
 
 @interface QredoIndexVault ()
-
-// Private interface goes here.
 
 @end
 
@@ -20,7 +23,6 @@
         }
     }];
     return qredoIndexVault;
-    
 }
 
 

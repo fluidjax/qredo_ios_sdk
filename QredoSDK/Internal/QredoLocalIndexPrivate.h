@@ -10,8 +10,6 @@
 
 @interface QredoLocalIndex : NSObject <QredoVaultObserver>
 
-@property (readonly) NSManagedObjectContext *managedObjectContext;
-
 - (instancetype)initWithVault:(QredoVault *)vault;
 
 /** Put a metadata item into the local Index */

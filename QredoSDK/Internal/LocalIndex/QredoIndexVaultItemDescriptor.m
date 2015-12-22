@@ -1,3 +1,9 @@
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
+
+
 #import "QredoIndexVaultItemDescriptor.h"
 #import "QredoIndexSummaryValues.h"
 #import "Qredo.h"
@@ -5,9 +11,6 @@
 #import "QredoQUID.h"
 
 @interface QredoIndexVaultItemDescriptor ()
-
-// Private interface goes here.
-
 @end
 
 @implementation QredoIndexVaultItemDescriptor
@@ -37,9 +40,11 @@
 
 
 -(QredoVaultItemDescriptor *)buildQredoVaultItemDescriptor {
-	return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[[QredoQUID alloc]initWithQUIDData:self.sequenceId]
-	        sequenceValue:self.sequenceValueValue
-	        itemId:[[QredoQUID alloc]initWithQUIDData:self.itemId]];
+    QredoVaultItemDescriptor *qredoVaultItemDescriptor
+                        = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[[QredoQUID alloc]initWithQUIDData:self.sequenceId]
+                                                                        sequenceValue:self.sequenceValueValue
+                                                                               itemId:[[QredoQUID alloc]initWithQUIDData:self.itemId]];
+    return qredoVaultItemDescriptor;
 }
 
 

@@ -1,3 +1,8 @@
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
+
 #import "_QredoIndexVaultItem.h"
 
 @class QredoVaultItemMetadata;
@@ -7,11 +12,11 @@
 
 @interface QredoIndexVaultItem : _QredoIndexVaultItem {}
 
-
++(QredoIndexVaultItem *)searchForIndexByItemIdWithDescriptor:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
++(QredoIndexVaultItem *)create:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 -(QredoVaultItem *)buildQredoVaultItem;
-+(QredoIndexVaultItem *)searchForIndexByItemIdWithDescriptor:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 -(void)addNewVersion:(QredoVaultItemMetadata *)metadata;
-+(QredoIndexVaultItem *)create:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 -(void)setVaultValue:(NSData *)data hasVaultItemValue:(BOOL)hasVaultItemValue;
+
 @end

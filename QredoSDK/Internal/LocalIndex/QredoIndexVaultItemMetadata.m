@@ -1,3 +1,9 @@
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ */
+
+
+
 #import "QredoIndexVaultItemMetadata.h"
 #import "Qredo.h"
 #import "QredoIndexVaultItemDescriptor.h"
@@ -6,9 +12,6 @@
 
 
 @interface QredoIndexVaultItemMetadata ()
-
-// Private interface goes here.
-
 @end
 
 @implementation QredoIndexVaultItemMetadata

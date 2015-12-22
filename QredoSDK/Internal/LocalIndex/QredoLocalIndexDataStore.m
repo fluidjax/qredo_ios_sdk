@@ -1,17 +1,14 @@
-//
-//  QredoLocalIndexDataStore.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 09/12/2015.
-//  A singleton that handles the Coredata LocalIndex initialization and persisentent store.
-//
-//
+/*
+ *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  A singleton that handles the Coredata LocalIndex initialization and persisentent store.
+ */
 
-#import "QredoLocalIndexDataStore.h"
 @import CoreData;
+#import "QredoLocalIndexDataStore.h"
 
 @interface QredoLocalIndexDataStore ()
 @property (strong) NSManagedObjectContext *privateContext;
+@property (strong) NSManagedObjectContext *managedObjectContext;
 @end
 
 @implementation QredoLocalIndexDataStore
