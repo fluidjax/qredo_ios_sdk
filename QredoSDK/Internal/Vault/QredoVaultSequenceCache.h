@@ -13,5 +13,4 @@
 - (void)setItemSequence:(QLFVaultItemId *)itemId
              sequenceId:(QLFVaultSequenceId *)sequenceId
           sequenceValue:(QLFVaultSequenceValue)sequenceValue;
-
 @end

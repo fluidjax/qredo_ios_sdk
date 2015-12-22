@@ -5,8 +5,6 @@ platform :ios, '9.1'
 inhibit_all_warnings!
 
 target 'QredoSDK' do
-
-    pod 'PINCache'
     pod 'SocketRocket'
     pod 'OpenSSL-for-iOS', '1.0.2.d.1'
     pod 'libsodium', :path => 'libsodium.podspec'
@@ -19,10 +17,7 @@ target 'LinguaFrancaTests' do
 end
 
 target 'QredoSDKTests' do
-
-    pod 'PINCache'
     pod 'libsodium', :path => 'libsodium.podspec'
-
 
 end
 

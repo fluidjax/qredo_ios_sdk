@@ -12,9 +12,31 @@
 
 @implementation QredoIndexVaultItem
 
-+(QredoIndexVaultItem *)searchForIndexByItemIdWithMetadata:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
+
+-(void)setVaultValue:(NSData *)data hasVaultItemValue:(BOOL)hasVaultItemValue{
+    self.hasValueValue = hasVaultItemValue;
+    
+    if (hasVaultItemValue==YES){
+        self.value = [data copy];
+    }else{
+        self.value = nil;
+    }
+    
+}
+
+
+-(QredoVaultItem *)buildQredoVaultItem{
+    QredoIndexVaultItemMetadata *currentLatest = self.latest;
+    QredoVaultItemMetadata *metadata = [currentLatest buildQredoVaultItemMetadata];
+    QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:self.value];
+    vaultItem.metadata.origin = QredoVaultItemOriginCache;
+    return vaultItem;
+}
+
+
++(QredoIndexVaultItem *)searchForIndexByItemIdWithDescriptor:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
 	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@",metadata.descriptor.itemId.data];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@",descriptor.itemId.data];
 	[fetchRequest setPredicate:predicate];
 	[fetchRequest setFetchLimit:1];
 	NSError *error = nil;
@@ -25,9 +47,12 @@
 
 -(void)addNewVersion:(QredoVaultItemMetadata *)metadata {
 	QredoIndexVaultItemMetadata *currentLatest = self.latest;
+    NSDate *existingCreateDate = self.latest.created;
+    
     self.latest = nil;
     if (currentLatest) [self.managedObjectContext deleteObject:currentLatest];
 	self.latest = [QredoIndexVaultItemMetadata createWithMetadata:metadata inManageObjectContext:self.managedObjectContext];
+    if (existingCreateDate)self.latest.created = existingCreateDate;
 }
 
 

@@ -69,9 +69,6 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 - (void)strictlyUpdateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
 
-// Cleans only cache. Vault object is still usable after that
-- (void)clearCache;
-
 // Destroys all data, including sequenceId record. Vault objects is not supposed to be used after that
 - (void)clearAllData;
 

@@ -23,9 +23,7 @@
 #import "QredoVaultServerAccess.h"
 #import "QredoLocalIndexDataStore.h"
 
-// Cache
-#import <PINCache/PINCache.h>
-#import "QredoVaultItem+Cache.h"
+
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
@@ -40,11 +38,6 @@ static NSString *const QredoVaultItemMetadataItemTypeConversation = @"com.qredo.
 
 static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
-@interface PINDiskCache (Private)
-
-+(BOOL)moveItemAtURLToTrash:(NSURL *)itemURL;
-
-@end
 
 @interface QredoVault () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>
 {
@@ -63,9 +56,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     dispatch_queue_t _queue;
 
     QredoUpdateListener *_updateListener;
-
-    PINCache *_cacheItems;
-    PINCache *_cacheHeaders;
     
     QredoLocalIndex *_localIndex;
     QredoVaultHighWatermark *_savedHighWaterMark;;
@@ -134,8 +124,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                                      vaultSequenceCache:_vaultSequenceCache
                                                        enumerationQueue:_queue];
 
-    _cacheItems = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".items"]];
-    _cacheHeaders = [[PINCache alloc] initWithName:[_vaultKeys.vaultId.QUIDString stringByAppendingString:@".headers"]];
     _localIndex = (localIndexing)?[[QredoLocalIndex alloc] initWithVault:self]:nil;
     
     
@@ -174,14 +162,10 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
                                                                                sequenceValue:newItemMetadata.descriptor.sequenceValue
                                                                                       itemId:itemId];
-
-
-        [self cacheEncryptedVaultItem:encryptedVaultItem
-                       itemDescriptor:newMetadata.descriptor
-                    completionHandler:^(NSError *error)
-         {
-             completionHandler(newMetadata, nil);
-         }];
+        
+        [self cacheInIndexVaultItem:vaultItem withDescriptor:newMetadata.descriptor completionHandler:^(NSError *error) {
+            completionHandler(newMetadata, nil);
+        }];
     }];
 }
 
@@ -206,11 +190,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                   summaryValues:newSummaryValues
                     completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
                         
+                        [self cacheInIndexVaultItem:vaultItem withDescriptor:newItemMetadata.descriptor completionHandler:^(NSError *error) {
+                                completionHandler(newItemMetadata, error);
+                         }];
                         
-                        if(self.localIndex)[self.localIndex putItemWithMetadata:newItemMetadata];
-                        
-                        completionHandler(newItemMetadata, error);
-                    }];
+      }];
 }
 
 
@@ -230,82 +214,46 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                        dataType:metadata.dataType
                         created:created
                   summaryValues:newSummaryValues
-              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
-     {
-         if (newItemMetadata) {
-             
-             if(self.localIndex)[self.localIndex putItemWithMetadata:newItemMetadata];
-             
-             [self removeBodyFromCacheWithVaultItemDescriptor:vaultItem.metadata.descriptor
-                                            completionHandler:^(NSError *error)
-             {
+              completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+            [self cacheInIndexVaultItem:vaultItem withDescriptor:newItemMetadata.descriptor completionHandler:^(NSError *error) {
                  completionHandler(newItemMetadata, error);
-             }];
-         } else {
-             completionHandler(newItemMetadata, error);
-         }
+            }];
      }];
 }
 
+
 #pragma mark Cache
-
-- (void)clearCache
-{
-    [_cacheHeaders removeAllObjects];
-    [_cacheItems removeAllObjects];
-
-    // [PINDiskCache removeAllObjects] removes folders with all its contents, but then it creates a new empty one.
-    // These lines make sure that folder is removed entirely.
-    [PINDiskCache moveItemAtURLToTrash:_cacheHeaders.diskCache.cacheURL];
-    [PINDiskCache moveItemAtURLToTrash:_cacheItems.diskCache.cacheURL];
-    [PINDiskCache emptyTrash];
-}
 
 - (void)clearAllData
 {
-    [self clearCache];
     [self clearState];
     [_vaultSequenceCache clear];
 }
 
-- (void)cacheEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
-                 itemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-                    completionHandler:(void (^)(NSError *error))completionHandler
-{
-    [_cacheHeaders setObject:encryptedVaultItemHeader
-                      forKey:itemDescriptor.cacheKey
-                       block:^(PINCache *cache, NSString *key, id __nullable object) {
-        completionHandler(nil);
-    }];
 
+
+-(void)cacheInIndexVaultItem:(QredoVaultItem *)vaultItem
+              withDescriptor:(QredoVaultItemDescriptor *)descriptor
+           completionHandler:(void (^)(NSError *error))completionHandler{
+    vaultItem.metadata.descriptor = descriptor;
+    [_localIndex putVaultItem:vaultItem];
+    if (completionHandler)completionHandler(nil);
 }
 
 
-- (void)cacheEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
-                 itemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-              completionHandler:(void (^)(NSError *error))completionHandler
-{
-    [self cacheEncryptedVaultItemHeader:encryptedVaultItem.header
-                         itemDescriptor:itemDescriptor
-                      completionHandler:^(NSError *error)
-    {
-        [_cacheItems setObject:encryptedVaultItem
-                        forKey:itemDescriptor.cacheKey
-                         block:^(PINCache *cache, NSString *key, id __nullable object)
-        {
-            completionHandler(nil);
-        }];
-    }];
-}
+//-(void)cacheInIndexMetadata:(QredoVaultItem *)vaultItem
+//           completionHandler:(void (^)(NSError *error))completionHandler{
+//    [_localIndex putVaultItem:vaultItem];
+//    if (completionHandler)completionHandler(nil);
+//}
+
 
 - (void)removeBodyFromCacheWithVaultItemDescriptor:(QredoVaultItemDescriptor *)descriptor
-                                 completionHandler:(void (^)(NSError *error))completionHandler
-{
-    [_cacheItems removeObjectForKey:descriptor.cacheKey
-                              block:^(PINCache *cache, NSString *key, id __nullable object)
-     {
-         completionHandler(nil);
-     }];
+                                 completionHandler:(void (^)(NSError *error))completionHandler{
+    NSError *error = nil;
+    [_localIndex deleteItem:descriptor error:error];
+    if (completionHandler)completionHandler(error);
+    
 }
 
 
@@ -323,58 +271,29 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 - (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-            completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler
-{
-    [_cacheItems objectForKey:itemDescriptor.cacheKey
-                        block:^(PINCache *cache, NSString *key, id __nullable object)
-    {
-        if (object && [object isKindOfClass:[QLFEncryptedVaultItem class]]) {
-            QLFEncryptedVaultItem *encryptedVaultItem = (QLFEncryptedVaultItem *)object;
-
-            [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem
-                                             origin:QredoVaultItemOriginCache
-                                  completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
-            {
-                // in case if cache entry is corrupted
-                if (!vaultItem) {
-                    [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:completionHandler];
-                } else {
-                    completionHandler(vaultItem, error);
-                }
-            }];
-
-        } else {
-            [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:completionHandler];
-        }
-    }];
+            completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler{
+    
+    QredoVaultItem *vaultItem = [self.localIndex getVaultItemFromIndexWithDescriptor:itemDescriptor];
+    if (vaultItem){
+        completionHandler(vaultItem,nil);
+    }else{
+         [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:completionHandler];
+    }
+    
 }
+
 
 - (void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-                    completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler
-{
-    [_cacheHeaders objectForKey:itemDescriptor.cacheKey
-                        block:^(PINCache *cache, NSString *key, id __nullable object)
-     {
-         if (object && [object isKindOfClass:[QLFEncryptedVaultItemHeader class]]) {
-             QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = (QLFEncryptedVaultItemHeader *)object;
-
-             [_vaultCrypto decryptEncryptedVaultItemHeader:encryptedVaultItemHeader
-                                                    origin:QredoVaultItemOriginCache
-                                         completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
-              {
-                  // in case if cache entry is corrupted
-                  if (!vaultItemMetadata) {
-                      [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:completionHandler];
-                  } else {
-                      completionHandler(vaultItemMetadata, error);
-                  }
-              }];
-
-         } else {
-             [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:completionHandler];
-         }
-     }];
+                    completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler{
+    
+    QredoVaultItemMetadata *metadata = [self.localIndex getMetadataFromIndexWithDescriptor:itemDescriptor];
+    if (metadata){
+        completionHandler(metadata,nil);
+    }else{
+        [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:completionHandler];
+    }
 }
+
 
 
 

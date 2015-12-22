@@ -147,6 +147,15 @@
                   Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_RootIncludedInPemCertChain">
                </Test>
                <Test
+                  Identifier = "QredoVaultTests/testMultipleRemovingListenerDurringNotification">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests/testRemovingListenerDurringNotification">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests/testMultipleRemovingListenerDurringNotification">
+               </Test>
+               <Test
                   Identifier = "RendezvousEd25519HelperTests/testCreateHelper_Invalid_ExternalKeysMissingSigningHandler">
                </Test>
                <Test

@@ -172,7 +172,7 @@ NSNumber *testNumber;
         NSLog(@"Adding Record %i",i);
         NSString *testSearchValue = [NSString stringWithFormat:@"%i", i];
         QredoVaultItemMetadata *item = [self createTestItemInVault:vault key1Value:testSearchValue];
-        [qredoLocalIndex putItemWithMetadata:item];
+        [qredoLocalIndex putMetadata:item];
     }
     
     NSInteger countAfter = [qredoLocalIndex count];

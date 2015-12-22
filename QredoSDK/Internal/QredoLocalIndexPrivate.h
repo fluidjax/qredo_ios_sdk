@@ -15,11 +15,12 @@
 - (instancetype)initWithVault:(QredoVault *)vault;
 
 /** Put a metadata item into the local Index */
-- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata;
+- (void)putMetadata:(QredoVaultItemMetadata *)newMetadata;
+- (void)putVaultItem:(QredoVaultItem *)vaultItem;
 
 /** Get a the most recent metadata item (most recent based on sequence number) */
-- (QredoVaultItemMetadata *)get:(QredoVaultItemDescriptor *)vaultItemDescriptor;
-
+- (QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+- (QredoVaultItemMetadata *)getMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
 /** Enumerates through all vault items in the local index that match the predicate
     The predicate search is performed on the QredoIndexSummaryValues object.

@@ -4,7 +4,9 @@
 #import "_QredoIndexVaultItem.h"
 
 const struct QredoIndexVaultItemAttributes QredoIndexVaultItemAttributes = {
+	.hasValue = @"hasValue",
 	.itemId = @"itemId",
+	.value = @"value",
 };
 
 const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships = {
@@ -38,10 +40,38 @@ const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships =
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 
+	if ([key isEqualToString:@"hasValueValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"hasValue"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+
 	return keyPaths;
 }
 
+@dynamic hasValue;
+
+- (BOOL)hasValueValue {
+	NSNumber *result = [self hasValue];
+	return [result boolValue];
+}
+
+- (void)setHasValueValue:(BOOL)value_ {
+	[self setHasValue:@(value_)];
+}
+
+- (BOOL)primitiveHasValueValue {
+	NSNumber *result = [self primitiveHasValue];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveHasValueValue:(BOOL)value_ {
+	[self setPrimitiveHasValue:@(value_)];
+}
+
 @dynamic itemId;
+
+@dynamic value;
 
 @dynamic latest;
 

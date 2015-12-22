@@ -16,7 +16,6 @@
 		0A177A5E1B31C846004B7DFE /* QredoVaultItemDescriptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A177A5D1B31C846004B7DFE /* QredoVaultItemDescriptor.m */; };
 		0A177A601B31C933004B7DFE /* QredoVaultItemMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A177A5F1B31C933004B7DFE /* QredoVaultItemMetadata.m */; };
 		0A177A621B31C96E004B7DFE /* QredoVaultItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A177A611B31C96E004B7DFE /* QredoVaultItem.m */; };
-		0A177A641B31CEF7004B7DFE /* QredoVaultItem+Cache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A177A631B31CEF7004B7DFE /* QredoVaultItem+Cache.m */; };
 		0A27BEB61A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A27BEB41A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h */; };
 		0A27BEB71A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A27BEB51A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m */; };
 		0A519B641A9E483100182499 /* QredoUpdateListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A519B621A9E483100182499 /* QredoUpdateListener.h */; };
@@ -116,7 +115,6 @@
 		665149431BF60432003491CA /* QredoVaultItemDescriptor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A177A5D1B31C846004B7DFE /* QredoVaultItemDescriptor.m */; };
 		665149441BF60432003491CA /* QredoVaultItemMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A177A5F1B31C933004B7DFE /* QredoVaultItemMetadata.m */; };
 		665149451BF60432003491CA /* QredoVaultItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A177A611B31C96E004B7DFE /* QredoVaultItem.m */; };
-		665149461BF60432003491CA /* QredoVaultItem+Cache.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A177A631B31CEF7004B7DFE /* QredoVaultItem+Cache.m */; };
 		665149471BF60432003491CA /* QredoVaultServerAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AF69D4B1B3DA21700E6A584 /* QredoVaultServerAccess.m */; };
 		665149481BF60432003491CA /* QredoConversationProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 78375E2A1A80F08D009CDFC2 /* QredoConversationProtocol.m */; };
 		665149491BF60432003491CA /* QredoUpdateListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A519B631A9E483100182499 /* QredoUpdateListener.m */; };
@@ -684,8 +682,6 @@
 		0A177A5D1B31C846004B7DFE /* QredoVaultItemDescriptor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultItemDescriptor.m; sourceTree = "<group>"; };
 		0A177A5F1B31C933004B7DFE /* QredoVaultItemMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultItemMetadata.m; sourceTree = "<group>"; };
 		0A177A611B31C96E004B7DFE /* QredoVaultItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultItem.m; sourceTree = "<group>"; };
-		0A177A631B31CEF7004B7DFE /* QredoVaultItem+Cache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "QredoVaultItem+Cache.m"; sourceTree = "<group>"; };
-		0A177A651B31CF01004B7DFE /* QredoVaultItem+Cache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "QredoVaultItem+Cache.h"; sourceTree = "<group>"; };
 		0A27BEB41A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+QUIDSerialization.h"; path = "Internal/NSDictionary+QUIDSerialization.h"; sourceTree = "<group>"; };
 		0A27BEB51A1FBA7400926EA5 /* NSDictionary+QUIDSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+QUIDSerialization.m"; path = "Internal/NSDictionary+QUIDSerialization.m"; sourceTree = "<group>"; };
 		0A519B621A9E483100182499 /* QredoUpdateListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoUpdateListener.h; sourceTree = "<group>"; };
@@ -1190,8 +1186,6 @@
 				0A177A5D1B31C846004B7DFE /* QredoVaultItemDescriptor.m */,
 				0A177A5F1B31C933004B7DFE /* QredoVaultItemMetadata.m */,
 				0A177A611B31C96E004B7DFE /* QredoVaultItem.m */,
-				0A177A631B31CEF7004B7DFE /* QredoVaultItem+Cache.m */,
-				0A177A651B31CF01004B7DFE /* QredoVaultItem+Cache.h */,
 				0AF69D4B1B3DA21700E6A584 /* QredoVaultServerAccess.m */,
 				0AF69D4D1B3DA22A00E6A584 /* QredoVaultServerAccess.h */,
 			);
@@ -2806,7 +2800,6 @@
 				786DF4E21A5D5358000B4164 /* QredoRendezvousHelper.m in Sources */,
 				0A177A5E1B31C846004B7DFE /* QredoVaultItemDescriptor.m in Sources */,
 				0A519B651A9E483100182499 /* QredoUpdateListener.m in Sources */,
-				0A177A641B31CEF7004B7DFE /* QredoVaultItem+Cache.m in Sources */,
 				DCC22DC01A88F8B00047AB18 /* QredoRendezvousRsaPemCommonHelper.m in Sources */,
 				66F774E71BD64CE200F01A2C /* NSData+QredoRandomData.m in Sources */,
 				838E48C21C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel in Sources */,
@@ -2965,7 +2958,6 @@
 				83F4E8501C0F54AF00A99431 /* QredoIndexVaultItemDescriptor.m in Sources */,
 				665149441BF60432003491CA /* QredoVaultItemMetadata.m in Sources */,
 				665149451BF60432003491CA /* QredoVaultItem.m in Sources */,
-				665149461BF60432003491CA /* QredoVaultItem+Cache.m in Sources */,
 				665149471BF60432003491CA /* QredoVaultServerAccess.m in Sources */,
 				665149481BF60432003491CA /* QredoConversationProtocol.m in Sources */,
 				665149491BF60432003491CA /* QredoUpdateListener.m in Sources */,

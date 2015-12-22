@@ -97,8 +97,8 @@
 		[self setPrivateContext:privateMoc];
 		[self setManagedObjectContext:moc];
 
-		//NSLog(@"Store URL %@",storeURL);
-		//NSLog(@"Model URL %@",modelURL);
+		NSLog(@"Store URL %@",storeURL);
+		NSLog(@"Model URL %@",modelURL);
 	}
 	return self;
 }

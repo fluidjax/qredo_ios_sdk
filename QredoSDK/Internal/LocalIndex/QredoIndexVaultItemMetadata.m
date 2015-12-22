@@ -74,12 +74,14 @@
 
 -(QredoVaultItemMetadata *)buildQredoVaultItemMetadata {
 	//constructs a new QredoItemMetadata from a cached QredoIndexItemMetadata, and all its sub objects
-	return [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:[self.descriptor buildQredoVaultItemDescriptor]
-	        dataType:self.dataType
-	        accessLevel:self.accessLevelValue
-	        created:self.created
-	        summaryValues:[self buildSummaryDictionary]
-	];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:[self.descriptor buildQredoVaultItemDescriptor]
+                                                                                     dataType:self.dataType
+                                                                                  accessLevel:self.accessLevelValue
+                                                                                      created:self.created
+                                                                                summaryValues:[self buildSummaryDictionary]
+                                       ];
+    metadata.origin = QredoVaultItemOriginCache;
+    return metadata;
 }
 
 
@@ -89,6 +91,7 @@
 	for (QredoIndexSummaryValues *qredoIndexSummaryValue in self.summaryValues) {
 		[returnDictionary setObject:[qredoIndexSummaryValue retrieveValue] forKey:qredoIndexSummaryValue.key];
 	}
+    [returnDictionary setObject:self.created forKey:@"_created"];
 	return returnDictionary;
 }
 
