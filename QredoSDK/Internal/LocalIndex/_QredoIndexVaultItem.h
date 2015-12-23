@@ -6,15 +6,17 @@
 extern const struct QredoIndexVaultItemAttributes {
 	__unsafe_unretained NSString *hasValue;
 	__unsafe_unretained NSString *itemId;
-	__unsafe_unretained NSString *value;
+	__unsafe_unretained NSString *onServer;
 } QredoIndexVaultItemAttributes;
 
 extern const struct QredoIndexVaultItemRelationships {
 	__unsafe_unretained NSString *latest;
+	__unsafe_unretained NSString *payload;
 	__unsafe_unretained NSString *vault;
 } QredoIndexVaultItemRelationships;
 
 @class QredoIndexVaultItemMetadata;
+@class QredoIndexVaultItemPayload;
 @class QredoIndexVault;
 
 @interface QredoIndexVaultItemID : NSManagedObjectID {}
@@ -38,13 +40,21 @@ extern const struct QredoIndexVaultItemRelationships {
 
 //- (BOOL)validateItemId:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSData* value;
+@property (nonatomic, strong) NSNumber* onServer;
 
-//- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
+@property (atomic) BOOL onServerValue;
+- (BOOL)onServerValue;
+- (void)setOnServerValue:(BOOL)value_;
+
+//- (BOOL)validateOnServer:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) QredoIndexVaultItemMetadata *latest;
 
 //- (BOOL)validateLatest:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) QredoIndexVaultItemPayload *payload;
+
+//- (BOOL)validatePayload:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) QredoIndexVault *vault;
 
@@ -63,11 +73,17 @@ extern const struct QredoIndexVaultItemRelationships {
 - (NSData*)primitiveItemId;
 - (void)setPrimitiveItemId:(NSData*)value;
 
-- (NSData*)primitiveValue;
-- (void)setPrimitiveValue:(NSData*)value;
+- (NSNumber*)primitiveOnServer;
+- (void)setPrimitiveOnServer:(NSNumber*)value;
+
+- (BOOL)primitiveOnServerValue;
+- (void)setPrimitiveOnServerValue:(BOOL)value_;
 
 - (QredoIndexVaultItemMetadata*)primitiveLatest;
 - (void)setPrimitiveLatest:(QredoIndexVaultItemMetadata*)value;
+
+- (QredoIndexVaultItemPayload*)primitivePayload;
+- (void)setPrimitivePayload:(QredoIndexVaultItemPayload*)value;
 
 - (QredoIndexVault*)primitiveVault;
 - (void)setPrimitiveVault:(QredoIndexVault*)value;

@@ -14,6 +14,7 @@
 #import "QredoIndexVault.h"
 #import "QredoIndexVaultItem.h"
 #import "QredoIndexVaultItemDescriptor.h"
+#import "QredoIndexVaultItemPayload.h"
 
 @interface QredoLocalIndex ()
 @property (strong) NSManagedObjectContext *managedObjectContext;
@@ -182,7 +183,7 @@ IncomingMetadataBlock incomingMetadatBlock;
             QredoIndexVaultItem *vaultItem = itemMetadata.latest;
             [self.managedObjectContext deleteObject:vaultItem];
             vaultItem.hasValueValue=NO;
-            vaultItem.value=nil;
+            vaultItem.payload.value=nil;
         }
         [self save];
         hasDeletedObject = YES;

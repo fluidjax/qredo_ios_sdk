@@ -8,6 +8,7 @@
 #import "QredoIndexVaultItemMetadata.h"
 #import "QredoIndexVaultItemDescriptor.h"
 #import "QredoVaultPrivate.h"
+#import "QredoIndexVaultItemPayload.h"
 
 @interface QredoIndexVaultItem ()
 
@@ -21,9 +22,15 @@
 -(void)setVaultValue:(NSData *)data hasVaultItemValue:(BOOL)hasVaultItemValue{
     self.hasValueValue = hasVaultItemValue;
     if (hasVaultItemValue==YES){
-        self.value = [data copy];
+        
+        if (self.payload==nil){
+            QredoIndexVaultItemPayload *payLoad = [QredoIndexVaultItemPayload insertInManagedObjectContext:self.managedObjectContext];
+            self.payload = payLoad;
+        }
+        
+        self.payload.value = [data copy];
     }else{
-        self.value = nil;
+        self.payload.value = nil;
     }
 }
 
@@ -31,7 +38,7 @@
 -(QredoVaultItem *)buildQredoVaultItem{
     QredoIndexVaultItemMetadata *currentLatest = self.latest;
     QredoVaultItemMetadata *metadata = [currentLatest buildQredoVaultItemMetadata];
-    QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:self.value];
+    QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:self.payload.value];
     vaultItem.metadata.origin = QredoVaultItemOriginCache;
     return vaultItem;
 }

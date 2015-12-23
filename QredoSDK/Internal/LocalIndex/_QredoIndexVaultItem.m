@@ -6,11 +6,12 @@
 const struct QredoIndexVaultItemAttributes QredoIndexVaultItemAttributes = {
 	.hasValue = @"hasValue",
 	.itemId = @"itemId",
-	.value = @"value",
+	.onServer = @"onServer",
 };
 
 const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships = {
 	.latest = @"latest",
+	.payload = @"payload",
 	.vault = @"vault",
 };
 
@@ -45,6 +46,11 @@ const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships =
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"onServerValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"onServer"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 
 	return keyPaths;
 }
@@ -71,9 +77,29 @@ const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships =
 
 @dynamic itemId;
 
-@dynamic value;
+@dynamic onServer;
+
+- (BOOL)onServerValue {
+	NSNumber *result = [self onServer];
+	return [result boolValue];
+}
+
+- (void)setOnServerValue:(BOOL)value_ {
+	[self setOnServer:@(value_)];
+}
+
+- (BOOL)primitiveOnServerValue {
+	NSNumber *result = [self primitiveOnServer];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveOnServerValue:(BOOL)value_ {
+	[self setPrimitiveOnServer:@(value_)];
+}
 
 @dynamic latest;
+
+@dynamic payload;
 
 @dynamic vault;
 

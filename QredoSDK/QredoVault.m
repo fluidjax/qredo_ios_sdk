@@ -163,7 +163,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                                                                sequenceValue:newItemMetadata.descriptor.sequenceValue
                                                                                       itemId:itemId];
         
-        [self cacheInIndexVaultItem:vaultItem withDescriptor:newMetadata.descriptor completionHandler:^(NSError *error) {
+        [self cacheInIndexVaultItem:vaultItem metadata:newMetadata completionHandler:^(NSError *error) {
             completionHandler(newMetadata, nil);
         }];
     }];
@@ -190,7 +190,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                   summaryValues:newSummaryValues
                     completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
                         
-                        [self cacheInIndexVaultItem:vaultItem withDescriptor:newItemMetadata.descriptor completionHandler:^(NSError *error) {
+                        [self cacheInIndexVaultItem:vaultItem  metadata:newItemMetadata  completionHandler:^(NSError *error) {
                                 completionHandler(newItemMetadata, error);
                          }];
                         
@@ -215,7 +215,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                         created:created
                   summaryValues:newSummaryValues
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-            [self cacheInIndexVaultItem:vaultItem withDescriptor:newItemMetadata.descriptor completionHandler:^(NSError *error) {
+                  [self cacheInIndexVaultItem:vaultItem metadata:newItemMetadata completionHandler:^(NSError *error) {
                  completionHandler(newItemMetadata, error);
             }];
      }];
@@ -233,9 +233,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 -(void)cacheInIndexVaultItem:(QredoVaultItem *)vaultItem
-              withDescriptor:(QredoVaultItemDescriptor *)descriptor
+                    metadata:(QredoVaultItemMetadata *)metadata
            completionHandler:(void (^)(NSError *error))completionHandler{
-    vaultItem.metadata.descriptor = descriptor;
+    vaultItem.metadata.descriptor = metadata.descriptor;
     [_localIndex putVaultItem:vaultItem];
     if (completionHandler)completionHandler(nil);
 }

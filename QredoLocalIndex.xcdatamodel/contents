@@ -21,8 +21,9 @@
     <entity name="QredoIndexVaultItem" representedClassName="QredoIndexVaultItem" syncable="YES">
         <attribute name="hasValue" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="itemId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
-        <attribute name="value" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="onServer" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="latest" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemMetadata" inverseName="latest" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
+        <relationship name="payload" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemPayload" inverseName="vaultItem" inverseEntity="QredoIndexVaultItemPayload" syncable="YES"/>
         <relationship name="vault" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVault" inverseName="vaultItems" inverseEntity="QredoIndexVault" syncable="YES"/>
     </entity>
     <entity name="QredoIndexVaultItemDescriptor" representedClassName="QredoIndexVaultItemDescriptor" syncable="YES">
@@ -39,12 +40,17 @@
         <relationship name="latest" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItem" inverseName="latest" inverseEntity="QredoIndexVaultItem" syncable="YES"/>
         <relationship name="summaryValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="QredoIndexSummaryValues" inverseName="vaultMetadata" inverseEntity="QredoIndexSummaryValues" syncable="YES"/>
     </entity>
+    <entity name="QredoIndexVaultItemPayload" representedClassName="QredoIndexVaultItemPayload" syncable="YES">
+        <attribute name="value" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="vaultItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVaultItem" inverseName="payload" inverseEntity="QredoIndexVaultItem" syncable="YES"/>
+    </entity>
     <elements>
         <element name="QredoIndexSummaryValues" positionX="-2772" positionY="-4149" width="216" height="103"/>
         <element name="QredoIndexVariableValue" positionX="-2486" positionY="-4158" width="128" height="118"/>
-        <element name="QredoIndexVault" positionX="-3701" positionY="-4219" width="128" height="88"/>
-        <element name="QredoIndexVaultItem" positionX="-3519" positionY="-4212" width="270" height="118"/>
+        <element name="QredoIndexVault" positionX="-3708" positionY="-4201" width="128" height="88"/>
+        <element name="QredoIndexVaultItem" positionX="-3519" positionY="-4221" width="270" height="133"/>
         <element name="QredoIndexVaultItemDescriptor" positionX="-2754" positionY="-4293" width="225" height="103"/>
         <element name="QredoIndexVaultItemMetadata" positionX="-3177" positionY="-4246" width="234" height="133"/>
+        <element name="QredoIndexVaultItemPayload" positionX="-3258" positionY="-4176" width="128" height="75"/>
     </elements>
 </model>
