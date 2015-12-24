@@ -299,8 +299,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 - (void)addVaultObserver:(id<QredoVaultObserver>)observer
 {
-    
-    QredoUpdateListener *updateListener = _updateListener;
     [_observers addObserver:observer];
     
     if (!_updateListener.isListening) {
@@ -315,7 +313,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 - (void)removeVaultObserver:(id<QredoVaultObserver>)observer{
-    QredoUpdateListener *updateListener = _updateListener;
     QredoObserverList *observers = _observers;
     
     NSLog(@"removeVaultObserver: [_observers count]: %@, _updateListener.isListening: %@", @([_observers count]), _updateListener.isListening ? @"YES" : @"NO");
