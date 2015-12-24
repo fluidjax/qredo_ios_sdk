@@ -133,7 +133,11 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 {
     @synchronized(self) {
         
+        NSLog(@"notifyObserver: _oberverProxies: %@", _observerProxies);
+        
         for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
+            
+            // perhaps some check here, if all observers are properly set up
             
             if (!observerProxy.observer) {
                 [_observerProxies removeObject:observerProxy];

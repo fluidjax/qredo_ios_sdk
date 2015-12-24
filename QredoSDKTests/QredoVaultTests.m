@@ -120,7 +120,7 @@
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
   
-    savedPassword =[QredoTestUtils randomPassword];
+    savedPassword = [QredoTestUtils randomPassword];
     
     [QredoClient initializeWithAppSecret:k_APPSECRET
                                   userId:k_USERID
@@ -146,7 +146,6 @@
         [mutableData appendBytes: (void *) &randomBits length: 1];
     } return mutableData;
 }
-
 
 - (void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
@@ -202,6 +201,7 @@
 -(void)testPutDelete{
     
     [self resetKeychain];
+    
     
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];

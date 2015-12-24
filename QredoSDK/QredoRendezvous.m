@@ -536,6 +536,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 - (void)addRendezvousObserver:(id<QredoRendezvousObserver>)observer
 {
     [_observers addObserver:observer];
+    
     if (!_updateListener.isListening) {
         [_updateListener startListening];
     }
@@ -544,7 +545,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 - (void)removeRendezvousObserver:(id<QredoRendezvousObserver>)observer
 {
     [_observers removeObserver:observer];
-    if ([_observers count] < 1 && !_updateListener.isListening) {
+    
+    NSLog(@"removeRendezvousObserver: [_observers count]: %@, _updateListener.isListening: %@", @([_observers count]), _updateListener.isListening ? @"YES" : @"NO");
+    NSLog(@"_observers: %@", _observers);
+    
+    if ([_observers count] < 1 && _updateListener.isListening) {
         [_updateListener stopListening];
     }
 }
@@ -754,11 +759,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     {
         self->_highWatermark = newWatermark;
     }];
+    
+    NSLog(@"started polling for incomming rendezvous");
 }
 
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
 subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
+    NSLog(@"Rendezvous: subscribeWithCompletionHandler");
     NSAssert([_observers count] > 0, @"There shoud be 1 or more rendezvous observers before starting listening for the updates");
 
     NSAssert(_subscriptionCorrelationId == nil, @"Already subscribed");
@@ -818,6 +826,10 @@ unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 //        _subscriptionCorrelationId = nil;
 //        completionHandler(error);
 //    }];
+    NSLog(@"QredoRendezvous: unsubscribeWithCompletionHandler"); // <- not called
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:updateListener name:@"resubscribe" object:nil];
+    //    updateListener = nil;
 }
 
 #pragma mark Qredo Update Listener - Delegate

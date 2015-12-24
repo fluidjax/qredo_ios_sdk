@@ -10,6 +10,7 @@
 #import "TestCertificates.h"
 #import "QredoCryptoError.h"
 #import "QredoCrypto.h"
+#import "QredoCertificateUtils.h"
 
 @interface QredoOpenSSLCertificateUtilsTests : XCTestCase
 
@@ -192,27 +193,33 @@
 
 - (void)testValidateSelfSignedCertificate_Invalid_EndCertificate
 {
-    NSString *pemCertificate = TestCertJavaSdkClient4096Pem;
+    NSError *error = nil;
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
     
     BOOL expectedValidationResult = NO;
     
-    NSError *error = nil;
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateSelfSignedCertificate:pemCertificate
                                                                                   error:&error];
-    XCTAssertNil(error);
+    
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
 - (void)testValidateSelfSignedCertificate_Invalid_IntermediateCertificate
 {
-    NSString *pemCertificate = TestCertJavaSdkIntermediatePem;
+    NSError *error = nil;
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"interCA1cert" error:&error];
     
     BOOL expectedValidationResult = NO;
     
-    NSError *error = nil;
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateSelfSignedCertificate:pemCertificate
                                                                                   error:&error];
-    XCTAssertNil(error);
+    
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -245,13 +252,15 @@
 
 - (void)testValidateCertificate_ValidChainWithRoot
 {
-    NSString *pemCertificate = TestCertJavaSdkClient4096Pem;
-    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem, nil];
-    NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertJavaSdkRootPem, nil];
+    NSError *error = nil;
     
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
+    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"interCA1cert" error:&error], nil];
+    NSArray *pemRootCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"rootCAcert" error:&error], nil];
+    
+    error = nil;
     BOOL expectedValidationResult = YES;
     
-    NSError *error = nil;
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
@@ -347,15 +356,18 @@
 
 - (void)testValidateCertificate_Valid_ValidChainWithMultipleRootsIncCorrectRoot
 {
-    NSString *pemCertificate = TestCertJavaSdkClient4096Pem;
-    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem, nil];
+    NSError *error = nil;
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
+    
+    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"interCA1cert" error:&error], nil];
     NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertDHTestingLocalhostRootPem,
-                                    TestCertJavaSdkRootPem,
+                                    [TestCertificates fetchPemForResource:@"rootCAcert" error:&error],
                                     nil];
     
     BOOL expectedValidationResult = YES;
     
-    NSError *error = nil;
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
@@ -433,6 +445,8 @@
     
     BOOL expectedValidationResult = NO;
     
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:NO
                                                          chainPemCertificates:pemIntermediateCertificates
@@ -440,7 +454,7 @@
                                                                       pemCrls:crls
                                                                         error:&error];
     
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -471,6 +485,8 @@
     
     BOOL expectedValidationResult = NO;
     
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:NO
                                                          chainPemCertificates:pemIntermediateCertificates
@@ -478,7 +494,7 @@
                                                                       pemCrls:crls
                                                                         error:&error];
     
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -509,6 +525,8 @@
     
     BOOL expectedValidationResult = NO;
     
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:NO
                                                          chainPemCertificates:pemIntermediateCertificates
@@ -516,7 +534,7 @@
                                                                       pemCrls:crls
                                                                         error:&error];
     
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -543,6 +561,8 @@
     
     BOOL expectedValidationResult = NO;
     
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:NO
                                                          chainPemCertificates:pemIntermediateCertificates
@@ -550,7 +570,7 @@
                                                                       pemCrls:crls
                                                                         error:&error];
     
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -592,26 +612,30 @@
                                                                       pemCrls:crls
                                                                         error:&error];
     
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
 - (void)testValidateCertificate_Invalid_NoChainNoRoot
 {
-    NSString *pemCertificate = TestCertJavaSdkClient4096Pem;
+    NSError *error = nil;
+    
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
     NSArray *pemIntermediateCertificates = [NSArray array];
     NSArray *pemRootCertificates = [NSArray array];
     
     BOOL expectedValidationResult = NO;
     
-    NSError *error = nil;
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:nil
                                                                         error:&error];
-    XCTAssertNil(error);
+    
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -690,32 +714,67 @@
 
 - (void)testValidateCertificate_Valid_DHCertWithRoot
 {
+    // http://security.stackexchange.com/a/82868/94521
+    
+    NSString *dhCert = @"-----BEGIN CERTIFICATE-----\n"
+    "MIICATCCAWoCCQD269NSkQbjtTANBgkqhkiG9w0BAQsFADBFMQswCQYDVQQGEwJB\n"
+    "VTETMBEGA1UECBMKU29tZS1TdGF0ZTEhMB8GA1UEChMYSW50ZXJuZXQgV2lkZ2l0\n"
+    "cyBQdHkgTHRkMB4XDTE1MTIxNDE0MTIxN1oXDTE2MDExMzE0MTIxN1owRTELMAkG\n"
+    "A1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0\n"
+    "IFdpZGdpdHMgUHR5IEx0ZDCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA+wyD\n"
+    "BlGXKto7If2kwznJUMwBFYlIq1Qfsq6m3WJoKHtRujnO9OOMqV+qZt1du04Yd+sH\n"
+    "J5aJjXJf+iKlombJ9pUn3hoKVYytZemNvXcTw9BLqGoCV8bMfz1MoWbEs6e31wOU\n"
+    "HEfT5Anu3Sdp4HOMViQjcHGfdyhe7jZRas0hr3ECAwEAATANBgkqhkiG9w0BAQsF\n"
+    "AAOBgQAy31xkBvTUwe0LWweWr6a8H7T4oZTwMEejbGajSCjoBm1wCwFrmCQn0BfX\n"
+    "m4Bf5oK3tQkRbtYqRy+F56diCFx5UCfrEFJGAQmFoA92NTfifAcjTeoAmfUgTLAL\n"
+    "o7cRnuZIfdw0mp6+kuL82sk6/gQOGSPIo5BmetXH4ubpf56X7w==\n"
+    "-----END CERTIFICATE-----\n"; // From StackExchange link
+    
+    NSString *rootCert = @"-----BEGIN CERTIFICATE-----\n"
+    "MIICsDCCAhmgAwIBAgIJANcISDG0V6EwMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV\n"
+    "BAYTAkFVMRMwEQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBX\n"
+    "aWRnaXRzIFB0eSBMdGQwHhcNMTUxMjExMTUzNzM0WhcNMjUxMjA4MTUzNzM0WjBF\n"
+    "MQswCQYDVQQGEwJBVTETMBEGA1UECBMKU29tZS1TdGF0ZTEhMB8GA1UEChMYSW50\n"
+    "ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB\n"
+    "gQC+bEnE6V1zmhTp3jxfjdANSuDHJ8au26GRhirDuQ5S4aeGxJ2M3iKawjvS4J/H\n"
+    "F4Voc8qyDM12DfkuqCjk4FbQaTsOrKZPW+M61w5qvvXqsE6y7sTqRZ2QJbc9avUG\n"
+    "CQgo8cHsXAdpUKJynIl65tPcQNu7Rd8FCkGPngBvidwjNwIDAQABo4GnMIGkMB0G\n"
+    "A1UdDgQWBBSDWtue1RiI4cN0R2zHx4rqu82z1zB1BgNVHSMEbjBsgBSDWtue1RiI\n"
+    "4cN0R2zHx4rqu82z16FJpEcwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgTClNvbWUt\n"
+    "U3RhdGUxITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZIIJANcISDG0\n"
+    "V6EwMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAd3e0o6E4EG1/iFbu\n"
+    "PlZhWE7Nw7puAfhYTB4oIqc/DBcooHYtcpUYOUyTlRYd7/dlFqjfgD5/0ppAvIEI\n"
+    "iu6UD6O6J0uycPQTQnOa4u1gjrQ8EtYkN4tDFuqQjxl5Pg/iGbtg823wqGlJXrUW\n"
+    "bciyRqxp5WnZOvqD6n8z0haN+LE=\n"
+    "-----END CERTIFICATE-----\n"; // From test_root_ca.crt
+    
     NSString *pemCertificate = TestCertDHTestingLocalhostClientPem;
     NSArray *pemIntermediateCertificates = [NSArray array];
     NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertDHTestingLocalhostRootPem, nil];
     
-    BOOL expectedValidationResult = YES;
     
-    NSError *error = nil;
-    BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
-                                                         skipRevocationChecks:YES // No CRLs available for this CA chain
-                                                         chainPemCertificates:pemIntermediateCertificates
-                                                          rootPemCertificates:pemRootCertificates
-                                                                      pemCrls:nil
-                                                                        error:&error];
-    XCTAssertNil(error);
-    XCTAssertEqual(validationResult, expectedValidationResult);
+    NSArray *rootCertificateRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCert];
+    XCTAssertNotNil(rootCertificateRefs, @"Root certificates should not be nil.");
+    
+    NSArray *certificateChainRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:dhCert];
+    XCTAssertNotNil(certificateChainRefs, @"Certificate chain array should not be nil.");
+    
+    SecKeyRef validationResult = [QredoCertificateUtils validateCertificateChain:certificateChainRefs rootCertificateRefs:rootCertificateRefs];
+
+    XCTAssertNotNil((__bridge id)validationResult);
 }
 
 - (void)testValidateCertificate_Valid_JavaSdkChain4096
 {
-    NSString *pemCertificate = TestCertJavaSdkClient4096Pem;
-    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem, nil];
-    NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertJavaSdkRootPem, nil];
+    NSError *error = nil;
+    
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
+    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"interCA1cert" error:&error], nil];
+    NSArray *pemRootCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"rootCAcert" error:&error], nil];
     
     BOOL expectedValidationResult = YES;
     
-    NSError *error = nil;
+    error = nil;
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
@@ -728,13 +787,16 @@
 
 - (void)testValidateCertificate_Valid_JavaSdkChain2048
 {
-    NSString *pemCertificate = TestCertJavaSdkClient2048Pem;
-    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem, nil];
-    NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertJavaSdkRootPem, nil];
+    NSError *error = nil;
+    
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert2.2048.IntCA1cert" error:&error];
+    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"interCA1cert" error:&error], nil];
+    NSArray *pemRootCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"rootCAcert" error:&error], nil];
     
     BOOL expectedValidationResult = YES;
     
-    NSError *error = nil;
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
@@ -747,58 +809,66 @@
 
 - (void)testValidateCertificate_Invalid_JavaSdkChain4096_MissingIntermediate
 {
-    NSString *pemCertificate = TestCertJavaSdkClient4096Pem;
+    NSError *error = nil;
+    
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
     NSArray *pemIntermediateCertificates = [NSArray array];
-    NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertJavaSdkRootPem, nil];
+    NSArray *pemRootCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"rootCAcert" error:&error], nil];
     
     BOOL expectedValidationResult = NO;
     
-    NSError *error = nil;
+    error = nil;
+    
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:nil
                                                                         error:&error];
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
 - (void)testValidateCertificate_Invalid_JavaSdkChain2048_WrongIntermediate
 {
-    NSString *pemCertificate = TestCertJavaSdkClient2048Pem;
+    NSError *error = nil;
+    
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert2.2048.IntCA1cert" error:&error];
     NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertDHTestingLocalhostRootPem, nil];
-    NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertJavaSdkRootPem, nil];
+    NSArray *pemRootCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"rootCAcert" error:&error], nil];
     
     BOOL expectedValidationResult = NO;
     
-    NSError *error = nil;
+    error = nil;
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:nil
                                                                         error:&error];
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
 - (void)testValidateCertificate_Invalid_JavaSdkChain2048_IncorrectRoot
 {
-    NSString *pemCertificate = TestCertJavaSdkClient2048Pem;
-    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem, nil];
+    NSError *error = nil;
+    
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert2.2048.IntCA1cert" error:&error];
+    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"interCA1cert" error:&error], nil];
     NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertDHTestingLocalhostRootPem, nil];
     
     BOOL expectedValidationResult = NO;
     
-    NSError *error = nil;
+    error = nil;
+
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:nil
                                                                         error:&error];
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -840,7 +910,7 @@
                                                                       pemCrls:crls
                                                                         error:&error];
     
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -881,26 +951,28 @@
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:crls
                                                                         error:&error];
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
 - (void)testValidateCertificate_Invalid_CertIsRoot_NoRootsProvided
 {
-    NSString *pemCertificate = TestCertDHTestingLocalhostRootPem;
+    NSError *error = nil;
+    
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert1.1024.IntCA1cert" error:&error];
     NSArray *pemIntermediateCertificates = [NSArray array];
     NSArray *pemRootCertificates = [NSArray array];
     
     BOOL expectedValidationResult = NO;
     
-    NSError *error = nil;
+    error = nil;
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:nil
                                                                         error:&error];
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -919,7 +991,7 @@
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:nil
                                                                         error:&error];
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -938,7 +1010,7 @@
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:nil
                                                                         error:&error];
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 
@@ -966,20 +1038,22 @@
 
 - (void)testValidateCertificate_Invalid_TooShortCertificateKey
 {
-    NSString *pemCertificate = TestCertJavaSdkClient1024Pem;
-    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem, nil];
-    NSArray *pemRootCertificates = [NSArray arrayWithObjects:TestCertJavaSdkRootPem, nil];
+    NSError *error = nil;
+    
+    NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert1.1024.IntCA1cert" error:&error];
+    NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"interCA1cert" error:&error], nil];
+    NSArray *pemRootCertificates = [NSArray arrayWithObjects:[TestCertificates fetchPemForResource:@"rootCAcert" error:&error], nil];
     
     BOOL expectedValidationResult = NO;
     
-    NSError *error = nil;
+    error = nil;
     BOOL validationResult = [QredoOpenSSLCertificateUtils validateCertificate:pemCertificate
                                                          skipRevocationChecks:YES // No CRLs available for this CA chain
                                                          chainPemCertificates:pemIntermediateCertificates
                                                           rootPemCertificates:pemRootCertificates
                                                                       pemCrls:nil
                                                                         error:&error];
-    XCTAssertNil(error);
+    XCTAssertNotNil(error);
     XCTAssertEqual(validationResult, expectedValidationResult);
 }
 

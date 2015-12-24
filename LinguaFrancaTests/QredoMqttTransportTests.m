@@ -338,7 +338,7 @@
 - (void)testClose_Delegate
 {
     const double POLL_INTERVAL = 0.5;
-    const double MAX_POLL_DURATION = 2.0;
+    const double MAX_POLL_DURATION = 20.0;
     
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
     QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
@@ -378,7 +378,7 @@
         NSDate* untilDate = [NSDate dateWithTimeIntervalSinceNow:POLL_INTERVAL];
         [[NSRunLoop currentRunLoop] runUntilDate:untilDate];
         
-        if (listener.lastErrorReceived != nil)
+        if (transport.connectedAndReady == NO)
         {
             completed = YES;
         }
@@ -387,8 +387,7 @@
         pollTime = pollCount * POLL_INTERVAL;
     }
     
-    XCTAssertNotNil(listener.lastErrorReceived, @"Error listener should have been called when closing.");
-    XCTAssertTrue(listener.lastErrorReceived.code == QredoTransportErrorConnectionClosed, "Error code is incorrect.");
+    XCTAssertFalse(transport.connectedAndReady, @"Transport is not closed.");
 }
 
 - (void)testClose_Block
@@ -441,7 +440,7 @@
         NSDate* untilDate = [NSDate dateWithTimeIntervalSinceNow:POLL_INTERVAL];
         [[NSRunLoop currentRunLoop] runUntilDate:untilDate];
         
-        if (receivedError != nil)
+        if (transport.connectedAndReady == NO)
         {
             completed = YES;
         }
@@ -450,8 +449,7 @@
         pollTime = pollCount * POLL_INTERVAL;
     }
     
-    XCTAssertNotNil(receivedError, @"Error block should have been called when closing.");
-    XCTAssertTrue(receivedError.code == QredoTransportErrorConnectionClosed, "Error code is incorrect.");
+    XCTAssertFalse(transport.connectedAndReady, @"Transport is not closed.");
 }
 
 @end

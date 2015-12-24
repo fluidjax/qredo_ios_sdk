@@ -50,7 +50,7 @@
     
     QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL pinnedCertificate:nil];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
-    XCTAssertTrue([transport isKindOfClass:[QredoMqttTransport class]]);
+    XCTAssertTrue([transport isMemberOfClass:NSClassFromString(@"QredoMqttTransport")]);
 }
 
 - (void)testTransportForServiceURL_TcpUppercaseGetsMqtt
@@ -59,7 +59,7 @@
     
     QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL pinnedCertificate:nil];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
-    XCTAssertTrue([transport isKindOfClass:[QredoMqttTransport class]]);
+    XCTAssertTrue([transport isMemberOfClass:NSClassFromString(@"QredoMqttTransport")]);
 }
 
 - (void)testTransportForServiceURL_SslLowercaseGetsMqtt
@@ -68,7 +68,7 @@
     
     QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL pinnedCertificate:nil];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
-    XCTAssertTrue([transport isKindOfClass:[QredoMqttTransport class]]);
+    XCTAssertTrue([transport isMemberOfClass:NSClassFromString(@"QredoMqttTransport")]);
 }
 
 - (void)testTransportForServiceURL_SslUppercaseGetsMqtt
@@ -77,7 +77,7 @@
     
     QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL pinnedCertificate:nil];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
-    XCTAssertTrue([transport isKindOfClass:[QredoMqttTransport class]]);
+    XCTAssertTrue([transport isMemberOfClass:NSClassFromString(@"QredoMqttTransport")]);
 }
 
 - (void)testTransportForServiceURL_UnsupportedFTP

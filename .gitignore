@@ -1,6 +1,7 @@
 build
 temp
 package
+QredoXDK.framework
 
 # Cocoapods
 #

@@ -11,6 +11,17 @@
     [super setUp];
 }
 
+- (void)testPersistanceVaultIdMultiple {
+    self.continueAfterFailure = NO;
+    
+    for (int i = 0; i < 10; i++)
+    {
+        NSLog(@"Run number: %@", @(i));
+        
+        [super testPersistanceVaultId];
+    }
+}
+
 - (void)testPersistanceVaultId {
     [super testPersistanceVaultId];
 }

@@ -3,7 +3,10 @@
 
 @interface ConversationTests : XCTestCase
 
+
 @property (nonatomic) QredoClientOptionsTransportType transportType;
+@property (atomic) XCTestExpectation *didReceiveResponseExpectation;
+@property (atomic) XCTestExpectation *didReceiveMessageExpectation;
 
 - (void)authoriseClient;
 - (void)testConversationCreation;

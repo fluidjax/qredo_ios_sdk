@@ -151,10 +151,12 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
 
 - (void)notifyListenerOfResponseData:(NSData *)data userData:(id)userData
 {
+    NSLog(@"QredoTransport: notifyListenerOfResponseData:userData:");
+
     if (self.transportClosed) {
         // Trying to notify listener of response after transport is closed
         
-        LogError(@"Attempting to notify listener after transport is closed.");
+        NSLog(@"Attempting to notify listener after transport is closed.");
         
         // TODO: DH - what should be done if data received after transport has been closed.  Convert to an error?
         [self notifyListenerOfErrorCode:QredoTransportErrorReceivedDataAfterTransportClosed userData:userData];

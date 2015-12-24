@@ -303,8 +303,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoUpdateListener *updateListener = _updateListener;
     [_observers addObserver:observer];
     
-    if (!updateListener.isListening) {
-        [updateListener startListening];
+    if (!_updateListener.isListening) {
+        [_updateListener startListening];
     }
 
     //if _localIndex is active and the localIndex is not already listening to updates, add the localIndex as an observer
@@ -318,13 +318,14 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoUpdateListener *updateListener = _updateListener;
     QredoObserverList *observers = _observers;
     
-    [_observers removeObserver:observer];
+    NSLog(@"removeVaultObserver: [_observers count]: %@, _updateListener.isListening: %@", @([_observers count]), _updateListener.isListening ? @"YES" : @"NO");
+    NSLog(@"_observers: %@", _observers);
 
     //If we have just removed a listener and the  only listener left is the localIndex - remove it.
     if ([observers count]==1 && [_observers contains:_localIndex])[_observers removeObserver:_localIndex];
     
     if ([observers count] < 1 && _updateListener.isListening) {
-        [updateListener stopListening];
+        [_updateListener stopListening];
     }
 }
 
@@ -512,6 +513,12 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
         self->_highwatermark = watermark;
         [self saveState];
     } since:self.highWatermark consolidatingResults:NO];
+}
+
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
+{
+    // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
+    NSLog(@"QredoVault: unsubscribeWithCompletionHandler"); // <- not called
 }
 
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item

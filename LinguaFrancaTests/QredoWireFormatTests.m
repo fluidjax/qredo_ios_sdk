@@ -2,6 +2,7 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoWireFormat.h"
 #import "QredoQUID.h"
+#import "NSData+ParseHex.h"
 
 @interface QredoWireFormatTests : XCTestCase
 
@@ -872,7 +873,7 @@
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
     
-
+    [writer writeInvocationHeader:[QredoAppCredentials appCredentialsWithAppId:@"test"                                                                             appSecret:[NSData dataWithHexString:@"cafebabe"]]];
     
     [writer writeEnd];
     NSData *data = [out propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
