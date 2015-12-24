@@ -336,7 +336,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error {
-    NSLog(@"Qredo Vault did fail with error %@",error);
+   // NSLog(@"Qredo Vault did fail with error %@",error);
 }
 
 
