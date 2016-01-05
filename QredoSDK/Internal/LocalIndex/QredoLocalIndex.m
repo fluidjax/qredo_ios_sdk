@@ -214,10 +214,12 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 - (void)addAppObservers {
     //Ensure coredata is saved on app resign/termination
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:)
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appWillResignActive:)
                                                  name:UIApplicationWillResignActiveNotification
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:)
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appWillTerminate:)
                                                  name:UIApplicationWillTerminateNotification
                                                object:nil];
 }

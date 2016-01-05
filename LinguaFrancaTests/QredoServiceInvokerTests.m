@@ -108,17 +108,17 @@
     serviceInvoker = nil;
 }
 
+
+
+
 - (void)testInit_NilUrl
 {
     NSURL *serviceURL = nil;
     XCTAssertNil(serviceURL);
 
-    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test~"                                                                             appSecret:[NSData dataWithHexString:@"cafebabe"]];
-    XCTAssertThrowsSpecificNamed([[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials],
+    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test~"
+                                                                             appSecret:[NSData dataWithHexString:@"cafebabe"]];
     
-    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test~" appSecret:[NSData dataWithHexString:@"cafebabe"]];
-    
-
     
     XCTAssertThrowsSpecificNamed( [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials],
                                  NSException,

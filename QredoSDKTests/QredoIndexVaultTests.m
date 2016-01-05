@@ -36,6 +36,12 @@ NSNumber *testNumber;
 
 
 
+
+
+
+
+
+
 -(void)testSearch{
     for (int i=0;i<300;i++){
         [self createTestItemInVault:vault key1Value:[NSString stringWithFormat:@"some value continaing %i",i]];
@@ -106,14 +112,80 @@ NSNumber *testNumber;
 }
 
 
--(void)testSimplePut{
+-(void)testIndexSource{
+    
+    //put item in index
+    //delete item from index
+    //clear cache (reset watermark)
+    //wait for it to populate from server
+    //check that the item requests the vault items value from the server
+    
+    
+    //check item is in index
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
+
+    //check metadata is set
+    QredoVaultItem *vaultItem = [self getItemWithDescriptor:junk1 inVault:vault];
+    NSString *key1Value =vaultItem.metadata.summaryValues[@"key1"];
+    XCTAssert([key1Value isEqualToString:randomKeyValue],@"Metadata data in vault item not set correctly");
+    XCTAssert(vaultItem.metadata.origin == QredoVaultItemOriginCache,@"Metata data in vault item not set correctly");
+    
+    //check value is set
+    NSString *str = @"this is some fixed test data";
+    NSData* item1Data = [str dataUsingEncoding:NSUTF8StringEncoding];
+    XCTAssert([vaultItem.value isEqualToData:item1Data],"Value in vault item not set correctly");
+    
+    //clear cache
+    [qredoLocalIndex purge];
+    NSInteger afterPurge = [qredoLocalIndex count];
+    XCTAssert(afterPurge == after - 1,@"Failed to purge index");
+    
+
+    
+    //wait for index to be re-populated from server
+    __block XCTestExpectation *receivedAfterPurgeExpectation = [self expectationWithDescription:@"receivedAfterPurgeExpectation"];
+    __block QredoVaultItemMetadata *incomingMetadata;
+    
+    
+    [vault addMetadataIndexObserver:^(QredoVaultItemMetadata *vaultMetaData) {
+        incomingMetadata = vaultMetaData;
+        [receivedAfterPurgeExpectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        receivedAfterPurgeExpectation = nil;
+    }];
+
+
+
+    //check that when we retrieve the item it now is not in the cache and so its origin is QredoVaultItemOriginServer
+    QredoVaultItem *vaultItem2 = [self getItemWithDescriptor:incomingMetadata inVault:vault];
+    NSString *key1Value2 =vaultItem.metadata.summaryValues[@"key1"];
+    XCTAssert([key1Value2 isEqualToString:randomKeyValue],@"Metadata data in vault item not set correctly");
+    XCTAssert(vaultItem2.metadata.origin == QredoVaultItemOriginServer,@"Metata data in vault item not set correctly");
+    
+    
+    
+    
+    
+    
     NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
 }
+
+
+-(void)testSimplePut{
+    NSInteger before = [qredoLocalIndex count];
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
+    NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+}
+
 
 
 -(void)testMultiplePut{
@@ -226,7 +298,7 @@ NSNumber *testNumber;
     XCTAssert(after == before + 3 ,@"Failed to add new items");
     [qredoLocalIndex purge];
     NSInteger afterPurge = [qredoLocalIndex count];
-    XCTAssert([qredoLocalIndex count] == 0 ,@"Failed to add new items");
+    XCTAssert([qredoLocalIndex count] == 0 ,@"Failed to purge items");
 
 }
 
@@ -392,7 +464,9 @@ NSNumber *testNumber;
     
     
     
-    NSData *item1Data = [self randomDataWithLength:1024];
+    NSString *str = @"this is some fixed test data";
+    NSData* item1Data = [str dataUsingEncoding:NSUTF8StringEncoding];
+
     NSDictionary *item1SummaryValues = @{@"key1": key1Value,
                                          @"key2": @"value2",
                                          @"key3": testNumber,

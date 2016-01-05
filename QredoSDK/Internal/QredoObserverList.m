@@ -84,7 +84,10 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     self = [super init];
     if (self) {
         _associationKey = associationKey ? associationKey : kDefaultAssociationKey;
-        _observerNotificationQueue = dispatch_queue_create("com.qredo.QredoObserverList.observerNotificationQueue", DISPATCH_QUEUE_CONCURRENT);
+//        _observerNotificationQueue = dispatch_queue_create("com.qredo.QredoObserverList.observerNotificationQueue", DISPATCH_QUEUE_CONCURRENT);
+        //csm
+        _observerNotificationQueue = dispatch_get_main_queue();
+        
         _observerProxies = [NSMutableArray array];
     }
     return self;
@@ -143,6 +146,12 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
                 [_observerProxies removeObject:observerProxy];
                 continue;
             }
+            
+            //csm
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                notificationBlock(observerProxy.observer);
+//            });
+            
             
             dispatch_async(_observerNotificationQueue, ^{
                 notificationBlock(observerProxy.observer);
