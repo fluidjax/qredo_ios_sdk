@@ -169,16 +169,12 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     
     if (!self.connectedAndReady)
     {
-        NSLog(@"!self.connectedAndReady");
-        
         // This could happen on the first send, as the connection/subscription setup runs in the background and may not be ready yet.
         // If occurs, then wait a bit and retry.  If still not ready, give up.
         [NSThread sleepForTimeInterval:MqttSendCheckConnectedDelay];
         
         if (!self.connectedAndReady)
         {
-            NSLog(@"still !self.connectedAndReady .. canceling");
-            
             LogError(@"%@: After waiting and retrying, still not connected/ready. Aborting send, returning error.", [self getHexClientID]);
             
             [self notifyListenerOfErrorCode:QredoTransportErrorSendWhilstNotReady userData:userData];
@@ -279,7 +275,6 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
 
 - (void)reconnectWithExponentialDelay:(id)sender
 {
-    NSLog(@"reconnectWithExponentialDelay");
     [self reconnectWithExponentialDelayForSession:self.mqttSession];
 }
 
@@ -304,9 +299,8 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         [NSThread sleepForTimeInterval:self.reconnectionDelay];
         
         [self connectToServerUsingSession:mqttSession];
-        
-        NSLog(@"restarting......");
-    }
+    
+   }
 }
 
 - (void)connectToServerUsingSession:(MQTTSession *)mqttSession
@@ -342,9 +336,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     
     // Note: All events other than MQTTSessionEventConnected result in an invalidated session,
     // therefore for these events we must always reconnect before using the session again
-    
-    NSLog(@"session: %@, handleEvent: %ld", sender, (long)eventCode);
-    
+        
     switch (eventCode) {
         case MQTTSessionEventConnected:
             {

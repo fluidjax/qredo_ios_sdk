@@ -135,9 +135,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 - (void)notifyObservers:(void(^)(id observer))notificationBlock
 {
     @synchronized(self) {
-        
-        NSLog(@"notifyObserver: _oberverProxies: %@", _observerProxies);
-        
+                
         for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
             
             // perhaps some check here, if all observers are properly set up

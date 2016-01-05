@@ -315,10 +315,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 - (void)removeVaultObserver:(id<QredoVaultObserver>)observer{
     QredoObserverList *observers = _observers;
     
-    NSLog(@"removeVaultObserver: [_observers count]: %@, _updateListener.isListening: %@", @([_observers count]), _updateListener.isListening ? @"YES" : @"NO");
-    NSLog(@"_observers: %@", _observers);
-
-    //If we have just removed a listener and the  only listener left is the localIndex - remove it.
+     //If we have just removed a listener and the  only listener left is the localIndex - remove it.
     if ([observers count]==1 && [_observers contains:_localIndex])[_observers removeObserver:_localIndex];
     
     if ([observers count] < 1 && _updateListener.isListening) {

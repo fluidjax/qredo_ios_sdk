@@ -716,7 +716,6 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     __block QredoRendezvousMetadata *matchedRendezvousMetadata;
     
     [self enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
-        NSLog(@"Tag %@",rendezvousMetadata.tag);
         if ([tag isEqualToString:rendezvousMetadata.tag]){
             matchedRendezvousMetadata =rendezvousMetadata;
             *stop = YES;

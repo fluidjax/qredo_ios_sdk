@@ -846,8 +846,7 @@
         
         XCTAssertNotNil(vaultItemMetadata);
         
-        NSLog(@"Found an item %i %@ - %@",count,vaultItemMetadata.summaryValues[@"key1"],item1SummaryValues[@"key1"] );
-        if ([vaultItemMetadata.summaryValues[@"key1"] isEqual:item1SummaryValues[@"key1"]] &&
+       if ([vaultItemMetadata.summaryValues[@"key1"] isEqual:item1SummaryValues[@"key1"]] &&
             [vaultItemMetadata.summaryValues[@"key2"] isEqual:item1SummaryValues[@"key2"]] &&
             [vaultItemMetadata.summaryValues[@"key3"] isEqual:item1SummaryValues[@"key3"]])
         {

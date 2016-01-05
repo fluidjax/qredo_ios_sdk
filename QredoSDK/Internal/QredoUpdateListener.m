@@ -73,7 +73,6 @@
 - (void)stopListening
 {
     _isListening = NO;
-    NSLog(@"stopListening %@", self.dataSource);
 
     // If we support multi-response, then use it, otherwise poll
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self])
@@ -89,8 +88,7 @@
 // This method enables subscription (push) for conversation items, and creates new messages from them. Will regularly re-send subsription request as subscriptions can fail silently
 - (void)startSubscribing
 {
-    NSLog(@"startSubscribing");
-    
+   
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
     if (_subscribedToMessages) {
@@ -114,7 +112,6 @@
                                                     15ull * NSEC_PER_SEC, // interval
                                       (5ull * NSEC_PER_SEC) / 10); // how much it can defer from the interval
             dispatch_source_set_event_handler(_subscriptionRenewalTimer, ^{
-                NSLog(@"pre periodic reconnection");
                 
                 @synchronized (self) {
                     if (!_subscriptionRenewalTimer) {
@@ -123,7 +120,6 @@
                     
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reconnect" object:nil];
                     
-                    NSLog(@"periodic reconnection");
                     
 //                    [NSThread sleepForTimeInterval:5];
 
@@ -157,7 +153,6 @@
 
 - (void)didTerminateSubscriptionWithError:(NSError *)error
 {
-    NSLog(@"Conversation subscription terminated with error: %@", error);
     _subscribedToMessages = NO;
 }
 
@@ -187,14 +182,12 @@
          }
     }];
     
-    NSLog(@"started subscription: %@", self.dataSource);
 }
 
 - (void)resubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
 //    if (_subscribedToMessages) return ;
 //    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
-    NSLog(@"resubscription %@", self.dataSource);
     
     if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
     
@@ -230,13 +223,11 @@
                     completionHandler(error);
         }}];
         
-        NSLog(@"started resubscription");
     }
 }
 
 - (void)unsubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
-    NSLog(@"unsubscribeWithCompletionHandler"); // <- not called
     [self.dataSource qredoUpdateListener:self unsubscribeWithCompletionHandler:^(NSError *error) {
         _subscribedToMessages = NO;
         if (completionHandler) completionHandler(error);
@@ -246,8 +237,7 @@
 // This method disables subscription (push) for responses to rendezvous
 - (void)stopSubscribing
 {
-    NSLog(@"stopSubscribing"); // <- not called
-    // Need to stop the subsription renewal timer as well
+   // Need to stop the subsription renewal timer as well
     @synchronized (self) {
         if (_subscriptionRenewalTimer) {
             dispatch_source_cancel(_subscriptionRenewalTimer);
@@ -260,7 +250,6 @@
 
 - (BOOL)processSingleItem:(id)item sequenceValue:(id)sequenceValue
 {
-    NSLog(@"processSingleItem:(id)item sequenceValue:(id)sequenceValue");
     if (_dedupeNecessary) {
         if ([self isDuplicateOrOldItem:item sequenceValue:sequenceValue]) {
             return NO;
@@ -293,7 +282,6 @@
 
 - (void)stopPolling
 {
-    NSLog(@"stopPolling"); // <- not called
     @synchronized (self) {
         _isPollingActive = NO;
     }
