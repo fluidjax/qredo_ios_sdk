@@ -162,9 +162,10 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
                                                                                sequenceValue:newItemMetadata.descriptor.sequenceValue
                                                                                       itemId:itemId];
-        
+        __block NSError *putError=error;
         [self cacheInIndexVaultItem:vaultItem metadata:newMetadata completionHandler:^(NSError *error) {
-            completionHandler(newMetadata, nil);
+            if (putError)error=putError;
+            completionHandler(newMetadata, error);
         }];
     }];
 }
@@ -190,7 +191,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                   summaryValues:newSummaryValues
                     completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
                         
+                         __block NSError *putError=error;
                         [self cacheInIndexVaultItem:vaultItem  metadata:newItemMetadata  completionHandler:^(NSError *error) {
+                                if (putError)error=putError;
                                 completionHandler(newItemMetadata, error);
                          }];
                         
