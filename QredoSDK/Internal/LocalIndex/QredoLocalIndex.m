@@ -332,13 +332,15 @@ IncomingMetadataBlock incomingMetadatBlock;
 #pragma mark QredoVaultObserver Methods
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
+    if (!itemMetadata || !client)return;
+    
     [self putMetadata:itemMetadata];
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);
 }
 
 
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error {
-   // NSLog(@"Qredo Vault did fail with error %@",error);
+    //The index doesn't really care if the vault operation failed or not
 }
 
 
@@ -351,6 +353,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)appWillTerminate:(NSNotification*)note {
+    //ensure a more graceful termination of the App
     [self saveAndWait];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];

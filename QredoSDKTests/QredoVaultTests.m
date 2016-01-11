@@ -1082,7 +1082,9 @@
     
     [self removeLastListenerOrFinishWith:listeners allListnersRemovedExpectation:allListnersRemovedExpectation];
     
-    [self waitForExpectationsWithTimeout:[listeners count]*10 handler:^(NSError *error) {
+    int timeout = (int)[listeners count]*10;
+    
+    [self waitForExpectationsWithTimeout:timeout handler:^(NSError *error) {
         allListnersRemovedExpectation = nil;
     }];
     
@@ -1096,8 +1098,7 @@
     }
 }
 
-- (void)removeLastListenerOrFinishWith:(NSMutableArray *)listeners allListnersRemovedExpectation:(XCTestExpectation *)allListnersRemovedExpectation
-{
+- (void)removeLastListenerOrFinishWith:(NSMutableArray *)listeners allListnersRemovedExpectation:(XCTestExpectation *)allListnersRemovedExpectation{
     QredoVaultListenerWithEmptyImplementation *listener = [listeners lastObject];
     if (listener) {
         

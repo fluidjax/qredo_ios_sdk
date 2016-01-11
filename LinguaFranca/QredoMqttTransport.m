@@ -144,9 +144,19 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         
         // Attempt to connect to the server
         [self connectToServerUsingSession:_mqttSession];
-
+    
+    
         while (!self.mqttThread.isCancelled) {
-            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:MqttCancellationCheckPeriod]];
+            /*  Documented Intermittent error
+             Error:
+                MQTT ssl://early1.qredo.com:8883:... (8) EXC_BAD_ACCESS (code=EXC_I386_GPFLT)
+                Occurs on QredoSKDTest: QredoRendezvousMQTTTests : testCreateRendezvousMulitple  - after many iterations (46 & 172 in testing)
+             References:
+                http://www.coderhelps.xyz/code/17032356-bad-exc-in-nsrunloop-currentrunloop-runmode-beforedate.html
+                removing autorelease has no effect
+             */
+            
+             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:MqttCancellationCheckPeriod]];
         }
 
     }
