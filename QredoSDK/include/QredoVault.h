@@ -180,25 +180,24 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 -(void)addMetadataIndexObserver:(IncomingMetadataBlock)block;
 -(void)removeMetadataIndexObserver;
 
-/** Return the number of Metadata entries in the local Metadata index
- */
+/** Return the number of Metadata entries in the local Metadata index  */
 -(int)indexSize;
 -(NSManagedObjectContext*)indexManagedObjectContext;
 
-/** Caching of Vault Item Metadata is enabled by default, turning it off will turn off all caching & indexing
- */
+/** Caching of Vault Item Metadata is enabled by default, turning it off will turn off all caching & indexing  */
 -(void)metadataCacheEnabled:(BOOL)metadataCacheEnabled;
 
-
-/** Caching of VaultItem values is enabled by default, turning it off will force the value to be retrieved from the server
-    Metadata caching is unaffected
- */
+/** Caching of VaultItem values is enabled by default, turning it off will force the value to be retrieved from the serve. Metadata caching is unaffected  */
 -(void)valueCacheEnabled:(BOOL)valueCacheEnabled;
 
 /** Returns the size in bytes of the cache/index coredata database 
-    Specifically to allow dynamic management of the caches if required in the case of an app which uses large (>a few gig) of storage.
- */
+    Specifically to allow dynamic management of the caches if required in the case of an app which uses large (>a few gig) of storage. */
 -(long)cacheFileSize;
+
+/**  Deletes all records in the Coredata Cache/Index for this vault */
+-(void)purgeCache;
+
+
 
 @end
 

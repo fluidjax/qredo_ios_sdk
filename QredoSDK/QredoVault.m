@@ -492,6 +492,9 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     [self.localIndex setEnableValueCache:valueCacheEnabled];
 }
 
+-(void)purgeCache{
+    [self.localIndex purgeCoreData];
+}
 
 
 -(NSManagedObjectContext*)indexManagedObjectContext{

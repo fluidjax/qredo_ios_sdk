@@ -136,15 +136,21 @@ IncomingMetadataBlock incomingMetadatBlock;
     
 }
 
-
-- (void)purge {
+- (void)purgeCoreData {
     [self.managedObjectContext performBlockAndWait:^{
         QredoIndexVault *indexVaultToDelete = self.qredoIndexVault;
         self.qredoIndexVault = nil;
         if (indexVaultToDelete) [self.managedObjectContext deleteObject:indexVaultToDelete];
+        [self saveAndWait];
+    }];
+}
+
+
+- (void)purge {
+    [self purgeCoreData];
+    [self.managedObjectContext performBlockAndWait:^{
         //rebuild the vault references after deleting the old version
         self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:self.qredoVault inManageObjectContext:self.managedObjectContext];
-        
         [self.qredoVault resetWatermark];
         [self saveAndWait];
     }];

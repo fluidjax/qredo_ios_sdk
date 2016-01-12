@@ -314,6 +314,7 @@ NSNumber *testNumber;
 }
 
 
+
 - (void)testPurge {
     NSInteger before = [qredoLocalIndex count];
     
@@ -325,7 +326,8 @@ NSNumber *testNumber;
     
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + 3,@"Failed to add new items");
-    [qredoLocalIndex purge];
+    
+    [vault purgeCache];
     NSInteger afterPurge = [qredoLocalIndex count];
     XCTAssert([qredoLocalIndex count] == 0,@"Failed to purge items");
     

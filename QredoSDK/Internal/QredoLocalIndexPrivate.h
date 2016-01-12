@@ -45,8 +45,12 @@
 /** Count of how many metadata items in the index */
 - (int)count;
 
-/** Delete all items in the cache */
+/** Delete all items in the cache and reset the watermark*/
 - (void)purge;
+
+/** Delete all items in the cache */
+- (void)purgeCoreData;
+
 
 
 /** Adds the LocalIndex as an observer to new/updated vault ID's sent from the server
@@ -60,4 +64,5 @@
 - (void)dump:(NSString *)message;
 - (long)persistentStoreFileSize;
 - (void)saveAndWait;
+
 @end
