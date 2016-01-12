@@ -77,6 +77,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @property (readonly) QredoVaultItemMetadata *metadata;
 @property (readonly) NSData *value;
 
+
 + (instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
 - (instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
 @end
@@ -86,7 +87,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
  @discussion constructor is private, as an external developer is not supposed to create an object of this class
  */
 @interface QredoVault : NSObject
-
 
 - (QredoQUID *)vaultId;
 
@@ -149,6 +149,8 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 @interface QredoVault (LocalIndex)
 
+
+
 typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 /** Enumerates through all vault items in the local index that match the predicate
@@ -182,6 +184,21 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
  */
 -(int)indexSize;
 -(NSManagedObjectContext*)indexManagedObjectContext;
+
+/** Caching of Vault Item Metadata is enabled by default, turning it off will turn off all caching & indexing
+ */
+-(void)metadataCacheEnabled:(BOOL)metadataCacheEnabled;
+
+
+/** Caching of VaultItem values is enabled by default, turning it off will force the value to be retrieved from the server
+    Metadata caching is unaffected
+ */
+-(void)valueCacheEnabled:(BOOL)valueCacheEnabled;
+
+/** Returns the size in bytes of the cache/index coredata database 
+    Specifically to allow dynamic management of the caches if required in the case of an app which uses large (>a few gig) of storage.
+ */
+-(long)cacheFileSize;
 
 @end
 

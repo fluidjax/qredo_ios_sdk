@@ -20,7 +20,7 @@
 @property (strong) NSManagedObjectContext *managedObjectContext;
 @property (strong) QredoVault *qredoVault;
 @property (strong) QredoIndexVault *qredoIndexVault;
-
+@property (strong) QredoLocalIndexDataStore *qredoLocalIndexDataStore;
 @end
 
 
@@ -39,6 +39,8 @@ IncomingMetadataBlock incomingMetadatBlock;
         self.qredoVault = vault;
         [self initializeCoreData];
         [self addAppObservers];
+        self.enableValueCache = YES;
+        self.enableMetadataCache = YES;
         self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:vault inManageObjectContext:self.managedObjectContext];
     }
     return self;
@@ -46,12 +48,19 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)putMetadata:(QredoVaultItemMetadata *)newMetadata {
+    if (self.enableMetadataCache==NO)return;
     [self putItemWithMetadata:newMetadata vaultItem:nil hasVaultItemValue:NO];
 }
 
 
 - (void)putVaultItem:(QredoVaultItem *)vaultItem {
-    [self putItemWithMetadata:vaultItem.metadata vaultItem:vaultItem hasVaultItemValue:YES];
+    if (self.enableMetadataCache==NO)return; //no caching at all
+    
+    if (self.enableValueCache==NO){
+        [self putMetadata:vaultItem.metadata];
+    }else{
+        [self putItemWithMetadata:vaultItem.metadata vaultItem:vaultItem hasVaultItemValue:YES];
+    }
 }
 
 
@@ -226,11 +235,10 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)initializeCoreData {
-    QredoLocalIndexDataStore *qredoLocalIndexDataStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
-    self.managedObjectContext = qredoLocalIndexDataStore.managedObjectContext;
+    self.qredoLocalIndexDataStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
+    self.managedObjectContext = self.qredoLocalIndexDataStore.managedObjectContext;
     return;
 }
-
 
 
 - (QredoIndexVaultItem *)addNewVaultItem:(QredoVaultItemMetadata *)newMetadata {
@@ -242,6 +250,9 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata vaultItem:(QredoVaultItem *)vaultItem hasVaultItemValue:(BOOL)hasVaultItemValue {
+    
+
+    
     [self.managedObjectContext performBlockAndWait:^{
         QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithDescriptor:newMetadata.descriptor
                                                                                inManageObjectContext:self.managedObjectContext];
@@ -286,14 +297,12 @@ IncomingMetadataBlock incomingMetadatBlock;
     
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
-        
         NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.latest.vault.vaultId = %@",self.qredoIndexVault.vaultId ];
         NSCompoundPredicate *searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToCurrentVault]];
         fetchRequest.predicate = searchPredicate;
         [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
     }];
 }
-
 
 
 - (void)enumerateQuery:(NSFetchRequest *)fetchRequest block:(void (^)(QredoVaultItemMetadata *, BOOL *))block completionHandler:(void (^)(NSError *))completionHandler {
@@ -304,7 +313,6 @@ IncomingMetadataBlock incomingMetadatBlock;
         if (completionHandler) completionHandler(error);
         return;
     }
-    
     NSError *error = nil;
     NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
     BOOL stop=NO;
@@ -328,12 +336,17 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
+
+- (long)persistentStoreFileSize{
+    return [self.qredoLocalIndexDataStore persistentStoreFileSize];
+}
+
+
 #pragma mark -
 #pragma mark QredoVaultObserver Methods
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
-    if (!itemMetadata || !client)return;
-    
+    if (!itemMetadata || !client) return;
     [self putMetadata:itemMetadata];
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);
 }

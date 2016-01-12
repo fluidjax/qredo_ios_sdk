@@ -5,11 +5,12 @@
 #import <Foundation/Foundation.h>
 @import CoreData;
 
-@interface QredoLocalIndexDataStore : NSObject
+@interface QredoLocalIndexDataStore :NSObject
 
 @property (strong, readonly) NSManagedObjectContext *managedObjectContext;
 
-+(id)sharedQredoLocalIndexDataStore;
--(void)saveContext:(BOOL)wait;
-
++ (id)sharedQredoLocalIndexDataStore;
+- (void)saveContext:(BOOL)wait;
+- (long)persistentStoreFileSize;
+ 
 @end

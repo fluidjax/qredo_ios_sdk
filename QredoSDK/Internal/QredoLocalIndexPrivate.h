@@ -8,7 +8,11 @@
 #import "QredoIndexVaultItemMetadata.h"
 
 
-@interface QredoLocalIndex : NSObject <QredoVaultObserver>
+@interface QredoLocalIndex :NSObject <QredoVaultObserver>
+
+@property (assign) BOOL enableMetadataCache;
+@property (assign) BOOL enableValueCache;
+
 
 - (instancetype)initWithVault:(QredoVault *)vault;
 
@@ -21,22 +25,22 @@
 - (QredoVaultItemMetadata *)getMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
 /** Enumerates through all vault items in the local index that match the predicate
-    The predicate search is performed on the QredoIndexSummaryValues object.
-
-    eg. [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
-        [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
-
-    Value is matched against a sub field depending on specified type.
-    Valid types are
-            value.string    (an NSString)
-            value.date      (as NSDate)
-            value.number    (an NSNumber)
-            value.data      (an NSData)
-
+ The predicate search is performed on the QredoIndexSummaryValues object.
+ 
+ eg. [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
+ [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
+ 
+ Value is matched against a sub field depending on specified type.
+ Valid types are
+ value.string    (an NSString)
+ value.date      (as NSDate)
+ value.number    (an NSNumber)
+ value.data      (an NSData)
+ 
  */
 - (void)enumerateSearch:(NSPredicate *)predicate
-        withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
-        completionHandler:(void (^)(NSError *error))completionHandler;
+              withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+      completionHandler:(void (^)(NSError *error))completionHandler;
 
 /** Count of how many metadata items in the index */
 - (int)count;
@@ -46,7 +50,7 @@
 
 
 /** Adds the LocalIndex as an observer to new/updated vault ID's sent from the server
-    Block is called after each incoming item
+ Block is called after each incoming item
  */
 - (void)enableSync;
 - (void)enableSyncWithBlock:(IncomingMetadataBlock)block;
@@ -54,5 +58,6 @@
 - (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 - (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
 - (void)dump:(NSString *)message;
-
+- (long)persistentStoreFileSize;
+- (void)saveAndWait;
 @end

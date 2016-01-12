@@ -12,10 +12,11 @@
 #import "QredoTestUtils.h"
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexPrivate.h"
+#import "QredoLocalIndexDataStore.h"
 
 //#import "PDDebugger.h"
 
-@interface QredoIndexVaultTests : XCTestCase
+@interface QredoIndexVaultTests :XCTestCase
 
 @end
 
@@ -29,32 +30,81 @@ QredoClient *client2;
 QredoVault *vault2;
 QredoLocalIndex *qredoLocalIndex2;
 
-
-
 NSDate *myTestDate;
 NSNumber *testNumber;
 
 
 
-
-
-
-
-
-
--(void)testSearch{
-    for (int i=0;i<300;i++){
+- (void)testSearch {
+    for (int i=0; i<300; i++) {
         [self createTestItemInVault:vault key1Value:[NSString stringWithFormat:@"some value continaing %i",i]];
     }
-    
     [self summaryValueTestSearch:3];
+}
+
+
+
+-(void)testDisableMetadataCache{
+    NSInteger before = [qredoLocalIndex count];
+    [vault metadataCacheEnabled:NO];
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before ,@"Item shouldn't be added to cache as it is disabled Before %ld After %ld", (long)before, (long)after);
+}
+
+
+
+-(void)testDisableValueCache{
+    NSInteger before = [qredoLocalIndex count];
+    [vault valueCacheEnabled:NO];
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before+1 ,@"Item hasn't been correctly added to the cache Before %ld After %ld", (long)before, (long)after);
+    
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomKeyValue];
+    
+    __block int count =0;
+    __block QredoVaultItemMetadata *checkVaultMetaData;
+    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        checkVaultMetaData = vaultMetaData;
+        count++;
+    } completionHandler:^(NSError *error) {
+    }];
+    
+    
+    //metadata should come from the cache
+    XCTAssert(count==1,"Incorrect number of items found");
+    XCTAssert(checkVaultMetaData.origin == QredoVaultItemOriginCache,@"Vault item doesnt come from the cache/index");
+    
+
+    //value should come from the server (not cache)
+    QredoVaultItem *vaultItem = [self getItemWithDescriptor:checkVaultMetaData inVault:vault];
+    XCTAssertNotNil(vaultItem);
+    XCTAssert(vaultItem.metadata.origin == QredoVaultItemOriginServer,@"Vault Item doesnt come from server");
     
 }
 
 
--(void)testEmptyPredicate{
+
+-(void)testPersistentFileSize{
+    long initialSize = [vault cacheFileSize];
+    NSString * randomVal = [QredoTestUtils randomStringWithLength:4096];
+    for (int i=0; i<10; i++) {
+        [self createTestItemInVault:vault key1Value:randomVal];
+    }
+    //flush to disk
+    [qredoLocalIndex saveAndWait];
+    long finalSize = [vault cacheFileSize];
+    XCTAssert(finalSize>initialSize,@"Persistent store filesize didnt grow in size when a new item is added");
+    
+}
+
+
+- (void)testEmptyPredicate {
     NSInteger before = [qredoLocalIndex count];
-    NSLog(@"Count before %ld", (long)before);
     NSString * randomTag = [QredoTestUtils randomStringWithLength:32];
     
     QredoVaultItemMetadata *item1 = [self createTestItemInVault:vault key1Value:randomTag];
@@ -62,10 +112,7 @@ NSNumber *testNumber;
     QredoVaultItemMetadata *item3 = [self createTestItemInVault:vault key1Value:@"value2"];
     
     NSInteger after = [qredoLocalIndex count];
-    NSLog(@"Count after %ld", (long)after);
-    
     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomTag];
-    
     __block int count =0;
     
     [qredoLocalIndex enumerateSearch:nil withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
@@ -73,17 +120,12 @@ NSNumber *testNumber;
     } completionHandler:^(NSError *error) {
         XCTAssertNotNil(error);
         XCTAssert(count==0,@"Count should be zero for nil predicate");
-        
-        NSLog(@"Found %i matches",count);
     }];
-  
 }
 
 
-
--(void)testMultipleClientsAndVaults{
+- (void)testMultipleClientsAndVaults {
     [self authoriseSecondClient:[QredoTestUtils randomPassword]];
-    
     
     XCTAssertNotEqual(client1, client2,@"Error creating clients");
     XCTAssertNotEqual(vault, vault2,@"Error creating vaults");
@@ -93,26 +135,23 @@ NSNumber *testNumber;
     NSInteger client2count1 = [qredoLocalIndex2 count];
     
     [self createTestItemInVault:vault key1Value:[QredoTestUtils randomStringWithLength:32]];
-
+    
     NSInteger client1count2 = [qredoLocalIndex count];
     NSInteger client2count2 = [qredoLocalIndex2 count];
     
     XCTAssertTrue(client1count2 == client1count1+1,@"failed to insert new item");
-    XCTAssertTrue(client2count1 == client2count2  ,@"incorrectly added new item to the wrong client");
-    
+    XCTAssertTrue(client2count1 == client2count2,@"incorrectly added new item to the wrong client");
     
     [self createTestItemInVault:vault2 key1Value:[QredoTestUtils randomStringWithLength:32]];
-    
     NSInteger client1count3 = [qredoLocalIndex count];
     NSInteger client2count3 = [qredoLocalIndex2 count];
-
-    XCTAssertTrue(client1count3 == client1count2,@"incorrectly added new item to the wrong client");
-        XCTAssertTrue(client2count3 == client2count2+1  ,@"failed to insert new item");
     
+    XCTAssertTrue(client1count3 == client1count2,@"incorrectly added new item to the wrong client");
+    XCTAssertTrue(client2count3 == client2count2+1,@"failed to insert new item");
 }
 
 
--(void)testIndexSource{
+- (void)testIndexSource {
     
     //put item in index
     //delete item from index
@@ -127,7 +166,7 @@ NSNumber *testNumber;
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
-
+    
     //check metadata is set
     QredoVaultItem *vaultItem = [self getItemWithDescriptor:junk1 inVault:vault];
     NSString *key1Value =vaultItem.metadata.summaryValues[@"key1"];
@@ -144,8 +183,6 @@ NSNumber *testNumber;
     NSInteger afterPurge = [qredoLocalIndex count];
     XCTAssert(afterPurge == after - 1,@"Failed to purge index");
     
-
-    
     //wait for index to be re-populated from server
     __block XCTestExpectation *receivedAfterPurgeExpectation = [self expectationWithDescription:@"receivedAfterPurgeExpectation"];
     __block QredoVaultItemMetadata *incomingMetadata;
@@ -158,52 +195,43 @@ NSNumber *testNumber;
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
         receivedAfterPurgeExpectation = nil;
     }];
-
-
-
+    
     //check that when we retrieve the item it now is not in the cache and so its origin is QredoVaultItemOriginServer
     QredoVaultItem *vaultItem2 = [self getItemWithDescriptor:incomingMetadata inVault:vault];
     NSString *key1Value2 =vaultItem.metadata.summaryValues[@"key1"];
     XCTAssert([key1Value2 isEqualToString:randomKeyValue],@"Metadata data in vault item not set correctly");
     XCTAssert(vaultItem2.metadata.origin == QredoVaultItemOriginServer,@"Metata data in vault item not set correctly");
-    
-    
-    
-    
-    
-    
-    NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+    //NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
 }
 
 
--(void)testSimplePut{
+- (void)testSimplePut {
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
-    NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+    //NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
 }
 
 
-
--(void)testMultiplePut{
+- (void)testMultiplePut {
     NSInteger before = [qredoLocalIndex count];
     int addCount = 20;
-    for (int i=0;i<addCount;i++){
+    for (int i=0; i<addCount; i++) {
         NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
         QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     }
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + addCount,@"Failed to put new LocalIndex item");
-     NSLog(@"testMultiplePut Before %ld After %ld", (long)before, (long)after);
+    //NSLog(@"testMultiplePut Before %ld After %ld", (long)before, (long)after);
 }
 
 
--(void)testEnumerateRandomClient{
+- (void)testEnumerateRandomClient {
     NSInteger before = [qredoLocalIndex count];
-    NSLog(@"Count before %ld", (long)before);
+    //NSLog(@"Count before %ld", (long)before);
     NSString * randomTag = [QredoTestUtils randomStringWithLength:32];
     
     QredoVaultItemMetadata *item1 = [self createTestItemInVault:vault key1Value:randomTag];
@@ -211,24 +239,25 @@ NSNumber *testNumber;
     QredoVaultItemMetadata *item3 = [self createTestItemInVault:vault key1Value:@"value2"];
     
     NSInteger after = [qredoLocalIndex count];
-    NSLog(@"Count after %ld", (long)after);
+    //NSLog(@"Count after %ld", (long)after);
     
-     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomTag];
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomTag];
     
     __block int count =0;
-
+    
     [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
         count++;
     } completionHandler:^(NSError *error) {
-        NSLog(@"Found %i matches",count);
+       //NSLog(@"Found %i matches",count);
     }];
     
-   
-    XCTAssert(after == before+3 ,@"Failed to add 3 items After:%ld  Before:%ld", (long)after, (long)before);
-    XCTAssert(count == 2 ,@"Failed to find 2 matches in search Found %i", count);
+    
+    XCTAssert(after == before+3,@"Failed to add 3 items After:%ld  Before:%ld", (long)after, (long)before);
+    XCTAssert(count == 2,@"Failed to find 2 matches in search Found %i", count);
 }
 
--(void)testItemDelete{
+
+- (void)testItemDelete {
     NSInteger before = [qredoLocalIndex count];
     
     QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault key1Value:@"chris"];
@@ -242,11 +271,11 @@ NSNumber *testNumber;
     [qredoLocalIndex deleteItem:meta1.descriptor];
     
     NSInteger afterDelete = [qredoLocalIndex count];
-    XCTAssert(afterDelete == before ,@"Failed to delete LocalIndex item");
+    XCTAssert(afterDelete == before,@"Failed to delete LocalIndex item");
 }
 
 
--(void)testIndexPutGet{
+- (void)testIndexPutGet {
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
     QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault key1Value:@"chris"];
     QredoVaultItem *item1 = [self getItemWithDescriptor:meta1 inVault:vault];
@@ -255,7 +284,7 @@ NSNumber *testNumber;
     
     QredoVaultItemDescriptor *searchDescriptorWithOnlyItemId =  [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:nil itemId:meta1.descriptor.itemId];
     QredoVaultItemMetadata *retrievedFromCacheMetatadata =      [qredoLocalIndex getMetadataFromIndexWithDescriptor:searchDescriptorWithOnlyItemId];
-
+    
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key1"] isEqualToString:@"chris"],@"Summary data is incorrect");
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key2"] isEqualToString:@"value2"],@"Summary data is incorrect");
     XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key3"] isEqual:testNumber],@"Summary data is correct");
@@ -264,7 +293,7 @@ NSNumber *testNumber;
     
     
     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key like %@ && value.date==%@", @"key*", myTestDate];
-
+    
     __block int count =0;
     [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
         //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
@@ -285,7 +314,7 @@ NSNumber *testNumber;
 }
 
 
--(void)testPurge{
+- (void)testPurge {
     NSInteger before = [qredoLocalIndex count];
     
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
@@ -293,19 +322,14 @@ NSNumber *testNumber;
     QredoVaultItem *item1 = [self getItemWithDescriptor:meta1 inVault:vault];
     QredoVaultItemMetadata *meta2 = [self updateItem:item1 inVault:vault];
     QredoVaultItemMetadata *junk2 = [self createTestItemInVault:vault key1Value:@"value1"];
-
+    
     NSInteger after = [qredoLocalIndex count];
-    XCTAssert(after == before + 3 ,@"Failed to add new items");
+    XCTAssert(after == before + 3,@"Failed to add new items");
     [qredoLocalIndex purge];
     NSInteger afterPurge = [qredoLocalIndex count];
-    XCTAssert([qredoLocalIndex count] == 0 ,@"Failed to purge items");
-
+    XCTAssert([qredoLocalIndex count] == 0,@"Failed to purge items");
+    
 }
-
-
-
-
-
 
 
 #pragma mark
@@ -321,13 +345,12 @@ NSNumber *testNumber;
 }
 
 
-
 - (void)tearDown {
     [super tearDown];
 }
 
 
--(void)summaryValueTestSearch:(int)expectedMatches{
+- (void)summaryValueTestSearch:(int)expectedMatches {
     //this search term returns each 100th item
     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key=%@ && value.string CONTAINS %@", @"key1", @"99"];
     
@@ -342,8 +365,7 @@ NSNumber *testNumber;
 }
 
 
-
--(void)authoriseClient:(NSString*)password{
+- (void)authoriseClient:(NSString*)password {
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
     
@@ -365,10 +387,6 @@ NSNumber *testNumber;
     vault = client1.defaultVault;
     qredoLocalIndex = client1.defaultVault.localIndex;
     
-    
-    NSLog(@"Valult in test %@",vault);
-    
-    
     XCTAssertNotNil(client1);
     XCTAssertNotNil(vault);
     XCTAssertNotNil(qredoLocalIndex);
@@ -377,7 +395,7 @@ NSNumber *testNumber;
 }
 
 
--(void)authoriseSecondClient:(NSString*)password{
+- (void)authoriseSecondClient:(NSString*)password {
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client2"];
     
@@ -417,8 +435,7 @@ NSNumber *testNumber;
 }
 
 
-
--(QredoVaultItem*)getItemWithDescriptor:(QredoVaultItemMetadata *)metadata inVault:(QredoVault *)vault{
+- (QredoVaultItem*)getItemWithDescriptor:(QredoVaultItemMetadata *)metadata inVault:(QredoVault *)vault {
     QredoVaultItemDescriptor *item1Descriptor = metadata.descriptor;
     __block XCTestExpectation  *testExpectation = [self expectationWithDescription:@"Get item"];
     __block QredoVaultItem *retrievedVaultItem = nil;
@@ -438,7 +455,7 @@ NSNumber *testNumber;
 }
 
 
--(QredoVaultItemMetadata *)updateItem:(QredoVaultItem *)item1 inVault:(QredoVault *)vault{
+- (QredoVaultItemMetadata *)updateItem:(QredoVaultItem *)item1 inVault:(QredoVault *)vault {
     
     
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
@@ -460,18 +477,18 @@ NSNumber *testNumber;
     return createdItemMetaData;
 }
 
--(QredoVaultItemMetadata *)createTestItemInVault:(QredoVault *)vault key1Value:(NSString*)key1Value{
+
+- (QredoVaultItemMetadata *)createTestItemInVault:(QredoVault *)vault key1Value:(NSString*)key1Value {
     
     
     
     NSString *str = @"this is some fixed test data";
     NSData* item1Data = [str dataUsingEncoding:NSUTF8StringEncoding];
-
+    
     NSDictionary *item1SummaryValues = @{@"key1": key1Value,
                                          @"key2": @"value2",
                                          @"key3": testNumber,
-                                         @"key4": myTestDate
-                                         };
+                                         @"key4": myTestDate};
     
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
@@ -479,7 +496,7 @@ NSNumber *testNumber;
                                                                                summaryValues:item1SummaryValues];
     
     
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata  value:item1Data];
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
     
     
     

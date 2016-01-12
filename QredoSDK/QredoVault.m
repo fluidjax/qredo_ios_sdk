@@ -39,8 +39,8 @@ static NSString *const QredoVaultItemMetadataItemTypeConversation = @"com.qredo.
 static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
-@interface QredoVault () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>
-{
+@interface QredoVault () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>{
+    
     QredoVaultKeys *_vaultKeys;
     QredoQUID *_sequenceId;
 
@@ -242,13 +242,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     [_localIndex putVaultItem:vaultItem];
     if (completionHandler)completionHandler(nil);
 }
-
-
-//-(void)cacheInIndexMetadata:(QredoVaultItem *)vaultItem
-//           completionHandler:(void (^)(NSError *error))completionHandler{
-//    [_localIndex putVaultItem:vaultItem];
-//    if (completionHandler)completionHandler(nil);
-//}
 
 
 - (void)removeBodyFromCacheWithVaultItemDescriptor:(QredoVaultItemDescriptor *)descriptor
@@ -484,6 +477,21 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 -(int)indexSize{
   return [self.localIndex count];
 }
+
+
+-(long)cacheFileSize{
+    return [self.localIndex persistentStoreFileSize];
+}
+
+
+-(void)metadataCacheEnabled:(BOOL)metadataCacheEnabled{
+    [self.localIndex setEnableMetadataCache:metadataCacheEnabled];
+}
+
+-(void)valueCacheEnabled:(BOOL)valueCacheEnabled{
+    [self.localIndex setEnableValueCache:valueCacheEnabled];
+}
+
 
 
 -(NSManagedObjectContext*)indexManagedObjectContext{

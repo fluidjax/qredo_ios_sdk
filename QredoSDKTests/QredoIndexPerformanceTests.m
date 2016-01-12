@@ -12,7 +12,7 @@
 #import "QredoTestUtils.h"
 #import "QredoVaultPrivate.h"
 
-@interface QredoIndexPerformanceTests : XCTestCase
+@interface QredoIndexPerformanceTests :XCTestCase
 
 @end
 
@@ -25,7 +25,7 @@ NSNumber *testNumber;
 
 
 
-/* Instructions for running 
+/* Instructions for running
  
  Once the vaults contains the required values
  
@@ -35,39 +35,39 @@ NSNumber *testNumber;
 
 
 //Performance Tests
--(void)testAddDummryRecords{
-//    //adding 1K records on Mac takes 160secs
-//    //do not run this on the current vaules that have 100,1000,10000 records - as they are already initialized
-//    //    NSString *clientPass = @"100";  //has 100 item ID's
-//    //    NSString *clientPass = @"1000"; //has 1000 item ID's
-//    
-        NSString *clientPass = @"10";//has 10000 item ID's
-        [self authoriseClient:clientPass];
-        XCTAssertNotNil(client1);
-        [self addTestItems:10];
+- (void)testAddDummryRecords {
+    //    //adding 1K records on Mac takes 160secs
+    //    //do not run this on the current vaules that have 100,1000,10000 records - as they are already initialized
+    //    //    NSString *clientPass = @"100";  //has 100 item ID's
+    //    //    NSString *clientPass = @"1000"; //has 1000 item ID's
+    //
+    NSString *clientPass = @"10";//has 10000 item ID's
+    [self authoriseClient:clientPass];
+    XCTAssertNotNil(client1);
+    [self addTestItems:10];
 }
 
 
--(void)testAllSizes{
+- (void)testAllSizes {
     [self importTest:10];
-  //  [self importTest:100];
-  //  [self importTest:259];
-  //    [self importTest:10000];
+    //  [self importTest:100];
+    //  [self importTest:259];
+    //    [self importTest:10000];
 }
 
 
--(void)importTest:(int)testSize{
+- (void)importTest:(int)testSize {
     NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
     [self authoriseClient:clientPass];
     qredoLocalIndex = client1.defaultVault.localIndex;
     
     [qredoLocalIndex purge];
-
+    
     int afterPurge = [qredoLocalIndex count];
     
     XCTAssertNotNil(client1);
     
-    __block  XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
+    __block XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
     __block int importCount =0;
     int countBefore = [qredoLocalIndex count];
     
@@ -76,7 +76,7 @@ NSNumber *testNumber;
     [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
         importCount++;
         NSLog(@"importing %i",importCount);
-        if (importCount==testSize)[syncwait fulfill];
+        if (importCount==testSize) [syncwait fulfill];
     }];
     
     [self waitForExpectationsWithTimeout:5000 handler:^(NSError * _Nullable error) {
@@ -84,14 +84,13 @@ NSNumber *testNumber;
     }];
     
     int countAfter = [qredoLocalIndex count];
-
+    
     XCTAssertTrue(testSize < importCount,@"Failing to import %i items", testSize);
     XCTAssertTrue(testSize < countAfter-countBefore,@"Failing to import %i items", testSize);
     
     NSLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
     
 }
-
 
 
 #pragma mark
@@ -112,7 +111,7 @@ NSNumber *testNumber;
 }
 
 
--(void)authoriseClient:(NSString*)password{
+- (void)authoriseClient:(NSString*)password {
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
     
@@ -133,8 +132,9 @@ NSNumber *testNumber;
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
         clientExpectation = nil;
     }];
-   
+    
 }
+
 
 - (NSData*)randomDataWithLength:(int)length {
     NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
@@ -145,8 +145,7 @@ NSNumber *testNumber;
 }
 
 
-
--(void)summaryValueTestSearch:(int)expectedMatches{
+- (void)summaryValueTestSearch:(int)expectedMatches {
     //this search term returns each 100th item
     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key=%@ && value.string == %@", @"key1", @"88"];
     
@@ -161,9 +160,8 @@ NSNumber *testNumber;
 }
 
 
-
--(void)addTestItems:(int)recordCount{
-   
+- (void)addTestItems:(int)recordCount {
+    
     QredoVault *vault = [client1 defaultVault];
     qredoLocalIndex = client1.defaultVault.localIndex;
     [vault addMetadataIndexObserver];
@@ -172,30 +170,29 @@ NSNumber *testNumber;
     NSInteger countBefore = [qredoLocalIndex count];
     XCTAssertNotNil(vault);
     
-    for (int i=0;i<recordCount;i++){
+    for (int i=0; i<recordCount; i++) {
         NSLog(@"Adding Record %i",i);
         NSString *testSearchValue = [NSString stringWithFormat:@"%i", i];
         QredoVaultItemMetadata *item = [self createTestItemInVault:vault key1Value:testSearchValue];
     }
     NSInteger countAfter = [qredoLocalIndex count];
-    XCTAssert(countAfter == countBefore+recordCount ,@"Failed to add items");
+    XCTAssert(countAfter == countBefore+recordCount,@"Failed to add items");
 }
 
 
--(QredoVaultItemMetadata *)createTestItemInVault:(QredoVault *)vault key1Value:(NSString*)key1Value{
+- (QredoVaultItemMetadata *)createTestItemInVault:(QredoVault *)vault key1Value:(NSString*)key1Value {
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": key1Value,
                                          @"key2": @"value2",
                                          @"key3": testNumber,
-                                         @"key4": myTestDate
-                                         };
+                                         @"key4": myTestDate};
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                  accessLevel:0
                                                                                summaryValues:item1SummaryValues];
     
     
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata  value:item1Data];
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
     
     
     
@@ -216,5 +213,6 @@ NSNumber *testNumber;
     
     return createdItemMetaData;
 }
+
 
 @end
