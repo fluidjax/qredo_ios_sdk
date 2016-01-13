@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="14F1021" minimumToolsVersion="Xcode 7.0">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15C50" minimumToolsVersion="Xcode 7.0">
     <entity name="QredoIndexSummaryValues" representedClassName="QredoIndexSummaryValues" syncable="YES">
         <attribute name="key" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="valueType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -15,13 +15,17 @@
     </entity>
     <entity name="QredoIndexVault" representedClassName="QredoIndexVault" syncable="YES">
         <attribute name="highWaterMark" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="metadataTotalSize" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="valueTotalSize" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="vaultId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
         <relationship name="vaultItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="QredoIndexVaultItem" inverseName="vault" inverseEntity="QredoIndexVaultItem" syncable="YES"/>
     </entity>
     <entity name="QredoIndexVaultItem" representedClassName="QredoIndexVaultItem" syncable="YES">
         <attribute name="hasValue" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="itemId" optional="YES" attributeType="Binary" indexed="YES" syncable="YES"/>
+        <attribute name="metadataSize" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="onServer" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="valueSize" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="latest" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemMetadata" inverseName="latest" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
         <relationship name="payload" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemPayload" inverseName="vaultItem" inverseEntity="QredoIndexVaultItemPayload" syncable="YES"/>
         <relationship name="vault" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVault" inverseName="vaultItems" inverseEntity="QredoIndexVault" syncable="YES"/>
@@ -36,6 +40,7 @@
         <attribute name="accessLevel" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="created" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dataType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastAccessed" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="descriptor" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemDescriptor" inverseName="metataData" inverseEntity="QredoIndexVaultItemDescriptor" syncable="YES"/>
         <relationship name="latest" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItem" inverseName="latest" inverseEntity="QredoIndexVaultItem" syncable="YES"/>
         <relationship name="summaryValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="QredoIndexSummaryValues" inverseName="vaultMetadata" inverseEntity="QredoIndexSummaryValues" syncable="YES"/>
@@ -47,10 +52,10 @@
     <elements>
         <element name="QredoIndexSummaryValues" positionX="-2772" positionY="-4149" width="216" height="103"/>
         <element name="QredoIndexVariableValue" positionX="-2486" positionY="-4158" width="128" height="118"/>
-        <element name="QredoIndexVault" positionX="-3708" positionY="-4201" width="128" height="88"/>
-        <element name="QredoIndexVaultItem" positionX="-3519" positionY="-4221" width="270" height="133"/>
+        <element name="QredoIndexVault" positionX="-3735" positionY="-4221" width="128" height="118"/>
+        <element name="QredoIndexVaultItem" positionX="-3528" positionY="-4221" width="270" height="163"/>
         <element name="QredoIndexVaultItemDescriptor" positionX="-2754" positionY="-4293" width="225" height="103"/>
-        <element name="QredoIndexVaultItemMetadata" positionX="-3177" positionY="-4246" width="234" height="133"/>
-        <element name="QredoIndexVaultItemPayload" positionX="-3258" positionY="-4176" width="128" height="75"/>
+        <element name="QredoIndexVaultItemMetadata" positionX="-3177" positionY="-4246" width="234" height="148"/>
+        <element name="QredoIndexVaultItemPayload" positionX="-3206" positionY="-4032" width="200" height="75"/>
     </elements>
 </model>

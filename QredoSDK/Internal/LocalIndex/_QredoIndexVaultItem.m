@@ -6,7 +6,9 @@
 const struct QredoIndexVaultItemAttributes QredoIndexVaultItemAttributes = {
 	.hasValue = @"hasValue",
 	.itemId = @"itemId",
+	.metadataSize = @"metadataSize",
 	.onServer = @"onServer",
+	.valueSize = @"valueSize",
 };
 
 const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships = {
@@ -46,8 +48,18 @@ const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships =
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"metadataSizeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"metadataSize"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"onServerValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"onServer"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"valueSizeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"valueSize"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -77,6 +89,26 @@ const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships =
 
 @dynamic itemId;
 
+@dynamic metadataSize;
+
+- (int64_t)metadataSizeValue {
+	NSNumber *result = [self metadataSize];
+	return [result longLongValue];
+}
+
+- (void)setMetadataSizeValue:(int64_t)value_ {
+	[self setMetadataSize:@(value_)];
+}
+
+- (int64_t)primitiveMetadataSizeValue {
+	NSNumber *result = [self primitiveMetadataSize];
+	return [result longLongValue];
+}
+
+- (void)setPrimitiveMetadataSizeValue:(int64_t)value_ {
+	[self setPrimitiveMetadataSize:@(value_)];
+}
+
 @dynamic onServer;
 
 - (BOOL)onServerValue {
@@ -95,6 +127,26 @@ const struct QredoIndexVaultItemRelationships QredoIndexVaultItemRelationships =
 
 - (void)setPrimitiveOnServerValue:(BOOL)value_ {
 	[self setPrimitiveOnServer:@(value_)];
+}
+
+@dynamic valueSize;
+
+- (int64_t)valueSizeValue {
+	NSNumber *result = [self valueSize];
+	return [result longLongValue];
+}
+
+- (void)setValueSizeValue:(int64_t)value_ {
+	[self setValueSize:@(value_)];
+}
+
+- (int64_t)primitiveValueSizeValue {
+	NSNumber *result = [self primitiveValueSize];
+	return [result longLongValue];
+}
+
+- (void)setPrimitiveValueSizeValue:(int64_t)value_ {
+	[self setPrimitiveValueSize:@(value_)];
 }
 
 @dynamic latest;

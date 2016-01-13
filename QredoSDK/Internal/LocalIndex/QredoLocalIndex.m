@@ -15,12 +15,13 @@
 #import "QredoIndexVaultItem.h"
 #import "QredoIndexVaultItemDescriptor.h"
 #import "QredoIndexVaultItemPayload.h"
+#import "QredoLocalIndexCacheInvalidation.h"
 
 @interface QredoLocalIndex ()
 @property (strong) NSManagedObjectContext *managedObjectContext;
 @property (strong) QredoVault *qredoVault;
-@property (strong) QredoIndexVault *qredoIndexVault;
 @property (strong) QredoLocalIndexDataStore *qredoLocalIndexDataStore;
+@property (strong) QredoLocalIndexCacheInvalidation  *cacheInvalidator;
 @end
 
 
@@ -42,9 +43,22 @@ IncomingMetadataBlock incomingMetadatBlock;
         self.enableValueCache = YES;
         self.enableMetadataCache = YES;
         self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:vault inManageObjectContext:self.managedObjectContext];
+        self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithIndexVault:self.qredoIndexVault maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
     }
     return self;
 }
+
+
+
+-(void)setMaxCacheSize:(long long)cacheSize{
+    [self.cacheInvalidator setMaxCacheSize:cacheSize];
+}
+
+
+-(long long)maxCacheSize{
+    return self.maxCacheSize;
+}
+
 
 
 - (void)putMetadata:(QredoVaultItemMetadata *)newMetadata {
@@ -91,6 +105,10 @@ IncomingMetadataBlock incomingMetadatBlock;
         }else{
             retrievedVaultItem = [qredoIndexVaultItem buildQredoVaultItem];
         }
+        
+        [self.cacheInvalidator updateAccessDate:qredoIndexVaultItem.latest];
+        [self save];
+        
     }];
     return retrievedVaultItem;
 }
@@ -118,6 +136,9 @@ IncomingMetadataBlock incomingMetadatBlock;
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [results lastObject];
         retrievedMetadata = [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
+        
+        [self.cacheInvalidator updateAccessDate:qredoIndexVaultItemMetadata];
+        
     }];
     return retrievedMetadata;
 }
@@ -151,10 +172,28 @@ IncomingMetadataBlock incomingMetadatBlock;
     [self.managedObjectContext performBlockAndWait:^{
         //rebuild the vault references after deleting the old version
         self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:self.qredoVault inManageObjectContext:self.managedObjectContext];
+        self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithIndexVault:self.qredoIndexVault maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
         [self.qredoVault resetWatermark];
         [self saveAndWait];
     }];
 }
+
+- (void)purgeAll{
+    [self.managedObjectContext performBlockAndWait:^{
+        NSError *error = nil;
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVault entityName]];
+        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        for (QredoIndexVault *qiv in results){
+            [self.managedObjectContext deleteObject:qiv];
+        }
+        [self purge];
+        [self saveAndWait];
+    }];
+   
+        
+        
+}
+
 
 
 - (void)enableSync {
@@ -249,16 +288,40 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 - (QredoIndexVaultItem *)addNewVaultItem:(QredoVaultItemMetadata *)newMetadata {
     //There is nothing in coredata so add this new item
-    QredoIndexVaultItem *newIndeVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
-    newIndeVaultItem.vault = self.qredoIndexVault;
-    return newIndeVaultItem;
+    QredoIndexVaultItem *newIndexVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
+    newIndexVaultItem.metadataSizeValue = [self summaryValueByteCount:newMetadata.summaryValues];
+    [self.cacheInvalidator updateAccessDate:newIndexVaultItem.latest];
+    newIndexVaultItem.vault = self.qredoIndexVault;
+    return newIndexVaultItem;
 }
 
 
-- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata vaultItem:(QredoVaultItem *)vaultItem hasVaultItemValue:(BOOL)hasVaultItemValue {
-    
+-(long)summaryValueByteCount:(NSDictionary *)summaryValue{
+    NSMutableData *data = [[NSMutableData alloc] init];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+    [archiver encodeObject:summaryValue];
+    [archiver finishEncoding];
+    NSInteger bytes=[data length];
+    return bytes;
+}
 
-    
+
+
+
+-(QredoIndexVaultItem *)getIndexVaultItemFor:(QredoVaultItemMetadata *)newMetadata{
+    //primarily for testing
+    __block QredoIndexVaultItem *indexedItem;
+    [self.managedObjectContext performBlockAndWait:^{
+        indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithDescriptor:newMetadata.descriptor
+                                                                       inManageObjectContext:self.managedObjectContext];
+    }];
+    return indexedItem;
+}
+
+
+
+
+- (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata vaultItem:(QredoVaultItem *)vaultItem hasVaultItemValue:(BOOL)hasVaultItemValue {
     [self.managedObjectContext performBlockAndWait:^{
         QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithDescriptor:newMetadata.descriptor
                                                                                inManageObjectContext:self.managedObjectContext];
@@ -268,14 +331,17 @@ IncomingMetadataBlock incomingMetadatBlock;
         if (!indexedItem) {
             QredoIndexVaultItem *vaultIndexItem = [self addNewVaultItem:newMetadata];
             [vaultIndexItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
+            [self.cacheInvalidator addSizeToTotals:vaultIndexItem];
             [self save];
             return;
         }
         
         //There is already a version in the index with same sequence ID and previous sequence Number
         if ([latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasSmallerSequenceNumberThan:newMetadata]) {
+            [self.cacheInvalidator subtractSizeFromTotals:indexedItem];
             [indexedItem addNewVersion:newMetadata];
             [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
+            [self.cacheInvalidator addSizeToTotals:indexedItem];
             [self save];
             return;
         }
@@ -283,8 +349,11 @@ IncomingMetadataBlock incomingMetadatBlock;
         //The new version comes from  a different SequenceID - and therefore another device
         //The only way to guess the newest one is to compare created Date stamps (which are set by the device, so not 100% reliable)
         if (![latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasCreatedTimeStampBefore:newMetadata]) {
+            [self.cacheInvalidator subtractSizeFromTotals:indexedItem];
             [indexedItem addNewVersion:newMetadata];
+            [self.cacheInvalidator updateAccessDate:indexedItem.latest];
             [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
+            [self.cacheInvalidator addSizeToTotals:indexedItem];
             [self save];
             return;
         }
@@ -324,7 +393,12 @@ IncomingMetadataBlock incomingMetadatBlock;
     BOOL stop=NO;
     for (QredoIndexSummaryValues *summaryValue in results) {
         QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = summaryValue.vaultMetadata;
+        
+        [self.cacheInvalidator updateAccessDate:qredoIndexVaultItemMetadata];
+        
         QredoVaultItemMetadata *qredoVaultItemMetadata= [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
+        
+        
         if (block) block(qredoVaultItemMetadata,&stop);
         if (stop) break;
     }

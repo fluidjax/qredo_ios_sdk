@@ -7,12 +7,14 @@
 #import "QredoIndexSummaryValues.h"
 #import "QredoIndexVaultItemMetadata.h"
 
+@class QredoIndexVault;
 
 @interface QredoLocalIndex :NSObject <QredoVaultObserver>
 
 @property (assign) BOOL enableMetadataCache;
 @property (assign) BOOL enableValueCache;
-
+@property (assign) long long maxCacheSize;
+@property (strong) QredoIndexVault *qredoIndexVault;
 
 - (instancetype)initWithVault:(QredoVault *)vault;
 
@@ -51,6 +53,8 @@
 /** Delete all items in the cache */
 - (void)purgeCoreData;
 
+/* Purge all vaults from coredata */
+- (void)purgeAll;
 
 
 /** Adds the LocalIndex as an observer to new/updated vault ID's sent from the server
@@ -64,5 +68,7 @@
 - (void)dump:(NSString *)message;
 - (long)persistentStoreFileSize;
 - (void)saveAndWait;
+
+- (QredoIndexVaultItem *)getIndexVaultItemFor:(QredoVaultItemMetadata *)newMetadata;
 
 @end

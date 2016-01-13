@@ -5,6 +5,8 @@
 
 extern const struct QredoIndexVaultAttributes {
 	__unsafe_unretained NSString *highWaterMark;
+	__unsafe_unretained NSString *metadataTotalSize;
+	__unsafe_unretained NSString *valueTotalSize;
 	__unsafe_unretained NSString *vaultId;
 } QredoIndexVaultAttributes;
 
@@ -26,6 +28,22 @@ extern const struct QredoIndexVaultRelationships {
 @property (nonatomic, strong) NSData* highWaterMark;
 
 //- (BOOL)validateHighWaterMark:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* metadataTotalSize;
+
+@property (atomic) int64_t metadataTotalSizeValue;
+- (int64_t)metadataTotalSizeValue;
+- (void)setMetadataTotalSizeValue:(int64_t)value_;
+
+//- (BOOL)validateMetadataTotalSize:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* valueTotalSize;
+
+@property (atomic) int64_t valueTotalSizeValue;
+- (int64_t)valueTotalSizeValue;
+- (void)setValueTotalSizeValue:(int64_t)value_;
+
+//- (BOOL)validateValueTotalSize:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSData* vaultId;
 
@@ -49,6 +67,18 @@ extern const struct QredoIndexVaultRelationships {
 
 - (NSData*)primitiveHighWaterMark;
 - (void)setPrimitiveHighWaterMark:(NSData*)value;
+
+- (NSNumber*)primitiveMetadataTotalSize;
+- (void)setPrimitiveMetadataTotalSize:(NSNumber*)value;
+
+- (int64_t)primitiveMetadataTotalSizeValue;
+- (void)setPrimitiveMetadataTotalSizeValue:(int64_t)value_;
+
+- (NSNumber*)primitiveValueTotalSize;
+- (void)setPrimitiveValueTotalSize:(NSNumber*)value;
+
+- (int64_t)primitiveValueTotalSizeValue;
+- (void)setPrimitiveValueTotalSizeValue:(int64_t)value_;
 
 - (NSData*)primitiveVaultId;
 - (void)setPrimitiveVaultId:(NSData*)value;
