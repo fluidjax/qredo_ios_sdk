@@ -21,7 +21,7 @@
 @property (strong) NSManagedObjectContext *managedObjectContext;
 @property (strong) QredoVault *qredoVault;
 @property (strong) QredoLocalIndexDataStore *qredoLocalIndexDataStore;
-@property (strong) QredoLocalIndexCacheInvalidation  *cacheInvalidator;
+
 @end
 
 
@@ -289,21 +289,14 @@ IncomingMetadataBlock incomingMetadatBlock;
 - (QredoIndexVaultItem *)addNewVaultItem:(QredoVaultItemMetadata *)newMetadata {
     //There is nothing in coredata so add this new item
     QredoIndexVaultItem *newIndexVaultItem = [QredoIndexVaultItem create:newMetadata inManageObjectContext:self.managedObjectContext];
-    newIndexVaultItem.metadataSizeValue = [self summaryValueByteCount:newMetadata.summaryValues];
+    newIndexVaultItem.metadataSizeValue = [self.cacheInvalidator summaryValueByteCountSizeEstimator:newMetadata.summaryValues];
     [self.cacheInvalidator updateAccessDate:newIndexVaultItem.latest];
     newIndexVaultItem.vault = self.qredoIndexVault;
     return newIndexVaultItem;
 }
 
 
--(long)summaryValueByteCount:(NSDictionary *)summaryValue{
-    NSMutableData *data = [[NSMutableData alloc] init];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-    [archiver encodeObject:summaryValue];
-    [archiver finishEncoding];
-    NSInteger bytes=[data length];
-    return bytes;
-}
+
 
 
 

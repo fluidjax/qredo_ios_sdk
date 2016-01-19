@@ -6,6 +6,7 @@
 #import "Qredo.h"
 #import "QredoIndexSummaryValues.h"
 #import "QredoIndexVaultItemMetadata.h"
+#import "QredoLocalIndexCacheInvalidation.h"
 
 @class QredoIndexVault;
 
@@ -15,6 +16,7 @@
 @property (assign) BOOL enableValueCache;
 @property (assign) long long maxCacheSize;
 @property (strong) QredoIndexVault *qredoIndexVault;
+@property (strong) QredoLocalIndexCacheInvalidation  *cacheInvalidator;
 
 - (instancetype)initWithVault:(QredoVault *)vault;
 

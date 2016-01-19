@@ -18,6 +18,22 @@
 @property (strong) QredoIndexVault *qredoIndexVault;
 @end
 
+/* Constants used to estimate the file size of the coredata index
+   The values chose give estimates within 10% of the actual size on disk for a variety of different
+    Count of VaultItems (1-1000)
+    Size of VaultItem payload (1-1000)
+    Count Of Metadata items per Vault Item (1-100)
+    Size of Metadata item (1-100)
+*/
+ 
+static long  COREDATA_OVERHEAD_PER_VAULT_ITEM = 190;            //storage overhead for each vaultitem
+static float COREDATA_SUMMARY_VALUE_INDEX_MULTIPLIER = 2.0;     //storage overhead multipler for each metadata item - space used by indexes
+static float COREDATA_OVERHEAD_PER_SUMMARY_ITEM = 135;          //storage overgead for each metadata item
+static long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;           //storage overhead for the sqllite version of the model without any data
+
+#pragma mark
+#pragma mark Public Methods
+
 
 @implementation QredoLocalIndexCacheInvalidation
 
@@ -32,8 +48,65 @@
 }
 
 
+
+- (void)subtractSizeFromTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
+    [self subtractValueSizeFromTotals:qredoIndexVaultItem];
+    [self subtractMetadataSizeFromTotals:qredoIndexVaultItem];
+}
+
+
+- (void)addSizeToTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
+    long long originalTotalValueSize = self.qredoIndexVault.valueTotalSizeValue;
+    long long vaultSizeIncrease = qredoIndexVaultItem.valueSizeValue;
+    [self.qredoIndexVault setValueTotalSizeValue:originalTotalValueSize+vaultSizeIncrease];
+    
+    long long originalTotalMetadataSize = self.qredoIndexVault.metadataTotalSizeValue;
+    long long metadataSizeIncrease = qredoIndexVaultItem.metadataSizeValue;
+    [self.qredoIndexVault setMetadataTotalSizeValue:originalTotalMetadataSize+metadataSizeIncrease];
+    
+    [self updateAccessDate:qredoIndexVaultItem.latest];
+    [self invalidate];
+}
+
+
+- (void)updateAccessDate:(QredoIndexVaultItemMetadata *)indexVaultItemMetadata {
+    NSDate *now = [NSDate date];
+    indexVaultItemMetadata.lastAccessed = now;
+}
+
+
+-(long)summaryValueByteCountSizeEstimator:(NSDictionary *)summaryValue{
+    //calculate the storage needed for the summaryValue dictionary
+    long totalByteCount = 0;
+    
+    for (NSString *key in summaryValue){
+        totalByteCount += [key length];
+        totalByteCount += (float)[[summaryValue objectForKey:key] length] * COREDATA_SUMMARY_VALUE_INDEX_MULTIPLIER;
+        totalByteCount += COREDATA_OVERHEAD_PER_SUMMARY_ITEM;
+        
+    }
+    return totalByteCount;
+}
+
+
+- (long long)totalCacheSizeEstimate {
+    //calculate how much data we are storing in the cache
+    //we cant use the size of the file on the disk, as sqllite reclaims disk spcae in its own time (vacuum)
+    long vaultItemCount = [self.qredoIndexVault.vaultItems count];
+    long overhead = (COREDATA_OVERHEAD_PER_VAULT_ITEM * vaultItemCount) + COREDATA_BASE_SQLLITE_OVERHEAD;
+    
+    long long totalCacheSize = self.qredoIndexVault.valueTotalSizeValue + self.qredoIndexVault.metadataTotalSizeValue + overhead;
+    
+    return totalCacheSize;
+}
+
+#pragma mark
+#pragma mark Private Methods
+
+
 - (void)invalidate {
-    //Check if cache is too big, if so remove Vault Item values
+    //Check if cache is too big, if so remove Vault Item values (not metadata) until there are either no more items to remove
+    //or the cache size is under the maximum allowed size
     BOOL haveMoreItemsToDelete = YES;
     while(haveMoreItemsToDelete && [self overCacheSize]==YES ) {
         haveMoreItemsToDelete = [self deleteOldestItem];
@@ -44,8 +117,8 @@
 
 - (void)checkForOverSizeCache {
     /* Display a warning if the cache size is too big, and cant be made smaller becasue there are no Vault Item Values left to remove
-     This will occur when the index/cache is full of metadata.
-     Deleting metadata will from the index will prevent metadata searches working correctly.  */
+       This will occur when the index/cache is full of metadata.
+       Deleting metadata will from the index will prevent metadata searches working correctly.  */
     QredoLocalIndexDataStore *persistentStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
     long fileSizeOnDisk = [persistentStore persistentStoreFileSize];
     if (fileSizeOnDisk > self.maxCacheSize) {
@@ -54,19 +127,12 @@
 }
 
 
-- (long long)totalCacheSize {
-    //calculate how much data we are storing in the cache
-    //we cant use the size of the file on the disk, as sqllite reclaims disk spcae in its own time (vacuum)
-    long vaultItemCount = [self.qredoIndexVault.vaultItems count];
-    long overhead = vaultItemCount * 20;
-    long long totalCacheSize = self.qredoIndexVault.valueTotalSizeValue + self.qredoIndexVault.metadataTotalSizeValue + overhead;
-    return totalCacheSize;
-}
+
 
 
 - (BOOL)overCacheSize {
-    //determine if the
-    if ([self totalCacheSize] > self.maxCacheSize) {
+    //Make an estimate to see if we are using more cache space than the specified maximum cache size
+    if ([self totalCacheSizeEstimate] > self.maxCacheSize) {
         return YES;
     }
     return NO;
@@ -74,6 +140,10 @@
 
 
 - (BOOL)deleteOldestItem {
+    /** Get a list of QredoIndexVaultItems which has a payload  in lastAccessed order
+        Delete the first item in the list (oldest)
+     */
+    
     __block BOOL haveMoreItemsToDelete = YES;
     NSManagedObjectContext * moc = self.qredoIndexVault.managedObjectContext;
     
@@ -116,32 +186,6 @@
     long long originalTotalMetadataSize = self.qredoIndexVault.metadataTotalSizeValue;
     long long metadataSizeIncrease = qredoIndexVaultItem.metadataSizeValue;
     [self.qredoIndexVault setMetadataTotalSizeValue:originalTotalMetadataSize-metadataSizeIncrease];
-}
-
-
-- (void)subtractSizeFromTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
-    [self subtractValueSizeFromTotals:qredoIndexVaultItem];
-    [self subtractMetadataSizeFromTotals:qredoIndexVaultItem];
-}
-
-
-- (void)addSizeToTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
-    long long originalTotalValueSize = self.qredoIndexVault.valueTotalSizeValue;
-    long long vaultSizeIncrease = qredoIndexVaultItem.valueSizeValue;
-    [self.qredoIndexVault setValueTotalSizeValue:originalTotalValueSize+vaultSizeIncrease];
-    
-    long long originalTotalMetadataSize = self.qredoIndexVault.metadataTotalSizeValue;
-    long long metadataSizeIncrease = qredoIndexVaultItem.metadataSizeValue;
-    [self.qredoIndexVault setMetadataTotalSizeValue:originalTotalMetadataSize+metadataSizeIncrease];
-    
-    [self updateAccessDate:qredoIndexVaultItem.latest];
-    [self invalidate];
-}
-
-
-- (void)updateAccessDate:(QredoIndexVaultItemMetadata *)indexVaultItemMetadata {
-    NSDate *now = [NSDate date];
-    indexVaultItemMetadata.lastAccessed = now;
 }
 
 

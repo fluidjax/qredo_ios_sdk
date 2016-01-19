@@ -49,60 +49,53 @@ NSNumber *testNumber;
 -(void)testUpdateAccessDatePut{
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:1024];
-    
     long startSize = [vault cacheFileSize];
-
     [self createLarge1MTestItem:vault];
-    
-    
-    
-    
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before+1 ,@"Item shouldn't be added to cache as it is disabled Before %ld After %ld", (long)before, (long)after);
-    
     long endSize = [vault cacheFileSize];
-    
     NSLog(@"Start:%ld  End:%ld", startSize, endSize);
-    
-    
 }
 
 
 
+-(void)testCoredataCacheEstimateConstants{
+    //This test was used as a utility (with rolling modifications) to determine the constants in QredoLocalIndexCacheInvalidation
+    //so the estimate of the coredata file size can be more accurate
+    //there is no need to run this as a standard test
 
-
-//    QredoIndexVault *qredoIndexVault = qredoLocalIndex.qredoIndexVault;
-//    long long startValueSize     = qredoIndexVault.valueTotalSizeValue;
-//    long long startMetadataSize  = qredoIndexVault.metadataTotalSizeValue;
-//    
-//    
-//    NSLog(@"Start File %ld",[vault cacheFileSize]);
-//    NSLog(@"Start Calc %lld",startValueSize+startMetadataSize);
-//
-//    long long endValueSize     = qredoIndexVault.valueTotalSizeValue;
-//    long long endMetadataSize  = qredoIndexVault.metadataTotalSizeValue;
-//    
-//    NSLog(@"End   File %ld",[vault cacheFileSize]);
-//    NSLog(@"End   Calc %lld",endValueSize+endMetadataSize);
-//    
-//    
-
-
-
--(void)testXXX{
+/*
     [qredoLocalIndex purgeAll];
     [vault setMaxCacheSize:10000000000];
     long startFile = [vault cacheFileSize];
 
-    int recordCount=10;
+    long recordCount=1000;
+    long vaultSize  = 1000;
+    long metaSize       = 100;
+    long metadataCount  = 10;
+    
     for (int i=0;i<recordCount;i++){
-        [self createVaultItemSize:1 metadataSize:1000];
+        [self createVaultItemSize:(int)vaultSize metadataSize:(int)metaSize withMetadataRecords:(int)metadataCount];
     }
     
     long endFile = [vault cacheFileSize];
+
+    NSLog(@"Start  Size on Disk = %ld", startFile);;
+    NSLog(@"End    Size on Disk = %ld", endFile);
     
-    NSLog(@"Size = %ld", (endFile - startFile)/recordCount);
+    long sizeOfPayload      = recordCount *vaultSize;
+    long sizeOfMetdadata    = (recordCount * metadataCount) * metaSize;
+    long recordSize = (vaultSize+(metaSize*metadataCount))* recordCount;
     
+    NSLog(@"Overhead per record is          = %ld", (endFile - startFile - recordSize)/recordCount);
+    NSLog(@"Overhead per metadata record is = %ld", (endFile - startFile - recordSize)/recordCount/metadataCount);
+    NSLog(@"Metadata size is                = %ld", metadataCount*metaSize);
+
+    NSLog(@"Size on disk is       %ld",  endFile);
+    NSLog(@"Index size stimate is %lld",[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
+    
+    NSLog(@"*** Difference between estimate & actual %0.2f",(float)endFile/(float)[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
+ */
     
 }
     
@@ -603,6 +596,46 @@ NSNumber *testNumber;
          createdItemMetaData = newItemMetadata;
          [testExpectation fulfill];
      }];
+    
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+    
+    return createdItemMetaData;
+}
+
+
+- (QredoVaultItemMetadata *)createVaultItemSize:(int)vaultItemSize metadataSize:(int)metadataSize withMetadataRecords:(int)metadataRecords{
+    //create a vault item with a specific size (both value & metadata)
+    
+    NSMutableDictionary *item1SummaryValues = [[NSMutableDictionary alloc] init];
+    for (int i=0;i<metadataRecords;i++){
+        NSString *key = [NSString stringWithFormat:@"key%i",i];
+        NSString *metadataString          = [QredoTestUtils randomStringWithLength:metadataSize];
+        [item1SummaryValues setObject:metadataString forKey:key];
+    }
+    
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
+                                                                                 accessLevel:0
+                                                                               summaryValues:item1SummaryValues];
+    
+    
+    NSString *valueString             = [QredoTestUtils randomStringWithLength:vaultItemSize];
+    NSData* item1Data                 = [valueString dataUsingEncoding:NSUTF8StringEncoding];
+
+    
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
+    
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item with defined size"];
+    __block QredoVaultItemMetadata *createdItemMetaData = nil;
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+        XCTAssertNil(error);
+        XCTAssertNotNil(newItemMetadata);
+        createdItemMetaData = newItemMetadata;
+        [testExpectation fulfill];
+    }];
     
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
