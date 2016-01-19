@@ -6,7 +6,9 @@
 extern const struct QredoIndexVaultItemAttributes {
 	__unsafe_unretained NSString *hasValue;
 	__unsafe_unretained NSString *itemId;
+	__unsafe_unretained NSString *metadataSize;
 	__unsafe_unretained NSString *onServer;
+	__unsafe_unretained NSString *valueSize;
 } QredoIndexVaultItemAttributes;
 
 extern const struct QredoIndexVaultItemRelationships {
@@ -40,6 +42,14 @@ extern const struct QredoIndexVaultItemRelationships {
 
 //- (BOOL)validateItemId:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSNumber* metadataSize;
+
+@property (atomic) int64_t metadataSizeValue;
+- (int64_t)metadataSizeValue;
+- (void)setMetadataSizeValue:(int64_t)value_;
+
+//- (BOOL)validateMetadataSize:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSNumber* onServer;
 
 @property (atomic) BOOL onServerValue;
@@ -47,6 +57,14 @@ extern const struct QredoIndexVaultItemRelationships {
 - (void)setOnServerValue:(BOOL)value_;
 
 //- (BOOL)validateOnServer:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* valueSize;
+
+@property (atomic) int64_t valueSizeValue;
+- (int64_t)valueSizeValue;
+- (void)setValueSizeValue:(int64_t)value_;
+
+//- (BOOL)validateValueSize:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) QredoIndexVaultItemMetadata *latest;
 
@@ -73,11 +91,23 @@ extern const struct QredoIndexVaultItemRelationships {
 - (NSData*)primitiveItemId;
 - (void)setPrimitiveItemId:(NSData*)value;
 
+- (NSNumber*)primitiveMetadataSize;
+- (void)setPrimitiveMetadataSize:(NSNumber*)value;
+
+- (int64_t)primitiveMetadataSizeValue;
+- (void)setPrimitiveMetadataSizeValue:(int64_t)value_;
+
 - (NSNumber*)primitiveOnServer;
 - (void)setPrimitiveOnServer:(NSNumber*)value;
 
 - (BOOL)primitiveOnServerValue;
 - (void)setPrimitiveOnServerValue:(BOOL)value_;
+
+- (NSNumber*)primitiveValueSize;
+- (void)setPrimitiveValueSize:(NSNumber*)value;
+
+- (int64_t)primitiveValueSizeValue;
+- (void)setPrimitiveValueSizeValue:(int64_t)value_;
 
 - (QredoIndexVaultItemMetadata*)primitiveLatest;
 - (void)setPrimitiveLatest:(QredoIndexVaultItemMetadata*)value;

@@ -7,6 +7,7 @@ extern const struct QredoIndexVaultItemMetadataAttributes {
 	__unsafe_unretained NSString *accessLevel;
 	__unsafe_unretained NSString *created;
 	__unsafe_unretained NSString *dataType;
+	__unsafe_unretained NSString *lastAccessed;
 } QredoIndexVaultItemMetadataAttributes;
 
 extern const struct QredoIndexVaultItemMetadataRelationships {
@@ -44,6 +45,10 @@ extern const struct QredoIndexVaultItemMetadataRelationships {
 
 //- (BOOL)validateDataType:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSDate* lastAccessed;
+
+//- (BOOL)validateLastAccessed:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) QredoIndexVaultItemDescriptor *descriptor;
 
 //- (BOOL)validateDescriptor:(id*)value_ error:(NSError**)error_;
@@ -79,6 +84,9 @@ extern const struct QredoIndexVaultItemMetadataRelationships {
 
 - (NSString*)primitiveDataType;
 - (void)setPrimitiveDataType:(NSString*)value;
+
+- (NSDate*)primitiveLastAccessed;
+- (void)setPrimitiveLastAccessed:(NSDate*)value;
 
 - (QredoIndexVaultItemDescriptor*)primitiveDescriptor;
 - (void)setPrimitiveDescriptor:(QredoIndexVaultItemDescriptor*)value;

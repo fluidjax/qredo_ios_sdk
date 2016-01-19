@@ -21,6 +21,7 @@
 
 -(void)setVaultValue:(NSData *)data hasVaultItemValue:(BOOL)hasVaultItemValue{
     self.hasValueValue = hasVaultItemValue;
+    self.valueSizeValue = [data length];
     if (hasVaultItemValue==YES){
         
         if (self.payload==nil){

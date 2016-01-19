@@ -173,15 +173,11 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 
 
-/** Registers & removes the Metadata index database as a listener to incoming vault items
- */
-
--(void)addMetadataIndexObserver;
--(void)addMetadataIndexObserver:(IncomingMetadataBlock)block;
--(void)removeMetadataIndexObserver;
 
 /** Return the number of Metadata entries in the local Metadata index  */
 -(int)indexSize;
+
+/** Retrieves an NSManagedObjectContext (on main Thread) for the Coredata stack holding the index */
 -(NSManagedObjectContext*)indexManagedObjectContext;
 
 /** Caching of Vault Item Metadata is enabled by default, turning it off will turn off all caching & indexing  */
@@ -197,6 +193,10 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 /**  Deletes all records in the Coredata Cache/Index for this vault */
 -(void)purgeCache;
 
+
+
+/** Set the maximum size in bytes of the local cache/index default is QREDO_DEFAULT_INDEX_CACHE_SIZE in Qredo.h */
+-(void)setMaxCacheSize:(long long)maxSize;
 
 
 @end

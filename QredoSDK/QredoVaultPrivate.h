@@ -72,4 +72,13 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 // Destroys all data, including sequenceId record. Vault objects is not supposed to be used after that
 - (void)clearAllData;
 
+
+/** Registers & removes the Metadata index database as a listener to incoming vault items
+ */
+
+-(void)addMetadataIndexObserver;
+-(void)addMetadataIndexObserver:(IncomingMetadataBlock)block;
+-(void)removeMetadataIndexObserver;
+
+
 @end

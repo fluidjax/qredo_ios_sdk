@@ -7,6 +7,7 @@ const struct QredoIndexVaultItemMetadataAttributes QredoIndexVaultItemMetadataAt
 	.accessLevel = @"accessLevel",
 	.created = @"created",
 	.dataType = @"dataType",
+	.lastAccessed = @"lastAccessed",
 };
 
 const struct QredoIndexVaultItemMetadataRelationships QredoIndexVaultItemMetadataRelationships = {
@@ -73,6 +74,8 @@ const struct QredoIndexVaultItemMetadataRelationships QredoIndexVaultItemMetadat
 @dynamic created;
 
 @dynamic dataType;
+
+@dynamic lastAccessed;
 
 @dynamic descriptor;
 

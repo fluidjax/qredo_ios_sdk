@@ -70,7 +70,18 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 @implementation QredoVault (Private)
 
+-(void)addMetadataIndexObserver{
+    [self.localIndex enableSync];
+}
 
+-(void)addMetadataIndexObserver:(IncomingMetadataBlock)block{
+    [self.localIndex enableSyncWithBlock:block];
+}
+
+
+-(void)removeMetadataIndexObserver{
+    [self.localIndex removeIndexObserver];
+}
 
 
 - (QredoLocalIndex *)localIndex{
@@ -461,18 +472,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 }
 
 
--(void)addMetadataIndexObserver{
-    [self.localIndex enableSync];
-}
 
--(void)addMetadataIndexObserver:(IncomingMetadataBlock)block{
-    [self.localIndex enableSyncWithBlock:block];
-}
-
-
--(void)removeMetadataIndexObserver{
-    [self.localIndex removeIndexObserver];
-}
 
 -(int)indexSize{
   return [self.localIndex count];
@@ -481,6 +481,11 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 
 -(long)cacheFileSize{
     return [self.localIndex persistentStoreFileSize];
+}
+
+
+-(void)setMaxCacheSize:(long long)maxSize{
+    [self.localIndex setMaxCacheSize:maxSize];
 }
 
 
