@@ -833,6 +833,7 @@
 		83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _QredoIndexVault.m; path = LocalIndex/_QredoIndexVault.m; sourceTree = "<group>"; };
 		83227B831C15CECB006CAD75 /* QredoIndexVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVault.h; path = LocalIndex/QredoIndexVault.h; sourceTree = "<group>"; };
 		83227B841C15CECB006CAD75 /* QredoIndexVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexVault.m; path = LocalIndex/QredoIndexVault.m; sourceTree = "<group>"; };
+		833A3BEE1C4E9FA500FAD9FC /* QredoIndexModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoIndexModel.h; sourceTree = "<group>"; };
 		833FB2BE1C10A8CE0092E05A /* QredoLocalIndexPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoLocalIndexPrivate.h; sourceTree = "<group>"; };
 		83627B941BF5F59F0062AB4E /* QredoUserCredentialsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUserCredentialsTests.m; sourceTree = "<group>"; };
 		837526671C0F3477004DDDB2 /* QredoLocalIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoLocalIndex.m; path = LocalIndex/QredoLocalIndex.m; sourceTree = "<group>"; };
@@ -1671,6 +1672,7 @@
 				837526A41C0F377C004DDDB2 /* QredoIndexVaultItemMetadata.m */,
 				83AF3A421C11DEFF003B258F /* QredoIndexVariableValue.h */,
 				83AF3A431C11DEFF003B258F /* QredoIndexVariableValue.m */,
+				833A3BEE1C4E9FA500FAD9FC /* QredoIndexModel.h */,
 			);
 			name = "human files";
 			sourceTree = "<group>";

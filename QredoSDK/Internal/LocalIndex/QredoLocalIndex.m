@@ -8,14 +8,14 @@
 @import CoreData;
 @import UIKit;
 
+
 #import "QredoLocalIndexPrivate.h"
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"
-#import "QredoIndexVault.h"
-#import "QredoIndexVaultItem.h"
-#import "QredoIndexVaultItemDescriptor.h"
-#import "QredoIndexVaultItemPayload.h"
 #import "QredoLocalIndexCacheInvalidation.h"
+#import "QredoIndexModel.h"
+
+
 
 @interface QredoLocalIndex ()
 @property (strong) NSManagedObjectContext *managedObjectContext;
@@ -50,12 +50,12 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 
--(void)setMaxCacheSize:(long long)cacheSize{
+- (void)setMaxCacheSize:(long long)cacheSize{
     [self.cacheInvalidator setMaxCacheSize:cacheSize];
 }
 
 
--(long long)maxCacheSize{
+- (long long)maxCacheSize{
     return self.maxCacheSize;
 }
 
@@ -157,6 +157,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     
 }
 
+
 - (void)purgeCoreData {
     [self.managedObjectContext performBlockAndWait:^{
         QredoIndexVault *indexVaultToDelete = self.qredoIndexVault;
@@ -189,11 +190,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         [self purge];
         [self saveAndWait];
     }];
-   
-        
-        
 }
-
 
 
 - (void)enableSync {
@@ -296,11 +293,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-
-
-
-
-
 -(QredoIndexVaultItem *)getIndexVaultItemFor:(QredoVaultItemMetadata *)newMetadata{
     //primarily for testing
     __block QredoIndexVaultItem *indexedItem;
@@ -312,15 +304,13 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-
-
 - (void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata vaultItem:(QredoVaultItem *)vaultItem hasVaultItemValue:(BOOL)hasVaultItemValue {
     [self.managedObjectContext performBlockAndWait:^{
         QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithDescriptor:newMetadata.descriptor
                                                                                inManageObjectContext:self.managedObjectContext];
         QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
         
-        //New item
+        //A new Vault Item
         if (!indexedItem) {
             QredoIndexVaultItem *vaultIndexItem = [self addNewVaultItem:newMetadata];
             [vaultIndexItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
@@ -386,11 +376,8 @@ IncomingMetadataBlock incomingMetadatBlock;
     BOOL stop=NO;
     for (QredoIndexSummaryValues *summaryValue in results) {
         QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = summaryValue.vaultMetadata;
-        
         [self.cacheInvalidator updateAccessDate:qredoIndexVaultItemMetadata];
-        
         QredoVaultItemMetadata *qredoVaultItemMetadata= [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
-        
         
         if (block) block(qredoVaultItemMetadata,&stop);
         if (stop) break;
@@ -407,7 +394,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 - (void)saveAndWait {
     [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:YES];
 }
-
 
 
 - (long)persistentStoreFileSize{

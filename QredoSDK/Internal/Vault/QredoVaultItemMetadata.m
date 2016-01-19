@@ -7,6 +7,8 @@
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexPrivate.h"
+#import "QredoIndexVaultItemMetadata.h"
+#import "QredoIndexSummaryValues.h"
 
 @implementation QredoVaultItemMetadata
 

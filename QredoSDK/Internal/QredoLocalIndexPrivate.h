@@ -4,11 +4,13 @@
 
 
 #import "Qredo.h"
-#import "QredoIndexSummaryValues.h"
-#import "QredoIndexVaultItemMetadata.h"
-#import "QredoLocalIndexCacheInvalidation.h"
+
+
 
 @class QredoIndexVault;
+@class QredoLocalIndexCacheInvalidation;
+@class QredoVaultItemMetadata;
+@class QredoIndexVaultItem;
 
 @interface QredoLocalIndex :NSObject <QredoVaultObserver>
 

@@ -15,6 +15,7 @@
 #import "QredoLocalIndexDataStore.h"
 #import "QredoIndexVault.h"
 #import "QredoIndexVaultItem.h"
+#import "QredoIndexVaultItemMetadata.h"
 
 //#import "PDDebugger.h"
 

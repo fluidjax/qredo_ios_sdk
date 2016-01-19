@@ -7,29 +7,26 @@
 //
 
 #import "QredoLocalIndexCacheInvalidation.h"
-#import "QredoIndexVault.h"
 #import "QredoVaultPrivate.h"
-#import "QredoIndexVaultItemMetadata.h"
-#import "QredoIndexVaultItem.h"
-#import "QredoIndexVaultItemPayload.h"
 #import "QredoLocalIndexDataStore.h"
+#import "QredoIndexModel.h"
 
 @interface QredoLocalIndexCacheInvalidation ()
 @property (strong) QredoIndexVault *qredoIndexVault;
 @end
 
 /* Constants used to estimate the file size of the coredata index
-   The values chose give estimates within 10% of the actual size on disk for a variety of different
-    Count of VaultItems (1-1000)
-    Size of VaultItem payload (1-1000)
-    Count Of Metadata items per Vault Item (1-100)
-    Size of Metadata item (1-100)
-*/
- 
-static long  COREDATA_OVERHEAD_PER_VAULT_ITEM = 190;            //storage overhead for each vaultitem
+ The values chose give estimates within 10% of the actual size on disk for a variety of different
+ Count of VaultItems (1-1000)
+ Size of VaultItem payload (1-1000)
+ Count Of Metadata items per Vault Item (1-100)
+ Size of Metadata item (1-100)
+ */
+
+static long COREDATA_OVERHEAD_PER_VAULT_ITEM = 190;             //storage overhead for each vaultitem
 static float COREDATA_SUMMARY_VALUE_INDEX_MULTIPLIER = 2.0;     //storage overhead multipler for each metadata item - space used by indexes
 static float COREDATA_OVERHEAD_PER_SUMMARY_ITEM = 135;          //storage overgead for each metadata item
-static long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;           //storage overhead for the sqllite version of the model without any data
+static long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage overhead for the sqllite version of the model without any data
 
 #pragma mark
 #pragma mark Public Methods
@@ -46,7 +43,6 @@ static long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;           //storage overhe
     }
     return self;
 }
-
 
 
 - (void)subtractSizeFromTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
@@ -75,15 +71,15 @@ static long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;           //storage overhe
 }
 
 
--(long)summaryValueByteCountSizeEstimator:(NSDictionary *)summaryValue{
+- (long)summaryValueByteCountSizeEstimator:(NSDictionary *)summaryValue {
     //calculate the storage needed for the summaryValue dictionary
     long totalByteCount = 0;
     
-    for (NSString *key in summaryValue){
-        totalByteCount += [key length];
-        totalByteCount += (float)[[summaryValue objectForKey:key] length] * COREDATA_SUMMARY_VALUE_INDEX_MULTIPLIER;
+    for (NSString *key in summaryValue) {
+        totalByteCount += [key length]; //add the number of bytes in the key
+        long valueSize = [self sizeOfSummaryValue:[summaryValue objectForKey:key]]; //calc the number of bytes in the value
+        totalByteCount += (float)valueSize * COREDATA_SUMMARY_VALUE_INDEX_MULTIPLIER;
         totalByteCount += COREDATA_OVERHEAD_PER_SUMMARY_ITEM;
-        
     }
     return totalByteCount;
 }
@@ -100,8 +96,23 @@ static long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;           //storage overhe
     return totalCacheSize;
 }
 
+
 #pragma mark
 #pragma mark Private Methods
+
+
+- (long)sizeOfSummaryValue:(id)value {
+    if ([value isKindOfClass:[NSString class]]) {
+        return [(NSString*)value length];
+    }else if ([value isKindOfClass:[NSNumber class]]) {
+        return 8;
+    }else if ([value isKindOfClass:[QredoQUID class]]) {
+        return 32;
+    }else if ([value isKindOfClass:[NSDate class]]) {
+        return 8;
+    }
+    @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type in summarydata value" userInfo:nil];
+}
 
 
 - (void)invalidate {
@@ -117,17 +128,14 @@ static long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;           //storage overhe
 
 - (void)checkForOverSizeCache {
     /* Display a warning if the cache size is too big, and cant be made smaller becasue there are no Vault Item Values left to remove
-       This will occur when the index/cache is full of metadata.
-       Deleting metadata will from the index will prevent metadata searches working correctly.  */
+     This will occur when the index/cache is full of metadata.
+     Deleting metadata will from the index will prevent metadata searches working correctly.  */
     QredoLocalIndexDataStore *persistentStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
     long fileSizeOnDisk = [persistentStore persistentStoreFileSize];
     if (fileSizeOnDisk > self.maxCacheSize) {
         NSLog(@"** Warning index/cache is beyond the maximum size, increase size or turn off metadata indexing");
     }
 }
-
-
-
 
 
 - (BOOL)overCacheSize {
@@ -141,7 +149,7 @@ static long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;           //storage overhe
 
 - (BOOL)deleteOldestItem {
     /** Get a list of QredoIndexVaultItems which has a payload  in lastAccessed order
-        Delete the first item in the list (oldest)
+	    Delete the first item in the list (oldest)
      */
     
     __block BOOL haveMoreItemsToDelete = YES;
