@@ -39,3 +39,4 @@ DerivedData
 **.DS_Store
 Podfile.lock
 
+docs/objc
