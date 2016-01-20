@@ -16,7 +16,7 @@
 /** Options for [QredoClient initWithServiceURL:options:] */
 extern NSString *const QredoClientOptionServiceURL;
 extern NSString *const QredoRendezvousURIProtocol;
-static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 5000000; //in bytes
+static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
