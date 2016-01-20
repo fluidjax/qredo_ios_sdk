@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
-#import "QredoLocalIndexPrivate.h"
+#import "QredoLocalIndex.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultPrivate.h"
 

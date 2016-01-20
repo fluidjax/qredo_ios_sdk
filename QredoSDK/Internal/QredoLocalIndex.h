@@ -5,8 +5,6 @@
 
 #import "Qredo.h"
 
-
-
 @class QredoIndexVault;
 @class QredoLocalIndexCacheInvalidation;
 @class QredoVaultItemMetadata;

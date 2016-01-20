@@ -834,7 +834,7 @@
 		83227B831C15CECB006CAD75 /* QredoIndexVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVault.h; path = LocalIndex/QredoIndexVault.h; sourceTree = "<group>"; };
 		83227B841C15CECB006CAD75 /* QredoIndexVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexVault.m; path = LocalIndex/QredoIndexVault.m; sourceTree = "<group>"; };
 		833A3BEE1C4E9FA500FAD9FC /* QredoIndexModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoIndexModel.h; sourceTree = "<group>"; };
-		833FB2BE1C10A8CE0092E05A /* QredoLocalIndexPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoLocalIndexPrivate.h; sourceTree = "<group>"; };
+		833FB2BE1C10A8CE0092E05A /* QredoLocalIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoLocalIndex.h; sourceTree = "<group>"; };
 		83627B941BF5F59F0062AB4E /* QredoUserCredentialsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUserCredentialsTests.m; sourceTree = "<group>"; };
 		837526671C0F3477004DDDB2 /* QredoLocalIndex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoLocalIndex.m; path = LocalIndex/QredoLocalIndex.m; sourceTree = "<group>"; };
 		8375268D1C0F376C004DDDB2 /* _QredoIndexSummaryValues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _QredoIndexSummaryValues.h; path = LocalIndex/_QredoIndexSummaryValues.h; sourceTree = "<group>"; };
@@ -1624,7 +1624,7 @@
 				8375266C1C0F3580004DDDB2 /* human files */,
 				8375266B1C0F3576004DDDB2 /* machine files */,
 				837526671C0F3477004DDDB2 /* QredoLocalIndex.m */,
-				833FB2BE1C10A8CE0092E05A /* QredoLocalIndexPrivate.h */,
+				833FB2BE1C10A8CE0092E05A /* QredoLocalIndex.h */,
 				831164C61C18941400661D7C /* QredoLocalIndexDataStore.h */,
 				831164C71C18941400661D7C /* QredoLocalIndexDataStore.m */,
 				838E48C11C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel */,

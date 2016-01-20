@@ -7,7 +7,7 @@
 #import "Qredo.h"
 #import "QredoPrivate.h"
 #import "QredoVaultSequenceCache.h"
-#import "QredoLocalIndexPrivate.h"
+#import "QredoLocalIndex.h"
 
 #import "NSDictionary+QUIDSerialization.h"
 #import "NSDictionary+IndexableSet.h"

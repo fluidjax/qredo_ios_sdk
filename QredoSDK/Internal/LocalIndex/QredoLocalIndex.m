@@ -9,18 +9,18 @@
 @import UIKit;
 
 
-#import "QredoLocalIndexPrivate.h"
+#import "QredoLocalIndex.h"
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"
 #import "QredoLocalIndexCacheInvalidation.h"
 #import "QredoIndexModel.h"
 
 
-
 @interface QredoLocalIndex ()
 @property (strong) NSManagedObjectContext *managedObjectContext;
 @property (strong) QredoVault *qredoVault;
 @property (strong) QredoLocalIndexDataStore *qredoLocalIndexDataStore;
+
 
 @end
 
@@ -344,7 +344,8 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-- (void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block completionHandler:(void (^)(NSError *error))completionHandler {
+- (void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+                                         completionHandler:(void (^)(NSError *error))completionHandler {
     if (predicate==nil) {
         NSString *message = @"Predicate can not be nil";
         NSError *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexErrorUnknown
@@ -355,11 +356,29 @@ IncomingMetadataBlock incomingMetadatBlock;
     
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
-        NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.latest.vault.vaultId = %@",self.qredoIndexVault.vaultId ];
+        NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.latest.vault.vaultId = %@",
+                                                    self.qredoIndexVault.vaultId];
         NSCompoundPredicate *searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToCurrentVault]];
         fetchRequest.predicate = searchPredicate;
         [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
     }];
+}
+
+
+
+
+- (void)save {
+    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:NO];
+}
+
+
+- (void)saveAndWait {
+    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:YES];
+}
+
+
+- (long)persistentStoreFileSize{
+    return [self.qredoLocalIndexDataStore persistentStoreFileSize];
 }
 
 
@@ -385,20 +404,6 @@ IncomingMetadataBlock incomingMetadatBlock;
     if (completionHandler) completionHandler(error);
 }
 
-
-- (void)save {
-    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:NO];
-}
-
-
-- (void)saveAndWait {
-    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:YES];
-}
-
-
-- (long)persistentStoreFileSize{
-    return [self.qredoLocalIndexDataStore persistentStoreFileSize];
-}
 
 
 #pragma mark -

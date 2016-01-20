@@ -16,17 +16,16 @@
 @end
 
 /* Constants used to estimate the file size of the coredata index
- The values chose give estimates within 10% of the actual size on disk for a variety of different
- Count of VaultItems (1-1000)
- Size of VaultItem payload (1-1000)
- Count Of Metadata items per Vault Item (1-100)
- Size of Metadata item (1-100)
+ (The size of sqllite file on the disk can't be used as a measure of the quanitity of data stored. The datafile is auto vacuum, which means its size is not immediately
+ changed when new records are put, or deleted. Therefore the quantity of datastore is estimated based on the size of the contents + some storage overheads, which are
+ calulcated based on the constants below:
  */
 
-static long COREDATA_OVERHEAD_PER_VAULT_ITEM = 190;             //storage overhead for each vaultitem
-static float COREDATA_SUMMARY_VALUE_INDEX_MULTIPLIER = 2.0;     //storage overhead multipler for each metadata item - space used by indexes
-static float COREDATA_OVERHEAD_PER_SUMMARY_ITEM = 135;          //storage overgead for each metadata item
-static long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage overhead for the sqllite version of the model without any data
+static const long  COREDATA_OVERHEAD_PER_VAULT_ITEM = 190;             //storage overhead for each vaultitem
+static const float COREDATA_SUMMARY_VALUE_INDEX_MULTIPLIER = 2.0;      //storage overhead multipler for each metadata item - space used by indexes
+static const float COREDATA_OVERHEAD_PER_SUMMARY_ITEM = 135;           //storage overgead for each metadata item
+static const long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage overhead for the sqllite version of the model without any data
+
 
 #pragma mark
 #pragma mark Public Methods
@@ -52,14 +51,8 @@ static long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage overhe
 
 
 - (void)addSizeToTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
-    long long originalTotalValueSize = self.qredoIndexVault.valueTotalSizeValue;
-    long long vaultSizeIncrease = qredoIndexVaultItem.valueSizeValue;
-    [self.qredoIndexVault setValueTotalSizeValue:originalTotalValueSize+vaultSizeIncrease];
-    
-    long long originalTotalMetadataSize = self.qredoIndexVault.metadataTotalSizeValue;
-    long long metadataSizeIncrease = qredoIndexVaultItem.metadataSizeValue;
-    [self.qredoIndexVault setMetadataTotalSizeValue:originalTotalMetadataSize+metadataSizeIncrease];
-    
+    [self addValueSizeToTotals:qredoIndexVaultItem];
+    [self addMetadataSizeToTotals:qredoIndexVaultItem];
     [self updateAccessDate:qredoIndexVaultItem.latest];
     [self invalidate];
 }
@@ -85,20 +78,33 @@ static long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage overhe
 }
 
 
+
 - (long long)totalCacheSizeEstimate {
     //calculate how much data we are storing in the cache
     //we cant use the size of the file on the disk, as sqllite reclaims disk spcae in its own time (vacuum)
     long vaultItemCount = [self.qredoIndexVault.vaultItems count];
     long overhead = (COREDATA_OVERHEAD_PER_VAULT_ITEM * vaultItemCount) + COREDATA_BASE_SQLLITE_OVERHEAD;
-    
     long long totalCacheSize = self.qredoIndexVault.valueTotalSizeValue + self.qredoIndexVault.metadataTotalSizeValue + overhead;
-    
     return totalCacheSize;
 }
 
 
 #pragma mark
 #pragma mark Private Methods
+
+
+- (void)addValueSizeToTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
+    long long originalTotalValueSize = self.qredoIndexVault.valueTotalSizeValue;
+    long long vaultSizeIncrease = qredoIndexVaultItem.valueSizeValue;
+    [self.qredoIndexVault setValueTotalSizeValue:originalTotalValueSize+vaultSizeIncrease];
+}
+
+
+- (void)addMetadataSizeToTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
+    long long originalTotalMetadataSize = self.qredoIndexVault.metadataTotalSizeValue;
+    long long metadataSizeIncrease = qredoIndexVaultItem.metadataSizeValue;
+    [self.qredoIndexVault setMetadataTotalSizeValue:originalTotalMetadataSize+metadataSizeIncrease];
+}
 
 
 - (long)sizeOfSummaryValue:(id)value {

@@ -11,7 +11,7 @@
 #import "QredoVault.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultPrivate.h"
-#import "QredoLocalIndexPrivate.h"
+#import "QredoLocalIndex.h"
 #import "QredoLocalIndexDataStore.h"
 #import "QredoIndexVault.h"
 #import "QredoIndexVaultItem.h"
@@ -741,8 +741,6 @@ NSNumber *testNumber;
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
     
-    
-    
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
     __block QredoVaultItemMetadata *createdItemMetaData = nil;
     [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
@@ -763,6 +761,7 @@ NSNumber *testNumber;
 
 
 -(long)countRecords:(NSString *)entityName{
+    //Count how many rows/records in the supplied entity
     NSManagedObjectContext *moc = qredoLocalIndex.qredoIndexVault.managedObjectContext;
     NSError *error = nil;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entityName];
