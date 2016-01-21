@@ -3,7 +3,7 @@
  */
 
 #import "QredoDerUtils.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @implementation QredoDerUtils
 

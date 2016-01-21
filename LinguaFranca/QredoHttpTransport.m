@@ -4,7 +4,7 @@
 
 #import "QredoHttpTransport.h"
 #import "QredoWireFormat.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoTransportSSLTrustUtils.h"
 #import "QredoCertificate.h"
 

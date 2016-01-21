@@ -6,7 +6,7 @@
 #import <XCTest/XCTest.h>
 #import "QredoSecKeyRefPair.h"
 #import "QredoCrypto.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "TestCertificates.h"
 #import "QredoCertificateUtils.h"
 

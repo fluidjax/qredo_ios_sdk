@@ -3,7 +3,7 @@
  */
 
 #import "QredoUpdateListener.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 #import "QredoConversationPrivate.h"
 #import "QredoRendezvous.h"

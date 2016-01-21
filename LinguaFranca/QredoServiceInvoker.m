@@ -3,7 +3,7 @@
 #import "NSData+QredoRandomData.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoTransport.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoCertificate.h"
 #import "NSData+ParseHex.h"
 #import "QredoHelpers.h"

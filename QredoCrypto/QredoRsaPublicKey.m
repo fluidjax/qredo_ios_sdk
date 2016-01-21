@@ -5,7 +5,7 @@
 #import "QredoRsaPublicKey.h"
 #import "QredoCrypto.h"
 #import "QredoDerUtils.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoRsaPublicKey ()
 

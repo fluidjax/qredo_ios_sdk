@@ -4,7 +4,7 @@
 
 #import "QredoRendezvousAnonymousHelper.h"
 #import "QredoRendezvousHelper_Private.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoBase58.h"
 

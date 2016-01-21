@@ -18,7 +18,7 @@
 #import "QredoCrypto.h"
 #import "QredoVaultCrypto.h"
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoUpdateListener.h"
 

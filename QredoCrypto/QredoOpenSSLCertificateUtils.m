@@ -4,7 +4,7 @@
 
 #import "QredoOpenSSLCertificateUtils.h"
 #import "QredoCertificateUtils.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoCrypto.h"
 #import "QredoCryptoError.h"
 #import <openssl/err.h>

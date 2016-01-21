@@ -9,7 +9,7 @@
 #import "TestCertificates.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoCrypto.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoCertificateUtilsTests : XCTestCase
 

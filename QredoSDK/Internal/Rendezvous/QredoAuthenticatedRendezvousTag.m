@@ -3,7 +3,7 @@
  */
 
 #import "QredoAuthenticatedRendezvousTag.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoAuthenticatedRendezvousTag ()
 

@@ -9,7 +9,7 @@
 #import "QredoRendezvousRsa2048PemHelper.h"
 #import "QredoRendezvousRsa4096PemHelper.h"
 #import "QredoRendezvousRsaPemCommonHelper.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @implementation QredoRendezvousHelpers
 

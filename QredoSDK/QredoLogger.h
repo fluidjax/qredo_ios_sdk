@@ -1,5 +1,5 @@
 //
-//  QredoLogger.h
+//  QredoLoggerPrivate.h
 //  QredoSDK
 //
 //  Created by Christopher Morris on 21/01/2016.
@@ -58,14 +58,6 @@
 #import <Foundation/Foundation.h>
 
 
-#define QredoLog(_level, _message)   [QredoLogger logMessage:(_message) level:(_level) file:__FILE__ function:__PRETTY_FUNCTION__ line:__LINE__]
-
-#define QredoLogError(format, ...)   QredoLog(QredoLogLevelError,   (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
-#define QredoLogWarning(format, ...) QredoLog(QredoLogLevelWarning, (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
-#define QredoLogInfo(format, ...)    QredoLog(QredoLogLevelInfo,    (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
-#define QredoLogDebug(format, ...)   QredoLog(QredoLogLevelDebug,   (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
-#define QredoLogVerbose(format, ...) QredoLog(QredoLogLevelVerbose, (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
-
 
 typedef NS_ENUM(NSInteger, QredoLogLevel) {
     QredoLogLevelNone   ,
@@ -79,20 +71,11 @@ typedef NS_ENUM(NSInteger, QredoLogLevel) {
 @interface QredoLogger : NSObject
 
 + (void)setLogHandler:(void (^)(NSString * (^message)(void), QredoLogLevel level, const char *file, const char *function, NSUInteger line))logHandler;
-+ (void)logMessage:(NSString * (^)(void))message level:(QredoLogLevel)level file:(const char *)file function:(const char *)function line:(NSUInteger)line;
 + (void)setLogLevel:(QredoLogLevel)logLevel;
 
-+ (NSString *)extractClassName:(NSString *)prettyFunction;
-+ (BOOL)isClassOfInterest:(NSString *)className;
 + (void)addLoggingForObject:(NSObject*)ob;
 + (void)addLoggingForClassName:(NSString*)className;
 + (void)resetLoggingObjects;
-
-+ (NSData *)NSDataFromHexString:(NSString*)string;
-+ (NSString*)hexRepresentationOfNSData:(NSData*)data;
-+ (NSString*)printBytesAsHex:(const unsigned char*)bytes numberOfBytes:(const unsigned int)numberOfBytes;
-+ (NSString*)stringFromOSStatus:(OSStatus)osStatus;
-+ (void)notImplementedYet:(SEL)selector;
 
 
 @end

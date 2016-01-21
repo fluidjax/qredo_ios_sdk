@@ -14,6 +14,7 @@
 #import "QredoLocalIndexDataStore.h"
 #import "QredoLocalIndexCacheInvalidation.h"
 #import "QredoIndexModel.h"
+#import "QredoLoggerPrivate.h"
 
 
 @interface QredoLocalIndex ()

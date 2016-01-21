@@ -3,7 +3,7 @@
  */
 
 #import "QredoTransport.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoHttpTransport.h"
 #import "QredoMqttTransport.h"
 #import "QredoWebSocketTransport.h"

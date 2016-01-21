@@ -6,7 +6,7 @@
 #import "QredoClient.h"
 #import "CryptoImpl.h"
 #import "QredoBase58.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 
 @implementation QredoAbstractRendezvousEd25519Helper

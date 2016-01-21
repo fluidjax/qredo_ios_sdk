@@ -3,7 +3,7 @@
  */
 
 #import "QredoCertificateUtils.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoCryptoError.h"
 #import "QredoCrypto.h"
 #import "QredoRsaPublicKey.h"

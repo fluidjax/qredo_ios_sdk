@@ -5,7 +5,7 @@
 
 @import CoreData;
 #import "QredoLocalIndexDataStore.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoLocalIndexDataStore ()
 @property (strong) NSManagedObjectContext *privateContext;

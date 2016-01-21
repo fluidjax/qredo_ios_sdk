@@ -9,7 +9,7 @@
 #import "CryptoImplV1.h"
 #import "TestCertificates.h"
 #import "QredoCertificateUtils.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoClient.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "NSData+QredoRandomData.h"

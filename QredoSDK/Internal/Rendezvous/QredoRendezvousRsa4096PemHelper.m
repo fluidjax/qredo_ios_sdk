@@ -4,7 +4,7 @@
 
 #import "QredoRendezvousRsa4096PemHelper.h"
 #import "QredoClient.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 /*
  PEM RSA Public Key is a DER encoded public key with PEM wrapping.

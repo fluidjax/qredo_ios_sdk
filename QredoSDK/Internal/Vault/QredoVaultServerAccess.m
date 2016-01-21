@@ -19,7 +19,7 @@
 #import "QredoSigner.h"
 
 #import "QredoErrorCodes.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoVaultServerAccess ()
 {

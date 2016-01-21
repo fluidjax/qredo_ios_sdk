@@ -11,7 +11,7 @@
 #import "QredoTestUtils.h"
 #import "NSDictionary+Contains.h"
 #import "QredoVaultPrivate.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoClientTests : XCTestCase
 

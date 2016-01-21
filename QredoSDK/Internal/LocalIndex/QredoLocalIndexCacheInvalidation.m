@@ -10,7 +10,7 @@
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"
 #import "QredoIndexModel.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoLocalIndexCacheInvalidation ()
 @property (strong) QredoIndexVault *qredoIndexVault;

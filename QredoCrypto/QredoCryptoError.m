@@ -3,7 +3,7 @@
  */
 
 #import "QredoCryptoError.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 NSString *const QredoCryptoErrorDomain = @"QredoCryptoError";
 

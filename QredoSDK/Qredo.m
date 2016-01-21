@@ -11,7 +11,7 @@
 
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoServiceInvoker.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 #import "QredoKeychain.h"
 #import "QredoKeychainArchiver.h"

@@ -5,7 +5,7 @@
 #import "QredoMqttTransport.h"
 #import "MQTTSession.h"
 #import "QredoClientId.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoTransportErrorUtils.h"
 #import "QredoTransportSSLTrustUtils.h"
 #import "QredoCertificate.h"

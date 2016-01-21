@@ -6,7 +6,7 @@
 #import "QredoClient.h"
 #import "QredoCrypto.h"
 #import "QredoCertificateUtils.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "NSData+QredoRandomData.h"
 
 @implementation QredoAbstractRendezvousRsaPemHelper

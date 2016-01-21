@@ -7,7 +7,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 //#import "tomcrypt.h"
 #import "sodium.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import <Security/Security.h>
 #import "rsapss.h"
 #import "QredoCertificateUtils.h"

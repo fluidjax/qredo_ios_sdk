@@ -8,7 +8,7 @@
 #import "QredoCrypto.h"
 #import "QredoCertificateUtils.h"
 #import "QredoOpenSSLCertificateUtils.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "NSData+Conversion.h"
 

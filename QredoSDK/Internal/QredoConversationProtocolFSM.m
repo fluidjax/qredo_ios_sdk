@@ -5,7 +5,7 @@
 #import "QredoConversationProtocolFSM.h"
 #import "QredoConversation.h"
 #import "QredoErrorCodes.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @class QredoConversationProtocolCancelState;
 @class QredoConversationProtocolErrorState;

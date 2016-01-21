@@ -8,7 +8,7 @@
 #import "QredoRsaPublicKey.h"
 #import "QredoRsaPrivateKey.h"
 #import "QredoRendezvousHelpers.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "QredoErrorCodes.h"
 

@@ -1,4 +1,4 @@
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @implementation QredoLogger
 

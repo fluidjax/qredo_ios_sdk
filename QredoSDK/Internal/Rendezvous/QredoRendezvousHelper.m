@@ -3,7 +3,7 @@
  */
 
 #import "QredoRendezvousHelper_Private.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 @implementation QredoAbstractRendezvousHelper
 

@@ -13,7 +13,7 @@
 #import "NSDictionary+IndexableSet.h"
 #import "QredoVaultCrypto.h"
 #import "QredoCrypto.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoKeychain.h"
 
 #import "QredoUpdateListener.h"

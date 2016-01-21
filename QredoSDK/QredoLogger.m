@@ -6,8 +6,8 @@
 //
 //
 
-#import "QredoLogger.h"
-
+#import "QredoLoggerPrivate.h"
+#import "QredoLoggerPrivate.h"
 
 @implementation QredoLogger
 

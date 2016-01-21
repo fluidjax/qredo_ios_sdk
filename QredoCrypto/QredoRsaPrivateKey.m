@@ -4,7 +4,7 @@
 
 #import "QredoRsaPrivateKey.h"
 #import "QredoDerUtils.h"
-#import "QredoLogger.h"
+#import "QredoLoggerPrivate.h"
 
 #define PKCS_FORMAT_VERSION_LENGTH 1
 #define PKCS8_SUPPORTED_FORMAT_VERSION 0
