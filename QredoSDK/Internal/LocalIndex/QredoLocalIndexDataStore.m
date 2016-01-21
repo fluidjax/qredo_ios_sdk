@@ -5,6 +5,7 @@
 
 @import CoreData;
 #import "QredoLocalIndexDataStore.h"
+#import "QredoLogger.h"
 
 @interface QredoLocalIndexDataStore ()
 @property (strong) NSManagedObjectContext *privateContext;
@@ -112,6 +113,10 @@
         
         [self setPrivateContext:privateMoc];
         [self setManagedObjectContext:moc];
+
+
+        QredoLogDebug(@"Store URL: %@", ^{ return storeURL; }());
+        QredoLogDebug(@"Model URL: %@", ^{ return modelURL; }());
         
         NSLog(@"Store URL %@",storeURL);
         NSLog(@"Model URL %@",modelURL);

@@ -11,7 +11,7 @@
 #import "QredoTestUtils.h"
 #import "NSDictionary+Contains.h"
 #import "QredoVaultPrivate.h"
-
+#import "QredoLogging.h"
 
 @interface QredoClientTests : XCTestCase
 
@@ -27,6 +27,21 @@
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+}
+
+
+-(void)testLogging{
+    [self testSuccessConnectToClient];
+    [QredoLogger setLogLevel:QredoLogLevelVerbose];
+    
+    QredoLogError  (@"Operation finished with error:   %@", ^{ return @"generated error message from block"; }());
+    QredoLogWarning(@"Operation finished with warning: %@", ^{ return @"generated error message from block"; }());
+    QredoLogInfo   (@"Operation finished with info:    %@", ^{ return @"generated error message from block"; }());
+    QredoLogDebug  (@"Operation finished with debug:   %@", ^{ return @"generated error message from block"; }());
+    QredoLogVerbose(@"Operation finished with verbose: %@", ^{ return @"generated error message from block"; }());
+    
+     LogError(@"Setting anchor certificates failed: %@", [QredoLogging stringFromOSStatus:1]);
+    
 }
 
 

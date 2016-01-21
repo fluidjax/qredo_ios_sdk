@@ -341,6 +341,8 @@ NSNumber *testNumber;
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
     //NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+    
+       
 }
 
 

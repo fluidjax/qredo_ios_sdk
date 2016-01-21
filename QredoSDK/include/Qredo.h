@@ -8,6 +8,7 @@
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
 #import "QredoErrorCodes.h"
+#import "QredoLogger.h"
 @import CoreData;
 
 // Revision 1
