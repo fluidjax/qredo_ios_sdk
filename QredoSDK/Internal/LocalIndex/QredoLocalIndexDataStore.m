@@ -114,12 +114,8 @@
         [self setPrivateContext:privateMoc];
         [self setManagedObjectContext:moc];
 
-
-        QredoLogDebug(@"Store URL: %@", ^{ return storeURL; }());
-        QredoLogDebug(@"Model URL: %@", ^{ return modelURL; }());
-        
-        NSLog(@"Store URL %@",storeURL);
-        NSLog(@"Model URL %@",modelURL);
+        QredoLogDebug(@"Store URL: %@",storeURL);
+        QredoLogDebug(@"Model URL: %@",modelURL);
     }
     return self;
 }

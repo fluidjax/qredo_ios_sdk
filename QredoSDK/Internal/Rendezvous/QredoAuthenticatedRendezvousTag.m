@@ -3,7 +3,7 @@
  */
 
 #import "QredoAuthenticatedRendezvousTag.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 
 @interface QredoAuthenticatedRendezvousTag ()
 
@@ -51,7 +51,7 @@
 {
     if (!fullTag) {
         NSString *message = @"Nil full tag provided.";
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         if (error) {
             *error = createError(QredoAuthenticatedRendezvousTagErrorMissingTag, message);
         }
@@ -68,7 +68,7 @@
     if (separatorCount != 1) {
         NSString *message = [NSString stringWithFormat:@"Invalid number (%lu) of @ characters present. Require exactly 1. Full tag: '%@'",
                              (unsigned long)separatorCount, fullTag];
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         if (error) {
             *error = createError(QredoAuthenticatedRendezvousTagErrorMalformedTag, message);
         }

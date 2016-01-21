@@ -3,7 +3,7 @@
 #import "NSData+QredoRandomData.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoTransport.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoCertificate.h"
 #import "NSData+ParseHex.h"
 #import "QredoHelpers.h"
@@ -105,14 +105,14 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         if (![self.transport supportsMultiResponse]) {
             NSString *reason = [NSString stringWithFormat:@"Transport does not support multi-response, yet multi-response was requested. Service URL: %@",
                                 self.transport.serviceURL];
-            LogError(@"%@", reason);
+            QredoLogError(@"%@", reason);
             
             if (errorHandler) {
                 errorHandler([NSError errorWithDomain:QredoTransportErrorDomain
                                                  code:QredoTransportErrorMultiResponseNotSupported
                                              userInfo:@{NSLocalizedDescriptionKey: reason}]);
             } else {
-                LogError(@"Could not notify caller that error occurred invoking operation '%@' on service '%@', no errorHandler configured.", operationName, serviceName)
+                QredoLogError(@"Could not notify caller that error occurred invoking operation '%@' on service '%@', no errorHandler configured.", operationName, serviceName);
             }
         }
     }
@@ -201,7 +201,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 - (void)notifyCallbackOfError:(NSError *)error forCallbacksValue:(QredoServiceInvokerCallbacks *)callbacksValue
 {
     if (!callbacksValue) {
-        LogError(@"No callbacksValue provided, cannot notify callback of error.");
+        QredoLogError(@"No callbacksValue provided, cannot notify callback of error.");
     }
     else {
         callbacksValue.errorHandler(error);
@@ -281,12 +281,12 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                 // Possible that the correlation ID in the call is nil (if unavailable when delegate called), but that header contains the correct value from server
                 correlationID = interchangeHeader.correlationID;
                 if (userData && ![correlationID isEqualToData:userData]) {
-                    LogError(@"Mismatch between non-nil userData (%@) and correlationID in header (%@).  Incorrect callback/responseReader may be used.", [QredoLogging hexRepresentationOfNSData:userData], [QredoLogging hexRepresentationOfNSData:correlationID]);
+                    QredoLogError(@"Mismatch between non-nil userData (%@) and correlationID in header (%@).  Incorrect callback/responseReader may be used.", [QredoLogger hexRepresentationOfNSData:userData], [QredoLogger hexRepresentationOfNSData:correlationID]);
                 }
         
                 callbacksValue = [self callbacksValueForCorrelationID:correlationID];
                 if (!callbacksValue) {
-                    LogError(@"No callback found for correlation ID %@ when processing new response (userData = %@). Will not be able to notify caller.", [QredoLogging hexRepresentationOfNSData:correlationID], [QredoLogging hexRepresentationOfNSData:userData]);
+                    QredoLogError(@"No callback found for correlation ID %@ when processing new response (userData = %@). Will not be able to notify caller.", [QredoLogger hexRepresentationOfNSData:correlationID], [QredoLogger hexRepresentationOfNSData:userData]);
                 }
         
                 QredoResultHeader *responseResultHeader = [wireFormatReader readResultStart];
@@ -313,7 +313,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                             reason = [NSString stringWithFormat:@"%@; Server error code: %@ (%@)",
                                       reason, serverErrorCode, serverErrorDescription];
                         }
-                        LogError(@"%@", reason);
+                        QredoLogError(@"%@", reason);
                         
                         NSError *error = [NSError errorWithDomain:QredoLFErrorDomain
                                                              code:QredoLFErrorRemoteOperationFailure
@@ -329,7 +329,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                         callbacksValue.responseReader(wireFormatReader);
                     } else {
                         // we can only LOG the error here. No throwing exception, because it will just crash app
-                        LogError(@"Received response data but no callback found for correlation ID %@, cannot process response.", [QredoLogging hexRepresentationOfNSData:correlationID]);
+                        QredoLogError(@"Received response data but no callback found for correlation ID %@, cannot process response.", [QredoLogger hexRepresentationOfNSData:correlationID]);
                     }
 
                 [wireFormatReader readEnd];
@@ -375,7 +375,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                         operationName,
                         serviceName,
                         error];
-    LogError(@"%@", reason);
+    QredoLogError(@"%@", reason);
 
     NSError *wrappedError = [NSError errorWithDomain:QredoLFErrorDomain
                                                 code:QredoLFErrorRemoteOperationFailure

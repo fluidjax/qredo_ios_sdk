@@ -5,7 +5,7 @@
 #import "QredoKeychainArchiverForAppleKeychain.h"
 #import "QredoKeychain.h"
 #import "QredoErrorCodes.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoCrypto.h"
 
 static NSString *kUnderlyingErrorSource = @"Underlying error source";

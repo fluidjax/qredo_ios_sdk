@@ -104,6 +104,7 @@ NSNumber *testNumber;
 
 -(void)testFillWithMetadata{
     [qredoLocalIndex purgeAll];
+    
     QredoIndexVault *qredoIndexVault = qredoLocalIndex.qredoIndexVault;
     [vault setMaxCacheSize:10000];
     int recordCount = 20;
@@ -124,6 +125,8 @@ NSNumber *testNumber;
 
 -(void)testCacheFill{
     [qredoLocalIndex purgeAll];
+   // [QredoLogger setLogLevel:QredoLogLevelVerbose];
+    [vault setMaxCacheSize:270000];
     int recordCount = 100;
 
     for (int i=0;i<recordCount;i++){
@@ -465,11 +468,16 @@ NSNumber *testNumber;
 
 
 #pragma mark
-#pragma Private
+#pragma mark - Private
 
 
 - (void)setUp {
     [super setUp];
+    
+    [QredoLogger setLogLevel:QredoLogLevelVerbose];
+//    [QredoLogger addLoggingForClassName:@"QredoLocalIndex"];
+    [QredoLogger addLoggingForClassName:@"QredoLocalIndexDataStore"];
+    
     myTestDate = [NSDate date];
     testNumber = [NSNumber numberWithInt:3];
     self.continueAfterFailure = YES;

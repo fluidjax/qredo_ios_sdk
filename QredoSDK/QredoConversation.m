@@ -20,7 +20,7 @@
 #import "QredoPrivate.h"
 #import "QredoVaultPrivate.h"
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoClient.h"
 #import "QredoConversationMessagePrivate.h"
 #import "QredoUpdateListener.h"

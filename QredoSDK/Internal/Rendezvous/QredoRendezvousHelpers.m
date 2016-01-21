@@ -9,7 +9,7 @@
 #import "QredoRendezvousRsa2048PemHelper.h"
 #import "QredoRendezvousRsa4096PemHelper.h"
 #import "QredoRendezvousRsaPemCommonHelper.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 
 @implementation QredoRendezvousHelpers
 
@@ -65,7 +65,7 @@
             
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add X.509 Self-signed support
-            LogError(@"Add X.509 Self-signed support!");
+            QredoLogError(@"Add X.509 Self-signed support!");
             NSAssert(0, @"Add X.509 Self-signed support");
             return nil;
             
@@ -120,7 +120,7 @@
 
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add X.509 Self-signed support
-            LogError(@"Add X.509 Self-signed support!");
+            QredoLogError(@"Add X.509 Self-signed support!");
             NSAssert(0, @"Add X.509 Self-signed support");
             return nil;
             
@@ -146,7 +146,7 @@
         
         case QredoRendezvousAuthenticationTypeX509PemSelfsigned:
             // TODO: DH - add X.509 Self-signed support
-            LogError(@"Add X.509 Self-signed support!");
+            QredoLogError(@"Add X.509 Self-signed support!");
             NSAssert(0, @"Add X.509 Self-signed support");
             return -1;
     }

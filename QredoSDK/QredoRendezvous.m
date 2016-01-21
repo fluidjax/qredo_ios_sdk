@@ -18,7 +18,7 @@
 #import "QredoCrypto.h"
 #import "QredoVaultCrypto.h"
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoUpdateListener.h"
 
@@ -200,7 +200,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
+    QredoLogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
     
     // TODO: DH - write tests
     // TODO: DH - validate that the configuration and tag formats match
@@ -237,7 +237,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _hashedTag  = [crypto hashedTagWithMasterKey:masterKey];
     NSData *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
     
-    LogDebug(@"Hashed tag: %@", _hashedTag);
+    QredoLogDebug(@"Hashed tag: %@", _hashedTag);
     
     // Generate the rendezvous key pairs.
     QLFKeyPairLF *ownershipKeyPair = [crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];

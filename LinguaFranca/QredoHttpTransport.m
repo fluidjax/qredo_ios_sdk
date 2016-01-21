@@ -4,7 +4,7 @@
 
 #import "QredoHttpTransport.h"
 #import "QredoWireFormat.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoTransportSSLTrustUtils.h"
 #import "QredoCertificate.h"
 
@@ -135,7 +135,7 @@ static const NSUInteger maxNumberOfConnections = 10;
 
                         if (error)
                         {
-                            LogError(@"%@: Error occurred during HTTP to URL '%@'. Error details: '%@'", [self.clientId getSafeString], self.serviceURL, error);
+                            QredoLogError(@"%@: Error occurred during HTTP to URL '%@'. Error details: '%@'", [self.clientId getSafeString], self.serviceURL, error);
                             
                             [self notifyListenerOfError:error userData:userData];
                         }
@@ -148,7 +148,7 @@ static const NSUInteger maxNumberOfConnections = 10;
                             
                             if (httpResponse.statusCode != 200) {
                                 // TODO: DH - Confirm whether non-200 code should be raised via error listener, rather then response listener
-                                LogError(@"NOTE: Non-200 status code returned (%ld). Call may not have been successful.", (long)httpResponse.statusCode);
+                                QredoLogError(@"NOTE: Non-200 status code returned (%ld). Call may not have been successful.", (long)httpResponse.statusCode);
                             }
                             
                             [self notifyListenerOfResponseData:data userData:userData];

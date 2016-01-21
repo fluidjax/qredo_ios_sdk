@@ -6,7 +6,7 @@
 #import "QredoClient.h"
 #import "QredoCrypto.h"
 #import "QredoCertificateUtils.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "NSData+QredoRandomData.h"
 
 @implementation QredoAbstractRendezvousRsaPemHelper
@@ -37,13 +37,13 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 - (SecKeyRef)publicKeyRefFromAuthenticationTag:(NSString *)authenticationTag publicKeyIdentifier:(NSString *)publicKeyIdentifier error:(NSError **)error
 {
     if (!authenticationTag) {
-        LogError(@"Authentication tag is nil.");
+        QredoLogError(@"Authentication tag is nil.");
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagMissing, nil);
         return nil;
     }
     
     if (!publicKeyIdentifier) {
-        LogError(@"Public key identifier is nil.");
+        QredoLogError(@"Public key identifier is nil.");
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorPublicKeyIdentifierMissing, nil);
         return nil;
     }
@@ -60,7 +60,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     // Note: This only converts from PEM to DER - doesn't validate which DER format it is.
     NSData *publicKeyData = [QredoCertificateUtils convertPemPublicKeyToDer:authenticationTag];
     if (!publicKeyData) {
-        LogError(@"Nil public key was returned by convertPemPublicKeyToDer. Authentication Tag: '%@'", authenticationTag);
+        QredoLogError(@"Nil public key was returned by convertPemPublicKeyToDer. Authentication Tag: '%@'", authenticationTag);
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
         return nil;
     }
@@ -74,7 +74,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                                      keyIdentifier:publicKeyIdentifier
                                          isPrivate:NO];
     if (!publicKeyRef) {
-        LogError(@"Could not import Public Key data (must be PKCS#1 'RSAPublicKey' format, not X.509 'SubjectPublicKeyInfo' format). Authentication Tag: '%@'", authenticationTag);
+        QredoLogError(@"Could not import Public Key data (must be PKCS#1 'RSAPublicKey' format, not X.509 'SubjectPublicKeyInfo' format). Authentication Tag: '%@'", authenticationTag);
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
         return nil;
     }
@@ -106,25 +106,25 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
     if (self) {
         
         if (!fullTag) {
-            LogError(@"Full tag is nil.");
+            QredoLogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         if (fullTag.length < 1) {
-            LogError(@"Full tag length is 0.");
+            QredoLogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
         if (!_authenticatedRendezvousTag || (error && *error)) {
-            LogError(@"Failed to split up full tag successfully.");
+            QredoLogError(@"Failed to split up full tag successfully.");
             return nil;
         }
         
         // Generate a random ID to temporarily (for life of this object) 'name' the keys.
-        NSString *keyId = [QredoLogging hexRepresentationOfNSData:[NSData dataWithRandomBytesOfLength:kRandomKeyIdentifierLength]];
+        NSString *keyId = [QredoLogger hexRepresentationOfNSData:[NSData dataWithRandomBytesOfLength:kRandomKeyIdentifierLength]];
         
         // Don't populate the private identifier unless we generated the key ourselves
         _publicKeyIdentifier = [keyId stringByAppendingString:@".public"];
@@ -132,7 +132,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         if ([_authenticatedRendezvousTag.authenticationTag isEqualToString:@""]) {
             // No authentication tag provided, so need to generate own keys and signing handler must be nil
             if (signingHandler) {
-                LogError(@"Provided a signing handler (so external keys to be used), but authentication tag (public key) also provided.");
+                QredoLogError(@"Provided a signing handler (so external keys to be used), but authentication tag (public key) also provided.");
                 updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided, nil);
                 return nil;
             }
@@ -145,7 +145,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                                              privateKeyIdentifier:_privateKeyIdentifier
                                            persistInAppleKeychain:YES];
             if (!_keyPairRef) {
-                LogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", _publicKeyIdentifier, _privateKeyIdentifier);
+                QredoLogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", _publicKeyIdentifier, _privateKeyIdentifier);
                 updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorKeyGenerationFailed, nil);
                 return nil;
             }
@@ -163,13 +163,13 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                                                 publicKeyIdentifier:_publicKeyIdentifier
                                                               error:error];
             if (!_publicKeyRef || (error && *error)) {
-                LogError(@"Failed to validate/get public key from authentication tag: %@", _authenticatedRendezvousTag.authenticationTag);
+                QredoLogError(@"Failed to validate/get public key from authentication tag: %@", _authenticatedRendezvousTag.authenticationTag);
                 return nil;
             }
             
             // Using externally provided keys, so signing handler must not be nil
             if (!signingHandler) {
-                LogError(@"Provided an authentication tag (public key) but signing handler is nil.");
+                QredoLogError(@"Provided an authentication tag (public key) but signing handler is nil.");
                 updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
                 return nil;
             }
@@ -195,7 +195,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
 - (NSData *)signatureForData:(NSData *)data error:(NSError **)error
 {
     if (!data) {
-        LogError(@"Data to sign is nil.");
+        QredoLogError(@"Data to sign is nil.");
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingDataToSign, nil);
         return nil;
     }
@@ -208,7 +208,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                                         saltLength:kRsaAuthenticatedRendezvousSaltLength
                                             keyRef:self.keyPairRef.privateKeyRef];
         if (!signature) {
-            LogError(@"Nil signature was returned by rsaPssSignMessage.");
+            QredoLogError(@"Nil signature was returned by rsaPssSignMessage.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
             return nil;
         }
@@ -217,7 +217,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         // Externally generated keys, so use the signing handler
         signature = self.signingHandler(data, self.type);
         if (!signature) {
-            LogError(@"Nil signature was returned by signing handler.");
+            QredoLogError(@"Nil signature was returned by signing handler.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
             return nil;
         }
@@ -229,7 +229,7 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
                                                           keyRef:self.publicKeyRef];
         
         if (!signatureValid) {
-            LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
+            QredoLogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
             return nil;
         }
@@ -258,25 +258,25 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
   minimumAuthenticationTagLength:minimumAuthenticationTagLength];
     if (self) {
         if (!fullTag) {
-            LogError(@"Full tag is nil.");
+            QredoLogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         if (fullTag.length < 1) {
-            LogError(@"Full tag length is 0.");
+            QredoLogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
         if (!_authenticatedRendezvousTag || (error && *error)) {
-            LogError(@"Failed to split up full tag successfully.");
+            QredoLogError(@"Failed to split up full tag successfully.");
             return nil;
         }
         
         if (_authenticatedRendezvousTag.authenticationTag.length < super.minimumAuthenticationTagLength) {
-            LogError(@"Invalid authentication tag length: %lu. Minimum tag length for %lu-bit RSA authentication tag: %lu",
+            QredoLogError(@"Invalid authentication tag length: %lu. Minimum tag length for %lu-bit RSA authentication tag: %lu",
                      (unsigned long)fullTag.length,
                      (unsigned long)super.keySizeBits,
                      (unsigned long)super.minimumAuthenticationTagLength);
@@ -285,14 +285,14 @@ static const NSUInteger kRandomKeyIdentifierLength = 32;
         }
         
         // Generate a random ID to temporarily (for life of this object) 'name' the keys.
-        NSString *keyId = [QredoLogging hexRepresentationOfNSData:[NSData dataWithRandomBytesOfLength:kRandomKeyIdentifierLength]];
+        NSString *keyId = [QredoLogger hexRepresentationOfNSData:[NSData dataWithRandomBytesOfLength:kRandomKeyIdentifierLength]];
         _publicKeyIdentifier = [keyId stringByAppendingString:@".public"];
         
         _publicKeyRef = [self publicKeyRefFromAuthenticationTag:_authenticatedRendezvousTag.authenticationTag
                                             publicKeyIdentifier:_publicKeyIdentifier
                                                           error:error];
         if (!_publicKeyRef || (error && *error)) {
-            LogError(@"Failed to validate/get public key from authentication tag: %@", _authenticatedRendezvousTag.authenticationTag);
+            QredoLogError(@"Failed to validate/get public key from authentication tag: %@", _authenticatedRendezvousTag.authenticationTag);
             return nil;
         }
     }

@@ -11,7 +11,7 @@
 
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoServiceInvoker.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 
 #import "QredoKeychain.h"
 #import "QredoKeychainArchiver.h"
@@ -526,7 +526,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     if (authenticationType == QredoRendezvousAuthenticationTypeAnonymous) {
         // Not an authenticated rendezvous, so shouldn't be using this method
         NSString *message = @"'Anonymous' is invalid, use the method dedicated to anonymous rendezvous.";
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -536,7 +536,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                authenticationType == QredoRendezvousAuthenticationTypeX509PemSelfsigned) {
         // X.509 authenticated rendezvous MUST use externally generated certificates, so MUST use method with signingHandler
         NSString *message = @"'X.509' is invalid, use the method dedicated to externally generated keys/certs which has a signing handler.";
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -578,7 +578,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     if (authenticationType == QredoRendezvousAuthenticationTypeAnonymous) {
         // Not an authenticated rendezvous, so shouldn't be using this method
         NSString *message = @"'Anonymous' is invalid, use the method dedicated to anonymous rendezvous.";
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -589,7 +589,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         if (!trustedRootPems) {
             // Cannot have nil trusted root PEMs
             NSString *message = @"TrustedRootPems cannot be nil when creating X.509 authenicated rendezvous, as creation will fail.";
-            LogError(@"%@", message);
+            QredoLogError(@"%@", message);
             NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                                  code:QredoErrorCodeRendezvousInvalidData
                                              userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -599,7 +599,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         else if (trustedRootPems.count == 0) {
             // Cannot have no trusted root refs
             NSString *message = @"TrustedRootPems cannot be empty when creating X.509 authenicated rendezvous, as creation will fail.";
-            LogError(@"%@", message);
+            QredoLogError(@"%@", message);
             NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                                  code:QredoErrorCodeRendezvousInvalidData
                                              userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -927,7 +927,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     {
         NSString *message =  @"'The Rendezvous duration must not be negative";
 
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];

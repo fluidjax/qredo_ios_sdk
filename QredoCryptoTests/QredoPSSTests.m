@@ -3,7 +3,7 @@
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"
 #import "NSData+Conversion.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoRsaPrivateKey.h"
 
 @interface QredoPSSTests : XCTestCase

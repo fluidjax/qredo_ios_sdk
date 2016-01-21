@@ -4,7 +4,7 @@
 
 #import "QredoRsaPrivateKey.h"
 #import "QredoDerUtils.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 
 #define PKCS_FORMAT_VERSION_LENGTH 1
 #define PKCS8_SUPPORTED_FORMAT_VERSION 0
@@ -292,7 +292,7 @@
         QredoAsn1ObjectIdentifier identifier = [QredoDerUtils getIdentifierFromData:objectIdentifier];
         if (identifier != QredoAsn1ObjectIdentifierRsa)
         {
-            LogError(@"Object Identifier did not indicate RSA.  Interpreted enum: %d. Actual OID data: %@.", identifier, [QredoLogging hexRepresentationOfNSData:objectIdentifier]);
+            QredoLogError(@"Object Identifier did not indicate RSA.  Interpreted enum: %d. Actual OID data: %@.", identifier, [QredoLogger hexRepresentationOfNSData:objectIdentifier]);
             dataIsValid = NO;
         }
     }

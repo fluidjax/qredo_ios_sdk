@@ -16,7 +16,7 @@
 #import "QredoBase58.h"
 #import "TestCertificates.h"
 #import "QredoCertificateUtils.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoPrivate.h"
 
 #import <objc/runtime.h>

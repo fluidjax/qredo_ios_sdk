@@ -11,7 +11,7 @@
 #import "QredoTestUtils.h"
 #import "NSDictionary+Contains.h"
 #import "QredoVaultPrivate.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 
 @interface QredoClientTests : XCTestCase
 
@@ -39,8 +39,7 @@
     QredoLogInfo   (@"Operation finished with info:    %@", ^{ return @"generated error message from block"; }());
     QredoLogDebug  (@"Operation finished with debug:   %@", ^{ return @"generated error message from block"; }());
     QredoLogVerbose(@"Operation finished with verbose: %@", ^{ return @"generated error message from block"; }());
-    
-     LogError(@"Setting anchor certificates failed: %@", [QredoLogging stringFromOSStatus:1]);
+    QredoLogError(@"Setting anchor certificates failed: %@",[QredoLogger stringFromOSStatus:1]);
     
 }
 

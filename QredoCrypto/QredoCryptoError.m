@@ -3,7 +3,7 @@
  */
 
 #import "QredoCryptoError.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 
 NSString *const QredoCryptoErrorDomain = @"QredoCryptoError";
 
@@ -14,7 +14,7 @@ NSString *const QredoCryptoErrorDomain = @"QredoCryptoError";
 
 + (void)populateError:(NSError **)error errorCode:(NSInteger)errorCode description:(NSString *)description
 {
-    LogError(@"%@", description);
+    QredoLogError(@"%@", description);
     if (error) {
         *error = [NSError errorWithDomain:QredoCryptoErrorDomain
                                      code:errorCode

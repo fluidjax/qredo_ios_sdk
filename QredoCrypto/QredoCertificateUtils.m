@@ -3,7 +3,7 @@
  */
 
 #import "QredoCertificateUtils.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoCryptoError.h"
 #import "QredoCrypto.h"
 #import "QredoRsaPublicKey.h"
@@ -22,13 +22,13 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
 
     NSData *certificateData = [QredoCertificateUtils convertPemCertificateToDer:pemCertificate];
     if (!certificateData) {
-        LogError(@"Failed to convert PEM certificate to DER format.");
+        QredoLogError(@"Failed to convert PEM certificate to DER format.");
         return nil;
     }
     
     SecCertificateRef certificateRef = [QredoCertificateUtils createCertificateWithDerData:certificateData];
     if (!certificateRef) {
-        LogError(@"Failed to create certificate ref from DER data.");
+        QredoLogError(@"Failed to create certificate ref from DER data.");
     }
     
     return certificateRef;
@@ -43,8 +43,8 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     if (certificateRef) {
         // TODO get rid of me
     } else {
-        LogError(@"Could not create certificate using provided data: %@.",
-                 [QredoLogging hexRepresentationOfNSData:certificateData]);
+        QredoLogError(@"Could not create certificate using provided data: %@.",
+                 [QredoLogger hexRepresentationOfNSData:certificateData]);
     }
     
     return certificateRef;
@@ -71,7 +71,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
 
     NSData *certificateData = (__bridge_transfer NSData *)SecCertificateCopyData(certificateRef);
     if (!certificateData) {
-        LogError(@"SecCertificateCopyData returned nil data.");
+        QredoLogError(@"SecCertificateCopyData returned nil data.");
         return nil;
     }
     
@@ -111,19 +111,19 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     
     NSRange startRange = [pemEncodedData rangeOfString:startMarker];
     if (startRange.location == NSNotFound) {
-        LogError(@"Could not find start marker (%@).", startMarker);
+        QredoLogError(@"Could not find start marker (%@).", startMarker);
         return nil;
     }
     
     NSRange endRange = [pemEncodedData rangeOfString:endMarker];
     if (endRange.location == NSNotFound) {
-        LogError(@"Could not find end marker (%@).", endMarker);
+        QredoLogError(@"Could not find end marker (%@).", endMarker);
         return nil;
     }
     
     if (endRange.location < startRange.location) {
         // End marker was found before start marker, invalid!
-        LogError(@"End Marker appeared before Start Marker. Not valid data.");
+        QredoLogError(@"End Marker appeared before Start Marker. Not valid data.");
         return nil;
     }
     
@@ -139,7 +139,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
                                  options:NSDataBase64DecodingIgnoreUnknownCharacters];
     
     if (!derEncodedPayload) {
-        LogError(@"Could reverse base64 to get DER encoded data.");
+        QredoLogError(@"Could reverse base64 to get DER encoded data.");
     }
     
     return derEncodedPayload;
@@ -162,7 +162,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
             pkcs1PublicKeyData = unknownPublicKeyData;
         }
         else {
-            LogError(@"Data does not have X.509 header, but also does not appear to be PKCS#1 data. Invalid data.");
+            QredoLogError(@"Data does not have X.509 header, but also does not appear to be PKCS#1 data. Invalid data.");
         }
     }
     else {
@@ -186,7 +186,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
         // Use QredoRsaPublicKey class to valid it's PKCS#1
         QredoRsaPublicKey *publicKey = [[QredoRsaPublicKey alloc] initWithPkcs1KeyData:pkcs1PublicKeyData];
         if (!publicKey) {
-            LogError(@"Could not create QredoRsaPublicKey object with PKCS#1 Public Key Data: %@", pkcs1PublicKeyData);
+            QredoLogError(@"Could not create QredoRsaPublicKey object with PKCS#1 Public Key Data: %@", pkcs1PublicKeyData);
             dataIsPkcs1 = NO;
         }
     }
@@ -202,12 +202,12 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
 
     QredoRsaPublicKey *publicKey = [[QredoRsaPublicKey alloc] initWithX509KeyData:x509PublicKeyData];
     if (!publicKey) {
-        LogError(@"Could not create QredoRsaPublicKey object with X.509 Public Key Data: %@", x509PublicKeyData);
+        QredoLogError(@"Could not create QredoRsaPublicKey object with X.509 Public Key Data: %@", x509PublicKeyData);
     }
     else {
         pkcs1PublicKeyData = [publicKey convertToPkcs1Format];
         if (!pkcs1PublicKeyData) {
-            LogError(@"Could not create convert RSA key object to PKCS#1 format");
+            QredoLogError(@"Could not create convert RSA key object to PKCS#1 format");
         }
     }
     
@@ -222,7 +222,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
                                                        startMarker:PEM_KEY_START
                                                          endMarker:PEM_KEY_END];
     if (!derEncodedPayload) {
-        LogError(@"Could convert PEM key to DER.");
+        QredoLogError(@"Could convert PEM key to DER.");
     }
     
     return derEncodedPayload;
@@ -236,7 +236,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
                                                        startMarker:PEM_CERTIFICATE_START
                                                          endMarker:PEM_CERTIFICATE_END];
     if (!derEncodedPayload) {
-        LogError(@"Could convert PEM certificate to DER.");
+        QredoLogError(@"Could convert PEM certificate to DER.");
     }
     
     return derEncodedPayload;
@@ -269,7 +269,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     
     NSRange startRange = [string rangeOfString:PEM_CERTIFICATE_START options:0 range:searchRange];
     if (startRange.location == NSNotFound) {
-        LogError(@"Could not find PEM start marker.");
+        QredoLogError(@"Could not find PEM start marker.");
         searchSuccessful = NO;
     }
 
@@ -277,7 +277,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     if (searchSuccessful) {
         endRange = [string rangeOfString:PEM_CERTIFICATE_END options:0 range:searchRange];
         if (endRange.location == NSNotFound) {
-            LogError(@"Could not find PEM end marker.");
+            QredoLogError(@"Could not find PEM end marker.");
             searchSuccessful = NO;
         }
     }
@@ -285,7 +285,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     if (searchSuccessful) {
         // Ensure start was before end
         if (startRange.location > endRange.location) {
-            LogError(@"PEM end marker was found before start marker.");
+            QredoLogError(@"PEM end marker was found before start marker.");
             searchSuccessful = NO;
         }
     }
@@ -297,7 +297,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
         return certificateRange;
     }
     else {
-        LogError(@"Failed to get PEM certificate from string: %@", string);
+        QredoLogError(@"Failed to get PEM certificate from string: %@", string);
         
         return NSMakeRange(NSNotFound, 0);
     }
@@ -322,7 +322,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
         NSRange certificateRange = [self getRangeOfPemCertificateInString:pemCertificateChain searchRange:searchRange];
         
         if (certificateRange.location == NSNotFound) {
-            LogError(@"Failed to find any PEM certificates.");
+            QredoLogError(@"Failed to find any PEM certificates.");
             chainSplitSuccessful = NO;
             break;
         }
@@ -337,7 +337,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     
     if (!chainSplitSuccessful) {
         // If the chain could not be split correctly, return nil chain. Do not want to mask certificate errors.
-        LogError(@"Chain split was not successful, returning nil certificate array.");
+        QredoLogError(@"Chain split was not successful, returning nil certificate array.");
         certificates = nil;
     }
     
@@ -358,13 +358,13 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     NSArray *pemCertificateStrings = [self splitPemCertificateChain:pemCertificates];
     
     if (!pemCertificateStrings) {
-        LogError(@"PEM cert split returned nil array.");
+        QredoLogError(@"PEM cert split returned nil array.");
         certificateValid = NO;
     }
     
     if (certificateValid) {
         if (pemCertificateStrings.count <= 0) {
-            LogError(@"PEM cert split returned 0 certificates in array.");
+            QredoLogError(@"PEM cert split returned 0 certificates in array.");
             certificateValid = NO;
         }
     }
@@ -395,7 +395,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
         SecCertificateRef certificateRef = [self createCertificateWithPemCertificate:pemCertificate];
         
         if (!certificateRef) {
-            LogError(@"Certificate creation returned nil.");
+            QredoLogError(@"Certificate creation returned nil.");
             certificateValid = NO;
             break;
         }
@@ -404,7 +404,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     }
     
     if (certificateRefs.count <= 0) {
-        LogError(@"No certificates created.");
+        QredoLogError(@"No certificates created.");
         certificateValid = NO;
     }
     
@@ -484,7 +484,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     
     if (status != noErr) {
         
-        LogError(@"Setting anchor certificates failed: %@", [QredoLogging stringFromOSStatus:status]);
+        QredoLogError(@"Setting anchor certificates failed: %@", [QredoLogger stringFromOSStatus:status]);
         trustEvaluatedSuccesfully = NO;
     }
     
@@ -495,7 +495,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
         
         if (status != noErr) {
             
-            LogError(@"Trust evaluation returned error: %@", [QredoLogging stringFromOSStatus:status]);
+            QredoLogError(@"Trust evaluation returned error: %@", [QredoLogger stringFromOSStatus:status]);
             trustEvaluatedSuccesfully = NO;
         }
         else  {
@@ -539,7 +539,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     NSArray *certificateRefs = [self getCertificateRefsFromPemCertificates:pemCertificateChain];
     
     if (!certificateRefs) {
-        LogError(@"Creation of certificates failed.");
+        QredoLogError(@"Creation of certificates failed.");
         certificateValid = NO;
     }
     else {
@@ -572,11 +572,11 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
             identityDictionary = CFArrayGetValueAtIndex(items, 0);;
         }
         else {
-            LogError(@"Invalid number of imported identities (%ld).  Must have only 1 identity in PKCS#12 blob.", identityCount);
+            QredoLogError(@"Invalid number of imported identities (%ld).  Must have only 1 identity in PKCS#12 blob.", identityCount);
         }
     }
     else {
-        LogError(@"Importing PKCS#12 data failed: %@", [QredoLogging stringFromOSStatus:status]);
+        QredoLogError(@"Importing PKCS#12 data failed: %@", [QredoLogger stringFromOSStatus:status]);
     }
     
     if (identityDictionary) {

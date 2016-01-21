@@ -52,6 +52,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 - (void)setMaxCacheSize:(long long)cacheSize{
     [self.cacheInvalidator setMaxCacheSize:cacheSize];
+    QredoLogDebug(@"Cache max size set to %lld", cacheSize);
 }
 
 
@@ -106,6 +107,8 @@ IncomingMetadataBlock incomingMetadatBlock;
             retrievedVaultItem = [qredoIndexVaultItem buildQredoVaultItem];
         }
         
+        QredoLogInfo(@"Retrieve item %@ from index", retrievedVaultItem.metadata.descriptor.itemId);
+        
         [self.cacheInvalidator updateAccessDate:qredoIndexVaultItem.latest];
         [self save];
         
@@ -136,6 +139,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [results lastObject];
         retrievedMetadata = [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
+        QredoLogInfo(@"Retrieve metadata %@ from index", retrievedMetadata.descriptor.itemId);
         
         [self.cacheInvalidator updateAccessDate:qredoIndexVaultItemMetadata];
         
@@ -172,6 +176,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     [self purgeCoreData];
     [self.managedObjectContext performBlockAndWait:^{
         //rebuild the vault references after deleting the old version
+        QredoLogDebug(@"Purge Index for vault:%@", self.qredoVault.vaultId);
         self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:self.qredoVault inManageObjectContext:self.managedObjectContext];
         self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithIndexVault:self.qredoIndexVault maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
         [self.qredoVault resetWatermark];
@@ -181,6 +186,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 - (void)purgeAll{
     [self.managedObjectContext performBlockAndWait:^{
+        QredoLogDebug(@"Purge Index for All vaults");
         NSError *error = nil;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVault entityName]];
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -217,6 +223,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 - (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError {
     __block BOOL hasDeletedObject = NO;
     __block NSError *blockError = nil;
+    QredoLogDebug(@"Delete Item from Index");
     
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexVaultItemMetadata class] entityName]];
@@ -277,6 +284,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)initializeCoreData {
+    QredoLogDebug(@"Initialize Coredata datastore");
     self.qredoLocalIndexDataStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
     self.managedObjectContext = self.qredoLocalIndexDataStore.managedObjectContext;
     return;
@@ -296,6 +304,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 -(QredoIndexVaultItem *)getIndexVaultItemFor:(QredoVaultItemMetadata *)newMetadata{
     //primarily for testing
     __block QredoIndexVaultItem *indexedItem;
+    QredoLogDebug(@"Get Vault Item from Index");
     [self.managedObjectContext performBlockAndWait:^{
         indexedItem = [QredoIndexVaultItem searchForIndexByItemIdWithDescriptor:newMetadata.descriptor
                                                                        inManageObjectContext:self.managedObjectContext];
@@ -316,6 +325,9 @@ IncomingMetadataBlock incomingMetadatBlock;
             [vaultIndexItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
             [self.cacheInvalidator addSizeToTotals:vaultIndexItem];
             [self save];
+            QredoLogDebug(@"Add new item to index");
+            QredoLogDebug(@"Index item count : %i", ^{ return [self count];}());
+            
             return;
         }
         
@@ -326,6 +338,8 @@ IncomingMetadataBlock incomingMetadatBlock;
             [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
             [self.cacheInvalidator addSizeToTotals:indexedItem];
             [self save];
+            QredoLogDebug(@"update an existing item in the index");
+            QredoLogDebug(@"Index item count : %i", ^{ return [self count];}());
             return;
         }
         
@@ -338,7 +352,10 @@ IncomingMetadataBlock incomingMetadatBlock;
             [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
             [self.cacheInvalidator addSizeToTotals:indexedItem];
             [self save];
+            QredoLogDebug(@"Item in index has different sequence and more recent date");
+            QredoLogDebug(@"Index item count : %i", ^{ return [self count];}());
             return;
+            
         }
     }];
 }
@@ -368,11 +385,13 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)save {
+    QredoLogDebug(@"Index save to disk");
     [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:NO];
 }
 
 
 - (void)saveAndWait {
+    QredoLogDebug(@"Index save to disk and wait");
     [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:YES];
 }
 
@@ -410,6 +429,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 #pragma mark QredoVaultObserver Methods
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
+    QredoLogDebug(@"Cache/Index received incoming Vault item");
     if (!itemMetadata || !client) return;
     [self putMetadata:itemMetadata];
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);
@@ -417,6 +437,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error {
+
     //The index doesn't really care if the vault operation failed or not
 }
 
@@ -432,6 +453,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 - (void)appWillTerminate:(NSNotification*)note {
     //ensure a more graceful termination of the App
     [self saveAndWait];
+    QredoLogDebug(@"App will resign notification to index");
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
 }

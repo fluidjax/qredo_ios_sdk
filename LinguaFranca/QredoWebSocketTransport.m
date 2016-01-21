@@ -7,7 +7,7 @@
 #import "QredoTransportSSLTrustUtils.h"
 #import "QredoCertificate.h"
 #import "QredoTransportErrorUtils.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 
 static const NSUInteger WebSocketSendCheckConnectedCount = 10;
 static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second delay when waiting to see if connected

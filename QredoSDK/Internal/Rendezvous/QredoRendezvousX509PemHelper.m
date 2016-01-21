@@ -8,7 +8,7 @@
 #import "QredoCrypto.h"
 #import "QredoCertificateUtils.h"
 #import "QredoOpenSSLCertificateUtils.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "NSData+Conversion.h"
 
@@ -64,12 +64,12 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 {
     NSArray *pemCertificateStrings = [QredoCertificateUtils splitPemCertificateChain:authenticationTag];
     if (!pemCertificateStrings) {
-        LogError(@"PEM cert split returned nil array.");
+        QredoLogError(@"PEM cert split returned nil array.");
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
         return nil;
     }
     else if (pemCertificateStrings.count <= 0) {
-        LogError(@"PEM cert split returned 0 certificates in array.");
+        QredoLogError(@"PEM cert split returned 0 certificates in array.");
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
         return nil;
     }
@@ -102,7 +102,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
                                                                                  error:error];
         
         if (!publicKeyRef) {
-            LogError(@"Could not import Public Key data from X.509 certificate. Authentication Tag: '%@'", authenticationTag);
+            QredoLogError(@"Could not import Public Key data from X.509 certificate. Authentication Tag: '%@'", authenticationTag);
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
             return nil;
         }
@@ -137,13 +137,13 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
     if (self) {
         
         if (!fullTag) {
-            LogError(@"Full tag is nil.");
+            QredoLogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
 
         if (fullTag.length < 1) {
-            LogError(@"Full tag length is 0.");
+            QredoLogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
@@ -151,19 +151,19 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
         // Signing handler is mandatory for X.509 certs (cannot generate these internally)
         if (!signingHandler)
         {
-            LogError(@"No signing handler provided. Mandatory for X.509 authenticated rendezvous as can only use externally generated keys.");
+            QredoLogError(@"No signing handler provided. Mandatory for X.509 authenticated rendezvous as can only use externally generated keys.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerMissing, nil);
             return nil;
         }
         
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
         if (!_authenticatedRendezvousTag || (error && *error)) {
-            LogError(@"Failed to split up full tag successfully.");
+            QredoLogError(@"Failed to split up full tag successfully.");
             return nil;
         }
 
         if ([_authenticatedRendezvousTag.authenticationTag isEqualToString:@""]) {
-            LogError(@"Empty authentication tag. X.509 authenticated rendezcous can only use externally generated keys.");
+            QredoLogError(@"Empty authentication tag. X.509 authenticated rendezcous can only use externally generated keys.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagMissing, nil);
             return nil;
         }
@@ -177,7 +177,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
                                                    publicKeyIdentifier:_publicKeyIdentifier
                                                                  error:error];
         if (!_publicKeyRef || (error && *error)) {
-            LogError(@"X.509 authentication tag is invalid.");
+            QredoLogError(@"X.509 authentication tag is invalid.");
             return nil;
         }
         
@@ -212,14 +212,14 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
 - (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
 {
     if (!data) {
-        LogError(@"Data to sign is nil.");
+        QredoLogError(@"Data to sign is nil.");
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingDataToSign, nil);
         return nil;
     }
     
     NSData *signature = self.signingHandler(data, self.type);
     if (!signature) {
-        LogError(@"Nil signature was returned by signing handler.");
+        QredoLogError(@"Nil signature was returned by signing handler.");
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
         return nil;
     }
@@ -231,7 +231,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
                                                       keyRef:self.publicKeyRef];
     
     if (!signatureValid) {
-        LogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
+        QredoLogError(@"Signing handler returned signature which didn't validate. Data: %@. Signature: %@", data, signature);
         updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorBadSignature, nil);
         return nil;
     }
@@ -263,25 +263,25 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
     if (self) {
         
         if (!fullTag) {
-            LogError(@"Full tag is nil.");
+            QredoLogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         if (fullTag.length < 1) {
-            LogError(@"Full tag length is 0.");
+            QredoLogError(@"Full tag length is 0.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         _authenticatedRendezvousTag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:error];
         if (!_authenticatedRendezvousTag || (error && *error)) {
-            LogError(@"Failed to split up full tag successfully.");
+            QredoLogError(@"Failed to split up full tag successfully.");
             return nil;
         }
         
         if (_authenticatedRendezvousTag.authenticationTag.length < kMinX509AuthenticationTagLength) {
-            LogError(@"Invalid authentication tag length: %lu. Minimum tag length for X509 authentication tag: %lu",
+            QredoLogError(@"Invalid authentication tag length: %lu. Minimum tag length for X509 authentication tag: %lu",
                      (unsigned long)fullTag.length,
                      (unsigned long)kMinX509AuthenticationTagLength);
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorAuthenticationTagInvalid, nil);
@@ -296,7 +296,7 @@ static const NSUInteger kMinX509AuthenticationTagLength = 256;
                                                    publicKeyIdentifier:_publicKeyIdentifier
                                                                  error:error];
         if (!_publicKeyRef || (error && *error)) {
-            LogError(@"Failed to validate/get public key from authentication tag.");
+            QredoLogError(@"Failed to validate/get public key from authentication tag.");
             return nil;
         }
     }

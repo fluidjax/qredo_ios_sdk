@@ -7,7 +7,7 @@
 #import "QredoTestConfiguration.h"
 #import "QredoHttpTransport.h"
 #import "NSData+QredoRandomData.h"
-#import "QredoLogging.h"
+#import "QredoLogger.h"
 
 @interface QredoHttpTransportTests : XCTestCase<QredoTransportDelegate>
 
