@@ -278,10 +278,18 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 @implementation QredoClient
 
 
--(NSDictionary *)version{
+- (NSString *)versionString{
     NSBundle* bundle = [NSBundle bundleForClass:[self class]];
-    return [bundle infoDictionary];
+    return [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }
+
+- (NSString *)buildString{
+    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+    return [bundle objectForInfoDictionaryKey:@"CFBundleVersion"];
+}
+
+
+
 
 
 - (QredoVault*)systemVault

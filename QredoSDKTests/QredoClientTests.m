@@ -66,7 +66,8 @@
                            XCTAssertNotNil(clientArg);
                            [clientExpectation fulfill];
                            
-                           NSLog(@"Version Dictionary %@",[clientArg version]);
+                           NSLog(@"Version is  %@",[clientArg versionString]);
+                           NSLog(@"Build is    %@",[clientArg buildString]);
                            
                            
                        }];
