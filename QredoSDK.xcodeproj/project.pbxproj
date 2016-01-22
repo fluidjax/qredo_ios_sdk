@@ -1822,6 +1822,7 @@
 				665148E81BF6037E003491CA /* Headers */,
 				665148E91BF6037E003491CA /* Resources */,
 				BA19E561BA05C99F877C9FF0 /* Copy Pods Resources */,
+				833B3E141C523D5500C10A81 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -2240,6 +2241,19 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoCryptoTests/Pods-QredoCryptoTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		833B3E141C523D5500C10A81 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = $SRCROOT/scripts/set_build_number.sh;
 		};
 		A0B5DCD8E2BDCAE7CD6BA21F /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;

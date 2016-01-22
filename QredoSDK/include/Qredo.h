@@ -71,7 +71,8 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 
 - (void)closeSession;
 - (BOOL)isClosed;
-- (QredoVault*) defaultVault;
+- (QredoVault *) defaultVault;
+- (NSDictionary *)version;
 
 @end
 

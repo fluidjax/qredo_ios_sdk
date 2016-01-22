@@ -277,6 +277,13 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 
 @implementation QredoClient
 
+
+-(NSDictionary *)version{
+    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+    return [bundle infoDictionary];
+}
+
+
 - (QredoVault*)systemVault
 {
     // For rev1 we have only one vault

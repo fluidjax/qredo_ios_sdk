@@ -30,6 +30,11 @@
 }
 
 
+-(void)showVersions{
+
+}
+
+
 -(void)testLogging{
     [self testSuccessConnectToClient];
     [QredoLogger setLogLevel:QredoLogLevelVerbose];
@@ -47,6 +52,9 @@
 
 
 -(void)testSuccessConnectToClient{
+    
+    
+    
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
     [QredoClient initializeWithAppSecret:@"cafebabe"
@@ -57,6 +65,10 @@
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
                            [clientExpectation fulfill];
+                           
+                           NSLog(@"Version Dictionary %@",[clientArg version]);
+                           
+                           
                        }];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
