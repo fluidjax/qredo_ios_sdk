@@ -131,7 +131,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _updateListener = [[QredoUpdateListener alloc] init];
     _updateListener.delegate = self;
     _updateListener.dataSource = self;
-
     _updateListener.pollInterval = kQredoRendezvousUpdateInterval;
     _updateListener.renewSubscriptionInterval = kQredoRendezvousRenewSubscriptionInterval;
 

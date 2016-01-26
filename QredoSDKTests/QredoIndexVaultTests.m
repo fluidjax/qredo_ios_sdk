@@ -7,7 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "Qredo.h"
+#import "QredoXCTestCase.h"
 #import "QredoVault.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultPrivate.h"
@@ -19,7 +19,7 @@
 
 //#import "PDDebugger.h"
 
-@interface QredoIndexVaultTests :XCTestCase
+@interface QredoIndexVaultTests :QredoXCTestCase
 
 @end
 
@@ -35,6 +35,13 @@ QredoLocalIndex *qredoLocalIndex2;
 
 NSDate *myTestDate;
 NSNumber *testNumber;
+
+
+
+-(void)initLogging{
+    [QredoLogger addLoggingForClassName:@"QredoVault"];
+    [QredoLogger addLoggingForClassName:@"QredoLocalIndexDataStore"];
+}
 
 
 
@@ -55,7 +62,7 @@ NSNumber *testNumber;
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before+1 ,@"Item shouldn't be added to cache as it is disabled Before %ld After %ld", (long)before, (long)after);
     long endSize = [vault cacheFileSize];
-    NSLog(@"Start:%ld  End:%ld", startSize, endSize);
+    //QLog(@"Start:%ld  End:%ld", startSize, endSize);
 }
 
 
@@ -81,21 +88,21 @@ NSNumber *testNumber;
     
     long endFile = [vault cacheFileSize];
 
-    NSLog(@"Start  Size on Disk = %ld", startFile);;
-    NSLog(@"End    Size on Disk = %ld", endFile);
+    QLog(@"Start  Size on Disk = %ld", startFile);;
+    QLog(@"End    Size on Disk = %ld", endFile);
     
     long sizeOfPayload      = recordCount *vaultSize;
     long sizeOfMetdadata    = (recordCount * metadataCount) * metaSize;
     long recordSize = (vaultSize+(metaSize*metadataCount))* recordCount;
     
-    NSLog(@"Overhead per record is          = %ld", (endFile - startFile - recordSize)/recordCount);
-    NSLog(@"Overhead per metadata record is = %ld", (endFile - startFile - recordSize)/recordCount/metadataCount);
-    NSLog(@"Metadata size is                = %ld", metadataCount*metaSize);
+    QLog(@"Overhead per record is          = %ld", (endFile - startFile - recordSize)/recordCount);
+    QLog(@"Overhead per metadata record is = %ld", (endFile - startFile - recordSize)/recordCount/metadataCount);
+    QLog(@"Metadata size is                = %ld", metadataCount*metaSize);
 
-    NSLog(@"Size on disk is       %ld",  endFile);
-    NSLog(@"Index size stimate is %lld",[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
+    QLog(@"Size on disk is       %ld",  endFile);
+    QLog(@"Index size stimate is %lld",[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
     
-    NSLog(@"*** Difference between estimate & actual %0.2f",(float)endFile/(float)[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
+    QLog(@"*** Difference between estimate & actual %0.2f",(float)endFile/(float)[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
  */
     
 }
@@ -126,7 +133,7 @@ NSNumber *testNumber;
 -(void)testCacheFill{
     [qredoLocalIndex purgeAll];
    // [QredoLogger setLogLevel:QredoLogLevelVerbose];
-    [vault setMaxCacheSize:270000];
+    [vault setMaxCacheSize:280000];
     int recordCount = 100;
 
     for (int i=0;i<recordCount;i++){
@@ -332,18 +339,22 @@ NSNumber *testNumber;
     NSString *key1Value2 =vaultItem.metadata.summaryValues[@"key1"];
     XCTAssert([key1Value2 isEqualToString:randomKeyValue],@"Metadata data in vault item not set correctly");
     XCTAssert(vaultItem2.metadata.origin == QredoVaultItemOriginServer,@"Metata data in vault item not set correctly");
-    //NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+    //QLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
 }
 
 
 - (void)testSimplePut {
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
-    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    [client1.defaultVault addMetadataIndexObserver];
+    
+    for (int i=0;i<10;i++){
+            QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    }
     
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
-    //NSLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+    //QLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
     
        
 }
@@ -358,13 +369,13 @@ NSNumber *testNumber;
     }
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + addCount,@"Failed to put new LocalIndex item");
-    //NSLog(@"testMultiplePut Before %ld After %ld", (long)before, (long)after);
+    //QLog(@"testMultiplePut Before %ld After %ld", (long)before, (long)after);
 }
 
 
 - (void)testEnumerateRandomClient {
     NSInteger before = [qredoLocalIndex count];
-    //NSLog(@"Count before %ld", (long)before);
+    //QLog(@"Count before %ld", (long)before);
     NSString * randomTag = [QredoTestUtils randomStringWithLength:32];
     
     QredoVaultItemMetadata *item1 = [self createTestItemInVault:vault key1Value:randomTag];
@@ -372,7 +383,7 @@ NSNumber *testNumber;
     QredoVaultItemMetadata *item3 = [self createTestItemInVault:vault key1Value:@"value2"];
     
     NSInteger after = [qredoLocalIndex count];
-    //NSLog(@"Count after %ld", (long)after);
+    //QLog(@"Count after %ld", (long)after);
     
     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomTag];
     
@@ -381,7 +392,7 @@ NSNumber *testNumber;
     [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
         count++;
     } completionHandler:^(NSError *error) {
-       //NSLog(@"Found %i matches",count);
+       //QLog(@"Found %i matches",count);
     }];
     
     
@@ -429,20 +440,20 @@ NSNumber *testNumber;
     
     __block int count =0;
     [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
-        //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
+        //QLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
         count++;
     } completionHandler:^(NSError *error) {
-        NSLog(@"Current Values = %i",count);
+        //QLog(@"Current Values = %i",count);
     }];
     
     
     count =0;
     [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
-        //NSLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
+        //QLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
         count++;
     } completionHandler:^(NSError *error) {
         
-        NSLog(@"All Values = %i",count);
+        //QLog(@"All Values = %i",count);
     }];
 }
 
@@ -473,10 +484,8 @@ NSNumber *testNumber;
 
 - (void)setUp {
     [super setUp];
-    
-    [QredoLogger setLogLevel:QredoLogLevelVerbose];
-//    [QredoLogger addLoggingForClassName:@"QredoLocalIndex"];
-    [QredoLogger addLoggingForClassName:@"QredoLocalIndexDataStore"];
+
+    [self initLogging];
     
     myTestDate = [NSDate date];
     testNumber = [NSNumber numberWithInt:3];
@@ -499,7 +508,6 @@ NSNumber *testNumber;
         count++;
     } completionHandler:^(NSError *error) {
         XCTAssert(expectedMatches==count,@"Did not match the correct number of expected matches");
-        NSLog(@"Search Matched %i items",count);
     }];
     
 }
@@ -776,8 +784,9 @@ NSNumber *testNumber;
     NSError *error = nil;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entityName];
     NSArray *results = [moc executeFetchRequest:fetchRequest error:&error];
-    
-    return [results count];
+
+    long count = [results count];
+    return count;
 }
 
 

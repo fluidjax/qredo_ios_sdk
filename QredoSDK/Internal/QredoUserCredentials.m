@@ -9,7 +9,7 @@
 #import "QredoUserCredentials.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoCrypto.h"
-
+#import "QredoLoggerPrivate.h"
 
 #define SALT_USER_UNLOCK [@"3aK3VkzxClECvyFW" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_USER_MASTER [@"wjB9zA2l1Z4eiW5t" dataUsingEncoding:NSUTF8StringEncoding]

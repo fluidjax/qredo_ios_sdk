@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
-#import "Qredo.h"
+#import "QredoXCTestCase.h"
 #import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
 #import "QredoQUID.h"
@@ -21,7 +21,7 @@
 // It may also cover responder's edge cases:
 // - responding to non-existing tag
 
-@interface RendezvousListenerTests : XCTestCase <QredoRendezvousObserver>
+@interface RendezvousListenerTests : QredoXCTestCase <QredoRendezvousObserver>
 {
     QredoClient *client;
     XCTestExpectation *didReceiveResponseExpectation;

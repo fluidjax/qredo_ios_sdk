@@ -79,7 +79,7 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 - (NSString *)versionString;
 
 /**
-     Report the current build number of the framework. The number is total count of the number of Git commits
+     Report the current build number of the framework. (The number is total count of the number of Git commits)
  */
 - (NSString *)buildString;
 

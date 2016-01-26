@@ -40,11 +40,11 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
     }
     
     if (level==QredoLogLevelError){
-        NSLog(@"%@%@%@%@%@",prefix,@"ERROR  ",postfix, locationMessage,  message());
+        NSLog(@"%@%@%@%@",prefix,@"ERROR  ",postfix, message());
     }else if (level==QredoLogLevelWarning){
-        NSLog(@"%@%@%@%@%@",prefix,@"WARNING",postfix, locationMessage,  message());
+        NSLog(@"%@%@%@%@",prefix,@"WARNING",postfix, message());
     }else if (level==QredoLogLevelInfo){
-        NSLog(@"%@%@%@%@%@",prefix,@"INFO   ",postfix, locationMessage,  message());
+        NSLog(@"%@%@%@%@",prefix,@"INFO   ",postfix, message());
     }else if (level==QredoLogLevelDebug){
         NSLog(@"%@%@%@%@%@",prefix,@"DEBUG  ",postfix, locationMessage,  message());
     }else if (level==QredoLogLevelVerbose){
@@ -110,10 +110,18 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
     NSRange firstSpace  = [prettyFunction rangeOfString:@" "];
     if (firstSpace.location == NSNotFound)return nil;
     
-    
     NSRange classPos = NSMakeRange(firstSquareBracket.location+1, firstSpace.location-firstSquareBracket.location-1);
     NSString *className = [prettyFunction substringWithRange:classPos];
-    return className;
+    
+    //the Classname may be a class extension eg. QredoVault(Private)
+    //so we need to strip the (Private) part
+    
+    NSRange firstParen  = [className rangeOfString:@"("];
+    if (firstParen.location == NSNotFound)return className;
+    
+    NSString *baseClassName = [className substringToIndex:firstParen.location];
+    
+    return baseClassName;
 }
 
 

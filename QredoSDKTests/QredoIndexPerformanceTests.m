@@ -7,12 +7,15 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "Qredo.h"
+#import "QredoXCTestCase.h"
 #import "QredoLocalIndex.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultPrivate.h"
+#import "QredoLocalIndex.h"
+#import "QredoLocalIndexDataStore.h"
+#import "QredoIndexVault.h"
 
-@interface QredoIndexPerformanceTests :XCTestCase
+@interface QredoIndexPerformanceTests :QredoXCTestCase
 
 @end
 
@@ -24,48 +27,80 @@ NSDate *myTestDate;
 NSNumber *testNumber;
 
 
-//Performance Tests
-- (void)testAddDummyRecords {
-    //adding 1K records on Mac takes 160secs
-    //do not run this on the current vaules that have 100,1000,10000 records - as they are already initialized
-    //    NSString *clientPass = @"100";  //has 100 item ID's
-    //    NSString *clientPass = @"1000"; //has 1000 item ID's
-
-    NSString *clientPass = @"10";   //has 10000 item ID's
-    [self authoriseClient:clientPass];
-    XCTAssertNotNil(client1);
-    [self addTestItems:10];
-}
-
-
-- (void)testAllSizes {
-    [self importTest:10];
-    //[self importTest:100];
-    //[self importTest:259];
-    //[self importTest:10000];
-}
-
-
-- (void)importTest:(int)testSize {
-    NSString *clientPass = [NSString stringWithFormat:@"%i",testSize];
+-(void)test10Records{
+    
+    int testSize = 10;
+    NSString *clientPass = [QredoTestUtils randomStringWithLength:32];
     [self authoriseClient:clientPass];
     qredoLocalIndex = client1.defaultVault.localIndex;
+    [qredoLocalIndex purgeAll];
     
-    [qredoLocalIndex purge];
+     XCTAssertTrue(0 == [self countRecords:@"QredoIndexVaultItem"],@"There are %ld records in the index there should be 0",[self countRecords:@"QredoIndexVaultItem"]);
+    XCTAssertNotNil(client1);
+    [self addTestItems:testSize];
+    XCTAssertTrue(testSize == [self countRecords:@"QredoIndexVaultItem"],@"There are %ld records in the index there shoudl be %i",[self countRecords:@"QredoIndexVaultItem"],testSize);
+
+
+    [qredoLocalIndex purgeAll];
     
-    int afterPurge = [qredoLocalIndex count];
+    //At this point have added 10 records to the server, but purged them locally
+    int countBefore = [qredoLocalIndex count];
+    
+    XCTAssertNotNil(client1);
+    XCTAssertTrue(0 == [self countRecords:@"QredoIndexVaultItem"],@"Failed to purge items");
+    
+    __block XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
+    __block int importCount =0;
+
+    
+    [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
+        importCount++;
+        QLog(@"importing %i",importCount);
+        if (importCount==testSize) [syncwait fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5000 handler:^(NSError * _Nullable error) {
+        syncwait=nil;
+    }];
+    
+    int countAfter = [qredoLocalIndex count];
+
+    
+    //at this point we should have received 10 records from the server
+    
+    XCTAssertTrue(testSize == importCount,@"Failing to import %i items", testSize);
+    XCTAssertTrue(testSize == countAfter-countBefore,@"Failing to import %i items", testSize);
+    
+    XCTAssertTrue(testSize == [self countRecords:@"QredoIndexVaultItem"],@"Failed to import the correct number of records");
+    
+    
+    QLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
+
+}
+
+-(void)test100Records{
+    int testSize = 100;
+    NSString *clientPass = [QredoTestUtils randomStringWithLength:32];
+    [self authoriseClient:clientPass];
+    XCTAssertNotNil(client1);
+    [self addTestItems:testSize];
+    
+    //At this point have added 100 records to the server, but purged them locally
+    
+    
+    qredoLocalIndex = client1.defaultVault.localIndex;
+    [qredoLocalIndex purgeAll];
+    int countBefore = [qredoLocalIndex count];
     
     XCTAssertNotNil(client1);
     
     __block XCTestExpectation *syncwait = [self expectationWithDescription:@"Sync"];
     __block int importCount =0;
-    int countBefore = [qredoLocalIndex count];
     
-    [qredoLocalIndex purge];
     
     [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
         importCount++;
-        NSLog(@"importing %i",importCount);
+        QLog(@"importing %i",importCount);
         if (importCount==testSize) [syncwait fulfill];
     }];
     
@@ -75,12 +110,18 @@ NSNumber *testNumber;
     
     int countAfter = [qredoLocalIndex count];
     
-    XCTAssertTrue(testSize < importCount,@"Failing to import %i items", testSize);
-    XCTAssertTrue(testSize < countAfter-countBefore,@"Failing to import %i items", testSize);
     
-    NSLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
+    //at this point we should have received 100 records from the server
+    
+    XCTAssertTrue(testSize == importCount,@"Failing to import %i items", testSize);
+    XCTAssertTrue(testSize == countAfter-countBefore,@"Failing to import %i items", testSize);
+    
+    
+    QLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
     
 }
+
+
 
 
 #pragma mark
@@ -90,7 +131,7 @@ NSNumber *testNumber;
 - (void)setUp {
     [super setUp];
     myTestDate = [NSDate date];
-    NSLog(@"**************%@",myTestDate);
+    QLog(@"**************%@",myTestDate);
     testNumber = [NSNumber numberWithInt:3];
     self.continueAfterFailure = YES;
 }
@@ -139,7 +180,7 @@ NSNumber *testNumber;
         count++;
     } completionHandler:^(NSError *error) {
         XCTAssert(expectedMatches==count,@"Did not match the correct number of expected matches");
-        NSLog(@"Search Matched %i items",count);
+        QLog(@"Search Matched %i items",count);
     }];
 }
 
@@ -151,12 +192,13 @@ NSNumber *testNumber;
     NSInteger countBefore = [qredoLocalIndex count];
     XCTAssertNotNil(vault);
     for (int i=0; i<recordCount; i++) {
-        NSLog(@"Adding Record %i",i);
+        QLog(@"Adding Record %i",i);
         NSString *testSearchValue = [NSString stringWithFormat:@"%i", i];
         QredoVaultItemMetadata *item = [self createTestItemInVault:vault key1Value:testSearchValue];
     }
     NSInteger countAfter = [qredoLocalIndex count];
     XCTAssert(countAfter == countBefore+recordCount,@"Failed to add items");
+    [vault removeMetadataIndexObserver];
 }
 
 
@@ -187,5 +229,15 @@ NSNumber *testNumber;
     return createdItemMetaData;
 }
 
+
+-(long)countRecords:(NSString *)entityName{
+    //Count how many rows/records in the supplied entity
+    NSManagedObjectContext *moc = qredoLocalIndex.qredoIndexVault.managedObjectContext;
+    NSError *error = nil;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:entityName];
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&error];
+    long count = [results count];
+    return count;
+}
 
 @end

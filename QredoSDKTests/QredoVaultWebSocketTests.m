@@ -16,7 +16,7 @@
     
     for (int i = 0; i < 10; i++)
     {
-        NSLog(@"Run number: %@", @(i));
+        QLog(@"Run number: %@", @(i));
         
         [super testPersistanceVaultId];
     }

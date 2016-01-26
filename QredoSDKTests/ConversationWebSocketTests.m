@@ -30,7 +30,7 @@
     
     for (int i = 0; i < 20; i++)
     {
-        NSLog(@"Run number: %@", @(i));
+        QLog(@"Run number: %@", @(i));
         
         [super testConversation];
     }

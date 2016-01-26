@@ -3,6 +3,7 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "QredoXCTestCase.h"
 #import <XCTest/XCTest.h>
 #import "QredoRendezvousCrypto.h"
 #import "QredoCrypto.h"
@@ -10,7 +11,7 @@
 #import "CryptoImplV1.h"
 #import "NSData+ParseHex.h"
 
-@interface QredoRendezvousCryptoTest : XCTestCase
+@interface QredoRendezvousCryptoTest : QredoXCTestCase
 {
     QredoRendezvousCrypto *rendezvousCrypto;
 }
@@ -157,7 +158,7 @@
                                                                  authenticationKey:authKey
                                                             encryptedResponderData:encryptedResponderInfo];
     
-    NSLog(@"*****%@",authenticationCode);
+    QLog(@"*****%@",authenticationCode);
     
     XCTAssertEqualObjects(authenticationCode, expectedAuthenticationCode);
 }

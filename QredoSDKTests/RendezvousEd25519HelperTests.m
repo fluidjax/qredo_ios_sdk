@@ -8,12 +8,12 @@
 #import "QredoClient.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "QredoBase58.h"
-
+#import "QredoXCTestCase.h"
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
 
-@interface RendezvousEd25519HelperTests : XCTestCase
+@interface RendezvousEd25519HelperTests : QredoXCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @end
 

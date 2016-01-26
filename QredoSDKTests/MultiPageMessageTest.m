@@ -6,10 +6,10 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "Qredo.h"
+#import "QredoXCTestCase.h"
 #import "QredoTestUtils.h"
 
-@interface MultiPageMessageTest : XCTestCase <QredoRendezvousObserver>
+@interface MultiPageMessageTest : QredoXCTestCase <QredoRendezvousObserver>
 @end
 
 @implementation MultiPageMessageTest
@@ -63,7 +63,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
             XCTAssertNil(error);
             XCTAssertNotNil(messageHighWatermark);
             [postExpectation fulfill];
-            NSLog(@"Sent message");
+            QLog(@"Sent message");
         }];
         [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
             postExpectation = nil;
@@ -76,10 +76,10 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     __block int messageCount1=0;
     [testConversation enumerateSentMessagesUsingBlock:^(QredoConversationMessage *message, BOOL *stop) {
         NSString *messageText = [[NSString alloc] initWithData: message.value encoding: NSUTF8StringEncoding];
-        NSLog(@"%@", messageText);
+        QLog(@"%@", messageText);
         messageCount1++;
     } since:nil completionHandler:^(NSError *error) {
-        NSLog(@"Retrieved all the messages");
+        QLog(@"Retrieved all the messages");
         [retrievePosts1 fulfill];
     }];
      
@@ -96,7 +96,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
 -(void)testPagedRendezvous{
     
     for (int i=0;i<PAGING_SIZE+PAGING_SIZE_MODIFIER;i++){
-        NSLog(@"Create rendezvous %i",i);
+        QLog(@"Create rendezvous %i",i);
         NSString *randomTag = [[QredoQUID QUID] QUIDString];
         [self createRendezvousOnClient:client1 withTag:randomTag];
     }
@@ -107,7 +107,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     
     [client1 enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
         XCTAssertNotNil(rendezvousMetadata.rendezvousRef);
-        NSLog(@"TAG = %@",rendezvousMetadata.tag);
+        QLog(@"TAG = %@",rendezvousMetadata.tag);
         count2++;
     } completionHandler:^(NSError *error) {
         XCTAssertNil(error);
@@ -148,7 +148,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     [client2 enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
         count2++;
     } completionHandler:^(NSError *error) {
-        NSLog(@"Enumerated %i conversations", count2);
+        QLog(@"Enumerated %i conversations", count2);
         [enumeateConv2 fulfill];
     }];
     
@@ -317,7 +317,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
         XCTAssertNotNil(messageHighWatermark);
         newMessageHighWatermark = messageHighWatermark;
         [postExpectation fulfill];
-        NSLog(@"Sent message");
+        QLog(@"Sent message");
     }];
     
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {

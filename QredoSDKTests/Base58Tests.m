@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "NSData+QredoRandomData.h"
-
+#import "QredoXCTestCase.h"
 
 static inline NSData *createRandomData() {
     
@@ -43,11 +43,13 @@ static inline NSString *createRandomEncodedValue() {
 }
 
 
-@interface Base58Tests : XCTestCase
+@interface Base58Tests : QredoXCTestCase
 
 @end
 
 @implementation Base58Tests
+
+
 
 - (void)test_0010_SimpleEncoding
 {

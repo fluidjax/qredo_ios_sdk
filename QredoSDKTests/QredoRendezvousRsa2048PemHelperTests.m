@@ -13,8 +13,9 @@
 #import "QredoClient.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "NSData+QredoRandomData.h"
+#import "QredoXCTestCase.h"
 
-@interface QredoRendezvousRsa2048PemHelperTests : XCTestCase
+@interface QredoRendezvousRsa2048PemHelperTests : QredoXCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @end
 

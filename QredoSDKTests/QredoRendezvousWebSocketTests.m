@@ -32,14 +32,18 @@
 }
 
 // This test has frequently helped in triggering intermittent bugs
-- (void)testCreateRendezvousMultiple
-{
+// This is currently failing
+- (void)testCreateRendezvousMultiple{
+    [QredoLogger setLogLevel:QredoLogLevelError];
+    
+    
+    
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = NO;
     
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 1000; i++)
     {
-        NSLog(@"run: %i", i);
+        QLog(@"run: %i", i);
         [super testCreateAndRespondAnonymousRendezvous];
     }
 }

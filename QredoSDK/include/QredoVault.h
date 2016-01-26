@@ -31,7 +31,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 // sequenceValue is not used, because in rev.1 there is no version control, then itemId should be enough for pointing to the correct vault item
 + (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId;
-//csm crap
+
 - (instancetype)initWithSequenceId:(QredoQUID *)sequenceId
                      sequenceValue:(int64_t)sequenceValue
                             itemId:(QredoQUID *)itemId;

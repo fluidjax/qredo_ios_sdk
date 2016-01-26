@@ -8,8 +8,9 @@
 #import "CryptoImplV1.h"
 #import "QredoClient.h"
 #import "QredoBase58.h"
+#import "QredoXCTestCase.h"
 
-@interface QredoRendezvousAnonymousHelperTests : XCTestCase
+@interface QredoRendezvousAnonymousHelperTests : QredoXCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @end
 
