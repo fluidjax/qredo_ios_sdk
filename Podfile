@@ -5,7 +5,7 @@ platform :ios, '9.1'
 inhibit_all_warnings!
 
 target 'QredoSDKTests' do
-    
+    pod 'jetfire'    
     pod 'libsodium', :path => 'libsodium.podspec'
 
 end

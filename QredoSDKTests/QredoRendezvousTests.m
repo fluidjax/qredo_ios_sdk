@@ -779,6 +779,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     
+    
+  
+    
     [QredoClient initializeWithAppSecret:k_APPSECRET
                                   userId:k_USERID
                               userSecret:[QredoTestUtils randomPassword]
@@ -794,6 +797,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation = nil;
     }];
+    
+  
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     
