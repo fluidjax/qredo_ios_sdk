@@ -45,6 +45,63 @@
                   Identifier = "QredoRendezvousMQTTTests">
                </Test>
                <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelperSigning_Invalid_ExternalKeysSignerReturnsNil">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelperSigning_Invalid_NilDataToSign">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testEmptySignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_EmptySignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_EmptySignatureData">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_IncorrectSignatureType">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilRendezvousData">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilSignatureData">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_UntrustedPublicKeyCertChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_BadSigning">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_IncludeUnnecessaryPemCerts">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_MultiUse">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_OutOfOrderPemChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_RootIncludedInPemCertChain">
+               </Test>
+               <Test
                   Identifier = "QredoVaultMQTTTests">
                </Test>
                <Test
