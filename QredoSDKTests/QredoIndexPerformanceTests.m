@@ -163,15 +163,6 @@ NSNumber *testNumber;
 }
 
 
-- (NSData*)randomDataWithLength:(int)length {
-    NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
-    for (unsigned int i = 0; i < length; i++) {
-        NSInteger randomBits = arc4random();
-        [mutableData appendBytes: (void *) &randomBits length: 1];
-    } return mutableData;
-}
-
-
 - (void)summaryValueTestSearch:(int)expectedMatches {
     //this search term returns each 100th item
     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key=%@ && value.string == %@", @"key1", @"88"];

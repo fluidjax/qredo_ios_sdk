@@ -6,7 +6,6 @@
 #import <Foundation/Foundation.h>
 
 #import "MQTTSession.h"
-#import "SRWebSocket.h"
 #import <Security/Security.h>
 
 
@@ -14,6 +13,5 @@ MQTTSessionTrustValidator trustValidatorWithTrustedCert(SecCertificateRef truste
 
 NSURLCredential *credentialForTrustUsingPinnedCertificate(SecTrustRef trust, SecCertificateRef trustedCert);
 
-//SRWebSocketTrustValidator webSocketTrustValidatorWithTrustedCert(SecCertificateRef trustedCert);
 
 

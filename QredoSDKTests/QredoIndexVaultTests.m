@@ -344,16 +344,17 @@ NSNumber *testNumber;
 
 
 - (void)testSimplePut {
+    int testCount = 10;
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
     [client1.defaultVault addMetadataIndexObserver];
     
-    for (int i=0;i<10;i++){
+    for (int i=0;i<testCount;i++){
             QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     }
     
     NSInteger after = [qredoLocalIndex count];
-    XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
+    XCTAssert(after == before + testCount,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
     //QLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
     
        
@@ -573,14 +574,6 @@ NSNumber *testNumber;
     
 }
 
-
-- (NSData*)randomDataWithLength:(int)length {
-    NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
-    for (unsigned int i = 0; i < length; i++) {
-        NSInteger randomBits = arc4random();
-        [mutableData appendBytes: (void *) &randomBits length: 1];
-    } return mutableData;
-}
 
 
 - (QredoVaultItem*)getItemWithDescriptor:(QredoVaultItemMetadata *)metadata inVault:(QredoVault *)vault {

@@ -1,6 +1,6 @@
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/OpenSSL" "${PODS_ROOT}/Headers/Public/SocketRocket" "${PODS_ROOT}/Headers/Public/jetfire" "${PODS_ROOT}/Headers/Public/libsodium"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/OpenSSL" "${PODS_ROOT}/Headers/Public/jetfire" "${PODS_ROOT}/Headers/Public/libsodium"
 LIBRARY_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/OpenSSL/lib" $(inherited) "${PODS_ROOT}/OpenSSL/lib"
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/OpenSSL" -isystem "${PODS_ROOT}/Headers/Public/SocketRocket" -isystem "${PODS_ROOT}/Headers/Public/jetfire" -isystem "${PODS_ROOT}/Headers/Public/libsodium"
-OTHER_LDFLAGS = $(inherited) -ObjC -l"SocketRocket" -l"crypto" -l"icucore" -l"libsodium" -l"ssl" -framework "CFNetwork" -framework "Security"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/OpenSSL" -isystem "${PODS_ROOT}/Headers/Public/jetfire" -isystem "${PODS_ROOT}/Headers/Public/libsodium"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"crypto" -l"jetfire" -l"libsodium" -l"ssl"
 PODS_ROOT = ${SRCROOT}/Pods

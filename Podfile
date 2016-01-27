@@ -11,8 +11,7 @@ target 'QredoSDKTests' do
 end
 
 target 'LinguaFrancaTests' do
-    
-    pod 'SocketRocket'
+    pod 'jetfire'
 
 end
 
@@ -23,7 +22,7 @@ target 'QredoCryptoTests' do
 end
 
 target 'QredoXDK' do
-    pod 'SocketRocket'
+    pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :path => 'libsodium.podspec'
     

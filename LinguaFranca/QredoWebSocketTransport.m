@@ -3,7 +3,7 @@
  */
 
 #import "QredoWebSocketTransport.h"
-#import "SRWebSocket.h"
+#import "JFRWebSocket.h"
 #import "QredoTransportSSLTrustUtils.h"
 #import "QredoCertificate.h"
 #import "QredoTransportErrorUtils.h"
@@ -12,12 +12,12 @@
 static const NSUInteger WebSocketSendCheckConnectedCount = 10;
 static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second delay when waiting to see if connected
 
-@interface QredoWebSocketTransport ()<SRWebSocketDelegate>
+@interface QredoWebSocketTransport ()<JFRWebSocketDelegate>
 {
     BOOL _webSocketOpen;
     BOOL _isResartingWebSocket;
 }
-@property (nonatomic) SRWebSocket *webSocket;
+@property (nonatomic) JFRWebSocket *webSocket;
 @property (nonatomic) BOOL shouldRestartWebSocket;
 @property (nonatomic) NSTimeInterval reconectionDelay;
 @end
@@ -64,17 +64,18 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 - (void)startWebSocket
 {
     self.shouldRestartWebSocket = YES;
-    self.webSocket = [[SRWebSocket alloc] initWithURL:self.serviceURL];
-//    _webSocket.trustValidator = webSocketTrustValidatorWithTrustedCert(self.pinnedCertificate.certificate);
-    [_webSocket setDelegateDispatchQueue:dispatch_queue_create("WebSocketDelegateDispatchQueue", DISPATCH_QUEUE_SERIAL)];
-    _webSocket.delegate = self;
-    [_webSocket open];
+    
+    self.webSocket = [[JFRWebSocket alloc] initWithURL:self.serviceURL protocols:@[@"qredo"]];
+    _webSocket.queue = dispatch_queue_create("WebSocketDelegateDispatchQueue", DISPATCH_QUEUE_SERIAL);
+    _webSocket.delegate=self;
+    [_webSocket connect];
+    
 }
 
 - (void)closeWebSocket
 {
     if (_webSocketOpen && _webSocket) {
-        [_webSocket close];
+        [_webSocket disconnect];
         _webSocket.delegate = nil;
     }
 }
@@ -93,6 +94,8 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
     
     [self closeWebSocket];
     
+    
+   QredoLogWarning(@"Reconnecting Web Socket");
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
                                  (int64_t)(self.reconectionDelay * NSEC_PER_SEC)),
@@ -146,8 +149,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
         }
     }
 
-//    NSLog(@"payloadOut: %@", payload);
-    [_webSocket send:payload];
+    [_webSocket writeData:payload];
 }
 
 - (void)setTransportClosed:(BOOL)transportClosed
@@ -157,39 +159,30 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 }
 
 
-#pragma mark SRWebSocketDelegate
 
-- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message
-{
-    if (![message isKindOfClass:[NSData class]]) {
-        NSString *description = @"Received message on unhandled type. Type must be NSData at this level.";
-        NSError *error = [QredoTransportErrorUtils errorWithErrorCode:QredoTransportErrorCannotParseProtocol description:description];
-        [self notifyListenerOfError:error userData:nil];
-        return;
-    }
-    
-//    NSLog(@"payloadIn: %@", message);
-    [self notifyListenerOfResponseData:message userData:nil];
+#pragma mark JFRWebSocketDelegate
+
+-(void)websocket:(JFRWebSocket*)socket didReceiveData:(NSData*)data{
+     [self notifyListenerOfResponseData:data userData:nil];
 }
 
-- (void)webSocketDidOpen:(SRWebSocket *)webSocket
-{
+-(void)websocketDidConnect:(JFRWebSocket*)socket{
     self.reconectionDelay = 1.0;
     _webSocketOpen = YES;
+
 }
 
-- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
-{
-    [self notifyListenerOfErrorCode:QredoTransportErrorConnectionFailed userData:nil];
-    [self restartWebSocketWithExponentialDelay];
-}
 
-- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
-{
+-(void)websocketDidDisconnect:(JFRWebSocket*)socket error:(NSError*)error{
     _webSocketOpen = NO;
-    [self notifyListenerOfErrorCode:QredoTransportErrorConnectionClosed userData:nil];
-    [self restartWebSocketWithExponentialDelay];
+    QredoLogWarning(@"Websocket did disconnect");
+    if (error){
+        [self notifyListenerOfErrorCode:QredoTransportErrorConnectionFailed userData:nil];
+        [self restartWebSocketWithExponentialDelay];
+    }
 }
+
+
 
 
 @end

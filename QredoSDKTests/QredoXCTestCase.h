@@ -20,4 +20,12 @@
 -(void)loggingOff;
 -(void)loggingOn;
 
+
+- (void)resetKeychain;
+- (void)deleteAllKeysForSecClass:(CFTypeRef)secClass;
+
+- (NSData*)randomDataWithLength:(int)length;
+- (NSString *)randomStringWithLength:(int)len;
+
+
 @end

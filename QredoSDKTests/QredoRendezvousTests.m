@@ -745,9 +745,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-   [NSThread sleepForTimeInterval:5];
-    
-    
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
@@ -810,6 +807,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                           crlPems:nil // Anonymous rendezvous, so technically not needed
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
                     XCTAssertNil(error);
+                    XCTAssertNotNil(conversation);
+                    
                     [respondExpectation fulfill];
                 }];
     
