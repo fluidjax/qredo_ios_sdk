@@ -75,7 +75,19 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 - (void)closeWebSocket
 {
     if (_webSocketOpen && _webSocket) {
+        
+        
+        
+//        static NSMutableArray *socketPark;
+//        
+//        if (!socketPark)socketPark=[[NSMutableArray alloc] init];
+//        [socketPark addObject:_webSocket];
+//        NSLog(@"Sockpark size is %i",(int)[socketPark count]);
+        
         [_webSocket disconnect];
+        
+        
+        
         _webSocket.delegate = nil;
     }
 }

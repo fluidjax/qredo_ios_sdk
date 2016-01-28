@@ -25,14 +25,13 @@
 // This test has frequently helped in triggering intermittent bugs
 - (void)testConversationMultiple
 {
+    
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = NO;
     
-    for (int i = 0; i < 20; i++)
-    {
+    for (int i = 0; i < 100; i++){
         QLog(@"Run number: %@", @(i));
-        
-        [super testConversation];
+       [super testConversation];
     }
 }
 

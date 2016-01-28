@@ -120,6 +120,7 @@ static const NSUInteger maxNumberOfConnections = 10;
 {
     // Nothing to do for HTTP as no long-running connections/threads used.
     self.transportClosed = YES;
+    
 }
 
 - (void)sendPayloadInternal:(NSData *)payload userData:(id)userData

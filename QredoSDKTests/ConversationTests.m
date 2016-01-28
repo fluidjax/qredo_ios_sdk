@@ -233,6 +233,8 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 - (void)testConversation
 {
+    [client closeSession];
+    
     rvuFulfilledTimes = 0;
     self.didReceiveResponseExpectation = nil;
     
@@ -420,76 +422,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [client closeSession];
     client = nil;
     
-//    XCTAssert([responderConversation.metadata.conversationId isEqual:creatorConversation.metadata.conversationId],
-//              @"Conversation ID from responder and creator should be the same");
-//
-//    // Enumerating conversations
-//    __block XCTestExpectation *didFindConversation = [self expectationWithDescription:@"find conversation in system vault"];
-//    __block QredoConversationMetadata *metadataFromEnumeration = nil;
-//    [client enumerateConversationsWithBlock:^(QredoConversationMetadata *metadata, BOOL *stop) {
-//        if ([metadata.conversationId isEqual:responderConversation.metadata.conversationId]) {
-//            metadataFromEnumeration = metadata;
-//            *stop = YES;
-//
-//        }
-//    } completionHandler:^(NSError *error) {
-//        XCTAssertNil(error);
-//        [didFindConversation fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//        didFindConversation = nil;
-//    }];
-//
-//    XCTAssertNotNil(metadataFromEnumeration);
-//    XCTAssert([metadataFromEnumeration.rendezvousTag isEqual:randomTag]);
-//
-//    // Fetching conversation
-//    __block XCTestExpectation *didFetchConversation = [self expectationWithDescription:@"fetch conversation from system vault"];
-//
-//    __block QredoConversation *conversatoinFromVault = nil;
-//    [client fetchConversationWithRef:metadataFromEnumeration.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
-//        XCTAssertNil(error);
-//        XCTAssertNotNil(conversation);
-//        conversatoinFromVault = conversation;
-//
-//        [didFetchConversation fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//        didFetchConversation = nil;
-//    }];
-//
-//    XCTAssertNotNil(conversatoinFromVault);
-//    XCTAssert([conversatoinFromVault.metadata.rendezvousTag isEqualToString:randomTag], @"Rendezvous tag should be the same");
-//    XCTAssert([conversatoinFromVault.metadata.type isEqualToString:configuration.conversationType], @"Conversation type should be the same");
-//
-//    // Making sure that we can use the fetched conversation
-//    __block XCTestExpectation *didPublishAnotherMessage = [self expectationWithDescription:@"did publish another message"];
-//
-//    ConversationMessageListener *anotherListener = [[ConversationMessageListener alloc] init];
-//    anotherListener.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message"];
-//    anotherListener.expectedMessageValue = kMessageTestValue2;
-//    [responderConversation addConversationObserver:anotherListener];
-//    
-//    QredoConversationMessage *anotherMessage = [[QredoConversationMessage alloc] initWithValue:[kMessageTestValue2 dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
-//    [conversatoinFromVault publishMessage:anotherMessage completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-//        XCTAssertNotNil(messageHighWatermark);
-//        XCTAssertNil(error);
-//
-//        [didPublishAnotherMessage fulfill];
-//    }];
-//
-//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//        didPublishAnotherMessage = nil;
-//        anotherListener.didReceiveMessageExpectation = nil;
-//    }];
-////    XCTAssertFalse(listener.failed);
-//
-//    [responderConversation removeConversationObserver:anotherListener];
-
     XCTAssertFalse(listener.failed);
-//    [anotherClient closeSession];
 }
 
 // Rendezvous Delegate
@@ -542,6 +475,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     [QredoClient initializeWithAppSecret:k_APPSECRET
                                   userId:k_USERID
                               userSecret:[QredoTestUtils randomPassword]
+                                      options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *newClient, NSError *error) {
                                   XCTAssertNotNil(newClient);
                                   XCTAssertNil(error);

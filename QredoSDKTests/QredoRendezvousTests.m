@@ -311,7 +311,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     [QredoClient initializeWithAppSecret:k_APPSECRET
                                   userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]                                 options:[self clientOptions:YES]
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -330,7 +331,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     [QredoClient initializeWithAppSecret:k_APPSECRET
                                   userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]                                 options:[self clientOptions:YES]
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
@@ -782,7 +784,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppSecret:k_APPSECRET
                                   userId:k_USERID
                               userSecret:[QredoTestUtils randomPassword]
-                                 options:nil
+                                 options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
