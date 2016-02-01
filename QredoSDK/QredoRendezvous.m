@@ -199,7 +199,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler
 {
-    QredoLogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
+    QredoLogVerbose(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
     
     // TODO: DH - write tests
     // TODO: DH - validate that the configuration and tag formats match
@@ -720,7 +720,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                   rendezvousTag:_tag
                                                                 converationType:_configuration.conversationType];
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
-    
+    //    NSLog(@"subs7");
     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
                                            publicKey:responderPublicKey
                                      rendezvousOwner:YES
@@ -762,6 +762,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
 subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
 {
+       // NSLog(@"subs4");
     NSAssert([_observers count] > 0, @"There shoud be 1 or more rendezvous observers before starting listening for the updates");
 
     NSAssert(_subscriptionCorrelationId == nil, @"Already subscribed");
@@ -785,7 +786,7 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
         completionHandler(error);
         return;
     }
-
+   // NSLog(@"subs5");
     [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
                                          signature:ownershipSignature
                                  completionHandler:^(QLFRendezvousResponseWithSequenceValue *result, NSError *error)
@@ -795,9 +796,12 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
             completionHandler(error);
             return;
         }
+        //    NSLog(@"subs6");
          [self createConversationAndStoreKeysForResponse:result.response
                                        completionHandler:^(QredoConversation *conversation, NSError *creationError)
           {
+         
+         //         NSLog(@"subs7");
               if (creationError) {
                   completionHandler(error);
                   return;

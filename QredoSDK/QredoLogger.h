@@ -43,15 +43,15 @@
  
  1)     QredoLogError(@"My car is %@",car.colour]);
  
- Similar to NSLog - here the [QredoLogger stringFromOSStatus:1] is calculated each time the line is encountered, whether or not the message is displayed
- If its simple and fast otherwise use option 2
+ Similar to NSLog - here the car.colour is calculated each time the line is encountered, whether or not the message is displayed
+ Use 1) If the parameters are simple properties
  
  
  2)     QredoLogVerbose(@"Some information : %@", ^{ return @"generated error message from block"; }());
         QredoLogDebug(@"Index item count : %i", ^{ return [self count];}());
  
- 2 examples above, both use a block to generate part of the message, this block is only executed if the message is actually going to be displayed.
- This is essential if the block will take a significant time to run.
+ The block is only executed if the message is actually going to be displayed.  This is essential if the block will take a significant time to run, such as a method call
+ to count the records in a coredata table.
  
  */
 

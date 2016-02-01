@@ -569,6 +569,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                        completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
     // Anonymous Rendezvous are created using the full tag. Signing handler, trustedRootPems and crlPems are unused
+    QredoLogVerbose(@"Start createAnonymousRendezvousWithTag %@", tag);
     [self createRendezvousWithTag:tag
                authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                     configuration:configuration
@@ -576,6 +577,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                           crlPems:[[NSArray alloc] init]
                    signingHandler:nil
                 completionHandler:completionHandler];
+    QredoLogVerbose(@"Complete createAnonymousRendezvousWithTag %@", tag);
 }
 
 // TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (internal keys)
@@ -707,8 +709,15 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
     // although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
+    
+    QredoLogVerbose(@"Start createRendezvousWithTag %@", tag);
+
+    
     dispatch_async(_rendezvousQueue, ^{
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self];
+        
+        QredoLogVerbose(@"Start createRendezvousWithTag on rendezvousQueue %@", tag);
+        
         [rendezvous createRendezvousWithTag:tag
                          authenticationType:authenticationType
                               configuration:configuration
@@ -722,7 +731,13 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                 completionHandler(rendezvous, error);
             }
         }];
+        QredoLogVerbose(@"End createRendezvousWithTag on rendezvousQueue %@", tag);
+        
     });
+
+    QredoLogVerbose(@"End createRendezvousWithTag %@", tag);
+
+    
 }
 
 - (QredoRendezvous*)rendezvousFromVaultItem:(QredoVaultItem*)vaultItem error:(NSError**)error {

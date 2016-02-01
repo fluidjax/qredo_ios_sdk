@@ -747,6 +747,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
+    
+    
     QredoRendezvousConfiguration *configuration
     = [[QredoRendezvousConfiguration alloc]
        initWithConversationType:kRendezvousTestConversationType
@@ -767,7 +769,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
-    
+//        [NSThread sleepForTimeInterval:1];
     // Listening for responses and respond from another client
     RendezvousListener *listener = [[RendezvousListener alloc] init];
     [createdRendezvous addRendezvousObserver:listener];
@@ -797,7 +799,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         clientExpectation = nil;
     }];
     
-  
+      [NSThread sleepForTimeInterval:1];
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     
@@ -815,7 +817,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                 }];
     
     // Give time for the subscribe/getResponses process to process - they could internally produce duplicates which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
-    [NSThread sleepForTimeInterval:1];
+ //   [NSThread sleepForTimeInterval:1];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         respondExpectation = nil;
@@ -825,7 +827,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [createdRendezvous removeRendezvousObserver:listener];
     
     [anotherClient closeSession];
-    
+ //       [NSThread sleepForTimeInterval:1];
     
 }
 

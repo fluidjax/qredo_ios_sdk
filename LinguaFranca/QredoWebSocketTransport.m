@@ -83,7 +83,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 //        if (!socketPark)socketPark=[[NSMutableArray alloc] init];
 //        [socketPark addObject:_webSocket];
 //        NSLog(@"Sockpark size is %i",(int)[socketPark count]);
-        
+//        
         [_webSocket disconnect];
         
         
@@ -131,21 +131,25 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 
 - (void)send:(NSData *)payload userData:(id)userData
 {
+
     if (!_webSocket) {
+      //                  NSLog(@"subs17");
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                        reason:@"No websocket or handlers configured. Must configure web socket, and delegate before sending data."
                                      userInfo:nil];
         return;
     }
-    
+
     if (self.transportClosed)
     {
+    //                    NSLog(@"subs18");
         [self notifyListenerOfErrorCode:QredoTransportErrorSendAfterTransportClosed userData:userData];
         return;
     }
-    
+
     if (!_webSocketOpen)
     {
+     //    NSLog(@"subs19");
         // This could happen on the first send, as the connection/subscription setup runs in the background and may not be ready yet.
         // If occurs, then wait a bit and retry.  If still not ready, give up.
         
@@ -157,11 +161,17 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
         if (!_webSocketOpen)
         {
             [self notifyListenerOfErrorCode:QredoTransportErrorSendWhilstNotReady userData:userData];
+      //      NSLog(@"subs21");
             return;
         }
     }
-
-    [_webSocket writeData:payload];
+    
+    static NSObject *socketLock;
+    @synchronized(socketLock) {
+        [_webSocket writeData:payload];
+    }
+    
+   //  NSLog(@"subs20");
 }
 
 - (void)setTransportClosed:(BOOL)transportClosed
@@ -175,6 +185,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 #pragma mark JFRWebSocketDelegate
 
 -(void)websocket:(JFRWebSocket*)socket didReceiveData:(NSData*)data{
+    //NSLog(@"did receieve data");
      [self notifyListenerOfResponseData:data userData:nil];
 }
 
@@ -187,7 +198,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 
 -(void)websocketDidDisconnect:(JFRWebSocket*)socket error:(NSError*)error{
     _webSocketOpen = NO;
-    QredoLogWarning(@"Websocket did disconnect");
+    QredoLogWarning(@"Websocket did disconnect %@",error);
     if (error){
         [self notifyListenerOfErrorCode:QredoTransportErrorConnectionFailed userData:nil];
         [self restartWebSocketWithExponentialDelay];

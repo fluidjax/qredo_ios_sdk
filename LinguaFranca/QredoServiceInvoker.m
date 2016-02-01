@@ -101,6 +101,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
          errorHandler:(void (^)(NSError *error))errorHandler
         multiResponse:(BOOL)multiResponse
 {
+
     if (multiResponse) {
         if (![self.transport supportsMultiResponse]) {
             NSString *reason = [NSString stringWithFormat:@"Transport does not support multi-response, yet multi-response was requested. Service URL: %@",
@@ -116,7 +117,6 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
             }
         }
     }
-
     NSOutputStream *outputStream = [NSOutputStream outputStreamToMemory];
     [outputStream open];
 
@@ -138,8 +138,13 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                                                       releaseVersion:releaseVersion];
         [wireFormatWriter writeMessageHeader:messageHeader];
             NSData *returnChannelID = [self.transport.clientId getData];
+      
+        
             // TODO: DH - replace magic number for correlation ID size
             correlationID   = [QredoServiceInvoker secureRandomWithSize:16];
+        
+        NSLog(@"************return Channel  %@     correlation %@",returnChannelID, correlationID);
+        
             QredoInterchangeHeader *interchangeHeader =
                     [QredoInterchangeHeader interchangeHeaderWithReturnChannelID:returnChannelID
                                                                    correlationID:correlationID
@@ -170,7 +175,16 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     [self setCallbacksValue:callbacksValue forCorrelationID:correlationID];
     
     // Send the data to the service
-    [_transport send:body userData:correlationID];
+         //       NSLog(@"subs16");
+    @try{
+        [_transport send:body userData:correlationID];
+    }
+    @catch (NSException * e) {
+        if (errorHandler){
+            errorHandler([[NSError alloc]initWithDomain:@"chris error" code:8888 userInfo:nil]);
+        }
+    }
+
 }
 
 + (NSData *)secureRandomWithSize:(NSUInteger)size

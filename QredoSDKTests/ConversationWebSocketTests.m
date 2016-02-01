@@ -7,31 +7,39 @@
     [super setUp];
 }
 
-- (void)testConversationCreation
-{
+- (void)testConversationCreation{
     [super testConversationCreation];
 }
 
-- (void)testRespondingToConversation
-{
+- (void)testRespondingToConversation{
     [super testRespondingToConversation];
 }
 
-- (void)testConversation
-{
+- (void)testConversation{
     [super testConversation];
 }
 
 // This test has frequently helped in triggering intermittent bugs
-- (void)testConversationMultiple
-{
+- (void)testConversationMultiple{
     
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
-    self.continueAfterFailure = NO;
+    self.continueAfterFailure = YES;
     
-    for (int i = 0; i < 100; i++){
-        QLog(@"Run number: %@", @(i));
-       [super testConversation];
+//    NSStreamEventNone = 0,
+//    NSStreamEventOpenCompleted = 1,
+//    NSStreamEventHasBytesAvailable = 2,
+//    NSStreamEventHasSpaceAvailable = 4,
+//    NSStreamEventErrorOccurred = 8,
+//    NSStreamEventEndEncountered = 16
+    
+    [QredoLogger setLogLevel:QredoLogLevelVerbose];
+    [QredoLogger setLogLevel:QredoLogLevelNone];
+    
+    
+    for (int i = 0; i < 100000; i++){ //failing
+        NSLog(@"Run number: %@", @(i));
+             [super testConversation];
+        
     }
 }
 
