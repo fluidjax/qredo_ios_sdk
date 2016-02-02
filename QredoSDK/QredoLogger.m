@@ -111,6 +111,11 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
 }
 
 
++ (QredoLogLevel)logLevel{
+    return currentLoggingLevel;
+}
+
+
 + (void) setLogHandler:(void (^)(NSString * (^message)(void), QredoLogLevel level, const char *file, const char *function, NSUInteger line))logHandler{
     LogHandler = logHandler;
 }

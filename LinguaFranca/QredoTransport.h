@@ -67,5 +67,6 @@ typedef void (^ReceivedErrorBlock)(NSError *error, id userData);
 - (void)notifyListenerOfError:(NSError *)error userData:(id)userData;
 - (void)notifyListenerOfErrorCode:(QredoTransportError)code userData:(id)userData;
 - (NSString *)getHexClientID;
+- (int)port;
 
 @end

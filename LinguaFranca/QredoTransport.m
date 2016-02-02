@@ -184,6 +184,12 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     
 }
 
+
+-(int)port{
+    return 0;
+}
+
+
 - (void)notifyListenerOfError:(NSError *)error userData:(id)userData
 {
     // Note: this method may be called after transport is closed, to notify send/receive attempted after transport is closed.

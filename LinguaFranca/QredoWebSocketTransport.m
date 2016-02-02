@@ -86,8 +86,6 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 //        
         [_webSocket disconnect];
         
-        
-        
         _webSocket.delegate = nil;
     }
 }
@@ -156,18 +154,21 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
         
         for (int sleepI = 0; sleepI < WebSocketSendCheckConnectedCount && !_webSocketOpen; sleepI++) {
             [NSThread sleepForTimeInterval:WebSocketSendCheckConnectedDelay];
+            NSLog(@"Failed to write %i", sleepI);
+            
         }
         
         if (!_webSocketOpen)
         {
             [self notifyListenerOfErrorCode:QredoTransportErrorSendWhilstNotReady userData:userData];
-      //      NSLog(@"subs21");
+            NSLog(@"total failure to write");
             return;
         }
     }
     
     static NSObject *socketLock;
     @synchronized(socketLock) {
+        //NSLog(@"Socket write");
         [_webSocket writeData:payload];
     }
     
@@ -180,6 +181,10 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
    _transportClosed = transportClosed;
 }
 
+
+-(int)port{
+   return  _webSocket.getPortnumber;
+}
 
 
 #pragma mark JFRWebSocketDelegate

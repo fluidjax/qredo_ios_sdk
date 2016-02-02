@@ -8009,21 +8009,22 @@ QredoServiceInvoker *_invoker;
 - (void)subscribeToResponsesWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousResponseWithSequenceValue *result, NSError *error))completionHandler
 {
 
-        //NSLog(@"subs10");
- [_invoker invokeService:@"Rendezvous"
+    [_invoker invokeService:@"Rendezvous"
                operation:@"subscribeToResponses"
            requestWriter:^(QredoWireFormatWriter *writer) {
-          //             NSLog(@"subs13");
+                   //NSLog(@"   !!!subscribe writer tag=%@ port=%i",hashedTag, _invoker.transport.port);
+               
                   [QredoPrimitiveMarshallers quidMarshaller](hashedTag, writer);
                   [QLFOwnershipSignature marshaller](signature, writer);
            }
           responseReader:^(QredoWireFormatReader *reader) {
-            //          NSLog(@"subs12");
+               //NSLog(@"   !!!subscribe reader tag=%@ port=%i",hashedTag, _invoker.transport.port);
                QLFRendezvousResponseWithSequenceValue *result = [QLFRendezvousResponseWithSequenceValue unmarshaller](reader);
+              
                completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-              //          NSLog(@"subs11");
+                  // NSLog(@"   !!!subscribe error tag=%@ port=%i",hashedTag, _invoker.transport.port);
                  completionHandler(nil, error);
             }
            multiResponse:YES];

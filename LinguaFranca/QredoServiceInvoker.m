@@ -143,7 +143,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
             // TODO: DH - replace magic number for correlation ID size
             correlationID   = [QredoServiceInvoker secureRandomWithSize:16];
         
-        NSLog(@"************return Channel  %@     correlation %@",returnChannelID, correlationID);
+       // NSLog(@"************return Channel  %@     correlation %@",returnChannelID, correlationID);
         
             QredoInterchangeHeader *interchangeHeader =
                     [QredoInterchangeHeader interchangeHeaderWithReturnChannelID:returnChannelID

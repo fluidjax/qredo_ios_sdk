@@ -333,7 +333,7 @@ NSString *randomTag;
 
 
 - (QredoRendezvous *)isolateCreateRendezvous:(NSString *)randomTag {
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 isUnlimitedResponseCount:NO];
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@3600 isUnlimitedResponseCount:YES];
     
     __block QredoRendezvous *rendezvous = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
@@ -359,9 +359,6 @@ NSString *randomTag;
 
 - (QredoConversation *)isolateRespondToRendezvous:(NSString *)randomTag rendezvous:(QredoRendezvous *)rendezvous{
     // Responding to the rendezvous
-    
-    [QredoLogger setLogLevel:QredoLogLevelNone];
-    
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
     self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
     
@@ -369,15 +366,21 @@ NSString *randomTag;
     __block QredoConversation *responderConversation = nil;
     // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
     
+    
+    NSLog(@"start the respond to tag");
+//    [NSThread sleepForTimeInterval:2];
+    
     [anotherClient respondWithTag:randomTag
                   trustedRootPems:nil
                           crlPems:nil
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
+                        NSLog(@"respnded to tag");
                     XCTAssertNil(error);
                     XCTAssertNotNil(conversation);
                     responderConversation = conversation;
                     QredoLogDebug(@"Responder conversation ID: %@", conversation.metadata.conversationId);
                     [didRespondExpectation fulfill];
+                    NSLog(@"respnded to tag");
                 }];
     
     //fail 3 times here
@@ -387,7 +390,7 @@ NSString *randomTag;
         self.didReceiveResponseExpectation = nil;
         
         if (error){
-            QredoLogError(@"Failed and retrying");
+            QredoLogError(@"Failed and retrying %@", error);
             again = YES;
         }
        
@@ -405,8 +408,6 @@ NSString *randomTag;
         [NSThread sleepForTimeInterval:5];
         [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
     }
-    
-    [QredoLogger setLogLevel:QredoLogLevelNone];
     return responderConversation;
 }
 
@@ -473,45 +474,60 @@ NSString *secondMessageText;
     }];
 }
 
+
+
+
 - (void)testConversation{
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
-    firstMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [NSDate date]];
+    [QredoLogger setLogLevel:0];
+    
+    //static NSString *randomTag;
+    NSString *randomTag = nil;
+    
+    if (!randomTag)randomTag= [[QredoQUID QUID] QUIDString];
+    
+    
+    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [NSDate date]];
     secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [NSDate date]];
     rvuFulfilledTimes = 0;
     self.didReceiveResponseExpectation = nil;
     
-
+   // NSLog(@"TAG %@",randomTag);
+    
+    //register listener
+    ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
+    listener.expectedMessageValue = firstMessageText;
+    listener.test = self;
+    
+    
     //Create Rendezvous
-    QredoRendezvous *rendezvous = [self isolateCreateRendezvous:randomTag];
     
-    [rendezvous addRendezvousObserver:self];
+    //static QredoRendezvous *rendezvous;
+    QredoRendezvous *rendezvous=nil;
+    if (!rendezvous){
+        rendezvous= [self isolateCreateRendezvous:randomTag];
+        [rendezvous addRendezvousObserver:self];
+    }
+    
+    [NSThread sleepForTimeInterval:2];
+    
 
-    //Response to Rendezvous
+    //Respond to Rendezvous
     QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
+    [creatorConversation addConversationObserver:listener];
     
-    [rendezvous removeRendezvousObserver:self];
+     //Response to Rendezvous
+    [self isolatePublishMessage1:listener responderConversation:responderConversation];
     
-
-//    ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
-//    listener.expectedMessageValue = firstMessageText;
-//    listener.test = self;
-//
-//    [creatorConversation addConversationObserver:listener];
-//    
-//     //Response to Rendezvous
-//    [self isolatePublishMessage1:listener responderConversation:responderConversation];
-//    
-//    
-//    @synchronized(self) {
-//        self.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published after listening"];    
-//    }
-//
-//    listener.expectedMessageValue = secondMessageText;
-//
-//    [self isolatePublishMessage2:listener responderConversation:responderConversation];
-//    [creatorConversation removeConversationObserver:listener];
-//    listener = nil;
-}
+    
+    self.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published after listening"];
+    
+    listener.expectedMessageValue = secondMessageText;
+    
+    [self isolatePublishMessage2:listener responderConversation:responderConversation];
+    //    [creatorConversation removeConversationObserver:listener];
+    listener = nil;
+    
+ }
 
 // Rendezvous Delegate
 - (void)qredoRendezvous:(QredoRendezvous*)rendezvous didReceiveReponse:(QredoConversation *)conversation {

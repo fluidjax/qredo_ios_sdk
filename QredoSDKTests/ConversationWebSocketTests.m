@@ -21,7 +21,6 @@
 
 // This test has frequently helped in triggering intermittent bugs
 - (void)testConversationMultiple{
-    
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = YES;
     
@@ -32,13 +31,14 @@
 //    NSStreamEventErrorOccurred = 8,
 //    NSStreamEventEndEncountered = 16
     
-    [QredoLogger setLogLevel:QredoLogLevelVerbose];
-    [QredoLogger setLogLevel:QredoLogLevelNone];
-    
+
     
     for (int i = 0; i < 100000; i++){ //failing
         NSLog(@"Run number: %@", @(i));
-             [super testConversation];
+        @autoreleasepool {
+            [super testConversation];
+        }
+
         
     }
 }

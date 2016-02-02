@@ -231,7 +231,6 @@
     _dedupeNecessary = YES;
     _queryAfterSubscribeComplete = YES;
    // NSLog(@"subs2");
-    [QredoLogger setLogLevel:6];
     
     [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
         _queryAfterSubscribeComplete = YES;

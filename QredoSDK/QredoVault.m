@@ -187,8 +187,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         itemId = [QredoQUID QUID];
     }
 
-    QredoLogDebug(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
-    //QredoLogError(@"Stack trace : %@",[NSThread callStackSymbols]);
+    QredoLogError(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
+   // QredoLogError(@"Stack trace : %@",[NSThread callStackSymbols]);
     
 
     QredoVaultItemMetadata *metadata = vaultItem.metadata;

@@ -72,6 +72,8 @@ typedef NS_ENUM(NSInteger, QredoLogLevel) {
 
 + (void)setLogHandler:(void (^)(NSString * (^message)(void), QredoLogLevel level, const char *file, const char *function, NSUInteger line))logHandler;
 + (void)setLogLevel:(QredoLogLevel)logLevel;
++ (QredoLogLevel)logLevel;
+
 
 + (void)addLoggingForObject:(NSObject*)ob;
 + (void)addLoggingForClassName:(NSString*)className;
