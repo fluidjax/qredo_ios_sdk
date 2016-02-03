@@ -16,7 +16,6 @@
 // 
 
 #import "MQTTDecoder.h"
-#import "QredoLoggerPrivate.h"
 
 @interface MQTTDecoder()
 {
@@ -162,7 +161,7 @@
             [delegate decoder:self handleEvent:MQTTDecoderEventConnectionError];
             break;
         default:
-            QredoLogError(@"unhandled event code");
+            NSLog(@"unhandled event code");
             break;
     }
 }

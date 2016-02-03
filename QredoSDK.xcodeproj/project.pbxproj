@@ -53,12 +53,6 @@
 		665149241BF60432003491CA /* QredoRsaPublicKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059961BD505FE00EC8D6C /* QredoRsaPublicKey.m */; };
 		665149251BF60432003491CA /* QredoSecKeyRefPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059981BD505FE00EC8D6C /* QredoSecKeyRefPair.m */; };
 		665149261BF60432003491CA /* rsapss.c in Sources */ = {isa = PBXBuildFile; fileRef = 666059991BD505FE00EC8D6C /* rsapss.c */; };
-		665149271BF60432003491CA /* (null) in Sources */ = {isa = PBXBuildFile; };
-		665149281BF60432003491CA /* (null) in Sources */ = {isa = PBXBuildFile; };
-		665149291BF60432003491CA /* (null) in Sources */ = {isa = PBXBuildFile; };
-		6651492A1BF60432003491CA /* (null) in Sources */ = {isa = PBXBuildFile; };
-		6651492B1BF60432003491CA /* (null) in Sources */ = {isa = PBXBuildFile; };
-		6651492C1BF60432003491CA /* (null) in Sources */ = {isa = PBXBuildFile; };
 		6651492D1BF60432003491CA /* NSDictionary+IndexableSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB39791AB1E0C000460797 /* NSDictionary+IndexableSet.m */; };
 		6651492E1BF60432003491CA /* QredoClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAB39741AB1DA8D00460797 /* QredoClient.m */; };
 		6651492F1BF60432003491CA /* QredoBase58.m in Sources */ = {isa = PBXBuildFile; fileRef = 78F868D91A5F1A37009CAFFE /* QredoBase58.m */; };
@@ -2518,13 +2512,7 @@
 				665149251BF60432003491CA /* QredoSecKeyRefPair.m in Sources */,
 				665149261BF60432003491CA /* rsapss.c in Sources */,
 				838279D31C46496600D6600F /* QredoLocalIndexCacheInvalidation.m in Sources */,
-				665149271BF60432003491CA /* (null) in Sources */,
 				83F4E84A1C0F545D00A99431 /* QredoLocalIndex.m in Sources */,
-				665149281BF60432003491CA /* (null) in Sources */,
-				665149291BF60432003491CA /* (null) in Sources */,
-				6651492A1BF60432003491CA /* (null) in Sources */,
-				6651492B1BF60432003491CA /* (null) in Sources */,
-				6651492C1BF60432003491CA /* (null) in Sources */,
 				6651492D1BF60432003491CA /* NSDictionary+IndexableSet.m in Sources */,
 				83F4E84C1C0F54AF00A99431 /* QredoIndexSummaryValues.m in Sources */,
 				6651492E1BF60432003491CA /* QredoClient.m in Sources */,
