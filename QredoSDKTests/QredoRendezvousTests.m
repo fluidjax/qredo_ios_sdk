@@ -1591,9 +1591,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         QredoRendezvousRef *newRendezvousRef = rendezvous.metadata.rendezvousRef;
         
         [client fetchRendezvousWithRef:newRendezvousRef completionHandler:^(QredoRendezvous *activatedRendezvous, NSError *error) {
-            //
+
+            XCTAssertNil(error,@"Error %@",error);
             XCTAssertNotNil(activatedRendezvous);
-            
             XCTAssertNotNil(activatedRendezvous.metadata);
             XCTAssertNotNil(activatedRendezvous.metadata.rendezvousRef);
             XCTAssertNotNil(activatedRendezvous.configuration);

@@ -45,13 +45,94 @@
                   Identifier = "QredoRendezvousMQTTTests">
                </Test>
                <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
+               </Test>
+               <Test
                   Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
                </Test>
                <Test
                   Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
                </Test>
                <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
+               </Test>
+               <Test
                   Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
                </Test>
                <Test
                   Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelperSigning_Invalid_ExternalKeysSignerReturnsNil">
