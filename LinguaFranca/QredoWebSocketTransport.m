@@ -156,10 +156,6 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 }
 
 
--(int)port{
-   return  _webSocket.getPortnumber;
-}
-
 
 #pragma mark JFRWebSocketDelegate
 
