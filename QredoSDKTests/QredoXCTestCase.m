@@ -14,6 +14,7 @@
 
 - (void)setUp {
     [super setUp];
+    [QredoLogger colour:YES];
     [self setLogLevel];
 }
 
@@ -27,11 +28,8 @@
         [QredoLogger setLogLevel:QredoLogLevelVerbose];
         [QredoLogger setLogLevel:QredoLogLevelInfo];
  */
-
-    
     [QredoLogger setLogLevel:QredoLogLevelWarning];
 }
-
 
 
 -(void)loggingOff{
@@ -44,7 +42,6 @@
 }
 
 
-
 -(void)resetKeychain {
     [self deleteAllKeysForSecClass:kSecClassGenericPassword];
     [self deleteAllKeysForSecClass:kSecClassInternetPassword];
@@ -53,12 +50,14 @@
     [self deleteAllKeysForSecClass:kSecClassIdentity];
 }
 
+
 -(void)deleteAllKeysForSecClass:(CFTypeRef)secClass {
     NSMutableDictionary* dict = [NSMutableDictionary dictionary];
     [dict setObject:(__bridge id)secClass forKey:(__bridge id)kSecClass];
     OSStatus result = SecItemDelete((__bridge CFDictionaryRef) dict);
     NSAssert(result == noErr || result == errSecItemNotFound, @"Error deleting keychain data (%ld)", (long)result);
 }
+
 
 - (NSData*)randomDataWithLength:(int)length {
     NSMutableData *mutableData = [NSMutableData dataWithCapacity: length];
@@ -67,6 +66,7 @@
         [mutableData appendBytes: (void *) &randomBits length: 1];
     } return mutableData;
 }
+
 
 -(NSString *)randomStringWithLength:(int)len {
     NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

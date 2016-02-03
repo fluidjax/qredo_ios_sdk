@@ -4,7 +4,7 @@
 
 
 #import "QredoBase58.h"
-
+#import "QredoLoggerPrivate.h"
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "NSData+QredoRandomData.h"
@@ -53,6 +53,11 @@ static inline NSString *createRandomEncodedValue() {
 
 - (void)test_0010_SimpleEncoding
 {
+    
+
+    
+    QredoLogError(@"TEST ERROR");
+    
     NSMutableData *data8 = [NSMutableData dataWithLength:1];
     unsigned char *data8Bytes = [data8 mutableBytes];
     NSUInteger data8Length = [data8 length];

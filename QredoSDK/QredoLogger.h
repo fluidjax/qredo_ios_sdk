@@ -1,5 +1,4 @@
 //
-//  QredoLoggerPrivate.h
 //  QredoSDK
 //
 //  Created by Christopher Morris on 21/01/2016.
@@ -57,6 +56,12 @@
 
 #import <Foundation/Foundation.h>
 
+#define QredoLog(_level, _message)   [QredoLogger logMessage:(_message) level:(_level) file:__FILE__ function:__PRETTY_FUNCTION__ line:__LINE__]
+#define QredoLogError(format, ...)   QredoLog(QredoLogLevelError,   (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
+#define QredoLogWarning(format, ...) QredoLog(QredoLogLevelWarning, (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
+#define QredoLogInfo(format, ...)    QredoLog(QredoLogLevelInfo,    (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
+#define QredoLogDebug(format, ...)   QredoLog(QredoLogLevelDebug,   (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
+#define QredoLogVerbose(format, ...) QredoLog(QredoLogLevelVerbose, (^{ return [NSString stringWithFormat:(format), ##__VA_ARGS__]; }))
 
 
 typedef NS_ENUM(NSInteger, QredoLogLevel) {
@@ -68,16 +73,30 @@ typedef NS_ENUM(NSInteger, QredoLogLevel) {
     QredoLogLevelVerbose
 };
 
+
 @interface QredoLogger : NSObject
 
+
++ (void)logMessage:(NSString * (^)(void))message level:(QredoLogLevel)level file:(const char *)file function:(const char *)function line:(NSUInteger)line;
 + (void)setLogHandler:(void (^)(NSString * (^message)(void), QredoLogLevel level, const char *file, const char *function, NSUInteger line))logHandler;
 + (void)setLogLevel:(QredoLogLevel)logLevel;
 + (QredoLogLevel)logLevel;
 
 
+/* Specify a whitelist of Objects/classNames to restrict logging messages produce by specified Objects/classes
+ */
 + (void)addLoggingForObject:(NSObject*)ob;
 + (void)addLoggingForClassName:(NSString*)className;
+
+/** Clear whitelist and return to producing logging for everything
+ */
 + (void)resetLoggingObjects;
+
+/** If colour is enabled, the debug output in xcode will produced coloured messages
+    Installed XcodeColours - https://github.com/robbiehanson/XcodeColors
+    Or (better method) install using Alcatraz package manage - http://alcatraz.io
+ */
++ (void)colour:(BOOL)colour;
 
 
 @end

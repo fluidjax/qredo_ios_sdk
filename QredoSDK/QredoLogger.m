@@ -13,7 +13,6 @@
 
 
 #import "QredoLoggerPrivate.h"
-#import "QredoLoggerPrivate.h"
 
 @implementation QredoLogger
 
@@ -22,7 +21,7 @@
  The default logging value
  */
 static const int DEFAULT_LOG_LEVEL = QredoLogLevelError;
-
+static BOOL inColour = NO;
 
 static int currentLoggingLevel = DEFAULT_LOG_LEVEL;
 static NSMutableArray *classRestrictionArray;
@@ -32,19 +31,24 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
 
     if (level==QredoLogLevelNone)return;
     if (currentLoggingLevel<level)return;  //no logging at this currentLogginLevel
-
-    setenv("XcodeColors", "YES", 0);
-    char *xcode_colors = getenv("XcodeColors");
     
-    BOOL inColour = NO;
-    
-    
-    
-    if (xcode_colors && (strcmp(xcode_colors, "YES") == 0))    {
-        // XcodeColors is installed and enabled!
-        inColour = YES;
-        
-    }
+//#ifdef COLOUROFF
+//    setenv("XcodeColors", "NO", 0);
+//#else
+//    setenv("XcodeColors", "YES", 0);
+//#endif
+//  
+//    char *xcode_colors = getenv("XcodeColors");
+//    
+//    BOOL inColour = NO;
+//    
+//    
+//    
+//    if (xcode_colors && (strcmp(xcode_colors, "YES") == 0))    {
+//        // XcodeColors is installed and enabled!
+//        inColour = YES;
+//        
+//    }
     
     
     
@@ -98,6 +102,11 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
 
     }
 };
+
+
++ (void)colour:(BOOL)colour{
+    inColour=colour;
+}
 
 
 + (void)load{

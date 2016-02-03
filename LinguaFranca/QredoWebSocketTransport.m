@@ -75,17 +75,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 - (void)closeWebSocket
 {
     if (_webSocketOpen && _webSocket) {
-        
-        
-        
-//        static NSMutableArray *socketPark;
-//        
-//        if (!socketPark)socketPark=[[NSMutableArray alloc] init];
-//        [socketPark addObject:_webSocket];
-//        NSLog(@"Sockpark size is %i",(int)[socketPark count]);
-//        
         [_webSocket disconnect];
-        
         _webSocket.delegate = nil;
     }
 }
@@ -131,48 +121,32 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 {
 
     if (!_webSocket) {
-      //                  NSLog(@"subs17");
         @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                        reason:@"No websocket or handlers configured. Must configure web socket, and delegate before sending data."
                                      userInfo:nil];
         return;
     }
 
-    if (self.transportClosed)
-    {
-    //                    NSLog(@"subs18");
+    if (self.transportClosed){
         [self notifyListenerOfErrorCode:QredoTransportErrorSendAfterTransportClosed userData:userData];
         return;
     }
 
-    if (!_webSocketOpen)
-    {
-     //    NSLog(@"subs19");
+    if (!_webSocketOpen){
         // This could happen on the first send, as the connection/subscription setup runs in the background and may not be ready yet.
         // If occurs, then wait a bit and retry.  If still not ready, give up.
         
-        
         for (int sleepI = 0; sleepI < WebSocketSendCheckConnectedCount && !_webSocketOpen; sleepI++) {
             [NSThread sleepForTimeInterval:WebSocketSendCheckConnectedDelay];
-            NSLog(@"Failed to write %i", sleepI);
-            
         }
         
-        if (!_webSocketOpen)
-        {
+        if (!_webSocketOpen){
             [self notifyListenerOfErrorCode:QredoTransportErrorSendWhilstNotReady userData:userData];
-            NSLog(@"total failure to write");
+            QredoLogError(@"Total failure to write to websocket - giving up");
             return;
         }
     }
-    
-    static NSObject *socketLock;
-    @synchronized(socketLock) {
-        //NSLog(@"Socket write");
-        [_webSocket writeData:payload];
-    }
-    
-   //  NSLog(@"subs20");
+    [_webSocket writeData:payload];
 }
 
 - (void)setTransportClosed:(BOOL)transportClosed
@@ -190,8 +164,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
 #pragma mark JFRWebSocketDelegate
 
 -(void)websocket:(JFRWebSocket*)socket didReceiveData:(NSData*)data{
-    //NSLog(@"did receieve data");
-     [self notifyListenerOfResponseData:data userData:nil];
+    [self notifyListenerOfResponseData:data userData:nil];
 }
 
 -(void)websocketDidConnect:(JFRWebSocket*)socket{

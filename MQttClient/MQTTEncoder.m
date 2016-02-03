@@ -16,6 +16,7 @@
 // 
 
 #import "MQTTEncoder.h"
+#import "QredoLoggerPrivate.h"
 
 @interface MQTTEncoder() {
     MQTTEncoderStatus status;
@@ -115,7 +116,7 @@
             }
             break;
         default:
-            NSLog(@"Oops, event code not handled: 0x%02lx", (unsigned long)eventCode);
+            QredoLogError(@"Oops, event code not handled: 0x%02lx", (unsigned long)eventCode);
             break;
     }
 }
@@ -125,7 +126,7 @@
     NSInteger n, length;
     
     if (status != MQTTEncoderStatusReady) {
-        NSLog(@"Encoder not ready");
+        QredoLogError(@"Encoder not ready");
         return;
     }
     

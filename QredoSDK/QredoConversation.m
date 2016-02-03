@@ -1104,8 +1104,6 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
         //    NSAssert([_observers count] > 0, @"Conversation observers should be added before starting listening for the updates");
         return;
     }
-    
-//    NSLog(@"message.highWatermark.sequenceValue: %@", message.highWatermark.sequenceValue.bytes);
 
     // Subscribe to conversations newer than our highwatermark
     [self subscribeToMessagesWithBlock:^(QredoConversationMessage *message) {

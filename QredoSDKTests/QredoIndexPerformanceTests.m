@@ -14,6 +14,7 @@
 #import "QredoLocalIndex.h"
 #import "QredoLocalIndexDataStore.h"
 #import "QredoIndexVault.h"
+#import "Qredo.h"
 
 @interface QredoIndexPerformanceTests :QredoXCTestCase
 
@@ -28,8 +29,8 @@ NSNumber *testNumber;
 
 
 -(void)test10Records{
-    
     int testSize = 10;
+    
     NSString *clientPass = [QredoTestUtils randomStringWithLength:32];
     [self authoriseClient:clientPass];
     qredoLocalIndex = client1.defaultVault.localIndex;
@@ -113,11 +114,11 @@ NSNumber *testNumber;
     
     //at this point we should have received 100 records from the server
     
-    XCTAssertTrue(testSize == importCount,@"Failing to import %i items", testSize);
+    XCTAssertTrue(testSize <= importCount,@"Failing to import %i items", testSize);
     XCTAssertTrue(testSize == countAfter-countBefore,@"Failing to import %i items", testSize);
     
     
-    QLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
+    NSLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
     
 }
 
@@ -130,6 +131,7 @@ NSNumber *testNumber;
 
 - (void)setUp {
     [super setUp];
+    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] deleteStore];
     myTestDate = [NSDate date];
     QLog(@"**************%@",myTestDate);
     testNumber = [NSNumber numberWithInt:3];

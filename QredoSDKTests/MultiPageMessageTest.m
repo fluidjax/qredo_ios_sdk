@@ -344,6 +344,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
         newRendezvous = rendezvous;
         [createRendezvous1Expectation fulfill];
         [newRendezvous addRendezvousObserver:self];
+        [NSThread sleepForTimeInterval:0.1];
     }];
     
     [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {

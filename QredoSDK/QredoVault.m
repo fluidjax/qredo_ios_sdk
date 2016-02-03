@@ -17,9 +17,7 @@
 #import "QredoKeychain.h"
 
 #import "QredoUpdateListener.h"
-
 #import "QredoObserverList.h"
-
 #import "QredoVaultServerAccess.h"
 #import "QredoLocalIndexDataStore.h"
 
@@ -187,9 +185,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         itemId = [QredoQUID QUID];
     }
 
-    QredoLogError(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
-   // QredoLogError(@"Stack trace : %@",[NSThread callStackSymbols]);
-    
+    QredoLogVerbose(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
 
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
@@ -551,10 +547,9 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     } since:self.highWatermark consolidatingResults:NO];
 }
 
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
-{
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler{
     // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
-    NSLog(@"QredoVault: unsubscribeWithCompletionHandler"); // <- not called
+    QredoLogDebug(@"QredoVault: unsubscribeWithCompletionHandler"); // <- not called
 }
 
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item

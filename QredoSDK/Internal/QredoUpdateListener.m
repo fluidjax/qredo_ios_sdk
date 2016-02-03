@@ -89,33 +89,8 @@
 
 
 
--(void)dumpHighwater{
-    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
-        QredoRendezvous *rendezvous = self.dataSource;
-        NSLog(@"HWM %llu",rendezvous.highWatermark);
-    }
-    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")]) {
-        QredoConversation *conversation = self.dataSource;
-        NSLog(@"HWM %@",conversation.highWatermark);
-    }
-    
-}
-    
--(void)resetHWM{
-    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
-        QredoRendezvous *rendezvous = self.dataSource;
-        [rendezvous resetHighWatermark];
-    }
-    if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")]) {
-        QredoConversation *conversation = self.dataSource;
-        [conversation resetHighWatermark];
-    }
-    
-}
-    
 // This method enables subscription (push) for conversation items, and creates new messages from them. Will regularly re-send subsription request as subscriptions can fail silently
-- (void)startSubscribing
-{
+- (void)startSubscribing{
    
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
@@ -146,12 +121,8 @@
                         return;
                     }
                     
-                    //csm
-
-                    
-
-                     [self subscribeWithCompletionHandler:nil];
-                    
+                    [self subscribeWithCompletionHandler:nil];
+                   
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reconnect" object:nil];
                     
                     
@@ -202,24 +173,10 @@
 }
 
 - (void)subscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler{
-   // NSLog(@"subs1");
-    
     if (_subscribedToMessages){
-    //    NSLog(@"Already subscribed");
-    // [self dumpHighwater];
      return ;
     }
     
-//    if (rand()%10==0){
-//        NSLog(@"Randomly failing");
-//        [self resetHWM];
-//        [self dumpHighwater];
-//        NSError *error = [[NSError alloc] init];
-//        completionHandler(error);
-//    }
-    
-//    NSLog(@"Subscribing");
-//         [self dumpHighwater];
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
     _subscribedToMessages = YES;
@@ -230,11 +187,9 @@
      */
     _dedupeNecessary = YES;
     _queryAfterSubscribeComplete = YES;
-   // NSLog(@"subs2");
     
     [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
         _queryAfterSubscribeComplete = YES;
-//NSLog(@"subs3");
         if (!error) {
             [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error) {
                 if (completionHandler) completionHandler(error);
@@ -250,8 +205,6 @@
 {
 //    if (_subscribedToMessages) return ;
 //    NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
-    
-    NSLog(@"We are resubscribing1");
     
     if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
     
@@ -273,28 +226,21 @@
 //            QredoRendezvous *rendezvous = self.dataSource;
 //            [rendezvous resetHighWatermark];
 //        }
-        NSLog(@"We are resubscribing2");
         [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
             _queryAfterSubscribeComplete = YES;
-            NSLog(@"We are resubscribing3");
             if (!error) {
-                NSLog(@"We are resubscribing4");
-                [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error) {
-                    NSLog(@"We are resubscribing5");
+                [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error){
                     if (completionHandler)
                         completionHandler(error);
                 }];
             } else {
-                NSLog(@"We are resubscribing6");
                 if (completionHandler)
                     completionHandler(error);
         }}];
-        NSLog(@"We are resubscribing7");
     }
 }
 
-- (void)unsubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
+- (void)unsubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler{
     [self.dataSource qredoUpdateListener:self unsubscribeWithCompletionHandler:^(NSError *error) {
         _subscribedToMessages = NO;
         if (completionHandler) completionHandler(error);
@@ -381,7 +327,6 @@
             [_dedupeStore setObject:sequenceValue forKey:item];
         }
     }
-
     return itemIsDuplicate;
 }
 

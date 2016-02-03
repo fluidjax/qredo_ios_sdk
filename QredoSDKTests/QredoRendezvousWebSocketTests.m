@@ -39,12 +39,10 @@
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = NO;
     
-    for (int i = 0; i < 1000; i++) //passing
+    for (int i = 0; i < 100; i++) //passing
     {
-        @autoreleasepool {
             QLog(@" run: %i", i);
             [super testCreateAndRespondAnonymousRendezvous];
-        }
     }
 }
 

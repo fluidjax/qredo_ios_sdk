@@ -694,57 +694,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 
-//-(void)testOpenConnectionWaitThenSend{
-//    
-//    QLog(@"Start & wait");
-//    int timeOutTestDelay = 100;
-//    
-//    timeoutExpectation = [self expectationWithDescription:@"timeout expectation"];
-//    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeOutTestDelay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-//        [timeoutExpectation fulfill];
-//    });
-//    
-//    
-//    
-//    [self waitForExpectationsWithTimeout:timeOutTestDelay+2 handler:^(NSError *error) {
-//        timeoutExpectation = nil;
-//    }];
-//    
-//    QLog(@"Finished Waiting");
-//    
-//    NSString *randomTag = [[QredoQUID QUID] QUIDString];
-//    
-//    
-//    
-//    
-//    
-//    QredoRendezvousConfiguration *configuration
-//    = [[QredoRendezvousConfiguration alloc]
-//       initWithConversationType:kRendezvousTestConversationType
-//       durationSeconds:[NSNumber numberWithLongLong:kRendezvousTestDurationSeconds]
-//       isUnlimitedResponseCount:YES];
-//    
-//    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-//    __block QredoRendezvous *createdRendezvous = nil;
-//    
-//    [client createAnonymousRendezvousWithTag:randomTag
-//                               configuration:configuration
-//                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//                               XCTAssertNil(error);
-//                               XCTAssertNotNil(rendezvous);
-//                               createdRendezvous = rendezvous;
-//                               [createExpectation fulfill];
-//                           }];
-//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//        createExpectation = nil;
-//    }];
-//    
-//}
-
-
-- (void)testCreateAndRespondAnonymousRendezvous
-{
+- (void)testCreateAndRespondAnonymousRendezvous{
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
     
@@ -773,7 +723,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // Listening for responses and respond from another client
     RendezvousListener *listener = [[RendezvousListener alloc] init];
     [createdRendezvous addRendezvousObserver:listener];
-    
+    [NSThread sleepForTimeInterval:0.1];
     XCTAssertNotNil(createdRendezvous);
     
     __block QredoClient *anotherClient = nil;
@@ -860,7 +810,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // Listening for responses and respond from another client
     RendezvousListener *listener = [[RendezvousListener alloc] init];
     [createdRendezvous addRendezvousObserver:listener];
-    
+    [NSThread sleepForTimeInterval:0.1];
     XCTAssertNotNil(createdRendezvous);
 
 //    __block QredoClient *anotherClient = nil;
@@ -943,7 +893,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // Listening for responses and respond from another client
     RendezvousListener *listener = [[RendezvousListener alloc] init];
     [createdRendezvous addRendezvousObserver:listener];
-    
+    [NSThread sleepForTimeInterval:0.1];
     XCTAssertNotNil(createdRendezvous);
     
     NSString *fullTag = createdRendezvous.metadata.tag;
@@ -1073,7 +1023,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     [createdRendezvous addRendezvousObserver:listener];
-    
+    [NSThread sleepForTimeInterval:0.1];
     __block QredoConversation *createdConversation = nil;
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:fullTag
@@ -1485,7 +1435,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
     [createdRendezvous addRendezvousObserver:listener];
-    
+    [NSThread sleepForTimeInterval:0.1];
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
     [anotherClient respondWithTag:fullTag
                   trustedRootPems:self.trustedRootPems
@@ -1619,7 +1569,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // responding to the expired rendezvous should fail
     [client respondWithTag: self.randomlyCreatedTag completionHandler:^(QredoConversation *conversation, NSError *error) {
         //
-        XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse);
+
+        XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse,@"Error is %@",error);
     }];
 
     

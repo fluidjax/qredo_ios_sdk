@@ -17,6 +17,7 @@
 
 #import "MQTTSession.h"
 #import "MQttTxFlow.h"
+#import "QredoLoggerPrivate.h"
 
 @interface MQTTSession()<MQTTEncoderDelegate, MQTTDecoderDelegate>
 {
@@ -391,7 +392,7 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
     NSError * error = nil;
     NSData * data = [NSJSONSerialization dataWithJSONObject:payload options:0 error:&error];
     if(error!=nil){
-        //NSLog(@"Error creating JSON: %@",error.description);
+        QredoLogError(@"Error creating JSON: %@",error.description);
         return;
     }
     [self publishData:data onTopic:theTopic];
@@ -401,7 +402,7 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
     idleTimer++;
     if (idleTimer >= keepAliveInterval) {
         if ([encoder status] == MQTTEncoderStatusReady) {
-            //NSLog(@"sending PINGREQ");
+            QredoLogError(@"sending PINGREQ");
             [encoder encodeMessage:[MQTTMessage pingreqMessage]];
             idleTimer = 0;
         }
@@ -420,13 +421,13 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
 }
 
 - (void)encoder:(MQTTEncoder*)sender handleEvent:(MQTTEncoderEvent) eventCode {
-   // NSLog(@"encoder:(MQTTEncoder*)sender handleEvent:(MQTTEncoderEvent) eventCode ");
+   QredoLogError(@"encoder:(MQTTEncoder*)sender handleEvent:(MQTTEncoderEvent) eventCode ");
     if(sender == encoder) {
         switch (eventCode) {
             case MQTTEncoderEventReady:
                 switch (status) {
                     case MQTTSessionStatusCreated:
-                        //NSLog(@"Encoder has been created. Sending Auth Message");
+                        QredoLogError(@"Encoder has been created. Sending Auth Message");
                         [sender encodeMessage:connectMessage];
                         status = MQTTSessionStatusConnecting;
                         break;
@@ -451,7 +452,7 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
 }
 
 - (void)decoder:(MQTTDecoder*)sender handleEvent:(MQTTDecoderEvent)eventCode {
-    //NSLog(@"decoder:(MQTTDecoder*)sender handleEvent:(MQTTDecoderEvent)eventCode");
+    QredoLogError(@"decoder:(MQTTDecoder*)sender handleEvent:(MQTTDecoderEvent)eventCode");
     if(sender == decoder) {
         MQTTSessionEvent event;
         switch (eventCode) {
@@ -470,7 +471,7 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
 }
 
 - (void)decoder:(MQTTDecoder*)sender newMessage:(MQTTMessage*)msg {
-    //NSLog(@"decoder:(MQTTDecoder*)sender newMessage:(MQTTMessage*)msg ");
+    QredoLogError(@"decoder:(MQTTDecoder*)sender newMessage:(MQTTMessage*)msg ");
     if(sender == decoder){
         switch (status) {
             case MQTTSessionStatusConnecting:
