@@ -3,7 +3,7 @@
  */
 
 #import "QredoDerUtils.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @implementation QredoDerUtils
 
@@ -135,7 +135,7 @@ uint8_t rsaIdentifierArray[] = {0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 
         // Only cater for lengths in the range 1 - 65535 i.e. lengthSize <= 3
         if (*lengthByteCount > 3)
         {
-            LogError(@"Length size (%d) exceeds currently supported length of 3 bytes.", *lengthByteCount);
+            QredoLogError(@"Length size (%d) exceeds currently supported length of 3 bytes.", *lengthByteCount);
             return NO;
         }
         else
@@ -175,7 +175,7 @@ uint8_t rsaIdentifierArray[] = {0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 
     if (dataLength > 65535)
     {
         NSString *message = [NSString stringWithFormat:@"Length of data (%lu) exceeds max value of 65535 bytes.", (unsigned long)dataLength];
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
 
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:message
@@ -282,7 +282,7 @@ uint8_t rsaIdentifierArray[] = {0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 
             break;
             
         default:
-            LogError(@"Unhandled identifier path. Value = %d", identifier);
+            QredoLogError(@"Unhandled identifier path. Value = %d", identifier);
             break;
     }
     

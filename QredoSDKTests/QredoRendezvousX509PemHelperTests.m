@@ -13,8 +13,9 @@
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoCryptoError.h"
+#import "QredoXCTestCase.h"
 
-@interface QredoRendezvousX509PemHelperTests : XCTestCase
+@interface QredoRendezvousX509PemHelperTests : QredoXCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @property (nonatomic) NSArray *trustedRootPems;
 @property (nonatomic) NSArray *crlPems;

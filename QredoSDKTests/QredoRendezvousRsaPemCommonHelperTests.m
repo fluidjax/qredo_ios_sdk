@@ -6,8 +6,9 @@
 #import <XCTest/XCTest.h>
 #import "QredoRendezvousRsaPemCommonHelper.h"
 #import "CryptoImplV1.h"
+#import "QredoXCTestCase.h"
 
-@interface QredoRendezvousRsaPemCommonHelperTests : XCTestCase
+@interface QredoRendezvousRsaPemCommonHelperTests : QredoXCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @end
 

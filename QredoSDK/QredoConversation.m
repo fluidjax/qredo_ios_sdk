@@ -20,7 +20,7 @@
 #import "QredoPrivate.h"
 #import "QredoVaultPrivate.h"
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoClient.h"
 #import "QredoConversationMessagePrivate.h"
 #import "QredoUpdateListener.h"
@@ -270,8 +270,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
                                  publicKey:(QredoDhPublicKey*)publicKey
                            rendezvousOwner:(BOOL)rendezvousOwner
-                         completionHandler:(void(^)(NSError *error))completionHandler
-{
+                         completionHandler:(void(^)(NSError *error))completionHandler{
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey rendezvousOwner:rendezvousOwner];
 
     [self storeWithCompletionHandler:^(NSError *error)
@@ -293,6 +292,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                completionHandler(error);
            }];
     }];
+    
 }
 
 - (void)generateKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
@@ -475,16 +475,20 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    [self.client.systemVault strictlyPutNewItem:vaultItem
-            completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
-    {
-        if (newItemMetadata) {
-            self.metadata.conversationRef =
-            [[QredoConversationRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
-                                                                vault:self.client.systemVault];
-        }
-        completionHandler(error);
-    }];
+    //csm
+    @synchronized(self) {
+
+        [self.client.systemVault strictlyPutNewItem:vaultItem
+                completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+        {
+            if (newItemMetadata) {
+                self.metadata.conversationRef =
+                [[QredoConversationRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
+                                                                    vault:self.client.systemVault];
+            }
+            completionHandler(error);
+        }];
+    }
 }
 
 - (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
@@ -728,6 +732,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)sendMessageWithoutStoring:(QredoConversationMessage*)message
                 completionHandler:(void(^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler
 {
+    QredoLogVerbose(@"Start sendMessageWithoutStoring");
     QLFConversationMessage *messageLF = [message messageLF];
 
     QLFEncryptedConversationItem *encryptedItem = [_conversationCrypto encryptMessage:messageLF
@@ -750,13 +755,14 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         return;
     }
 
+    
     // it may happen that both watermark and error != nil, when the message has been sent but failed to be stored
     [_conversationService publishWithQueueId:_outboundQueueId
                                         item:encryptedItem
                                    signature:ownershipSignature
                            completionHandler:^(QLFConversationPublishResult *result, NSError *error)
      {
-         
+         QredoLogVerbose(@"Completion start publishWithQueueId");
          if (error) {
              completionHandler(QredoConversationHighWatermarkOrigin, error);
              return;
@@ -773,13 +779,16 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
          QredoConversationHighWatermark *watermark = [[QredoConversationHighWatermark alloc] initWithSequenceValue:result.sequenceValue];
 
          completionHandler(watermark, error);
+         QredoLogVerbose(@"Completion end publishWithQueueId");
      }];
 }
 
 - (void)publishMessage:(QredoConversationMessage *)message
      completionHandler:(void(^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler
 {
+    QredoLogVerbose(@"Start publish message");
     if (_deleted) {
+        QredoLogVerbose(@"deleted is true");
         completionHandler(nil, [NSError errorWithDomain:QredoErrorDomain
                                                    code:QredoErrorCodeConversationDeleted
                                                userInfo:@{NSLocalizedDescriptionKey: @"Conversation has been deleted"}]);
@@ -798,6 +807,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
     if (!self.metadata.isPersistent || [message isControlMessage]) {
+         QredoLogVerbose(@"not persistent or control ");
         [self sendMessageWithoutStoring:modifiedMessage completionHandler:completionHandler];
         return;
     }
@@ -808,6 +818,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
      completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
     {
         if (error) {
+            QredoLogVerbose(@"store Message Error");
             completionHandler(nil, error);
             return ;
         }
@@ -818,8 +829,11 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                                            dataType:message.dataType
                                                                                       summaryValues:summaryValues];
 
+        QredoLogVerbose(@"start sendMessageWithoutStoring");
         [self sendMessageWithoutStoring:modifiedMessage completionHandler:completionHandler];
+        QredoLogVerbose(@"end sendMessageWithoutStoring");
     }];
+    QredoLogVerbose(@"End publish message");
 }
 
 - (void)acknowledgeReceiptUpToHighWatermark:(QredoConversationHighWatermark*)highWatermark
@@ -1090,8 +1104,6 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
         //    NSAssert([_observers count] > 0, @"Conversation observers should be added before starting listening for the updates");
         return;
     }
-    
-//    NSLog(@"message.highWatermark.sequenceValue: %@", message.highWatermark.sequenceValue.bytes);
 
     // Subscribe to conversations newer than our highwatermark
     [self subscribeToMessagesWithBlock:^(QredoConversationMessage *message) {

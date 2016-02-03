@@ -10,6 +10,7 @@
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"
 #import "QredoIndexModel.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoLocalIndexCacheInvalidation ()
 @property (strong) QredoIndexVault *qredoIndexVault;
@@ -139,7 +140,9 @@ static const long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage
     QredoLocalIndexDataStore *persistentStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
     long fileSizeOnDisk = [persistentStore persistentStoreFileSize];
     if (fileSizeOnDisk > self.maxCacheSize) {
-        NSLog(@"** Warning index/cache is beyond the maximum size, increase size or turn off metadata indexing");
+        QredoLogWarning(@"Index/cache is beyond the maximum size %@",^{
+            return [NSString stringWithFormat:@"\n   CacheSize(Est):%lld \n   CacheSize(Act):%ld\n   MaxSize:       %lld",[self totalCacheSizeEstimate],fileSizeOnDisk, self.maxCacheSize];
+        }());
     }
 }
 
@@ -147,6 +150,7 @@ static const long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage
 - (BOOL)overCacheSize {
     //Make an estimate to see if we are using more cache space than the specified maximum cache size
     if ([self totalCacheSizeEstimate] > self.maxCacheSize) {
+        QredoLogInfo(@"Cache over Size");
         return YES;
     }
     return NO;
@@ -179,6 +183,9 @@ static const long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage
             qredoIndexVaultItem.hasValueValue=NO;
             [self subtractValueSizeFromTotals:qredoIndexVaultItem];
             if (payload) [moc deleteObject:payload];
+             QredoLogInfo(@"Deleting oldest item in Index/cache");
+        }else{
+             QredoLogInfo(@"No more items in Index/cache to invalidate & delete");
         }
         if (results && [results count]<=1) haveMoreItemsToDelete=NO;
         

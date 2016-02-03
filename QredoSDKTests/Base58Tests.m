@@ -4,11 +4,11 @@
 
 
 #import "QredoBase58.h"
-
+#import "QredoLoggerPrivate.h"
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "NSData+QredoRandomData.h"
-
+#import "QredoXCTestCase.h"
 
 static inline NSData *createRandomData() {
     
@@ -43,14 +43,21 @@ static inline NSString *createRandomEncodedValue() {
 }
 
 
-@interface Base58Tests : XCTestCase
+@interface Base58Tests : QredoXCTestCase
 
 @end
 
 @implementation Base58Tests
 
+
+
 - (void)test_0010_SimpleEncoding
 {
+    
+
+    
+    QredoLogError(@"TEST ERROR");
+    
     NSMutableData *data8 = [NSMutableData dataWithLength:1];
     unsigned char *data8Bytes = [data8 mutableBytes];
     NSUInteger data8Length = [data8 length];

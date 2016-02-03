@@ -1,0 +1,44 @@
+#!/bin/bash
+#(c)Qredo - Chris Morris 02/2016
+
+
+
+#navigate to the correct directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+cd ..
+
+set -eo pipefail
+
+
+#check if xcpretty is installed, if not bail and advise
+if ! gem spec xcpretty > /dev/null 2>&1; then
+  echo "Gem xcpretty is not installed!"
+  echo "Install using:"
+  echo "   sudo gem install xcpretty"
+  exit
+fi
+
+
+
+#Run tests     
+# to pass environment variables use GCC_PREPROCESSOR_DEFINITIONS='$GCC_PREPROCESSOR_DEFINITIONS COLOUROFF=1' \ - now unused
+xcodebuild \
+-workspace QredoSDK.xcworkspace \
+-scheme QredoSDKTests \
+-sdk iphonesimulator \
+-destination 'platform=iOS Simulator,name=iPhone 6,OS=latest' \
+test | xcpretty -s -r html
+
+
+#Append date to output report filename
+reportFilename="./build/reports/tests.html"
+if [ -f $reportFilename ]; then
+	now=$(date +"%m_%d_%Y")
+	newFilename="./build/reports/tests$now.html"
+	mv $reportFilename $newFilename
+	open $newFilename
+else
+	echo "** No report generated **"
+fi
+

@@ -1,11 +1,11 @@
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
-@implementation QredoLogging
+@implementation QredoLogger
 
 // TODO: DH - write unit test for NSDataFromHexString
 // TODO: DH - confirm works with odd length input string
-+ (NSData *)NSDataFromHexString:(NSString*)string
-{
+
++ (NSData *)NSDataFromHexString:(NSString*)string{
     // Originated http://stackoverflow.com/questions/7317860/converting-hex-nsstring-to-nsdata?rq=1
     NSString *noWhitespaceString = [string stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSMutableData *convertedData = [[NSMutableData alloc] init];
@@ -24,49 +24,37 @@
     return convertedData;
 }
 
-+ (NSString*)hexRepresentationOfNSData:(NSData*)data
-{
+
++ (NSString*)hexRepresentationOfNSData:(NSData*)data{
     //    LogTrace();
     
     NSString *hexString;
     
-    if (data == nil)
-    {
+    if (data == nil){
         // If data is nil, just return string containing 'nil'
         hexString = @"nil";
+    }else{
+        hexString = [QredoLogger printBytesAsHex:data.bytes numberOfBytes:(unsigned int)data.length];
     }
-    else
-    {
-        hexString = [QredoLogging printBytesAsHex:data.bytes numberOfBytes:(unsigned int)data.length];
-    }
-    
     return hexString;
 }
 
-+ (NSString*)printBytesAsHex:(const unsigned char*)bytes numberOfBytes:(const unsigned int)numberOfBytes
-{
-    //    LogTrace();
-    
+
++ (NSString*)printBytesAsHex:(const unsigned char*)bytes numberOfBytes:(const unsigned int)numberOfBytes{
     NSMutableString *hexString;
-    
-    if (!bytes)
-    {
+    if (!bytes){
         // If bytes is nil, just return string containing 'nil'
         hexString = [NSMutableString stringWithString:@"nil"];
-    }
-    else
-    {
+    }else{
         hexString = [[NSMutableString alloc] initWithCapacity:numberOfBytes * 2];
-        for (int i = 0; i < numberOfBytes; i++)
-        {
+        for (int i = 0; i < numberOfBytes; i++){
             [hexString appendFormat:@"%02X", bytes[i]];
         }
     }
     return hexString;
 }
 
-+ (NSString*)stringFromOSStatus:(OSStatus)osStatus
-{
++ (NSString*)stringFromOSStatus:(OSStatus)osStatus{
     NSString *messageString = nil;
     
     // OSX supports converting OSStatus to strings through SecErrorMessages.string, but iOS doesn't include that.
@@ -143,10 +131,8 @@
 }
 
 // TODO: Remove before release
-+ (void)notImplementedYet:(SEL)selector
-{
++ (void)notImplementedYet:(SEL)selector{
     NSString *message = [NSString stringWithFormat:@"Method %@ not yet complete/implemented!", NSStringFromSelector(selector)];
-    
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:message
                                  userInfo:nil];

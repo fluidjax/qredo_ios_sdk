@@ -7,7 +7,7 @@
 #import "QredoTestConfiguration.h"
 #import "QredoMqttTransport.h"
 #import "NSData+QredoRandomData.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @interface TransportListener : NSObject <QredoTransportDelegate>
 

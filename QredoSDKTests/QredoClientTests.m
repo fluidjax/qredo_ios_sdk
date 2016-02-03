@@ -7,13 +7,13 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "Qredo.h"
+#import "QredoXCTestCase.h"
 #import "QredoTestUtils.h"
 #import "NSDictionary+Contains.h"
 #import "QredoVaultPrivate.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
-@interface QredoClientTests : XCTestCase
+@interface QredoClientTests : QredoXCTestCase
 
 @end
 
@@ -30,21 +30,66 @@
 }
 
 
+-(void)showVersions{
+
+}
+
+
+
+
+
 -(void)testLogging{
     [self testSuccessConnectToClient];
     [QredoLogger setLogLevel:QredoLogLevelVerbose];
     
-    QredoLogError  (@"Operation finished with error:   %@", ^{ return @"generated error message from block"; }());
-    QredoLogWarning(@"Operation finished with warning: %@", ^{ return @"generated error message from block"; }());
-    QredoLogInfo   (@"Operation finished with info:    %@", ^{ return @"generated error message from block"; }());
-    QredoLogDebug  (@"Operation finished with debug:   %@", ^{ return @"generated error message from block"; }());
-    QredoLogVerbose(@"Operation finished with verbose: %@", ^{ return @"generated error message from block"; }());
-    
-     LogError(@"Setting anchor certificates failed: %@", [QredoLogging stringFromOSStatus:1]);
+    QredoLogError  (@"Ignore this intentional error:   %@", ^{ return @"generated error message from block"; }());
+    QredoLogWarning(@"Ignore this intentional warning: %@", ^{ return @"generated error message from block"; }());
+    QredoLogInfo   (@"Ignore this intentional info:    %@", ^{ return @"generated error message from block"; }());
+    QredoLogDebug  (@"Ignore this intentional debug:   %@", ^{ return @"generated error message from block"; }());
+    QredoLogVerbose(@"Ignore this intentional verbose: %@", ^{ return @"generated error message from block"; }());
+
+    [self loggingOn]; //restore back to original default state
     
 }
 
+-(void)testConnectAndCloseMultiple{
+    for (int i=0;i<10;i++){
+        [self testConnectAndClose];
+    }
+}
 
+
+-(void)testConnectAndClose{
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    
+    __block QredoClient *client;
+    
+    
+    [QredoClient initializeWithAppSecret:@"cafebabe"
+                                  userId:@"testuser"
+                              userSecret:[QredoTestUtils randomPassword]
+                                 options:nil
+                       completionHandler:^(QredoClient *clientArg, NSError *error) {
+                           XCTAssertNil(error);
+                           XCTAssertNotNil(clientArg);
+                           [clientExpectation fulfill];
+                           client = clientArg;
+                           
+                           QLog(@"Version is  %@",[clientArg versionString]);
+                           QLog(@"Build is    %@",[clientArg buildString]);
+                           
+                           
+                       }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
+    
+    [client closeSession];
+
+
+}
 
 
 -(void)testSuccessConnectToClient{
@@ -58,6 +103,11 @@
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
                            [clientExpectation fulfill];
+                           
+                           QLog(@"Version is  %@",[clientArg versionString]);
+                           QLog(@"Build is    %@",[clientArg buildString]);
+                           
+                           
                        }];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {

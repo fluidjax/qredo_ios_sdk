@@ -2,7 +2,7 @@
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
-
+#import "QredoXCTestCase.h"
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoED25519SigningKey.h"
 #import "QredoED25519VerifyKey.h"
@@ -226,7 +226,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
 // =============================================================================================================
 
 
-@interface OwnershipSignatureTests : XCTestCase
+@interface OwnershipSignatureTests : QredoXCTestCase
 
 @property (nonatomic) QredoED25519SigningKey *key;
 

@@ -32,7 +32,9 @@ extern NSString *const QredoVaultItemMetadataItemTypeTombstone;
 typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 {
     QredoVaultItemOriginServer,
-    QredoVaultItemOriginCache
+    QredoVaultItemOriginCache,
+    QredoVaultItemOriginLocal
+    
 };
 
 @interface QredoVaultItemMetadata ()

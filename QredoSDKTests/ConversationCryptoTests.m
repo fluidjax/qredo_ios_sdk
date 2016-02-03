@@ -6,9 +6,10 @@
 #import <XCTest/XCTest.h>
 #import "QredoConversationCrypto.h"
 #import "CryptoImplV1.h"
+#import "QredoXCTestCase.h"
 #import "NSData+ParseHex.h"
 
-@interface ConversationCryptoTests : XCTestCase
+@interface ConversationCryptoTests : QredoXCTestCase
 {
     QredoConversationCrypto *_conversationCrypto;
     CryptoImplV1 *_crypto;
@@ -18,12 +19,13 @@
 
 @implementation ConversationCryptoTests
 
-- (void)setUp
-{
+- (void)setUp{
     [super setUp];
     _crypto = [CryptoImplV1 sharedInstance];
     _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
 }
+
+
 
 - (void)testGenerateTestVectors
 {

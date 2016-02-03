@@ -9,8 +9,9 @@
 #import <XCTest/XCTest.h>
 #import "QredoUserCredentials.h"
 #import "NSData+ParseHex.h"
+#import "QredoXCTestCase.h"
 
-@interface QredoUserCredentialsTests : XCTestCase
+@interface QredoUserCredentialsTests : QredoXCTestCase
 
 @end
 

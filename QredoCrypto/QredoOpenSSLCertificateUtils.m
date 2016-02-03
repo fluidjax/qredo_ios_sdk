@@ -4,7 +4,7 @@
 
 #import "QredoOpenSSLCertificateUtils.h"
 #import "QredoCertificateUtils.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoCrypto.h"
 #import "QredoCryptoError.h"
 #import <openssl/err.h>
@@ -59,7 +59,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
     // Other arguments are validated by internal method
     
     if (skipRevocationChecks) {
-        LogError(@"Caller opted to skip revocation checks. Not recommended.");
+        QredoLogError(@"Caller opted to skip revocation checks. Not recommended.");
     }
     
     return [self validateCertificate:pemCertificate
@@ -111,7 +111,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
         certificateToValidate = [self x509FromPemCertificate:pemCertificate error:error];
         if (!certificateToValidate) {
             certificateValid = NO;
-            LogError(@"Could not create certificate to validate");
+            QredoLogError(@"Could not create certificate to validate");
         }
     }
     
@@ -120,7 +120,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
         publicKey = [self getValidatedPublicKeyFromX509Certificate:certificateToValidate error:error];
         if (!publicKey) {
             certificateValid = NO;
-            LogError(@"Could not get valid public key from certificate.");
+            QredoLogError(@"Could not get valid public key from certificate.");
         }
     }
     
@@ -131,7 +131,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
         if (!intermediateCertStack) {
             // Not populating NSError as failed method does that
             certificateValid = NO;
-            LogError(@"Failed to create intermediate certificate stack");
+            QredoLogError(@"Failed to create intermediate certificate stack");
         }
     }
     
@@ -141,7 +141,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
         if (!rootCertStack) {
             // Not populating NSError as failed method does that
             certificateValid = NO;
-            LogError(@"Failed to create root certificate stack");
+            QredoLogError(@"Failed to create root certificate stack");
         }
     }
     
@@ -151,7 +151,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
             if (!crlStack) {
                 // Not populating NSError as failed method does that
                 certificateValid = NO;
-                LogError(@"Failed to create CRL stack");
+                QredoLogError(@"Failed to create CRL stack");
             }
         }
     }
@@ -309,17 +309,17 @@ int verify_callback(int ok, X509_STORE_CTX *ctx)
                 keySize = BN_num_bits(publicKey->pkey.rsa->n);
                 
                 if (keySize < kMinX509RsaKeyLengthBits) {
-                    LogError(@"Certificate rejected. Public key length too short.");
+                    QredoLogError(@"Certificate rejected. Public key length too short.");
                     publicKeyValid = NO;
                 }
                 else if (keySize > kMaxX509RsaKeyLengthBits) {
-                    LogError(@"Certificate rejected. Public key length too long.");
+                    QredoLogError(@"Certificate rejected. Public key length too long.");
                     publicKeyValid = NO;
                 }
                 break;
                 
             default:
-                LogError(@"Certificate contains an unsupported public key type (%d).", publicKey->type);
+                QredoLogError(@"Certificate contains an unsupported public key type (%d).", publicKey->type);
                 publicKeyValid = NO;
                 break;
         }
@@ -344,7 +344,7 @@ int verify_callback(int ok, X509_STORE_CTX *ctx)
     // Create empty STACK_OF(X509)
     STACK_OF(X509) *certificatesStack = sk_X509_new_null();
     if (!certificatesStack) {
-        LogError(@"Failed to create new X509 stack");
+        QredoLogError(@"Failed to create new X509 stack");
         return NULL;
     }
     
@@ -358,7 +358,7 @@ int verify_callback(int ok, X509_STORE_CTX *ctx)
         
         X509 *certificate = [self x509FromPemCertificate:pemCertificate error:error];
         if (!certificate) {
-            LogError(@"Could not create certificate at index %d", certificateIndex);
+            QredoLogError(@"Could not create certificate at index %d", certificateIndex);
             break;
         }
         
@@ -395,7 +395,7 @@ int verify_callback(int ok, X509_STORE_CTX *ctx)
     // Create empty STACK_OF(X509_CRL)
     STACK_OF(X509_CRL) *crlsStack = sk_X509_CRL_new_null();
     if (!crlsStack) {
-        LogError(@"Failed to create new X509 CRL stack");
+        QredoLogError(@"Failed to create new X509 CRL stack");
         return NULL;
     }
     
@@ -480,7 +480,7 @@ int verify_callback(int ok, X509_STORE_CTX *ctx)
     // Convert PEM certificate into OpenSSL's X509 object
     X509 *certificate = [self x509FromPemCertificate:pemCertificate error:error];
     if (!certificate) {
-        LogError(@"Could not create X509 certificate.");
+        QredoLogError(@"Could not create X509 certificate.");
         return nil;
     }
     
@@ -491,7 +491,7 @@ int verify_callback(int ok, X509_STORE_CTX *ctx)
     if (!errorOccurred && !publicKey) {
         // NSError should already be populated
         errorOccurred = YES;
-        LogError(@"Could not get valid public key (EVP_PKEY) from certificate.");
+        QredoLogError(@"Could not get valid public key (EVP_PKEY) from certificate.");
     }
     
     // Know it's RSA, with key size in acceptable range, so safe to get the key size

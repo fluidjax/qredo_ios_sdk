@@ -19,7 +19,7 @@
 #import "QredoSigner.h"
 
 #import "QredoErrorCodes.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoVaultServerAccess ()
 {
@@ -313,7 +313,7 @@
                                                                                                    error:&error];
                      if (error) {
                          // skipping the error
-                         LogError(@"Failed to decrypt an item with error: %@", error);
+                         QredoLogError(@"Failed to decrypt an item with error: %@", error);
                          continue;
                      }
 

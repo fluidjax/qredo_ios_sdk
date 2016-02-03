@@ -49,7 +49,7 @@
 
     for (int i = 0; i < 100; i++)
     {
-        NSLog(@"run: %i", i);
+        QLog(@"run: %i", i);
         [super testCreateAndRespondAnonymousRendezvous];
     }
 }

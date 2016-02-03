@@ -95,10 +95,4 @@ NSURLCredential *credentialForTrustUsingPinnedCertificate(SecTrustRef trust, Sec
     return nil;
 }
 
-//SRWebSocketTrustValidator webSocketTrustValidatorWithTrustedCert(SecCertificateRef trustedCert)
-//{
-//    return ^BOOL(NSStream *stream) {
-//        return checkTrustOfStreamUsingCertificate(stream, trustedCert);
-//    };
-//}
 

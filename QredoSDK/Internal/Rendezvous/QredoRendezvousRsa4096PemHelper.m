@@ -4,7 +4,7 @@
 
 #import "QredoRendezvousRsa4096PemHelper.h"
 #import "QredoClient.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 /*
  PEM RSA Public Key is a DER encoded public key with PEM wrapping.
@@ -67,7 +67,7 @@ static const NSUInteger kRsa4096KeyLengthBits = 4096;
     NSData *signatureData = [super signatureForData:data error:error];
     
     if (!signatureData || (error && *error)) {
-        LogError(@"Signature generation unsuccessful.");
+        QredoLogError(@"Signature generation unsuccessful.");
         return nil;
     }
     

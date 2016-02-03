@@ -5,7 +5,7 @@
 #import "QredoMqttTransport.h"
 #import "MQTTSession.h"
 #import "QredoClientId.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoTransportErrorUtils.h"
 #import "QredoTransportSSLTrustUtils.h"
 #import "QredoCertificate.h"
@@ -133,7 +133,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         
         if (!_mqttSession)
         {
-            LogError(@"%@: Could not initialise MQTTSession, initialiser returned nil.", [self getHexClientID]);
+            QredoLogError(@"%@: Could not initialise MQTTSession, initialiser returned nil.", [self getHexClientID]);
             
             @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                            reason:@"Could not initialise MQTTSession."
@@ -185,7 +185,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         
         if (!self.connectedAndReady)
         {
-            LogError(@"%@: After waiting and retrying, still not connected/ready. Aborting send, returning error.", [self getHexClientID]);
+            QredoLogError(@"%@: After waiting and retrying, still not connected/ready. Aborting send, returning error.", [self getHexClientID]);
             
             [self notifyListenerOfErrorCode:QredoTransportErrorSendWhilstNotReady userData:userData];
             
@@ -361,40 +361,41 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
             }
             break;
             
-        case MQTTSessionEventConnectionRefused:
-            LogError(@"%@: Connection refused.  Will reconnect.", [self getHexClientID]);
+        case MQTTSessionEventConnectionRefused:{
+            QredoLogError(@"%@: Connection refused.  Will reconnect.", [self getHexClientID]);
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorConnectionRefused userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
-            
-        case MQTTSessionEventConnectionClosed:
-            LogError(@"%@: Connection closed.  Will reconnect.", [self getHexClientID]);
+        }
+        case MQTTSessionEventConnectionClosed:{
+            QredoLogError(@"%@: Connection closed.  Will reconnect.", [self getHexClientID]);
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorConnectionClosed userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
-            
-        case MQTTSessionEventConnectionError:
-            LogError(@"%@: Connection error.  Will reconnect.", [self getHexClientID]);
+        }
+        case MQTTSessionEventConnectionError:{
+            QredoLogError(@"%@: Connection error.  Will reconnect.", [self getHexClientID]);
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorConnectionFailed userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
-            
-        case MQTTSessionEventProtocolError:
-            LogError(@"%@: Protocol error.  Will reconnect.", [self getHexClientID]);
+        }
+        case MQTTSessionEventProtocolError:{
+            QredoLogError(@"%@: Protocol error.  Will reconnect.", [self getHexClientID]);
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorCannotParseProtocol userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
-            
-        default:
-            LogError(@"%@: Unhandled event code: %@.  Will reconnect.", [self getHexClientID], @(eventCode));
+        }
+        default:{
+            QredoLogError(@"%@: Unhandled event code: %@.  Will reconnect.", [self getHexClientID], @(eventCode));
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorUnknown userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
+        }
     }
 }
 
@@ -409,7 +410,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         NSString *description = [NSString stringWithFormat:@"Received message on unhandled topic: '%@'", topic];
         NSError *error = [QredoTransportErrorUtils errorWithErrorCode:QredoTransportErrorUnhandledTopic description:description];
 
-        LogError(@"%@: %@", [self getHexClientID], description);
+        QredoLogError(@"%@: %@", [self getHexClientID], description);
         [self notifyListenerOfError:error userData:nil];
     }
 }

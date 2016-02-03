@@ -71,7 +71,17 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 
 - (void)closeSession;
 - (BOOL)isClosed;
-- (QredoVault*) defaultVault;
+- (QredoVault *) defaultVault;
+
+/**
+    Report the current version of the framework in Major.Minor.Patch format
+ */
+- (NSString *)versionString;
+
+/**
+     Report the current build number of the framework. (The number is total count of the number of Git commits)
+ */
+- (NSString *)buildString;
 
 @end
 

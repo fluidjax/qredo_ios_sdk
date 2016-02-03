@@ -10,7 +10,7 @@
 #import "QredoRsaPublicKey.h"
 #import "QredoCertificateUtils.h"
 #import "TestCertificates.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoCryptoTests : XCTestCase
 

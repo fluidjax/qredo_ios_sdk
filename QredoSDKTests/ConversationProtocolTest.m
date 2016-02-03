@@ -6,7 +6,7 @@
 #import "QredoConversationProtocol.h"
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-
+#import "QredoXCTestCase.h"
 
 
 @class ProtocolUnderTest;
@@ -189,7 +189,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 //===============================================================================================================
 
 
-@interface ConversationProtocolTest : XCTestCase
+@interface ConversationProtocolTest : QredoXCTestCase
 @property (nonatomic) ProtocolUnderTest *protocol;
 @end
 

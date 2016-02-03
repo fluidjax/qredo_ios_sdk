@@ -3,7 +3,7 @@
  */
 
 #import "QredoUpdateListener.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 #import "QredoConversationPrivate.h"
 #import "QredoRendezvous.h"
@@ -54,11 +54,13 @@
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
     // If we support multi-response, then use it, otherwise poll
+
+    
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self])
     {
         if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")])
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resubscribeWithCompletionHandler:) name:@"resubscribe" object:nil];
-
+        //csm
         [self startSubscribing];
     }
     else
@@ -85,9 +87,10 @@
     }
 }
 
+
+
 // This method enables subscription (push) for conversation items, and creates new messages from them. Will regularly re-send subsription request as subscriptions can fail silently
-- (void)startSubscribing
-{
+- (void)startSubscribing{
    
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
@@ -118,6 +121,8 @@
                         return;
                     }
                     
+                    [self subscribeWithCompletionHandler:nil];
+                   
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reconnect" object:nil];
                     
                     
@@ -147,8 +152,19 @@
         }
     }
 
+    
+    
     // Start first subscription
-    [self subscribeWithCompletionHandler:nil];
+    [self subscribeWithCompletionHandler:^(NSError *error) {
+        if (error){
+            //try again
+            [self subscribeWithCompletionHandler:^(NSError *error) {
+                if (error){
+                    NSLog(@"Failed twice");
+                }
+            }];
+        }
+    }];
 }
 
 - (void)didTerminateSubscriptionWithError:(NSError *)error
@@ -156,9 +172,11 @@
     _subscribedToMessages = NO;
 }
 
-- (void)subscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
-    if (_subscribedToMessages) return ;
+- (void)subscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler{
+    if (_subscribedToMessages){
+     return ;
+    }
+    
     NSAssert(_delegate, @"Conversation delegate should be set before starting listening for the updates");
 
     _subscribedToMessages = YES;
@@ -169,10 +187,9 @@
      */
     _dedupeNecessary = YES;
     _queryAfterSubscribeComplete = YES;
-
+    
     [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
         _queryAfterSubscribeComplete = YES;
-
         if (!error) {
             [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error) {
                 if (completionHandler) completionHandler(error);
@@ -209,12 +226,10 @@
 //            QredoRendezvous *rendezvous = self.dataSource;
 //            [rendezvous resetHighWatermark];
 //        }
-        
         [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
             _queryAfterSubscribeComplete = YES;
-            
             if (!error) {
-                [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error) {
+                [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error){
                     if (completionHandler)
                         completionHandler(error);
                 }];
@@ -222,12 +237,10 @@
                 if (completionHandler)
                     completionHandler(error);
         }}];
-        
     }
 }
 
-- (void)unsubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
+- (void)unsubscribeWithCompletionHandler:(void(^)(NSError *error))completionHandler{
     [self.dataSource qredoUpdateListener:self unsubscribeWithCompletionHandler:^(NSError *error) {
         _subscribedToMessages = NO;
         if (completionHandler) completionHandler(error);
@@ -314,7 +327,6 @@
             [_dedupeStore setObject:sequenceValue forKey:item];
         }
     }
-
     return itemIsDuplicate;
 }
 

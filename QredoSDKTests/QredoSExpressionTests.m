@@ -1,7 +1,8 @@
 #import <XCTest/XCTest.h>
 #import "QredoSExpression.h"
+#import "QredoXCTestCase.h"
 
-@interface QredoSExpressionTests : XCTestCase
+@interface QredoSExpressionTests : QredoXCTestCase
 
 @end
 

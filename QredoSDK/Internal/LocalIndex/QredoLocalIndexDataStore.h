@@ -12,5 +12,12 @@
 + (id)sharedQredoLocalIndexDataStore;
 - (void)saveContext:(BOOL)wait;
 - (long)persistentStoreFileSize;
- 
+
+
+/** Delete the coredata sqllite database, and rebuild the coredata stack 
+    This ensures a clean start point, useful for errors and tests
+    Use before any QredoClients are created
+ */
+- (void)deleteStore;
+
 @end

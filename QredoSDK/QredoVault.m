@@ -13,13 +13,11 @@
 #import "NSDictionary+IndexableSet.h"
 #import "QredoVaultCrypto.h"
 #import "QredoCrypto.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoKeychain.h"
 
 #import "QredoUpdateListener.h"
-
 #import "QredoObserverList.h"
-
 #import "QredoVaultServerAccess.h"
 #import "QredoLocalIndexDataStore.h"
 
@@ -158,8 +156,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                      dataType:(NSString *)dataType
                       created:(NSDate*)created
                 summaryValues:(NSDictionary *)summaryValues
-            completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
-{
+            completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
+    
     
     [_vaultServerAccess putUpdateOrDeleteItem:vaultItem
                                        itemId:itemId
@@ -173,22 +171,22 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
                                                                                sequenceValue:newItemMetadata.descriptor.sequenceValue
                                                                                       itemId:itemId];
-        __block NSError *putError=error;
-        [self cacheInIndexVaultItem:vaultItem metadata:newMetadata completionHandler:^(NSError *error) {
-            if (putError)error=putError;
             completionHandler(newMetadata, error);
-        }];
     }];
 }
 
 - (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem
          completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
+    
     QredoQUID *itemId;
     if (vaultItem.metadata.descriptor.itemId){
-     itemId = vaultItem.metadata.descriptor.itemId;
+        itemId = vaultItem.metadata.descriptor.itemId;
     }else{
         itemId = [QredoQUID QUID];
     }
+
+    QredoLogVerbose(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
+
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
     
@@ -217,6 +215,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 {
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     QredoQUID *itemId = metadata.descriptor.itemId;
+    
+    QredoLogDebug(@"Update VaultItem:%@",itemId);
+    
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
     NSDate *created = [NSDate date];
     
@@ -250,6 +251,18 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                     metadata:(QredoVaultItemMetadata *)metadata
            completionHandler:(void (^)(NSError *error))completionHandler{
     vaultItem.metadata.descriptor = metadata.descriptor;
+    
+    
+    //this logger message displays the source of the data (index or server)
+    QredoLogDebug(@"Put vault item in index %@", ^{
+        NSString *source;
+        if (metadata.origin == QredoVaultItemOriginServer)source = @"Server";
+        if (metadata.origin == QredoVaultItemOriginCache) source = @"Index";
+        return [NSString stringWithFormat:@" Origin:%@  ItemId:%@",source,vaultItem.metadata.descriptor.itemId];
+    }());
+
+    
+    
     [_localIndex putVaultItem:vaultItem];
     if (completionHandler)completionHandler(nil);
 }
@@ -258,6 +271,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 - (void)removeBodyFromCacheWithVaultItemDescriptor:(QredoVaultItemDescriptor *)descriptor
                                  completionHandler:(void (^)(NSError *error))completionHandler{
     NSError *error = nil;
+    QredoLogDebug(@"Remove vault payload from Index %@",descriptor.itemId);
     [_localIndex deleteItem:descriptor error:error];
     if (completionHandler)completionHandler(error);
     
@@ -282,9 +296,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
     QredoVaultItem *vaultItem = [self.localIndex getVaultItemFromIndexWithDescriptor:itemDescriptor];
     if (vaultItem){
+        QredoLogDebug(@"Get Vault Item from Index");
         completionHandler(vaultItem,nil);
     }else{
-         [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:completionHandler];
+        QredoLogDebug(@"Get Vault Item from server");
+        [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:completionHandler];
     }
     
 }
@@ -295,8 +311,10 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
     QredoVaultItemMetadata *metadata = [self.localIndex getMetadataFromIndexWithDescriptor:itemDescriptor];
     if (metadata){
+        QredoLogDebug(@"Get VaultMetadata from Index");
         completionHandler(metadata,nil);
     }else{
+        QredoLogDebug(@"Get VaultMetadata from server");
         [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:completionHandler];
     }
 }
@@ -304,9 +322,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 
-- (void)addVaultObserver:(id<QredoVaultObserver>)observer
-{
+- (void)addVaultObserver:(id<QredoVaultObserver>)observer{
+    QredoLogDebug(@"Add vault Observer %@",observer);
+    
     [_observers addObserver:observer];
+    
     
     if (!_updateListener.isListening) {
         [_updateListener startListening];
@@ -320,6 +340,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 - (void)removeVaultObserver:(id<QredoVaultObserver>)observer{
+    QredoLogDebug(@"Remove vault Observer %@",observer);
     QredoObserverList *observers = _observers;
     
      //If we have just removed a listener and the  only listener left is the localIndex - remove it.
@@ -338,8 +359,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
      
      
 
-- (void)resetWatermark
-{
+- (void)resetWatermark{
+     QredoLogDebug(@"Reset Watermark");
     _highwatermark = nil;
     [self saveState];
 }
@@ -472,8 +493,6 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 }
 
 
-
-
 -(int)indexSize{
   return [self.localIndex count];
 }
@@ -528,10 +547,9 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     } since:self.highWatermark consolidatingResults:NO];
 }
 
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
-{
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler{
     // TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
-    NSLog(@"QredoVault: unsubscribeWithCompletionHandler"); // <- not called
+    QredoLogDebug(@"QredoVault: unsubscribeWithCompletionHandler"); // <- not called
 }
 
 - (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item
