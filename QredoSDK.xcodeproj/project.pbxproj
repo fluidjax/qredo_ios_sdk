@@ -425,7 +425,6 @@
 		83ADC5741C3BF0F000C34A76 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D11F851BF37A1E0015E293 /* main.m */; };
 		83ADC5751C3BF16900C34A76 /* QredoRsaBlindSignature.c in Sources */ = {isa = PBXBuildFile; fileRef = 666059911BD505FE00EC8D6C /* QredoRsaBlindSignature.c */; };
 		83ADC5761C3BF16900C34A76 /* rsapss.c in Sources */ = {isa = PBXBuildFile; fileRef = 666059991BD505FE00EC8D6C /* rsapss.c */; };
-		83ADC5771C3BF16900C34A76 /* openssl.cnf in Sources */ = {isa = PBXBuildFile; fileRef = 66605B7B1BD5266700EC8D6C /* openssl.cnf */; };
 		83AF3A411C11DEE5003B258F /* _QredoIndexVariableValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AF3A3D1C11DEE5003B258F /* _QredoIndexVariableValue.m */; };
 		83AF3A471C11DEFF003B258F /* QredoIndexVariableValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AF3A431C11DEFF003B258F /* QredoIndexVariableValue.m */; };
 		83C614D21C5142AC002CCC5C /* QredoLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 83800C6F1C50E81E007B3401 /* QredoLogger.h */; };
@@ -2352,7 +2351,6 @@
 			files = (
 				83ADC5751C3BF16900C34A76 /* QredoRsaBlindSignature.c in Sources */,
 				83ADC5761C3BF16900C34A76 /* rsapss.c in Sources */,
-				83ADC5771C3BF16900C34A76 /* openssl.cnf in Sources */,
 				83ADC4D31C3BF0EF00C34A76 /* MQTTDecoder.m in Sources */,
 				83ADC4D41C3BF0EF00C34A76 /* MQTTEncoder.m in Sources */,
 				83ADC4D51C3BF0EF00C34A76 /* MQTTMessage.m in Sources */,
