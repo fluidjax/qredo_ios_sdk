@@ -1,6 +1,7 @@
 build
 temp
 package
+QredoXDK.framework
 
 # Cocoapods
 #
@@ -24,8 +25,8 @@ xcuserdata
 DerivedData
 *.hmap
 *.ipa
-*.xcuserstate
-*.xcworkspace
+#*.xcuserstate
+#*.xcworkspace
 
 # CocoaPods
 #
@@ -38,3 +39,4 @@ DerivedData
 **.DS_Store
 Podfile.lock
 
+docs/objc

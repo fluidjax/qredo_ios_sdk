@@ -6,7 +6,7 @@
 #import <XCTest/XCTest.h>
 #import "QredoRsaBlindSignature.h"
 //#import "tommath.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoCrypto.h"
 
 @interface QredoRsaBlindSignatureTests : XCTestCase

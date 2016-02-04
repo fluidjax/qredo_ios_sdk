@@ -28,7 +28,7 @@ extern NSString *k_USERID;
 
 
 @interface QredoTestUtils:NSObject
-
++(NSString *)randomStringWithLength:(int)len;
 +(NSString*)randomPassword;
 
 @end

@@ -14,6 +14,8 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @class QredoQUID;
 @class QredoVault;
 @class QredoVaultItemMetadata;
+@class QredoIndexSummaryValues;
+@class NSManagedObjectContext;
 
 @protocol QredoVaultObserver <NSObject>
 
@@ -29,6 +31,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 // sequenceValue is not used, because in rev.1 there is no version control, then itemId should be enough for pointing to the correct vault item
 + (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId;
+
+- (instancetype)initWithSequenceId:(QredoQUID *)sequenceId
+                     sequenceValue:(int64_t)sequenceValue
+                            itemId:(QredoQUID *)itemId;
 
 - (BOOL)isEqual:(id)object;
 @end
@@ -49,6 +55,9 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel summaryValues:(NSDictionary *)summaryValues;
 
+/** Converts an index coredata summaryValue object retrieved by an index search predicate into a QredoVaultItemMetadata */
++(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue;
+
 @end
 
 /** Mutable metadata. */
@@ -67,6 +76,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @interface QredoVaultItem : NSObject
 @property (readonly) QredoVaultItemMetadata *metadata;
 @property (readonly) NSData *value;
+
 
 + (instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
 - (instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
@@ -121,8 +131,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
                        completionHandler:(void(^)(NSError *error))completionHandler;
 
 
-
-
 /** Deletes a vault item and returns it's metadata */
 - (void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
 
@@ -131,4 +139,66 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 /** If for some reason the client application needs to receive all items in the delegate after calling `startListening`, then this method can be called. */
 - (void)resetWatermark;
+
+
+
 @end
+
+
+
+
+@interface QredoVault (LocalIndex)
+
+
+
+typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
+
+/** Enumerates through all vault items in the local index that match the predicate
+ The predicate search is performed on the QredoIndexSummaryValues object.
+ 
+ eg. [NSPredicate predicateWithFormat:@"key='name' && value.string=='John'"];
+ [NSPredicate predicateWithFormat:@"key=='name' && value.string=='John'"];
+ 
+ Value is matched against a sub field depending on specified type.
+ Valid types are
+ value.string    (an NSString)
+ value.date      (as NSDate)
+ value.number    (an NSNumber)
+ value.data      (an NSData)
+ 
+ */
+-(void)enumerateIndexUsingPredicate:(NSPredicate *)predicate
+             withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+     completionHandler:(void(^)(NSError *error))completionHandler;
+
+
+
+
+/** Return the number of Metadata entries in the local Metadata index  */
+-(int)indexSize;
+
+/** Retrieves an NSManagedObjectContext (on main Thread) for the Coredata stack holding the index */
+-(NSManagedObjectContext*)indexManagedObjectContext;
+
+/** Caching of Vault Item Metadata is enabled by default, turning it off will turn off all caching & indexing  */
+-(void)metadataCacheEnabled:(BOOL)metadataCacheEnabled;
+
+/** Caching of VaultItem values is enabled by default, turning it off will force the value to be retrieved from the serve. Metadata caching is unaffected  */
+-(void)valueCacheEnabled:(BOOL)valueCacheEnabled;
+
+/** Returns the size in bytes of the cache/index coredata database 
+    Specifically to allow dynamic management of the caches if required in the case of an app which uses large (>a few gig) of storage. */
+-(long)cacheFileSize;
+
+/**  Deletes all records in the Coredata Cache/Index for this vault */
+-(void)purgeCache;
+
+
+
+/** Set the maximum size in bytes of the local cache/index default is QREDO_DEFAULT_INDEX_CACHE_SIZE in Qredo.h */
+-(void)setMaxCacheSize:(long long)maxSize;
+
+
+@end
+
+

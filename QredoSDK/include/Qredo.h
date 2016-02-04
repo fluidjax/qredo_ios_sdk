@@ -8,6 +8,8 @@
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
 #import "QredoErrorCodes.h"
+#import "QredoLogger.h"
+@import CoreData;
 
 // Revision 1
 // See https://github.com/Qredo/ios-sdk/wiki/SDK-revisions
@@ -15,6 +17,7 @@
 /** Options for [QredoClient initWithServiceURL:options:] */
 extern NSString *const QredoClientOptionServiceURL;
 extern NSString *const QredoRendezvousURIProtocol;
+static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
@@ -32,6 +35,8 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 
 @property (nonatomic) QredoClientOptionsTransportType transportType;
 @property BOOL resetData;
+@property BOOL disableMetadataIndex;
+
 
 - (instancetype)initWithDefaultTrustedRoots;
 - (instancetype)initDefaultPinnnedCertificate;
@@ -45,6 +50,11 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
  During the authorization the SDK may ask user to allow access to their Qredo account.
  
  If the app calls any Vault, Rendezvous or Conversation API without an authorization, then those methods will return `QredoErrorCodeAppNotAuthorized` error immediately.
+ 
+ appSecret  is a hex String supplied by Qredo
+ userId     is a unique identifier for a user of the App, usually username or email address
+ userSecret a password for the user of the App.
+ 
  */
 
 
@@ -53,19 +63,25 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
                      userSecret:(NSString*)userSecret
              completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
-
-
 + (void)initializeWithAppSecret:(NSString*)appSecret
                          userId:(NSString*)userId
                      userSecret:(NSString*)userSecret
                         options:(QredoClientOptions*)options
               completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler;
 
-
 - (void)closeSession;
 - (BOOL)isClosed;
+- (QredoVault *) defaultVault;
 
-- (QredoVault*) defaultVault;
+/**
+    Report the current version of the framework in Major.Minor.Patch format
+ */
+- (NSString *)versionString;
+
+/**
+     Report the current build number of the framework. (The number is total count of the number of Git commits)
+ */
+- (NSString *)buildString;
 
 @end
 
@@ -96,15 +112,14 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 
 
 
-/** Fetch previously created rendezvous that has been stored in the vault by tag */
--(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
 /** Enumerates through the rendezvous that have been stored in the Vault
  @discussion assign YES to *stop to break the enumeration */
 - (void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block completionHandler:(void(^)(NSError *error))completionHandler;
 
-
+/** Fetch previously created rendezvous that has been stored in the vault by tag */
+-(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 /** Fetches previously created rendezvous that has been stored in the vault */
 - (void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
@@ -141,4 +156,9 @@ Existing conversations established with this Rendezvous will still be available 
 New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again */
  - (void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref completionHandler:(void(^)(NSError *error))completionHandler;
 
+
 @end
+
+
+
+

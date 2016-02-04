@@ -9,7 +9,7 @@
 #import "TestCertificates.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoCrypto.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoCertificateUtilsTests : XCTestCase
 
@@ -151,21 +151,33 @@
     XCTAssertFalse([generatedPemCertificates isEqualToString:pemCertificates]);
 }
 
+- (NSString *)stripPem:(NSString *)pem {
+    
+    NSRange r1 = [pem rangeOfString:@"-----BEGIN CERTIFICATE-----"];
+    NSRange r2 = [pem rangeOfString:@"-----END CERTIFICATE-----"];
+    NSRange rSub = NSMakeRange(r1.location + r1.length, r2.location - r1.location - r1.length);
+    NSString *sub = [pem substringWithRange:rSub];
+    
+    
+    NSString *strippedPem = [NSString stringWithFormat:@"-----BEGIN CERTIFICATE-----%@-----END CERTIFICATE-----\n", sub];
+    
+    return strippedPem;
+}
 - (void)testConvertCertificateRefToPemCertificate
 {
     // Import some PKCS#12 data and then get the public certificate ref from the identity.
     // Use SecCertificateRef to create a PEM which is then processed (to confirm validity)
     
+    NSError *error = nil;
     
     // 1.) Create identity
     
     // Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert2.2048.IntCA1" error:&error];
     NSString *pkcs12Password = @"password";
     
     // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
+    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
     int expectedNumberOfRootCertificateRefs = 1;
     
     NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
@@ -190,7 +202,7 @@
     XCTAssertNotNil(pemCertificate);
     
     // Compare the new certificate with the original certificate (used to create the PKCS12 data)
-    XCTAssertTrue([pemCertificate isEqualToString:TestCertJavaSdkClient2048Pem]);
+    XCTAssertTrue([pemCertificate isEqualToString:[self stripPem:[TestCertificates fetchPemForResource:@"clientCert2.2048.IntCA1cert" error:&error]]]);
 }
 
 - (void)testConvertKeyIdentifierToPemKey_GeneratedKey
@@ -250,16 +262,35 @@
 {
     NSString *publicKeyIdentifier = @"";
 
-    NSString *pemEncodedPublicKey = [QredoCertificateUtils convertKeyIdentifierToPemKey:publicKeyIdentifier];
-    XCTAssertNil(pemEncodedPublicKey);
+    NSString *pemEncodedPublicKey;
+    
+    @try {
+        pemEncodedPublicKey = [QredoCertificateUtils convertKeyIdentifierToPemKey:publicKeyIdentifier];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Key shouldn't be found.");
+    }
+    @finally {
+        XCTAssertNil(pemEncodedPublicKey);
+    }
 }
 
 - (void)testConvertKeyIdentifierToPemKey_Invalid_UnknownIdentifier
 {
     NSString *publicKeyIdentifier = @"This is an unknown identifier";
+    NSString *pemEncodedPublicKey;
     
-    NSString *pemEncodedPublicKey = [QredoCertificateUtils convertKeyIdentifierToPemKey:publicKeyIdentifier];
-    XCTAssertNil(pemEncodedPublicKey);
+    @try {
+        pemEncodedPublicKey = [QredoCertificateUtils convertKeyIdentifierToPemKey:publicKeyIdentifier];
+    }
+    @catch (NSException *exception) {
+        if (![exception.name isEqualToString:@"QredoKeyIdentifierNotFound"])
+            XCTFail(@"Key shouldn't be found.");
+    }
+    @finally {
+        XCTAssertNil(pemEncodedPublicKey);
+    }
 }
 
 - (void)testConvertPemWrappedStringToDer
@@ -877,38 +908,6 @@
     XCTAssertNil(certificateRefs, @"Returned data should be nil.");
 }
 
-- (void)testValidateCertificateChain_ValidChainWithRoot
-{
-    /*
-     Test steps:
-     1.) Create NSArray containing certificate chain refs
-     2.) Create NSArray containing root certificate refs
-     3.) Validate certificate chain against root certificates
-    */
-
-    // Java-SDK cert chain with 4096 bit client cert and intermediate cert
-    NSString *certificateChainPemString = [NSString stringWithFormat:@"%@%@",
-                                           TestCertJavaSdkClient4096Pem,
-                                           TestCertJavaSdkIntermediatePem];
-    int expectedNumberOfCertificateRefsInChain = 2;
-    
-    // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
-    int expectedNumberOfRootCertificateRefs = 1;
-    
-    NSArray *rootCertificateRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
-    XCTAssertNotNil(rootCertificateRefs, @"Root certificates should not be nil.");
-    XCTAssertEqual(rootCertificateRefs.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
-    
-    NSArray *certificateChainRefs = [QredoCertificateUtils getCertificateRefsFromPemCertificates:certificateChainPemString];
-    XCTAssertNotNil(certificateChainRefs, @"Certificate chain array should not be nil.");
-    XCTAssertEqual(certificateChainRefs.count, expectedNumberOfCertificateRefsInChain, @"Wrong number of certificate chain refs returned.");
-    
-    SecKeyRef validatedKeyRef = [QredoCertificateUtils validateCertificateChain:certificateChainRefs
-                                                            rootCertificateRefs:rootCertificateRefs];
-    XCTAssertNotNil((__bridge id)validatedKeyRef);
-}
-
 - (void)testValidateCertificateChain_ValidChainWithRoot_qredoTestCA
 {
     /*
@@ -1117,27 +1116,145 @@
 - (void)testValidatePemCertificateChain_CertWithRoot_Valid
 {
     // DH localhost generated cert with own root CA
+    
+    // Creation of Root Certificate Authority and self-signed certificate
+    
+    //  IMPORTANT -> Add following line at the end of your openssl.cnf file
+    // 		subjectAltName = DNS:example.com
+    //  otherwise you'll face "kSecTrustResultRecoverableTrustFailure" validation result
+    //
+    //  NOTE: On OS X openssl.cnf is here: /System/Library/OpenSSL/openssl.cnf
+    
+    // 	Create a Root Certificate Authority certificate and private key
+    
+    // 		$ openssl req -config -config openssl.cnf -new -x509 -keyout test_root_ca_key.pem -out test_root_ca.crt -days 3650
+    // 			Generating a 1024 bit RSA private key
+    // 			...++++++
+    // 			........................................++++++
+    // 			writing new private key to 'test_client_cakey.pem'
+    // 			Enter PEM pass phrase:
+    // 			Verifying - Enter PEM pass phrase:
+    // 			-----
+    // 			You are about to be asked to enter information that will be incorporated
+    // 			into your certificate request.
+    // 			What you are about to enter is what is called a Distinguished Name or a DN.
+    // 			There are quite a few fields but you can leave some blank
+    // 			For some fields there will be a default value,
+    // 			If you enter '.', the field will be left blank.
+    // 			-----
+    // 			Country Name (2 letter code) [AU]:
+    // 			State or Province Name (full name) [Some-State]:
+    // 			Locality Name (eg, city) []:
+    // 			Organization Name (eg, company) [Internet Widgits Pty Ltd]:
+    // 			Organizational Unit Name (eg, section) []:
+    // 			Common Name (e.g. server FQDN or YOUR name) []:
+    // 			Email Address []:
+    
+    // 	Create Client CSR
+    
+    // 		$ openssl req -new -out test_client.csr
+    // 			Generating a 1024 bit RSA private key
+    // 			...++++++
+    // 			............++++++
+    // 			writing new private key to 'privkey.pem'
+    // 			Enter PEM pass phrase:
+    // 			Verifying - Enter PEM pass phrase:
+    // 			-----
+    // 			You are about to be asked to enter information that will be incorporated
+    // 			into your certificate request.
+    // 			What you are about to enter is what is called a Distinguished Name or a DN.
+    // 			There are quite a few fields but you can leave some blank
+    // 			For some fields there will be a default value,
+    // 			If you enter '.', the field will be left blank.
+    // 			-----
+    // 			Country Name (2 letter code) [AU]:
+    // 			State or Province Name (full name) [Some-State]:
+    // 			Locality Name (eg, city) []:
+    // 			Organization Name (eg, company) [Internet Widgits Pty Ltd]:
+    // 			Organizational Unit Name (eg, section) []:
+    // 			Common Name (e.g. server FQDN or YOUR name) []:
+    // 			Email Address []:
+    
+    // 			Please enter the following 'extra' attributes
+    // 			to be sent with your certificate request
+    // 			A challenge password []:
+    // 			An optional company name []:
+    
+    // 		$ openssl x509 -req -days 365 -in test_client.csr -CA test_root_ca.crt -CAkey test_root_ca_key.pem -set_serial 01 -out test_client.crt
+    // 			Signature ok
+    // 			subject=/C=AU/ST=Some-State/O=Internet Widgits Pty Ltd
+    // 			Getting CA Private Key
+    // 			Enter pass phrase for test_cakey.pem:
+
+    
+    NSString *newRootCertificatesPemString = @"-----BEGIN CERTIFICATE-----\n"
+    "MIICsDCCAhmgAwIBAgIJANcISDG0V6EwMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV\n"
+    "BAYTAkFVMRMwEQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBX\n"
+    "aWRnaXRzIFB0eSBMdGQwHhcNMTUxMjExMTUzNzM0WhcNMjUxMjA4MTUzNzM0WjBF\n"
+    "MQswCQYDVQQGEwJBVTETMBEGA1UECBMKU29tZS1TdGF0ZTEhMB8GA1UEChMYSW50\n"
+    "ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB\n"
+    "gQC+bEnE6V1zmhTp3jxfjdANSuDHJ8au26GRhirDuQ5S4aeGxJ2M3iKawjvS4J/H\n"
+    "F4Voc8qyDM12DfkuqCjk4FbQaTsOrKZPW+M61w5qvvXqsE6y7sTqRZ2QJbc9avUG\n"
+    "CQgo8cHsXAdpUKJynIl65tPcQNu7Rd8FCkGPngBvidwjNwIDAQABo4GnMIGkMB0G\n"
+    "A1UdDgQWBBSDWtue1RiI4cN0R2zHx4rqu82z1zB1BgNVHSMEbjBsgBSDWtue1RiI\n"
+    "4cN0R2zHx4rqu82z16FJpEcwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgTClNvbWUt\n"
+    "U3RhdGUxITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZIIJANcISDG0\n"
+    "V6EwMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAd3e0o6E4EG1/iFbu\n"
+    "PlZhWE7Nw7puAfhYTB4oIqc/DBcooHYtcpUYOUyTlRYd7/dlFqjfgD5/0ppAvIEI\n"
+    "iu6UD6O6J0uycPQTQnOa4u1gjrQ8EtYkN4tDFuqQjxl5Pg/iGbtg823wqGlJXrUW\n"
+    "bciyRqxp5WnZOvqD6n8z0haN+LE=\n"
+    "-----END CERTIFICATE-----\n"; // From test_root_ca.crt
+    
+    NSString *newCertificateChainPemString = @"-----BEGIN CERTIFICATE-----\n"
+    "MIIB+TCCAWICAQEwDQYJKoZIhvcNAQEFBQAwRTELMAkGA1UEBhMCQVUxEzARBgNV\n"
+    "BAgTClNvbWUtU3RhdGUxITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0\n"
+    "ZDAeFw0xNTEyMTExNTUwNDhaFw0xNjEyMTAxNTUwNDhaMEUxCzAJBgNVBAYTAkFV\n"
+    "MRMwEQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBXaWRnaXRz\n"
+    "IFB0eSBMdGQwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALk9gNSSLs1asDG0\n"
+    "54Zep4RuXzRDmkfw398ebPo8WKvf/WQlKmbra504+AAfpfOj3/w0X6LwVZMGzuTa\n"
+    "4YfGf55USUbZG2xbOk0PJOWyGzs8b3jHGGN6QBCNPZipxQRZHBZqerzIMFSx6AS0\n"
+    "t9HoqHP1PnUr262MKfHUklW/BCgLAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAgTEO\n"
+    "vbwQydp85ak2GfPxKGuAui1qoA7NvYGPBxn6pET70yPitpm8VBnh2ReoI5WBpVg6\n"
+    "NWXOGwDfzknk6k49iDb+dPoNbPbzx2+KUchV0o3qSJNxciiGHOJFc7iripZVEUNi\n"
+    "1SN/uRPlMdXuSPOzY5t/94l9OFVjQLBawxUTcUs=\n"
+    "-----END CERTIFICATE-----\n"; // From test_client.crt
+
     NSString *certificateChainPemString = TestCertDHTestingLocalhostClientPem;
     
     // DH localhost root CA
     NSString *rootCertificatesPemString = TestCertDHTestingLocalhostRootPem;
     int expectedNumberOfRootCertificateRefs = 1;
     
-    NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
+    NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:newRootCertificatesPemString];
     XCTAssertNotNil(rootCertificates, @"Root certificates should not be nil.");
     XCTAssertEqual(rootCertificates.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
     
-    SecKeyRef validatedKeyRef = [QredoCertificateUtils validatePemCertificateChain:certificateChainPemString rootCertificateRefs:rootCertificates];
+    SecKeyRef validatedKeyRef = [QredoCertificateUtils validatePemCertificateChain:newCertificateChainPemString rootCertificateRefs:rootCertificates];
     XCTAssertNotNil((__bridge id)validatedKeyRef, @"Incorrect certificate validation result. Should have returned valid SecKeyRef.");
 }
 
 - (void)testValidatePemCertificateChain_JavaSdkChain4096_Valid
 {
+    
+    NSError *error = nil;
+    
+    NSString *cert = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
+    XCTAssertNotNil(cert);
+    XCTAssertNil(error);
+    
+    NSString *intermediateCert = [TestCertificates fetchPemForResource:@"interCA1cert" error:&error];
+    XCTAssertNotNil(intermediateCert);
+    XCTAssertNil(error);
+    
+    NSString *rootCert = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCert);
+    XCTAssertNil(error);
+    
     // Java-SDK cert chain with 4096 bit client cert
-    NSString *certificateChainPemString = [NSString stringWithFormat:@"%@%@", TestCertJavaSdkClient4096Pem, TestCertJavaSdkIntermediatePem];
+    NSString *certificateChainPemString = [NSString stringWithFormat:@"%@%@", cert, intermediateCert];
     
     // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
+    NSString *rootCertificatesPemString = rootCert;
     int expectedNumberOfRootCertificateRefs = 1;
     
     NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
@@ -1150,11 +1267,25 @@
 
 - (void)testValidatePemCertificateChain_JavaSdkChain2048_Valid
 {
+    NSError *error = nil;
+    
+    NSString *cert = [TestCertificates fetchPemForResource:@"clientCert2.2048.IntCA1cert" error:&error];
+    XCTAssertNotNil(cert);
+    XCTAssertNil(error);
+    
+    NSString *intermediateCert = [TestCertificates fetchPemForResource:@"interCA1cert" error:&error];
+    XCTAssertNotNil(intermediateCert);
+    XCTAssertNil(error);
+    
+    NSString *rootCert = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
+    XCTAssertNotNil(rootCert);
+    XCTAssertNil(error);
+    
     // Java-SDK cert chain with 2048 bit client cert
-    NSString *certificateChainPemString = [NSString stringWithFormat:@"%@%@", TestCertJavaSdkClient2048Pem, TestCertJavaSdkIntermediatePem];
+    NSString *certificateChainPemString = [NSString stringWithFormat:@"%@%@", cert, intermediateCert];
     
     // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
+    NSString *rootCertificatesPemString = rootCert;
     int expectedNumberOfRootCertificateRefs = 1;
     
     NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
@@ -1202,10 +1333,12 @@
 - (void)testValidatePemCertificateChain_JavaSdkChain2048_IntermediateAsRoot_Valid
 {
     // Java-SDK cert chain with 2048 bit client cert
-    NSString *certificateChainPemString = TestCertJavaSdkClient2048Pem;
+    NSError *error = nil;
+    
+    NSString *certificateChainPemString = [TestCertificates fetchPemForResource:@"clientCert2.2048.IntCA1cert" error:&error];
     
     // Incorrect root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkIntermediatePem;
+    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"interCA1cert" error:&error];
     int expectedNumberOfRootCertificateRefs = 1;
     
     NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
@@ -1308,16 +1441,137 @@
 
 - (void)testCreateAndValidateIdentityFromPkcs12Data_DHTestCert
 {
+//    https://gist.github.com/mtigas/952344
+//    $ openssl pkcs12 -export -clcerts -in test_client.crt -inkey test_client_private.pem -out test_client.p12
+//        Enter pass phrase for test_client_private.pem:
+//        Enter Export Password:
+//        Verifying - Enter Export Password:
+    
+    NSString *newRootCertificatesPemString = @"-----BEGIN CERTIFICATE-----\n"
+    "MIICsDCCAhmgAwIBAgIJANcISDG0V6EwMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV\n"
+    "BAYTAkFVMRMwEQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJbnRlcm5ldCBX\n"
+    "aWRnaXRzIFB0eSBMdGQwHhcNMTUxMjExMTUzNzM0WhcNMjUxMjA4MTUzNzM0WjBF\n"
+    "MQswCQYDVQQGEwJBVTETMBEGA1UECBMKU29tZS1TdGF0ZTEhMB8GA1UEChMYSW50\n"
+    "ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB\n"
+    "gQC+bEnE6V1zmhTp3jxfjdANSuDHJ8au26GRhirDuQ5S4aeGxJ2M3iKawjvS4J/H\n"
+    "F4Voc8qyDM12DfkuqCjk4FbQaTsOrKZPW+M61w5qvvXqsE6y7sTqRZ2QJbc9avUG\n"
+    "CQgo8cHsXAdpUKJynIl65tPcQNu7Rd8FCkGPngBvidwjNwIDAQABo4GnMIGkMB0G\n"
+    "A1UdDgQWBBSDWtue1RiI4cN0R2zHx4rqu82z1zB1BgNVHSMEbjBsgBSDWtue1RiI\n"
+    "4cN0R2zHx4rqu82z16FJpEcwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgTClNvbWUt\n"
+    "U3RhdGUxITAfBgNVBAoTGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZIIJANcISDG0\n"
+    "V6EwMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAd3e0o6E4EG1/iFbu\n"
+    "PlZhWE7Nw7puAfhYTB4oIqc/DBcooHYtcpUYOUyTlRYd7/dlFqjfgD5/0ppAvIEI\n"
+    "iu6UD6O6J0uycPQTQnOa4u1gjrQ8EtYkN4tDFuqQjxl5Pg/iGbtg823wqGlJXrUW\n"
+    "bciyRqxp5WnZOvqD6n8z0haN+LE=\n"
+    "-----END CERTIFICATE-----\n"; // From test_root_ca.crt
+    
+    unsigned char newTestCertDHTestingLocalhostClientPkcs12Array[3205] = {
+        0x30, 0x82, 0x05, 0xf1, 0x02, 0x01, 0x03, 0x30, 0x82, 0x05, 0xb7, 0x06, 0x09, 0x2a, 0x86, 0x48,
+        0x86, 0xf7, 0x0d, 0x01, 0x07, 0x01, 0xa0, 0x82, 0x05, 0xa8, 0x04, 0x82, 0x05, 0xa4, 0x30, 0x82,
+        0x05, 0xa0, 0x30, 0x82, 0x02, 0x9f, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x07,
+        0x06, 0xa0, 0x82, 0x02, 0x90, 0x30, 0x82, 0x02, 0x8c, 0x02, 0x01, 0x00, 0x30, 0x82, 0x02, 0x85,
+        0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x07, 0x01, 0x30, 0x1c, 0x06, 0x0a, 0x2a,
+        0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x0c, 0x01, 0x06, 0x30, 0x0e, 0x04, 0x08, 0x3e, 0xbe, 0xbb,
+        0xbf, 0xfa, 0xbe, 0xa9, 0x86, 0x02, 0x02, 0x08, 0x00, 0x80, 0x82, 0x02, 0x58, 0x23, 0x5c, 0x45,
+        0x74, 0x7e, 0x9d, 0x5c, 0x63, 0x92, 0x1e, 0x13, 0x93, 0xf1, 0xb9, 0x36, 0xbb, 0x61, 0x51, 0x04,
+        0xc0, 0x58, 0x74, 0x7f, 0xa4, 0x95, 0xc5, 0xcf, 0xfc, 0x1a, 0x25, 0xd4, 0x79, 0x0f, 0x78, 0x0e,
+        0x3e, 0xcd, 0x99, 0xf4, 0xff, 0xed, 0x84, 0xdc, 0x51, 0x98, 0x5f, 0xf6, 0x86, 0x69, 0xd2, 0xc6,
+        0xe0, 0x08, 0xfd, 0x30, 0xd5, 0x3f, 0x02, 0x34, 0x08, 0x2b, 0x71, 0x36, 0xa8, 0x90, 0x8f, 0xf6,
+        0xdd, 0x31, 0xfb, 0x62, 0x10, 0x47, 0x52, 0xff, 0x2e, 0x49, 0x71, 0xd1, 0x77, 0xe4, 0x52, 0xae,
+        0x6a, 0x7f, 0x11, 0xf2, 0xde, 0x90, 0xab, 0x05, 0xfa, 0x89, 0x30, 0x51, 0xab, 0x5b, 0xdd, 0xcd,
+        0x1c, 0x25, 0x83, 0x9e, 0xef, 0x2d, 0xf7, 0x52, 0xc0, 0xef, 0x3b, 0x9f, 0x22, 0x47, 0x9f, 0x3c,
+        0x7f, 0x0b, 0x34, 0xfe, 0x2b, 0xe2, 0xb8, 0x49, 0x04, 0x0c, 0xcb, 0xbf, 0x0e, 0x51, 0x05, 0x76,
+        0x44, 0x77, 0xe9, 0xe5, 0x4f, 0x69, 0x52, 0xca, 0x3f, 0x3f, 0xd5, 0x99, 0x49, 0x82, 0xf2, 0xc8,
+        0x80, 0x81, 0xdb, 0xd7, 0x68, 0xbc, 0xda, 0x83, 0xad, 0x04, 0x9c, 0x62, 0x2a, 0x89, 0x9d, 0x8b,
+        0x5f, 0x47, 0xac, 0xf3, 0xcd, 0x91, 0x53, 0x04, 0xd8, 0x70, 0x13, 0xcf, 0x87, 0x0f, 0x63, 0x5c,
+        0x0b, 0x9c, 0x07, 0x3d, 0x8f, 0x90, 0xeb, 0x33, 0x14, 0x90, 0x07, 0x2d, 0x10, 0x09, 0x43, 0x40,
+        0x37, 0x18, 0x0f, 0x3f, 0x74, 0x77, 0x25, 0x08, 0xea, 0xa6, 0x44, 0x59, 0x58, 0x71, 0x3e, 0x71,
+        0xad, 0xbd, 0x64, 0xd2, 0x92, 0x45, 0x61, 0x04, 0xc4, 0xbf, 0x3c, 0xb3, 0x11, 0xa8, 0xc1, 0xcf,
+        0x28, 0xf7, 0x1b, 0x93, 0x72, 0x1c, 0xbb, 0x23, 0x50, 0x86, 0xc2, 0x89, 0x5e, 0x68, 0x60, 0xd0,
+        0xb5, 0x56, 0xd7, 0x9c, 0x87, 0xd9, 0x97, 0x79, 0xcb, 0x54, 0x7c, 0x0d, 0x1b, 0x78, 0xdc, 0x0d,
+        0xb4, 0xc2, 0xb7, 0xaf, 0x57, 0x14, 0x85, 0x3c, 0x42, 0xc5, 0x22, 0x25, 0x96, 0x0a, 0x9d, 0x86,
+        0x3b, 0x20, 0xef, 0x82, 0x31, 0x01, 0xea, 0xc6, 0xb8, 0xe8, 0xc8, 0x7a, 0xa0, 0x43, 0x2c, 0xcd,
+        0xd2, 0xc9, 0x30, 0xc9, 0xb9, 0xea, 0xef, 0x6b, 0x72, 0x6c, 0x2e, 0xbc, 0x02, 0x74, 0x4d, 0x79,
+        0x69, 0x6b, 0xe5, 0x73, 0xe3, 0x60, 0x53, 0x59, 0x64, 0x06, 0x38, 0xdc, 0x36, 0x70, 0x14, 0xcb,
+        0x10, 0x64, 0x3b, 0x91, 0xbd, 0x6d, 0x1f, 0x0f, 0x3d, 0x1a, 0x0a, 0xcc, 0x0d, 0xe8, 0xfa, 0x14,
+        0x64, 0x73, 0xe0, 0x27, 0xf0, 0xc2, 0xe5, 0xe0, 0xc4, 0x60, 0xe8, 0x09, 0xdd, 0x72, 0x80, 0x62,
+        0x60, 0x92, 0x48, 0x93, 0xdb, 0x9c, 0x07, 0xae, 0x88, 0xa5, 0x34, 0x95, 0xd3, 0xb5, 0x27, 0x49,
+        0x2c, 0xc7, 0xe9, 0xe4, 0x5c, 0x51, 0x69, 0x80, 0x32, 0xfa, 0x8a, 0x29, 0xaa, 0x69, 0x65, 0x25,
+        0x46, 0xc1, 0x7c, 0xfd, 0xb5, 0xea, 0x37, 0x5c, 0xe9, 0xfe, 0x5c, 0x7c, 0xa4, 0xc9, 0x33, 0x73,
+        0x2e, 0x5d, 0xfe, 0x69, 0x06, 0x11, 0xf2, 0xf0, 0x1b, 0xa4, 0x1f, 0x22, 0x4a, 0x59, 0xa0, 0xea,
+        0x5d, 0x47, 0x0e, 0xe5, 0x9d, 0xa3, 0x97, 0xbf, 0xf0, 0x82, 0x6c, 0x1d, 0x34, 0x04, 0x42, 0x0a,
+        0x44, 0x19, 0xb1, 0xac, 0x6e, 0x35, 0xb6, 0xc1, 0x48, 0x27, 0x61, 0x42, 0xe6, 0x0b, 0x24, 0x08,
+        0x7f, 0x51, 0xba, 0xaa, 0xae, 0xb6, 0x52, 0xe6, 0x62, 0xb6, 0x42, 0x20, 0x2d, 0x72, 0x57, 0xa3,
+        0xc8, 0x73, 0x21, 0x60, 0x69, 0x07, 0x7a, 0xfc, 0x2b, 0xd6, 0x8a, 0xe9, 0xac, 0xd5, 0xc1, 0xac,
+        0x3c, 0xcd, 0xb6, 0x36, 0x55, 0x8f, 0x43, 0x98, 0x3e, 0x6a, 0x0d, 0x8d, 0x98, 0x56, 0x01, 0x0d,
+        0x34, 0x29, 0xf5, 0x13, 0x1a, 0x5d, 0x0b, 0xf5, 0x84, 0xd7, 0x7f, 0x81, 0x9e, 0x4c, 0xe4, 0x3e,
+        0x86, 0x84, 0x21, 0xda, 0xec, 0x2a, 0xfa, 0x11, 0x18, 0x9b, 0x39, 0x6d, 0x84, 0xd7, 0x27, 0xad,
+        0x2b, 0x1e, 0xb8, 0x41, 0x9b, 0x69, 0x09, 0xc8, 0xff, 0xc7, 0x1a, 0x96, 0x0a, 0xa8, 0xbe, 0xce,
+        0x96, 0xef, 0x74, 0x43, 0x55, 0xee, 0x07, 0x90, 0xda, 0xbf, 0x02, 0x67, 0xd9, 0x29, 0x29, 0xe1,
+        0x80, 0xca, 0xf6, 0xa7, 0x3b, 0x95, 0x46, 0x4b, 0xdc, 0xe4, 0xc2, 0x93, 0x71, 0xd0, 0x0a, 0x07,
+        0xfb, 0x40, 0x41, 0x8b, 0xba, 0xff, 0x98, 0xaf, 0xe2, 0x30, 0x45, 0x63, 0x9d, 0x78, 0x55, 0xf0,
+        0xb1, 0x2e, 0x0a, 0x53, 0x25, 0x30, 0x82, 0x02, 0xf9, 0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7,
+        0x0d, 0x01, 0x07, 0x01, 0xa0, 0x82, 0x02, 0xea, 0x04, 0x82, 0x02, 0xe6, 0x30, 0x82, 0x02, 0xe2,
+        0x30, 0x82, 0x02, 0xde, 0x06, 0x0b, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x0c, 0x0a, 0x01,
+        0x02, 0xa0, 0x82, 0x02, 0xa6, 0x30, 0x82, 0x02, 0xa2, 0x30, 0x1c, 0x06, 0x0a, 0x2a, 0x86, 0x48,
+        0x86, 0xf7, 0x0d, 0x01, 0x0c, 0x01, 0x03, 0x30, 0x0e, 0x04, 0x08, 0xb4, 0xcb, 0xb1, 0x28, 0x1f,
+        0x6c, 0x13, 0xac, 0x02, 0x02, 0x08, 0x00, 0x04, 0x82, 0x02, 0x80, 0x7f, 0x95, 0x27, 0xcc, 0xf0,
+        0x36, 0x73, 0x2a, 0xcf, 0x83, 0x96, 0xf7, 0xd9, 0xa5, 0xc8, 0xc5, 0x4f, 0xf2, 0x56, 0x4d, 0xbb,
+        0x3c, 0x00, 0x91, 0xf3, 0x3b, 0x35, 0x6f, 0xdb, 0xe1, 0x8d, 0x88, 0x0e, 0x3d, 0x44, 0x60, 0x36,
+        0x57, 0x5c, 0x46, 0x3d, 0x5c, 0x5b, 0x7f, 0x6b, 0xd1, 0x24, 0x50, 0x6e, 0xaa, 0x24, 0x57, 0xdd,
+        0x41, 0xa6, 0x7f, 0x9e, 0x27, 0x8d, 0x19, 0x8d, 0x8c, 0x0b, 0x3e, 0x4c, 0xf4, 0x50, 0xff, 0xd5,
+        0xd0, 0x26, 0x94, 0x51, 0xeb, 0xab, 0x8d, 0xa4, 0x30, 0x42, 0x4e, 0x31, 0x8a, 0x5d, 0x18, 0xb0,
+        0x24, 0x9e, 0x6b, 0x28, 0x73, 0xe6, 0xdb, 0x45, 0xdb, 0xc3, 0xdb, 0xc7, 0x81, 0xaf, 0xd5, 0x06,
+        0x55, 0x2c, 0x64, 0x6b, 0x31, 0xab, 0xc3, 0x8b, 0xc5, 0x88, 0x49, 0x07, 0xc3, 0x31, 0x16, 0x24,
+        0x4f, 0x86, 0x69, 0x96, 0x92, 0x22, 0xe8, 0x61, 0x70, 0x1c, 0xa9, 0x46, 0x1e, 0x7d, 0xc4, 0xd2,
+        0xd2, 0x3f, 0x70, 0xfb, 0x3a, 0x93, 0xe3, 0x90, 0x0b, 0x0d, 0x67, 0x59, 0x83, 0x93, 0x29, 0xf8,
+        0x93, 0xec, 0x2b, 0xe3, 0xf3, 0x39, 0xb5, 0xc6, 0xb2, 0x5b, 0x95, 0xe2, 0x99, 0x1b, 0x5b, 0x62,
+        0xfa, 0xc4, 0x68, 0x7b, 0x1f, 0x81, 0x41, 0x9d, 0x32, 0x2d, 0x44, 0xe3, 0xbe, 0x98, 0x20, 0xc5,
+        0x87, 0xef, 0xa2, 0x80, 0x76, 0x35, 0x8a, 0x8d, 0xa2, 0xcf, 0x54, 0x6b, 0xec, 0x30, 0x12, 0xdd,
+        0x0e, 0x4f, 0x26, 0x75, 0xd4, 0xe1, 0x44, 0x48, 0x49, 0xa7, 0x09, 0x47, 0xa8, 0x2f, 0x9b, 0x45,
+        0xcf, 0x42, 0x8c, 0x2b, 0x23, 0x5b, 0x38, 0xf9, 0x41, 0x70, 0x0a, 0xea, 0xf4, 0xe4, 0x83, 0x66,
+        0x32, 0x54, 0xcc, 0x9a, 0x02, 0x64, 0xcf, 0x09, 0x00, 0xbf, 0xb8, 0x90, 0x2c, 0xda, 0x39, 0xb2,
+        0x73, 0x0a, 0xe2, 0x50, 0x94, 0x33, 0x84, 0x65, 0x2d, 0xa6, 0x7c, 0xcf, 0x8c, 0x52, 0xf9, 0x0f,
+        0x61, 0x03, 0xcd, 0x0a, 0x6d, 0xd6, 0x03, 0xb7, 0x1b, 0x48, 0x21, 0xb2, 0xd9, 0x71, 0x05, 0xaa,
+        0xb6, 0xdc, 0xb7, 0x0a, 0xf9, 0xff, 0x26, 0x04, 0x90, 0x88, 0x93, 0xf9, 0x7b, 0xc1, 0x19, 0x77,
+        0xae, 0xc8, 0x59, 0x84, 0x63, 0xec, 0x4b, 0xe9, 0xf4, 0xcb, 0x97, 0x04, 0x70, 0xf7, 0xca, 0x5f,
+        0xa6, 0x92, 0x50, 0x44, 0x2b, 0xb1, 0x82, 0xee, 0x72, 0x59, 0xef, 0x88, 0x1f, 0xcd, 0xb9, 0x92,
+        0xb7, 0xc4, 0x42, 0xf7, 0x15, 0x02, 0xf5, 0xda, 0xd1, 0xbe, 0x39, 0xf0, 0x95, 0x28, 0xdf, 0xfe,
+        0xd7, 0x3d, 0x17, 0xa2, 0x43, 0x57, 0x23, 0x24, 0x33, 0x6e, 0x38, 0x9e, 0xcb, 0xe4, 0xec, 0x90,
+        0x43, 0x12, 0xba, 0x34, 0x8d, 0x2c, 0x20, 0x25, 0x4c, 0xee, 0xf6, 0x80, 0x75, 0x3e, 0x31, 0xa7,
+        0xa1, 0x92, 0x1d, 0x7f, 0x09, 0xa5, 0xdf, 0xec, 0x92, 0x1d, 0x6a, 0x25, 0xa7, 0x70, 0x37, 0x1e,
+        0x5d, 0xd0, 0x44, 0x93, 0x1b, 0x79, 0x06, 0xc1, 0xf4, 0x33, 0x49, 0xd5, 0x58, 0x6c, 0xd6, 0xb6,
+        0xbe, 0x52, 0x85, 0xb3, 0x1c, 0xb5, 0x43, 0xf6, 0x0c, 0x48, 0x5c, 0xa3, 0xbf, 0x16, 0xbc, 0x9c,
+        0xa5, 0xf9, 0x15, 0x20, 0x1f, 0x29, 0xce, 0x60, 0x5d, 0x43, 0xf4, 0x43, 0x10, 0x07, 0xa9, 0x8d,
+        0x81, 0xc9, 0x9c, 0x13, 0xc8, 0xe8, 0x26, 0xc8, 0x3e, 0x5c, 0x71, 0x6e, 0x4f, 0xbb, 0x68, 0xd8,
+        0x17, 0xb2, 0x9f, 0x14, 0x47, 0xc3, 0xfb, 0x0c, 0xbb, 0xb9, 0xac, 0x1d, 0x87, 0x5c, 0x23, 0x32,
+        0xbe, 0x15, 0x25, 0x54, 0x8e, 0x61, 0x18, 0xe0, 0xc8, 0x12, 0xb4, 0x08, 0x3c, 0x50, 0x78, 0x16,
+        0x2b, 0x54, 0x3a, 0x5b, 0xfa, 0x2a, 0x4e, 0x10, 0xab, 0x60, 0x5c, 0xe4, 0x29, 0x6e, 0xd3, 0x4b,
+        0xa3, 0xe6, 0x1b, 0xa9, 0x5d, 0x7e, 0x54, 0x39, 0xd3, 0x1c, 0xc3, 0xe7, 0xbf, 0x71, 0x81, 0x9d,
+        0xb6, 0x03, 0x0d, 0xa8, 0xfc, 0x6d, 0x76, 0x07, 0x9c, 0x16, 0x52, 0x96, 0x5e, 0x2f, 0x4c, 0x14,
+        0x08, 0xfb, 0x5e, 0x3e, 0xc8, 0x66, 0xf8, 0x04, 0x09, 0xc9, 0x64, 0x47, 0x54, 0xda, 0x0e, 0x45,
+        0x8d, 0x9e, 0xd4, 0xf1, 0x1b, 0xeb, 0xb8, 0x3f, 0xfe, 0x81, 0xff, 0xdc, 0xee, 0x4e, 0xb5, 0x8e,
+        0x6d, 0x2a, 0x88, 0x74, 0xf6, 0x58, 0xce, 0x7f, 0x24, 0x5a, 0xc3, 0xda, 0x5e, 0x4b, 0xd7, 0x9b,
+        0xe3, 0x67, 0x56, 0xbb, 0x11, 0x8a, 0x3d, 0x8d, 0xeb, 0x16, 0x30, 0x9f, 0xe0, 0xe0, 0x30, 0xc5,
+        0xee, 0xfa, 0xa0, 0xf4, 0x35, 0xd9, 0x37, 0x8f, 0x60, 0x86, 0xfb, 0x5c, 0x99, 0x86, 0x3d, 0x45,
+        0x93, 0xe7, 0x18, 0xce, 0xa3, 0x2b, 0xbd, 0x93, 0x7d, 0xbe, 0x31, 0xb4, 0xf1, 0x8c, 0xf5, 0x3a,
+        0x33, 0x12, 0xe2, 0x26, 0x1a, 0x57, 0xd1, 0xe5, 0xc5, 0x2c, 0xf6, 0x31, 0x25, 0x30, 0x23, 0x06,
+        0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x09, 0x15, 0x31, 0x16, 0x04, 0x14, 0x3d, 0xe0,
+        0x3b, 0xda, 0xb1, 0x39, 0x99, 0x1d, 0xce, 0x7d, 0x5c, 0xab, 0x96, 0x24, 0x1f, 0x60, 0xba, 0xf8,
+        0xd3, 0xe4, 0x30, 0x31, 0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2b, 0x0e, 0x03, 0x02, 0x1a, 0x05,
+        0x00, 0x04, 0x14, 0x8c, 0x41, 0x22, 0xd8, 0x56, 0x7d, 0x8f, 0x16, 0xd8, 0xa5, 0x76, 0x88, 0x0a,
+        0xb7, 0x28, 0xed, 0xc4, 0xb7, 0x23, 0xe4, 0x04, 0x08, 0x3f, 0xb0, 0xac, 0x92, 0x8f, 0x8f, 0xe7,
+        0x53, 0x02, 0x02, 0x08, 0x00};
+    
     // DH localhost generated cert with own root CA (CA included in data)
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertDHTestingLocalhostClientPkcs12Array length:sizeof(TestCertDHTestingLocalhostClientPkcs12Array) / sizeof(uint8_t)];
-    NSString *pkcs12Password = @"";
-    int expectedNumberOfCertsInCertChain = 2;
+    NSData *pkcs12Data = [NSData dataWithBytes:newTestCertDHTestingLocalhostClientPkcs12Array length:sizeof(newTestCertDHTestingLocalhostClientPkcs12Array) / sizeof(uint8_t)];
+    NSString *pkcs12Password = @"password";
+    int expectedNumberOfCertsInCertChain = 1;
     
     // DH localhost root CA
-    NSString *rootCertificatesPemString = TestCertDHTestingLocalhostRootPem;
     int expectedNumberOfRootCertificateRefs = 1;
     
-    NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
+    NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:newRootCertificatesPemString];
     XCTAssertNotNil(rootCertificates, @"Root certificates should not be nil.");
     XCTAssertEqual(rootCertificates.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
     
@@ -1387,19 +1641,20 @@
     XCTAssertEqual(rootCertificates.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
     
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data password:pkcs12Password rootCertificateRefs:rootCertificates];
-    XCTAssertNil(identityDictionary, @"Incorrect identity validation result. Should have returned nil NSDictionary.");
+    XCTAssertTrue(identityDictionary.count == 0, @"Incorrect identity validation result. Should have returned nil NSDictionary.");
 }
 
 - (void)testCreateAndValidateIdentityFromPkcs12Data_JavaSDK2048ClientWithIntermediate
 {
+    NSError *error = nil;
+    
     // Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert2.2048.IntCA1" error:&error];
     NSString *pkcs12Password = @"password";
     int expectedNumberOfCertsInCertChain = 2;
     
     // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
+    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
     int expectedNumberOfRootCertificateRefs = 1;
     
     NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
@@ -1436,7 +1691,7 @@
     XCTAssertEqual(rootCertificates.count, expectedNumberOfRootCertificateRefs, @"Wrong number of root certificate refs returned.");
     
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data password:pkcs12Password rootCertificateRefs:rootCertificates];
-    XCTAssertNil(identityDictionary, @"Incorrect identity validation result. Should have returned nil NSDictionary.");
+    XCTAssertTrue(identityDictionary.count == 0, @"Incorrect identity validation result. Should have returned nil NSDictionary.");
 }
 
 - (void)testCreateAndValidateIdentityFromPkcs12Data_JavaSDK2048ClientWithIntermediate_InvalidPassword
@@ -1480,15 +1735,16 @@
 {
     // Import some PKCS#12 data and then use the private key to sign some data.  Then use the public key to verify the signature.
     
+    NSError *error = nil;
+    
     // 1.) Create identity
     
     // Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
-    NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
-                                        length:sizeof(TestCertJavaSdkClient2048WithIntermediatePkcs12Array) / sizeof(uint8_t)];
+    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert3.4096.IntCA1" error:&error];
     NSString *pkcs12Password = @"password";
     
     // Java-SDK root cert
-    NSString *rootCertificatesPemString = TestCertJavaSdkRootPem;
+    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
     int expectedNumberOfRootCertificateRefs = 1;
     
     NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];

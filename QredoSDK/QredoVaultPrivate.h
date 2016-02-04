@@ -11,7 +11,7 @@
 
 extern NSString *const QredoVaultItemMetadataItemTypeTombstone;
 
-@class QredoClient, QredoKeychain, QredoVaultKeys;
+@class QredoClient, QredoKeychain, QredoVaultKeys, QredoLocalIndex;
 
 @interface QredoVaultItemDescriptor()<NSCopying>
 @property (readonly) QLFVaultSequenceValue sequenceValue;
@@ -32,7 +32,9 @@ extern NSString *const QredoVaultItemMetadataItemTypeTombstone;
 typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 {
     QredoVaultItemOriginServer,
-    QredoVaultItemOriginCache
+    QredoVaultItemOriginCache,
+    QredoVaultItemOriginLocal
+    
 };
 
 @interface QredoVaultItemMetadata ()
@@ -52,10 +54,11 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 
 @interface QredoVault (Private)
 
+- (QredoLocalIndex *)localIndex;
 - (QredoQUID *)sequenceId;
 - (QredoVaultKeys *)vaultKeys;
 
-- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys;
+- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing;
 
 - (QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
 - (QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;
@@ -68,10 +71,16 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 - (void)strictlyUpdateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
 
-// Cleans only cache. Vault object is still usable after that
-- (void)clearCache;
-
 // Destroys all data, including sequenceId record. Vault objects is not supposed to be used after that
 - (void)clearAllData;
+
+
+/** Registers & removes the Metadata index database as a listener to incoming vault items
+ */
+
+-(void)addMetadataIndexObserver;
+-(void)addMetadataIndexObserver:(IncomingMetadataBlock)block;
+-(void)removeMetadataIndexObserver;
+
 
 @end

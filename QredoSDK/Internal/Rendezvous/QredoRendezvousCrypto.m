@@ -8,7 +8,7 @@
 #import "QredoRsaPublicKey.h"
 #import "QredoRsaPrivateKey.h"
 #import "QredoRendezvousHelpers.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "QredoErrorCodes.h"
 
@@ -94,7 +94,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                       persistInAppleKeychain:YES];
     if (!keyPairRef) {
         // TODO: What should happen if keypair generation failed? More than just log it
-        LogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
+        QredoLogError(@"Failed to generate keypair for identifiers: '%@' and '%@'", publicKeyId, privateKeyId);
     }
     
     QredoRsaPublicKey *rsaPublicKey = [[QredoRsaPublicKey alloc] initWithPkcs1KeyData:[QredoCrypto getKeyDataForIdentifier:publicKeyId]];
@@ -332,7 +332,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                                  data:encryptedResponderDataRaw];
     }
     @catch (NSException *exception) {
-        LogError(@"Failed to decode: %@", exception);
+        QredoLogError(@"Failed to decode: %@", exception);
     }
 
     if (!decryptedData) {

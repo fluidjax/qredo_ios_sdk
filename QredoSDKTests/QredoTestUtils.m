@@ -5,8 +5,10 @@
 #import "QredoTestUtils.h"
 
 // Note: do not reduce this as some tests may rely on this value to complete processing before timeout
-//NSTimeInterval qtu_defaultTimeout = 10.0;
-NSTimeInterval qtu_defaultTimeout = 30.0; // TODO: DH - Investigating whether increasing timeout improves test reliability. Orig 10s, RSA 4096 key gen can take 10+ seconds, so upping to 30 seconds for safety
+NSTimeInterval qtu_defaultTimeout = 10.0;
+
+// Beacuse of slow QMac... (perhaps)
+// TODO: DH - Investigating whether increasing timeout improves test reliability. Orig 10s, RSA 4096 key gen can take 10+ seconds, so upping to 30 seconds for safety
 
 NSString *k_APPSECRET     = @"cafebabe";
 NSString *k_USERID        = @"testUserId";

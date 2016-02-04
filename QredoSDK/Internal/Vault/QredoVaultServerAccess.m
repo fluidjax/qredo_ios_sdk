@@ -19,7 +19,7 @@
 #import "QredoSigner.h"
 
 #import "QredoErrorCodes.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoVaultServerAccess ()
 {
@@ -214,9 +214,13 @@
      }];
 }
 
+
+
+
+
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                     completionHandler:(void(^)(NSError *error))completionHandler
-                     watermarkHandler:(void(^)(QredoVaultHighWatermark*))watermarkHandler
+                     watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
                                 since:(QredoVaultHighWatermark*)sinceWatermark
                  consolidatingResults:(BOOL)shouldConsolidateResults{
     
@@ -235,8 +239,10 @@
                                watermarkHandler:watermarkHandler
                                           since:highWaterMark consolidatingResults:shouldConsolidateResults];
         }else{
+ 
             if (completionHandler)completionHandler(error);
-        }
+       }
+ 
 
     } watermarkHandler:^(QredoVaultHighWatermark *vaultHighWaterMark){
         highWaterMark =vaultHighWaterMark;
@@ -307,7 +313,7 @@
                                                                                                    error:&error];
                      if (error) {
                          // skipping the error
-                         LogError(@"Failed to decrypt an item with error: %@", error);
+                         QredoLogError(@"Failed to decrypt an item with error: %@", error);
                          continue;
                      }
 

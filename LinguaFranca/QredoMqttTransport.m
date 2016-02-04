@@ -5,7 +5,7 @@
 #import "QredoMqttTransport.h"
 #import "MQTTSession.h"
 #import "QredoClientId.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoTransportErrorUtils.h"
 #import "QredoTransportSSLTrustUtils.h"
 #import "QredoCertificate.h"
@@ -39,7 +39,7 @@ static const int DefaultMqttPort = 1883;
 static const int DefaultMqttSslPort = 8883;
 static const NSTimeInterval MqttInitialReconnectionDelaySeconds = 1; // 1 second delay
 static const NSTimeInterval MqttMaxReconnectionDelaySeconds = 60 * 5; // 5 mins maximum delay
-static const NSTimeInterval MqttSendCheckConnectedDelay = 1.0; // 1 second delay when waiting to see if connected
+static const NSTimeInterval MqttSendCheckConnectedDelay = 5.0; // 1 second delay when waiting to see if connected
 static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to check whether MQTT thread has been cancelled
 
 #pragma mark - QredoTransport override methods
@@ -96,6 +96,8 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         self.transportClosed = NO;
     }
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reconnectWithExponentialDelay:) name:@"reconnect" object:nil];
+    
     return self;
 }
 
@@ -104,6 +106,8 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     if (!_transportClosed) {
         [self close];
     }
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"reconnect" object:nil];
 }
 
 -(void)setTransportClosed:(BOOL)transportClosed {
@@ -129,7 +133,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         
         if (!_mqttSession)
         {
-            LogError(@"%@: Could not initialise MQTTSession, initialiser returned nil.", [self getHexClientID]);
+            QredoLogError(@"%@: Could not initialise MQTTSession, initialiser returned nil.", [self getHexClientID]);
             
             @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                            reason:@"Could not initialise MQTTSession."
@@ -140,9 +144,19 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         
         // Attempt to connect to the server
         [self connectToServerUsingSession:_mqttSession];
-
+    
+    
         while (!self.mqttThread.isCancelled) {
-            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:MqttCancellationCheckPeriod]];
+            /*  Documented Intermittent error
+             Error:
+                MQTT ssl://early1.qredo.com:8883:... (8) EXC_BAD_ACCESS (code=EXC_I386_GPFLT)
+                Occurs on QredoSKDTest: QredoRendezvousMQTTTests : testCreateRendezvousMulitple  - after many iterations (46 & 172 in testing)
+             References:
+                http://www.coderhelps.xyz/code/17032356-bad-exc-in-nsrunloop-currentrunloop-runmode-beforedate.html
+                removing autorelease has no effect
+             */
+            
+             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:MqttCancellationCheckPeriod]];
         }
 
     }
@@ -171,7 +185,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         
         if (!self.connectedAndReady)
         {
-            LogError(@"%@: After waiting and retrying, still not connected/ready. Aborting send, returning error.", [self getHexClientID]);
+            QredoLogError(@"%@: After waiting and retrying, still not connected/ready. Aborting send, returning error.", [self getHexClientID]);
             
             [self notifyListenerOfErrorCode:QredoTransportErrorSendWhilstNotReady userData:userData];
             
@@ -269,6 +283,11 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     return lastWillTestamentChannelTopic;
 }
 
+- (void)reconnectWithExponentialDelay:(id)sender
+{
+    [self reconnectWithExponentialDelayForSession:self.mqttSession];
+}
+
 - (void)reconnectWithExponentialDelayForSession:(MQTTSession *)mqttSession
 {
     if (self.connectedAndReady)
@@ -290,7 +309,8 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         [NSThread sleepForTimeInterval:self.reconnectionDelay];
         
         [self connectToServerUsingSession:mqttSession];
-    }
+    
+   }
 }
 
 - (void)connectToServerUsingSession:(MQTTSession *)mqttSession
@@ -326,7 +346,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     
     // Note: All events other than MQTTSessionEventConnected result in an invalidated session,
     // therefore for these events we must always reconnect before using the session again
-    
+        
     switch (eventCode) {
         case MQTTSessionEventConnected:
             {
@@ -341,40 +361,41 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
             }
             break;
             
-        case MQTTSessionEventConnectionRefused:
-            LogError(@"%@: Connection refused.  Will reconnect.", [self getHexClientID]);
+        case MQTTSessionEventConnectionRefused:{
+            QredoLogError(@"%@: Connection refused.  Will reconnect.", [self getHexClientID]);
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorConnectionRefused userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
-            
-        case MQTTSessionEventConnectionClosed:
-            LogError(@"%@: Connection closed.  Will reconnect.", [self getHexClientID]);
+        }
+        case MQTTSessionEventConnectionClosed:{
+            QredoLogError(@"%@: Connection closed.  Will reconnect.", [self getHexClientID]);
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorConnectionClosed userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
-            
-        case MQTTSessionEventConnectionError:
-            LogError(@"%@: Connection error.  Will reconnect.", [self getHexClientID]);
+        }
+        case MQTTSessionEventConnectionError:{
+            QredoLogError(@"%@: Connection error.  Will reconnect.", [self getHexClientID]);
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorConnectionFailed userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
-            
-        case MQTTSessionEventProtocolError:
-            LogError(@"%@: Protocol error.  Will reconnect.", [self getHexClientID]);
+        }
+        case MQTTSessionEventProtocolError:{
+            QredoLogError(@"%@: Protocol error.  Will reconnect.", [self getHexClientID]);
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorCannotParseProtocol userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
-            
-        default:
-            LogError(@"%@: Unhandled event code: %@.  Will reconnect.", [self getHexClientID], @(eventCode));
+        }
+        default:{
+            QredoLogError(@"%@: Unhandled event code: %@.  Will reconnect.", [self getHexClientID], @(eventCode));
             self.connectedAndReady = NO;
             [self notifyListenerOfErrorCode:QredoTransportErrorUnknown userData:nil];
             [self reconnectWithExponentialDelayForSession:sender];
             break;
+        }
     }
 }
 
@@ -389,7 +410,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
         NSString *description = [NSString stringWithFormat:@"Received message on unhandled topic: '%@'", topic];
         NSError *error = [QredoTransportErrorUtils errorWithErrorCode:QredoTransportErrorUnhandledTopic description:description];
 
-        LogError(@"%@: %@", [self getHexClientID], description);
+        QredoLogError(@"%@: %@", [self getHexClientID], description);
         [self notifyListenerOfError:error userData:nil];
     }
 }

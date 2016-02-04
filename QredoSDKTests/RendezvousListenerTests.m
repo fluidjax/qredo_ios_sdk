@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
-#import "Qredo.h"
+#import "QredoXCTestCase.h"
 #import "QredoTestConfiguration.h"
 #import "QredoTestUtils.h"
 #import "QredoQUID.h"
@@ -21,7 +21,7 @@
 // It may also cover responder's edge cases:
 // - responding to non-existing tag
 
-@interface RendezvousListenerTests : XCTestCase <QredoRendezvousObserver>
+@interface RendezvousListenerTests : QredoXCTestCase <QredoRendezvousObserver>
 {
     QredoClient *client;
     XCTestExpectation *didReceiveResponseExpectation;
@@ -122,6 +122,7 @@
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
 
     [rendezvous addRendezvousObserver:self];
+    [NSThread sleepForTimeInterval:0.1];
     
     __block QredoConversation *responderConversation = nil;
     // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test

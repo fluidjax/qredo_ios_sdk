@@ -34,10 +34,11 @@
 - (void)testConversationMultiple
 {
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
-    self.continueAfterFailure = YES;
+    self.continueAfterFailure = NO;
 
     for (int i = 0; i < 20; i++)
     {
+        QLog(@"run: %i", i);
         [super testConversation];
     }
 }

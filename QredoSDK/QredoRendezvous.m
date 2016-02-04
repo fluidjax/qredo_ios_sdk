@@ -18,7 +18,7 @@
 #import "QredoCrypto.h"
 #import "QredoVaultCrypto.h"
 #import "QredoPrimitiveMarshallers.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoUpdateListener.h"
 
@@ -131,7 +131,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _updateListener = [[QredoUpdateListener alloc] init];
     _updateListener.delegate = self;
     _updateListener.dataSource = self;
-
     _updateListener.pollInterval = kQredoRendezvousUpdateInterval;
     _updateListener.renewSubscriptionInterval = kQredoRendezvousRenewSubscriptionInterval;
 
@@ -200,7 +199,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler
 {
-    LogDebug(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
+    QredoLogVerbose(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
     
     // TODO: DH - write tests
     // TODO: DH - validate that the configuration and tag formats match
@@ -237,7 +236,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _hashedTag  = [crypto hashedTagWithMasterKey:masterKey];
     NSData *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
     
-    LogDebug(@"Hashed tag: %@", _hashedTag);
+    QredoLogDebug(@"Hashed tag: %@", _hashedTag);
     
     // Generate the rendezvous key pairs.
     QLFKeyPairLF *ownershipKeyPair = [crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];
@@ -523,34 +522,33 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return (object == nil ? [NSSet new] : [NSSet setWithObject:object]);
 }
 
-- (void)resetHighWatermark
-{
+- (void)resetHighWatermark{
     _highWatermark = QredoRendezvousHighWatermarkOrigin;
 }
 
-- (void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler
-{
+- (void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler{
     // TODO: implement later
 }
 
-- (void)addRendezvousObserver:(id<QredoRendezvousObserver>)observer
-{
+- (void)addRendezvousObserver:(id<QredoRendezvousObserver>)observer{
     [_observers addObserver:observer];
+    
     if (!_updateListener.isListening) {
         [_updateListener startListening];
     }
+
 }
 
-- (void)removeRendezvousObserver:(id<QredoRendezvousObserver>)observer
-{
+- (void)removeRendezvousObserver:(id<QredoRendezvousObserver>)observer{
     [_observers removeObserver:observer];
-    if ([_observers count] < 1 && !_updateListener.isListening) {
+    
+    
+    if ([_observers count] < 1 && _updateListener.isListening) {
         [_updateListener stopListening];
     }
 }
 
-- (void)notifyObservers:(void(^)(id<QredoRendezvousObserver> observer))notificationBlock
-{
+- (void)notifyObservers:(void(^)(id<QredoRendezvousObserver> observer))notificationBlock{
     [_observers notifyObservers:notificationBlock];
 }
 
@@ -558,9 +556,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 - (BOOL)processResponse:(QLFRendezvousResponse *)response
           sequenceValue:(QLFRendezvousSequenceValue)sequenceValue
               withBlock:(void(^)(QredoConversation *conversation))block
-           errorHandler:(void (^)(NSError *))errorHandler
-{
-
+           errorHandler:(void (^)(NSError *))errorHandler{
     return YES;
 }
 
@@ -596,8 +592,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 - (void)enumerateResponsesWithBlock:(void(^)(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop))block
                   completionHandler:(void(^)(NSError *error))completionHandler
                               since:(QredoRendezvousHighWatermark)sinceWatermark
-               highWatermarkHandler:(void(^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler
-{
+               highWatermarkHandler:(void(^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler{
     NSError *error = nil;
 
     NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:nil
@@ -648,8 +643,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                           responseIndex:(NSUInteger)responseIndex
                 rendezvousResponseBlock:(void(^)(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop))rendezvousResponseBlock
                    highWatermarkHandler:(void(^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler
-                      completionHandler:(void(^)(NSError *error))completionHandler
-{
+                      completionHandler:(void(^)(NSError *error))completionHandler{
     void (^finishEnumeration)() = ^{
         if (result.sequenceValue && highWatermarkHandler) {
             highWatermarkHandler(result.sequenceValue);
@@ -711,24 +705,20 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 - (void)createConversationAndStoreKeysForResponse:(QLFRendezvousResponse *)response
-                                completionHandler:(void(^)(QredoConversation *conversation, NSError *error))completionHandler
-{
+                                completionHandler:(void(^)(QredoConversation *conversation, NSError *error))completionHandler{
     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
                                                              authenticationType:_lfAuthType
                                                                   rendezvousTag:_tag
                                                                 converationType:_configuration.conversationType];
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
-    
     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
                                            publicKey:responderPublicKey
                                      rendezvousOwner:YES
-                                   completionHandler:^(NSError *error)
-     {
+                                   completionHandler:^(NSError *error){
          if (error) {
              completionHandler(nil, error);
              return ;
          }
-
          completionHandler(conversation, nil);
      }];
 }
@@ -737,16 +727,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source
-- (BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener
-{
+- (BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener{
     return _client.serviceInvoker.supportsMultiResponse;
 }
 
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
-  pollWithCompletionHandler:(void (^)(NSError *))completionHandler
-{
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener pollWithCompletionHandler:(void (^)(NSError *))completionHandler{
     [self enumerateResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop) {
-        [_updateListener processSingleItem:conversation sequenceValue:@(rendezvousResponse.sequenceValue)];
+        
+            [_updateListener processSingleItem:conversation sequenceValue:@(rendezvousResponse.sequenceValue)];
     }
                     completionHandler:completionHandler
                                 since:self.highWatermark
@@ -754,11 +742,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     {
         self->_highWatermark = newWatermark;
     }];
+    
 }
 
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
-subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
-{
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler{
     NSAssert([_observers count] > 0, @"There shoud be 1 or more rendezvous observers before starting listening for the updates");
 
     NSAssert(_subscriptionCorrelationId == nil, @"Already subscribed");
@@ -777,53 +764,45 @@ subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
                                            marshalledData:payloadData
                                                     error:&error];
 
-    if (error)
-    {
+    if (error){
         completionHandler(error);
         return;
     }
-
     [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
                                          signature:ownershipSignature
-                                 completionHandler:^(QLFRendezvousResponseWithSequenceValue *result, NSError *error)
-    {
+                                 completionHandler:^(QLFRendezvousResponseWithSequenceValue *result, NSError *error){
         if (error) {
             [_updateListener didTerminateSubscriptionWithError:error];
             completionHandler(error);
             return;
         }
-         [self createConversationAndStoreKeysForResponse:result.response
-                                       completionHandler:^(QredoConversation *conversation, NSError *creationError)
-          {
+        [self createConversationAndStoreKeysForResponse:result.response
+                                       completionHandler:^(QredoConversation *conversation, NSError *creationError){
               if (creationError) {
                   completionHandler(error);
                   return;
               }
-
               [_updateListener processSingleItem:conversation sequenceValue:@(result.sequenceValue)];
 
-          }];
-
+         }];
          self->_highWatermark = result.sequenceValue;
-     }
-     ];
-
+     }];
 }
 
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
-unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler
-{
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler{
     // TODO: ownership
 //    [_rendezvous unsubscribeWithCorrelationId:_subscriptionCorrelationId completionHandler:^(NSError *error) {
 //        _subscriptionCorrelationId = nil;
 //        completionHandler(error);
 //    }];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:updateListener name:@"resubscribe" object:nil];
+    //    updateListener = nil;
 }
 
 #pragma mark Qredo Update Listener - Delegate
 
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item
-{
+- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item{
     QredoConversation *conversation = (QredoConversation *)item;
 
     [self notifyObservers:^(id<QredoRendezvousObserver> observer) {

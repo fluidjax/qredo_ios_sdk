@@ -5,7 +5,7 @@
 #import "QredoConversationProtocolFSM.h"
 #import "QredoConversation.h"
 #import "QredoErrorCodes.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @class QredoConversationProtocolCancelState;
 @class QredoConversationProtocolErrorState;
@@ -450,7 +450,7 @@
 
 - (void)failWithError:(NSError *)error
 {
-    LogError(@"failWithError");
+    QredoLogError(@"failWithError");
 
     [self switchToState:self.errorState withConfigBlock:^{
         self.errorState.error = error;

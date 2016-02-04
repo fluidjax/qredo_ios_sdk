@@ -11,7 +11,7 @@
 
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoServiceInvoker.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 #import "QredoKeychain.h"
 #import "QredoKeychainArchiver.h"
@@ -35,13 +35,19 @@ NSString *const QredoVaultItemSummaryKeyDeviceName = @"device-name";
 NSString *const QredoClientOptionCreateNewSystemVault = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL = @"com.qredo.option.serviceUrl";
 
-//static NSString *const QredoClientDefaultServiceURL = @"https://ltd.qredo.me:443/services";
-//static NSString *const QredoClientMQTTServiceURL = @"ssl://ltd.qredo.me:8883";
-//static NSString *const QredoClientWebSocketsServiceURL = @"wss://ltd.qredo.me:443/services";
+//static NSString *const QredoClientDefaultServiceURL = @"https://suchlog.qredo.me:443/services";
+//static NSString *const QredoClientMQTTServiceURL = @"ssl://suchlog.qredo.me:8883";
+//static NSString *const QredoClientWebSocketsServiceURL = @"wss://suchlog.qredo.me:443/services";
+
+
+
 
 static NSString *const QredoClientDefaultServiceURL = @"https://early1.qredo.me:443/services";
 static NSString *const QredoClientMQTTServiceURL = @"ssl://early1.qredo.me:8883";
 static NSString *const QredoClientWebSocketsServiceURL = @"wss://early1.qredo.me:443/services";
+
+
+
 
 
 NSString *const QredoRendezvousURIProtocol = @"qrp:";
@@ -203,7 +209,39 @@ NSString *systemVaultKeychainArchiveIdentifier;
                 57:c1:fa:3e:7a:e1:97:c9
      
      */
-    NSString *base64EncodedDerCertificateData
+    
+    //this is Charles root key for debugging
+    //use this key & start charles
+    NSString *base64EncodedDerCertificateData_CHARLES
+    = @"\
+MIIFbjCCBFagAwIBAgIGAVJ5ULzjMA0GCSqGSIb3DQEBCwUAMIG7MU0wSwYDVQQDDERDaGFybGVz\
+IFByb3h5IEN1c3RvbSBSb290IENlcnRpZmljYXRlIChidWlsdCBvbiBxdWluY2UsIDI1IEphbiAy\
+MDE2KTEkMCIGA1UECwwbaHR0cDovL2NoYXJsZXNwcm94eS5jb20vc3NsMREwDwYDVQQKDAhYSzcy\
+IEx0ZDERMA8GA1UEBwwIQXVja2xhbmQxETAPBgNVBAgMCEF1Y2tsYW5kMQswCQYDVQQGEwJOWjAe\
+Fw0wMDAxMDEwMDAwMDBaFw00NTAzMjMxNTA0NDBaMIG7MU0wSwYDVQQDDERDaGFybGVzIFByb3h5\
+IEN1c3RvbSBSb290IENlcnRpZmljYXRlIChidWlsdCBvbiBxdWluY2UsIDI1IEphbiAyMDE2KTEk\
+MCIGA1UECwwbaHR0cDovL2NoYXJsZXNwcm94eS5jb20vc3NsMREwDwYDVQQKDAhYSzcyIEx0ZDER\
+MA8GA1UEBwwIQXVja2xhbmQxETAPBgNVBAgMCEF1Y2tsYW5kMQswCQYDVQQGEwJOWjCCASIwDQYJ\
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAIE0afLxakBnz4SkQUXa/owSwrtI6e2FOcEiEVVwzLQn\
+t1cZoo7KCNoKWjPa+pNtlJ0naEDcxIdPfOwWz8wmyg1aXRpe7Cn2dVPsK5mKQKE4DOw5XMqQj9iM\
+DFw7L8CoUcsBzyQtMLBxm4vhO7i3KlnzOAaO0LzZ81zp0NLxCbxg0LSnXHoJCCnxSUqmfd6fMheg\
+uLtLOruiSR6TTXVrzn3ymn58LhBTMrosUjdJvM+OyTHdNpH9n+GTQeEeYXte5wFn1NWsxvohI/BF\
+jXjP0ap1lnu+eHnQEPwouOQVnBqiQzt2FHXKDlDFHwSnOTUhg9CjJv1bgpWTmmxBWMtLyG0CAwEA\
+AaOCAXQwggFwMA8GA1UdEwEB/wQFMAMBAf8wggEsBglghkgBhvhCAQ0EggEdE4IBGVRoaXMgUm9v\
+dCBjZXJ0aWZpY2F0ZSB3YXMgZ2VuZXJhdGVkIGJ5IENoYXJsZXMgUHJveHkgZm9yIFNTTCBQcm94\
+eWluZy4gSWYgdGhpcyBjZXJ0aWZpY2F0ZSBpcyBwYXJ0IG9mIGEgY2VydGlmaWNhdGUgY2hhaW4s\
+IHRoaXMgbWVhbnMgdGhhdCB5b3UncmUgYnJvd3NpbmcgdGhyb3VnaCBDaGFybGVzIFByb3h5IHdp\
+dGggU1NMIFByb3h5aW5nIGVuYWJsZWQgZm9yIHRoaXMgd2Vic2l0ZS4gUGxlYXNlIHNlZSBodHRw\
+Oi8vY2hhcmxlc3Byb3h5LmNvbS9zc2wgZm9yIG1vcmUgaW5mb3JtYXRpb24uMA4GA1UdDwEB/wQE\
+AwICBDAdBgNVHQ4EFgQUuEXgnNm2K6PDOmPu0/T8kEVBKOUwDQYJKoZIhvcNAQELBQADggEBAB4n\
+Oeg7/14raScFPSpdfPzLYkgmmJx5tJYkt2GwoSmFWaKY2sRvGxZ5CKb30LiwXW5fYJWBi7V6eBuN\
+GRWeXpObTTHjWjRSjj5al8/iLFax2inKK3v0QDd5/xn5zj5f4eMfNZdL5dwf4/qY4fXXs8nX3TI/\
+uvHi0vyTR2TTEuo9BzmX0Lp/4D6SdEZLMEaunh3z/78INf8I6yTwytOSuwGv5k5pINrKjUc4p8i8\
+KMpsX1xsx4Cvc/Vy/C5TZcTnIDul0aCI7Z1sSefbFjtiehAx+gmZMQqXLYa8afJ9PwLIFOw1vf7b\
+ldRMSpzB9BEMBs6YVotd0s+xvbr9Hyymyi4=";
+
+    
+    NSString *base64EncodedDerCertificateData_QREDO
     = @"\
 MIIFujCCA6KgAwIBAgIJALtAHEP1Xk+wMA0GCSqGSIb3DQEBBQUAMEUxCzAJBgNV\
 BAYTAkNIMRUwEwYDVQQKEwxTd2lzc1NpZ24gQUcxHzAdBgNVBAMTFlN3aXNzU2ln\
@@ -238,6 +276,9 @@ ZMEBnunKoGqYDs/YYPIvSbjkQuE4NRb0yG5P94FW6LqjviOvrv1vA+ACOzB2+htt\
 Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     ;
     
+    
+    NSString *base64EncodedDerCertificateData=base64EncodedDerCertificateData_QREDO;
+    
     NSData *derCertificateData
     = [[NSData alloc] initWithBase64EncodedString:base64EncodedDerCertificateData
                                           options:NSDataBase64DecodingIgnoreUnknownCharacters];
@@ -259,12 +300,13 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     QredoKeychain *_keychain;
     QredoUserCredentials *_userCredentials;
     QredoAppCredentials *_appCredentials;
+    
 
     dispatch_queue_t _rendezvousQueue;
 }
 
 @property NSURL *serviceURL;
-
+@property QredoClientOptions *clientOptions;
 
 /** Creates instance of qredo client
  @param serviceURL Root URL for Qredo services
@@ -275,6 +317,21 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 @end
 
 @implementation QredoClient
+
+
+- (NSString *)versionString{
+    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+    return [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+}
+
+- (NSString *)buildString{
+    NSBundle* bundle = [NSBundle bundleForClass:[self class]];
+    return [bundle objectForInfoDictionaryKey:@"CFBundleVersion"];
+}
+
+
+
+
 
 - (QredoVault*)systemVault
 {
@@ -310,22 +367,29 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                      completionHandler:(void(^)(QredoClient *client, NSError *error))completionHandler{
     
     
+    
     // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
     if (!options) {
         options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     }
-    
+
     
     NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
     if (!appID)appID = @"test";
     
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appID
-                                                                                          userId:userId
-                                                                                      userSecure:userSecret];
+                                                                                 userId:userId
+                                                                             userSecure:userSecret];
+
+    QredoLogDebug(@"UserCredentials: Appid:%@   userID:%@   userSecure:%@",appID,userId,userSecret);
+    
+    
     
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appID
                                                                              appSecret:[NSData dataWithHexString:appSecret]];
+    
+    QredoLogDebug(@"AppCredentials: Appid:%@   appSecret:%@",appID,appSecret);
     
     systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
     
@@ -348,6 +412,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                                                         pinnedCertificate:options.certificate
                                                            appCredentials:appCredentials];
     
+    client.clientOptions = options;
     
     void(^completeAuthorization)(NSError *) = ^void(NSError *error) {
         
@@ -355,7 +420,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
             if (completionHandler) completionHandler(nil, error);
         } else {
             // This assert is very important!!!
-            NSAssert(client.defaultVault, @"No QredoClient without a system vault must be passed to the client code.");
+            if (!client.defaultVault)QredoLogError(@"No QredoClient without a system vault must be passed to the client code.");
             if (completionHandler) completionHandler(client, error);
         }
         
@@ -504,6 +569,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                        completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
     // Anonymous Rendezvous are created using the full tag. Signing handler, trustedRootPems and crlPems are unused
+    QredoLogVerbose(@"Start createAnonymousRendezvousWithTag %@", tag);
     [self createRendezvousWithTag:tag
                authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                     configuration:configuration
@@ -511,6 +577,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                           crlPems:[[NSArray alloc] init]
                    signingHandler:nil
                 completionHandler:completionHandler];
+    QredoLogVerbose(@"Complete createAnonymousRendezvousWithTag %@", tag);
 }
 
 // TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (internal keys)
@@ -523,7 +590,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     if (authenticationType == QredoRendezvousAuthenticationTypeAnonymous) {
         // Not an authenticated rendezvous, so shouldn't be using this method
         NSString *message = @"'Anonymous' is invalid, use the method dedicated to anonymous rendezvous.";
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -533,7 +600,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                authenticationType == QredoRendezvousAuthenticationTypeX509PemSelfsigned) {
         // X.509 authenticated rendezvous MUST use externally generated certificates, so MUST use method with signingHandler
         NSString *message = @"'X.509' is invalid, use the method dedicated to externally generated keys/certs which has a signing handler.";
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -575,7 +642,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     if (authenticationType == QredoRendezvousAuthenticationTypeAnonymous) {
         // Not an authenticated rendezvous, so shouldn't be using this method
         NSString *message = @"'Anonymous' is invalid, use the method dedicated to anonymous rendezvous.";
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -586,7 +653,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         if (!trustedRootPems) {
             // Cannot have nil trusted root PEMs
             NSString *message = @"TrustedRootPems cannot be nil when creating X.509 authenicated rendezvous, as creation will fail.";
-            LogError(@"%@", message);
+            QredoLogError(@"%@", message);
             NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                                  code:QredoErrorCodeRendezvousInvalidData
                                              userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -596,7 +663,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
         else if (trustedRootPems.count == 0) {
             // Cannot have no trusted root refs
             NSString *message = @"TrustedRootPems cannot be empty when creating X.509 authenicated rendezvous, as creation will fail.";
-            LogError(@"%@", message);
+            QredoLogError(@"%@", message);
             NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                                  code:QredoErrorCodeRendezvousInvalidData
                                              userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -642,8 +709,15 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler
 {
     // although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
+    
+    QredoLogVerbose(@"Start createRendezvousWithTag %@", tag);
+
+    
     dispatch_async(_rendezvousQueue, ^{
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self];
+        
+        QredoLogVerbose(@"Start createRendezvousWithTag on rendezvousQueue %@", tag);
+        
         [rendezvous createRendezvousWithTag:tag
                          authenticationType:authenticationType
                               configuration:configuration
@@ -657,7 +731,13 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
                 completionHandler(rendezvous, error);
             }
         }];
+        QredoLogVerbose(@"End createRendezvousWithTag on rendezvousQueue %@", tag);
+        
     });
+
+    QredoLogVerbose(@"End createRendezvousWithTag %@", tag);
+
+    
 }
 
 - (QredoRendezvous*)rendezvousFromVaultItem:(QredoVaultItem*)vaultItem error:(NSError**)error {
@@ -713,7 +793,6 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     __block QredoRendezvousMetadata *matchedRendezvousMetadata;
     
     [self enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
-        NSLog(@"Tag %@",rendezvousMetadata.tag);
         if ([tag isEqualToString:rendezvousMetadata.tag]){
             matchedRendezvousMetadata =rendezvousMetadata;
             *stop = YES;
@@ -925,7 +1004,7 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
     {
         NSString *message =  @"'The Rendezvous duration must not be negative";
 
-        LogError(@"%@", message);
+        QredoLogError(@"%@", message);
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -1066,8 +1145,14 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 }
 
 - (void)initializeVaults {
-    _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys];
-    _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys];
+    _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys  withLocalIndex:NO];
+
+    if (self.clientOptions.disableMetadataIndex==YES){
+        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:NO];
+    }else{
+        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:YES];
+    }
+    
 }
 
 - (id<QredoKeychainArchiver>)qredoKeychainArchiver

@@ -69,4 +69,12 @@
     return self;
 }
 
+
+- (NSString *)description {
+    NSString *desc = [NSString stringWithFormat:@"ItemId:   %@ \n"
+                                                 "Seq#  :   %lld \n"
+                                                 "SeqId :   %@", self.itemId, self.sequenceValue, self.sequenceId];
+    return desc;
+}
+
 @end

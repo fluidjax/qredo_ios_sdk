@@ -17,7 +17,6 @@
 
 #import "MQTTDecoder.h"
 
-
 @interface MQTTDecoder()
 {
     MQTTDecoderStatus status;

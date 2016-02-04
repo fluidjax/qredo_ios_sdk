@@ -9,12 +9,13 @@
 #import "CryptoImplV1.h"
 #import "TestCertificates.h"
 #import "QredoCertificateUtils.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoClient.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "NSData+QredoRandomData.h"
+#import "QredoXCTestCase.h"
 
-@interface QredoRendezvousRsa4096PemHelperTests : XCTestCase
+@interface QredoRendezvousRsa4096PemHelperTests : QredoXCTestCase
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
 @end
 

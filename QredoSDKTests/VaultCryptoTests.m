@@ -4,13 +4,13 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-
+#import "QredoXCTestCase.h"
 #import "QredoVaultCrypto.h"
 #import "NSData+QredoRandomData.h"
 #import "NSDictionary+IndexableSet.h"
 #import "NSData+ParseHex.h"
 
-@interface VaultCryptoTests : XCTestCase
+@interface VaultCryptoTests : QredoXCTestCase
 
 @end
 
@@ -24,13 +24,13 @@
     QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
     QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
 
-    NSLog(@"%@:", vaultInfo);
-    NSLog(@" vaultKey          = %@", vaultKey);
-    NSLog(@" vaultID           = %@", vaultID);
-    NSLog(@" ownership.public  = %@", ownershipKeyPair.verifyKey.data);
-    NSLog(@" ownership.private = %@", ownershipKeyPair.data);
-    NSLog(@" encyrptionKey     = %@", encryptionAndAuthKeys.encryptionKey);
-    NSLog(@" authentication    = %@", encryptionAndAuthKeys.authenticationKey);
+    QLog(@"%@:", vaultInfo);
+    QLog(@" vaultKey          = %@", vaultKey);
+    QLog(@" vaultID           = %@", vaultID);
+    QLog(@" ownership.public  = %@", ownershipKeyPair.verifyKey.data);
+    QLog(@" ownership.private = %@", ownershipKeyPair.data);
+    QLog(@" encyrptionKey     = %@", encryptionAndAuthKeys.encryptionKey);
+    QLog(@" authentication    = %@", encryptionAndAuthKeys.authenticationKey);
 
 
 //    QredoQUID *sequenceID = [QredoQUID QUID];
@@ -66,12 +66,12 @@
                                                                                   values:indexableValues];
     NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
 
-    NSLog(@" sequenceID        = %@ (random)", sequenceID);
-    NSLog(@" itemID            = %@ (random)", itemID);
-    NSLog(@" dataType          = \"%@\"", dataType);
-    NSLog(@" metadata.values   = %@", metadataValues);
+    QLog(@" sequenceID        = %@ (random)", sequenceID);
+    QLog(@" itemID            = %@ (random)", itemID);
+    QLog(@" dataType          = \"%@\"", dataType);
+    QLog(@" metadata.values   = %@", metadataValues);
 
-    NSLog(@" metadata          = %@", serializedMetadata);
+    QLog(@" metadata          = %@", serializedMetadata);
 
     QredoVaultCrypto *vaultCrypto
     = [QredoVaultCrypto vaultCryptoWithBulkKey:encryptionAndAuthKeys.encryptionKey
@@ -89,16 +89,16 @@
                                      parseHeader:YES];
 
     NSRange ivRange = NSMakeRange(0, 16);
-    NSLog(@" encyptedMetadata IV = %@", [encryptedMetadataRaw subdataWithRange:ivRange]);
-    NSLog(@" message(encryptedMetadata) = %@", encryptedVaultItemHeader.encryptedMetadata);
-    NSLog(@" header.authCode     = %@", encryptedVaultItemHeader.authCode);
-    NSLog(@" encryptedVaultItemHeader = %@", serializedEncryptedVaultItemHeader);
+    QLog(@" encyptedMetadata IV = %@", [encryptedMetadataRaw subdataWithRange:ivRange]);
+    QLog(@" message(encryptedMetadata) = %@", encryptedVaultItemHeader.encryptedMetadata);
+    QLog(@" header.authCode     = %@", encryptedVaultItemHeader.authCode);
+    QLog(@" encryptedVaultItemHeader = %@", serializedEncryptedVaultItemHeader);
 
     NSString *vaultItemBodyString = @"vault item body";
     NSData *vaultItemBody = [vaultItemBodyString dataUsingEncoding:NSUTF8StringEncoding];
 
-    NSLog(@" vaultItemBody (string) = \"%@\"", vaultItemBodyString);
-    NSLog(@" vaultItemBody (data)   = %@", vaultItemBody);
+    QLog(@" vaultItemBody (string) = \"%@\"", vaultItemBodyString);
+    QLog(@" vaultItemBody (data)   = %@", vaultItemBody);
 
     QLFEncryptedVaultItem *encryptedVaultItem
     = [vaultCrypto encryptVaultItemWithBody:vaultItemBody encryptedVaultItemHeader:encryptedVaultItemHeader];
@@ -109,13 +109,13 @@
                                      parseHeader:YES];
 
 
-    NSLog(@" encryptedBody IV  = %@", [encryptedBodyRaw subdataWithRange:ivRange]);
-    NSLog(@" message(encryptedBody) = %@", encryptedVaultItem.encryptedBody);
-    NSLog(@" item.authCode     = %@", encryptedVaultItem.authCode);
+    QLog(@" encryptedBody IV  = %@", [encryptedBodyRaw subdataWithRange:ivRange]);
+    QLog(@" message(encryptedBody) = %@", encryptedVaultItem.encryptedBody);
+    QLog(@" item.authCode     = %@", encryptedVaultItem.authCode);
 
-    NSLog(@" item.ref          = %@", [QredoPrimitiveMarshallers marshalObject:vaultItemRef includeHeader:NO]);
-    NSLog(@" encryptedVaultItemHeader = %@", [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO]);
-    NSLog(@" encryptedVaultItem = %@", [QredoPrimitiveMarshallers marshalObject:encryptedVaultItem includeHeader:NO]);
+    QLog(@" item.ref          = %@", [QredoPrimitiveMarshallers marshalObject:vaultItemRef includeHeader:NO]);
+    QLog(@" encryptedVaultItemHeader = %@", [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO]);
+    QLog(@" encryptedVaultItem = %@", [QredoPrimitiveMarshallers marshalObject:encryptedVaultItem includeHeader:NO]);
 }
 
 - (void)testGenerateVaultTestVectors
@@ -124,10 +124,10 @@
     NSData *userMasterKey
     = [NSData dataWithHexString:@"86ca9c96 7e591207 02b27f02 801e6782 69fc5d40 301ed86f 03c5d6ef 7f660d66"];
 
-    NSLog(@"User master key    = %@", userMasterKey);
+    QLog(@"User master key    = %@", userMasterKey);
 
     NSData *vaultMasterKey = [QredoVaultCrypto vaultMasterKeyWithUserMasterKey:userMasterKey];
-    NSLog(@"Vault master key   = %@", vaultMasterKey);
+    QLog(@"Vault master key   = %@", vaultMasterKey);
 
     [self generateVaultKeysWithVaultInfo:@"System Vault" userMasterKey:vaultMasterKey];
     [self generateVaultKeysWithVaultInfo:@"User Vault" userMasterKey:vaultMasterKey];

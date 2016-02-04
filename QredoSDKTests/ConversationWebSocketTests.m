@@ -7,30 +7,31 @@
     [super setUp];
 }
 
-- (void)testConversationCreation
-{
+- (void)testConversationCreation{
     [super testConversationCreation];
 }
 
-- (void)testRespondingToConversation
-{
+- (void)testRespondingToConversation{
     [super testRespondingToConversation];
 }
 
-- (void)testConversation
-{
+- (void)testConversation{
     [super testConversation];
 }
 
-// This test has frequently helped in triggering intermittent bugs
-- (void)testConversationMultiple
-{
-    // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
+
+
+- (void)testConversationMultiple{
+    //The pauses in this test are required to fix subscribe delay issue.
+    //see "docs/bugs/IOS SDK Rendezvous Subscribe Failure.pdf"
+
     self.continueAfterFailure = YES;
-    
-    for (int i = 0; i < 20; i++)
-    {
-        [super testConversation];
+
+    for (int i = 0; i < 100; i++){ //failing
+        NSLog(@"Run number: %@", @(i));
+        @autoreleasepool {
+            [super testConversation];
+        }
     }
 }
 

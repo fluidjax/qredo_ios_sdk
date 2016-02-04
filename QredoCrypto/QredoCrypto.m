@@ -7,7 +7,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 //#import "tomcrypt.h"
 #import "sodium.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import <Security/Security.h>
 #import "rsapss.h"
 #import "QredoCertificateUtils.h"
@@ -235,7 +235,7 @@
     
     if (bypassSaltLengthCheck)
     {
-        LogError(@"Caller opted to bypass RFC recommended minimum salt length check.  Should only be used for testing.  Provided salt length is %lu.  Minimum recommended salt length is %d.", (unsigned long)salt.length, PBKDF2_MIN_SALT_LENGTH);
+        QredoLogError(@"Caller opted to bypass RFC recommended minimum salt length check.  Should only be used for testing.  Provided salt length is %lu.  Minimum recommended salt length is %d.", (unsigned long)salt.length, PBKDF2_MIN_SALT_LENGTH);
     }
     else if (salt.length < PBKDF2_MIN_SALT_LENGTH)
     {
@@ -456,19 +456,20 @@
     keyAttributes[(__bridge id) kSecAttrCanUnwrap] = (__bridge id) kCFBooleanFalse;
     keyAttributes[(__bridge id) kSecReturnRef] = (__bridge id) kCFBooleanTrue;
     
-    CFTypeRef importedKeyRef = nil;
-    OSStatus result = SecItemAdd((__bridge CFDictionaryRef) keyAttributes, &importedKeyRef);
+    SecKeyRef secKeyRef = nil;
     
-    if (result != errSecSuccess) {
+    OSStatus status = SecItemAdd((__bridge CFDictionaryRef) keyAttributes, (CFTypeRef *)&secKeyRef);
+    
+    if (status != errSecSuccess) {
         @throw [NSException exceptionWithName:@"QredoCryptoImportPublicKeyFailed"
-                                       reason:[NSString stringWithFormat:@"Error code: %d", (int)result]
+                                       reason:[NSString stringWithFormat:@"Error code: %d", (int)status]
                                      userInfo:nil];
-    } else if (!importedKeyRef) {
+    } else if (!secKeyRef) {
         @throw [NSException exceptionWithName:@"QredoCryptoImportPublicKeyInvalidFormat"
                                        reason:@"No imported key ref returned. Check key format is PKCS#1 ASN.1 DER."
                                      userInfo:nil];
     } else {
-        return (SecKeyRef)importedKeyRef;
+        return (SecKeyRef)secKeyRef;
     }
     
 }
@@ -559,7 +560,7 @@
     status = SecKeyGeneratePair((__bridge CFDictionaryRef)keyPairAttr, &publicKeyRef, &privateKeyRef);
     
     if (status != errSecSuccess) {
-        LogError(@"Failed to generate %ld bit keypair. Public key ID: '%@', Private key ID: '%@'. Status: %@", (long)lengthBits, publicKeyIdentifier, privateKeyIdentifier, [QredoLogging stringFromOSStatus:status]);
+        QredoLogError(@"Failed to generate %ld bit keypair. Public key ID: '%@', Private key ID: '%@'. Status: %@", (long)lengthBits, publicKeyIdentifier, privateKeyIdentifier, [QredoLogger stringFromOSStatus:status]);
     }
     else {
         
@@ -585,7 +586,7 @@
     OSStatus status = SecIdentityCopyCertificate(identityRef, &certificateRef);
     if (status != errSecSuccess)
     {
-        LogError(@"SecIdentityCopyCertificate returned error: %@", [QredoLogging stringFromOSStatus:status]);
+        QredoLogError(@"SecIdentityCopyCertificate returned error: %@", [QredoLogger stringFromOSStatus:status]);
         certificateRef = nil;
     }
     
@@ -606,7 +607,7 @@
     OSStatus status = SecIdentityCopyPrivateKey(identityRef, &privateKeyRef);
     if (status != errSecSuccess)
     {
-        LogError(@"SecIdentityCopyPrivateKey returned error: %@", [QredoLogging stringFromOSStatus:status]);
+        QredoLogError(@"SecIdentityCopyPrivateKey returned error: %@", [QredoLogger stringFromOSStatus:status]);
         identityRef = nil;
     }
 
@@ -637,7 +638,7 @@
     OSStatus status = SecIdentityCopyCertificate(identityRef, &publicCertificateRef);
     if (status != errSecSuccess)
     {
-        LogError(@"SecIdentityCopyCertificate returned error: %@", [QredoLogging stringFromOSStatus:status]);
+        QredoLogError(@"SecIdentityCopyCertificate returned error: %@", [QredoLogger stringFromOSStatus:status]);
     }
 
     // Now need to create and evaluate a SecTrustRef
@@ -648,7 +649,7 @@
     
     status = SecTrustCreateWithCertificates((__bridge CFArrayRef)certificates, policyRef, &trustRef);
     if (status != noErr) {
-        LogError(@"Creating trust failed: %@", [QredoLogging stringFromOSStatus:status]);
+        QredoLogError(@"Creating trust failed: %@", [QredoLogger stringFromOSStatus:status]);
     }
     else {
         
@@ -662,7 +663,7 @@
         
         if (status != noErr) {
             
-            LogError(@"Trust evaluation returned error: %@", [QredoLogging stringFromOSStatus:status]);
+            QredoLogError(@"Trust evaluation returned error: %@", [QredoLogger stringFromOSStatus:status]);
         }
         else  {
             // Trust evaluation completed (not interested in trust result)
@@ -694,7 +695,7 @@
     SecKeyRef publicKeyRef = SecTrustCopyPublicKey(trustRef);
     if (!publicKeyRef)
     {
-        LogError(@"SecTrustCopyPublicKey returned nil ref.");
+        QredoLogError(@"SecTrustCopyPublicKey returned nil ref.");
     }
     
     return publicKeyRef;
@@ -708,8 +709,7 @@
                                        reason:[NSString stringWithFormat:@"Key identifier argument is nil"]
                                      userInfo:nil];
     }
-    
-    SecKeyRef keyRef;
+
     NSMutableDictionary *queryKey = [[NSMutableDictionary alloc] init];
     
     NSData* tag = [keyIdentifier dataUsingEncoding:NSUTF8StringEncoding];
@@ -718,27 +718,29 @@
     queryKey[(__bridge id) kSecClass] = (__bridge id) kSecClassKey;
     queryKey[(__bridge id) kSecAttrApplicationTag] = tag;
     queryKey[(__bridge id) kSecAttrKeyType] = (__bridge id) kSecAttrKeyTypeRSA;
-    queryKey[(__bridge id) kSecReturnRef] = @YES;
+    queryKey[(__bridge id) kSecReturnRef] = (__bridge id) kCFBooleanTrue;
     
     // Get the key reference.
-    OSStatus result = fixedSecItemCopyMatching((__bridge CFDictionaryRef)queryKey, (CFTypeRef *)&keyRef);
-    if (result != errSecSuccess) {
-        if (result == errSecItemNotFound) {
+    SecKeyRef secKeyRef;
+    
+    OSStatus status = fixedSecItemCopyMatching((__bridge CFDictionaryRef)queryKey, (CFTypeRef *)&secKeyRef);
+    if (status != errSecSuccess) {
+        if (status == errSecItemNotFound) {
             @throw [NSException exceptionWithName:@"QredoKeyIdentifierNotFound"
                                            reason:[NSString stringWithFormat:@"fixedSecItemCopyMatching reported key with identifier '%@' could not be found.", keyIdentifier]
                                          userInfo:nil];
         } else {
             @throw [NSException exceptionWithName:@"QredoKeyIdentifierFailure"
-                                           reason:[NSString stringWithFormat:@"fixedSecItemCopyMatching returned error: %@.", [QredoLogging stringFromOSStatus:result]]
+                                           reason:[NSString stringWithFormat:@"fixedSecItemCopyMatching returned error: %@.", [QredoLogger stringFromOSStatus:status]]
                                          userInfo:nil];
         }
-    } else if (keyRef == nil) {
+    } else if (secKeyRef == nil) {
         @throw [NSException exceptionWithName:@"QredoKeyIdentifierNotReturned"
                                        reason:@"Key ref came back nil despite success."
                                      userInfo:nil];
     }
     
-    return keyRef;
+    return secKeyRef;
 }
 
 + (NSData*)getKeyDataForIdentifier:(NSString*)keyIdentifier
@@ -771,7 +773,7 @@
                                          userInfo:nil];
         } else {
             @throw [NSException exceptionWithName:@"QredoKeyIdentifierFailure"
-                                           reason:[NSString stringWithFormat:@"fixedSecItemCopyMatching returned error: %@.", [QredoLogging stringFromOSStatus:result]]
+                                           reason:[NSString stringWithFormat:@"fixedSecItemCopyMatching returned error: %@.", [QredoLogger stringFromOSStatus:result]]
                                          userInfo:nil];
         }
     }
@@ -800,7 +802,7 @@
     size_t keyLength = SecKeyGetBlockSize(keyRef);
     if (keyLength == 0) {
         // If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
-        LogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
+        QredoLogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:@"Invalid SecKeyRef. Key block size is 0 bytes."
                                      userInfo:nil];
@@ -822,7 +824,7 @@
     if (result != errSecSuccess)
     {
         // Something went wrong, so return nil;
-        LogError(@"SecKeyEncrypt returned error: %@.", [QredoLogging stringFromOSStatus:result]);
+        QredoLogError(@"SecKeyEncrypt returned error: %@.", [QredoLogger stringFromOSStatus:result]);
         outputData = nil;
     }
 
@@ -887,7 +889,7 @@ SecPadding secPaddingFromQredoPadding(QredoPadding padding)
     size_t keyLength = SecKeyGetBlockSize(keyRef);
     if (keyLength == 0) {
         // If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
-        LogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
+        QredoLogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:@"Invalid SecKeyRef. Key block size is 0 bytes."
                                      userInfo:nil];
@@ -923,7 +925,7 @@ SecPadding secPaddingFromQredoPadding(QredoPadding padding)
     }
     else
     {
-        LogError(@"SecKeyDecrypt returned error: %@.", [QredoLogging stringFromOSStatus:result]);
+        QredoLogError(@"SecKeyDecrypt returned error: %@.", [QredoLogger stringFromOSStatus:result]);
     }
     
     return outputData;
@@ -998,7 +1000,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
     size_t keyLength = SecKeyGetBlockSize(keyRef);
     if (keyLength == 0) {
         // If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
-        LogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
+        QredoLogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:@"Invalid SecKeyRef. Key block size is 0 bytes."
                                      userInfo:nil];
@@ -1028,7 +1030,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
     if (result != errSecSuccess)
     {
         // Something went wrong, so return nil;
-        LogError(@"SecKeyRawSign returned error: %@.", [QredoLogging stringFromOSStatus:result]);
+        QredoLogError(@"SecKeyRawSign returned error: %@.", [QredoLogger stringFromOSStatus:result]);
         outputData = nil;
         
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Failed to sign the data" userInfo:nil];
@@ -1064,7 +1066,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
     size_t keyLength = SecKeyGetBlockSize(keyRef);
     if (keyLength == 0) {
         // If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
-        LogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
+        QredoLogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:@"Invalid SecKeyRef. Key block size is 0 bytes."
                                      userInfo:nil];
@@ -1088,7 +1090,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
                                     &outputDataLength); // plainTextLen
     
     if (result != errSecSuccess) {
-        LogError(@"SecKeyDecrypt returned error: %@.", [QredoLogging stringFromOSStatus:result]);
+        QredoLogError(@"SecKeyDecrypt returned error: %@.", [QredoLogger stringFromOSStatus:result]);
         return NO;
     }
     
@@ -1104,7 +1106,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
     int pss_result = rsa_pss_sha256_verify(hash.bytes, hash.length, decryptedSignature.bytes, decryptedSignature.length, saltLength, keyLength * 8 - 1);
     
     if (pss_result < 0 && pss_result != QREDO_RSA_PSS_NOT_VERIFIED) {
-        LogError(@"Failed to decode PSS data. Result %d", pss_result);
+        QredoLogError(@"Failed to decode PSS data. Result %d", pss_result);
     }
     
     return pss_result == QREDO_RSA_PSS_VERIFIED;
@@ -1127,7 +1129,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
         }
         else
         {
-            LogError(@"SecItemDelete returned error: %@.", [QredoLogging stringFromOSStatus:result]);
+            QredoLogError(@"SecItemDelete returned error: %@.", [QredoLogger stringFromOSStatus:result]);
             success = NO;
         }
     }
@@ -1160,11 +1162,11 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
         if (result == errSecItemNotFound)
         {
             // This means that the specified key was not found. This is an error as specifying a specific key
-            LogError(@"Could not find key with identifier '%@' to delete.", keyIdentifier);
+            QredoLogError(@"Could not find key with identifier '%@' to delete.", keyIdentifier);
         }
         else
         {
-            LogError(@"SecItemDelete returned error: %@.", [QredoLogging stringFromOSStatus:result]);
+            QredoLogError(@"SecItemDelete returned error: %@.", [QredoLogger stringFromOSStatus:result]);
         }
     }
     
@@ -1184,8 +1186,8 @@ OSStatus fixedSecItemCopyMatching(CFDictionaryRef query, CFTypeRef *result)
     OSStatus status = SecItemCopyMatching(query, result);
     if (status != errSecSuccess) {
         
-        LogError(@"SecItemCopyMatching returned error: %@. Query dictionary: %@",
-                 [QredoLogging stringFromOSStatus:status],
+        QredoLogDebug(@"SecItemCopyMatching returned error: %@. Query dictionary: %@",
+                 [QredoLogger stringFromOSStatus:status],
                  query);
         
         if (status == errSecParam) {
@@ -1195,19 +1197,19 @@ OSStatus fixedSecItemCopyMatching(CFDictionaryRef query, CFTypeRef *result)
             if (status != errSecSuccess) {
                 if (status == errSecParam) {
                     // Retry failed
-                    LogError(@"Retry SecItemCopyMatching unsuccessful, same error returned: %@. Query dictionary: %@",
-                             [QredoLogging stringFromOSStatus:status],
+                    QredoLogError(@"Retry SecItemCopyMatching unsuccessful, same error returned: %@. Query dictionary: %@",
+                             [QredoLogger stringFromOSStatus:status],
                              query);
                 }
                 else {
                     // Retry fixed -50/errSecParam issue, but a different error occurred
-                    LogError(@"Retrying SecItemCopyMatching returned different error: %@. Query dictionary: %@",
-                             [QredoLogging stringFromOSStatus:status],
+                    QredoLogError(@"Retrying SecItemCopyMatching returned different error: %@. Query dictionary: %@",
+                             [QredoLogger stringFromOSStatus:status],
                              query);
                 }
             }
             else {
-                LogError(@"Retrying SecItemCopyMatching resulted in success. Query dictionary: %@", query);
+                QredoLogError(@"Retrying SecItemCopyMatching resulted in success. Query dictionary: %@", query);
             }
         }
     }

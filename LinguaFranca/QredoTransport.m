@@ -3,7 +3,7 @@
  */
 
 #import "QredoTransport.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "QredoHttpTransport.h"
 #import "QredoMqttTransport.h"
 #import "QredoWebSocketTransport.h"
@@ -151,10 +151,9 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
 
 - (void)notifyListenerOfResponseData:(NSData *)data userData:(id)userData
 {
+
     if (self.transportClosed) {
         // Trying to notify listener of response after transport is closed
-        
-        LogError(@"Attempting to notify listener after transport is closed.");
         
         // TODO: DH - what should be done if data received after transport has been closed.  Convert to an error?
         [self notifyListenerOfErrorCode:QredoTransportErrorReceivedDataAfterTransportClosed userData:userData];
@@ -179,11 +178,17 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
         else
         {
             // Otherwise log an error. Throwing exception from a separate thread is not useful.
-            LogError(@"Cannot notify receipt of response data as no block or delegate has been configured.");
+            QredoLogError(@"Cannot notify receipt of response data as no block or delegate has been configured.");
         }
     });
     
 }
+
+
+-(int)port{
+    return 0;
+}
+
 
 - (void)notifyListenerOfError:(NSError *)error userData:(id)userData
 {
@@ -204,7 +209,7 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
         else
         {
             // Otherwise log an error. Throwing exception from a separate thread is not useful.
-            LogError(@"Cannot notify error as no block or delegate has been configured.");
+            QredoLogError(@"Cannot notify error as no block or delegate has been configured.");
         }
     });
 }
@@ -217,7 +222,7 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
 
 - (NSString *)getHexClientID
 {
-    return [QredoLogging hexRepresentationOfNSData:[self.clientId getData]];
+    return [QredoLogger hexRepresentationOfNSData:[self.clientId getData]];
 }
 
 @end

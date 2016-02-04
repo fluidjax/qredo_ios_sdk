@@ -46,6 +46,7 @@ static NSString* kQUIDEncodeKey = @"Qredo.quidbytes";
 {
 	if ((self = [super init]))
 	{
+        NSAssert(sizeof(bytes)<sizeof(_quid),@"bytes is too short");
 		memcpy(_quid, bytes, sizeof(_quid));
 	}
 	return self;

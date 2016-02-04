@@ -1,11 +1,11 @@
 #import <XCTest/XCTest.h>
-#import "Qredo.h"
+#import "QredoXCTestCase.h"
 #import "QredoRendezvous.h"
 #import "QredoRendezvousPrivate.h"
 #import "QredoPrivate.h"
 
 
-@interface QredoRendezvousTests : XCTestCase
+@interface QredoRendezvousTests : QredoXCTestCase
 
 @property (nonatomic) QredoClientOptionsTransportType transportType;
 

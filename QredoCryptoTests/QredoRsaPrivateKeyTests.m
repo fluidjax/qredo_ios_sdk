@@ -6,7 +6,7 @@
 #import <XCTest/XCTest.h>
 #import "QredoRsaPrivateKey.h"
 #import "QredoCrypto.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoRsaPrivateKeyTests : XCTestCase
 

@@ -5,7 +5,7 @@
 #import "QredoRsaPublicKey.h"
 #import "QredoCrypto.h"
 #import "QredoDerUtils.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 
 @interface QredoRsaPublicKey ()
 
@@ -189,7 +189,7 @@
         QredoAsn1ObjectIdentifier identifier = [QredoDerUtils getIdentifierFromData:objectIdentifier];
         if (identifier != QredoAsn1ObjectIdentifierRsa)
         {
-            LogError(@"Object Identifier did not indicate RSA.  Interpreted enum: %d. Actual OID data: %@.", identifier, [QredoLogging hexRepresentationOfNSData:objectIdentifier]);
+            QredoLogError(@"Object Identifier did not indicate RSA.  Interpreted enum: %d. Actual OID data: %@.", identifier, [QredoLogger hexRepresentationOfNSData:objectIdentifier]);
             dataIsValid = NO;
         }
     }
@@ -220,7 +220,7 @@
 #define MIN_LENGTH_OF_PUBLIC_KEY_BIT_STRING 5
         if (dataLength < MIN_LENGTH_OF_PUBLIC_KEY_BIT_STRING)
         {
-            LogError(@"Public key bit string is too short (%d bytes). Should be at least %d bytes.", dataLength, MIN_LENGTH_OF_PUBLIC_KEY_BIT_STRING);
+            QredoLogError(@"Public key bit string is too short (%d bytes). Should be at least %d bytes.", dataLength, MIN_LENGTH_OF_PUBLIC_KEY_BIT_STRING);
             dataIsValid = NO;
         }
     }
@@ -232,7 +232,7 @@
         const uint8_t* dataBytes = publicKeyData.bytes;
         if (dataBytes[dataOffset] != NO_UNUSED_BITS)
         {
-            LogError(@"Unused bits value (%d) incorrect. Should be %d.", dataBytes[dataOffset], NO_UNUSED_BITS);
+            QredoLogError(@"Unused bits value (%d) incorrect. Should be %d.", dataBytes[dataOffset], NO_UNUSED_BITS);
             dataIsValid = NO;
        }
     }

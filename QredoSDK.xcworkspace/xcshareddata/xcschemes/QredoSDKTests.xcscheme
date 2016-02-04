@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "0720"
+   version = "1.3">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
+               BuildableName = "QredoSDKTests.xctest"
+               BlueprintName = "QredoSDKTests"
+               ReferencedContainer = "container:QredoSDK.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
+               BuildableName = "QredoSDKTests.xctest"
+               BlueprintName = "QredoSDKTests"
+               ReferencedContainer = "container:QredoSDK.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ConversationMQTTTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousMQTTTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelperSigning_Invalid_ExternalKeysSignerReturnsNil">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelperSigning_Invalid_NilDataToSign">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testEmptySignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_EmptySignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_EmptySignatureData">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_IncorrectSignatureType">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilRendezvousData">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilSignature">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilSignatureData">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_UntrustedPublicKeyCertChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_BadSigning">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_IncludeUnnecessaryPemCerts">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_MultiUse">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_OutOfOrderPemChain">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_RootIncludedInPemCertChain">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultMQTTTests">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultUpdateMQTTTests">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
+      </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
+            BuildableName = "QredoSDKTests.xctest"
+            BlueprintName = "QredoSDKTests"
+            ReferencedContainer = "container:QredoSDK.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <AdditionalOptions>
+      </AdditionalOptions>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
+            BuildableName = "QredoSDKTests.xctest"
+            BlueprintName = "QredoSDKTests"
+            ReferencedContainer = "container:QredoSDK.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+      <AdditionalOptions>
+         <AdditionalOption
+            key = "MallocStackLogging"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "DYLD_INSERT_LIBRARIES"
+            value = "/usr/lib/libgmalloc.dylib"
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "DYLD_PRINT_LIBRARIES"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "DYLD_PRINT_APIS"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "NSZombieEnabled"
+            value = "YES"
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "NSDOLoggingEnabled"
+            value = "YES"
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "MallocGuardEdges"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+         <AdditionalOption
+            key = "MallocScribble"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+      </AdditionalOptions>
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>

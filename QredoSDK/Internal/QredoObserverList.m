@@ -93,59 +93,53 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 
 #pragma mark Add, remove and notify observers
 
-- (void)addObserver:(id)observer
-{
+- (void)addObserver:(id)observer{
     NSAssert(observer, @"An observer must be supplied to [QredoVault addQredoVaultObserver:]");
     
     @synchronized(self) {
-        
         QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
         if (!observerProxy) {
             observerProxy = [QredoObserverProxy observerProxyWithObserver:observer];
+            [self setProxy:observerProxy forObserver:observer];
         }
         
-        NSAssert1(![_observerProxies containsObject:observerProxy],
-                  @"The %@ is already added to the QredoObserverList", observer);
-        
+        NSAssert1(![_observerProxies containsObject:observerProxy],@"The %@ is already added to the QredoObserverList", observer);
         [_observerProxies addObject:observerProxy];
         
     }
 }
 
-- (void)removeObserver:(id)observer
-{
+- (void)removeObserver:(id)observer{
     NSAssert(observer, @"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
-    
     QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
-    
     @synchronized(self) {
-        
         if (observerProxy) {
             [_observerProxies removeObject:observerProxy];
         }
-        
     }
 }
 
-- (void)notifyObservers:(void(^)(id observer))notificationBlock
-{
+- (void)notifyObservers:(void(^)(id observer))notificationBlock{
     @synchronized(self) {
-        
         for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
-            
+            // perhaps some check here, if all observers are properly set up
             if (!observerProxy.observer) {
                 [_observerProxies removeObject:observerProxy];
                 continue;
             }
-            
             dispatch_async(_observerNotificationQueue, ^{
                 notificationBlock(observerProxy.observer);
             });
-            
         }
-        
     }
 }
+
+
+- (BOOL)contains:(id)observer{
+    if ([self proxyForObserver:observer])return YES;
+    return NO;
+}
+
 
 
 #pragma mark Misc utils
@@ -171,7 +165,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     objc_setAssociatedObject(observer,
                              associationKey,
                              observerProxy,
-                             OBJC_ASSOCIATION_ASSIGN);
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 

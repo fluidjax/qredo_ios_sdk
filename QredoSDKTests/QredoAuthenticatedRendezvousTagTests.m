@@ -1,12 +1,11 @@
 /*
  *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
-
+#import "QredoXCTestCase.h"
 #import <UIKit/UIKit.h>
-#import <XCTest/XCTest.h>
 #import "QredoAuthenticatedRendezvousTag.h"
 
-@interface QredoAuthenticatedRendezvousTagTests : XCTestCase
+@interface QredoAuthenticatedRendezvousTagTests : QredoXCTestCase
 
 @end
 
@@ -72,7 +71,10 @@
     NSString *fullTag = nil;
     NSError *error = nil;
     
+    [self loggingOff];
     QredoAuthenticatedRendezvousTag *tag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:&error];
+    [self loggingOn];
+    
     XCTAssertNil(tag);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -84,7 +86,9 @@
     NSString *fullTag = @"";
     NSError *error = nil;
     
+    [self loggingOff];
     QredoAuthenticatedRendezvousTag *tag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:&error];
+    [self loggingOn];
     XCTAssertNil(tag);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -95,8 +99,9 @@
 {
     NSString *fullTag = @"authenticationTag";
     NSError *error = nil;
-    
+    [self loggingOff];
     QredoAuthenticatedRendezvousTag *tag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:&error];
+    [self loggingOn];
     XCTAssertNil(tag);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -107,8 +112,9 @@
 {
     NSString *fullTag = @"@authentication@Tag";
     NSError *error = nil;
-    
+    [self loggingOff];
     QredoAuthenticatedRendezvousTag *tag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:&error];
+    [self loggingOn];
     XCTAssertNil(tag);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);

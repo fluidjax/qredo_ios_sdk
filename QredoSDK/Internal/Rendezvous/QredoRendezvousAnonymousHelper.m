@@ -4,7 +4,7 @@
 
 #import "QredoRendezvousAnonymousHelper.h"
 #import "QredoRendezvousHelper_Private.h"
-#import "QredoLogging.h"
+#import "QredoLoggerPrivate.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoBase58.h"
 
@@ -32,7 +32,7 @@ static const NSUInteger kRandomTagLength = 32;
         // Crypto, TrustedRootPems and CrlPems are unused in anonymous rendezvous
         
         if (!fullTag) {
-            LogError(@"Full tag is nil.");
+            QredoLogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
@@ -40,7 +40,7 @@ static const NSUInteger kRandomTagLength = 32;
         // Signing handler unnecessary for anonymous rendezvous
         if (signingHandler)
         {
-            LogError(@"Signing handler provided for anonymous rendezvous.");
+            QredoLogError(@"Signing handler provided for anonymous rendezvous.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided, nil);
             return nil;
         }
@@ -54,7 +54,7 @@ static const NSUInteger kRandomTagLength = 32;
             
             // Anonymous tag must not look like an authenticated rendezvous
             if ([fullTag containsString:@"@"]) {
-                LogError(@"Full tag contains @, not valid for anonymous rendezvous tag.");
+                QredoLogError(@"Full tag contains @, not valid for anonymous rendezvous tag.");
                 updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMalformedTag, nil);
                 return nil;
             }
@@ -129,21 +129,21 @@ static const NSUInteger kRandomTagLength = 32;
         // Crypto, TrustedRootPems and CrlPems are unused for anonymous rendezvous
 
         if (!fullTag) {
-            LogError(@"Full tag is nil.");
+            QredoLogError(@"Full tag is nil.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
 
         // When responding to a rendezvous, can't have an empty tag
         if (fullTag.length == 0) {
-            LogError(@"Full tag is empty.");
+            QredoLogError(@"Full tag is empty.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
             return nil;
         }
         
         // Anonymous tag must not look like an authenticated rendezvous
         if ([fullTag containsString:@"@"]) {
-            LogError(@"Full tag contains @, not valid for anonymous rendezvous tag.");
+            QredoLogError(@"Full tag contains @, not valid for anonymous rendezvous tag.");
             updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMalformedTag, nil);
             return nil;
         }

@@ -1,9 +1,12 @@
 #import <XCTest/XCTest.h>
-#import "Qredo.h"
+#import "QredoXCTestCase.h"
 
-@interface ConversationTests : XCTestCase
+@interface ConversationTests : QredoXCTestCase
+
 
 @property (nonatomic) QredoClientOptionsTransportType transportType;
+@property (atomic) XCTestExpectation *didReceiveResponseExpectation;
+@property (atomic) XCTestExpectation *didReceiveMessageExpectation;
 
 - (void)authoriseClient;
 - (void)testConversationCreation;
