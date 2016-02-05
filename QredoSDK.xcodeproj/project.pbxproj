@@ -2585,7 +2585,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Horacek (H965LZ6656)";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				ENABLE_TESTABILITY = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					QREDO_LOG_ERROR,
@@ -2603,7 +2603,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Adam Horacek (H965LZ6656)";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
