@@ -87,6 +87,7 @@ typedef NS_ENUM(NSUInteger, QredoClientOptionsTransportType) {
 
 @interface QredoClient (Rendezvous)
 
+
 /** Creates an anonymous rendezvous and automatically stores it in the vault */
 - (void)createAnonymousRendezvousWithTag:(NSString *)tag
                            configuration:(QredoRendezvousConfiguration *)configuration

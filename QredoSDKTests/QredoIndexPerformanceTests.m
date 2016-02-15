@@ -34,7 +34,7 @@ NSNumber *testNumber;
     for (int i=0;i<10;i++){
         NSLog(@"Pass %i",i);
         [self setUp];
-        [self test100Records];
+        [self test10Records];
     }
 }
 

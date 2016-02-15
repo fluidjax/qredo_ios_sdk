@@ -33,11 +33,13 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 @property (readonly) NSNumber *durationSeconds;
 /** if `nil`, then conversation doesn't have a limit for the number of responders */
 @property (readonly) BOOL isUnlimitedResponseCount;
+@property (readonly) NSDate *expiresAt;
+
 
 /** Should be used only for creating a new rendezvous */
 - (instancetype)initWithConversationType:(NSString*)conversationType;
 /** Should be used only for creating a new rendezvous */
-- (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount;
+- (instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount expiresAt:(NSDate*)expiresAt;
 
 @end
 
