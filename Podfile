@@ -5,26 +5,25 @@ platform :ios, '9.1'
 inhibit_all_warnings!
 
 target 'QredoSDKTests' do
-#    pod 'jetfire'    
-    pod 'libsodium', :path => 'libsodium.podspec'
+  pod 'libsodium'
 
 end
 
 target 'LinguaFrancaTests' do
-    pod 'jetfire'
+   pod 'jetfire'
 
 end
 
 target 'QredoCryptoTests' do
-
     pod 'OpenSSL', '~> 1.0'
+
 
 end
 
 target 'QredoXDK' do
     pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
-    pod 'libsodium', :path => 'libsodium.podspec'
+    pod 'libsodium'
     
 end
 
