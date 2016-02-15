@@ -433,6 +433,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     QredoLogDebug(@"Cache/Index received incoming Vault item");
     if (!itemMetadata || !client) return;
     [self putMetadata:itemMetadata];
+
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);
 }
 
