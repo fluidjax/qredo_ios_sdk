@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import "QredoTypes.h"
@@ -57,6 +57,9 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 @property (readonly) long duration;
 @property (readonly) BOOL unlimitedResponses;
 @property (readonly) NSDate *expiresAt;
+@property (readonly) NSString *tag;
+
+
 /** High watermark defining the last point when we get the number of responders. Updated when listening for events. See `startListening`.
  The value of the high watermark is persisted on the device.
  */

@@ -498,7 +498,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 }
 
 
--(long)cacheFileSize{
+-(long long)cacheFileSize{
     return [self.localIndex persistentStoreFileSize];
 }
 

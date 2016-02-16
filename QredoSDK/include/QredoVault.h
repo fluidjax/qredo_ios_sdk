@@ -195,7 +195,7 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 /** Returns the size in bytes of the cache/index coredata database
  Specifically to allow dynamic management of the caches if required in the case of an app which uses large (>a few gig) of storage. */
--(long)cacheFileSize;
+-(long long)cacheFileSize;
 
 /**  Deletes all records in the Coredata Cache/Index for this vault */
 -(void)purgeCache;

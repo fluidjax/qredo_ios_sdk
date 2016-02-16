@@ -419,6 +419,25 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [rendezvous removeRendezvousObserver:listener];
 }
 
+-(void)testQuickCreateRandomRandezvous{
+    
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    
+    [client createAnonymousRendezvousWithRandomTagCompletionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(rendezvous.tag);
+                               XCTAssertNotNil(rendezvous);
+                               createdRendezvous = rendezvous;
+                               [createExpectation fulfill];
+                           }];
+    
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+}
+
+
 -(void)testQuickCreateRendezvousExpiresAt{
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];

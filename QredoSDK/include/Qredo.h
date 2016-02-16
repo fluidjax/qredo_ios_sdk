@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -93,6 +93,11 @@ typedef NS_ENUM (NSUInteger, QredoClientOptionsTransportType) {
  */
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+
+-(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+
 
 
 /** Creates an anonymous rendezvous and automatically stores it in the vault */

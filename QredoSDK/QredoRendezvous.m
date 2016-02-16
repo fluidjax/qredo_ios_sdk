@@ -523,11 +523,19 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return self.configuration.isUnlimitedResponseCount;
 }
 
--(NSDate*)expiresAt{
+-(NSDate *)expiresAt{
     return self.configuration.expiresAt;
 }
 
+-(NSString *)tag{
+    return _tag;
+}
 
+
+
+-(void)setTag:(NSString *)tag{
+    _tag = tag;
+}
 
 
 

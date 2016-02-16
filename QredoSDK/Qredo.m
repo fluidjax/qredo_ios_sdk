@@ -550,6 +550,29 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
+
+-(NSString *)randomStringWithLength:(int)len {
+    NSString *letters = @"abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
+    for (int i=0; i<len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((int)[letters length])]];
+    }
+    return randomString;
+}
+
+
+
+-(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
+    [self createAnonymousRendezvousWithTag:[self randomStringWithLength:32]
+                          conversationType:[self appId]
+                                  duration:0
+                        unlimitedResponses:YES
+                         completionHandler:completionHandler];
+}
+
+
+
+
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler {
     [self createAnonymousRendezvousWithTag:tag

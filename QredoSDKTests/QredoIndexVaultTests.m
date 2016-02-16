@@ -57,11 +57,11 @@ NSNumber *testNumber;
 -(void)testUpdateAccessDatePut{
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:1024];
-    long startSize = [vault cacheFileSize];
+    long long startSize = [vault cacheFileSize];
     [self createLarge1MTestItem:vault];
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before+1 ,@"Item shouldn't be added to cache as it is disabled Before %ld After %ld", (long)before, (long)after);
-    long endSize = [vault cacheFileSize];
+    long long endSize = [vault cacheFileSize];
     //QLog(@"Start:%ld  End:%ld", startSize, endSize);
 }
 
@@ -150,7 +150,7 @@ NSNumber *testNumber;
     //Test to ensure that different types of cache access cause the last access date/time to be updated
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:1024];
-    long startSize = [vault cacheFileSize];
+    long long startSize = [vault cacheFileSize];
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     [qredoLocalIndex saveAndWait];
     
@@ -228,14 +228,14 @@ NSNumber *testNumber;
 
 
 -(void)testPersistentFileSize{
-    long initialSize = [vault cacheFileSize];
+    long long initialSize = [vault cacheFileSize];
     NSString * randomVal = [QredoTestUtils randomStringWithLength:4096];
     for (int i=0; i<10; i++) {
         [self createTestItemInVault:vault key1Value:randomVal];
     }
     //flush to disk
     [qredoLocalIndex saveAndWait];
-    long finalSize = [vault cacheFileSize];
+    long long finalSize = [vault cacheFileSize];
     XCTAssert(finalSize>initialSize,@"Persistent store filesize didnt grow in size when a new item is added");
     
 }
