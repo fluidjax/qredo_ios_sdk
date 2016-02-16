@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #ifndef QredoSDK_QredoRendezvousPrivate_h
@@ -22,12 +22,40 @@
 @end
 
 
+
+
+/** This class is used for creating rendezvous and for getting information about rendezvous */
+@interface QredoRendezvousConfiguration : NSObject
+/** Reverse domain name service notation. For example, `com.qredo.qatchat` */
+@property (readwrite, copy) NSString *conversationType;
+
+/** if 0, then conversation doesn't have a time limit */
+@property (readwrite) long durationSeconds;
+@property (readwrite) BOOL isUnlimitedResponseCount;
+@property (readwrite) NSDate *expiresAt;
+
+
+
+/** Should be used only for creating a new rendezvous */
+//- (instancetype)initWithConversationType:(NSString*)conversationType;
+/** Should be used only for creating a new rendezvous */
+- (instancetype)initWithConversationType:(NSString*)conversationType
+                         durationSeconds:(long)durationSeconds
+                isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount
+                               expiresAt:(NSDate*)expiresAt;
+
+- (instancetype)initWithConversationType:(NSString*)conversationType
+                         durationSeconds:(long)durationSeconds
+                isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount;
+
+
+@end
+
+
+
 @interface QredoRendezvous (Private)
 
-@property (readwrite) QredoRendezvousConfiguration *configuration;
-@property (readwrite) QredoRendezvousMetadata *metadata;
-@property (readwrite) NSString *tag;
-@property (readwrite) QredoRendezvousAuthenticationType authenticationType;
+
 
 
 - (instancetype)initWithClient:(QredoClient *)client;
@@ -40,8 +68,8 @@
                         crlPems:(NSArray *)crlPems
                  signingHandler:(signDataBlock)signingHandler
               completionHandler:(void(^)(NSError *error))completionHandler;
-- (void)activateRendezvous: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler;
-- (void)updateRendezvousWithDuration: (NSNumber *)duration expiresAt:(NSSet*)expiresAt completionHandler:(void (^)(NSError *error))completionHandler;
+- (void)activateRendezvous:(long)duration completionHandler:(void (^)(NSError *error))completionHandler;
+- (void)updateRendezvousWithDuration:(long)duration expiresAt:(NSSet*)expiresAt completionHandler:(void (^)(NSError *error))completionHandler;
 - (void)deactivateRendezvous :(void (^)(NSError *error))completionHandler;
 
 

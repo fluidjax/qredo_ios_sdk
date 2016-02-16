@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -8,12 +8,12 @@
 extern NSString *const QredoErrorDomain;
 
 
-typedef NS_ENUM(NSInteger, QredoErrorCode) {
+typedef NS_ENUM (NSInteger, QredoErrorCode) {
     QredoErrorCodeUnknown = 1000,
     QredoErrorCodeRemoteOperationFailure,
     QredoErrorCodeAppNotAuthorized,
     QredoErrorCodeMalformedOrTamperedData,
-
+    
     // Vault errors
     QredoErrorCodeVaultUnknown = 2000,
     QredoErrorCodeVaultItemNotFound,
@@ -27,15 +27,15 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     QredoErrorCodeRendezvousWrongAuthenticationCode,
     QredoErrorCodeRendezvousAccessControlKeyMissing,
     QredoErrorCodeRendezvousAccessControlSignatureGenerationFailed,
-
+    
     // Conversation errors
     QredoErrorCodeConversationUnknown = 4000,
     QredoErrorCodeConversationNotFound,
     QredoErrorCodeConversationInvalidData,
     QredoErrorCodeConversationWrongAuthenticationCode,
     QredoErrorCodeConversationDeleted,
-
-
+    
+    
     // Conversation protocol errors
     QredoErrorCodeConversationProtocolUnknown = 5000,
     QredoErrorCodeConversationProtocolWrongState,
@@ -54,9 +54,6 @@ typedef NS_ENUM(NSInteger, QredoErrorCode) {
     //LocalIndex errors
     QredoErrorCodeIndexErrorUnknown = 7000,
     QredoErrorCodeIndexItemNotFound,
-   
-    
-    
 };
 
 

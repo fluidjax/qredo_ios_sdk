@@ -8,6 +8,7 @@
 #import <XCTest/XCTest.h>
 #import "QredoXCTestCase.h"
 #import "QredoTestUtils.h"
+#import "QredoQUID.h"
 
 @interface MultiPageMessageTest : QredoXCTestCase <QredoRendezvousObserver>
 @end
@@ -331,15 +332,16 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
 
 -(QredoRendezvous*)createRendezvousOnClient:(QredoClient*)qredoClient withTag:(NSString*)tagName{
     //create rendezvous
-    QredoRendezvousConfiguration *rendezvousConfiguration =  [[QredoRendezvousConfiguration alloc]
-                                                              initWithConversationType:@"com.qredo.epiq"
-                                                                       durationSeconds:0
-                                                              isUnlimitedResponseCount:true];
     
     __block XCTestExpectation *createRendezvous1Expectation = [self expectationWithDescription:@"Create rendezvous 1"];
     __block QredoRendezvous *newRendezvous = nil;
     
-    [qredoClient createAnonymousRendezvousWithTag:tagName configuration:rendezvousConfiguration completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+    [qredoClient createAnonymousRendezvousWithTag:tagName
+                                 conversationType:@"com.qredo.epiq"
+                                         duration:0
+                               unlimitedResponses:YES
+
+                                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
         XCTAssertNotNil(rendezvous);
         newRendezvous = rendezvous;
         [createRendezvous1Expectation fulfill];

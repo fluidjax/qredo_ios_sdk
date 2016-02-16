@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -38,12 +38,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 
 
-@interface QredoRendezvousConfiguration ()
-@property (readwrite) NSDate *expiresAt;
-
-@end
-
-
 @implementation QredoRendezvousRef
 
 @end
@@ -68,14 +62,25 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 @implementation QredoRendezvousConfiguration
 
--(instancetype)initWithConversationType:(NSString*)conversationType {
-    return [self initWithConversationType:conversationType
-                          durationSeconds:nil
-                 isUnlimitedResponseCount:NO];
+-(instancetype)initWithConversationType:(NSString*)conversationType
+                        durationSeconds:(long)durationSeconds
+               isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount{
+    self = [super init];
+    if (!self) return nil;
+    
+    
+    _conversationType = [conversationType copy];
+    _durationSeconds = durationSeconds;
+    _isUnlimitedResponseCount = isUnlimitedResponseCount;
+    _expiresAt = nil;
+    return self;
 }
 
 
--(instancetype)initWithConversationType:(NSString*)conversationType durationSeconds:(NSNumber *)durationSeconds isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount{
+-(instancetype)initWithConversationType:(NSString*)conversationType
+                        durationSeconds:(long)durationSeconds
+               isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount
+                              expiresAt:(NSDate*)expiresAt{
     self = [super init];
     if (!self) return nil;
     
@@ -83,15 +88,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _conversationType = [conversationType copy];
     _durationSeconds = durationSeconds;
     _isUnlimitedResponseCount = isUnlimitedResponseCount;
-    
+    _expiresAt = expiresAt;
     return self;
 }
 
 
 @end
 
-@interface QredoRendezvous () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>
-{
+@interface QredoRendezvous () <QredoUpdateListenerDataSource, QredoUpdateListenerDelegate>{
     QredoClient *_client;
     QredoRendezvousHighWatermark _highWatermark;
     
@@ -116,11 +120,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 // making the properties read/write for private use
 @property QredoRendezvousConfiguration *configuration;
 
+
 @property (readwrite, copy) NSString *tag;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 @property  QredoRendezvousMetadata *metadata;
 
--(NSSet *)maybe:(id)object;
+-(NSSet *)maybe:(long)val;
 
 @end
 
@@ -176,8 +181,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         isUnlimitedResponseCount = YES;
     }];
     
+    
+    
     self.configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:descriptor.conversationType
-                                                                        durationSeconds:[descriptor.durationSeconds anyObject]
+                                                                        durationSeconds:[[descriptor.durationSeconds anyObject] intValue]
                                                                isUnlimitedResponseCount:isUnlimitedResponseCount];
     
     
@@ -217,6 +224,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoRendezvousCrypto *crypto = [QredoRendezvousCrypto instance];
     
     // Box up optional values.
+    
+    
     NSSet *maybeDurationSeconds  = [self maybe:configuration.durationSeconds];
     QLFRendezvousResponseCountLimit *responseCount = configuration.isUnlimitedResponseCount
     ?[QLFRendezvousResponseCountLimit rendezvousUnlimitedResponses]
@@ -354,7 +363,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
--(void)activateRendezvous: (NSNumber *)duration completionHandler:(void (^)(NSError *error))completionHandler {
+-(void)activateRendezvous:(long)duration completionHandler:(void (^)(NSError *error))completionHandler {
     NSError *error = nil;
     NSSet *durationSeconds  = [self maybe:duration];
     
@@ -399,7 +408,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
--(void)updateRendezvousWithDuration: (NSNumber *)duration expiresAt:(NSSet*)expiresAt completionHandler:(void (^)(NSError *error))completionHandler {
+-(void)updateRendezvousWithDuration: (long)duration expiresAt:(NSSet*)expiresAt completionHandler:(void (^)(NSError *error))completionHandler {
     NSSet *durationSeconds = [self maybe:duration];
     
     // the response count will always be unlimited when we activate Rendezvous
@@ -453,10 +462,9 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                                                 rendezvousRef:rendezvousRef];
                                                  
                                                  self.configuration = [[QredoRendezvousConfiguration alloc]  initWithConversationType:_descriptor.conversationType
-                                                                                                                      durationSeconds: duration
-                                                                                                             isUnlimitedResponseCount:TRUE];
-                                                 self.configuration.expiresAt = [expiresAt anyObject];
-                                                 
+                                                                                                                      durationSeconds:duration
+                                                                                                            isUnlimitedResponseCount:TRUE
+                                                                                                                           expiresAt:[expiresAt anyObject]];
                                                  
                                              }
                                              completionHandler(error);
@@ -501,8 +509,31 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 @implementation QredoRendezvous
 
--(NSSet *)maybe:(id)object {
-    return (object == nil ?[NSSet new] :[NSSet setWithObject:object]);
+
+
+-(NSString*)conversationType{
+    return self.configuration.conversationType;
+}
+
+-(long)duration{
+    return self.configuration.durationSeconds;
+}
+
+-(BOOL)unlimitedResponses{
+    return self.configuration.isUnlimitedResponseCount;
+}
+
+-(NSDate*)expiresAt{
+    return self.configuration.expiresAt;
+}
+
+
+
+
+
+-(NSSet *)maybe:(long)val {
+    if (val==0)return [NSSet new];
+    return [NSSet setWithObject:[NSNumber numberWithLong:val]];
 }
 
 

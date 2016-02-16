@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #ifndef QredoSDK_rsapss_h
@@ -19,12 +19,9 @@
 #define QREDO_RSA_PSS_BUFFER_TOO_SHORT          -101
 #define QREDO_RSA_PSS_SALT_TOO_LONG             -102
 #define QREDO_RSA_PSS_INVALID_DATA              -103
-
 #define QREDO_RSA_PSS_OUT_OF_MEMORY             -200
 #define QREDO_RSA_PSS_RANDOM_GENERATION_FAILED  -201
-
 #define QREDO_RSA_PSS_NOT_VERIFIED              -300
-
 #define QREDO_RSA_PSS_VERIFIED                  1
 
 // Input data should be already hashed (SHA-256). This is done mainly for effeciency, as the hash can be pre-calculated already, or if it is a large data
