@@ -563,6 +563,75 @@ Qc8Bsem4yWb02ybzOqR08kkkW8mw0FfB+j564ZfJ"
 #pragma mark -
 #pragma mark Rendezvous
 
+
+
+-(NSString*)appId{
+    NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+    
+    if (!appID || [appID isEqualToString:@""]){
+        appID = @"testtag";
+    }
+    return appID;
+}
+
+
+-(void)createAnonymousRendezvousWithTag:(NSString *)tag
+                      completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
+    
+    [self createAnonymousRendezvousWithTag:tag
+                          conversationType:[self appId]
+                                  duration:0
+                        unlimitedResponses:YES
+                         completionHandler:completionHandler];
+    
+}
+
+
+
+-(void)createAnonymousRendezvousWithTag:(NSString *)tag
+                               duration:(long)duration
+                      completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
+
+    [self createAnonymousRendezvousWithTag:tag
+                          conversationType:[self appId]
+                                  duration:duration
+                        unlimitedResponses:YES
+                         completionHandler:completionHandler];
+
+}
+
+
+
+
+-(void)createAnonymousRendezvousWithTag:(NSString *)tag
+                       conversationType:(NSString*)conversationType
+                              duration:(long)duration
+                         unlimitedResponses:(BOOL)unlimitedResponses
+                     completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
+    // Anonymous Rendezvous are created using the full tag. Signing handler, trustedRootPems and crlPems are unused
+    QredoLogVerbose(@"Start createAnonymousRendezvousWithTag %@", tag);
+                         
+
+     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc]
+                                                    initWithConversationType:conversationType
+                                                             durationSeconds:[NSNumber numberWithLong:duration]
+                                                     isUnlimitedResponseCount:unlimitedResponses];
+    
+    [self createRendezvousWithTag:tag
+               authenticationType:QredoRendezvousAuthenticationTypeAnonymous
+                    configuration:configuration
+                  trustedRootPems:[[NSArray alloc] init]
+                          crlPems:[[NSArray alloc] init]
+                   signingHandler:nil
+                completionHandler:completionHandler];
+    QredoLogVerbose(@"Complete createAnonymousRendezvousWithTag %@", tag);
+}
+
+
+
+
+
+
 // TODO: DH - Create unit tests for createAnonymousRendezvousWithTag
 - (void)createAnonymousRendezvousWithTag:(NSString *)tag
                            configuration:(QredoRendezvousConfiguration *)configuration

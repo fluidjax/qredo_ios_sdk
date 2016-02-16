@@ -188,6 +188,9 @@
                <Test
                   Identifier = "QredoVaultUpdateMQTTTests">
                </Test>
+               <Test
+                  Identifier = "QredoXCTestCase">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
@@ -271,6 +274,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
+            BuildableName = "QredoSDKTests.xctest"
+            BlueprintName = "QredoSDKTests"
+            ReferencedContainer = "container:QredoSDK.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

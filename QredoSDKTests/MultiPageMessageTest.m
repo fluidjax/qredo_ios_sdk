@@ -334,7 +334,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     QredoRendezvousConfiguration *rendezvousConfiguration =  [[QredoRendezvousConfiguration alloc]
                                                               initWithConversationType:@"com.qredo.epiq"
                                                                        durationSeconds:0
-                                                              isUnlimitedResponseCount:true expiresAt:nil];
+                                                              isUnlimitedResponseCount:true];
     
     __block XCTestExpectation *createRendezvous1Expectation = [self expectationWithDescription:@"Create rendezvous 1"];
     __block QredoRendezvous *newRendezvous = nil;
