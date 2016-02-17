@@ -11,6 +11,8 @@
 #import "QredoTypes.h"
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
+#import "QredoQUID.h"
+
 @import CoreData;
 
 extern NSString *const QredoClientOptionServiceURL;
