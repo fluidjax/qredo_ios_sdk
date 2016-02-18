@@ -9,6 +9,7 @@
 @import UIKit;
 
 
+#import "QredoPrivate.h"
 #import "QredoLocalIndex.h"
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"

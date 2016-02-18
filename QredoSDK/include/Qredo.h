@@ -15,34 +15,12 @@
 
 @import CoreData;
 
-extern NSString *const QredoClientOptionServiceURL;
-extern NSString *const QredoRendezvousURIProtocol;
-static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
 @class QredoCertificate;
 
 
-typedef NS_ENUM (NSUInteger, QredoClientOptionsTransportType) {
-    QredoClientOptionsTransportTypeHTTP,
-    QredoClientOptionsTransportTypeMQTT,
-    QredoClientOptionsTransportTypeWebSockets,
-};
-
-
-@interface QredoClientOptions :NSObject
-
-@property (nonatomic) QredoClientOptionsTransportType transportType;
-@property BOOL resetData;
-@property BOOL disableMetadataIndex;
-
-
--(instancetype)initWithDefaultTrustedRoots;
--(instancetype)initDefaultPinnnedCertificate;
--(instancetype)initWithPinnedCertificate:(QredoCertificate *)certificate;
-
-@end
 
 /** Qredo Client */
 @interface QredoClient :NSObject
@@ -63,11 +41,6 @@ typedef NS_ENUM (NSUInteger, QredoClientOptionsTransportType) {
              completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler;
 
 
-+(void)initializeWithAppSecret:(NSString*)appSecret
-                        userId:(NSString*)userId
-                    userSecret:(NSString*)userSecret
-                       options:(QredoClientOptions*)options
-             completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler;
 
 -(void)closeSession;
 -(BOOL)isClosed;
@@ -98,7 +71,7 @@ typedef NS_ENUM (NSUInteger, QredoClientOptionsTransportType) {
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
-/** A random tag is 32 chars alpha/numeric */
+/** Create an anonymous rendezvous with a random tag (32 chars alpha/numeric) */
 -(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 

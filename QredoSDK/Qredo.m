@@ -413,17 +413,17 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     BOOL loaded = [client loadStateWithError:&error];
     
-    if (options.resetData) {
-        [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
-            if (!error) {
-                [client saveStateWithError:&error];
-            }
-            
-            completeAuthorization(error);
-        }];
-        
-        return;
-    }
+//    if (options.resetData) {
+//        [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
+//            if (!error) {
+//                [client saveStateWithError:&error];
+//            }
+//            
+//            completeAuthorization(error);
+//        }];
+//        
+//        return;
+//    }
     
     
     if (!loaded) {

@@ -4,6 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Qredo.h"
+#import "QredoPrivate.h"
 
 extern NSTimeInterval qtu_defaultTimeout;
 extern NSString *k_APPSECRET;

@@ -1757,7 +1757,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 -(void)testDeactivateExpiredRendezvous {
     
-    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:20000];
+    QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:1];
     XCTAssertNotNil(rendezvousRef);
     
     // now sleep until the rendezvous expires

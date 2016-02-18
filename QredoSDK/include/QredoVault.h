@@ -4,6 +4,14 @@
 
 #import "QredoTypes.h"
 
+@class QredoQUID;
+@class QredoVault;
+@class QredoVaultItemMetadata;
+@class QredoIndexSummaryValues;
+@class NSManagedObjectContext;
+
+
+
 /** Represents state of the vault. An opaque class */
 @interface QredoVaultHighWatermark :NSObject
 @end
@@ -11,11 +19,7 @@
 /** Points to the origin of the vault. If it is used in `[QredoVault enumerateVaultItemsUsingBlock:failureHandler:since:]`, then it will return all the items from the vault */
 extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
-@class QredoQUID;
-@class QredoVault;
-@class QredoVaultItemMetadata;
-@class QredoIndexSummaryValues;
-@class NSManagedObjectContext;
+
 
 @protocol QredoVaultObserver <NSObject>
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata;
@@ -70,18 +74,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 @end
 
-/** Mutable metadata. */
-@interface QredoMutableVaultItemMetadata :QredoVaultItemMetadata
 
-@property QredoVaultItemDescriptor *descriptor;
-@property (copy) NSString *dataType;
-@property QredoAccessLevel accessLevel;
-@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
-
-
--(void)setSummaryValue:(id)value forKey:(NSString *)key;
-
-@end
 
 @interface QredoVaultItem :NSObject
 @property (readonly) QredoVaultItemMetadata *metadata;
