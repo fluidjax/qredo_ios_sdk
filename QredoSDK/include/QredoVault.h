@@ -76,6 +76,20 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 
 
+/** Mutable metadata. */
+@interface QredoMutableVaultItemMetadata :QredoVaultItemMetadata
+
+@property QredoVaultItemDescriptor *descriptor;
+@property (copy) NSString *dataType;
+@property QredoAccessLevel accessLevel;
+@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
+-(void)setSummaryValue:(id)value forKey:(NSString *)key;
+
+@end
+
+
+
+
 @interface QredoVaultItem :NSObject
 @property (readonly) QredoVaultItemMetadata *metadata;
 @property (readonly) NSData *value;

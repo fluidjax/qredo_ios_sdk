@@ -52,21 +52,6 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 @end
 
 
-/** Mutable metadata. */
-@interface QredoMutableVaultItemMetadata :QredoVaultItemMetadata
-
-@property QredoVaultItemDescriptor *descriptor;
-@property (copy) NSString *dataType;
-@property QredoAccessLevel accessLevel;
-@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
-
-
--(void)setSummaryValue:(id)value forKey:(NSString *)key;
-
-@end
-
-
-
 
 @interface QredoVault (Private)
 
