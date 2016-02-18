@@ -337,7 +337,6 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     __block QredoRendezvous *newRendezvous = nil;
     
     [qredoClient createAnonymousRendezvousWithTag:tagName
-                                 conversationType:@"com.qredo.epiq"
                                          duration:0
                                unlimitedResponses:YES
 

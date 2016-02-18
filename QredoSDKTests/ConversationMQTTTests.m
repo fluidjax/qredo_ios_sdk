@@ -43,13 +43,13 @@
     }
 }
 
-- (void)testMetadataOfEphemeralConversation {
-    [super testMetadataOfEphemeralConversation];
-}
-
-- (void)testMetadataOfPersistentConversation {
-    [super testMetadataOfPersistentConversation];
-}
+//- (void)testMetadataOfEphemeralConversation {
+//    [super testMetadataOfEphemeralConversation];
+//}
+//
+//- (void)testMetadataOfPersistentConversation {
+//    [super testMetadataOfPersistentConversation];
+//}
 
 
 @end

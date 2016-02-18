@@ -65,6 +65,9 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 /** Converts an index coredata summaryValue object retrieved by an index search predicate into a QredoVaultItemMetadata */
 +(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue;
 
+
+-(id)objectForMetadataKey:(NSString*)key;
+
 @end
 
 /** Mutable metadata. */
@@ -73,8 +76,8 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @property QredoVaultItemDescriptor *descriptor;
 @property (copy) NSString *dataType;
 @property QredoAccessLevel accessLevel;
-
 @property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
+
 
 -(void)setSummaryValue:(id)value forKey:(NSString *)key;
 
@@ -85,8 +88,14 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @property (readonly) NSData *value;
 
 
+
+/** Shortcut to creating a Vaultitem with accessLevel=0 and dataType='' */
++(instancetype)vaultItemWithValue:(NSData *)value;
++(instancetype)vaultItemWithMetadataDictionary:(NSDictionary *)metadataDictionary value:(NSData *)value;
 +(instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
+
 -(instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
+-(id)objectForMetadataKey:(NSString *)key;
 @end
 
 
@@ -199,8 +208,6 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
 
 /**  Deletes all records in the Coredata Cache/Index for this vault */
 -(void)purgeCache;
-
-
 
 /** Set the maximum size in bytes of the local cache/index default is QREDO_DEFAULT_INDEX_CACHE_SIZE in Qredo.h */
 -(void)setMaxCacheSize:(long long)maxSize;

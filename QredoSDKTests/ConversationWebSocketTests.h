@@ -14,7 +14,7 @@
 - (void)testRespondingToConversation;
 - (void)testConversation;
 - (void)testConversationMultiple;
-- (void)testMetadataOfEphemeralConversation;
-- (void)testMetadataOfPersistentConversation;
+//- (void)testMetadataOfEphemeralConversation;
+//- (void)testMetadataOfPersistentConversation;
 
 @end

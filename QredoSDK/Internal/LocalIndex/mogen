@@ -1,1 +1,3 @@
+#!/bin/bash
+cd "$(dirname "$0")"
 mogenerator --v2 --model ../../../QredoLocalIndex.xcdatamodel 

@@ -343,10 +343,47 @@
         // avoiding exception when 'fulfill' is called after timeout
         testExpectation = nil;
     }];
+    
+    
 }
 
 
+- (void)testGetSetShortcuts{
+    
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    
+    NSString *testVal = @"testvalue";
+    
+    NSDictionary *dict = @{@"key1": testVal, @"key2": @"value2"};
+    
+    
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadataDictionary:dict value:item1Data];
+    
+    
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
 
+        XCTAssertTrue([testVal isEqualToString:[item1 objectForMetadataKey:@"key1"]],@"Failed to retrieve summary value using QredoItem");
+        XCTAssertTrue([testVal isEqualToString:[newItemMetadata objectForMetadataKey:@"key1"]],@"Failed to retrieve summary value using QredoVaultItemMetadata");
+        
+        
+        
+         XCTAssertNil(error);
+         XCTAssertNotNil(newItemMetadata);
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+    
+    
+}
 
 - (void)testPutItemMultiple
 {

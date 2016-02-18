@@ -48,6 +48,10 @@
 }
 
 
+-(id)objectForMetadataKey:(NSString*)key{
+    return [_summaryValues objectForKey:key];
+}
+
 
 - (instancetype)initWithDescriptor:(QredoVaultItemDescriptor *)descriptor
                           dataType:(NSString *)dataType

@@ -71,7 +71,6 @@
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
     [client createAnonymousRendezvousWithTag:randomTag
-                            conversationType:@"test.chat"
                                     duration:600
                           unlimitedResponses:NO
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {

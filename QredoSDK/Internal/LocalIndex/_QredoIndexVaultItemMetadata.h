@@ -12,13 +12,13 @@ extern const struct QredoIndexVaultItemMetadataAttributes {
 
 extern const struct QredoIndexVaultItemMetadataRelationships {
 	__unsafe_unretained NSString *descriptor;
-	__unsafe_unretained NSString *latest;
 	__unsafe_unretained NSString *summaryValues;
+	__unsafe_unretained NSString *vaultItem;
 } QredoIndexVaultItemMetadataRelationships;
 
 @class QredoIndexVaultItemDescriptor;
-@class QredoIndexVaultItem;
 @class QredoIndexSummaryValues;
+@class QredoIndexVaultItem;
 
 @interface QredoIndexVaultItemMetadataID : NSManagedObjectID {}
 @end
@@ -53,13 +53,13 @@ extern const struct QredoIndexVaultItemMetadataRelationships {
 
 //- (BOOL)validateDescriptor:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) QredoIndexVaultItem *latest;
-
-//- (BOOL)validateLatest:(id*)value_ error:(NSError**)error_;
-
 @property (nonatomic, strong) NSSet *summaryValues;
 
 - (NSMutableSet*)summaryValuesSet;
+
+@property (nonatomic, strong) QredoIndexVaultItem *vaultItem;
+
+//- (BOOL)validateVaultItem:(id*)value_ error:(NSError**)error_;
 
 @end
 
@@ -91,10 +91,10 @@ extern const struct QredoIndexVaultItemMetadataRelationships {
 - (QredoIndexVaultItemDescriptor*)primitiveDescriptor;
 - (void)setPrimitiveDescriptor:(QredoIndexVaultItemDescriptor*)value;
 
-- (QredoIndexVaultItem*)primitiveLatest;
-- (void)setPrimitiveLatest:(QredoIndexVaultItem*)value;
-
 - (NSMutableSet*)primitiveSummaryValues;
 - (void)setPrimitiveSummaryValues:(NSMutableSet*)value;
+
+- (QredoIndexVaultItem*)primitiveVaultItem;
+- (void)setPrimitiveVaultItem:(QredoIndexVaultItem*)value;
 
 @end

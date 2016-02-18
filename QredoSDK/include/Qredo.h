@@ -89,25 +89,26 @@ typedef NS_ENUM (NSUInteger, QredoClientOptionsTransportType) {
 
 
 /** Creates an anonymous rendezvous and automatically stores it in the vault
- Conversation Type is the Apps' AppID eg. "com.qredo.myapp"
- duration = infinte
- unlimitedResponses = YES
+ Defaults:
+    Conversation Type is the Apps' AppID eg. "com.qredo.myapp"
+    duration = infinte
+    unlimitedResponses = YES
  */
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
+/** A random tag is 32 chars alpha/numeric */
 -(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
-
-
 
 
 /** Creates an anonymous rendezvous and automatically stores it in the vault */
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
-                       conversationType:(NSString*)conversationType
                                duration:(long)duration
                      unlimitedResponses:(BOOL)unlimitedResponses
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+
 
 
 

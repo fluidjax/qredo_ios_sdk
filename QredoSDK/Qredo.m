@@ -564,7 +564,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 -(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
     [self createAnonymousRendezvousWithTag:[self randomStringWithLength:32]
-                          conversationType:[self appId]
                                   duration:0
                         unlimitedResponses:YES
                          completionHandler:completionHandler];
@@ -576,7 +575,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler {
     [self createAnonymousRendezvousWithTag:tag
-                          conversationType:[self appId]
                                   duration:0
                         unlimitedResponses:YES
                          completionHandler:completionHandler];
@@ -587,7 +585,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                duration:(long)duration
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler {
     [self createAnonymousRendezvousWithTag:tag
-                          conversationType:[self appId]
                                   duration:duration
                         unlimitedResponses:YES
                          completionHandler:completionHandler];
@@ -595,7 +592,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
-                       conversationType:(NSString*)conversationType
                                duration:(long)duration
                      unlimitedResponses:(BOOL)unlimitedResponses
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler {
@@ -604,7 +600,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc]
-                                                   initWithConversationType:conversationType
+                                                   initWithConversationType:@""
                                                    durationSeconds:duration
                                                    isUnlimitedResponseCount:unlimitedResponses];
     
