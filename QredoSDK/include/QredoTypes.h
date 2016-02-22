@@ -5,9 +5,7 @@
 #import <Foundation/Foundation.h>
 
 
-
 @interface QredoObjectRef :NSObject
-
 -(instancetype)initWithData:(NSData *)data;
 @property (readonly) NSData *data;
 

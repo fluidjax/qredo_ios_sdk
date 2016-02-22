@@ -56,11 +56,21 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 // private method. the developer should not specify the date
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType created:(NSDate*)created summaryValues:(NSDictionary *)summaryValues;
 
++(instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
+                                      dataType:(NSString *)dataType
+                                       created: (NSDate*)created
+                                 summaryValues:(NSDictionary *)summaryValues;
+
+
+
+
 @end
 
 
 
 @interface QredoVault (Private)
+
+// this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
 
 - (QredoLocalIndex *)localIndex;
 - (QredoQUID *)sequenceId;

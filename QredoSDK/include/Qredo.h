@@ -50,7 +50,6 @@
  Report the current version of the framework in Major.Minor.Patch format
  */
 -(NSString *)versionString;
-
 /**
  Report the current build number of the framework. (The number is total count of the number of Git commits)
  */
@@ -74,16 +73,11 @@
 /** Create an anonymous rendezvous with a random tag (32 chars alpha/numeric) */
 -(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
-
 /** Creates an anonymous rendezvous and automatically stores it in the vault */
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                                duration:(long)duration
                      unlimitedResponses:(BOOL)unlimitedResponses
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
-
-
-
-
 
 /** Enumerates through the rendezvous that have been stored in the Vault
  @discussion assign YES to *stop to break the enumeration */
@@ -132,7 +126,3 @@
 
 
 @end
-
-
-
-

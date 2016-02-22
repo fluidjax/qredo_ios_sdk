@@ -10,8 +10,7 @@
 
 @implementation QredoObjectRef
 
-- (instancetype)initWithData:(NSData *)data
-{
+- (instancetype)initWithData:(NSData *)data{
     NSAssert(data, @"Data can't be nil");
     self = [super init];
     if (!self) return nil;

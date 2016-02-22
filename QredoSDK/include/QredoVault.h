@@ -49,16 +49,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @interface QredoVaultItemMetadata :NSObject<NSCopying, NSMutableCopying>
 
 @property (readonly) QredoVaultItemDescriptor *descriptor;
-//@property (readonly, copy) NSString *dataType;
-//@property (readonly) QredoAccessLevel accessLevel;
 @property (readonly, copy) NSDate* created;
 @property (readonly, copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
 
-// this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
-+(instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
-                                      dataType:(NSString *)dataType
-                                       created: (NSDate*)created
-                                 summaryValues:(NSDictionary *)summaryValues;
+
 
 /** this constructor to be used externally when creating a new vault item to be stored in Vault */
 +(instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
@@ -66,7 +60,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 /** Converts an index coredata summaryValue object retrieved by an index search predicate into a QredoVaultItemMetadata */
 +(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue;
-
 
 -(id)objectForMetadataKey:(NSString*)key;
 
@@ -96,7 +89,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 +(instancetype)vaultItemWithValue:(NSData *)value;
 +(instancetype)vaultItemWithMetadataDictionary:(NSDictionary *)metadataDictionary value:(NSData *)value;
 +(instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
-
 -(instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
 -(id)objectForMetadataKey:(NSString *)key;
 @end
@@ -159,15 +151,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 /** If for some reason the client application needs to receive all items in the delegate after calling `startListening`, then this method can be called. */
 -(void)resetWatermark;
 
-
-
 @end
 
 
-
-
 @interface QredoVault (LocalIndex)
-
 
 
 typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
@@ -184,13 +171,11 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
  value.date      (as NSDate)
  value.number    (an NSNumber)
  value.data      (an NSData)
- 
  */
+
 -(void)enumerateIndexUsingPredicate:(NSPredicate *)predicate
                           withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
                   completionHandler:(void (^)(NSError *error))completionHandler;
-
-
 
 
 /** Return the number of Metadata entries in the local Metadata index  */
