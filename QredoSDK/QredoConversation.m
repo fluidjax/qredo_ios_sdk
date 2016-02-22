@@ -469,7 +469,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     NSDate *created = [NSDate date];
     QredoVaultItemMetadata *metadata =
     [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoConversationVaultItemType
-                            accessLevel:0
                             created: created
                             summaryValues:summaryValues];
 
@@ -698,7 +697,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     [summaryValues removeObjectForKey:kQredoConversationMessageKeyCreated];
 
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:message.dataType
-                                                                                 accessLevel:0
                                                                                      created:sentDate
                                                                                summaryValues:summaryValues];
 

@@ -694,7 +694,6 @@ NSNumber *testNumber;
     }
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
                                                                                summaryValues:item1SummaryValues];
     
     
@@ -733,7 +732,6 @@ NSNumber *testNumber;
     
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
                                                                                summaryValues:item1SummaryValues];
     
     
@@ -771,7 +769,6 @@ NSNumber *testNumber;
     
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
                                                                                summaryValues:item1SummaryValues];
     
     
@@ -810,7 +807,6 @@ NSNumber *testNumber;
     
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
                                                                                summaryValues:item1SummaryValues];
     
     

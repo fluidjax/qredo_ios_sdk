@@ -91,8 +91,7 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
-                                                                               summaryValues:item1SummaryValues];
+                                                                                summaryValues:item1SummaryValues];
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata
                                                             value:item1Data];
     
@@ -187,8 +186,7 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
-                                                                               summaryValues:item1SummaryValues];
+                                                                                 summaryValues:item1SummaryValues];
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
@@ -312,8 +310,7 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
-                                                                               summaryValues:item1SummaryValues];
+                                                                                summaryValues:item1SummaryValues];
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;

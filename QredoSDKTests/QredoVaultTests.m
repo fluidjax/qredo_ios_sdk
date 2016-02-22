@@ -194,7 +194,6 @@
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
@@ -328,7 +327,6 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
@@ -399,7 +397,6 @@
                                              @"key2": @"value2",
                                              @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
         QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                                accessLevel:0
                                                                                                               summaryValues:item1SummaryValues]
                                                                 value:item1Data];
         
@@ -432,7 +429,6 @@
     NSDate* created = [NSDate date];
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                                 created: created
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
@@ -500,7 +496,6 @@
     NSDate* created = [NSDate date];
   
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                                 created: created
                                                                                                                 summaryValues:item1SummaryValues]
                                                             value:item1Data];
@@ -613,7 +608,6 @@
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
 
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
 
@@ -813,7 +807,6 @@
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
 
@@ -902,7 +895,6 @@
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
@@ -912,7 +904,6 @@
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
     QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                           summaryValues:item2SummaryValues]
                                                             value:item2Data];
 
@@ -990,8 +981,7 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
+                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
@@ -1035,9 +1025,8 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
-                                                            value:item1Data];
+                                                                                                           summaryValues:item1SummaryValues]
+                                                                value:item1Data];
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
@@ -1159,7 +1148,6 @@
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                                       dataType:@"blob"
-                                                                                   accessLevel:0
                                                                                        created:created
                                                                                  summaryValues:item1SummaryValues];
     
@@ -1191,7 +1179,6 @@
     XCTAssertEqualObjects(aMutableCopy.summaryValues, aMutableCopySummaryValues);
     
     QredoMutableVaultItemMetadata *mutableMetadata = [QredoMutableVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                      accessLevel:0
                                                                                                     summaryValues:nil];
     
     NSDictionary *mutableMetadataSummaryValues = @{@"key3": @"value3"};

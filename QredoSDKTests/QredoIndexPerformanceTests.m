@@ -218,7 +218,6 @@ NSNumber *testNumber;
                                          @"key4": myTestDate};
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
                                                                                summaryValues:item1SummaryValues];
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"creatTestItem"];

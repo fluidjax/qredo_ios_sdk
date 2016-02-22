@@ -5,6 +5,13 @@
 #import "QredoVault.h"
 #import "QredoQUID.h"
 #import "QredoClient.h"
+#import "QredoTypesPrivate.h"
+
+
+
+
+
+
 
 // This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
 // It shall be included only in the implementation files
@@ -47,7 +54,7 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 @property QredoVaultItemOrigin origin;
 
 // private method. the developer should not specify the date
-+ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel created: (NSDate*)created summaryValues:(NSDictionary *)summaryValues;
++ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType created:(NSDate*)created summaryValues:(NSDictionary *)summaryValues;
 
 @end
 

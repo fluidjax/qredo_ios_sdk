@@ -3,6 +3,7 @@
  */
 
 #import "QredoRendezvousHelper.h"
+#import "QredoPrivate.h"
 #import "CryptoImpl.h"
 
 @protocol QredoRendezvousCreatePrivateHelper <QredoRendezvousCreateHelper>

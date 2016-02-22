@@ -1893,12 +1893,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     QredoVault *vault = [client systemVault];
     
     NSDictionary *item1SummaryValues = @{@"name": @"Joe Bloggs"};
-    QredoVaultItem *item1 =
-    [QredoVaultItem vaultItemWithMetadata:
-     [QredoVaultItemMetadata
-      vaultItemMetadataWithDataType :@"com.qredo.test"
-      accessLevel:0
-      summaryValues:item1SummaryValues]
+    QredoVaultItem *item1 =  [QredoVaultItem vaultItemWithMetadata: [QredoVaultItemMetadata   vaultItemMetadataWithDataType :@"com.qredo.test"    summaryValues:item1SummaryValues]
                                     value:[@"item name" dataUsingEncoding:NSUTF8StringEncoding]];
     
     __block XCTestExpectation *createRendezvousRefExpectation = [self expectationWithDescription:@"create rendezvous"];

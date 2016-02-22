@@ -79,7 +79,6 @@
 	//constructs a new QredoItemMetadata from a cached QredoIndexItemMetadata, and all its sub objects
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:[self.descriptor buildQredoVaultItemDescriptor]
                                                                                      dataType:self.dataType
-                                                                                  accessLevel:self.accessLevelValue
                                                                                       created:self.created
                                                                                 summaryValues:[self buildSummaryDictionary]
                                        ];

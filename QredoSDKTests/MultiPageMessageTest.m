@@ -180,7 +180,6 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
                                              @"key3": @"value3"};
         
         QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                                accessLevel:0
                                                                                                               summaryValues:item1SummaryValues]
                                                                                                                       value:item1Data];
         __block QredoVaultItemDescriptor *item1Descriptor = nil;

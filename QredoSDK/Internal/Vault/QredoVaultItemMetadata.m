@@ -14,29 +14,26 @@
 
 + (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
                                        dataType:(NSString *)dataType
-                                     accessLevel:(QredoAccessLevel)accessLevel
                                         created:(NSDate*)created
                                   summaryValues:(NSDictionary *)summaryValues
 {
-    return [[self alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
+    return [[self alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:0 created: created summaryValues:summaryValues];
 }
 
 
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
-                                  accessLevel:(QredoAccessLevel)accessLevel
                                       created:(NSDate*)created
                                 summaryValues:(NSDictionary *)summaryValues
 {
-    return [self vaultItemMetadataWithDescriptor:nil dataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
+    return [self vaultItemMetadataWithDescriptor:nil dataType:dataType  created: created summaryValues:summaryValues];
 }
 
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
-                                  accessLevel:(QredoAccessLevel)accessLevel
                                  summaryValues:(NSDictionary *)summaryValues
 {
    
     NSDate* created = [NSDate date];
-    return [self vaultItemMetadataWithDataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
+    return [self vaultItemMetadataWithDataType:dataType created: created summaryValues:summaryValues];
 }
 
 

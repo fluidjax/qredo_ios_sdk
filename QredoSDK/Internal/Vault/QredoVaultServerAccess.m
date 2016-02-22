@@ -325,7 +325,6 @@
                      QredoVaultItemMetadata *externalItem
                      = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                       dataType:decryptedItem.dataType
-                                                                   accessLevel:0
                                                                        created:decryptedItem.created.asDate
                                                                  summaryValues:[decryptedItem.values dictionaryFromIndexableSet]];
 

@@ -40,7 +40,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 @interface QredoRendezvousMetadata :NSObject
 @property (readonly) QredoRendezvousRef *rendezvousRef;
 @property (readonly, copy) NSString *tag;
-@property (readonly) QredoRendezvousAuthenticationType authenticationType;
 @end
 
 
@@ -53,7 +52,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
  */
 @interface QredoRendezvous :NSObject
 @property (readonly) QredoRendezvousMetadata *metadata;
-@property (readonly) NSString* conversationType;
 @property (readonly) long duration;
 @property (readonly) BOOL unlimitedResponses;
 @property (readonly) NSDate *expiresAt;

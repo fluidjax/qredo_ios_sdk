@@ -1106,7 +1106,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     QredoVaultItemMetadata *metadata
     = [QredoVaultItemMetadata vaultItemMetadataWithDataType:QredoVaultItemTypeKeychain
-                                                accessLevel:0
                                               summaryValues:
        @{
          QredoVaultItemSummaryKeyDeviceName : [self deviceName]

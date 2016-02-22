@@ -49,22 +49,20 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @interface QredoVaultItemMetadata :NSObject<NSCopying, NSMutableCopying>
 
 @property (readonly) QredoVaultItemDescriptor *descriptor;
-@property (readonly, copy) NSString *dataType;
-@property (readonly) QredoAccessLevel accessLevel;
+//@property (readonly, copy) NSString *dataType;
+//@property (readonly) QredoAccessLevel accessLevel;
 @property (readonly, copy) NSDate* created;
 @property (readonly, copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
 
 // this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
 +(instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
                                       dataType:(NSString *)dataType
-                                   accessLevel:(QredoAccessLevel)accessLevel
                                        created: (NSDate*)created
                                  summaryValues:(NSDictionary *)summaryValues;
 
 /** this constructor to be used externally when creating a new vault item to be stored in Vault */
 +(instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
-                                 accessLevel:(QredoAccessLevel)accessLevel
-                               summaryValues:(NSDictionary *)summaryValues;
+                              summaryValues:(NSDictionary *)summaryValues;
 
 /** Converts an index coredata summaryValue object retrieved by an index search predicate into a QredoVaultItemMetadata */
 +(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue;
@@ -80,8 +78,6 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @interface QredoMutableVaultItemMetadata :QredoVaultItemMetadata
 
 @property QredoVaultItemDescriptor *descriptor;
-@property (copy) NSString *dataType;
-@property QredoAccessLevel accessLevel;
 @property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
 -(void)setSummaryValue:(id)value forKey:(NSString *)key;
 
