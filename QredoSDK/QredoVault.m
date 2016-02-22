@@ -272,7 +272,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                  completionHandler:(void (^)(NSError *error))completionHandler{
     NSError *error = nil;
     QredoLogDebug(@"Remove vault payload from Index %@",descriptor.itemId);
-    [_localIndex deleteItem:descriptor error:error];
+    [_localIndex deleteItem:descriptor error:&error];
     if (completionHandler)completionHandler(error);
     
 }

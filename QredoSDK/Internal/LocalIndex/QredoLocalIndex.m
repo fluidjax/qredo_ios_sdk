@@ -222,7 +222,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-- (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError {
+- (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError {
     __block BOOL hasDeletedObject = NO;
     __block NSError *blockError = nil;
     QredoLogDebug(@"Delete Item from Index");
@@ -248,7 +248,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         [self save];
         hasDeletedObject = YES;
     }];
-    if (returnError) returnError = blockError;
+    if (returnError) *returnError = blockError;
     return hasDeletedObject;
 }
 

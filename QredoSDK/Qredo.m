@@ -274,7 +274,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     SecCertificateRef secCert = SecCertificateCreateWithData(kCFAllocatorDefault, (__bridge CFDataRef)(derCertificateData));
     QredoCertificate *qredoCert = [QredoCertificate certificateWithSecCertificateRef:secCert];
-    
+    CFRelease(secCert);
     return qredoCert;
 }
 

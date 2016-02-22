@@ -192,6 +192,71 @@ NSNumber *testNumber;
 }
 
 
+-(void)testMetaDataCacheDisable{
+    [vault metadataCacheEnabled:NO];
+    NSInteger before = [qredoLocalIndex count];
+    
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before ,@"Item has incorrectly been added to the cache  Before %ld After %ld", (long)before, (long)after);
+    
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomKeyValue];
+    
+    __block int count =0;
+    __block QredoVaultItemMetadata *checkVaultMetaData;
+    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        checkVaultMetaData = vaultMetaData;
+        count++;
+    } completionHandler:^(NSError *error) {
+    }];
+    
+    
+    //metadata should come from the cache
+    XCTAssert(count==0,"Incorrect number of items found");
+    
+    XCTAssert(checkVaultMetaData ==nil,@"Vault item doesnt come from the cache/index");
+    
+    
+    //value should come from the server (not cache)
+    QredoVaultItem *vaultItem = [self getItemWithDescriptor:junk1 inVault:vault];
+    XCTAssertNotNil(vaultItem);
+    XCTAssert(vaultItem.metadata.origin == QredoVaultItemOriginServer,@"Vault Item doesnt come from server");
+}
+
+
+
+-(void)testEnableValueCache{
+    NSInteger before = [qredoLocalIndex count];
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before+1 ,@"Item hasn't been correctly added to the cache Before %ld After %ld", (long)before, (long)after);
+    
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomKeyValue];
+    
+    __block int count =0;
+    __block QredoVaultItemMetadata *checkVaultMetaData;
+    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        checkVaultMetaData = vaultMetaData;
+        count++;
+    } completionHandler:^(NSError *error) {
+    }];
+    
+    
+    //metadata should come from the cache
+    XCTAssert(count==1,"Incorrect number of items found");
+    XCTAssert(checkVaultMetaData.origin == QredoVaultItemOriginCache,@"Vault item doesnt come from the cache/index");
+    
+    
+    //value should come from the server (not cache)
+    QredoVaultItem *vaultItem = [self getItemWithDescriptor:checkVaultMetaData inVault:vault];
+    XCTAssertNotNil(vaultItem);
+    XCTAssert(vaultItem.metadata.origin == QredoVaultItemOriginCache,@"Vault Item doesnt come from server");
+}
+
 
 -(void)testDisableValueCache{
     NSInteger before = [qredoLocalIndex count];
@@ -222,7 +287,6 @@ NSNumber *testNumber;
     QredoVaultItem *vaultItem = [self getItemWithDescriptor:checkVaultMetaData inVault:vault];
     XCTAssertNotNil(vaultItem);
     XCTAssert(vaultItem.metadata.origin == QredoVaultItemOriginServer,@"Vault Item doesnt come from server");
-    
 }
 
 

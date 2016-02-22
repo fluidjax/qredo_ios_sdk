@@ -66,7 +66,7 @@
 - (void)enableSyncWithBlock:(IncomingMetadataBlock)block;
 - (void)removeIndexObserver;
 - (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
-- (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError;
+- (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError;
 - (void)dump:(NSString *)message;
 - (long)persistentStoreFileSize;
 - (void)saveAndWait;
