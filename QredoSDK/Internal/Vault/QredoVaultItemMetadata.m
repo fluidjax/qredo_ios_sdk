@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -14,47 +14,41 @@
 
 + (instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
                                        dataType:(NSString *)dataType
-                                     accessLevel:(QredoAccessLevel)accessLevel
                                         created:(NSDate*)created
-                                  summaryValues:(NSDictionary *)summaryValues
-{
-    return [[self alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
+                                  summaryValues:(NSDictionary *)summaryValues{
+    return [[self alloc] initWithDescriptor:descriptor dataType:dataType accessLevel:0 created: created summaryValues:summaryValues];
 }
 
 
 + (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
-                                  accessLevel:(QredoAccessLevel)accessLevel
                                       created:(NSDate*)created
-                                summaryValues:(NSDictionary *)summaryValues
-{
-    return [self vaultItemMetadataWithDescriptor:nil dataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
+                                summaryValues:(NSDictionary *)summaryValues{
+    return [self vaultItemMetadataWithDescriptor:nil dataType:dataType  created: created summaryValues:summaryValues];
 }
 
-+ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
-                                  accessLevel:(QredoAccessLevel)accessLevel
-                                 summaryValues:(NSDictionary *)summaryValues
-{
-   
-    NSDate* created = [NSDate date];
-    return [self vaultItemMetadataWithDataType:dataType accessLevel:accessLevel created: created summaryValues:summaryValues];
++ (instancetype)vaultItemMetadataWithSummaryValues:(NSDictionary *)summaryValues{
+   NSDate* created = [NSDate date];
+    return [self vaultItemMetadataWithDataType:@"" created: created summaryValues:summaryValues];
 }
 
 
 
 +(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue{
-    
     QredoIndexVaultItemMetadata *indexMetadata = summaryValue.vaultMetadata;
     return  [indexMetadata buildQredoVaultItemMetadata];
 }
 
+
+-(id)objectForMetadataKey:(NSString*)key{
+    return [_summaryValues objectForKey:key];
+}
 
 
 - (instancetype)initWithDescriptor:(QredoVaultItemDescriptor *)descriptor
                           dataType:(NSString *)dataType
                        accessLevel:(QredoAccessLevel)accessLevel
                            created:(NSDate*)created
-                     summaryValues:(NSDictionary *)summaryValues
-{
+                     summaryValues:(NSDictionary *)summaryValues{
     self = [super init];
     if (!self) return nil;
 

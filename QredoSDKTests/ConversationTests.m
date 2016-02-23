@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -75,14 +75,13 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 }
 
-@property NSString *conversationType;
+
 @end
 
 @implementation ConversationTests
 
 - (void)setUp {
     [super setUp];
-    self.conversationType = @"test.chat~";
     [self authoriseClient];
     [self authoriseAnotherClient];
 }
@@ -164,14 +163,13 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 - (void)testConversationCreation {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 isUnlimitedResponseCount:NO];
-    
     __block QredoRendezvous *rendezvous = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
     [client createAnonymousRendezvousWithTag:randomTag
-                               configuration:configuration
+                                    duration:600
+                          unlimitedResponses:NO
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                                QLog(@"Create rendezvous completion handler called.");
                                XCTAssertNil(error);
@@ -187,18 +185,25 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
 }
 
+
+
+
+
 - (void)testRespondingToConversation {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:self.conversationType durationSeconds:@600 isUnlimitedResponseCount:NO];
     
     __block QredoRendezvous *rendezvous = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
     QLog(@"\nCreating rendezvous");
+    
+    
+    
     [client createAnonymousRendezvousWithTag:randomTag
-                               configuration:configuration
+                                    duration:600
+                          unlimitedResponses:NO
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                                QLog(@"\nRendezvous creation completion handler entered");
                                XCTAssertNil(error);
@@ -216,7 +221,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     QLog(@"\nStarting listening");
     [rendezvous addRendezvousObserver:self];
-    [NSThread sleepForTimeInterval:0.1];
+    [NSThread sleepForTimeInterval:0.2];
     
     XCTAssertNotNil(anotherClient);
     
@@ -228,8 +233,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     QLog(@"\n2nd client responding to rendezvous");
     // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
     [anotherClient respondWithTag:randomTag
-                  trustedRootPems:nil
-                          crlPems:nil
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         QLog(@"\nRendezvous respond completion handler entered");
         XCTAssertNil(error);
@@ -257,13 +260,14 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 
 - (QredoRendezvous *)isolateCreateRendezvous:(NSString *)randomTag {
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@3600 isUnlimitedResponseCount:YES];
     
     __block QredoRendezvous *rendezvous = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     QredoLogDebug(@"Creating Rendezvous (with client 1)");
+    
     [client createAnonymousRendezvousWithTag:randomTag
-                               configuration:configuration
+                                    duration:3600
+                          unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                                QredoLogDebug(@"Create rendezvous completion handler called.");
                                XCTAssertNil(error);
@@ -291,8 +295,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
     
     [anotherClient respondWithTag:randomTag
-                  trustedRootPems:nil
-                          crlPems:nil
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
                     XCTAssertNil(error);
                     XCTAssertNotNil(conversation);
@@ -410,14 +412,14 @@ NSString *secondMessageText;
     
     
     //this is a fix so the observer registers before the rendezvous is responded to.
-    [NSThread sleepForTimeInterval:0.1];
+    [NSThread sleepForTimeInterval:0.2];
     
 
     //Respond to Rendezvous
     QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
     
     [creatorConversation addConversationObserver:listener];
-    [NSThread sleepForTimeInterval:0.1];
+    [NSThread sleepForTimeInterval:0.2];
     
     //Response to Rendezvous
     [self isolatePublishMessage1:listener responderConversation:responderConversation];
@@ -449,125 +451,120 @@ NSString *secondMessageText;
     }
 }
 
-- (void)testMetadataOfEphemeralConversation {
-    
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
-    
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat~" durationSeconds:@600 isUnlimitedResponseCount:NO];
-    
-    __block QredoRendezvous *rendezvous = nil;
-    
-    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-    
-    [client createAnonymousRendezvousWithTag:randomTag
-                               configuration:configuration
-                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               XCTAssertNil(error);
-                               XCTAssertNotNil(_rendezvous);
-                               
-                               rendezvous = _rendezvous;
-                               
-                               [createExpectation fulfill];
-                           }];
-    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-        createExpectation = nil;
-    }];
-
-
-    // Creating a new client with a new vault
-    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
-
-    
-    // Responding to the rendezvous
-    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
-    self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
-    
-    [rendezvous addRendezvousObserver:self];
-    [NSThread sleepForTimeInterval:0.1];
-
-    __block QredoConversation *responderConversation = nil;
-    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
-    [anotherClient respondWithTag:randomTag
-                  trustedRootPems:nil
-                          crlPems:nil
-                completionHandler:^(QredoConversation *conversation, NSError *error) {
-        XCTAssertNil(error);
-        XCTAssertNotNil(conversation);
-        XCTAssert(conversation.metadata.isEphemeral);
-        XCTAssertFalse(conversation.metadata.isPersistent);
-        
-        responderConversation = conversation;
-        
-        [didRespondExpectation fulfill];
-    }];
-    
-    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-        didRespondExpectation = nil;
-    }];
-    
-    [rendezvous removeRendezvousObserver:self];
-    
-}
-
-- (void)testMetadataOfPersistentConversation {    
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
-    
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat"
-                                                                                                 durationSeconds:@600
-                                                                                        isUnlimitedResponseCount:NO];
-
-    __block QredoRendezvous *rendezvous = nil;
-    
-    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-    
-    [client createAnonymousRendezvousWithTag:randomTag
-                               configuration:configuration
-                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               XCTAssertNil(error);
-                               XCTAssertNotNil(_rendezvous);
-                               
-                               rendezvous = _rendezvous;
-                               
-                               [createExpectation fulfill];
-                           }];
-    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-        createExpectation = nil;
-    }];
-
-
-   
-
-    // Responding to the rendezvous
-    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
-    self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
-    
-    [rendezvous addRendezvousObserver:self];
-    [NSThread sleepForTimeInterval:0.1];
-    
-    __block QredoConversation *responderConversation = nil;
-    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
-    [anotherClient respondWithTag:randomTag
-                  trustedRootPems:nil
-                          crlPems:nil
-                completionHandler:^(QredoConversation *conversation, NSError *error) {
-        XCTAssertNil(error);
-        XCTAssertNotNil(conversation);
-        XCTAssertFalse(conversation.metadata.isEphemeral);
-        XCTAssert(conversation.metadata.isPersistent);
-        
-        responderConversation = conversation;
-        
-        [didRespondExpectation fulfill];
-    }];
-    
-    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-        didRespondExpectation = nil;
-    }];
-    
-    [rendezvous removeRendezvousObserver:self];
-    
-
-}
-
+//- (void)testMetadataOfEphemeralConversation {
+//    
+//    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+//    
+//    
+//    __block QredoRendezvous *rendezvous = nil;
+//    
+//    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+//    
+//    
+//    
+//    [client createAnonymousRendezvousWithTag:randomTag
+//                                    duration:600
+//                          unlimitedResponses:NO
+//                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+//                               XCTAssertNil(error);
+//                               XCTAssertNotNil(_rendezvous);
+//                               
+//                               rendezvous = _rendezvous;
+//                               
+//                               [createExpectation fulfill];
+//                           }];
+//    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+//        createExpectation = nil;
+//    }];
+//
+//
+//    // Creating a new client with a new vault
+//    XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
+//
+//    
+//    // Responding to the rendezvous
+//    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
+//    self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
+//    
+//    [rendezvous addRendezvousObserver:self];
+//    [NSThread sleepForTimeInterval:0.2];
+//
+//    __block QredoConversation *responderConversation = nil;
+//    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
+//    [anotherClient respondWithTag:randomTag
+//                completionHandler:^(QredoConversation *conversation, NSError *error) {
+//        XCTAssertNil(error);
+//        XCTAssertNotNil(conversation);
+//        XCTAssert(conversation.metadata.isEphemeral);
+//        XCTAssertFalse(conversation.metadata.isPersistent);
+//        
+//        responderConversation = conversation;
+//        
+//        [didRespondExpectation fulfill];
+//    }];
+//    
+//    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+//        didRespondExpectation = nil;
+//    }];
+//    
+//    [rendezvous removeRendezvousObserver:self];
+//    
+//}
+//
+//- (void)testMetadataOfPersistentConversation {    
+//    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+//    
+//    __block QredoRendezvous *rendezvous = nil;
+//    
+//    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+//    
+//    [client createAnonymousRendezvousWithTag:randomTag
+//                                    duration:600
+//                          unlimitedResponses:NO
+//                             completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+//                               XCTAssertNil(error);
+//                               XCTAssertNotNil(_rendezvous);
+//                               
+//                               rendezvous = _rendezvous;
+//                               
+//                               [createExpectation fulfill];
+//                           }];
+//    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+//        createExpectation = nil;
+//    }];
+//
+//
+//   
+//
+//    // Responding to the rendezvous
+//    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
+//    self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
+//    
+//    [rendezvous addRendezvousObserver:self];
+//    [NSThread sleepForTimeInterval:0.2];
+//    
+//    __block QredoConversation *responderConversation = nil;
+//    // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
+//    [anotherClient respondWithTag:randomTag
+//                completionHandler:^(QredoConversation *conversation, NSError *error) {
+//        XCTAssertNil(error);
+//        XCTAssertNotNil(conversation);
+//        XCTAssertFalse(conversation.metadata.isEphemeral);
+//        XCTAssert(conversation.metadata.isPersistent);
+//        
+//        responderConversation = conversation;
+//        
+//        [didRespondExpectation fulfill];
+//    }];
+//    
+//    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+//        didRespondExpectation = nil;
+//    }];
+//    
+//    [rendezvous removeRendezvousObserver:self];
+//    
+//
+//}
+//
 
 @end

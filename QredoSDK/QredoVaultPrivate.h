@@ -1,10 +1,17 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import "QredoVault.h"
 #import "QredoQUID.h"
 #import "QredoClient.h"
+#import "QredoTypesPrivate.h"
+
+
+
+
+
+
 
 // This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
 // It shall be included only in the implementation files
@@ -47,12 +54,23 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 @property QredoVaultItemOrigin origin;
 
 // private method. the developer should not specify the date
-+ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType accessLevel:(QredoAccessLevel)accessLevel created: (NSDate*)created summaryValues:(NSDictionary *)summaryValues;
++ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType created:(NSDate*)created summaryValues:(NSDictionary *)summaryValues;
+
++(instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
+                                      dataType:(NSString *)dataType
+                                       created: (NSDate*)created
+                                 summaryValues:(NSDictionary *)summaryValues;
+
+
+
 
 @end
 
 
+
 @interface QredoVault (Private)
+
+// this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
 
 - (QredoLocalIndex *)localIndex;
 - (QredoQUID *)sequenceId;
@@ -81,6 +99,8 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 -(void)addMetadataIndexObserver;
 -(void)addMetadataIndexObserver:(IncomingMetadataBlock)block;
 -(void)removeMetadataIndexObserver;
+
+
 
 
 @end

@@ -1,7 +1,6 @@
 #import "QredoWireFormat.h"
 #import "QredoServiceInvoker.h"
 #import "NSData+QredoRandomData.h"
-#import <CommonCrypto/CommonCrypto.h>
 #import "QredoTransport.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoCertificate.h"

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -272,7 +272,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                  completionHandler:(void (^)(NSError *error))completionHandler{
     NSError *error = nil;
     QredoLogDebug(@"Remove vault payload from Index %@",descriptor.itemId);
-    [_localIndex deleteItem:descriptor error:error];
+    [_localIndex deleteItem:descriptor error:&error];
     if (completionHandler)completionHandler(error);
     
 }
@@ -498,7 +498,7 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 }
 
 
--(long)cacheFileSize{
+-(long long)cacheFileSize{
     return [self.localIndex persistentStoreFileSize];
 }
 

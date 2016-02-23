@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15C50" minimumToolsVersion="Xcode 7.0">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15D21" minimumToolsVersion="Xcode 7.0">
     <entity name="QredoIndexSummaryValues" representedClassName="QredoIndexSummaryValues" syncable="YES">
         <attribute name="key" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="valueType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -26,7 +26,7 @@
         <attribute name="metadataSize" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="onServer" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="valueSize" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <relationship name="latest" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemMetadata" inverseName="latest" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
+        <relationship name="latest" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemMetadata" inverseName="vaultItem" inverseEntity="QredoIndexVaultItemMetadata" syncable="YES"/>
         <relationship name="payload" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemPayload" inverseName="vaultItem" inverseEntity="QredoIndexVaultItemPayload" syncable="YES"/>
         <relationship name="vault" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="QredoIndexVault" inverseName="vaultItems" inverseEntity="QredoIndexVault" syncable="YES"/>
     </entity>
@@ -42,8 +42,8 @@
         <attribute name="dataType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastAccessed" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="descriptor" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItemDescriptor" inverseName="metataData" inverseEntity="QredoIndexVaultItemDescriptor" syncable="YES"/>
-        <relationship name="latest" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItem" inverseName="latest" inverseEntity="QredoIndexVaultItem" syncable="YES"/>
         <relationship name="summaryValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="QredoIndexSummaryValues" inverseName="vaultMetadata" inverseEntity="QredoIndexSummaryValues" syncable="YES"/>
+        <relationship name="vaultItem" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="QredoIndexVaultItem" inverseName="latest" inverseEntity="QredoIndexVaultItem" syncable="YES"/>
     </entity>
     <entity name="QredoIndexVaultItemPayload" representedClassName="QredoIndexVaultItemPayload" syncable="YES">
         <attribute name="value" optional="YES" attributeType="Binary" syncable="YES"/>

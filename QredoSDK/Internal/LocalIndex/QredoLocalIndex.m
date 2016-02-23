@@ -9,6 +9,7 @@
 @import UIKit;
 
 
+#import "QredoPrivate.h"
 #import "QredoLocalIndex.h"
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"
@@ -124,7 +125,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
         NSCompoundPredicate *searchPredicate;
         NSPredicate *itemIdPredicate = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@",vaultItemDescriptor.itemId.data];
-        NSPredicate *vaultIdPredicate = [NSPredicate predicateWithFormat:@"latest.vault.vaultId == %@",self.qredoIndexVault.vaultId];
+        NSPredicate *vaultIdPredicate = [NSPredicate predicateWithFormat:@"vaultItem.vault.vaultId == %@",self.qredoIndexVault.vaultId];
         
         if (vaultItemDescriptor.sequenceValue) {
             NSPredicate *seqNumPredicate =  [NSPredicate predicateWithFormat:@"descriptor.sequenceValue == %i",vaultItemDescriptor.sequenceValue];
@@ -153,7 +154,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     __block NSInteger count =0;
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"latest.vault.vaultId = %@", self.qredoIndexVault.vaultId];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"vaultItem.vault.vaultId = %@", self.qredoIndexVault.vaultId];
         NSError *error = nil;
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         count = [results count];
@@ -221,7 +222,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-- (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError*)returnError {
+- (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError {
     __block BOOL hasDeletedObject = NO;
     __block NSError *blockError = nil;
     QredoLogDebug(@"Delete Item from Index");
@@ -239,7 +240,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         }else{
             //delete the parent of the found item -
             QredoIndexVaultItemMetadata *itemMetadata = [items lastObject];
-            QredoIndexVaultItem *vaultItem = itemMetadata.latest;
+            QredoIndexVaultItem *vaultItem = itemMetadata.vaultItem;
             [self.managedObjectContext deleteObject:vaultItem];
             vaultItem.hasValueValue=NO;
             vaultItem.payload.value=nil;
@@ -247,7 +248,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         [self save];
         hasDeletedObject = YES;
     }];
-    if (returnError) returnError = blockError;
+    if (returnError) *returnError = blockError;
     return hasDeletedObject;
 }
 
@@ -374,7 +375,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
-        NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.latest.vault.vaultId = %@",
+        NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.vaultItem.vault.vaultId = %@",
                                                     self.qredoIndexVault.vaultId];
         NSCompoundPredicate *searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToCurrentVault]];
         fetchRequest.predicate = searchPredicate;
@@ -433,6 +434,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     QredoLogDebug(@"Cache/Index received incoming Vault item");
     if (!itemMetadata || !client) return;
     [self putMetadata:itemMetadata];
+
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);
 }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import "QredoCertificateUtils.h"
@@ -559,7 +559,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     CFDictionaryRef identityDictionary = nil;
     NSDictionary *returningIdentityDictionary = nil;
     
-    NSDictionary *options = @{(__bridge id)kSecImportExportPassphrase: password};
+    NSDictionary *options = @{(__bridge id)kSecImportExportPassphrase:password};
     
     CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
     OSStatus status = SecPKCS12Import((__bridge CFDataRef)pkcs12Data, (__bridge CFDictionaryRef)options, &items);

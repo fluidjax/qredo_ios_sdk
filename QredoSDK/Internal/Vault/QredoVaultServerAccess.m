@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import "QredoVaultServerAccess.h"
@@ -325,7 +325,6 @@
                      QredoVaultItemMetadata *externalItem
                      = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                       dataType:decryptedItem.dataType
-                                                                   accessLevel:0
                                                                        created:decryptedItem.created.asDate
                                                                  summaryValues:[decryptedItem.values dictionaryFromIndexableSet]];
 

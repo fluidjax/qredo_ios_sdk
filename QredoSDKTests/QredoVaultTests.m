@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <XCTest/XCTest.h>
@@ -193,9 +193,7 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                             value:item1Data];
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
@@ -327,9 +325,7 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                             value:item1Data];
     
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
@@ -343,10 +339,47 @@
         // avoiding exception when 'fulfill' is called after timeout
         testExpectation = nil;
     }];
+    
+    
 }
 
 
+- (void)testGetSetShortcuts{
+    
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    
+    NSString *testVal = @"testvalue";
+    
+    NSDictionary *dict = @{@"key1": testVal, @"key2": @"value2"};
+    
+    
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadataDictionary:dict value:item1Data];
+    
+    
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
 
+        XCTAssertTrue([testVal isEqualToString:[item1 objectForMetadataKey:@"key1"]],@"Failed to retrieve summary value using QredoItem");
+        XCTAssertTrue([testVal isEqualToString:[newItemMetadata objectForMetadataKey:@"key1"]],@"Failed to retrieve summary value using QredoVaultItemMetadata");
+        
+        
+        
+         XCTAssertNil(error);
+         XCTAssertNotNil(newItemMetadata);
+         [testExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+    
+    
+}
 
 - (void)testPutItemMultiple
 {
@@ -361,9 +394,7 @@
         NSDictionary *item1SummaryValues = @{@"key1": description,
                                              @"key2": @"value2",
                                              @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
-        QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                                accessLevel:0
-                                                                                                              summaryValues:item1SummaryValues]
+        QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                                 value:item1Data];
         
         __block XCTestExpectation *testExpectation = [self expectationWithDescription:description];
@@ -395,7 +426,6 @@
     NSDate* created = [NSDate date];
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                                 created: created
                                                                                                           summaryValues:item1SummaryValues]
                                                             value:item1Data];
@@ -463,7 +493,6 @@
     NSDate* created = [NSDate date];
   
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
                                                                                                                 created: created
                                                                                                                 summaryValues:item1SummaryValues]
                                                             value:item1Data];
@@ -575,9 +604,7 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
 
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                             value:item1Data];
 
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
@@ -775,9 +802,7 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                             value:item1Data];
 
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
@@ -864,9 +889,7 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                             value:item1Data];
     
     NSData *item2Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
@@ -874,9 +897,7 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item2SummaryValues]
+    QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item2SummaryValues]
                                                             value:item2Data];
 
     __block XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem 1 completion handler called"];
@@ -952,9 +973,7 @@
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                             value:item1Data];
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
@@ -997,10 +1016,8 @@
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                            accessLevel:0
-                                                                                                          summaryValues:item1SummaryValues]
-                                                            value:item1Data];
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
+                                                                value:item1Data];
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
@@ -1122,7 +1139,6 @@
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                                       dataType:@"blob"
-                                                                                   accessLevel:0
                                                                                        created:created
                                                                                  summaryValues:item1SummaryValues];
     
@@ -1153,9 +1169,7 @@
     XCTAssertEqual(aMutableCopy.accessLevel, metadata.accessLevel);
     XCTAssertEqualObjects(aMutableCopy.summaryValues, aMutableCopySummaryValues);
     
-    QredoMutableVaultItemMetadata *mutableMetadata = [QredoMutableVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                      accessLevel:0
-                                                                                                    summaryValues:nil];
+    QredoMutableVaultItemMetadata *mutableMetadata = [QredoMutableVaultItemMetadata vaultItemMetadataWithSummaryValues:nil];
     
     NSDictionary *mutableMetadataSummaryValues = @{@"key3": @"value3"};
     

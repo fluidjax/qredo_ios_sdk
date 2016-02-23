@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import "QredoTypes.h"
@@ -10,8 +10,7 @@
 
 @implementation QredoObjectRef
 
-- (instancetype)initWithData:(NSData *)data
-{
+- (instancetype)initWithData:(NSData *)data{
     NSAssert(data, @"Data can't be nil");
     self = [super init];
     if (!self) return nil;

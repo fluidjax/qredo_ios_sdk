@@ -1,9 +1,10 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
 #import "QredoTypes.h"
+#import "QredoTypesPrivate.h"
 
 @protocol CryptoImpl;
 @class QLFRendezvousAuthSignature;

@@ -1,14 +1,11 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"
 #import <CommonCrypto/CommonCrypto.h>
-//#import "tomcrypt.h"
-#import "sodium.h"
 #import "QredoLoggerPrivate.h"
-#import <Security/Security.h>
 #import "rsapss.h"
 #import "QredoCertificateUtils.h"
 

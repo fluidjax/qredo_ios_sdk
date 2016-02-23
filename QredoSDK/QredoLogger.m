@@ -53,7 +53,7 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
     
     
     
-    NSString *filename = [[[NSString alloc] initWithUTF8String:file] lastPathComponent];
+    //NSString *filename = [[[NSString alloc] initWithUTF8String:file] lastPathComponent];
     NSString *function = [[NSString alloc] initWithUTF8String:functionChar];
     NSString *locationMessage = [NSString stringWithFormat:@"%@:%i ",function,(int)line];
     NSString *className = [QredoLogger extractClassName:function];

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -67,14 +67,12 @@
 - (void)testRendezvousResponder {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
 
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:@"test.chat" durationSeconds:@600 isUnlimitedResponseCount:NO];
-
     __block QredoRendezvous *rendezvous = nil;
-
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-
+    
     [client createAnonymousRendezvousWithTag:randomTag
-                      configuration:configuration
+                                    duration:600
+                          unlimitedResponses:NO
                   completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                       XCTAssertNil(error);
                       XCTAssertNotNil(_rendezvous);
@@ -127,8 +125,6 @@
     __block QredoConversation *responderConversation = nil;
     // Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
     [anotherClient respondWithTag:randomTag
-                  trustedRootPems:nil
-                          crlPems:nil
                 completionHandler:^(QredoConversation *conversation, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(conversation);

@@ -37,8 +37,28 @@
                BlueprintName = "QredoCryptoTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "QredoOpenSSLCertificateUtilsTests/testValidateCertificate_ValidChainWithRootAndCrls_qredoTestCA">
+               </Test>
+               <Test
+                  Identifier = "QredoOpenSSLCertificateUtilsTests/testValidateCertificate_Valid_DHCertWithRoot">
+               </Test>
+               <Test
+                  Identifier = "QredoOpenSSLCertificateUtilsTests/testValidateCertificate_Valid_RevokedCertButPreRevokedCrl_qredoTestCA">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "66605C361BD55A9F00EC8D6C"
+            BuildableName = "QredoCryptoTests.xctest"
+            BlueprintName = "QredoCryptoTests"
+            ReferencedContainer = "container:QredoSDK.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>

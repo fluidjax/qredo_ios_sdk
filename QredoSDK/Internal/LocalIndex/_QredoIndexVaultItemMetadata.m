@@ -12,8 +12,8 @@ const struct QredoIndexVaultItemMetadataAttributes QredoIndexVaultItemMetadataAt
 
 const struct QredoIndexVaultItemMetadataRelationships QredoIndexVaultItemMetadataRelationships = {
 	.descriptor = @"descriptor",
-	.latest = @"latest",
 	.summaryValues = @"summaryValues",
+	.vaultItem = @"vaultItem",
 };
 
 @implementation QredoIndexVaultItemMetadataID
@@ -79,8 +79,6 @@ const struct QredoIndexVaultItemMetadataRelationships QredoIndexVaultItemMetadat
 
 @dynamic descriptor;
 
-@dynamic latest;
-
 @dynamic summaryValues;
 
 - (NSMutableSet*)summaryValuesSet {
@@ -91,6 +89,8 @@ const struct QredoIndexVaultItemMetadataRelationships QredoIndexVaultItemMetadat
 	[self didAccessValueForKey:@"summaryValues"];
 	return result;
 }
+
+@dynamic vaultItem;
 
 @end
 

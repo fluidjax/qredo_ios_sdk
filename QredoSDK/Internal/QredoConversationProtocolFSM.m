@@ -1,8 +1,9 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import "QredoConversationProtocolFSM.h"
+#import "QredoConversationMessagePrivate.h"
 #import "QredoConversation.h"
 #import "QredoErrorCodes.h"
 #import "QredoLoggerPrivate.h"

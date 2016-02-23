@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2011-2014 Qredo Ltd.  Strictly confidential.  All rights reserved.
+ *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -469,7 +469,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     NSDate *created = [NSDate date];
     QredoVaultItemMetadata *metadata =
     [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoConversationVaultItemType
-                            accessLevel:0
                             created: created
                             summaryValues:summaryValues];
 
@@ -698,7 +697,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     [summaryValues removeObjectForKey:kQredoConversationMessageKeyCreated];
 
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:message.dataType
-                                                                                 accessLevel:0
                                                                                      created:sentDate
                                                                                summaryValues:summaryValues];
 

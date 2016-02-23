@@ -57,11 +57,11 @@ NSNumber *testNumber;
 -(void)testUpdateAccessDatePut{
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:1024];
-    long startSize = [vault cacheFileSize];
+    long long startSize = [vault cacheFileSize];
     [self createLarge1MTestItem:vault];
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before+1 ,@"Item shouldn't be added to cache as it is disabled Before %ld After %ld", (long)before, (long)after);
-    long endSize = [vault cacheFileSize];
+    long long endSize = [vault cacheFileSize];
     //QLog(@"Start:%ld  End:%ld", startSize, endSize);
 }
 
@@ -150,7 +150,7 @@ NSNumber *testNumber;
     //Test to ensure that different types of cache access cause the last access date/time to be updated
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:1024];
-    long startSize = [vault cacheFileSize];
+    long long startSize = [vault cacheFileSize];
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     [qredoLocalIndex saveAndWait];
     
@@ -192,6 +192,71 @@ NSNumber *testNumber;
 }
 
 
+-(void)testMetaDataCacheDisable{
+    [vault metadataCacheEnabled:NO];
+    NSInteger before = [qredoLocalIndex count];
+    
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before ,@"Item has incorrectly been added to the cache  Before %ld After %ld", (long)before, (long)after);
+    
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomKeyValue];
+    
+    __block int count =0;
+    __block QredoVaultItemMetadata *checkVaultMetaData;
+    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        checkVaultMetaData = vaultMetaData;
+        count++;
+    } completionHandler:^(NSError *error) {
+    }];
+    
+    
+    //metadata should come from the cache
+    XCTAssert(count==0,"Incorrect number of items found");
+    
+    XCTAssert(checkVaultMetaData ==nil,@"Vault item doesnt come from the cache/index");
+    
+    
+    //value should come from the server (not cache)
+    QredoVaultItem *vaultItem = [self getItemWithDescriptor:junk1 inVault:vault];
+    XCTAssertNotNil(vaultItem);
+    XCTAssert(vaultItem.metadata.origin == QredoVaultItemOriginServer,@"Vault Item doesnt come from server");
+}
+
+
+
+-(void)testEnableValueCache{
+    NSInteger before = [qredoLocalIndex count];
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    
+    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before+1 ,@"Item hasn't been correctly added to the cache Before %ld After %ld", (long)before, (long)after);
+    
+    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@", randomKeyValue];
+    
+    __block int count =0;
+    __block QredoVaultItemMetadata *checkVaultMetaData;
+    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
+        checkVaultMetaData = vaultMetaData;
+        count++;
+    } completionHandler:^(NSError *error) {
+    }];
+    
+    
+    //metadata should come from the cache
+    XCTAssert(count==1,"Incorrect number of items found");
+    XCTAssert(checkVaultMetaData.origin == QredoVaultItemOriginCache,@"Vault item doesnt come from the cache/index");
+    
+    
+    //value should come from the server (not cache)
+    QredoVaultItem *vaultItem = [self getItemWithDescriptor:checkVaultMetaData inVault:vault];
+    XCTAssertNotNil(vaultItem);
+    XCTAssert(vaultItem.metadata.origin == QredoVaultItemOriginCache,@"Vault Item doesnt come from server");
+}
+
 
 -(void)testDisableValueCache{
     NSInteger before = [qredoLocalIndex count];
@@ -222,20 +287,19 @@ NSNumber *testNumber;
     QredoVaultItem *vaultItem = [self getItemWithDescriptor:checkVaultMetaData inVault:vault];
     XCTAssertNotNil(vaultItem);
     XCTAssert(vaultItem.metadata.origin == QredoVaultItemOriginServer,@"Vault Item doesnt come from server");
-    
 }
 
 
 
 -(void)testPersistentFileSize{
-    long initialSize = [vault cacheFileSize];
+    long long initialSize = [vault cacheFileSize];
     NSString * randomVal = [QredoTestUtils randomStringWithLength:4096];
     for (int i=0; i<10; i++) {
         [self createTestItemInVault:vault key1Value:randomVal];
     }
     //flush to disk
     [qredoLocalIndex saveAndWait];
-    long finalSize = [vault cacheFileSize];
+    long long finalSize = [vault cacheFileSize];
     XCTAssert(finalSize>initialSize,@"Persistent store filesize didnt grow in size when a new item is added");
     
 }
@@ -629,9 +693,7 @@ NSNumber *testNumber;
         [item1SummaryValues setObject:metadataString forKey:key];
     }
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
     NSString *valueString             = [QredoTestUtils randomStringWithLength:vaultItemSize];
@@ -668,9 +730,7 @@ NSNumber *testNumber;
     NSDictionary *item1SummaryValues = @{@"key": metadataString};
     
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
@@ -706,9 +766,7 @@ NSNumber *testNumber;
                                         };
     
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
@@ -745,9 +803,7 @@ NSNumber *testNumber;
                                          @"key4": myTestDate};
     
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];

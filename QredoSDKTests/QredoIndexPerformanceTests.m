@@ -28,6 +28,16 @@ NSDate *myTestDate;
 NSNumber *testNumber;
 
 
+
+
+-(void)testMultiple{
+    for (int i=0;i<10;i++){
+        NSLog(@"Pass %i",i);
+        [self setUp];
+        [self test10Records];
+    }
+}
+
 -(void)test10Records{
     int testSize = 10;
     
@@ -41,7 +51,7 @@ NSNumber *testNumber;
     [self addTestItems:testSize];
     XCTAssertTrue(testSize == [self countRecords:@"QredoIndexVaultItem"],@"There are %ld records in the index there shoudl be %i",[self countRecords:@"QredoIndexVaultItem"],testSize);
 
-
+    [qredoLocalIndex removeIndexObserver];
     [qredoLocalIndex purgeAll];
     
     //At this point have added 10 records to the server, but purged them locally
@@ -56,11 +66,12 @@ NSNumber *testNumber;
     
     [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
         importCount++;
+        NSLog(@"Incoming %@, %@",[vaultMetaData.summaryValues objectForKey:@"key1"], client1.defaultVault.vaultId);
         QLog(@"importing %i",importCount);
         if (importCount==testSize) [syncwait fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:5000 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:100 handler:^(NSError * _Nullable error) {
         syncwait=nil;
     }];
     
@@ -69,7 +80,7 @@ NSNumber *testNumber;
     
     //at this point we should have received 10 records from the server
     
-    XCTAssertTrue(testSize == importCount,@"Failing to import %i items", testSize);
+    XCTAssertTrue(testSize == importCount,@"Failing to import %i items - imported %i", testSize, importCount);
     XCTAssertTrue(testSize == countAfter-countBefore,@"Failing to import %i items", testSize);
     
     XCTAssertTrue(testSize == [self countRecords:@"QredoIndexVaultItem"],@"Failed to import the correct number of records");
@@ -90,6 +101,7 @@ NSNumber *testNumber;
     
     
     qredoLocalIndex = client1.defaultVault.localIndex;
+    [qredoLocalIndex removeIndexObserver];
     [qredoLocalIndex purgeAll];
     int countBefore = [qredoLocalIndex count];
     
@@ -101,11 +113,12 @@ NSNumber *testNumber;
     
     [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
         importCount++;
+        NSLog(@"Incoming %@, %@",[vaultMetaData.summaryValues objectForKey:@"key1"], client1.defaultVault.vaultId);
         QLog(@"importing %i",importCount);
         if (importCount==testSize) [syncwait fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:5000 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:100 handler:^(NSError * _Nullable error) {
         syncwait=nil;
     }];
     
@@ -132,6 +145,7 @@ NSNumber *testNumber;
 - (void)setUp {
     [super setUp];
     [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] deleteStore];
+    
     myTestDate = [NSDate date];
     QLog(@"**************%@",myTestDate);
     testNumber = [NSNumber numberWithInt:3];
@@ -181,17 +195,18 @@ NSNumber *testNumber;
 - (void)addTestItems:(int)recordCount {
     QredoVault *vault = [client1 defaultVault];
     qredoLocalIndex = client1.defaultVault.localIndex;
-    [vault addMetadataIndexObserver];
+   // [vault addMetadataIndexObserver];
     NSInteger countBefore = [qredoLocalIndex count];
     XCTAssertNotNil(vault);
     for (int i=0; i<recordCount; i++) {
         QLog(@"Adding Record %i",i);
+
         NSString *testSearchValue = [NSString stringWithFormat:@"%i", i];
         QredoVaultItemMetadata *item = [self createTestItemInVault:vault key1Value:testSearchValue];
     }
     NSInteger countAfter = [qredoLocalIndex count];
     XCTAssert(countAfter == countBefore+recordCount,@"Failed to add items");
-    [vault removeMetadataIndexObserver];
+   // [vault removeMetadataIndexObserver];
 }
 
 
@@ -202,14 +217,15 @@ NSNumber *testNumber;
                                          @"key3": testNumber,
                                          @"key4": myTestDate};
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                 accessLevel:0
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"creatTestItem"];
     __block QredoVaultItemMetadata *createdItemMetaData = nil;
     [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
         XCTAssertNil(error);
+        
+        NSLog(@"Added  %@ %@",key1Value,vault.vaultId);
+        
         XCTAssertNotNil(newItemMetadata);
         createdItemMetaData = newItemMetadata;
         [testExpectation fulfill];
