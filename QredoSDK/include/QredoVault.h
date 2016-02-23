@@ -55,8 +55,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 
 /** this constructor to be used externally when creating a new vault item to be stored in Vault */
-+(instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
-                              summaryValues:(NSDictionary *)summaryValues;
++(instancetype)vaultItemMetadataWithSummaryValues:(NSDictionary *)summaryValues;
 
 /** Converts an index coredata summaryValue object retrieved by an index search predicate into a QredoVaultItemMetadata */
 +(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue;
@@ -85,7 +84,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 
 
-/** Shortcut to creating a Vaultitem with accessLevel=0 and dataType='' */
+/** Shortcut to creating a Vaultitem*/
 +(instancetype)vaultItemWithValue:(NSData *)value;
 +(instancetype)vaultItemWithMetadataDictionary:(NSDictionary *)metadataDictionary value:(NSData *)value;
 +(instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
@@ -157,7 +156,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @interface QredoVault (LocalIndex)
 
 
-typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
+typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetadata);
 
 /** Enumerates through all vault items in the local index that match the predicate
  The predicate search is performed on the QredoIndexSummaryValues object.
@@ -174,7 +173,7 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetaData);
  */
 
 -(void)enumerateIndexUsingPredicate:(NSPredicate *)predicate
-                          withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData, BOOL *stop))block
+                          withBlock:(void (^)(QredoVaultItemMetadata *vaultMetadata, BOOL *stop))block
                   completionHandler:(void (^)(NSError *error))completionHandler;
 
 

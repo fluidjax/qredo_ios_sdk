@@ -179,8 +179,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
                                              @"key2": @"value2",
                                              @"key3": @"value3"};
         
-        QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                                                              summaryValues:item1SummaryValues]
+        QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                                                                                       value:item1Data];
         __block QredoVaultItemDescriptor *item1Descriptor = nil;
         __block XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];

@@ -3,6 +3,7 @@
  */
 
 #import "QredoConversationProtocolFSM.h"
+#import "QredoConversationMessagePrivate.h"
 #import "QredoConversation.h"
 #import "QredoErrorCodes.h"
 #import "QredoLoggerPrivate.h"

@@ -693,8 +693,7 @@ NSNumber *testNumber;
         [item1SummaryValues setObject:metadataString forKey:key];
     }
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
     NSString *valueString             = [QredoTestUtils randomStringWithLength:vaultItemSize];
@@ -731,8 +730,7 @@ NSNumber *testNumber;
     NSDictionary *item1SummaryValues = @{@"key": metadataString};
     
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
@@ -768,8 +766,7 @@ NSNumber *testNumber;
                                         };
     
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];
@@ -806,8 +803,7 @@ NSNumber *testNumber;
                                          @"key4": myTestDate};
     
     
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
-                                                                               summaryValues:item1SummaryValues];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:metadata value:item1Data];

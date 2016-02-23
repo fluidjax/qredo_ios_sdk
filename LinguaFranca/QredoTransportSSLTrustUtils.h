@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 
 #import "MQTTSession.h"
-#import <Security/Security.h>
+//#import <Security/Security.h>
 
 
 MQTTSessionTrustValidator trustValidatorWithTrustedCert(SecCertificateRef trustedCert);

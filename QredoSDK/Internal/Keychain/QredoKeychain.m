@@ -6,7 +6,6 @@
 #import "CryptoImplV1.h"
 #import "QredoCrypto.h"
 #import "QredoErrorCodes.h"
-#import <CommonCrypto/CommonCrypto.h>
 #import "NSData+QredoRandomData.h"
 #import "QredoVaultCrypto.h"
 #import "QredoUserCredentials.h"

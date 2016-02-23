@@ -3,7 +3,6 @@
  */
 
 #import "QredoClientId.h"
-#import <CommonCrypto/CommonCrypto.h>
 
 @interface QredoClientId ()
 

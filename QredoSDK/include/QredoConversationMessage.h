@@ -11,7 +11,7 @@
 @interface QredoConversationMessage :NSObject
 
 @property (readonly) QredoQUID *messageId;
-@property (readonly) NSString *dataType;
+
 @property (readonly) NSDictionary *summaryValues;
 @property (readonly) QredoQUID *parentId;
 @property (readonly) BOOL incoming;
@@ -20,7 +20,6 @@
 
 
 -(instancetype)initWithValue:(NSData*)value
-                    dataType:(NSString*)dataType
                summaryValues:(NSDictionary*)summaryValues;
 
 @end

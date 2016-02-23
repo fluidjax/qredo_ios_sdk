@@ -555,6 +555,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     NSString *letters = @"abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
     for (int i=0; i<len; i++) {
+        
         [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((int)[letters length])]];
     }
     return randomString;
@@ -1105,8 +1106,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoVault *systemVault = [self systemVault];
     
     QredoVaultItemMetadata *metadata
-    = [QredoVaultItemMetadata vaultItemMetadataWithDataType:QredoVaultItemTypeKeychain
-                                              summaryValues:
+    = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:
        @{
          QredoVaultItemSummaryKeyDeviceName : [self deviceName]
          }];

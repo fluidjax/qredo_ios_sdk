@@ -14,7 +14,7 @@
 }
 
 + (instancetype)vaultItemWithMetadataDictionary:(NSDictionary *)metadataDictionary value:(NSData *)value{
-    QredoVaultItemMetadata *vaultItemMetadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:@"" summaryValues:metadataDictionary];
+    QredoVaultItemMetadata *vaultItemMetadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:metadataDictionary];
     return [[QredoVaultItem alloc] initWithMetadata:vaultItemMetadata value:value];
 }
 

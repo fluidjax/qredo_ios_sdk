@@ -101,4 +101,6 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 -(void)removeMetadataIndexObserver;
 
 
+
+
 @end

@@ -341,7 +341,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
-                                                                               summaryValues:@{
+                                                                                    created:[NSDate date]
+                                                                              summaryValues:@{
                                                                                                kQredoRendezvousVaultItemLabelTag: self.tag,
                                                                                                kQredoRendezvousVaultItemLabelAuthenticationType:[NSNumber numberWithInt:self.authenticationType]
                                                                                                }];

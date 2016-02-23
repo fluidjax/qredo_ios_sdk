@@ -40,6 +40,13 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
     return self; // for immutable objects
 }
 
+
+
+- (instancetype)initWithValue:(NSData*)value summaryValues:(NSDictionary*)summaryValues{
+    return [self initWithValue:value dataType:@"" summaryValues:summaryValues];
+}
+
+
 - (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues
 {
     self = [super init];

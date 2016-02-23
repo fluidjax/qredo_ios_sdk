@@ -3,6 +3,7 @@
  */
 
 #import "QredoConversationProtocol.h"
+#import "QredoConversationMessagePrivate.h"
 #import "QredoConversation.h"
 #import "QredoQUID.h"
 

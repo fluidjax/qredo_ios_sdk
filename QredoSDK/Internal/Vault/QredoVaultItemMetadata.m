@@ -26,10 +26,9 @@
     return [self vaultItemMetadataWithDescriptor:nil dataType:dataType  created: created summaryValues:summaryValues];
 }
 
-+ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType
-                                 summaryValues:(NSDictionary *)summaryValues{
++ (instancetype)vaultItemMetadataWithSummaryValues:(NSDictionary *)summaryValues{
    NSDate* created = [NSDate date];
-    return [self vaultItemMetadataWithDataType:dataType created: created summaryValues:summaryValues];
+    return [self vaultItemMetadataWithDataType:@"" created: created summaryValues:summaryValues];
 }
 
 

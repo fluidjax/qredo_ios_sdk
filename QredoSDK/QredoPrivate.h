@@ -16,9 +16,6 @@
 #import "QredoConversationPrivate.h"
 
 
-
-
-
 typedef NS_ENUM (NSUInteger, QredoClientOptionsTransportType) {
     QredoClientOptionsTransportTypeHTTP,
     QredoClientOptionsTransportTypeMQTT,
