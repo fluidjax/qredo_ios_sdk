@@ -1,6 +1,6 @@
 xcodeproj 'QredoSDK.xcodeproj/'
 
-platform :ios, '9.1'
+platform :ios, '8.0'
 
 inhibit_all_warnings!
 

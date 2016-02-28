@@ -36,7 +36,8 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 @protocol QredoConversationObserver <NSObject>
 @required
--(void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message;
+-(void)qredoConversation:(QredoConversation *)conversation
+    didReceiveNewMessage:(QredoConversationMessage *)message;
 @optional
 -(void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation;
 @end
@@ -45,6 +46,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 @interface QredoConversation :NSObject
 @property (readonly) QredoConversationHighWatermark* highWatermark;
+
 -(QredoConversationMetadata *)metadata;
 -(void)resetHighWatermark;
 -(void)publishMessage:(QredoConversationMessage *)message

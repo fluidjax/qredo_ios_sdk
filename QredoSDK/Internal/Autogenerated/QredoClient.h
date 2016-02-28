@@ -1491,13 +1491,20 @@
 @property (readonly) QLFVaultSequenceValue sequenceValue;
 @property (readonly) QLFVaultItemId *itemId;
 
-+ (QLFVaultItemRef *)vaultItemRefWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QLFVaultItemId *)itemId;
++ (QLFVaultItemRef *)vaultItemRefWithVaultId:(QLFVaultId *)vaultId
+                                  sequenceId:(QLFVaultSequenceId *)sequenceId
+                               sequenceValue:(QLFVaultSequenceValue)sequenceValue
+                                      itemId:(QLFVaultItemId *)itemId;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QLFVaultItemId *)itemId;
+- (instancetype)initWithVaultId:(QLFVaultId *)vaultId
+                     sequenceId:(QLFVaultSequenceId *)sequenceId
+                  sequenceValue:(QLFVaultSequenceValue)sequenceValue
+                         itemId:(QLFVaultItemId *)itemId;
+
 - (NSComparisonResult)compare:(QLFVaultItemRef *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToVaultItemRef:(QLFVaultItemRef *)other;
@@ -1512,13 +1519,18 @@
 @property (readonly) NSData *encryptedMetadata;
 @property (readonly) QLFAuthCode *authCode;
 
-+ (QLFEncryptedVaultItemHeader *)encryptedVaultItemHeaderWithRef:(QLFVaultItemRef *)ref encryptedMetadata:(NSData *)encryptedMetadata authCode:(QLFAuthCode *)authCode;
++ (QLFEncryptedVaultItemHeader *)encryptedVaultItemHeaderWithRef:(QLFVaultItemRef *)ref
+                                               encryptedMetadata:(NSData *)encryptedMetadata
+                                                        authCode:(QLFAuthCode *)authCode;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithRef:(QLFVaultItemRef *)ref encryptedMetadata:(NSData *)encryptedMetadata authCode:(QLFAuthCode *)authCode;
+- (instancetype)initWithRef:(QLFVaultItemRef *)ref
+          encryptedMetadata:(NSData *)encryptedMetadata
+                   authCode:(QLFAuthCode *)authCode;
+
 - (NSComparisonResult)compare:(QLFEncryptedVaultItemHeader *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)other;

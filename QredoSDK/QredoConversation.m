@@ -678,8 +678,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 - (void)storeMessage:(QredoConversationMessage*)message
               isMine:(BOOL)mine
-   completionHandler:(void(^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler
-{
+   completionHandler:(void(^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler{
     NSMutableDictionary *summaryValues = [message.summaryValues mutableCopy];
 
     [summaryValues setObject:@(mine) forKey:kQredoConversationItemIsMine];
