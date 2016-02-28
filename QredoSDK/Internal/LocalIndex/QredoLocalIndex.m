@@ -85,7 +85,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     __block QredoVaultItem* retrievedVaultItem = nil;
     [self.managedObjectContext performBlockAndWait:^{
         
-        QredoLogInfo(@"Try to get %@", vaultItemDescriptor);
+        QredoLogInfo(@"vaultItemDescriptor %@", vaultItemDescriptor);
 
         
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItem entityName]];
