@@ -84,6 +84,9 @@ IncomingMetadataBlock incomingMetadatBlock;
 - (QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     __block QredoVaultItem* retrievedVaultItem = nil;
     [self.managedObjectContext performBlockAndWait:^{
+        
+        QredoLogInfo(@"vaultItemDescriptor %@", vaultItemDescriptor);
+        
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItem entityName]];
         NSCompoundPredicate *searchPredicate;
         NSPredicate *itemIdPredicate = [NSPredicate predicateWithFormat:@"itemId == %@",vaultItemDescriptor.itemId.data];

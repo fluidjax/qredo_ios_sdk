@@ -247,6 +247,17 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 
+-(void)cacheInIndexVaultItemMetadata:(QredoVaultItemMetadata *)metadata
+                   completionHandler:(void (^)(NSError *error))completionHandler{
+    //this logger message displays the source of the data (index or server)
+    QredoLogDebug(@"Put metadata in index");
+    [_localIndex putMetadata:metadata];
+    if (completionHandler)completionHandler(nil);
+}
+
+
+
+
 -(void)cacheInIndexVaultItem:(QredoVaultItem *)vaultItem
                     metadata:(QredoVaultItemMetadata *)metadata
            completionHandler:(void (^)(NSError *error))completionHandler{
@@ -300,7 +311,14 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         completionHandler(vaultItem,nil);
     }else{
         QredoLogDebug(@"Get Vault Item from server");
-        [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:completionHandler];
+         [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+             //we can now put it in the cache
+             [self cacheInIndexVaultItem:vaultItem metadata:vaultItem.metadata completionHandler:^(NSError *error) {
+                 //nothing to do once item has been added to cache
+             }];
+             if (completionHandler)completionHandler(vaultItem, error);
+         }];
+
     }
     
 }
@@ -315,7 +333,13 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         completionHandler(metadata,nil);
     }else{
         QredoLogDebug(@"Get VaultMetadata from server");
-        [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:completionHandler];
+        [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+            
+            [self cacheInIndexVaultItemMetadata:vaultItemMetadata completionHandler:^(NSError *error) {
+                //nothing to do once item has been added to cache
+            }];
+            if (completionHandler)completionHandler(vaultItemMetadata, error);
+        }];
     }
 }
 
