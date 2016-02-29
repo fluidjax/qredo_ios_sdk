@@ -307,15 +307,22 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
     QredoVaultItem *vaultItem = [self.localIndex getVaultItemFromIndexWithDescriptor:itemDescriptor];
     if (vaultItem){
-        QredoLogDebug(@"Get Vault Item from Index");
+        QredoLogDebug(@"Get VaultItem from Index");
         completionHandler(vaultItem,nil);
     }else{
-        QredoLogDebug(@"Get Vault Item from server");
+        QredoLogDebug(@"Get VaultItem from server");
          [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
              //we can now put it in the cache
-             [self cacheInIndexVaultItem:vaultItem metadata:vaultItem.metadata completionHandler:^(NSError *error) {
+             if (error){
+                 QredoLogDebug(@"VaultItem not found on server");
                  if (completionHandler)completionHandler(vaultItem, error);
-             }];
+             }else{
+                 
+                 [self cacheInIndexVaultItem:vaultItem metadata:vaultItem.metadata completionHandler:^(NSError *error) {
+                     QredoLogDebug(@"vaultItem added to cache");
+                     if (completionHandler)completionHandler(vaultItem, error);
+                 }];
+             }
              
          }];
 
@@ -335,9 +342,15 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         QredoLogDebug(@"Get VaultMetadata from server");
         [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
             
-            [self cacheInIndexVaultItemMetadata:vaultItemMetadata completionHandler:^(NSError *error) {
+            if (error){
+                QredoLogDebug(@"VaultMetadata not found on server");
                 if (completionHandler)completionHandler(vaultItemMetadata, error);
-            }];
+            }else{
+                [self cacheInIndexVaultItemMetadata:vaultItemMetadata completionHandler:^(NSError *error) {
+                     QredoLogDebug(@"VaultMetadata added to cache");
+                    if (completionHandler)completionHandler(vaultItemMetadata, error);
+                }];
+            }
 
         }];
     }
