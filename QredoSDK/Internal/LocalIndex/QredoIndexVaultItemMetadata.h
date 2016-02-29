@@ -17,5 +17,5 @@
 -(BOOL)hasSameSequenceIdAs:(QredoVaultItemMetadata*)metadata;
 -(BOOL)hasSmallerSequenceNumberThan:(QredoVaultItemMetadata*)metadata;
 -(BOOL)hasCreatedTimeStampBefore:(QredoVaultItemMetadata*)metadata;
-
+-(BOOL)hasSameSequenceNumberAs:(QredoVaultItemMetadata*)metadata;
 @end

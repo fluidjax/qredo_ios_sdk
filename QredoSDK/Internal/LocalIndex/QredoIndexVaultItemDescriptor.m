@@ -19,7 +19,7 @@
 +(instancetype)createWithDescriptor:(QredoVaultItemDescriptor*)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
 	QredoIndexVaultItemDescriptor *qredoIndexVaultDescriptor = [[self class] insertInManagedObjectContext:managedObjectContext];
 	qredoIndexVaultDescriptor.itemId            = [[descriptor.itemId data] copy];
-	qredoIndexVaultDescriptor.sequenceId        = [descriptor.sequenceId data];
+	qredoIndexVaultDescriptor.sequenceId        = [[descriptor.sequenceId data] copy];
 
 	QLFVaultSequenceValue sequenceValue = descriptor.sequenceValue;
 	qredoIndexVaultDescriptor.sequenceValue = [NSNumber numberWithLongLong:sequenceValue];

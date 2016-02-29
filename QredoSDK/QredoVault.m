@@ -261,7 +261,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 -(void)cacheInIndexVaultItem:(QredoVaultItem *)vaultItem
                     metadata:(QredoVaultItemMetadata *)metadata
            completionHandler:(void (^)(NSError *error))completionHandler{
-    vaultItem.metadata.descriptor = metadata.descriptor;
+    //vaultItem.metadata.descriptor = metadata.descriptor;
     
     
     //this logger message displays the source of the data (index or server)
@@ -274,7 +274,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
     
     
-    [_localIndex putVaultItem:vaultItem];
+    [_localIndex putVaultItem:vaultItem metadata:metadata];
     if (completionHandler)completionHandler(nil);
 }
 
@@ -314,9 +314,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
          [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
              //we can now put it in the cache
              [self cacheInIndexVaultItem:vaultItem metadata:vaultItem.metadata completionHandler:^(NSError *error) {
-                 //nothing to do once item has been added to cache
+                 if (completionHandler)completionHandler(vaultItem, error);
              }];
-             if (completionHandler)completionHandler(vaultItem, error);
+             
          }];
 
     }
@@ -336,9 +336,9 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
             
             [self cacheInIndexVaultItemMetadata:vaultItemMetadata completionHandler:^(NSError *error) {
-                //nothing to do once item has been added to cache
+                if (completionHandler)completionHandler(vaultItemMetadata, error);
             }];
-            if (completionHandler)completionHandler(vaultItemMetadata, error);
+
         }];
     }
 }

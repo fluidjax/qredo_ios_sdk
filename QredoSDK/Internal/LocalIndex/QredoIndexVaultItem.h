@@ -14,7 +14,6 @@
 
 +(QredoIndexVaultItem *)searchForIndexByItemIdWithDescriptor:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 +(QredoIndexVaultItem *)create:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
-
 -(QredoVaultItem *)buildQredoVaultItem;
 -(void)addNewVersion:(QredoVaultItemMetadata *)metadata;
 -(void)setVaultValue:(NSData *)data hasVaultItemValue:(BOOL)hasVaultItemValue;

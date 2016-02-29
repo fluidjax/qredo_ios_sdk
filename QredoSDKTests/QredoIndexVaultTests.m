@@ -54,6 +54,8 @@ NSNumber *testNumber;
 
 
 
+
+
 -(void)testUpdateAccessDatePut{
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:1024];
@@ -107,6 +109,31 @@ NSNumber *testNumber;
     
 }
     
+
+
+-(void)testFillCacheAfterMiss{
+    [qredoLocalIndex purgeAll];
+    
+
+    //create item and make sure it has a value in the cache
+    QredoVaultItemMetadata *meta =  [self createLarge1MTestItem:vault];
+    long before = [self countRecords:@"QredoIndexVaultItem"];
+    XCTAssertTrue([vault.localIndex hasValue:meta.descriptor],@"Vault item should have a value/payload");
+    
+    //delete the value in the cache
+    [vault.localIndex deleteItemValue:meta.descriptor error:nil];
+    long after = [self countRecords:@"QredoIndexVaultItem"];
+    XCTAssertFalse([vault.localIndex hasValue:meta.descriptor],@"Vault item should have had the value/payload deleted");
+    XCTAssert(before == after, @"Whole Item has been deleted - but it should still exist - just with no payload");
+    
+
+    //get the item from server - it should now be in the index
+    [self getItemWithDescriptor:meta inVault:vault];
+    XCTAssertTrue([vault.localIndex hasValue:meta.descriptor],@"Vault item should again have a value/payload");
+    
+    
+    
+}
 
 
 -(void)testFillWithMetadata{
@@ -477,7 +504,7 @@ NSNumber *testNumber;
     NSInteger afterPut = [qredoLocalIndex count];
     XCTAssert(afterPut == before + 1,@"Failed to put new LocalIndex item");
     
-    [qredoLocalIndex deleteItem:meta1.descriptor];
+    [qredoLocalIndex deleteItem:meta2.descriptor];
     
     NSInteger afterDelete = [qredoLocalIndex count];
     XCTAssert(afterDelete == before,@"Failed to delete LocalIndex item");

@@ -14,6 +14,7 @@
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"
 #import "QredoLocalIndexCacheInvalidation.h"
+#import "QredoIndexVaultItemMetadata.h"
 #import "QredoIndexModel.h"
 #import "QredoLoggerPrivate.h"
 
@@ -70,13 +71,14 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-- (void)putVaultItem:(QredoVaultItem *)vaultItem {
+- (void)putVaultItem:(QredoVaultItem *)vaultItem metadata:(QredoVaultItemMetadata *)metadata{
     if (self.enableMetadataCache==NO)return; //no caching at all
     
     if (self.enableValueCache==NO){
-        [self putMetadata:vaultItem.metadata];
+        [self putMetadata:metadata];
     }else{
-        [self putItemWithMetadata:vaultItem.metadata vaultItem:vaultItem hasVaultItemValue:YES];
+        NSLog(@"Putting vault item into index %@ %@",vaultItem, metadata);
+        [self putItemWithMetadata:metadata vaultItem:vaultItem hasVaultItemValue:YES];
     }
 }
 
@@ -233,7 +235,14 @@ IncomingMetadataBlock incomingMetadatBlock;
     
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexVaultItemMetadata class] entityName]];
-        NSPredicate *searchByItemId = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@", vaultItemDescriptor.itemId.data];
+        NSPredicate *searchByItemId = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@ && descriptor.sequenceId == %@  && descriptor.sequenceValue == %d ",
+                                       vaultItemDescriptor.itemId.data,vaultItemDescriptor.sequenceId.data,vaultItemDescriptor.sequenceValue];
+        
+//        NSPredicate *searchByItemId = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@ && descriptor.sequenceId == %@",
+//                                       vaultItemDescriptor.itemId.data,vaultItemDescriptor.sequenceId.data];
+
+        
+        
         fetchRequest.predicate = searchByItemId;
         NSError *error = nil;
         NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -256,6 +265,75 @@ IncomingMetadataBlock incomingMetadatBlock;
     return hasDeletedObject;
 }
 
+
+- (BOOL)deleteItemValue:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError{
+    __block BOOL hasDeletedObject = NO;
+    __block NSError *blockError = nil;
+    QredoLogDebug(@"Delete Item from Index");
+    
+    [self.managedObjectContext performBlockAndWait:^{
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexVaultItemMetadata class] entityName]];
+        NSPredicate *searchByItemId = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@ && descriptor.sequenceId == %@  && descriptor.sequenceValue == %d ",
+                                       vaultItemDescriptor.itemId.data,vaultItemDescriptor.sequenceId.data,vaultItemDescriptor.sequenceValue];
+        fetchRequest.predicate = searchByItemId;
+        NSError *error = nil;
+        NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        if (error) {
+            blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexErrorUnknown userInfo:@{ NSLocalizedDescriptionKey : @"Failed to retrieve item to delete" }];
+        }else if ([items count]==0) {
+            blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexItemNotFound userInfo:@{ NSLocalizedDescriptionKey : @"Item not found in cache" }];
+        }else{
+            //delete the parent of the found item -
+            QredoIndexVaultItemMetadata *itemMetadata = [items lastObject];
+            QredoIndexVaultItem *vaultItem = itemMetadata.vaultItem;
+            [self.managedObjectContext deleteObject:vaultItem.payload];
+            vaultItem.hasValueValue=NO;
+            vaultItem.payload.value=nil;
+            vaultItem.payload=nil;
+        }
+        [self save];
+        hasDeletedObject = YES;
+    }];
+    if (returnError) *returnError = blockError;
+    return hasDeletedObject;
+}
+
+
+
+-(BOOL)hasValue:(QredoVaultItemDescriptor *)vaultItemDescriptor{
+    QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [self getIndexVaultItemMetadataWith:vaultItemDescriptor error:nil];
+    if (qredoIndexVaultItemMetadata && qredoIndexVaultItemMetadata.vaultItem.hasValueValue==YES)return YES;
+    return NO;
+}
+
+
+
+
+-(QredoIndexVaultItemMetadata *)getIndexVaultItemMetadataWith:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError{
+    __block BOOL hasDeletedObject = NO;
+    __block NSError *blockError = nil;
+    __block QredoIndexVaultItemMetadata *returnValue = nil;
+    
+    [self.managedObjectContext performBlockAndWait:^{
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexVaultItemMetadata class] entityName]];
+        NSPredicate *searchByItemId = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@ && descriptor.sequenceId == %@  && descriptor.sequenceValue == %d ",
+                                       vaultItemDescriptor.itemId.data,vaultItemDescriptor.sequenceId.data,vaultItemDescriptor.sequenceValue];
+        fetchRequest.predicate = searchByItemId;
+        NSError *error = nil;
+        NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        if (error) {
+            blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexErrorUnknown userInfo:@{ NSLocalizedDescriptionKey : @"Failed to retrieve item to delete" }];
+        }else if ([items count]==0) {
+            blockError = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeIndexItemNotFound userInfo:@{ NSLocalizedDescriptionKey : @"Item not found in cache" }];
+        }else{
+            //delete the parent of the found item -
+           returnValue = [items lastObject];
+        }
+    }];
+    if (returnError) *returnError = blockError;
+    return returnValue;
+
+}
 
 - (void)dump:(NSString *)message {
     for (QredoIndexVaultItem *vaultItem in self.qredoIndexVault.vaultItems) {
@@ -325,6 +403,17 @@ IncomingMetadataBlock incomingMetadatBlock;
                                                                                inManageObjectContext:self.managedObjectContext];
         QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
         
+        
+//        NSLog(@"LOOKING 1 *** %@",  newMetadata.descriptor.itemId);
+//        NSLog(@"LOOKING 2 *** %lli",newMetadata.descriptor.sequenceValue);
+//        NSLog(@"LOOKING 3 *** %@",  newMetadata.descriptor.sequenceId);
+//
+//        NSLog(@"LOOKING 4 *** %@",  latestIndexedMetadata.descriptor.itemId);
+//        NSLog(@"LOOKING 5 *** %@",  latestIndexedMetadata.descriptor.sequenceValue);
+//        NSLog(@"LOOKING 6 *** %@",  latestIndexedMetadata.descriptor.sequenceId);
+
+        
+        
         //A new Vault Item
         if (!indexedItem) {
             QredoIndexVaultItem *vaultIndexItem = [self addNewVaultItem:newMetadata];
@@ -333,9 +422,23 @@ IncomingMetadataBlock incomingMetadatBlock;
             [self save];
             QredoLogDebug(@"Add new item to index");
             QredoLogDebug(@"Index item count : %i", ^{ return [self count];}());
-            
             return;
         }
+        
+        //this is an existing item set the value
+        if ([latestIndexedMetadata hasSameSequenceIdAs:newMetadata]  &&
+            [latestIndexedMetadata hasSameSequenceNumberAs:newMetadata]){
+            QredoLogDebug(@"Existing item");
+            //check if we need to update the payload
+            if (indexedItem.hasValueValue==NO){
+                [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:YES];
+                [self.cacheInvalidator addSizeToTotals:indexedItem];
+                QredoLogDebug(@"Existing item without value, value set to data len %lu", (unsigned long)[vaultItem.value length]);
+                [self save];
+           }
+            return;
+        }
+        
         
         //There is already a version in the index with same sequence ID and previous sequence Number
         if ([latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasSmallerSequenceNumberThan:newMetadata]) {

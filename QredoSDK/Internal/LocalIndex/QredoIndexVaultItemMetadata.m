@@ -38,6 +38,10 @@
     return ([metadata.descriptor.sequenceId.data isEqualToData:self.descriptor.sequenceId]);
 }
 
+-(BOOL)hasSameSequenceNumberAs:(QredoVaultItemMetadata*)metadata{
+    return (self.descriptor.sequenceValueValue == metadata.descriptor.sequenceValue);
+}
+
 
 -(BOOL)hasSmallerSequenceNumberThan:(QredoVaultItemMetadata*)metadata{
     return (self.descriptor.sequenceValueValue < metadata.descriptor.sequenceValue);

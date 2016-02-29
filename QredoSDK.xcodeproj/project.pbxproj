@@ -1123,6 +1123,7 @@
 		0A16F88619C3566B00639779 = {
 			isa = PBXGroup;
 			children = (
+				837120971C7B16FE00648E47 /* APP */,
 				839D42B41C7C744F006180DD /* Legacy */,
 				839D42B31C7C743C006180DD /* Tests */,
 				66605B0E1BD5073A00EC8D6C /* QredoCommon */,
@@ -1748,7 +1749,7 @@
 			name = LocalIndex;
 			sourceTree = "<group>";
 		};
-		837120971C7B16FE00648E47 /* TestHost */ = {
+		837120971C7B16FE00648E47 /* APP */ = {
 			isa = PBXGroup;
 			children = (
 				8371209B1C7B16FE00648E47 /* AppDelegate.h */,
@@ -1762,6 +1763,7 @@
 				837120A41C7B16FE00648E47 /* TestHost.xcdatamodeld */,
 				837120981C7B16FE00648E47 /* Supporting Files */,
 			);
+			name = APP;
 			path = TestHost;
 			sourceTree = "<group>";
 		};
@@ -1853,7 +1855,6 @@
 		839D42B31C7C743C006180DD /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				837120971C7B16FE00648E47 /* TestHost */,
 				837120B41C7B16FF00648E47 /* TestHostTests */,
 				0A6573DF1A2DEBA300D5502E /* LinguaFrancaTests */,
 				0A16F8CC19C358B400639779 /* QredoSDKTests */,

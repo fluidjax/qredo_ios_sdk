@@ -22,7 +22,7 @@
 
 /** Put a metadata item into the local Index */
 - (void)putMetadata:(QredoVaultItemMetadata *)newMetadata;
-- (void)putVaultItem:(QredoVaultItem *)vaultItem;
+- (void)putVaultItem:(QredoVaultItem *)vaultItem metadata:(QredoVaultItemMetadata *)metadata;
 
 /** Get a the most recent metadata item (most recent based on sequence number) */
 - (QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
@@ -67,10 +67,15 @@
 - (void)removeIndexObserver;
 - (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 - (BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError;
+- (BOOL)deleteItemValue:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError;
+- (BOOL)hasValue:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 - (void)dump:(NSString *)message;
 - (long)persistentStoreFileSize;
 - (void)saveAndWait;
 
+
 - (QredoIndexVaultItem *)getIndexVaultItemFor:(QredoVaultItemMetadata *)newMetadata;
+
+
 
 @end
