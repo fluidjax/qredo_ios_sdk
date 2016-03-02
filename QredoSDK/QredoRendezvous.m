@@ -396,12 +396,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                              signature:ownershipSignature
                      completionHandler:^(QLFRendezvousActivated *result, NSError *error){
                          if (error) {
+                              QredoLogError(@"Error activating rendezvous %@",error);
                              completionHandler(error);
                              return;
                          }
                          
                          NSSet* expiresAt = [result expiresAt];
                          [self updateRendezvousWithDuration: duration expiresAt: expiresAt completionHandler:^(NSError *error) {
+                             QredoLogInfo(@"Rendezvous Activated");
                              completionHandler(error);
                          }];
                      }];
@@ -604,12 +606,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                      completionHandler:(void (^)(NSError *error))completionHandler
                                  since:(QredoRendezvousHighWatermark)sinceWatermark
                   highWatermarkHandler:(void (^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler {
-    [self enumerateResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop)
-     {
+    [self enumerateResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop) {
          block(conversation, stop);
      }
-                    completionHandler:completionHandler
-                                since:sinceWatermark
+                    completionHandler:^(NSError *error) {
+                            QredoLogInfo(@"Enumerate Conversations complete");
+                        completionHandler(error);
+                    }           since:sinceWatermark
                  highWatermarkHandler:highWatermarkHandler];
 }
 

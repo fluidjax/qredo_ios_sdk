@@ -243,7 +243,6 @@
 		830A3EF01BFF38EC002CE210 /* MultiPageMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A3EEF1BFF38EC002CE210 /* MultiPageMessageTest.m */; };
 		831164C51C18630400661D7C /* QredoIndexPerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 831164BE1C184A4E00661D7C /* QredoIndexPerformanceTests.m */; };
 		831164CA1C1895E600661D7C /* QredoLocalIndexDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 831164C71C18941400661D7C /* QredoLocalIndexDataStore.m */; };
-		832121501C7B1C84006989CB /* QredoLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 83800C701C50E81E007B3401 /* QredoLogger.m */; };
 		83227B821C15CEB2006CAD75 /* _QredoIndexVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */; };
 		83227B881C15CECB006CAD75 /* QredoIndexVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 83227B841C15CECB006CAD75 /* QredoIndexVault.m */; };
 		83303D951C7C7876006814A3 /* QredoClientIdTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573E71A2DEC0500D5502E /* QredoClientIdTests.m */; };
@@ -341,7 +340,6 @@
 		837526AE1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 837526AD1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m */; };
 		837FB2A41BED013700C66FC8 /* QredoServiceInvokerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66828EBC1BDFBB6B00067431 /* QredoServiceInvokerTests.m */; };
 		83800C731C50E837007B3401 /* QredoLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 83800C701C50E81E007B3401 /* QredoLogger.m */; };
-		83800C741C50E837007B3401 /* QredoLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 83800C701C50E81E007B3401 /* QredoLogger.m */; };
 		838279D21C46496500D6600F /* QredoLocalIndexCacheInvalidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 838279CF1C4647A000D6600F /* QredoLocalIndexCacheInvalidation.m */; };
 		838279D31C46496600D6600F /* QredoLocalIndexCacheInvalidation.m in Sources */ = {isa = PBXBuildFile; fileRef = 838279CF1C4647A000D6600F /* QredoLocalIndexCacheInvalidation.m */; };
 		838E48C31C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 838E48C11C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel */; };
@@ -2606,7 +2604,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "UNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/Debug-universal\n\nif [ \"true\" == ${ALREADYINVOKED:-false} ]\nthen\necho \"RECURSION: Detected, stopping\"\nelse\nexport ALREADYINVOKED=\"true\"\n\n# Step 1. Build Device and Simulator versions\n\n\n\nxcodebuild -workspace \"QredoSDK.xcworkspace\" -scheme \"QredoXDK\" \\\nONLY_ACTIVE_ARCH=NO -configuration Debug -sdk iphoneos  \\\nBUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n\n\nxcodebuild -workspace \"QredoSDK.xcworkspace\" -scheme \"QredoXDK\" \\\n-configuration Debug -sdk iphonesimulator  \\\nARCHS=\"i386 x86_64\" ONLY_ACTIVE_ARCH=NO \\\n-destination 'platform=iOS Simulator,name=iPhone 4s,OS=8.1' \\\nBUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\n# delete it first otherwise it will be copied inside any existing framework directory\nrm -rf \"${UNIVERSAL_OUTPUTFOLDER}/QredoXDK.framework\"\ncp -R \"${BUILD_DIR}/Debug-iphoneos/QredoXDK.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/QredoXDK.framework\"\n\n\n# Step 3. Copy Swift modules (from iphonesimulator build) to the copied framework directory\n#cp -R \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\n\n\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/QredoXDK.framework/QredoXDK\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/QredoXDK.framework/QredoXDK\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/QredoXDK.framework/QredoXDK\"\n\n# Step 5. Convenience step to copy the framework to the project's directory\n# delete it first otherwise it will be copied inside any existing framework directory\nrm -rf \"${PROJECT_DIR}/QredoXDK.framework\"\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/QredoXDK.framework\" \"${PROJECT_DIR}\"\n\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"\n\nfi";
+			shellScript = "UNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/Debug-universal\n\nif [ \"true\" == ${ALREADYINVOKED:-false} ]\nthen\necho \"RECURSION: Detected, stopping\"\nelse\nexport ALREADYINVOKED=\"true\"\n\n# Step 1. Build Device and Simulator versions\n\n\n\nxcodebuild -workspace \"QredoSDK.xcworkspace\" -scheme \"QredoXDK\" \\\nONLY_ACTIVE_ARCH=NO -configuration Debug -sdk iphoneos  \\\nBUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n\n\n\n\nxcodebuild -workspace \"QredoSDK.xcworkspace\" -scheme \"QredoXDK\" \\\n-configuration Debug -sdk iphonesimulator  \\\nARCHS=\"i386 x86_64\" ONLY_ACTIVE_ARCH=NO \\\n-destination 'platform=iOS Simulator,name=iPhone 4s,OS=8.1' \\\nBUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n\n\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n\n\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\n# delete it first otherwise it will be copied inside any existing framework directory\nrm -rf \"${UNIVERSAL_OUTPUTFOLDER}/QredoXDK.framework\"\ncp -R \"${BUILD_DIR}/Debug-iphoneos/QredoXDK.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/QredoXDK.framework\"\n\n\n# Step 3. Copy Swift modules (from iphonesimulator build) to the copied framework directory\n#cp -R \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\n\n\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/QredoXDK.framework/QredoXDK\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/QredoXDK.framework/QredoXDK\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/QredoXDK.framework/QredoXDK\"\n\n# Step 5. Convenience step to copy the framework to the project's directory\n# delete it first otherwise it will be copied inside any existing framework directory\nrm -rf \"${PROJECT_DIR}/QredoXDK.framework\"\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/QredoXDK.framework\" \"${PROJECT_DIR}\"\n\n#Insert the version number into a file in the\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleShortVersionString\" \"${PROJECT_DIR}/QredoXDK.framework/Info.plist\")\necho \"{\\\"version\\\":\\\"${buildNumber}\\\"}\" > \"${PROJECT_DIR}/version.json\"\necho \"${buildNumber}\" > \"${PROJECT_DIR}/version\"\n\n\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"\n\nfi";
 		};
 		6BFC122C270C320813238E79 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2760,7 +2758,6 @@
 				83ADC4DA1C3BF0EF00C34A76 /* NSData+QredoDataEquality.m in Sources */,
 				83ADC4DB1C3BF0EF00C34A76 /* NSData+QredoRandomData.m in Sources */,
 				83ADC4DC1C3BF0EF00C34A76 /* NSSet+QredoSetEquality.m in Sources */,
-				83800C741C50E837007B3401 /* QredoLogger.m in Sources */,
 				83ADC4DD1C3BF0EF00C34A76 /* NSData+ParseHex.m in Sources */,
 				83ADC4DF1C3BF0EF00C34A76 /* CryptoImplV1.m in Sources */,
 				83ADC4E01C3BF0EF00C34A76 /* QredoCertificateUtils.m in Sources */,
@@ -3082,7 +3079,6 @@
 				8371209D1C7B16FE00648E47 /* AppDelegate.m in Sources */,
 				8371209A1C7B16FE00648E47 /* main.m in Sources */,
 				837120A61C7B16FE00648E47 /* TestHost.xcdatamodeld in Sources */,
-				832121501C7B1C84006989CB /* QredoLogger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

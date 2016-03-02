@@ -356,27 +356,26 @@ NSString *systemVaultKeychainArchiveIdentifier;
                        options:(QredoClientOptions*)options
              completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler {
     // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
+    
     if (!options) {
         options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     }
     
-    
     NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
     if (!appID) appID = @"test";
-    
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appID
                                                                                  userId:userId
                                                                              userSecure:userSecret];
     
-    QredoLogDebug(@"UserCredentials: Appid:%@   userID:%@   userSecure:%@",appID,userId,userSecret);
+    QredoLogInfo(@"UserCredentials: Appid:%@   userID:%@   userSecure:%@",appID,userId,userSecret);
     
     
     
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appID
                                                                              appSecret:[NSData dataWithHexString:appSecret]];
     
-    QredoLogDebug(@"AppCredentials: Appid:%@   appSecret:%@",appID,appSecret);
+    QredoLogInfo(@"AppCredentials: Appid:%@   appSecret:%@",appID,appSecret);
     
     systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
     
@@ -407,10 +406,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
         } else {
             // This assert is very important!!!
             if (!client.defaultVault) QredoLogError(@"No QredoClient without a system vault must be passed to the client code.");
+            QredoLogInfo(@"Client Inialized");
             if (completionHandler) completionHandler(client, error);
         }
     };
-    
+
     BOOL loaded = [client loadStateWithError:&error];
     
 //    if (options.resetData) {
@@ -474,7 +474,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
             });
         }
         
-        return;
+        
     }
     
     completeAuthorization(error);
@@ -520,7 +520,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 -(void)closeSession {
     // Need to terminate transport, which ends associated threads and subscriptions etc.
+    QredoLogInfo(@"Close session");
     [_serviceInvoker terminate];
+
     
     // TODO: DH - somehow indicate that the client has been closed and therefore cannot be used again.
 }
@@ -611,8 +613,12 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   trustedRootPems:[[NSArray alloc] init]
                           crlPems:[[NSArray alloc] init]
                    signingHandler:nil
-                completionHandler:completionHandler];
-    QredoLogVerbose(@"Complete createAnonymousRendezvousWithTag %@", tag);
+                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                    QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@", tag);
+                    if (completionHandler)completionHandler(rendezvous,error);
+                }
+     ];
+
 }
 
 
@@ -628,8 +634,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   trustedRootPems:[[NSArray alloc] init]
                           crlPems:[[NSArray alloc] init]
                    signingHandler:nil
-                completionHandler:completionHandler];
-    QredoLogVerbose(@"Complete createAnonymousRendezvousWithTag %@", tag);
+                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                    QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@", tag);
+                    if (completionHandler)completionHandler(rendezvous,error);
+                }
+     ];
 }
 
 
@@ -647,6 +656,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
         completionHandler(nil, error);
+        
         return;
     } else if (authenticationType == QredoRendezvousAuthenticationTypeX509Pem ||
                authenticationType == QredoRendezvousAuthenticationTypeX509PemSelfsigned) {
@@ -677,7 +687,12 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   trustedRootPems:[[NSArray alloc] init]
                           crlPems:[[NSArray alloc] init]
                    signingHandler:nil
-                completionHandler:completionHandler];
+                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                    QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@", prefixedTag);
+                    if (completionHandler)completionHandler(rendezvous,error);
+                }
+     ];
+
 }
 
 
@@ -847,14 +862,17 @@ NSString *systemVaultKeychainArchiveIdentifier;
         }
     } completionHandler:^(NSError *error) {
         if (error) {
+            QredoLogError(@"Fetch Rendezvous Error %@",error);
             completionHandler(nil,error);
         }else if(!matchedRendezvousMetadata) {
             NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                                  code:QredoErrorCodeRendezvousNotFound
                                              userInfo:@{ NSLocalizedDescriptionKey : @"Rendezvous was not found in vault" }];
+            QredoLogError(@"Fetch Rendezvous Error %@",error);
             completionHandler(nil,error);
         }else{
             [self fetchRendezvousWithMetadata:matchedRendezvousMetadata completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+               QredoLogInfo(@"Fetch Rendezvous complete");
                 completionHandler(rendezvous, error);
             }];
         }
@@ -884,6 +902,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
             *stopVaultEnumeration = stopObjectEnumeration;
         }
     } completionHandler:^(NSError *error) {
+        QredoLogInfo(@"Enumerate Rendezvous complete");
         completionHandler(error);
     }];
 }
@@ -892,10 +911,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
             completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler {
     // an unknown ref will throw an exception, but catch a nil ref here
-    if (ref == nil)
-    {
+    if (ref == nil)    {
         NSString *message = @"'The RendezvousRef must not be nil";
-        
+        QredoLogError(@"fetchRendezvousWithRef - RendezvousRef must not be nil ");
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
@@ -919,16 +937,16 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoVault *vault = [self systemVault];
     
     [vault getItemWithDescriptor:vaultItemDescriptor
-               completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
-     {
+               completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
          if (error) {
+             QredoLogError(@"Fetch Rendezvous Error %@",error);
              completionHandler(nil, error);
              return;
          }
          
          NSError *parsingError = nil;
          QredoRendezvous *rendezvous = [self rendezvousFromVaultItem:vaultItem error:&parsingError];
-         
+         QredoLogInfo(@"Fetch Rendezvous complete");
          completionHandler(rendezvous, parsingError);
      }];
 }
@@ -981,6 +999,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
             *stopVaultEnumeration = stopObjectEnumeration;
         }
     } completionHandler:^(NSError *error) {
+        QredoLogInfo(@"Enumermate Conversation Complete");
         completionHandler(error);
     }];
 }
@@ -1000,6 +1019,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
          
          NSError *parsingError = nil;
          QredoConversation *conversation = [self conversationFromVaultItem:vaultItem error:&parsingError];
+         QredoLogInfo(@"Fetch Conversation with Ref complete");
          completionHandler(conversation, parsingError);
      }];
 }
@@ -1054,12 +1074,13 @@ NSString *systemVaultKeychainArchiveIdentifier;
         }
         
         
-        [rendezvous activateRendezvous:duration completionHandler:^(NSError *error)
-         {
+        [rendezvous activateRendezvous:duration completionHandler:^(NSError *error){
              if (error) {
                  completionHandler(nil, error);
+                 QredoLogError(@"Failed to activate Rendezvous");
              } else {
                  completionHandler(rendezvous, nil);
+                                
              }
          }
          ];
@@ -1087,6 +1108,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
         }
         
         [rendezvous deactivateRendezvous:^(NSError *error) {
+            QredoLogInfo(@"Rendezvous deactivated"); 
             completionHandler(error);
         }];
     }];

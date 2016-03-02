@@ -65,11 +65,10 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 -(void)resetHighWatermark;
 
-/** Not implemented yet. */
--(void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
+
+
 -(void)addRendezvousObserver:(id<QredoRendezvousObserver>)observer;
 -(void)removeRendezvousObserver:(id<QredoRendezvousObserver>)observer;
-
 /** Enumerates all the conversations (responses) that were created for this rendezvous */
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler;
@@ -80,6 +79,8 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
                      completionHandler:(void (^)(NSError *error))completionHandler;
 
 
+/** Not implemented yet. */
+-(void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
 
 @end

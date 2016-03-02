@@ -185,7 +185,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         itemId = [QredoQUID QUID];
     }
 
-    QredoLogVerbose(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
+    
 
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
@@ -201,6 +201,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                     completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
                         
                          __block NSError *putError=error;
+                        QredoLogInfo(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
                         [self cacheInIndexVaultItem:vaultItem  metadata:newItemMetadata  completionHandler:^(NSError *error) {
                                 if (putError)error=putError;
                                 completionHandler(newItemMetadata, error);
@@ -307,19 +308,19 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
     QredoVaultItem *vaultItem = [self.localIndex getVaultItemFromIndexWithDescriptor:itemDescriptor];
     if (vaultItem){
-        QredoLogDebug(@"Get VaultItem from Index");
+        QredoLogInfo(@"Retrieved VaultItem from Index");
         completionHandler(vaultItem,nil);
     }else{
-        QredoLogDebug(@"Get VaultItem from server");
+        QredoLogInfo(@"Retrieved VaultItem from server");
          [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
              //we can now put it in the cache
              if (error){
-                 QredoLogDebug(@"VaultItem not found on server");
+                 QredoLogWarning(@"VaultItem not found on server");
                  if (completionHandler)completionHandler(vaultItem, error);
              }else{
                  
                  [self cacheInIndexVaultItem:vaultItem metadata:vaultItem.metadata completionHandler:^(NSError *error) {
-                     QredoLogDebug(@"vaultItem added to cache");
+                     QredoLogVerbose(@"vaultItem added to cache");
                      if (completionHandler)completionHandler(vaultItem, error);
                  }];
              }
@@ -336,18 +337,18 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
     QredoVaultItemMetadata *metadata = [self.localIndex getMetadataFromIndexWithDescriptor:itemDescriptor];
     if (metadata){
-        QredoLogDebug(@"Get VaultMetadata from Index");
+        QredoLogInfo(@"Retrieved VaultMetadata from Index");
         completionHandler(metadata,nil);
     }else{
-        QredoLogDebug(@"Get VaultMetadata from server");
+        QredoLogInfo(@"Retrieved VaultMetadata from server");
         [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
             
             if (error){
-                QredoLogDebug(@"VaultMetadata not found on server");
+                QredoLogWarning(@"VaultMetadata not found on server");
                 if (completionHandler)completionHandler(vaultItemMetadata, error);
             }else{
                 [self cacheInIndexVaultItemMetadata:vaultItemMetadata completionHandler:^(NSError *error) {
-                     QredoLogDebug(@"VaultMetadata added to cache");
+                     QredoLogVerbose(@"VaultMetadata added to cache");
                     if (completionHandler)completionHandler(vaultItemMetadata, error);
                 }];
             }
@@ -397,14 +398,12 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
      
 
 - (void)resetWatermark{
-     QredoLogDebug(@"Reset Watermark");
+     QredoLogInfo(@"Reset Watermark");
     _highwatermark = nil;
     [self saveState];
 }
 
-- (void)putItem:(QredoVaultItem *)vaultItem
-completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler
-{
+- (void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
     BOOL isNewItemFromDateCreated = vaultItem.metadata.summaryValues[QredoVaultItemMetadataItemDateCreated] == nil;
     BOOL isNewItemFromDescriptor = vaultItem.metadata.descriptor == nil;
     
@@ -459,8 +458,10 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
                    }];
                   
               } else {
+
                   completionHandler(nil, error);
               }
+              QredoLogInfo(@"Delete item complete");
      }];
 }
 

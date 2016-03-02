@@ -47,8 +47,7 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
 }
 
 
-- (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues
-{
+- (instancetype)initWithValue:(NSData*)value dataType:(NSString*)dataType summaryValues:(NSDictionary*)summaryValues{
     self = [super init];
     if (!self) return nil;
 
@@ -59,8 +58,7 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
     return self;
 }
 
-- (QLFConversationMessage*)messageLF
-{
+- (QLFConversationMessage*)messageLF{
     NSSet* summaryValuesSet = [self.summaryValues indexableSet];
 
      // NOTE: QLFConversationMessageMetadata and QLFConversationMessage  will be removed in v0.52 of CommonDefs
@@ -81,26 +79,20 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
 
 }
 
-- (BOOL)isControlMessage
-{
+- (BOOL)isControlMessage{
     return [self.dataType isEqualToString:kQredoConversationMessageTypeControl];
 }
 
-- (QredoConversationControlMessageType)controlMessageType
-{
+- (QredoConversationControlMessageType)controlMessageType{
     if (![self isControlMessage]) return QredoConversationControlMessageTypeNotControlMessage;
-
-
 
     NSData *qrvValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRV]
                                                      marshaller:[QLFCtrl marshaller]];
-
 
     if ([self.value isEqualToData:qrvValue]) return QredoConversationControlMessageTypeJoined;
 
     NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRT]
                                                      marshaller:[QLFCtrl marshaller]];
-
 
     if ([self.value isEqualToData:qrtValue]) return QredoConversationControlMessageTypeLeft;
 

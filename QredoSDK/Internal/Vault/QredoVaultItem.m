@@ -31,7 +31,7 @@
     if (!self) return nil;
     _metadata = metadata;
     _value = value;
-
+    QredoLogInfo(@"Created Vault Item Metadata");
     return self;
 }
 

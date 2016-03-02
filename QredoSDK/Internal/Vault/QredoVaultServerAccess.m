@@ -239,7 +239,7 @@
                                watermarkHandler:watermarkHandler
                                           since:highWaterMark consolidatingResults:shouldConsolidateResults];
         }else{
- 
+            QredoLogInfo(@"Enumerate vaults items complete");
             if (completionHandler)completionHandler(error);
        }
  

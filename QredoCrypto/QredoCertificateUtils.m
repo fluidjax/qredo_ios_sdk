@@ -16,8 +16,7 @@ static NSString *const PEM_CERTIFICATE_END = @"\n-----END CERTIFICATE-----\n";
 static NSString *const PEM_KEY_START = @"-----BEGIN PUBLIC KEY-----\n";
 static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
 
-+ (SecCertificateRef)createCertificateWithPemCertificate:(NSString *)pemCertificate
-{
++ (SecCertificateRef)createCertificateWithPemCertificate:(NSString *)pemCertificate{
     [QredoCryptoError throwArgExceptionIf:!pemCertificate reason:@"Certificate string argument is nil"];
 
     NSData *certificateData = [QredoCertificateUtils convertPemCertificateToDer:pemCertificate];
@@ -34,8 +33,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return certificateRef;
 }
 
-+ (SecCertificateRef)createCertificateWithDerData:(NSData *)certificateData
-{
++ (SecCertificateRef)createCertificateWithDerData:(NSData *)certificateData{
     [QredoCryptoError throwArgExceptionIf:!certificateData reason:@"Certificate data argument is nil"];
 
     // Note: certificate data must be X.509 DER encoded.
@@ -46,12 +44,10 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
         QredoLogError(@"Could not create certificate using provided data: %@.",
                  [QredoLogger hexRepresentationOfNSData:certificateData]);
     }
-    
     return certificateRef;
 }
 
-+ (NSString *)convertCertificateRefsToPemCertificate:(NSArray *)certificateRefs
-{
++ (NSString *)convertCertificateRefsToPemCertificate:(NSArray *)certificateRefs{
     [QredoCryptoError throwArgExceptionIf:!certificateRefs reason:@"Certificate refs argument is nil"];
 
     NSMutableString *pemCertificates = [[NSMutableString alloc] init];
@@ -65,8 +61,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return pemCertificates;
 }
 
-+ (NSString *)convertCertificateRefToPemCertificate:(SecCertificateRef)certificateRef
-{
++ (NSString *)convertCertificateRefToPemCertificate:(SecCertificateRef)certificateRef{
     [QredoCryptoError throwArgExceptionIf:!certificateRef reason:@"Certificate ref argument is nil"];
 
     NSData *certificateData = (__bridge_transfer NSData *)SecCertificateCopyData(certificateRef);
@@ -84,8 +79,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return certificatePem;
 }
 
-+ (NSString *)convertKeyIdentifierToPemKey:(NSString *)keyIdentifier
-{
++ (NSString *)convertKeyIdentifierToPemKey:(NSString *)keyIdentifier{
     [QredoCryptoError throwArgExceptionIf:!keyIdentifier reason:@"Key identifier argument is nil"];
 
     NSData *keyData = [QredoCrypto getKeyDataForIdentifier:keyIdentifier];
@@ -99,8 +93,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return keyPem;
 }
 
-+ (NSData *)convertPemWrappedStringToDer:(NSString *)pemEncodedData startMarker:(NSString *)startMarker endMarker:(NSString *)endMarker
-{
++ (NSData *)convertPemWrappedStringToDer:(NSString *)pemEncodedData startMarker:(NSString *)startMarker endMarker:(NSString *)endMarker{
     [QredoCryptoError throwArgExceptionIf:!pemEncodedData reason:@"PEM encoded data argument is nil"];
     [QredoCryptoError throwArgExceptionIf:!startMarker reason:@"Start marker argument is nil" ];
     [QredoCryptoError throwArgExceptionIf:!endMarker reason:@"End marker argument is nil"];
@@ -145,8 +138,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return derEncodedPayload;
 }
 
-+ (NSData *)getPkcs1PublicKeyDataFromUnknownPublicKeyData:(NSData *)unknownPublicKeyData
-{
++ (NSData *)getPkcs1PublicKeyDataFromUnknownPublicKeyData:(NSData *)unknownPublicKeyData{
     [QredoCryptoError throwArgExceptionIf:!unknownPublicKeyData reason:@"Public key data argument is nil"];
 
     // This method will return PKCS#1 encoded Public Key data when provided with either PKCS#1 or X.509 (SubjectPublicKeyInfo) Public Key data
@@ -173,12 +165,10 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return pkcs1PublicKeyData;
 }
 
-+ (BOOL)checkIfPublicKeyDataIsPkcs1:(NSData *)pkcs1PublicKeyData
-{
++ (BOOL)checkIfPublicKeyDataIsPkcs1:(NSData *)pkcs1PublicKeyData{
     BOOL dataIsPkcs1 = YES;
     
-    if (!pkcs1PublicKeyData)
-    {
+    if (!pkcs1PublicKeyData)    {
         // Nil data is not PKCS1 data
         dataIsPkcs1 = NO;
     }
@@ -194,8 +184,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return dataIsPkcs1;
 }
 
-+ (NSData *)convertX509PublicKeyToPkcs1PublicKey:(NSData *)x509PublicKeyData
-{
++ (NSData *)convertX509PublicKeyToPkcs1PublicKey:(NSData *)x509PublicKeyData{
     NSData *pkcs1PublicKeyData = nil;
 
     [QredoCryptoError throwArgExceptionIf:!x509PublicKeyData reason:@"X509 Public Key data argument is nil"];
@@ -214,8 +203,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return pkcs1PublicKeyData;
 }
 
-+ (NSData *)convertPemPublicKeyToDer:(NSString *)pemEncodedPublicKey
-{
++ (NSData *)convertPemPublicKeyToDer:(NSString *)pemEncodedPublicKey{
     [QredoCryptoError throwArgExceptionIf:!pemEncodedPublicKey reason:@"PEM Public Key argument is nil"];
 
     NSData *derEncodedPayload = [self convertPemWrappedStringToDer:pemEncodedPublicKey
@@ -228,8 +216,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return derEncodedPayload;
 }
 
-+ (NSData *)convertPemCertificateToDer:(NSString *)pemEncodedCertificate
-{
++ (NSData *)convertPemCertificateToDer:(NSString *)pemEncodedCertificate{
     [QredoCryptoError throwArgExceptionIf:!pemEncodedCertificate reason:@"Certificate argument is nil"];
 
     NSData *derEncodedPayload = [self convertPemWrappedStringToDer:pemEncodedCertificate
@@ -243,8 +230,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
 
 }
 
-+ (NSString *)getFirstPemCertificateFromString:(NSString *)string
-{
++ (NSString *)getFirstPemCertificateFromString:(NSString *)string{
     [QredoCryptoError throwArgExceptionIf:!string reason:@"String argument is nil"];
 
     NSRange searchRange = NSMakeRange(0, string.length);
@@ -259,8 +245,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return certificate;
 }
 
-+ (NSRange)getRangeOfPemCertificateInString:(NSString *)string searchRange:(NSRange)searchRange
-{
++ (NSRange)getRangeOfPemCertificateInString:(NSString *)string searchRange:(NSRange)searchRange{
     [QredoCryptoError throwArgExceptionIf:!string reason:@"String argument is nil"];
     [QredoCryptoError throwArgExceptionIf:searchRange.location >= string.length
                                    reason:@"Search range exceeds length of string being searched"];
@@ -304,8 +289,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
 }
 
 // Splits a string containing multiple PEM encoded certificates into array of PEM encoded certificates
-+ (NSArray *)splitPemCertificateChain:(NSString *)pemCertificateChain
-{
++ (NSArray *)splitPemCertificateChain:(NSString *)pemCertificateChain{
     [QredoCryptoError throwArgExceptionIf:!pemCertificateChain reason:@"Certificate chain argument is nil"];
 
     // Break the certificate chain into individual certificates
@@ -344,8 +328,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return certificates;
 }
 
-+ (NSArray*)getCertificateRefsFromPemCertificates:(NSString *)pemCertificates
-{
++ (NSArray*)getCertificateRefsFromPemCertificates:(NSString *)pemCertificates{
     [QredoCryptoError throwArgExceptionIf:!pemCertificates reason:@"Certificates argument is nil"];
 
     /*
@@ -378,8 +361,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return certificateRefs;
 }
 
-+ (NSArray*)getCertificateRefsFromPemCertificatesArray:(NSArray *)pemCertificatesArray
-{
++ (NSArray*)getCertificateRefsFromPemCertificatesArray:(NSArray *)pemCertificatesArray{
     [QredoCryptoError throwArgExceptionIf:!pemCertificatesArray reason:@"Certificates array argument is nil"];
 
     /*
@@ -421,8 +403,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
  @param certificateChainRefs NSArray containing SecCertificateRefs of X.509 certificate chain
  @param rootCertificateRefs NSArray containing the root/anchor certificates refs needed to validate the PEM certificate chain.  Use [QredoCertificateUtils getCertificateRefsFromPemCertificates:] to get the refs from PEM encoded X.509 certificates string.
  */
-+ (SecKeyRef)validateCertificateChain:(NSArray*)certificateChainRefs rootCertificateRefs:(NSArray*)rootCertificateRefs
-{
++ (SecKeyRef)validateCertificateChain:(NSArray*)certificateChainRefs rootCertificateRefs:(NSArray*)rootCertificateRefs{
     [QredoCryptoError throwArgExceptionIf:!certificateChainRefs reason:@"Certificate chain refs argument is nil"];
     [QredoCryptoError throwArgExceptionIf:!rootCertificateRefs reason:@"Root certificates argument is nil"];
 
@@ -460,8 +441,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return validatedCertificatePublicKeyRef;
 }
 
-+ (BOOL)evaluateTrustRef:(SecTrustRef)trustRef rootCertificateRefs:(NSArray*)rootCertificateRefs
-{
++ (BOOL)evaluateTrustRef:(SecTrustRef)trustRef rootCertificateRefs:(NSArray*)rootCertificateRefs{
     [QredoCryptoError throwArgExceptionIf:!trustRef reason:@"Trust ref argument is nil"];
     [QredoCryptoError throwArgExceptionIf:!rootCertificateRefs reason:@"Root certificates argument is nil"];
 
@@ -519,8 +499,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
  @param pemCertificateChain String containing PEM encoded X.509 certificate chain (i.e. with -----BEGIN CERTIFICATE-----/-----END CERTIFICATE----- markers)
  @param rootCertificateRefs NSArray containing the root/anchor certificates refs needed to validate the PEM certificate chain.  Use [QredoCertificateUtils getCertificateRefsFromPemCertificates:] to get the refs from PEM encoded X.509 certificates string.
  */
-+ (SecKeyRef)validatePemCertificateChain:(NSString*)pemCertificateChain rootCertificateRefs:(NSArray*)rootCertificateRefs
-{
++ (SecKeyRef)validatePemCertificateChain:(NSString*)pemCertificateChain rootCertificateRefs:(NSArray*)rootCertificateRefs{
     [QredoCryptoError throwArgExceptionIf:!pemCertificateChain reason:@"Certificate chain argument is nil"];
     [QredoCryptoError throwArgExceptionIf:!rootCertificateRefs reason:@"Root certificates argument is nil"];
     
@@ -550,8 +529,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     return validatedCertificatePublicKeyRef;
 }
 
-+ (NSDictionary *)createAndValidateIdentityFromPkcs12Data:(NSData *)pkcs12Data password:(NSString *)password rootCertificateRefs:(NSArray*)rootCertificateRefs
-{
++ (NSDictionary *)createAndValidateIdentityFromPkcs12Data:(NSData *)pkcs12Data password:(NSString *)password rootCertificateRefs:(NSArray*)rootCertificateRefs{
     [QredoCryptoError throwArgExceptionIf:!pkcs12Data reason:@"PKCS#12 data argument is nil"];
     [QredoCryptoError throwArgExceptionIf:!password reason:@"Password argument is nil"];
     [QredoCryptoError throwArgExceptionIf:!rootCertificateRefs reason:@"Root certificates argument is nil"];

@@ -21,7 +21,7 @@
 
 - (void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    [QredoLogger setLogLevel:QredoLogLevelDebug];
 }
 
 - (void)tearDown {
@@ -61,15 +61,18 @@
 
 -(void)testConnectAndClose{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
+   
+
     __block QredoClient *client;
     
+    [QredoLogger setLogLevel:QredoLogLevelDebug];
     
     [QredoClient initializeWithAppSecret:@"cafebabe"
                                   userId:@"testuser"
                               userSecret:[QredoTestUtils randomPassword]
                                  options:nil
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
+                           
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
                            [clientExpectation fulfill];

@@ -14,7 +14,7 @@
 
 - (void)setUp {
     [super setUp];
-    [QredoLogger colour:YES];
+    [QredoLogger colour:NO];
     [self setLogLevel];
 }
 
@@ -28,7 +28,7 @@
         [QredoLogger setLogLevel:QredoLogLevelVerbose];
         [QredoLogger setLogLevel:QredoLogLevelInfo];
  */
-    [QredoLogger setLogLevel:QredoLogLevelWarning];
+    [QredoLogger setLogLevel:QredoLogLevelDebug];
 }
 
 

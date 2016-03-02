@@ -530,6 +530,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         if (stop) break;
     }
     if (completionHandler) completionHandler(error);
+    QredoLogInfo(@"Enumerate index complete");
 }
 
 

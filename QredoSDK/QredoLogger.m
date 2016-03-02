@@ -1,4 +1,4 @@
-//
+ //
 //  QredoLogger.m
 //  QredoSDK
 //
@@ -10,27 +10,23 @@
 #define XCODE_COLORS_RESET_FG  XCODE_COLORS_ESCAPE @"fg;" // Clear any foreground color
 #define XCODE_COLORS_RESET_BG  XCODE_COLORS_ESCAPE @"bg;" // Clear any background color
 #define XCODE_COLORS_RESET     XCODE_COLORS_ESCAPE @";"   // Clear any foreground or background color
-
+static int currentLoggingLevel = 1;//DEFAULT_LOG_LEVEL;
 
 #import "QredoLoggerPrivate.h"
 
 @implementation QredoLogger
 
-
-/**
- The default logging value
- */
-static const int DEFAULT_LOG_LEVEL = QredoLogLevelError;
 static BOOL inColour = NO;
-
-static int currentLoggingLevel = DEFAULT_LOG_LEVEL;
 static NSMutableArray *classRestrictionArray;
 
-static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, const char *, NSUInteger) = ^(NSString *(^message)(void),
-                        QredoLogLevel level, const char *file, const char *functionChar, NSUInteger line)   {
+
+
+
+static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, const char *, const char *, NSUInteger) = ^(NSString *(^message)(void),
+                        QredoLogLevel currentLevel,QredoLogLevel level, const char *file, const char *functionChar, NSUInteger line)   {
 
     if (level==QredoLogLevelNone)return;
-    if (currentLoggingLevel<level)return;  //no logging at this currentLogginLevel
+    if (currentLevel<level)return;  //no logging at this currentLogginLevel
     
 //#ifdef COLOUROFF
 //    setenv("XcodeColors", "NO", 0);
@@ -57,49 +53,50 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
     NSString *function = [[NSString alloc] initWithUTF8String:functionChar];
     NSString *locationMessage = [NSString stringWithFormat:@"%@:%i ",function,(int)line];
     NSString *className = [QredoLogger extractClassName:function];
-    NSString *prefix = @"**";
+    NSString *prefix = @"";
     NSString *postfix= @" ";
     
     if ([classRestrictionArray count]>0 && ![QredoLogger isClassOfInterest:className]){
         return;
     }
     
+    //❤️💛💚💙💜
+
+    
     if (level==QredoLogLevelError){
         if (inColour){
-            NSLog(XCODE_COLORS_ESCAPE @"fg255,0,0;" @"%@%@%@%@" XCODE_COLORS_RESET,prefix,@"ERROR  ",postfix, message());
+            NSLog(XCODE_COLORS_ESCAPE @"fg255,0,0;" @"❤️%@%@%@%@" XCODE_COLORS_RESET,prefix,@"ERROR  ",postfix, message());
         }else{
-            NSLog(@"%@%@%@%@",prefix,@"ERROR  ",postfix, message());
+            NSLog(@"❤️%@%@%@%@",prefix,@"ERROR  ",postfix, message());
         }
         
     }else if (level==QredoLogLevelWarning){
         if (inColour){
-            NSLog(XCODE_COLORS_ESCAPE @"fg0,0,255;" @"%@%@%@%@" XCODE_COLORS_RESET,prefix,@"WARNING  ",postfix, message());
+            NSLog(XCODE_COLORS_ESCAPE @"fg0,0,255;" @"💛%@%@%@%@" XCODE_COLORS_RESET,prefix,@"WARNING  ",postfix, message());
         }else{
-            NSLog(@"%@%@%@%@",prefix,@"WARNING",postfix, message());
+            NSLog(@"💛%@%@%@%@",prefix,@"WARNING",postfix, message());
         }
         
 
     }else if (level==QredoLogLevelInfo){
         if (inColour){
-            NSLog(XCODE_COLORS_ESCAPE @"fg0,0,255;" @"%@%@%@%@" XCODE_COLORS_RESET,prefix,@"INFO   ",postfix, message());
+            NSLog(XCODE_COLORS_ESCAPE @"fg0,0,255;" @"💚%@%@%@%@" XCODE_COLORS_RESET,prefix,@"INFO   ",postfix, message());
         }else{
-            NSLog(@"%@%@%@%@",prefix,@"INFO   ",postfix, message());
+            NSLog(@"💚%@%@%@%@",prefix,@"INFO   ",postfix, message());
         }
         
     }else if (level==QredoLogLevelDebug){
         if (inColour){
-             NSLog(XCODE_COLORS_ESCAPE @"fg0,0,255;" @"%@%@%@%@%@" XCODE_COLORS_RESET,prefix,@"DEBUG  ",postfix, locationMessage,  message());
+             NSLog(XCODE_COLORS_ESCAPE @"fg0,0,255;" @"💙%@%@%@%@%@" XCODE_COLORS_RESET,prefix,@"DEBUG  ",postfix, locationMessage,  message());
         }else{
-             NSLog(@"%@%@%@%@%@",prefix,@"DEBUG  ",postfix, locationMessage,  message());
+             NSLog(@"💙%@%@%@%@%@",prefix,@"DEBUG  ",postfix, locationMessage,  message());
         }
     }else if (level==QredoLogLevelVerbose){
         if (inColour){
-            NSLog(XCODE_COLORS_ESCAPE @"fg0,0,255;" @"%@%@%@%@%@" XCODE_COLORS_RESET,prefix,@"VERBOSE",postfix, locationMessage,  message());
+            NSLog(XCODE_COLORS_ESCAPE @"fg0,0,255;" @"💜%@%@%@%@%@" XCODE_COLORS_RESET,prefix,@"VERBOSE",postfix, locationMessage,  message());
         }else{
-            NSLog(@"%@%@%@%@%@",prefix,@"VERBOSE",postfix, locationMessage,  message());
+            NSLog(@"💜%@%@%@%@%@",prefix,@"VERBOSE",postfix, locationMessage,  message());
         }
-
-
     }
 };
 
@@ -108,11 +105,6 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
     inColour=colour;
 }
 
-
-+ (void)load{
-    //called once when class is first accessed
-    [self resetLoggingObjects];
-}
 
 
 + (void)setLogLevel:(QredoLogLevel)logLevel{
@@ -125,13 +117,18 @@ static void (^LogHandler)(NSString * (^)(void), QredoLogLevel, const char *, con
 }
 
 
-+ (void) setLogHandler:(void (^)(NSString * (^message)(void), QredoLogLevel level, const char *file, const char *function, NSUInteger line))logHandler{
++ (void) setLogHandler:(void (^)(NSString * (^message)(void), QredoLogLevel currentLevel,QredoLogLevel level, const char *file, const char *function, NSUInteger line))logHandler{
     LogHandler = logHandler;
 }
 
-+ (void) logMessage:(NSString * (^)(void))message level:(QredoLogLevel)level file:(const char *)file function:(const char *)function line:(NSUInteger)line{
++ (void) logMessage:(NSString * (^)(void))message
+       currentLevel:(QredoLogLevel)currentLevel
+              level:(QredoLogLevel)level
+               file:(const char *)file
+           function:(const char *)function
+               line:(NSUInteger)line{
     if (LogHandler){
-        LogHandler(message, level, file, function, line);
+        LogHandler(message, currentLevel, level, file, function, line);
     }
 }
 

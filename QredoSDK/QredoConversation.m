@@ -833,13 +833,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoLogVerbose(@"End publish message");
 }
 
-- (void)acknowledgeReceiptUpToHighWatermark:(QredoConversationHighWatermark*)highWatermark
-{
+- (void)acknowledgeReceiptUpToHighWatermark:(QredoConversationHighWatermark*)highWatermark{
     // TODO: Implement acknowledgeReceiptUpToHighWatermark
 }
 
-- (void)addConversationObserver:(id<QredoConversationObserver>)observer
-{
+- (void)addConversationObserver:(id<QredoConversationObserver>)observer{
+    QredoLogInfo(@"Added conversation observer");
     [_observers addObserver:observer];
     
     if (!_updateListener.isListening) {
@@ -847,8 +846,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     }
 }
 
-- (void)removeConversationObserver:(id<QredoConversationObserver>)observer
-{
+- (void)removeConversationObserver:(id<QredoConversationObserver>)observer{
+    QredoLogInfo(@"Remove conversation observer");
     [_observers removeObserver:observer];
     
     if ([_observers count] < 1 && _updateListener.isListening) {
@@ -862,8 +861,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 }
 
 
-- (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler
-{
+- (void)deleteConversationWithCompletionHandler:(void(^)(NSError *error))completionHandler{
     NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRT]
                                                      marshaller:[QLFCtrl marshaller]];
     
@@ -872,8 +870,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                                        summaryValues:nil];
 
     [self publishMessage:leftControlMessage
-       completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error)
-    {
+       completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error){
         if (error) {
             completionHandler(error);
             return ;
@@ -887,13 +884,15 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                            completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
         {
             if (error) {
+                QredoLogError(@"Delete Conversation %@",error);
+
                 completionHandler(error);
                 return ;
             }
 
             [vault deleteItem:vaultItemMetadata
-            completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
-            {
+            completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+                
                 completionHandler(error);
             }];
             
@@ -982,6 +981,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                since:highWaterMark
                                    completionHandler:completionHandler];
         }else{
+            QredoLogInfo(@"Enumerate received messages complete");
             if (completionHandler)completionHandler(error);
         }
     }];
@@ -1032,6 +1032,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                    since:highWaterMark
                                        completionHandler:completionHandler];
             }else{
+                QredoLogInfo(@"Enumerate Sent messages complete");
                 if (completionHandler)completionHandler(error);
             }
         }];

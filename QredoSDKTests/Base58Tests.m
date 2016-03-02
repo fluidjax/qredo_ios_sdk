@@ -51,11 +51,7 @@ static inline NSString *createRandomEncodedValue() {
 
 
 
-- (void)test_0010_SimpleEncoding
-{
-    
-
-    
+- (void)test_0010_SimpleEncoding{
     QredoLogError(@"TEST ERROR");
     
     NSMutableData *data8 = [NSMutableData dataWithLength:1];
