@@ -473,10 +473,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
                  presentViewController:alertController animated:YES completion:nil];
             });
         }
-        
+        return;
         
     }
-    
     completeAuthorization(error);
 }
 
