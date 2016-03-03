@@ -402,6 +402,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     void (^completeAuthorization)(NSError *) = ^void (NSError *error) {
         if (error) {
+            if (error)QredoLogError(@"Failed to create client");
             if (completionHandler) completionHandler(nil, error);
         } else {
             // This assert is very important!!!
@@ -413,26 +414,18 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
     BOOL loaded = [client loadStateWithError:&error];
     
-//    if (options.resetData) {
-//        [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
-//            if (!error) {
-//                [client saveStateWithError:&error];
-//            }
-//            
-//            completeAuthorization(error);
-//        }];
-//        
-//        return;
-//    }
     
     
     if (!loaded) {
         if ([error.domain isEqualToString:QredoErrorDomain] && error.code == QredoErrorCodeKeychainCouldNotBeFound) {
-            // TODO: [GR]: Show new device screen insted of creating the vault straight away.
+            //New KeyChain is required
+          
             error = nil;
+            
             [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
+                if (error)QredoLogError(@"Failed to create system vault");
                 if (!error) {
-			                 [client saveStateWithError:&error];
+	                 [client saveStateWithError:&error];
                 }
                 
                 completeAuthorization(error);

@@ -136,7 +136,9 @@ static const NSUInteger maxNumberOfConnections = 10;
 
                         if (error)
                         {
-                            QredoLogError(@"%@: Error occurred during HTTP to URL '%@'. Error details: '%@'", [self.clientId getSafeString], self.serviceURL, error);
+                            //QredoLogError(@"%@: Error occurred during HTTP to URL '%@'. Error details: '%@'", [self.clientId getSafeString], self.serviceURL, error);
+                            
+                            QredoLogError(@"Error occurred during HTTP to URL '%@'. Error details: '%@'", self.serviceURL, error.localizedDescription);
                             
                             [self notifyListenerOfError:error userData:userData];
                         }

@@ -381,15 +381,22 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         serviceName = callbacksValue.serviceName;
     }
     
-    NSString *reason = [NSString stringWithFormat:@"Remote operation '%@' on service '%@' triggered an error. Error details: '%@'.",
+    NSString *longErrorReason = [NSString stringWithFormat:@"Remote operation '%@' on service '%@' triggered an error. Error details: '%@'.",
                         operationName,
                         serviceName,
                         error];
-    QredoLogError(@"%@", reason);
+
+    NSString *shortErrorReason = [NSString stringWithFormat:@"Remote operation '%@' Error %@",operationName,error.localizedDescription];
+
+    
+    
+    QredoLogVerbose(@"%@", longErrorReason);
+    QredoLogError(@"%@", shortErrorReason);
+    
 
     NSError *wrappedError = [NSError errorWithDomain:QredoLFErrorDomain
                                                 code:QredoLFErrorRemoteOperationFailure
-                                            userInfo:@{NSLocalizedDescriptionKey: reason,
+                                            userInfo:@{NSLocalizedDescriptionKey: longErrorReason,
                                                        NSUnderlyingErrorKey: error}];
 
     [self notifyCallbackOfError:wrappedError forCallbacksValue:callbacksValue];

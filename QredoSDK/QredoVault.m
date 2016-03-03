@@ -265,17 +265,21 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     //vaultItem.metadata.descriptor = metadata.descriptor;
     
     
-    //this logger message displays the source of the data (index or server)
-    QredoLogDebug(@"Put vault item in index %@", ^{
-        NSString *source;
-        if (metadata.origin == QredoVaultItemOriginServer)source = @"Server";
-        if (metadata.origin == QredoVaultItemOriginCache) source = @"Index";
-        return [NSString stringWithFormat:@" Origin:%@  ItemId:%@",source,vaultItem.metadata.descriptor.itemId];
-    }());
+    
+   
 
     
+    if (vaultItem.metadata.descriptor.itemId){
+        //this logger message displays the source of the data (index or server)        
+        QredoLogDebug(@"Put vault item in index %@", ^{
+            NSString *source;
+            if (metadata.origin == QredoVaultItemOriginServer)source = @"Server";
+            if (metadata.origin == QredoVaultItemOriginCache) source = @"Index";
+            return [NSString stringWithFormat:@" Origin:%@  ItemId:%@",source,vaultItem.metadata.descriptor.itemId];
+        }());
+        [_localIndex putVaultItem:vaultItem metadata:metadata];
+    }
     
-    [_localIndex putVaultItem:vaultItem metadata:metadata];
     if (completionHandler)completionHandler(nil);
 }
 

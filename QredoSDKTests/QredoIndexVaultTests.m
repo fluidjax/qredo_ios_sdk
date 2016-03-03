@@ -621,7 +621,7 @@ NSNumber *testNumber;
                            [clientExpectation fulfill];
                        }];
     
-    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         clientExpectation = nil;
     }];
     vault = client1.defaultVault;
