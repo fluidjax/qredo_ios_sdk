@@ -76,8 +76,79 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return keyReference;
 }
 
-- (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag
+
+
+
++ (NSData *)transformPublicKeyToData:(SecKeyRef)key
 {
+    NSString *const keychainTag = @"X509_KEY";
+    NSData *publicKeyData;
+    OSStatus putResult, delResult = noErr;
+    
+    // Params for putting the key first
+    NSMutableDictionary *putKeyParams = [NSMutableDictionary new];
+    putKeyParams[(__bridge id) kSecClass] = (__bridge id) kSecClassKey;
+    putKeyParams[(__bridge id) kSecAttrApplicationTag] = keychainTag;
+    putKeyParams[(__bridge id) kSecValueRef] = (__bridge id) (key);
+    putKeyParams[(__bridge id) kSecReturnData] = (__bridge id) (kCFBooleanTrue); // Request the key's data to be returned too
+    
+    // Params for deleting the data
+    NSMutableDictionary *delKeyParams = [[NSMutableDictionary alloc] init];
+    delKeyParams[(__bridge id) kSecClass] = (__bridge id) kSecClassKey;
+    delKeyParams[(__bridge id) kSecAttrApplicationTag] = keychainTag;
+    delKeyParams[(__bridge id) kSecReturnData] = (__bridge id) (kCFBooleanTrue);
+    
+    // Put the key
+    putResult = SecItemAdd((__bridge CFDictionaryRef) putKeyParams, (void *)&publicKeyData);
+    // Delete the key
+    delResult = SecItemDelete((__bridge CFDictionaryRef)(delKeyParams));
+    
+    if ((putResult != errSecSuccess) || (delResult != errSecSuccess))
+    {
+        publicKeyData = nil;
+    }
+    
+    return publicKeyData;
+}
+
+
+
++ (NSData *)transformPrivateKeyToData:(SecKeyRef)key
+{
+    NSString *const keychainTag = @"TESTPRIVATEKEY";
+    NSData *privateKeyData;
+    OSStatus putResult, delResult = noErr;
+    
+    // Params for putting the key first
+    NSMutableDictionary *putKeyParams = [NSMutableDictionary new];
+    putKeyParams[(__bridge id) kSecClass] = (__bridge id) kSecClassKey;
+    putKeyParams[(__bridge id) kSecAttrApplicationTag] = keychainTag;
+    putKeyParams[(__bridge id) kSecValueRef] = (__bridge id) (key);
+    putKeyParams[(__bridge id) kSecReturnData] = (__bridge id) (kCFBooleanTrue); // Request the key's data to be returned too
+    
+    // Params for deleting the data
+    NSMutableDictionary *delKeyParams = [[NSMutableDictionary alloc] init];
+    delKeyParams[(__bridge id) kSecClass] = (__bridge id) kSecClassKey;
+    delKeyParams[(__bridge id) kSecAttrApplicationTag] = keychainTag;
+    delKeyParams[(__bridge id) kSecReturnData] = (__bridge id) (kCFBooleanTrue);
+    
+    // Put the key
+    putResult = SecItemAdd((__bridge CFDictionaryRef) putKeyParams, (void *)&privateKeyData);
+    // Delete the key
+    delResult = SecItemDelete((__bridge CFDictionaryRef)(delKeyParams));
+    
+    if ((putResult != errSecSuccess) || (delResult != errSecSuccess))
+    {
+        privateKeyData = nil;
+    }
+    
+    return privateKeyData;
+}
+
+
+
+
+- (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag{
     NSString *privateKeyId = [tag stringByAppendingString:@".private"];
     
     SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];

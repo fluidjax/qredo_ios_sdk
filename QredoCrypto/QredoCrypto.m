@@ -4,6 +4,8 @@
 
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"
+
+#import "QredoRendezvousCrypto.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoLoggerPrivate.h"
 #import "rsapss.h"
@@ -1008,6 +1010,9 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
     NSMutableData *pssData = [NSMutableData dataWithLength:pssDataLength];
     NSMutableData *outputData = [NSMutableData dataWithLength:pssDataLength];
 
+    
+    NSData *dat = [QredoRendezvousCrypto transformPrivateKeyToData:keyRef ];
+    NSLog(@"KEY DATA IS %@",dat);
     int pss_result = rsa_pss_sha256_encode(hash.bytes, hash.length, saltLength, keyLength * 8 - 1,
                                            pssData.mutableBytes, pssData.length);
     

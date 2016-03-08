@@ -62,6 +62,6 @@
 - (QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey;
 - (NSData *)encryptionKeyWithMasterKey:(NSData *)masterKey;
 - (NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey;
-
++ (NSData *)transformPrivateKeyToData:(SecKeyRef)key;
 
 @end
