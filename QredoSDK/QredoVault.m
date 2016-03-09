@@ -262,12 +262,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 -(void)cacheInIndexVaultItem:(QredoVaultItem *)vaultItem
                     metadata:(QredoVaultItemMetadata *)metadata
            completionHandler:(void (^)(NSError *error))completionHandler{
-    //vaultItem.metadata.descriptor = metadata.descriptor;
     
-    
-    
-   
-
+    vaultItem.metadata.descriptor = metadata.descriptor;
     
     if (vaultItem.metadata.descriptor.itemId){
         //this logger message displays the source of the data (index or server)        
