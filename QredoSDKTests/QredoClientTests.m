@@ -125,7 +125,7 @@
 -(void)testFailingConnectToClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppId:k_APPID
+    [QredoClient initializeWithAppId:@"FAILINGSECRET"
                            appSecret:k_APPSECRET
                               userId:k_USERID
                           userSecret:[QredoTestUtils randomPassword]

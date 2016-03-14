@@ -1012,7 +1012,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding, size_t k
 
     
     NSData *dat = [QredoRendezvousCrypto transformPrivateKeyToData:keyRef ];
-    NSLog(@"KEY DATA IS %@",dat);
     int pss_result = rsa_pss_sha256_encode(hash.bytes, hash.length, saltLength, keyLength * 8 - 1,
                                            pssData.mutableBytes, pssData.length);
     
