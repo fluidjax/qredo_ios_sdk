@@ -306,9 +306,10 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 -(void)authoriseClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
                                  options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -327,9 +328,10 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 -(void)authoriseClient2 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
                                  options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -352,10 +354,11 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
     
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]
-                                 options:[self clientOptions:YES]
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
+                             options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
@@ -795,10 +798,11 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     
     
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]
-                                 options:[self clientOptions:YES]
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
+                             options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
@@ -929,9 +933,11 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //    
 //    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"verify: create client"];
 //    
-//    [QredoClient initializeWithAppSecret:k_APPSECRET
-//                                  userId:k_USERID
-//                              userSecret:[QredoTestUtils randomPassword]
+//    [QredoClient initializeWithAppId:k_APPID
+//                appSecret:k_APPSECRET
+//                userId:k_USERID
+//                userSecret:[QredoTestUtils randomPassword]
+//
 //                                 options:[self clientOptions:YES]
 //                       completionHandler:^(QredoClient *clientArg, NSError *error) {
 //                           XCTAssertNil(error);

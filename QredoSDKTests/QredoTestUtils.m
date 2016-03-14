@@ -10,6 +10,8 @@ NSTimeInterval qtu_defaultTimeout = 300.0;
 // Beacuse of slow QMac... (perhaps)
 // TODO: DH - Investigating whether increasing timeout improves test reliability. Orig 10s, RSA 4096 key gen can take 10+ seconds, so upping to 30 seconds for safety
 
+
+NSString *k_APPID         = @"test";
 NSString *k_APPSECRET     = @"cafebabe";
 NSString *k_USERID        = @"testUserId";
 

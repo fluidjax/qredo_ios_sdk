@@ -162,11 +162,11 @@ NSNumber *testNumber;
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.resetData = YES;
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:password
-                                 options:clientOptions
-                       completionHandler:^(QredoClient *clientArg, NSError *error) {
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
                            client1 = clientArg;

@@ -13,7 +13,7 @@
 #import "QredoRendezvous.h"
 #import "QredoQUID.h"
 
-@import CoreData;
+#import <CoreData/CoreData.h>
 
 
 @class QredoClient;
@@ -35,10 +35,11 @@
  userSecret a password for the user of the App.
  
  */
-+(void)initializeWithAppSecret:(NSString*)appSecret
-                        userId:(NSString*)userId
-                    userSecret:(NSString*)userSecret
-             completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler;
++(void)initializeWithAppId:(NSString*)appId
+                 appSecret:(NSString*)appSecret
+                    userId:(NSString*)userId
+                userSecret:(NSString*)userSecret
+         completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler;
 
 
 
@@ -126,3 +127,4 @@
 
 
 @end
+

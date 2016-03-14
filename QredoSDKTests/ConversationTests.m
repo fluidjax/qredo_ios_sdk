@@ -103,10 +103,11 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 - (void)authoriseClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]
-                                 options:[self clientOptions:YES]
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
+                             options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -133,11 +134,12 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 - (void)authoriseAnotherClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:[QredoTestUtils randomPassword]
-                                 options:[self clientOptions:YES]
-                       completionHandler:^(QredoClient *clientArg, NSError *error) {
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
+                             options:[self clientOptions:YES]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
                            anotherClient = clientArg;

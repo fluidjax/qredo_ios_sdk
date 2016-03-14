@@ -1,6 +1,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd ..
-cd $DIR/docs/
+cd $DIR
+cd ../docs/
 rm -rf objc
 mkdir objc
 cd ..

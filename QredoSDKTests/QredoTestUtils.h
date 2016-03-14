@@ -7,6 +7,8 @@
 #import "QredoPrivate.h"
 
 extern NSTimeInterval qtu_defaultTimeout;
+
+extern NSString *k_APPID;
 extern NSString *k_APPSECRET;
 extern NSString *k_USERID;
 

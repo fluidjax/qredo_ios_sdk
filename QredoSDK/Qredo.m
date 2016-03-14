@@ -338,22 +338,27 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
-+(void)initializeWithAppSecret:(NSString*)appSecret
-                        userId:(NSString*)userId
-                    userSecret:(NSString*)userSecret
-             completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler {
-    [self initializeWithAppSecret:appSecret
-                           userId:userId
-                       userSecret:userSecret
-                          options:nil
-                completionHandler:completionHandler];
++(void)initializeWithAppId:(NSString*)appId
+                 appSecret:(NSString*)appSecret
+                    userId:(NSString*)userId
+                userSecret:(NSString*)userSecret
+         completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler {
+    
+    [self initializeWithAppId:appId
+                    appSecret:appSecret
+                       userId:userId
+                   userSecret:userSecret
+                      options:nil
+            completionHandler:completionHandler];
 }
 
 
-+(void)initializeWithAppSecret:(NSString*)appSecret
-                        userId:(NSString*)userId
-                    userSecret:(NSString*)userSecret
-                       options:(QredoClientOptions*)options
+
++(void)initializeWithAppId:(NSString*)appId
+                 appSecret:(NSString*)appSecret
+                    userId:(NSString*)userId
+                userSecret:(NSString*)userSecret
+                   options:(QredoClientOptions*)options
              completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler {
     // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
     
@@ -361,21 +366,19 @@ NSString *systemVaultKeychainArchiveIdentifier;
         options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     }
     
-    NSString* appID = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
-    if (!appID) appID = @"test";
     
-    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appID
+    QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appId
                                                                                  userId:userId
                                                                              userSecure:userSecret];
     
-    QredoLogInfo(@"UserCredentials: Appid:%@   userID:%@   userSecure:%@",appID,userId,userSecret);
+    QredoLogInfo(@"UserCredentials: Appid:%@   userID:%@   userSecure:%@",appId,userId,userSecret);
     
     
     
-    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appID
+    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appId
                                                                              appSecret:[NSData dataWithHexString:appSecret]];
     
-    QredoLogInfo(@"AppCredentials: Appid:%@   appSecret:%@",appID,appSecret);
+    QredoLogInfo(@"AppCredentials: Appid:%@   appSecret:%@",appId,appSecret);
     
     systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
     

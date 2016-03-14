@@ -67,10 +67,12 @@
     
     [QredoLogger setLogLevel:QredoLogLevelDebug];
     
-    [QredoClient initializeWithAppSecret:@"cafebabe"
-                                  userId:@"testuser"
-                              userSecret:[QredoTestUtils randomPassword]
-                                 options:nil
+    [QredoClient initializeWithAppId:@"test"
+                           appSecret:@"cafebabe"
+                              userId:@"testuser"
+                          userSecret:[QredoTestUtils randomPassword]
+                             options:nil
+
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            
                            XCTAssertNil(error);
@@ -98,11 +100,11 @@
 -(void)testSuccessConnectToClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppSecret:@"cafebabe"
-                                  userId:@"testuser"
-                              userSecret:[QredoTestUtils randomPassword]
-                                 options:nil
-                       completionHandler:^(QredoClient *clientArg, NSError *error) {
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
                         //   XCTAssertNil(error);
                          //  XCTAssertNotNil(clientArg);
                            [clientExpectation fulfill];
@@ -123,11 +125,11 @@
 -(void)testFailingConnectToClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppSecret:@"FAILINGSECRET"
-                                  userId:@"testuser"
-                              userSecret:[QredoTestUtils randomPassword]
-                                 options:nil
-                       completionHandler:^(QredoClient *clientArg, NSError *error) {
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNotNil(error);
                            XCTAssertNil(clientArg);
                            [clientExpectation fulfill];

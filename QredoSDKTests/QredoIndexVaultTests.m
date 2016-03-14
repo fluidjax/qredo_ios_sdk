@@ -610,10 +610,10 @@ NSNumber *testNumber;
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
     
     
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:password
-                                 options:nil
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
@@ -640,10 +640,10 @@ NSNumber *testNumber;
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client2"];
     
     
-    [QredoClient initializeWithAppSecret:k_APPSECRET
-                                  userId:k_USERID
-                              userSecret:password
-                                 options:nil
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:[QredoTestUtils randomPassword]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
