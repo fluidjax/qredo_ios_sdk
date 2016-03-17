@@ -242,6 +242,9 @@
 		830A3EF01BFF38EC002CE210 /* MultiPageMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A3EEF1BFF38EC002CE210 /* MultiPageMessageTest.m */; };
 		831164C51C18630400661D7C /* QredoIndexPerformanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 831164BE1C184A4E00661D7C /* QredoIndexPerformanceTests.m */; };
 		831164CA1C1895E600661D7C /* QredoLocalIndexDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 831164C71C18941400661D7C /* QredoLocalIndexDataStore.m */; };
+		83199B911C986925002C6077 /* QredoLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B6432C1C970E24003461F7 /* QredoLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		83199B921C98692D002C6077 /* QredoLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B6432C1C970E24003461F7 /* QredoLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		83199B931C98694E002C6077 /* QredoLocalIndex.xcdatamodel in Headers */ = {isa = PBXBuildFile; fileRef = 838E48C11C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel */; settings = {ATTRIBUTES = (Public, ); }; };
 		83227B821C15CEB2006CAD75 /* _QredoIndexVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */; };
 		83227B881C15CECB006CAD75 /* QredoIndexVault.m in Sources */ = {isa = PBXBuildFile; fileRef = 83227B841C15CECB006CAD75 /* QredoIndexVault.m */; };
 		83303D951C7C7876006814A3 /* QredoClientIdTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573E71A2DEC0500D5502E /* QredoClientIdTests.m */; };
@@ -1920,6 +1923,7 @@
 			files = (
 				6602D9B51C24239500CB5794 /* QredoTransportSSLTrustUtils.h in Headers */,
 				83675A4E1C7B5F2200F31533 /* QredoRendezvousRsa2048PemHelper.h in Headers */,
+				83199B921C98692D002C6077 /* QredoLogger.h in Headers */,
 				83675A501C7B5F2200F31533 /* QredoRendezvousRsaPemCommonHelper.h in Headers */,
 				83675A4D1C7B5F2200F31533 /* QredoRendezvousEd25519Helper.h in Headers */,
 				83675A4A1C7B5F2200F31533 /* QredoRendezvousHelper.h in Headers */,
@@ -1927,6 +1931,7 @@
 				6602D9B91C24239500CB5794 /* Qredo.h in Headers */,
 				83B643311C970EB7003461F7 /* QredoQUID.h in Headers */,
 				6602D9BA1C24239500CB5794 /* QredoKeychain.h in Headers */,
+				83199B931C98694E002C6077 /* QredoLocalIndex.xcdatamodel in Headers */,
 				6602D9BB1C24239500CB5794 /* QredoTypes.h in Headers */,
 				6602D9BC1C24239500CB5794 /* QredoVault.h in Headers */,
 				83675A4F1C7B5F2200F31533 /* QredoRendezvousRsa4096PemHelper.h in Headers */,
@@ -1948,6 +1953,7 @@
 			files = (
 				83675A3B1C7B5F2100F31533 /* QredoRendezvousRsaPemCommonHelper.h in Headers */,
 				6651496A1BF6064C003491CA /* Qredo.h in Headers */,
+				83199B911C986925002C6077 /* QredoLogger.h in Headers */,
 				83675A381C7B5F2100F31533 /* QredoRendezvousEd25519Helper.h in Headers */,
 				66FCEC141C1848C200C865FE /* QredoTransportSSLTrustUtils.h in Headers */,
 				83675A331C7B5F2100F31533 /* QredoRendezvousCrypto.h in Headers */,

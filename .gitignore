@@ -2,6 +2,7 @@ build
 temp
 package
 QredoXDK.framework
+macosx/
 
 # Cocoapods
 #
