@@ -338,6 +338,24 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
+
++(void)initializeWithAppSecret:(NSString*)appSecret
+                        userId:(NSString*)userId
+                    userSecret:(NSString*)userSecret
+             completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler {
+    
+    NSString* appId = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"];
+    if (!appId) appId = @"test";
+    
+    
+    [self initializeWithAppId:appId
+                    appSecret:appSecret
+                       userId:userId
+                   userSecret:userSecret
+            completionHandler:completionHandler];
+}
+
+
 +(void)initializeWithAppId:(NSString*)appId
                  appSecret:(NSString*)appSecret
                     userId:(NSString*)userId

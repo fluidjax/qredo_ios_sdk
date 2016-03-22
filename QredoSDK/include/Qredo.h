@@ -35,11 +35,15 @@
  userSecret a password for the user of the App.
  
  */
-+(void)initializeWithAppId:(NSString*)appId
-                 appSecret:(NSString*)appSecret
-                    userId:(NSString*)userId
-                userSecret:(NSString*)userSecret
-         completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler;
+
+
+
++(void)initializeWithAppSecret:(NSString*)appSecret
+                        userId:(NSString*)userId
+                    userSecret:(NSString*)userSecret
+             completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler;
+
+
 
 
 
