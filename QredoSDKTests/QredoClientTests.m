@@ -59,39 +59,6 @@
 }
 
 
--(void)testOldStyleConnectAndClose{
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
-    __block QredoClient *client;
-    
-    [QredoLogger setLogLevel:QredoLogLevelDebug];
-    
-    
-    [QredoClient initializeWithAppSecret:@"cafebabe"
-                                  userId:@"user"
-                              userSecret:[QredoTestUtils randomPassword]
-                       completionHandler:^(QredoClient *clientArg, NSError *error) {
-                           XCTAssertNil(error);
-                           XCTAssertNotNil(clientArg);
-                           [clientExpectation fulfill];
-                           client = clientArg;
-                           
-                           QLog(@"Version is  %@",[clientArg versionString]);
-                           QLog(@"Build is    %@",[clientArg buildString]);
-                           
-                           
-                       }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        clientExpectation = nil;
-    }];
-    
-    [client closeSession];
-}
-
-
-
 -(void)testConnectAndClose{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
    
