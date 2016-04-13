@@ -34,7 +34,7 @@ static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 
 
 @interface QredoClientOptions :NSObject
-
+@property (strong) NSString *serverURL;
 @property (nonatomic) QredoClientOptionsTransportType transportType;
 @property BOOL resetData;
 @property BOOL disableMetadataIndex;

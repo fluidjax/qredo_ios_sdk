@@ -49,8 +49,48 @@
     QredoLogVerbose(@"Ignore this intentional verbose: %@", ^{ return @"generated error message from block"; }());
 
     [self loggingOn]; //restore back to original default state
-    
 }
+
+
+-(void)testExplicitServer{
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block QredoClient *client;
+    
+    QredoClientOptions *options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+    options.serverURL = @"https://early1.qredo.me:443/services";
+    options.transportType = QredoClientOptionsTransportTypeHTTP;
+    
+    
+    [QredoLogger setLogLevel:QredoLogLevelDebug];
+    
+    [QredoClient initializeWithAppId:@"test"
+                           appSecret:@"cafebabe"
+                              userId:@"testuser"
+                          userSecret:[QredoTestUtils randomPassword]
+                             options:options
+     
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
+                       
+                       XCTAssertNil(error);
+                       XCTAssertNotNil(clientArg);
+                       [clientExpectation fulfill];
+                       client = clientArg;
+                       
+                       QLog(@"Version is  %@",[clientArg versionString]);
+                       QLog(@"Build is    %@",[clientArg buildString]);
+                       
+                       
+                   }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
+    
+    [client closeSession];
+}
+
+
 
 -(void)testConnectAndCloseMultiple{
     for (int i=0;i<10;i++){

@@ -42,6 +42,8 @@ static NSString *const QredoClientDefaultServiceURL         = @"https://early1.q
 static NSString *const QredoClientMQTTServiceURL            = @"ssl://early1.qredo.me:8883";
 static NSString *const QredoClientWebSocketsServiceURL      = @"wss://early1.qredo.me:443/services";
 
+
+
 NSString *const QredoRendezvousURIProtocol                  = @"qrp:";
 
 static NSString *const QredoKeychainOperatorName            = @"Qredo Mock Operator";
@@ -57,7 +59,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 -(instancetype)init {
     self = [super init];
-    NSAssert(FALSE, @"Please use [QredoClientOptions initWithPinnedCertificate:] in stead of init without arguments]");
+    NSAssert(FALSE, @"Please use [QredoClientOptions initWithPinnedCertificate:] instead of init without arguments]");
     self = nil;
     return self;
 }
@@ -352,6 +354,28 @@ NSString *systemVaultKeychainArchiveIdentifier;
             completionHandler:completionHandler];
 }
 
++(NSURL*)chooseServiceURL:(QredoClientOptions*)options{
+    long transportType = options.transportType?options.transportType:QredoClientOptionsTransportTypeHTTP;
+    NSString *serviceURLString = options.serverURL;
+
+    NSURL *serviceURL;
+    
+    if (serviceURLString)return [NSURL URLWithString:serviceURLString];
+    
+    switch (transportType) {
+        case QredoClientOptionsTransportTypeHTTP:
+            
+            serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
+            break;
+        case QredoClientOptionsTransportTypeMQTT:
+            serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
+            break;
+        case QredoClientOptionsTransportTypeWebSockets:
+            serviceURL = [NSURL URLWithString:QredoClientWebSocketsServiceURL];
+            break;
+    }
+    return serviceURL;
+}
 
 
 +(void)initializeWithAppId:(NSString*)appId
@@ -381,22 +405,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoLogInfo(@"AppCredentials: Appid:%@   appSecret:%@",appId,appSecret);
     
     systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
+
     
-    NSURL *serviceURL = nil;
-    switch (options.transportType) {
-        case QredoClientOptionsTransportTypeHTTP:
-            serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
-            break;
-        case QredoClientOptionsTransportTypeMQTT:
-            serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
-            break;
-        case QredoClientOptionsTransportTypeWebSockets:
-            serviceURL = [NSURL URLWithString:QredoClientWebSocketsServiceURL];
-            break;
-    }
-    
+    NSURL *serviceURL = [self chooseServiceURL:options];
+
     __block NSError *error = nil;
-    
     __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL
                                                         pinnedCertificate:options.certificate
                                                            appCredentials:appCredentials];
