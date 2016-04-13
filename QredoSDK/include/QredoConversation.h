@@ -29,7 +29,6 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 @property (readonly) QredoQUID *conversationId;
 @property (readonly) BOOL amRendezvousOwner;
 @property (readonly) NSString *rendezvousTag;
-@property (readonly) QredoVault* store;
 @end
 
 
@@ -51,16 +50,9 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 -(void)resetHighWatermark;
 -(void)publishMessage:(QredoConversationMessage *)message
     completionHandler:(void (^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler;
--(void)acknowledgeReceiptUpToHighWatermark:(QredoConversationHighWatermark*)highWatermark;
 -(void)addConversationObserver:(id<QredoConversationObserver>)observer;
 -(void)removeConversationObserver:(id<QredoConversationObserver>)observer;
--(QredoVault*)store;
 -(void)deleteConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler;
--(void)subscribeToMessagesWithBlock:(void (^)(QredoConversationMessage *message))block
-      subscriptionTerminatedHandler:(void (^)(NSError *))subscriptionTerminatedHandler
-                              since:(QredoConversationHighWatermark *)sinceWatermark
-               highWatermarkHandler:(void (^)(QredoConversationHighWatermark *newWatermark))highWatermarkHandler;
-
 
 /**
  @param block is called for every received message. If the block sets `stop` to `NO`, then it terminates the enumeration

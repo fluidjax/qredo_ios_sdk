@@ -20,7 +20,8 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 
 @property (nonatomic, readonly) QredoClient *client;
 
-- (instancetype)initWithClient:(QredoClient *)client;
+-(QredoVault*)store;
+-(instancetype)initWithClient:(QredoClient *)client;
 - (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFConversationDescriptor*)descriptor;
 
 - (instancetype)initWithClient:(QredoClient *)client

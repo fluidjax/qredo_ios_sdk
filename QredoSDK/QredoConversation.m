@@ -706,6 +706,19 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     }];
 }
 
+
+
+- (QredoVault*)store{
+    if (_metadata.isEphemeral) return nil;
+    if (_store) return _store;
+    
+    NSData *vaultKey = [QredoVaultCrypto vaultKeyWithVaultMasterKey:self.client.systemVault.vaultKeys.vaultKey
+                                                           infoData:_inboundQueueId.data];
+    QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKey:vaultKey];
+    _store = [[QredoVault alloc] initWithClient:self.client vaultKeys:keys withLocalIndex:NO];
+    return _store;
+}
+
 @end
 
 
@@ -1053,19 +1066,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                  highWatermarkHandler:nil];
 }
 
-- (QredoVault*)store
-{
-    if (_metadata.isEphemeral) return nil;
 
-    if (_store) return _store;    
-
-    NSData *vaultKey = [QredoVaultCrypto vaultKeyWithVaultMasterKey:_client.systemVault.vaultKeys.vaultKey
-                                                           infoData:_inboundQueueId.data];
-    QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKey:vaultKey];
-    _store = [[QredoVault alloc] initWithClient:_client vaultKeys:keys withLocalIndex:NO];
-
-    return _store;
-}
 
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source
