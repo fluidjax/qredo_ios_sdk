@@ -1003,6 +1003,7 @@
 		838279CE1C4647A000D6600F /* QredoLocalIndexCacheInvalidation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoLocalIndexCacheInvalidation.h; path = LocalIndex/QredoLocalIndexCacheInvalidation.h; sourceTree = "<group>"; };
 		838279CF1C4647A000D6600F /* QredoLocalIndexCacheInvalidation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoLocalIndexCacheInvalidation.m; path = LocalIndex/QredoLocalIndexCacheInvalidation.m; sourceTree = "<group>"; };
 		838E48C11C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = QredoLocalIndex.xcdatamodel; sourceTree = SOURCE_ROOT; };
+		8396FD6D1CBE987000EDBCEA /* QredoQUIDPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = QredoQUIDPrivate.h; path = QredoSDK/QredoQUIDPrivate.h; sourceTree = SOURCE_ROOT; };
 		83AF3A3C1C11DEE5003B258F /* _QredoIndexVariableValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _QredoIndexVariableValue.h; path = LocalIndex/_QredoIndexVariableValue.h; sourceTree = "<group>"; };
 		83AF3A3D1C11DEE5003B258F /* _QredoIndexVariableValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _QredoIndexVariableValue.m; path = LocalIndex/_QredoIndexVariableValue.m; sourceTree = "<group>"; };
 		83AF3A421C11DEFF003B258F /* QredoIndexVariableValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVariableValue.h; path = LocalIndex/QredoIndexVariableValue.h; sourceTree = "<group>"; };
@@ -1319,6 +1320,7 @@
 				0A16F98919C6F62200639779 /* Rendezvous */,
 				0A16F89A19C3567E00639779 /* Vault */,
 				0AC016461A7FEF38006EB7E5 /* QredoConversationProtocol.h */,
+				8396FD6D1CBE987000EDBCEA /* QredoQUIDPrivate.h */,
 				78375E2A1A80F08D009CDFC2 /* QredoConversationProtocol.m */,
 				0A519B621A9E483100182499 /* QredoUpdateListener.h */,
 				0A519B631A9E483100182499 /* QredoUpdateListener.m */,

@@ -9,6 +9,8 @@
 #import "QredoXCTestCase.h"
 #import "QredoTestUtils.h"
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
+
 
 @interface MultiPageMessageTest : QredoXCTestCase <QredoRendezvousObserver>
 @end

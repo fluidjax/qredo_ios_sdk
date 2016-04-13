@@ -4,6 +4,8 @@
 #import "CryptoImplV1.h"
 #import "QredoErrorCodes.h"
 #import "NSDictionary+IndexableSet.h"
+#import "QredoQUIDPrivate.h"
+
 
 #define QREDO_VAULT_MASTER_SALT  [@"U7TIOyVRqCKuFFNa" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_VAULT_SUBTYPE_SALT [@"rf3cxEQ8B9Nc8uFj" dataUsingEncoding:NSUTF8StringEncoding]

@@ -11,8 +11,6 @@
 #import "QredoTypes.h"
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
-#import "QredoQUID.h"
-
 #import <CoreData/CoreData.h>
 
 

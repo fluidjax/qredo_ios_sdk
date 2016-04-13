@@ -6,6 +6,8 @@
 #import "QredoQUID.h"
 #import "QredoClient.h"
 #import "QredoTypesPrivate.h"
+#import "QredoQUIDPrivate.h"
+
 
 
 

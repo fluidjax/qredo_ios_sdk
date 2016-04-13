@@ -3,6 +3,7 @@
  */
 
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 #import "NSDictionary+QUIDSerialization.h"
 
 @implementation NSDictionary (QUIDSerialization)

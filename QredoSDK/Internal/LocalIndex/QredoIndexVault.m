@@ -6,6 +6,7 @@
 #import "QredoIndexVault.h"
 #import "QredoVault.h"
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 
 @interface QredoIndexVault ()
 

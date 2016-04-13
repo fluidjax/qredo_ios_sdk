@@ -5,6 +5,7 @@
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 #import "QredoTestUtils.h"
 #import "QredoVaultUpdateTests.h"
 #import "NSDictionary+Contains.h"

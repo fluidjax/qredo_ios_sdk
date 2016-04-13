@@ -11,7 +11,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoAuthenticatedRendezvousTag.h"
 #import "QredoErrorCodes.h"
-
+#import "QredoQUIDPrivate.h"
 
 #define QREDO_RENDEZVOUS_AUTH_KEY [@"Authenticate" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_RENDEZVOUS_SALT [@"Rendezvous" dataUsingEncoding:NSUTF8StringEncoding]

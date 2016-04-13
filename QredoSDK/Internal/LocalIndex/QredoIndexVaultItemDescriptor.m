@@ -9,6 +9,8 @@
 #import "Qredo.h"
 #import "QredoVaultPrivate.h"
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
+
 
 @interface QredoIndexVaultItemDescriptor ()
 @end

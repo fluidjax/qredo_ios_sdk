@@ -6,6 +6,7 @@
 #import "QredoConversationMessagePrivate.h"
 #import "QredoConversation.h"
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 
 
 static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";

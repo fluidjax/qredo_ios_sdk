@@ -1,5 +1,7 @@
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 #import <CommonCrypto/CommonCrypto.h>
+
 
 static NSString* kQUIDEncodeKey = @"Qredo.quidbytes";
 

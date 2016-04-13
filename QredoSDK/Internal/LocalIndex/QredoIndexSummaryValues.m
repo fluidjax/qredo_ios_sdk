@@ -5,6 +5,7 @@
 #import "QredoIndexSummaryValues.h"
 #import "QredoIndexVariableValue.h"
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 
 
 @interface QredoIndexSummaryValues ()

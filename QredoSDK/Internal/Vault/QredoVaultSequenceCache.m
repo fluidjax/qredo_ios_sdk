@@ -1,5 +1,6 @@
 #import "QredoVaultSequenceCache.h"
 #import "QredoLoggerPrivate.h"
+#import "QredoQUIDPrivate.h"
 
 @implementation QredoVaultSequenceCache {
     NSMutableDictionary *_itemSequenceIds;

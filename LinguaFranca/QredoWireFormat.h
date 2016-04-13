@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 #import "QredoDateTime.h"
 #import "QredoSExpression.h"
 

@@ -6,6 +6,7 @@
 #import "QredoClient.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoErrorCodes.h"
+#import "QredoQUIDPrivate.h"
 
 //#import <CommonCrypto/CommonCrypto.h>
 

@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "QredoDateTime.h"
 #import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoMarshallable.h"
 #import "QredoServiceInvoker.h"
