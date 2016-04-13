@@ -561,7 +561,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 
--(NSString *)randomStringWithLength:(int)len {
++(NSString *)randomStringWithLength:(int)len{
     NSString *letters = @"abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
     for (int i=0; i<len; i++) {
@@ -574,7 +574,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
-    [self createAnonymousRendezvousWithTag:[self randomStringWithLength:32]
+    [self createAnonymousRendezvousWithTag:[QredoClient randomStringWithLength:32]
                                   duration:0
                         unlimitedResponses:YES
                          completionHandler:completionHandler];

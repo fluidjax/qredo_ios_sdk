@@ -11,6 +11,7 @@
 #import "QredoTypes.h"
 #import "QredoVault.h"
 #import "QredoRendezvous.h"
+#import "QredoQUID.h"
 #import <CoreData/CoreData.h>
 
 
@@ -123,6 +124,9 @@
 -(void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref
                  completionHandler:(void (^)(NSError *error))completionHandler;
 
+
+//Helper method to generate a random string of specified length using only chars from abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789
++(NSString *)randomStringWithLength:(int)len;
 
 @end
 
