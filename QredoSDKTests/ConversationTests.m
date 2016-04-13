@@ -404,6 +404,7 @@ NSString *secondMessageText;
     
     
     //Create Rendezvous
+    [NSThread sleepForTimeInterval:0.2];
     
     //static QredoRendezvous *rendezvous;
     QredoRendezvous *rendezvous=nil;
