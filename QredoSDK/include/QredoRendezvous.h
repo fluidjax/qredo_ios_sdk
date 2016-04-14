@@ -27,12 +27,9 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 @end
 
 
-
-
-
 @interface QredoRendezvousRef :QredoObjectRef
++ (NSString *)description;
 @end
-
 
 
 // QredoRendezvousMetadata objects are returned in [QredoClient enumerateRendezvousWithBlock:] method.

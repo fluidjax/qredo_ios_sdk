@@ -24,8 +24,7 @@
 /**
  Used to manage connections to Qredo and create, manage and respond to Rendezvous.
  
- @note You must be connected to a network and initialise your app with 
- 
+ @note You app must be initialised and connected to a network before using any Qredo services.
  */
 
 @interface QredoClient :NSObject
@@ -33,27 +32,27 @@
 
 #pragma mark - Creating and managing a Qredo session
 
- /**
+/**
  Initializes the connection to Qredo and returns a `QredoClient` object to access Qredo services.
-  
+ 
  The appID and appSecret will be generated for you by Qredo when you sign up for the developer program
-  
+ 
  @note if a `QredoClient` object is returned this means that your app has been successfully initialised with Qredo and your credentials are correct.
-  Subsequent calls to Qredo services such as Vault and Rendezvous will fail if you do not have a network connection, so always check the error codes returned from all Qredo functions.
+ Subsequent calls to Qredo services such as Vault and Rendezvous will fail if you do not have a network connection, so always check the error codes returned from all Qredo functions.
  
  @see Connecting to Qredo: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/connecting_to_qredo/index.html),
-  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/connecting_to_qredo/index.html)
-  
+ [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/connecting_to_qredo/index.html)
+ 
  @param appSecret  a hex String supplied by Qredo. This is your API key for Qredo services.
  @param appSecret  a hex String supplied by Qredo. This uniquely identifies your app to Qredo
  @param userId     a unique identifier for a user of the App, usually username or email address
  @param userSecret a password for the user of the App.
  
  @param completionhandler Returns the `QredoClient` object or an error.
-                          The `QredoClient` parameter will be nil if the app cannot be initialized. See the note above.
-  The `NSError` parameter will be non nil if an error has occured: `error.code` contains `QredoErrorCodeUnknown` if the credentials are incorrect or if the app cannot be initialised due to a network error. `error.localizedDescription` includes more information about the error.
-  
-  
+ The `QredoClient` parameter will be nil if the app cannot be initialized. See the note above.
+ The `NSError` parameter will be non nil if an error has occured: `error.code` contains `QredoErrorCodeUnknown` if the credentials are incorrect or if the app cannot be initialised due to a network error. `error.localizedDescription` includes more information about the error.
+ 
+ 
  */
 
 +(void)initializeWithAppId:(NSString*)appId
@@ -75,7 +74,7 @@
  The status of the Qredo connection
  
  @return YES if the connection is closed, otherwise NO.
-*/
+ */
 
 
 -(BOOL)isClosed;
@@ -92,8 +91,8 @@
  
  @see Creating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
-
-
+ 
+ 
  @param tag The specified tag as a string.
  @param completionhandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousAlreadyExists` if a rendezvous with the specified tag already exists and `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
  
@@ -112,7 +111,7 @@
  
  
  @param completionhandler returns a `QredoRendezvous` or nil if an error occurs.`error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
-
+ 
  */
 
 -(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
@@ -147,7 +146,7 @@
 /** Enumerates through all the Rendezvous created by the current app user passing the `QredoRendezvousMetadata` for each one.
  
  @param rendezvousMetadata The metadata for the current Rendezvous in the list. You can access the `QredoRendezvousRef` and tag from the metadata
- @param stop. Set this value to YES to stop the enumeration. 
+ @param stop. Set this value to YES to stop the enumeration.
  @param completionHandler error will be non nil if an error occurs.
  
  @see Retrieving a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html)
@@ -183,12 +182,12 @@
  
  @see Retrieving a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html),
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
-
+ 
  @param ref The `QredoRendevousRef` for the required `QredoRendevous`.
  @param completionHandler rendezvous will be set to the `QredoRendezvous` represented by the `QredoRendezvousRef` . If the Rendezvous cannot be found, then an error will be non nil and  error.code will be `QredoErrorCodeRendezvousNotFound`
  
  */-(void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
-            completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
 /** Returns the QredoRendezvous with the specified `QredoRendezvousMetadata`
@@ -208,11 +207,11 @@
 
 #pragma mark - Responding to a Rendezvous
 
-/** Respond to the Rendezvous with the specified tag. A secure `QredoConversation` will automatically be created between the creator and responder which you can then use to send and receive `QredoConversationMessage objects
+/** Respond to the Rendezvous with the specified tag. A secure `QredoConversation` will automatically be created between the creator and responder which you can then use to send and receive `QredoConversationMessage` objects
  
  
  @see Responding to a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/responding_to_a_rendezvous.html),
-                                            [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/responding_to_a_rendezvous.html)
+ [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/responding_to_a_rendezvous.html)
  
  @param tag The string representing the tag of the Rendezvous to respond to.
  @param completionHandler conversation will be the QredoConversation created or nil if an error occured. error.code will be `QredoErrorCodeRendezvousNotFound`
@@ -232,11 +231,11 @@
  
  @see Activating and Deactivating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html),
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
-
+ 
  
  @param tag The string representing the tag of the Rendezvous to respond to.
  @param completionHandler rendezvous will contain the activated Rendezvous or nil if an error occurs. error.code will contain `QredoErrorCodeRendezvousNotFound` if a Rendezvous with the specified `QredoRendezvousRef` cannot be found.
-
+ 
  
  */
 -(void)activateRendezvousWithRef:(QredoRendezvousRef *)ref duration:(long)duration
@@ -245,11 +244,11 @@
 /** Deactivates a Rendezvous.
  
  @note Existing conversations established with this Rendezvous will still be available and are NOT closed.
- New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again by calling `activateRendezvousWithRef`  
+ New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again by calling `activateRendezvousWithRef`
  
  @see Activating and Deactivating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html),
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
-
+ 
  @param ref The `QredoRendezvousRef` for the Rendezvous to be deactivated
  @param completionHandler error will be non nil if an error occurs. error.code will be `QredoErrorCodeRendezvousNotFound` if a Rendezvous with the specified `QredoRendezvousRef` cannot be found.
  
@@ -267,7 +266,7 @@
  
  @note This method lists all Conversations that this user is a party to, whether as a result of responding to a Rendezvous or another user responding to a Rendezvous that this user created
  
- @see Listing all Conversations: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html), 
+ @see Listing all Conversations: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html),
  [Swift](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html)
  
  @param conversationMetadata The `QredoConversationMetadata` for the current Conversation being enumerated. The `QredoConversationRef` can be extracted from the metadata.
@@ -301,7 +300,7 @@
 
 /** Returns an object used to access the app user's Vault.
  
- @see The Vault [Objective-C](https://www.qredo.com/docs/android/programming_guide/html/the_vault/index.html), 
+ @see The Vault [Objective-C](https://www.qredo.com/docs/android/programming_guide/html/the_vault/index.html),
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/index.html)
  
  @warning If there is a problem initialising the app or connecting to the Qredo service, the default Vault will be nil, so always check before using it.
@@ -311,6 +310,20 @@
  */
 
 -(QredoVault *)defaultVault;
+
+
+/** Helper method to generate a random string of specified length using only chars from abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789
+ 
+ @note this method is used by `createAnonymousRendezvousWithRandomTagCompletionHandler` to create a random tag
+ 
+ @param len The length of the string to be generated
+ 
+ @return `NSString` a random string of the specified length
+ 
+ */
+
++(NSString *)randomStringWithLength:(int)len;
+
 
 /**
  @return the current version of the framework in Major.Minor.Patch format
