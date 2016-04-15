@@ -403,18 +403,14 @@ IncomingMetadataBlock incomingMetadatBlock;
                                                                                inManageObjectContext:self.managedObjectContext];
         QredoIndexVaultItemMetadata *latestIndexedMetadata = indexedItem.latest;
         
-        
 //        NSLog(@"LOOKING 1 *** %@",  newMetadata.descriptor.itemId);
 //        NSLog(@"LOOKING 2 *** %lli",newMetadata.descriptor.sequenceValue);
 //        NSLog(@"LOOKING 3 *** %@",  newMetadata.descriptor.sequenceId);
-//
 //        NSLog(@"LOOKING 4 *** %@",  latestIndexedMetadata.descriptor.itemId);
 //        NSLog(@"LOOKING 5 *** %@",  latestIndexedMetadata.descriptor.sequenceValue);
 //        NSLog(@"LOOKING 6 *** %@",  latestIndexedMetadata.descriptor.sequenceId);
-
         
-        
-        //A new Vault Item
+        //There is no item in the index with this item ID, so it is a new Vault Item
         if (!indexedItem) {
             QredoIndexVaultItem *vaultIndexItem = [self addNewVaultItem:newMetadata];
             [vaultIndexItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
@@ -424,8 +420,9 @@ IncomingMetadataBlock incomingMetadatBlock;
             QredoLogDebug(@"Index item count : %i", ^{ return [self count];}());
             return;
         }
-        
-        //this is an existing item set the value
+    
+        //There is an itemID with the same Sequence ID & Sequqnce Number
+        //So this is an existing item, sets its value
         if ([latestIndexedMetadata hasSameSequenceIdAs:newMetadata]  &&
             [latestIndexedMetadata hasSameSequenceNumberAs:newMetadata]){
             QredoLogDebug(@"Existing item");
@@ -436,11 +433,12 @@ IncomingMetadataBlock incomingMetadatBlock;
                 QredoLogDebug(@"Existing item without value, value set to data len %lu", (unsigned long)[vaultItem.value length]);
                 [self save];
            }
-            return;
+           return;
         }
         
         
-        //There is already a version in the index with same sequence ID and previous sequence Number
+        //There is an itemID in the index, with the same Sequence ID & previous Sequence Number
+        //So this must be a new version of a locally created item
         if ([latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasSmallerSequenceNumberThan:newMetadata]) {
             [self.cacheInvalidator subtractSizeFromTotals:indexedItem];
             [indexedItem addNewVersion:newMetadata];
@@ -452,8 +450,8 @@ IncomingMetadataBlock incomingMetadatBlock;
             return;
         }
         
-        //The new version comes from  a different SequenceID - and therefore another device
-        //The only way to guess the newest one is to compare created Date stamps (which are set by the device, so not 100% reliable)
+        //There is an item id in the index, with a different seqenceNumber and a previous createdDataStamp
+        //This is a new version of a remotely created item
         if (![latestIndexedMetadata hasSameSequenceIdAs:newMetadata] && [latestIndexedMetadata hasCreatedTimeStampBefore:newMetadata]) {
             [self.cacheInvalidator subtractSizeFromTotals:indexedItem];
             [indexedItem addNewVersion:newMetadata];
@@ -461,7 +459,7 @@ IncomingMetadataBlock incomingMetadatBlock;
             [indexedItem setVaultValue:vaultItem.value hasVaultItemValue:hasVaultItemValue];
             [self.cacheInvalidator addSizeToTotals:indexedItem];
             [self save];
-            QredoLogDebug(@"Item in index has different sequence and more recent date");
+            QredoLogDebug(@"Item in index has different sequence and older date");
             QredoLogDebug(@"Index item count : %i", ^{ return [self count];}());
             return;
             

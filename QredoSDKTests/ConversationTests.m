@@ -37,8 +37,24 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 @implementation ConversationMessageListener
 
+
+-(void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation{
+    @synchronized(_test) {
+        QLog(@"qredoConversation:didReceiveNewMessage:");
+        if (_listening) {
+            if (_test.didRecieveOtherPartyHasLeft) {
+                QLog(@"really fullfilling");
+                [_test.didRecieveOtherPartyHasLeft fulfill];
+                _listening = NO;
+            }
+        }
+    }
+}
+
 - (void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message{
     // Can't use XCTAsset, because this class is not QredoXCTestCase
+    
+    
     
     @synchronized(_test) {
         QLog(@"qredoConversation:didReceiveNewMessage:");
@@ -386,6 +402,110 @@ NSString *secondMessageText;
     return hwm;
 }
 
+
+
+-(void)testOtherPartyHasLeft{
+    
+    //Client1: Create Rendezvous
+    //Client2: Respond to Rendezvous
+    //Client1: get Conversation and then call deleteConversationWithCompletionHandler
+    //Client2: Receives qredoConversationOtherPartyHasLeft callback in its QredoConversationObserver
+    
+    
+    [QredoLogger setLogLevel:0];
+    
+    //static NSString *randomTag;
+    NSString *randomTag = nil;
+    
+    if (!randomTag)randomTag= [[QredoQUID QUID] QUIDString];
+    
+    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [NSDate date]];
+    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [NSDate date]];
+    rvuFulfilledTimes = 0;
+    self.didReceiveResponseExpectation = nil;
+    
+    // NSLog(@"TAG %@",randomTag);
+    
+    //register listener
+    ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
+    listener.expectedMessageValue = firstMessageText;
+    listener.test = self;
+    
+    
+    //Create Rendezvous
+    [NSThread sleepForTimeInterval:0.2];
+    
+    //static QredoRendezvous *rendezvous;
+    QredoRendezvous *rendezvous=nil;
+    if (!rendezvous){
+        rendezvous= [self isolateCreateRendezvous:randomTag];
+        [rendezvous addRendezvousObserver:self];
+    }
+    
+    
+    //this is a fix so the observer registers before the rendezvous is responded to.
+    [NSThread sleepForTimeInterval:0.2];
+    
+    
+    //Respond to Rendezvous
+    QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
+    
+    [creatorConversation addConversationObserver:listener];
+    [NSThread sleepForTimeInterval:0.2];
+    
+    //Response to Rendezvous
+    
+    //////SETUP COMPLETE -
+    
+    
+    
+    //get primary conversation
+    
+    
+    __block QredoConversation *primaryConveration  = nil;
+    __block XCTestExpectation *getPrimaryConv = [self expectationWithDescription:@"get first conversation"];
+    
+    
+    [rendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
+        primaryConveration = conversation;
+    } completionHandler:^(NSError *error) {
+        [getPrimaryConv fulfill];
+        XCTAssertNil(error);
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+
+    
+     //delete the conversation
+    __block XCTestExpectation *delcon = [self expectationWithDescription:@"del con"];
+    [primaryConveration deleteConversationWithCompletionHandler:^(NSError *error) {
+        NSLog(@"Conversation deleted %@",error);
+        [delcon fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+
+    
+    //wait for the observer to get the qredoConversationOtherPartyHasLeft callback
+    
+    ConversationMessageListener *deleteListener = [[ConversationMessageListener alloc] init];
+    deleteListener.expectedMessageValue = @"hello";
+    deleteListener.test = self;
+    self.didRecieveOtherPartyHasLeft = [self expectationWithDescription:@"wait to be notified of other party has left"];
+    deleteListener.listening = YES;
+    [responderConversation addConversationObserver:deleteListener];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+    
+    NSLog(@"here");
+}
 
 -(void)testConversationWatermark{
     

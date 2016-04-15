@@ -144,6 +144,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 /** Deletes a vault item and returns it's metadata */
 -(void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
 
+
+/** Updates vault item */
+-(void)updateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+
 /** High watermark of the Vault from which the updates will be arriving, when `startListening` is called. The watermark is persisted in `NSUserDefaults`. */
 -(QredoVaultHighWatermark *)highWatermark;
 

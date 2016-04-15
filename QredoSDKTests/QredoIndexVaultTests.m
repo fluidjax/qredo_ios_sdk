@@ -866,4 +866,182 @@ NSNumber *testNumber;
 }
 
 
+
+
+
+
+
+
+-(void)testPutItemType1{
+     NSInteger before = [qredoLocalIndex count];
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    [client1.defaultVault addMetadataIndexObserver];
+    
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"test item",
+                                         @"key2": @"value2"};
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadataDictionary:item1SummaryValues value:item1Data ];
+    
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"TestputItemType1"];
+    [client1.defaultVault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+        XCTAssertNil(error);
+        XCTAssertNotNil(newItemMetadata);
+        [testExpectation fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+    
+    
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
+}
+
+
+-(void)testPutItemType3{
+    //There is an itemID in the index, with the same Sequence ID & previous Sequence Number
+    //So this must be a new version of a locally created item
+    
+    NSInteger before = [qredoLocalIndex count];
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    [client1.defaultVault addMetadataIndexObserver];
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"test item",
+                                         @"key2": @"value2"};
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadataDictionary:item1SummaryValues value:item1Data ];
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"TestputItemType1"];
+    __block QredoVaultItemMetadata *itemMetadata;
+    
+    [client1.defaultVault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+        XCTAssertNil(error);
+        XCTAssertNotNil(newItemMetadata);
+        itemMetadata = newItemMetadata;
+        [testExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+   
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
+    
+    NSData *item1Data2 = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues2 = @{@"key1": @"test item",
+                                         @"key2": @"NEWVALUE"};
+    
+    QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadataDictionary:item1SummaryValues2 value:item1Data2 ];
+    item2.metadata.descriptor = itemMetadata.descriptor;
+    __block XCTestExpectation *testExpectation2 = [self expectationWithDescription:@"TestputItemType1"];
+    __block QredoVaultItemMetadata *itemMetadata2;
+    
+    [client1.defaultVault putItem:item2 completionHandler:^(QredoVaultItemMetadata *newItemMetadata2, NSError *error){
+        XCTAssertNil(error);
+        XCTAssertNotNil(newItemMetadata2);
+        itemMetadata2 = newItemMetadata2;
+        [testExpectation2 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+    
+    NSInteger afterSecond = [qredoLocalIndex count];
+    XCTAssert(afterSecond == after,@"There should not be a new item in the cache now Before %ld After %ld", (long)before, (long)after);
+    
+    NSString *val = [itemMetadata2.summaryValues objectForKey:@"key2"];
+    XCTAssertTrue([val isEqualToString:@"NEWVALUE"]);
+}
+
+
+
+-(void)testPutItemType4{
+    //There is an itemID with the same Sequence ID & Sequqnce Number
+    //So this is an existing item, sets its value
+    [self authoriseSecondClient:[QredoTestUtils randomPassword]];
+    
+    
+    
+    NSInteger before = [qredoLocalIndex count];
+    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    [client1.defaultVault addMetadataIndexObserver];
+    [client2.defaultVault addMetadataIndexObserver];
+
+    
+    NSData *item1Data = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"test item",
+                                         @"key2": @"value2"};
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadataDictionary:item1SummaryValues value:item1Data ];
+    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"TestputItemType1"];
+    __block QredoVaultItemMetadata *itemMetadata;
+    
+    [client1.defaultVault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+        XCTAssertNil(error);
+        XCTAssertNotNil(newItemMetadata);
+        itemMetadata = newItemMetadata;
+        [testExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+    
+    NSInteger after = [qredoLocalIndex count];
+    XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
+    
+    
+    //end of 1st put
+    
+    
+    
+    NSData *item1Data2 = [self randomDataWithLength:1024];
+    NSDictionary *item1SummaryValues2 = @{@"key1": @"test item",
+                                          @"key2": @"NEWVALUE"};
+    
+    QredoVaultItem *item2 = [QredoVaultItem vaultItemWithMetadataDictionary:item1SummaryValues2 value:item1Data2 ];
+    item2.metadata.descriptor = [[QredoVaultItemDescriptor alloc] initWithSequenceId:nil sequenceValue:0 itemId:item1.metadata.descriptor.itemId];
+    
+    
+    
+    __block XCTestExpectation *testExpectation2 = [self expectationWithDescription:@"TestputItemType1"];
+    __block QredoVaultItemMetadata *itemMetadata2;
+    
+    
+    
+    
+
+    
+    [client2.defaultVault putItem:item2 completionHandler:^(QredoVaultItemMetadata *newItemMetadata2, NSError *error){
+        XCTAssertNil(error);
+        XCTAssertNotNil(newItemMetadata2);
+        itemMetadata2 = newItemMetadata2;
+        [testExpectation2 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testExpectation = nil;
+    }];
+    
+    NSInteger afterSecond = [qredoLocalIndex count];
+    XCTAssert(afterSecond == after,@"There should not be a new item in the cache now Before %ld After %ld", (long)before, (long)after);
+    
+    NSString *val = [itemMetadata2.summaryValues objectForKey:@"key2"];
+    XCTAssertTrue([val isEqualToString:@"NEWVALUE"]);
+    
+}
+
+
+
+
+
+
 @end

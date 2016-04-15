@@ -898,7 +898,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                            completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
         {
             if (error) {
-                QredoLogError(@"Delete Conversation %@",error);
+                QredoLogError(@"Delete Conversation failed with error %@",error);
 
                 completionHandler(error);
                 return ;

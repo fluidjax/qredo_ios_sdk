@@ -9,7 +9,6 @@
 #import "NSDictionary+Contains.h"
 #import "QredoVaultPrivate.h"
 
-
 @interface QredoVaultListener : NSObject<QredoVaultObserver>
 
 @property XCTestExpectation *didReceiveVaultItemMetadataExpectation;
@@ -1179,5 +1178,9 @@
     
     XCTAssertEqualObjects(mutableMetadata.summaryValues, mutableMetadataSummaryValues);
 }
+
+
+
+
 
 @end

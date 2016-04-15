@@ -10,6 +10,7 @@ target 'TestHost' do
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium'
     pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
+
 end
 
 target 'QredoSDKTests' do
@@ -33,7 +34,7 @@ target 'QredoXDK' do
     pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium'
-    
+    pod 'ios-ntp'    
 end
 
 post_install do |installer_representation|

@@ -7,6 +7,7 @@
 @property (nonatomic) QredoClientOptionsTransportType transportType;
 @property (atomic) XCTestExpectation *didReceiveResponseExpectation;
 @property (atomic) XCTestExpectation *didReceiveMessageExpectation;
+@property (atomic) XCTestExpectation *didRecieveOtherPartyHasLeft;
 
 -(void)authoriseClient;
 -(void)testConversationCreation;
