@@ -62,12 +62,38 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 @end
 
 
+/** The protocol that must implemented by the object that listens for new messages received within a `QredoConversation`
+ 
+ @see Listening for Conversation Messages: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
+
+*/
 
 @protocol QredoConversationObserver <NSObject>
+
 @required
+
+/**
+ Invoked when a new message is received in the Conversation.
+ 
+ @param conversation The Conversation within which the new message is received
+ @param message The new message
+ 
+ @note this method must be implemented
+ */
+
 -(void)qredoConversation:(QredoConversation *)conversation
     didReceiveNewMessage:(QredoConversationMessage *)message;
+
+
 @optional
+/**
+ 
+ Invoked when the other party to the Conversation leaves as a result of calling [deleteConversationWithCompletionHandler](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)deleteConversationWithCompletionHandler:)
+ 
+ @note If the other party leaves the Conversation, they will no longer receive any more messages, but the message history will still be available.
+ 
+ */
+
 -(void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation;
 @end
 
@@ -84,11 +110,16 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 @interface QredoConversation :NSObject
 
+#pragma mark - Properties
+
 /**
  The current highwatermark for this Conversation. This is used when enumerating `QredoConversationMessages`.
  */
 
 @property (readonly) QredoConversationHighWatermark* highWatermark;
+
+#pragma mark - Methods
+
 
 /**
  @return the `QredoConversationMetadata` for this Conversation.
@@ -102,6 +133,10 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 -(void)resetHighWatermark;
 
+
+#pragma mark - Sending a message
+
+
 /**
  Send the specified message to the other party in the Conversation
  
@@ -114,6 +149,8 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 -(void)publishMessage:(QredoConversationMessage *)message
     completionHandler:(void (^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler;
+
+#pragma mark - Listening for messages
 
 
 /** 
@@ -141,6 +178,9 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 */
 -(void)removeConversationObserver:(id<QredoConversationObserver>)observer;
 
+
+#pragma mark - Deleting messages
+
 /**
  Deletes the specified Conversation. No further messages can be sent and received within this Conversation.
  
@@ -151,7 +191,12 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  
  */
 
+
 -(void)deleteConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler;
+
+
+#pragma mark - Listing messages
+
 
 /**
  

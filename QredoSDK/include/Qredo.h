@@ -24,7 +24,7 @@
 /**
  Used to manage connections to Qredo and create, manage and respond to Rendezvous.
  
- @note You app must be initialised and connected to a network before using any Qredo services.
+ @note Your app must be initialised and connected to a network before using any Qredo services.
  */
 
 @interface QredoClient :NSObject
