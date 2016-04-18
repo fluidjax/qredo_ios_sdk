@@ -40,6 +40,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 @implementation QredoRendezvousRef
 
+-(NSString *)description{
+    return [NSString stringWithFormat:@"%@",self.vaultItemDescriptor];
+}
+
+
 @end
 
 @implementation QredoRendezvousMetadata

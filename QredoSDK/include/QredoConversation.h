@@ -30,7 +30,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  */
 
 @interface QredoConversationRef :QredoObjectRef
-+ (NSString *)description;
+-(NSString *)description;
 @end
 
 

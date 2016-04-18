@@ -55,6 +55,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 @implementation QredoConversationRef
 
+-(NSString *)description{
+    return [NSString stringWithFormat:@"%@",self.vaultItemDescriptor];
+}
+
 @end
 
 @interface QredoConversationMetadata ()
