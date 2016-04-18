@@ -179,6 +179,9 @@
 
 
 
+
+
+
 -(void)testPutDelete{
     
     [self resetKeychain];
@@ -382,8 +385,15 @@
     
 }
 
-- (void)testPutItemMultiple
-{
+
+-(void)testMultiplePutItem{
+    for (int i=0;i<1000;i++){
+        [self testPutItem];
+    }
+}
+
+
+- (void)testPutItemMultiple{
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
     XCTAssertNotNil(vault);

@@ -199,13 +199,17 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                         created:created
                   summaryValues:newSummaryValues
                     completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-                        
-                         __block NSError *putError=error;
-                        QredoLogInfo(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
-                        [self cacheInIndexVaultItem:vaultItem  metadata:newItemMetadata  completionHandler:^(NSError *error) {
-                                if (putError)error=putError;
+                       
+                        if (error){
+                            //we failed to send the item to the server - dont put it in the local index
+                             QredoLogError(@"Failed to send vault item to server itemID=%@", itemId);
+                             completionHandler(newItemMetadata, error);
+                        }else{
+                            QredoLogInfo(@"Put New Item VaultItem:%@ vaultID:%@",itemId, self.vaultId);
+                            [self cacheInIndexVaultItem:vaultItem  metadata:newItemMetadata  completionHandler:^(NSError *error) {
                                 completionHandler(newItemMetadata, error);
-                         }];
+                            }];
+                        }
                         
       }];
 }
@@ -230,9 +234,15 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                         created:created
                   summaryValues:newSummaryValues
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-                  [self cacheInIndexVaultItem:vaultItem metadata:newItemMetadata completionHandler:^(NSError *error) {
-                 completionHandler(newItemMetadata, error);
-            }];
+                  if (error){
+                      //we failed to send the item to the server - dont put it in the local index
+                      QredoLogError(@"Failed to send vault item to server itemID=%@", itemId);
+                      completionHandler(newItemMetadata, error);
+                  }else{
+                      [self cacheInIndexVaultItem:vaultItem metadata:newItemMetadata completionHandler:^(NSError *error) {
+                          completionHandler(newItemMetadata, error);
+                      }];
+                  }
      }];
 }
 
@@ -317,7 +327,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                  QredoLogWarning(@"VaultItem not found on server");
                  if (completionHandler)completionHandler(vaultItem, error);
              }else{
-                 
                  [self cacheInIndexVaultItem:vaultItem metadata:vaultItem.metadata completionHandler:^(NSError *error) {
                      QredoLogVerbose(@"vaultItem added to cache");
                      if (completionHandler)completionHandler(vaultItem, error);
