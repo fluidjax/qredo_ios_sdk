@@ -9,10 +9,11 @@
 @class QredoQUID;
 
 extern NSString *const kQredoConversationVaultItemType;
+
+/** A constant used to specify the start of the Conversation. Used when enumerating Conversation messages  */
 extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin;
 
-/**
- Specify the highwatermark to set the location from which to retrieve messages in a Conversation. This reduces the time spent communicating with the server. Objects of this class are not created directly  */
+/** The highwater mark is the marker from which to retrieve messages in a Conversation. Objects of this class are not created directly  */
 
 @interface QredoConversationHighWatermark :NSObject
 
@@ -26,7 +27,6 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 /**
  Used to refer to a specific `QredoConversation`. Not created directly. Developers can find extract this value from the `QredoConversationMetadata`.
- 
  */
 
 @interface QredoConversationRef :QredoObjectRef
@@ -196,6 +196,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 
 #pragma mark - Listing messages
+
 
 /**
  
