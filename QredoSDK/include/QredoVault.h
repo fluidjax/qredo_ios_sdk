@@ -320,12 +320,9 @@ Goes through the items in this Vault and calls the specified code block on each 
 
 
 #pragma mark - Updating Vault items
--(void)updateItem:(QredoVaultItemMetadata *)metadata
-                value:(NSData *)value
-    completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+-(void)updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
+                                         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
-/** Updates the vault item with new metadata and value */
--(void)updateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
 
 @end

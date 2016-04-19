@@ -425,9 +425,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 
--(void)updateItem:(QredoVaultItemMetadata *)metadata
-            value:(NSData *)value
-completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
+-(void)updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
+                                        completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
     
     //this builds a new vault item metadata removes the SequenceValue (Num & Value) from the descriptor
     QredoQUID *itemID = metadata.descriptor.itemId;
@@ -436,11 +435,6 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
     newMetadata.descriptor = deSequencedDescriptor;
     QredoVaultItem *cleanedVaultItem = [[QredoVaultItem alloc] initWithMetadata:newMetadata value:value];
     [self strictlyUpdateItem:cleanedVaultItem completionHandler:completionHandler];
-    
-    
-    
-    
-    
 }
 
 
