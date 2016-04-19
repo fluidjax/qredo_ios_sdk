@@ -4,79 +4,182 @@
 
 #import "QredoTypes.h"
 
+/** Type definition for `QredoRendezvousHighWatermark`  */
 typedef uint64_t QredoRendezvousHighWatermark;
+
+/** A constant used to specify the start of the Rendezvous. Used when enumerating Conversation messages  */
 extern const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin;
+/** Used internally  */
 extern NSString *const kQredoRendezvousVaultItemType;
+/** Used internally  */
 extern NSString *const kQredoRendezvousVaultItemLabelTag;
+/** Used internally  */
 extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
+/** Used to establish a secure Conversation between two app users using just a string tag.
+ Objects of this class are returned by `createAnonymousRendezvousWithTag`.
+ 
+ @see Creating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
+ [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
+
+ */
 
 @class QredoRendezvous;
+
+/** The protocol that must implemented by the object that listens for new messages received within a `QredoConversation`
+ 
+ @see Listening for Conversation Messages: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
+ 
+ */
 
 @protocol QredoRendezvousObserver <NSObject>
 
 @required
-/** Called when a new response is received */
+/**
+ Invoked when this Rendezvous is responded to
+ 
+ @param conversation The Rendezvous being responded to
+ @param message The Conversation created by Qredo from the Rendezvous
+ 
+ @note this method must be implemented
+ */
 -(void)qredoRendezvous:(QredoRendezvous*)rendezvous
      didReceiveReponse:(QredoConversation *)conversation;
 
-@optional
-/** Not implemented yet. Supposed to be called when the server closes the rendezvous after `durationSeconds` specified in `QredoRendezvousConfiguration` */
--(void)qredoRendezvous:(QredoRendezvous*)rendezvous
-            didTimeout:(NSError *)error;
 @end
 
+/** Used to retrieve, activate and deactivate a particular Rendezvous. 
+ 
+ Pass this ref to [fetchRendezvousWithRef](QredoClient.html#/c:objc(cs)QredoClient(im)fetchRendezvousWithRef:completionHandler:), [activateRendezvousWithRef](QredoClient.html#/c:objc(cs)QredoClient(im)activateRendezvousWithRef:duration:completionHandler:) and [deactivateRendezvousWithRef](QredoClient.html#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
+
+ Stored in the `QredoRendezvousMetadata`
+ */
 
 @interface QredoRendezvousRef :QredoObjectRef
 -(NSString *)description;
 @end
 
 
-// QredoRendezvousMetadata objects are returned in [QredoClient enumerateRendezvousWithBlock:] method.
-// Although, at the moment it has only tag, we might add more information later.
+/** Contains information about a previously created Rendezvous. 
+ Used to retrieve the `QredoRendezvousRef`
+ 
+  `QredoRendezvousMetadata` objects are returned by [enumerateRendezvousWithBlock:completionHandler](QredoClient.html#/c:objc(cs)QredoClient(im)enumerateRendezvousWithBlock:completionHandler:)
+ 
+ Other Rendezvous information can be accessed from the `QredoRendezvous`
+*/
+
 @interface QredoRendezvousMetadata :NSObject
+/** Use this ref to retrieve, activate or deactivate a Rendezvous */
 @property (readonly) QredoRendezvousRef *rendezvousRef;
+
+/** The Rendezvous tag */
 @property (readonly, copy) NSString *tag;
 @end
 
 
 
-
-/** Objects of this class are not supposed to be created manually. Instances of QredoRendezvous can be returned from:
- - `[QredoClient createRendezvousWithTag:configuration:completionHandler:]`
- - `[QredoClient enumerateRendezvousWithBlock:failureHandler:]`
- - `[QredoClient fetchRendezvousWithTag:completionHandler:]`
+/** 
+ Represents a Rendezvous. 
+ Created with [createAnonymousRendezvousWithTag](QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithTag:completionHandler:) and [createAnonymousRendezvousWithRandomTag](QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithRandomTagCompletionHandler:)
  */
+
+
 @interface QredoRendezvous :NSObject
+
+#pragma mark - Properties
+
+/** See `QredoRendezvousMetadata` */
 @property (readonly) QredoRendezvousMetadata *metadata;
+
+/** The duration in seconds after which the Rendezvous will expire. Expired Rendezvous can no longer be responded to.
+ To activate an expired Rendezvous call [activateRendezvousWithRef](QredoClient.html#/c:objc(cs)QredoClient(im)activateRendezvousWithRef:duration:completionHandler:)
+*/
 @property (readonly) long duration;
+
+/** Set to YES if the Rendezvous accepts multiple responses, otherwise only one response will be accepted before the Rendezvous expires */
 @property (readonly) BOOL unlimitedResponses;
+
+/** The date and time at which the Rendezvous expires. */
 @property (readonly) NSDate *expiresAt;
+
+/** The Rendezvous tag */
 @property (readonly) NSString *tag;
 
+/** Used to store the mark to search from when enumerating Conversations created for this Rendezvous
+ Pass this as a parameter to [enumerateConversationsWithBlock](#/c:objc(cs)QredoRendezvous(im)enumerateConversationsWithBlock:completionHandler:
+) */
 
-/** High watermark defining the last point when we get the number of responders. Updated when listening for events. See `startListening`.
- The value of the high watermark is persisted on the device.
- */
 @property (readonly) QredoRendezvousHighWatermark highWatermark;
 
+/** Resets the highwatermark so that the next enumeration starts from the first Conversation created from this Rendezvous */
 -(void)resetHighWatermark;
 
 
+#pragma mark - Listening for responses
+
+/**
+ 
+ Start listening for responses to this Rendezvous
+ 
+ Adds an observer that adopts the `QredoRendezvousObserver` protocol. The [qredoRendezvous:didReceiveReponse](../Protocols/QredoRendezvousObserver.html#/c:objc(pl)QredoRendezvousObserver(im)qredoRendezvous:didReceiveReponse:) method must be implemented.
+ 
+ @see Listening for Responses: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/listening_for_responses.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/listening_for_responses.html)
+ 
+ @param observer The object that implements the QredoRendezvousObserver protocol.
+ 
+ */
 
 -(void)addRendezvousObserver:(id<QredoRendezvousObserver>)observer;
+
+
+/**
+ Stop listening for responses to this Rendezvous and delete the observer object
+ 
+ @param observer The observer to remove
+ 
+ @note Observers are automatically deleted when you close the connection to the `QredoClient`
+ 
+ */
+
 -(void)removeRendezvousObserver:(id<QredoRendezvousObserver>)observer;
-/** Enumerates all the conversations (responses) that were created for this rendezvous */
+
+
+#pragma mark - Listing Conversations
+
+/**
+ 
+ Goes through the Conversations created from this Rendezvous and calls the specified code block for each one
+ 
+ @see Listing Conversations created from a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html)
+ 
+ @param block Called for each `QredoConversation`. Set `stop` to YES to terminate the enumeration
+ @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
+ */
+
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler;
 
-/** Enumerates the conversations (responses) that were created for this rendezvous since the specified high watermark */
+/**
+ 
+ Goes through the Conversations created from this Rendezvous since the specified highwatermark and calls the specified code block for each one
+ 
+ @see Listing Conversations created from a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html)
+ 
+ @param block Called for each `QredoConversation`. Set `stop` to YES to terminate the enumeration
+ @param sinceWatermark the point at which to start the search. Use `QredoRendezvousHighWatermarkOrigin` to start from the first Conversation
+ @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
+ */
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
                                  since:(QredoRendezvousHighWatermark)sinceWatermark
                      completionHandler:(void (^)(NSError *error))completionHandler;
 
 
-/** Not implemented yet. */
+#pragma mark - Other methods
+
+/** Deletes a Rendezvous. Not yet implemented.
+ Use `deactivateRendezvous`
+ @see [Deactivating a Rendezvous](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
+ */
 -(void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
 
