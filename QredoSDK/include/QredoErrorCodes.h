@@ -18,6 +18,8 @@ typedef NS_ENUM (NSInteger, QredoErrorCode) {
     QredoErrorCodeVaultUnknown = 2000,
     QredoErrorCodeVaultItemNotFound,
     QredoErrorCodeVaultItemHasBeenDeleted,
+    QredoErrorCodeVaultInsufficientParameters,
+    
     
     // Rendezvous errors
     QredoErrorCodeRendezvousNotFound = 3001,

@@ -68,11 +68,9 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 /** Mutable metadata. */
 @interface QredoMutableVaultItemMetadata :QredoVaultItemMetadata
-
 @property QredoVaultItemDescriptor *descriptor;
 @property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
 -(void)setSummaryValue:(id)value forKey:(NSString *)key;
-
 @end
 
 
@@ -146,7 +144,10 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 
 /** Updates vault item */
--(void)updateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+-(void)updateItem:(QredoVaultItemMetadata *)metadata
+                value:(NSData *)value
+    completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+
 
 /** High watermark of the Vault from which the updates will be arriving, when `startListening` is called. The watermark is persisted in `NSUserDefaults`. */
 -(QredoVaultHighWatermark *)highWatermark;

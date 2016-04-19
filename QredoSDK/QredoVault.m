@@ -321,6 +321,19 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         completionHandler(vaultItem,nil);
     }else{
         QredoLogInfo(@"Retrieved VaultItem from server");
+        
+
+        //report API server limitation
+        if (itemDescriptor.sequenceId==nil){
+            NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                                 code:QredoErrorCodeVaultInsufficientParameters
+                                             userInfo:@{ NSLocalizedDescriptionKey : @"Cant retrieve item from server without Sequece ID & Value" }];
+            if (completionHandler)completionHandler(nil, error);
+            return;
+        }
+        
+        
+        
          [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
              //we can now put it in the cache
              if (error){
@@ -412,18 +425,21 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 
-
--(void)updateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
-    //this is a convenience method which calls putItem
+-(void)updateItem:(QredoVaultItemMetadata *)metadata
+            value:(NSData *)value
+completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
     
-    //this builds a new vault item metadat removes the SequenceValue (Num & Value) from the descriptor 
-    QredoQUID *itemID = vaultItem.metadata.descriptor.itemId;
+    //this builds a new vault item metadata removes the SequenceValue (Num & Value) from the descriptor
+    QredoQUID *itemID = metadata.descriptor.itemId;
     QredoVaultItemDescriptor *deSequencedDescriptor = [[QredoVaultItemDescriptor alloc] initWithSequenceId:nil sequenceValue:0 itemId:itemID];
-    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:vaultItem.metadata.summaryValues];
-    metadata.descriptor = deSequencedDescriptor;
-    QredoVaultItem *cleanedVaultItem = [[QredoVaultItem alloc] initWithMetadata:metadata value:vaultItem.value];
-    
+    QredoVaultItemMetadata *newMetadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:metadata.summaryValues];
+    newMetadata.descriptor = deSequencedDescriptor;
+    QredoVaultItem *cleanedVaultItem = [[QredoVaultItem alloc] initWithMetadata:newMetadata value:value];
     [self strictlyUpdateItem:cleanedVaultItem completionHandler:completionHandler];
+    
+    
+    
+    
     
 }
 

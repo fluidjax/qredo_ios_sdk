@@ -17,7 +17,6 @@ typedef NS_ENUM(NSInteger, QredoCryptoErrorCode) {
     QredoCryptoErrorCodeOpenSslCertificateReadFailure,
     QredoCryptoErrorCodeOpenSslStackPushFailure,
     QredoCryptoErrorCodeOpenSslFailedToGetPublicKey,
-    
 };
 
 @interface QredoCryptoError : NSObject

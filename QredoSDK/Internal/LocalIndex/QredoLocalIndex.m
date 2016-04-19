@@ -84,6 +84,9 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
+    if (self.enableValueCache==NO)return nil;
+    if (self.enableMetadataCache==NO)return nil;
+    
     __block QredoVaultItem* retrievedVaultItem = nil;
     [self.managedObjectContext performBlockAndWait:^{
         
@@ -126,6 +129,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (QredoVaultItemMetadata *)getMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
+    if (self.enableMetadataCache==NO)return nil;
     __block QredoVaultItemMetadata* retrievedMetadata = nil;
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
