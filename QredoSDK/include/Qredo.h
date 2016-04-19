@@ -63,7 +63,7 @@
 
 /**
  Closes the connection to Qredo. Call this when you no longer require Qredo services.
- This method will remove any Vault, Conversation or ConversationMessage listeners that you installed
+ This method will remove any Vault, Conversation or ConversationMessage observers that were installed
  */
 
 -(void)closeSession;

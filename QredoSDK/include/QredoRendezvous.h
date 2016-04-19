@@ -133,10 +133,11 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 
 /**
- Stop listening for responses to this Rendezvous and delete the observer object.
- @param The observer to remove
+ Stop listening for responses to this Rendezvous and delete the observer object
  
- @note Observers are automatically deleted when you close the connection to the `QredoClient`.
+ @param observer The observer to remove
+ 
+ @note Observers are automatically deleted when you close the connection to the `QredoClient`
  
  */
 
