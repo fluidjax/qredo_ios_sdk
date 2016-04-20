@@ -52,7 +52,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define QredoLog(_level, _message)   [QredoLogger logMessage:(_message) currentLevel:[QredoLogger logLevel] level:(_level) file:__FILE__ function: __PRETTY_FUNCTION__ line: __LINE__]
+#define QredoLog(_level, _message)   [QredoLogger logMessage:(_message) logLevel:[QredoLogger logLevel] level:(_level) file:__FILE__ function: __PRETTY_FUNCTION__ line: __LINE__]
 #define QredoLogError(format, ...)   QredoLog(QredoLogLevelError,   (^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
 #define QredoLogWarning(format, ...) QredoLog(QredoLogLevelWarning, (^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
 #define QredoLogInfo(format, ...)    QredoLog(QredoLogLevelInfo,    (^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
@@ -72,7 +72,7 @@ typedef NS_ENUM (NSInteger, QredoLogLevel) {
 
 @interface QredoLogger :NSObject
 
-+(void)logMessage:(NSString * (^)(void))message currentLevel:(QredoLogLevel)currentLevel level:(QredoLogLevel)level file:(const char *)file function:(const char *)function line:(NSUInteger)line;
++(void)logMessage:(NSString * (^)(void))message logLevel:(QredoLogLevel)logLevel level:(QredoLogLevel)level file:(const char *)file function:(const char *)function line:(NSUInteger)line;
 //+(void)setLogHandler:(void (^)(NSString * (^message)(void), QredoLogLevel level, const char *file, const char *function, NSUInteger line))logHandler;
 +(void)setLogLevel:(QredoLogLevel)logLevel;
 +(QredoLogLevel)logLevel;

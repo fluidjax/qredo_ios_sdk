@@ -4,26 +4,50 @@
  */
 
 @import CoreData;
+#import "QredoVault.h"
+#import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"
+#import "QredoUserCredentials.h"
 #import "QredoLoggerPrivate.h"
+
+
 
 @interface QredoLocalIndexDataStore ()
 @property (strong) NSManagedObjectContext *privateContext;
 @property (strong) NSManagedObjectContext *managedObjectContext;
+@property (strong) QredoUserCredentials   *userCredentials;
 @end
 
 @implementation QredoLocalIndexDataStore
 
+NSURL *_storeUrl;
 
-+ (id)sharedQredoLocalIndexDataStore {
-    static QredoLocalIndexDataStore *sharedLocalIndexDataStore = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedLocalIndexDataStore = [[self alloc] init];
-        
-    });
-    return sharedLocalIndexDataStore;
+static NSMutableDictionary *dataStoreDictionary;
+
+
++(void)initialize{
+    //this is run just once when the class is first loaded
+    dataStoreDictionary = [[NSMutableDictionary alloc] init];
 }
+
+
+-(instancetype)initWithVault:(QredoVault *)vault{
+    //we cache the Datastores so if a new client requests an already loaded data store, it returns the existing one - otherwise we have two clients access the sqllite separately
+    QredoUserCredentials *userCredentials = vault.userCredentials;
+    
+    NSString *uniqueIdentifier = [userCredentials buildIndexName];
+    QredoLocalIndexDataStore *existingDataStore = [dataStoreDictionary objectForKey:uniqueIdentifier];
+    if (existingDataStore)return existingDataStore;
+    
+    self = [super init];
+    if (self) {
+        _userCredentials = userCredentials;
+        [self buildStack:vault];
+        [dataStoreDictionary setObject:self forKey:uniqueIdentifier];
+    }
+    return self;
+}
+
 
 
 - (void)saveContext:(BOOL)wait {
@@ -66,29 +90,46 @@
 
 
 -(NSURL *)storeURL{
+    if (_storeUrl)return _storeUrl;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSURL *storeURL = [documentsURL URLByAppendingPathComponent:@"QredoLocalIndex.sqlite"];
+    NSString *subDirectory = @".qredo";
+    
+    //create directory
+    NSURL *qredoDirectory = [documentsURL URLByAppendingPathComponent:subDirectory isDirectory:YES];
+    
+    BOOL isDir;
+    
+    
+    
+    if(![fileManager fileExistsAtPath:[qredoDirectory path] isDirectory:&isDir])
+        if(![fileManager createDirectoryAtPath:[qredoDirectory path] withIntermediateDirectories:NO attributes:nil error:NULL])
+            NSLog(@"Error: Create folder failed %@", qredoDirectory);
+    
+    
+    
+    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
+    
+    if (!bundleID || [bundleID isEqualToString:@""]){
+        bundleID = @"com.qredo.sdk";
+    }
+    NSString *userPart = [self.userCredentials buildIndexName];
+    NSString *filename = [NSString stringWithFormat:@"%@.%@.%@", bundleID,userPart,@"QredoLocalIndex.sqlite"];
+    
+    NSURL *storeURL = [qredoDirectory URLByAppendingPathComponent:filename];
+    _storeUrl = _storeUrl;
     return storeURL;
 }
 
 
--(void)deleteStore{
+
+-(void)deleteStore:(QredoVault*)vault{
     [[NSFileManager defaultManager] removeItemAtURL:[self storeURL] error:nil];
-    [self buildStack];
-}
-
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        [self buildStack];
-    }
-    return self;
+    [self buildStack:vault];
 }
 
 
-
--(void)buildStack{
+-(void)buildStack:(QredoVault *)vault{
     //Model
     
     NSAssert([NSThread isMainThread], @"Metadata Index - Initialization must be on main thread");

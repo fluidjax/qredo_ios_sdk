@@ -20,7 +20,7 @@
 
 extern NSString *const QredoVaultItemMetadataItemTypeTombstone;
 
-@class QredoClient, QredoKeychain, QredoVaultKeys, QredoLocalIndex;
+@class QredoClient, QredoKeychain, QredoVaultKeys, QredoLocalIndex, QredoUserCredentials;
 
 @interface QredoVaultItemDescriptor()<NSCopying>
 @property (readonly) QLFVaultSequenceValue sequenceValue;
@@ -71,6 +71,8 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 
 
 @interface QredoVault (Private)
+
+@property (strong) QredoUserCredentials *userCredentials;
 
 // this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
 

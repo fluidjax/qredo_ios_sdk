@@ -9,12 +9,14 @@
 #import "QredoLocalIndexCacheInvalidation.h"
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"
+#import "QredoLocalIndex.h"
 #import "QredoIndexModel.h"
 #import "QredoLoggerPrivate.h"
 #import "SSLTimeSyncServer.h"
 
 @interface QredoLocalIndexCacheInvalidation ()
 @property (strong) QredoIndexVault *qredoIndexVault;
+@property (strong) QredoLocalIndex *localIndex;
 @end
 
 /* Constants used to estimate the file size of the coredata index
@@ -36,10 +38,11 @@ static const long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage
 @implementation QredoLocalIndexCacheInvalidation
 
 
-- (instancetype)initWithIndexVault:(QredoIndexVault *)qredoIndexVault maxCacheSize:(long long)maxCacheSize {
+- (instancetype)initWithLocalIndex:(QredoLocalIndex *)localIndex maxCacheSize:(long long)maxCacheSize {
     self = [super init];
     if (self) {
-        self.qredoIndexVault = qredoIndexVault;
+        self.localIndex = localIndex;
+        self.qredoIndexVault = localIndex.qredoIndexVault;
         self.maxCacheSize = maxCacheSize;
     }
     return self;
@@ -138,7 +141,7 @@ static const long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage
     /* Display a warning if the cache size is too big, and cant be made smaller becasue there are no Vault Item Values left to remove
      This will occur when the index/cache is full of metadata.
      Deleting metadata will from the index will prevent metadata searches working correctly.  */
-    QredoLocalIndexDataStore *persistentStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
+    QredoLocalIndexDataStore *persistentStore = self.localIndex.qredoLocalIndexDataStore;
     long fileSizeOnDisk = [persistentStore persistentStoreFileSize];
     if (fileSizeOnDisk > self.maxCacheSize) {
         QredoLogWarning(@"Index/cache is beyond the maximum size %@",^{

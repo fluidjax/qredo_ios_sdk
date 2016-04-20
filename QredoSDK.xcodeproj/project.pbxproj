@@ -295,10 +295,10 @@
 		83395EAA1BE7DB9A006028D0 /* index.txt.old in Resources */ = {isa = PBXBuildFile; fileRef = 66605B8C1BD5266700EC8D6C /* index.txt.old */; };
 		833B3E1C1C5287DF00C10A81 /* QredoXCTestCase.h in Headers */ = {isa = PBXBuildFile; fileRef = 833B3E1A1C5287DF00C10A81 /* QredoXCTestCase.h */; };
 		833B3E1D1C5287DF00C10A81 /* QredoXCTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 833B3E1B1C5287DF00C10A81 /* QredoXCTestCase.m */; };
+		834199C01CC7C1A200B21035 /* QredoVaultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6574081A2F3B7200D5502E /* QredoVaultTests.m */; };
 		8350AF1F1CC623E1008A6715 /* HighwatermarksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573F81A2F3B7200D5502E /* HighwatermarksTests.m */; };
 		835B6CB01C75D7CF00A27986 /* QredoLocalIndex.xcdatamodel in Headers */ = {isa = PBXBuildFile; fileRef = 838E48C11C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel */; settings = {ATTRIBUTES = (Public, ); }; };
 		836253D11C8748FD0049A52E /* QredoLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 83800C701C50E81E007B3401 /* QredoLogger.m */; };
-		8362EF4C1CC5300D00EFE38D /* QredoVaultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6574081A2F3B7200D5502E /* QredoVaultTests.m */; };
 		83675A271C7B5F2000F31533 /* QredoRendezvousCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A16F98A19C6F62200639779 /* QredoRendezvousCrypto.h */; };
 		83675A281C7B5F2000F31533 /* QredoRendezvousHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 786DF4EC1A5D80C0000B4164 /* QredoRendezvousHelpers.h */; };
 		83675A291C7B5F2000F31533 /* QredoRendezvousHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 786DF4DF1A5D5358000B4164 /* QredoRendezvousHelper.h */; };
@@ -3050,9 +3050,9 @@
 				66605CA11BD6408D00EC8D6C /* QredoAuthenticatedRendezvousTagTests.m in Sources */,
 				66605CA31BD6408D00EC8D6C /* NSDictionary+Contains.m in Sources */,
 				66605CA41BD6408D00EC8D6C /* NSData+ParseHex.m in Sources */,
-				8362EF4C1CC5300D00EFE38D /* QredoVaultTests.m in Sources */,
 				66605CA71BD6408D00EC8D6C /* QredoRendezvousCryptoTest.m in Sources */,
 				66605CA81BD6408D00EC8D6C /* ConversationMQTTTests.m in Sources */,
+				834199C01CC7C1A200B21035 /* QredoVaultTests.m in Sources */,
 				83E6CFEE1C1AE80000A501D8 /* QredoClientTests.m in Sources */,
 				66605CA91BD6408D00EC8D6C /* ConversationWebSocketTests.m in Sources */,
 				66605CAA1BD6408D00EC8D6C /* ConversationTests.m in Sources */,

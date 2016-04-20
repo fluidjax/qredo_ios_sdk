@@ -145,7 +145,8 @@ NSNumber *testNumber;
 
 - (void)setUp {
     [super setUp];
-    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] deleteStore];
+
+//    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] deleteStore];
     
     myTestDate = [SSLTimeSyncServer date];
     QLog(@"**************%@",myTestDate);

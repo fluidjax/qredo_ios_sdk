@@ -21,4 +21,6 @@
 -(NSData*)masterKey;
 -(NSString*)createSystemVaultIdentifier;
 -(NSString*)dataToHexString:(NSData*)data;
+-(NSString*)buildIndexName;
+-(NSString*)buildIndexKey;
 @end

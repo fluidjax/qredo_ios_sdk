@@ -9,6 +9,7 @@
 @class QredoLocalIndexCacheInvalidation;
 @class QredoVaultItemMetadata;
 @class QredoIndexVaultItem;
+@class QredoLocalIndexDataStore;
 
 @interface QredoLocalIndex :NSObject <QredoVaultObserver>
 
@@ -17,6 +18,7 @@
 @property (assign) long long maxCacheSize;
 @property (strong) QredoIndexVault *qredoIndexVault;
 @property (strong) QredoLocalIndexCacheInvalidation  *cacheInvalidator;
+@property (strong) QredoLocalIndexDataStore *qredoLocalIndexDataStore;
 
 - (instancetype)initWithVault:(QredoVault *)vault;
 

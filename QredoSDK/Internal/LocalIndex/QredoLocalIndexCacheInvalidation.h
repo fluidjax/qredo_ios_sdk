@@ -12,13 +12,14 @@
 @class QredoIndexVaultItem;
 @class QredoIndexVaultItemMetadata;
 @class QredoVaultItemMetadata;
+@class QredoLocalIndex;
 
 @interface QredoLocalIndexCacheInvalidation : NSObject
 
 
 @property (assign) long long maxCacheSize;
 
-- (instancetype)initWithIndexVault:(QredoIndexVault *)qredoIndexVault  maxCacheSize:(long long)maxCacheSize;
+- (instancetype)initWithLocalIndex:(QredoLocalIndex *)localIndex maxCacheSize:(long long)maxCacheSize;
 
     /** add Payload & Metadata size in bytes for a given IndexVaultItem to the total in qredoIndexVault    */
 - (void)addSizeToTotals:(QredoIndexVaultItem *)qredoIndexVaultItem;

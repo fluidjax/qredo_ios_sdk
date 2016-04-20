@@ -307,13 +307,16 @@ NetworkClock *netClock;
 /** Creates instance of qredo client
  @param serviceURL Root URL for Qredo services
  */
--(instancetype)initWithServiceURL:(NSURL *)serviceURL appCredentials:(QredoAppCredentials *)appCredentials;
+-(instancetype)initWithServiceURL:(NSURL *)serviceURL appCredentials:(QredoAppCredentials *)appCredentials  userCredentials:(QredoUserCredentials *)userCredentials;
 
 
 @end
 
 @implementation QredoClient
 
+-(QredoUserCredentials *)userCredentials{
+    return _userCredentials;
+}
 
 -(NSString *)versionString {
     NSBundle* bundle = [NSBundle bundleForClass:[self class]];
@@ -421,7 +424,8 @@ NetworkClock *netClock;
     __block NSError *error = nil;
     __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL
                                                         pinnedCertificate:options.certificate
-                                                           appCredentials:appCredentials];
+                                                           appCredentials:appCredentials
+                                                          userCredentials:userCredentials];
     
     client.clientOptions = options;
     
@@ -459,37 +463,7 @@ NetworkClock *netClock;
             // TODO: [GR]: Show alert for corrupted keychain instead of the placeholder below.
             // Also implement a way of recovering a keychain here.
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertController *alertController
-                = [UIAlertController alertControllerWithTitle:@"Keychain is corrupt"
-                                                      message:@"The system vault keychain seems to be corrupt."
-                                               preferredStyle:UIAlertControllerStyleAlert];
-                
-                [alertController addAction:
-                 [UIAlertAction actionWithTitle:@"Try later"
-                                          style:UIAlertActionStyleDefault
-                                        handler:^(UIAlertAction *action)
-                  {
-                      completeAuthorization(error);
-                  }]];
-                
-                [alertController addAction:
-                 [UIAlertAction actionWithTitle:@"Remove keychain"
-                                          style:UIAlertActionStyleDestructive
-                                        handler:^(UIAlertAction *action)
-                  {
-                      [client createSystemVaultWithUserCredentials:userCredentials completionHandler:^(NSError *error) {
-                          if (!error) {
-                              [client saveStateWithError:&error];
-                          }
-                          
-                          completeAuthorization(error);
-                      }];
-                  }]];
-                
-                [[UIApplication sharedApplication].keyWindow.rootViewController
-                 presentViewController:alertController animated:YES completion:nil];
-            });
+             QredoLogError(@"Critical error - possible keychain corruption");
         }
         return;
         
@@ -498,15 +472,20 @@ NetworkClock *netClock;
 }
 
 
--(instancetype)initWithServiceURL:(NSURL *)serviceURL appCredentials:(QredoAppCredentials *)appCredentials {
-    return [self initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials];
+-(instancetype)initWithServiceURL:(NSURL *)serviceURL appCredentials:(QredoAppCredentials *)appCredentials userCredentials:(QredoUserCredentials *)userCredentials{
+    return [self initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials userCredentials:userCredentials];
 }
 
 
--(instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials *)appCredentials {
+-(instancetype)initWithServiceURL:(NSURL *)serviceURL
+                pinnedCertificate:(QredoCertificate *)certificate
+                   appCredentials:(QredoAppCredentials *)appCredentials
+                  userCredentials:(QredoUserCredentials *)userCredentials{
+    
     self = [self init];
     if (!self) return nil;
     
+    _userCredentials = userCredentials;
     _serviceURL = serviceURL;
     if (_serviceURL) {
         _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL pinnedCertificate:certificate appCredentials:appCredentials];
@@ -1195,6 +1174,7 @@ NetworkClock *netClock;
 
 
 -(void)createSystemVaultWithUserCredentials:(QredoUserCredentials*)userCredentials completionHandler:(void (^)(NSError *error))completionHandler {
+    _userCredentials = userCredentials;
     [self deleteCurrentDataWithError:nil];
     
     [self createDefaultKeychain:userCredentials];
@@ -1266,7 +1246,8 @@ withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
     
     QredoClient *newClient = [[QredoClient alloc] initWithServiceURL:
                               [NSURL URLWithString:keychain.operatorInfo.serviceUri]
-                                                      appCredentials:_appCredentials];
+                                                      appCredentials:_appCredentials
+                                                     userCredentials:_userCredentials];
     [newClient loadStateWithError:error];
     [newClient addDeviceToVaultWithCompletionHandler:nil];
     

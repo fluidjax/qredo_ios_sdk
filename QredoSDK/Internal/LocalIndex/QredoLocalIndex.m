@@ -17,12 +17,13 @@
 #import "QredoIndexVaultItemMetadata.h"
 #import "QredoIndexModel.h"
 #import "QredoLoggerPrivate.h"
+#import "QredoVaultCrypto.h"
 
 
 @interface QredoLocalIndex ()
 @property (strong) NSManagedObjectContext *managedObjectContext;
 @property (strong) QredoVault *qredoVault;
-@property (strong) QredoLocalIndexDataStore *qredoLocalIndexDataStore;
+
 
 
 @end
@@ -46,7 +47,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         self.enableValueCache = YES;
         self.enableMetadataCache = YES;
         self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:vault inManageObjectContext:self.managedObjectContext];
-        self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithIndexVault:self.qredoIndexVault maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
+        self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithLocalIndex:self maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
     }
     return self;
 }
@@ -164,7 +165,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     __block NSInteger count =0;
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
-        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"vaultItem.vault.vaultId = %@", self.qredoIndexVault.vaultId];
+        fetchRequest.predicate = [NSPredicate predicateWithFormat:@"vaultItem.vault.vaultId == %@", self.qredoIndexVault.vaultId];
         NSError *error = nil;
         NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
         count = [results count];
@@ -190,7 +191,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         //rebuild the vault references after deleting the old version
         QredoLogDebug(@"Purge Index for vault:%@", self.qredoVault.vaultId);
         self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:self.qredoVault inManageObjectContext:self.managedObjectContext];
-        self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithIndexVault:self.qredoIndexVault maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
+        self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithLocalIndex:self maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
         [self.qredoVault resetWatermark];
         [self saveAndWait];
     }];
@@ -373,7 +374,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 - (void)initializeCoreData {
     QredoLogDebug(@"Initialize Coredata datastore");
-    self.qredoLocalIndexDataStore = [QredoLocalIndexDataStore sharedQredoLocalIndexDataStore];
+    self.qredoLocalIndexDataStore = [[QredoLocalIndexDataStore alloc] initWithVault:self.qredoVault];
     self.managedObjectContext = self.qredoLocalIndexDataStore.managedObjectContext;
     return;
 }
@@ -497,13 +498,13 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 - (void)save {
     QredoLogDebug(@"Index save to disk");
-    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:NO];
+    [self.qredoLocalIndexDataStore saveContext:NO];
 }
 
 
 - (void)saveAndWait {
     QredoLogDebug(@"Index save to disk and wait");
-    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] saveContext:YES];
+    [self.qredoLocalIndexDataStore saveContext:YES];
 }
 
 

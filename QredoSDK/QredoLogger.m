@@ -122,13 +122,13 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
 }
 
 + (void) logMessage:(NSString * (^)(void))message
-       currentLevel:(QredoLogLevel)currentLevel
+           logLevel:(QredoLogLevel)logLevel
               level:(QredoLogLevel)level
                file:(const char *)file
            function:(const char *)function
                line:(NSUInteger)line{
     if (LogHandler){
-        LogHandler(message, currentLevel, level, file, function, line);
+        LogHandler(message, logLevel, level, file, function, line);
     }
 }
 

@@ -61,6 +61,7 @@ static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 - (QredoServiceInvoker*)serviceInvoker;
 - (QredoVault *)systemVault;
 - (QredoKeychain *)keychain;
+- (QredoUserCredentials *)userCredentials;
 
 - (void)createSystemVaultWithUserCredentials:(QredoUserCredentials*)userCredentials  completionHandler:(void(^)(NSError *error))completionHandler;
 - (BOOL)saveStateWithError:(NSError **)error;

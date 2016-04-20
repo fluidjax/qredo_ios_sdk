@@ -14,6 +14,10 @@
 #define SALT_USER_UNLOCK [@"3aK3VkzxClECvyFW" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_USER_MASTER [@"wjB9zA2l1Z4eiW5t" dataUsingEncoding:NSUTF8StringEncoding]
 #define INFO_USER_MASTER [@"QREDO_INFO_USER_MASTER" dataUsingEncoding:NSUTF8StringEncoding]
+
+#define INDEX_KEY_SALT [@"6GdwobGnGj85rD2Z" dataUsingEncoding:NSUTF8StringEncoding]
+#define INFO_INDEX [@"QREDO_COREDATA_INDEX_KEY" dataUsingEncoding:NSUTF8StringEncoding]
+
 #define PBKDF2_USERUNLOCK_KEY_ITERATIONS 1000
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES 32
 #define CHECK_ARG(expr, msg) if (expr){@throw [NSException exceptionWithName:NSInvalidArgumentException\
@@ -90,6 +94,24 @@
         [sbuf appendFormat:@"%02X", (unsigned int)buf[i]];
     }
     return [sbuf copy];
+}
+
+
+-(NSString*)buildIndexName{
+    NSString *indexNameSalt = @"48JGdrpomHvzO9ng";
+    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure,indexNameSalt];
+    NSData *sha1UserCredentials = [self sha1WithString:userCredentials];
+    NSString *sha1UserCredentialsString =  [self dataToHexString:sha1UserCredentials];
+    return sha1UserCredentialsString;
+}
+
+
+-(NSString*)buildIndexKey{
+    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@",self.appId,self.userId,self.userSecure];
+    NSData *sha1UserCredentials = [self sha1WithString:userCredentials];
+    
+    NSData *indexKey = [QredoCrypto hkdfSha256WithSalt:INDEX_KEY_SALT initialKeyMaterial:sha1UserCredentials info:INFO_INDEX outputLength:256];
+    return [self dataToHexString:indexKey];
 }
 
 

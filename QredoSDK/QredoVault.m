@@ -58,6 +58,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoLocalIndex *_localIndex;
     QredoVaultHighWatermark *_savedHighWaterMark;;
 
+    QredoUserCredentials *_userCredentials;
 }
 
 - (void)saveState;
@@ -67,6 +68,17 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 @end
 
 @implementation QredoVault (Private)
+
+
+-(QredoUserCredentials*)userCredentials{
+    return _userCredentials;
+}
+
+
+-(void)setUserCredentials:(QredoUserCredentials *)userCredentials{
+    _userCredentials = userCredentials;
+}
+
 
 -(void)addMetadataIndexObserver{
     [self.localIndex enableSync];
@@ -103,6 +115,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     if (!self) return nil;
 
     _vaultKeys = vaultKeys;
+    _userCredentials = client.userCredentials;
     _highwatermark = QredoVaultHighWatermarkOrigin;
     
     _observers = [[QredoObserverList alloc] init];
@@ -596,7 +609,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 -(NSManagedObjectContext*)indexManagedObjectContext{
-    return [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] managedObjectContext];
+    return [_localIndex.qredoLocalIndexDataStore managedObjectContext];
 }
 
 #pragma mark -
