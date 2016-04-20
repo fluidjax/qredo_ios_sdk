@@ -566,6 +566,11 @@
 		83EA4E6E1C7B299D009F4DDA /* clientCert6.2048.IntCA2key.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B641BD5266700EC8D6C /* clientCert6.2048.IntCA2key.pem */; };
 		83EA4E6F1C7B299D009F4DDA /* clientCert6.2048.IntCA2req.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B651BD5266700EC8D6C /* clientCert6.2048.IntCA2req.pem */; };
 		83EA4E701C7B299D009F4DDA /* createRoot2xIntermediateAndFinalCerts.sh in Resources */ = {isa = PBXBuildFile; fileRef = 66605B661BD5266700EC8D6C /* createRoot2xIntermediateAndFinalCerts.sh */; };
+		83EC3B0A1CC7A0A200A55271 /* SSLTimeSyncServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EC3B051CC7A0A200A55271 /* SSLTimeSyncServer.m */; };
+		83EC3B0B1CC7A0A200A55271 /* SSLTimeSyncServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EC3B051CC7A0A200A55271 /* SSLTimeSyncServer.m */; };
+		83EC3B0E1CC7A0A200A55271 /* SSLTimeSyncWorker.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EC3B071CC7A0A200A55271 /* SSLTimeSyncWorker.m */; };
+		83EC3B0F1CC7A0A200A55271 /* SSLTimeSyncWorker.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EC3B071CC7A0A200A55271 /* SSLTimeSyncWorker.m */; };
+		83EC3B111CC7A30F00A55271 /* SSLTimeSyncTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EC3B101CC7A30F00A55271 /* SSLTimeSyncTests.m */; };
 		83F05A5E1BF108E100003FF2 /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
 		83F4E84A1C0F545D00A99431 /* QredoLocalIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 837526671C0F3477004DDDB2 /* QredoLocalIndex.m */; };
 		83F4E84C1C0F54AF00A99431 /* QredoIndexSummaryValues.m in Sources */ = {isa = PBXBuildFile; fileRef = 8375269E1C0F377C004DDDB2 /* QredoIndexSummaryValues.m */; };
@@ -1018,6 +1023,11 @@
 		83E6CFED1C1AE80000A501D8 /* QredoClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClientTests.m; sourceTree = "<group>"; };
 		83E710B21BF251280048BFEE /* QredoUserCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoUserCredentials.h; sourceTree = "<group>"; };
 		83E710B31BF251280048BFEE /* QredoUserCredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUserCredentials.m; sourceTree = "<group>"; };
+		83EC3B041CC7A0A200A55271 /* SSLTimeSyncServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSLTimeSyncServer.h; sourceTree = "<group>"; };
+		83EC3B051CC7A0A200A55271 /* SSLTimeSyncServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSLTimeSyncServer.m; sourceTree = "<group>"; };
+		83EC3B061CC7A0A200A55271 /* SSLTimeSyncWorker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSLTimeSyncWorker.h; sourceTree = "<group>"; };
+		83EC3B071CC7A0A200A55271 /* SSLTimeSyncWorker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSLTimeSyncWorker.m; sourceTree = "<group>"; };
+		83EC3B101CC7A30F00A55271 /* SSLTimeSyncTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSLTimeSyncTests.m; sourceTree = "<group>"; };
 		83F4E85B1C0F568500A99431 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		86D4F2E28EAE4BAE05046FE8 /* libPods-QredoXDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoXDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		89132424A995A1E688B257EF /* Pods-QredoSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoSDKTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1230,6 +1240,7 @@
 				83627B941BF5F59F0062AB4E /* QredoUserCredentialsTests.m */,
 				830A3EEF1BFF38EC002CE210 /* MultiPageMessageTest.m */,
 				83E6CFED1C1AE80000A501D8 /* QredoClientTests.m */,
+				83EC3B101CC7A30F00A55271 /* SSLTimeSyncTests.m */,
 			);
 			path = QredoSDKTests;
 			sourceTree = "<group>";
@@ -1311,6 +1322,7 @@
 		0A9DDE0319ED57FE00B4248C /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				83EC3AFB1CC79FB700A55271 /* SSLTimeSync */,
 				83800C761C50FCDF007B3401 /* Logging */,
 				837526601C0F2B0E004DDDB2 /* LocalIndex */,
 				0AAB39771AB1E0C000460797 /* Categories */,
@@ -1874,6 +1886,17 @@
 				66E6F8C11BD65AC600319BC9 /* MQttClient */,
 			);
 			name = Legacy;
+			sourceTree = "<group>";
+		};
+		83EC3AFB1CC79FB700A55271 /* SSLTimeSync */ = {
+			isa = PBXGroup;
+			children = (
+				83EC3B041CC7A0A200A55271 /* SSLTimeSyncServer.h */,
+				83EC3B051CC7A0A200A55271 /* SSLTimeSyncServer.m */,
+				83EC3B061CC7A0A200A55271 /* SSLTimeSyncWorker.h */,
+				83EC3B071CC7A0A200A55271 /* SSLTimeSyncWorker.m */,
+			);
+			name = SSLTimeSync;
 			sourceTree = "<group>";
 		};
 		DC1B55131A81244400D2F8B1 /* Internal */ = {
@@ -2774,6 +2797,7 @@
 				83ADC4E21C3BF0EF00C34A76 /* QredoCryptoError.m in Sources */,
 				83ADC4E31C3BF0EF00C34A76 /* QredoDerUtils.m in Sources */,
 				83ADC4E41C3BF0EF00C34A76 /* QredoDhPrivateKey.m in Sources */,
+				83EC3B0B1CC7A0A200A55271 /* SSLTimeSyncServer.m in Sources */,
 				83ADC4E51C3BF0EF00C34A76 /* QredoDhPublicKey.m in Sources */,
 				83ADC4E61C3BF0EF00C34A76 /* QredoED25519SigningKey.m in Sources */,
 				83ADC4E71C3BF0EF00C34A76 /* QredoED25519VerifyKey.m in Sources */,
@@ -2787,6 +2811,7 @@
 				83ADC4EF1C3BF0EF00C34A76 /* QredoRsaPublicKey.m in Sources */,
 				83ADC4F01C3BF0EF00C34A76 /* QredoSecKeyRefPair.m in Sources */,
 				83ADC4FC1C3BF0EF00C34A76 /* QredoIndexVaultItemPayload.m in Sources */,
+				83EC3B0F1CC7A0A200A55271 /* SSLTimeSyncWorker.m in Sources */,
 				83ADC4FD1C3BF0EF00C34A76 /* QredoIndexVault.m in Sources */,
 				83ADC4FE1C3BF0EF00C34A76 /* QredoIndexSummaryValues.m in Sources */,
 				83ADC4FF1C3BF0EF00C34A76 /* QredoIndexVaultItem.m in Sources */,
@@ -2890,6 +2915,7 @@
 				665149151BF60432003491CA /* QredoCrypto.m in Sources */,
 				665149161BF60432003491CA /* QredoCryptoError.m in Sources */,
 				665149171BF60432003491CA /* QredoDerUtils.m in Sources */,
+				83EC3B0A1CC7A0A200A55271 /* SSLTimeSyncServer.m in Sources */,
 				665149181BF60432003491CA /* QredoDhPrivateKey.m in Sources */,
 				665149191BF60432003491CA /* QredoDhPublicKey.m in Sources */,
 				83F4E8561C0F54B200A99431 /* _QredoIndexVaultItem.m in Sources */,
@@ -2903,6 +2929,7 @@
 				6651491F1BF60432003491CA /* QredoOpenSSLCertificateUtils.m in Sources */,
 				665149201BF60432003491CA /* QredoPrivateKey.m in Sources */,
 				665149211BF60432003491CA /* QredoPublicKey.m in Sources */,
+				83EC3B0E1CC7A0A200A55271 /* SSLTimeSyncWorker.m in Sources */,
 				665149221BF60432003491CA /* QredoRsaBlindSignature.c in Sources */,
 				665149231BF60432003491CA /* QredoRsaPrivateKey.m in Sources */,
 				83800C731C50E837007B3401 /* QredoLogger.m in Sources */,
@@ -3049,6 +3076,7 @@
 				83303D961C7C78A5006814A3 /* QredoUserCredentialsTests.m in Sources */,
 				66605CC41BD6408D00EC8D6C /* VaultCryptoTests.m in Sources */,
 				66605CC51BD6408D00EC8D6C /* ConversationCryptoTests.m in Sources */,
+				83EC3B111CC7A30F00A55271 /* SSLTimeSyncTests.m in Sources */,
 				833B3E1D1C5287DF00C10A81 /* QredoXCTestCase.m in Sources */,
 				831164C51C18630400661D7C /* QredoIndexPerformanceTests.m in Sources */,
 			);

@@ -29,7 +29,7 @@
 #import "QredoSigner.h"
 #import "QredoVaultCrypto.h"
 #import "QredoObserverList.h"
-
+#import "SSLTimeSyncServer.h"
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
 NSString *const kQredoConversationVaultItemType = @"com.qredo.conversation";
@@ -471,7 +471,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                     kQredoConversationVaultItemLabelType: _metadata.type
                                     };
     
-    NSDate *created = [NSDate date];
+    NSDate *created = [SSLTimeSyncServer date];
     QredoVaultItemMetadata *metadata =
     [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoConversationVaultItemType
                             created: created
@@ -695,7 +695,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     if (sentDate) {
         [summaryValues setObject:sentDate forKey:kQredoConversationItemDateSent];
     }
-    else sentDate = [NSDate date];
+    else sentDate = [SSLTimeSyncServer date];
 
     // if there is '_created' in the vault item, it can be taken as not a new item
     [summaryValues removeObjectForKey:kQredoConversationMessageKeyCreated];
@@ -814,7 +814,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     NSMutableDictionary *summaryValues = [message.summaryValues mutableCopy];
     if (!summaryValues) summaryValues = [NSMutableDictionary dictionary];
 
-    [summaryValues setObject:[NSDate date] forKey:kQredoConversationMessageKeyCreated];
+    [summaryValues setObject:[SSLTimeSyncServer date] forKey:kQredoConversationMessageKeyCreated];
 
     QredoConversationMessage *modifiedMessage = [[QredoConversationMessage alloc] initWithValue:message.value
                                                                                        dataType:message.dataType

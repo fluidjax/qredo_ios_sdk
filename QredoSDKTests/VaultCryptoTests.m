@@ -9,6 +9,7 @@
 #import "NSData+QredoRandomData.h"
 #import "NSDictionary+IndexableSet.h"
 #import "NSData+ParseHex.h"
+#import "SSLTimeSyncServer.h"
 
 @interface VaultCryptoTests : QredoXCTestCase
 
@@ -58,7 +59,7 @@
 
     NSSet *indexableValues = [metadataValues indexableSet];
     
-    NSDate* created = [NSDate date];
+    NSDate* created = [SSLTimeSyncServer date];
     
     QredoUTCDateTime* createdDate = [[QredoUTCDateTime alloc] initWithDate: created];
     QLFVaultItemMetadata *metadata = [QLFVaultItemMetadata vaultItemMetadataWithDataType:dataType

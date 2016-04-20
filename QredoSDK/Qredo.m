@@ -24,6 +24,7 @@
 // TEMP
 #import "QredoConversationProtocol.h"
 #import "ios-ntp.h"
+#import "SSLTimeSyncServer.h"
 
 #import <UIKit/UIKit.h>
 
@@ -1288,7 +1289,7 @@ withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
 
 -(void)reportFromDelegate {
     //this is called when the NetworkClock has a time to report (I didnt invent the method name, but can't change it otherwise we cant uses PODs)
-    NSLog(@"LocalTime:%@    NetworkTime:%@     Offset:%f", [NSDate date], netClock.networkTime, netClock.networkOffset);
+    NSLog(@"LocalTime:%@    NetworkTime:%@     Offset:%f", [SSLTimeSyncServer date], netClock.networkTime, netClock.networkOffset);
 }
 
 

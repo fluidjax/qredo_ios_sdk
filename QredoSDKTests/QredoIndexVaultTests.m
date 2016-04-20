@@ -16,6 +16,7 @@
 #import "QredoIndexVault.h"
 #import "QredoIndexVaultItem.h"
 #import "QredoIndexVaultItemMetadata.h"
+#import "SSLTimeSyncServer.h"
 
 //#import "PDDebugger.h"
 
@@ -579,7 +580,7 @@ NSNumber *testNumber;
 
     [self initLogging];
     
-    myTestDate = [NSDate date];
+    myTestDate = [SSLTimeSyncServer date];
     testNumber = [NSNumber numberWithInt:3];
     self.continueAfterFailure = YES;
     [self authoriseClient:[QredoTestUtils randomPassword]];

@@ -8,12 +8,12 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoSigner.h"
 #import "QredoVault.h"
-
+#import "SSLTimeSyncServer.h"
 
 @implementation QLFOwnershipSignature (FactoryMethods)
 
 + (int64_t)timestamp {
-    return [[NSDate date] timeIntervalSince1970] * 1000LL;
+    return [[SSLTimeSyncServer date] timeIntervalSince1970] * 1000LL;
 }
 
 + (QLFNonce *)nonce {

@@ -8,6 +8,7 @@
 #import "QredoTestUtils.h"
 #import "NSDictionary+Contains.h"
 #import "QredoVaultPrivate.h"
+#import "SSLTimeSyncServer.h"
 
 @interface QredoVaultListener : NSObject<QredoVaultObserver>
 
@@ -546,7 +547,7 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    NSDate* created = [NSDate date];
+    NSDate* created = [SSLTimeSyncServer date];
     
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                                 created: created
@@ -613,7 +614,7 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    NSDate* created = [NSDate date];
+    NSDate* created = [SSLTimeSyncServer date];
   
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithDataType:@"blob"
                                                                                                                 created: created
@@ -1258,7 +1259,7 @@
     NSDictionary *item1SummaryValues = @{@"key1": @"value1",
                                          @"key2": @"value2"};
     
-    NSDate* created = [NSDate date];
+    NSDate* created = [SSLTimeSyncServer date];
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
                                                                                       dataType:@"blob"

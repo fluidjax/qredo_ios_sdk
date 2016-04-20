@@ -9,6 +9,7 @@
 #import "QredoLocalIndex.h"
 #import "QredoIndexVaultItemMetadata.h"
 #import "QredoIndexSummaryValues.h"
+#import "SSLTimeSyncServer.h"
 
 @implementation QredoVaultItemMetadata
 
@@ -27,7 +28,7 @@
 }
 
 + (instancetype)vaultItemMetadataWithSummaryValues:(NSDictionary *)summaryValues{
-   NSDate* created = [NSDate date];
+   NSDate* created = [SSLTimeSyncServer date];
     return [self vaultItemMetadataWithDataType:@"" created: created summaryValues:summaryValues];
 }
 
