@@ -106,6 +106,7 @@ Constructed when a 'QredoVaultItem` is created and returned from `enumerateVault
 
 /** Converts an index coredata summaryValue object retrieved by an index search predicate into a `QredoVaultItemMetadata` 
  @note You only need to call this function if you are accessing the `NSManagedObjectContext` directly.
+
  @see The CustomerLookup example app
  */
 +(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue;
@@ -213,6 +214,7 @@ Constructed when a 'QredoVaultItem` is created and returned from `enumerateVault
 /** Retrieves the item with the given descriptor from the Vault 
  @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
  @param completionHandler Returns the vaultItem or an error if it cannot be found or some other error occurs.
+ 
  @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
 */
 
@@ -221,6 +223,7 @@ Constructed when a 'QredoVaultItem` is created and returned from `enumerateVault
 /** Retrieves the metadata for the vault item with the given descriptor
  @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
  @param completionHandler Returns the vault item metadata or an error if it cannot be found
+ 
  @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  */
 
@@ -256,6 +259,20 @@ Constructed when a 'QredoVaultItem` is created and returned from `enumerateVault
 
 
 #pragma mark - Adding items to the Vault
+
+/**
+ Add the specified item to the Vault.
+ 
+ @param vaultItem The item to add
+ @param completionHandler Invoked with the new item's metadata if the item is successfully added. Error will be non nil if an error occurs.
+ 
+ 
+ @note If the vault item is successfully added, the `QredoVaultItemMetadata` will contain the `QredoVaultItemDescriptor` used to retrieve the item later
+ 
+ @see Adding an item to the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/adding_an_item_to_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/adding_an_item_to_the_vault.html)
+
+ 
+*/
 
 -(void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
@@ -320,9 +337,18 @@ Goes through the items in this Vault and calls the specified code block on each 
 
 
 #pragma mark - Updating Vault items
--(void)updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
-                                         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
+/** Updates the vault item with new metadata and value 
+ 
+ @param metadata The metadata for the vault item to update. To update the vault item's metadata, pass a `QredoMutableVaultItemMetadata` containing the updated data
+ @param value The new value of the vault item
+ @param completionHandler Invoked with a new meta data object for the updated vault item or an error.
+ 
+ @note To store a reference to the updated vault item, use `newItemMetadata.descriptor`
+ @see Updating a vault item: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/updating_a_vaultitem.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/updating_a_vaultitem.html)
+ */
+-(void)updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
+completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
 
 
 @end
