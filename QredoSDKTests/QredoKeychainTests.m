@@ -82,6 +82,40 @@
 }
 
 
+
+
+-(void)testTemp{
+    //this test create a client and puts 1 item in it
+    //then changes the userSecure (ie. user changes password)
+    //it moves the keychain from the old to the new
+    //check that the new user credentials can access the 1 item.
+    
+    [QredoLogger setLogLevel:QredoLogLevelVerbose];
+    NSString  *password2 = @"pass55";
+    QredoClient *client2 = [self makeClient:password2];
+    
+    
+    //get vault item from server
+    __block int count =0;
+    __block XCTestExpectation *testEnumExpectation = [self expectationWithDescription:@"test enum"];
+    
+    [client2.defaultVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        QredoVaultItemMetadata *meta = vaultItemMetadata;
+        NSString *value = [meta objectForMetadataKey:@"key1"];
+        
+        count++;
+    } completionHandler:^(NSError *error) {
+        [testEnumExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testEnumExpectation = nil;
+    }];
+    
+
+}
+
 -(void)testChangeUserSecure{
     //this test create a client and puts 1 item in it
     //then changes the userSecure (ie. user changes password)
@@ -89,8 +123,13 @@
     //check that the new user credentials can access the 1 item.
 
     [QredoLogger setLogLevel:QredoLogLevelVerbose];
-    NSString  *password1 = [QredoTestUtils randomPassword];
-    NSString  *password2 = [QredoTestUtils randomPassword];
+//    NSString  *password1 = [QredoTestUtils randomPassword];
+//    NSString  *password2 = [QredoTestUtils randomPassword];
+//    
+    NSString  *password1 = @"pass55";
+    NSString  *password2 = @"pass66";
+
+    
 
     QredoClient *client1 = [self makeClient:password1];
     XCTAssertNotNil(client1);
@@ -115,6 +154,30 @@
     QredoClient *client2 = [self makeClient:password2];
     NSInteger afterMove = [client2.defaultVault.localIndex count];
     XCTAssert(afterMove==1,@"Client 2 should have 1 item copied from the old client");
+    
+    
+    
+    
+    //get vault item from server
+    __block int count =0;
+    __block XCTestExpectation *testEnumExpectation = [self expectationWithDescription:@"test enum"];
+    
+    [client2.defaultVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        QredoVaultItemMetadata *meta = vaultItemMetadata;
+        NSString *value = [meta objectForMetadataKey:@"key1"];
+        
+        count++;
+    } completionHandler:^(NSError *error) {
+        [testEnumExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        testEnumExpectation = nil;
+    }];
+
+    
+    
     
 }
 

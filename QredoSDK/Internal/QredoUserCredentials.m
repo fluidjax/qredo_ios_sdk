@@ -52,7 +52,6 @@
     CHECK_ARG(!self.userId,     @"userId cannot be nil");
     CHECK_ARG(!self.userSecure, @"userSecure cannot be nil");
     
-    
     NSMutableData *concatenatedBytes = [[NSMutableData alloc] init];
     [concatenatedBytes appendData:[self sha1WithString:self.appId]];
     [concatenatedBytes appendData:[self sha1WithString:self.userId]];
