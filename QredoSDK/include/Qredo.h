@@ -334,5 +334,13 @@
 -(NSString *)buildString;
 
 
+/** Permits a user to change their UserSecure (password)
+ */
++(void)changeUserCredentialsAppId:(NSString*)sourceAppId
+                           userId:(NSString*)sourceUserId
+                   fromUserSecure:(NSString*)fromUserSecure
+                     toUserSecure:(NSString*)toUserSecure
+                            error:(NSError **)error;
+
 @end
 

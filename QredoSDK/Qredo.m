@@ -21,7 +21,7 @@
 #import "QredoCertificate.h"
 #import "QredoUserCredentials.h"
 
-// TEMP
+#import "QredoLocalIndexDataStore.h"
 #import "QredoConversationProtocol.h"
 #import "ios-ntp.h"
 #import "SSLTimeSyncServer.h"
@@ -1214,6 +1214,40 @@ NetworkClock *netClock;
     
     _keychain = keychain;
 }
+
+
+
+
+
+
+
++(void)changeUserCredentialsAppId:(NSString*)appId
+                           userId:(NSString*)userId
+                   fromUserSecure:(NSString*)fromUserSecure
+                     toUserSecure:(NSString*)toUserSecure
+                            error:(NSError **)error{
+
+
+    QredoUserCredentials *sourceCredentials        = [[QredoUserCredentials alloc] initWithAppId:appId
+                                                                                          userId:userId
+                                                                                      userSecure:fromUserSecure];
+    QredoUserCredentials *destinationCredentials   = [[QredoUserCredentials alloc] initWithAppId:appId
+                                                                                          userId:userId
+                                                                                      userSecure:toUserSecure];
+    
+    id<QredoKeychainArchiver>keychainArchiver = [QredoKeychainArchivers defaultQredoKeychainArchiver];
+    
+    //get exsiting keychain
+    QredoKeychain * keyChain = [keychainArchiver loadQredoKeychainWithIdentifier:[sourceCredentials createSystemVaultIdentifier] error:error];
+    if (*error)return;
+    
+    [QredoLocalIndexDataStore renameStoreFrom:sourceCredentials to:destinationCredentials];
+
+    //save to  new iD
+    [keychainArchiver saveQredoKeychain:keyChain  withIdentifier:[destinationCredentials createSystemVaultIdentifier] error:error];
+    
+}
+
 
 
 -(QredoKeychain *)loadSystemVaultKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
