@@ -7,12 +7,6 @@
 //
 
 #import "SSLTimeSyncWorker.h"
-#import "QredoLogger.h"
-
-static const int HISTORY_SIZE = 5;
-static const int MAX_TIME_TO_RETRIEVE = 5;
-static const int RETRIEVE_PERIOD_SUCESSS = 60; //the last time get SSL request was successful
-static const int RETRIEVE_PERIOD_FAIL = 10; //the last SSL request failed/to slow
 
 @interface SSLTimeSyncWorker ()
 @property (strong) NSMutableArray *serverHistory;
@@ -33,9 +27,8 @@ static const int RETRIEVE_PERIOD_FAIL = 10; //the last SSL request failed/to slo
 
 
 @implementation SSLTimeSyncWorker
-
-
-
+static const int HISTORY_SIZE = 5;
+static const int MAX_TIME_TO_RETRIEVE = 5;
 
 -(instancetype)initWithURLString:(NSString*)urlString{
     self = [super init];
@@ -49,7 +42,7 @@ static const int RETRIEVE_PERIOD_FAIL = 10; //the last SSL request failed/to slo
 
 -(void)incomingDate:(NSDate*)serverDate timeToRetrieve:(NSTimeInterval)timeToRetrieve{
     if (timeToRetrieve>MAX_TIME_TO_RETRIEVE){
-        [self scheduleNextRetrieve:RETRIEVE_PERIOD_FAIL];
+        [self scheduleNextRetrieve];
         return;
     };
     
@@ -65,14 +58,18 @@ static const int RETRIEVE_PERIOD_FAIL = 10; //the last SSL request failed/to slo
     self.averageDifference = (double)timeInterval;
     [self addNewValue:timeInterval retrieveTime:timeToRetrieve];
     
-    QredoLogInfo   (@"Client time sync to server %@", ^{ return [self guessTime];}());
-    [self scheduleNextRetrieve:RETRIEVE_PERIOD_SUCESSS];
+    
+    
+   // NSLog(@"Time Guess %@",[self guessTime]);
+    
+    
+    [self scheduleNextRetrieve];
     
 }
 
 
--(void)scheduleNextRetrieve:(int)waitPeriod{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, waitPeriod * NSEC_PER_SEC), self.queue, ^{
+-(void)scheduleNextRetrieve{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), self.queue, ^{
         [self retrieveDate];
     });
 }
@@ -99,6 +96,7 @@ static const int RETRIEVE_PERIOD_FAIL = 10; //the last SSL request failed/to slo
     
     for (SecureWebDateServerTimeStamp *timestamp in self.serverHistory){
         NSTimeInterval retrieveTime = timestamp.timeToRetrieve;
+        
         if (retrieveTime<lowestRetrieveTime){
             bestGuess = timestamp;
             lowestRetrieveTime = retrieveTime;
@@ -133,7 +131,7 @@ static const int RETRIEVE_PERIOD_FAIL = 10; //the last SSL request failed/to slo
                                       
                                       if (error){
                                           NSLog(@"Error: %@", error.localizedDescription);
-                                          [self scheduleNextRetrieve:RETRIEVE_PERIOD_FAIL];
+                                          [self scheduleNextRetrieve];
                                       }else if([httpResponse respondsToSelector:@selector(allHeaderFields)]){
                                           NSDictionary *headerFields = [httpResponse allHeaderFields];
                                           NSString *lastModification = [headerFields objectForKey:@"Date"];

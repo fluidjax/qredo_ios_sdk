@@ -10,7 +10,7 @@
 
 @interface SSLTimeSyncWorker : NSObject
 @property (assign) double averageDifference;
-@property (copy) NSString *urlString;
+@property (strong) NSString *urlString;
 @property (nonatomic, strong) dispatch_queue_t queue;
 
 -(instancetype)initWithURLString:(NSString*)urlString;
