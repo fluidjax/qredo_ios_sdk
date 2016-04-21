@@ -22,9 +22,7 @@
 
 @interface QredoLocalIndex ()
 @property (strong) NSManagedObjectContext *managedObjectContext;
-@property (strong) QredoVault *qredoVault;
-
-
+@property (weak) QredoVault *qredoVault;
 
 @end
 

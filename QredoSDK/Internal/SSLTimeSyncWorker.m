@@ -7,6 +7,12 @@
 //
 
 #import "SSLTimeSyncWorker.h"
+#import "QredoLogger.h"
+
+static const int HISTORY_SIZE = 5;
+static const int MAX_TIME_TO_RETRIEVE = 5;
+static const int RETRIEVE_PERIOD_SUCESSS = 60; //the last time get SSL request was successful
+static const int RETRIEVE_PERIOD_FAIL = 10; //the last SSL request failed/to slow
 
 @interface SSLTimeSyncWorker ()
 @property (strong) NSMutableArray *serverHistory;
@@ -27,8 +33,9 @@
 
 
 @implementation SSLTimeSyncWorker
-static const int HISTORY_SIZE = 5;
-static const int MAX_TIME_TO_RETRIEVE = 5;
+
+
+
 
 -(instancetype)initWithURLString:(NSString*)urlString{
     self = [super init];
@@ -42,7 +49,7 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
 
 -(void)incomingDate:(NSDate*)serverDate timeToRetrieve:(NSTimeInterval)timeToRetrieve{
     if (timeToRetrieve>MAX_TIME_TO_RETRIEVE){
-        [self scheduleNextRetrieve];
+        [self scheduleNextRetrieve:RETRIEVE_PERIOD_FAIL];
         return;
     };
     
@@ -58,18 +65,14 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     self.averageDifference = (double)timeInterval;
     [self addNewValue:timeInterval retrieveTime:timeToRetrieve];
     
-    
-    
-   // NSLog(@"Time Guess %@",[self guessTime]);
-    
-    
-    [self scheduleNextRetrieve];
+    QredoLogInfo   (@"Client time sync to server %@", ^{ return [self guessTime];}());
+    [self scheduleNextRetrieve:RETRIEVE_PERIOD_SUCESSS];
     
 }
 
 
--(void)scheduleNextRetrieve{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), self.queue, ^{
+-(void)scheduleNextRetrieve:(int)waitPeriod{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, waitPeriod * NSEC_PER_SEC), self.queue, ^{
         [self retrieveDate];
     });
 }
@@ -96,7 +99,6 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     
     for (SecureWebDateServerTimeStamp *timestamp in self.serverHistory){
         NSTimeInterval retrieveTime = timestamp.timeToRetrieve;
-        
         if (retrieveTime<lowestRetrieveTime){
             bestGuess = timestamp;
             lowestRetrieveTime = retrieveTime;
@@ -131,7 +133,7 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
                                       
                                       if (error){
                                           NSLog(@"Error: %@", error.localizedDescription);
-                                          [self scheduleNextRetrieve];
+                                          [self scheduleNextRetrieve:RETRIEVE_PERIOD_FAIL];
                                       }else if([httpResponse respondsToSelector:@selector(allHeaderFields)]){
                                           NSDictionary *headerFields = [httpResponse allHeaderFields];
                                           NSString *lastModification = [headerFields objectForKey:@"Date"];

@@ -134,6 +134,14 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     }
 }
 
+- (void)removeAllObservers{
+    @synchronized(self) {
+        for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
+            [_observerProxies removeObject:observerProxy];
+        }
+    }
+}
+
 
 - (BOOL)contains:(id)observer{
     if ([self proxyForObserver:observer])return YES;

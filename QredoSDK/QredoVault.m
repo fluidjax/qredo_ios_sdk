@@ -260,6 +260,13 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 
+-(void)removeAllObservers{
+    QredoObserverList *observers = _observers;
+    [observers removeAllObservers];
+    if (_updateListener.isListening)[_updateListener stopListening];
+}
+
+
 #pragma mark Cache
 
 - (void)clearAllData
@@ -467,11 +474,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 
-
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                     completionHandler:(void(^)(NSError *error))completionHandler{
     [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
 }
+
 
 - (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                                 since:(QredoVaultHighWatermark*)sinceWatermark
