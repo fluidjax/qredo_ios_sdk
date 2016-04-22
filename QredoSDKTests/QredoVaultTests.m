@@ -357,7 +357,8 @@
     
     for (int i=1;i<10;i++){
         QredoVaultItemMetadata *updateMetadata = newItemMetadata;
-        updateMetadata.summaryValues = @{@"key1": [NSNumber numberWithInt:i]};
+        updateMetadata.summaryValues = @{@"key1": [NSNumber numberWithInt:i],
+                                         @"key2": @"updated"};
 
         __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
         

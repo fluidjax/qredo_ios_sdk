@@ -67,8 +67,8 @@ NSNumber *testNumber;
     
     [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
         importCount++;
-        NSLog(@"Incoming %@, %@",[vaultMetaData.summaryValues objectForKey:@"key1"], client1.defaultVault.vaultId);
-        QLog(@"importing %i",importCount);
+        //NSLog(@"Incoming %@, %@",[vaultMetaData.summaryValues objectForKey:@"key1"], client1.defaultVault.vaultId);
+        //QLog(@"importing %i",importCount);
         if (importCount==testSize) [syncwait fulfill];
     }];
     
@@ -226,7 +226,7 @@ NSNumber *testNumber;
     [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
         XCTAssertNil(error);
         
-        NSLog(@"Added  %@ %@",key1Value,vault.vaultId);
+        //NSLog(@"Added  %@ %@",key1Value,vault.vaultId);
         
         XCTAssertNotNil(newItemMetadata);
         createdItemMetaData = newItemMetadata;

@@ -21,7 +21,7 @@
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
@@ -42,171 +42,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
-               BuildableName = "QredoSDKTests.xctest"
-               BlueprintName = "QredoSDKTests"
-               ReferencedContainer = "container:QredoSDK.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "ConversationMQTTTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousMQTTTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_EmptyPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_ExternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_EmptyPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_ForgedSignature">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_ExternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_EmptyPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa2048_InternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_ExternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_EmptyPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousRsa4096_InternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_ExternalKeys_WithPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_EmptyPrefix_Invalid">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAndRespondAuthenticatedRendezvousX509Pem_InternalKeys_WithPrefix_Invalid">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests/testCreateAuthenticatedRendezvousED25519_InternalKeys_NilPrefix">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelperSigning_Invalid_ExternalKeysSignerReturnsNil">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testCreateHelperSigning_Invalid_NilDataToSign">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testEmptySignature">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_EmptySignature">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_EmptySignatureData">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_IncorrectSignatureType">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilRendezvousData">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilSignature">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_NilSignatureData">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testRespondHelper_Invalid_UntrustedPublicKeyCertChain">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_BadSigning">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_IncludeUnnecessaryPemCerts">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_MultiUse">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_OutOfOrderPemChain">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests/testSignatureAndVerification_ExternalKeys_RootIncludedInPemCertChain">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultMQTTTests">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultUpdateMQTTTests">
-               </Test>
-               <Test
-                  Identifier = "QredoXCTestCase">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
@@ -288,15 +123,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
-            BuildableName = "QredoSDKTests.xctest"
-            BlueprintName = "QredoSDKTests"
-            ReferencedContainer = "container:QredoSDK.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

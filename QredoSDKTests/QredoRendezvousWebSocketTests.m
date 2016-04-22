@@ -34,8 +34,6 @@
 // This test has frequently helped in triggering intermittent bugs
 // This is currently failing
 - (void)testCreateRendezvousMultiple{
-        
-    [QredoLogger setLogLevel:QredoLogLevelWarning];
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = NO;
     
