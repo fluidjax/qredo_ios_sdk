@@ -1187,7 +1187,7 @@ OSStatus fixedSecItemCopyMatching(CFDictionaryRef query, CFTypeRef *result)
     OSStatus status = SecItemCopyMatching(query, result);
     if (status != errSecSuccess) {
         
-        QredoLogDebug(@"SecItemCopyMatching returned error: %@. Query dictionary: %@",
+        QredoLogVerbose(@"SecItemCopyMatching returned error: %@. Query dictionary: %@",
                  [QredoLogger stringFromOSStatus:status],
                  query);
         

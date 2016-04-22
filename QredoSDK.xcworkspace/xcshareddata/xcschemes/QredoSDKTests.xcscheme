@@ -20,6 +20,20 @@
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "837120951C7B16FE00648E47"
+               BuildableName = "TestHost.app"
+               BlueprintName = "TestHost"
+               ReferencedContainer = "container:QredoSDK.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

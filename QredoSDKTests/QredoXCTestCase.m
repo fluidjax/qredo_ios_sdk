@@ -28,7 +28,7 @@
         [QredoLogger setLogLevel:QredoLogLevelVerbose];
         [QredoLogger setLogLevel:QredoLogLevelInfo];
  */
-    [QredoLogger setLogLevel:QredoLogLevelDebug];
+        [QredoLogger setLogLevel:QredoLogLevelError];
 }
 
 

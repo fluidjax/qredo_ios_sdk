@@ -78,7 +78,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     if (self.enableValueCache==NO){
         [self putMetadata:metadata];
     }else{
-        NSLog(@"Putting vault item into index %@ %@",vaultItem, metadata);
+        //NSLog(@"Putting vault item into index %@ %@",vaultItem, metadata);
         [self putItemWithMetadata:metadata vaultItem:vaultItem hasVaultItemValue:YES];
     }
 }
@@ -542,8 +542,8 @@ IncomingMetadataBlock incomingMetadatBlock;
 #pragma mark QredoVaultObserver Methods
 
 - (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
-    QredoLogDebug(@"Cache/Index received incoming Vault item");
     if (!itemMetadata || !client) return;
+    QredoLogDebug(@"Cache/Index received incoming Vault item");
     [self putMetadata:itemMetadata];
 
     if (incomingMetadatBlock) incomingMetadatBlock(itemMetadata);

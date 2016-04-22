@@ -629,7 +629,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         [didFindStoredRendezvous fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
         didFindStoredRendezvous = nil;
     }];
     
@@ -649,7 +649,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         [didFetchExpectation fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
         didFetchExpectation = nil;
     }];
     

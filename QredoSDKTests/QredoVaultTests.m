@@ -458,6 +458,7 @@
         testExpectation = nil;
     }];
     
+ 
     
 }
 
@@ -501,7 +502,7 @@
 
 
 -(void)testMultiplePutItem{
-    for (int i=0;i<1000;i++){
+    for (int i=0;i<10;i++){
         [self testPutItem];
     }
 }
@@ -1167,6 +1168,10 @@
     
     [vault removeVaultObserver:listener1];
     [vault removeVaultObserver:listener2];
+    
+    
+    [client closeSession];
+    
 }
 
 

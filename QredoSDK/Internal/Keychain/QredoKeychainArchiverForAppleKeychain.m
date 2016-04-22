@@ -130,6 +130,9 @@ static NSString *kCurrentService = @"CurrentService";
     }
     
     NSDictionary * resultDict = (__bridge NSDictionary *)result;
+    CFRelease(result);
+    
+    
     NSData *keychainData = [resultDict objectForKey:(__bridge id)(kSecValueData)];
     if (!keychainData) {
         *error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeKeychainCouldNotBeRetrieved userInfo:

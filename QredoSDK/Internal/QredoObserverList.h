@@ -24,6 +24,7 @@
 - (void)removeObserver:(id)observer;
 - (void)notifyObservers:(void(^)(id observer))notificationBlock;
 - (BOOL)contains:(id)observer;
+- (void)removeAllObservers;
 
 #pragma mark Misc utils
 

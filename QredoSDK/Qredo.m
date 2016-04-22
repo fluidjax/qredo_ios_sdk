@@ -518,7 +518,7 @@ NetworkClock *netClock;
     // Need to terminate transport, which ends associated threads and subscriptions etc.
     QredoLogInfo(@"Close session");
     [_serviceInvoker terminate];
-
+    [self.defaultVault removeAllObservers];
     
     // TODO: DH - somehow indicate that the client has been closed and therefore cannot be used again.
 }
@@ -874,6 +874,7 @@ NetworkClock *netClock;
         }
     }];
 }
+
 
 
 -(void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block

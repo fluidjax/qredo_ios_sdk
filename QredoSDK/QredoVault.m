@@ -260,6 +260,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 
+
+
 #pragma mark Cache
 
 - (void)clearAllData
@@ -311,6 +313,11 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
 }
 
+-(void)removeAllObservers{
+    QredoObserverList *observers = _observers;
+    [observers removeAllObservers];
+    if (_updateListener.isListening)[_updateListener stopListening];
+}
 
 
 @end
@@ -422,6 +429,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         [_updateListener stopListening];
     }
 }
+
 
 
 - (void)notifyObservers:(void(^)(id<QredoVaultObserver> observer))notificationBlock

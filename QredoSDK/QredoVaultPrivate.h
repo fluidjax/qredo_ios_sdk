@@ -103,6 +103,7 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
 -(void)addMetadataIndexObserver;
 -(void)addMetadataIndexObserver:(IncomingMetadataBlock)block;
 -(void)removeMetadataIndexObserver;
+-(void)removeAllObservers;
 
 
 

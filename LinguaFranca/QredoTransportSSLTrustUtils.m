@@ -23,6 +23,10 @@ static SecTrustRef setAnchorForTrust(SecTrustRef trust, SecCertificateRef truste
     CFArrayAppendValue(newAnchorArray, trustedCert);
     
     osStatus = SecTrustSetAnchorCertificates(trust, newAnchorArray);
+    
+    CFRelease(newAnchorArray);
+    
+    
     if (osStatus) {
         return NULL;
     }

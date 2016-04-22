@@ -172,8 +172,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     XCTAssertNotNil(anotherClient.systemVault.vaultId);
     
     //NSLog(@"Another Client default Vault %@",anotherClient.defaultVault.vaultId);
-
-    
+  
 }
 
 
