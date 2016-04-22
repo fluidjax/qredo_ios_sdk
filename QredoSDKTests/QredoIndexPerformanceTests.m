@@ -33,7 +33,7 @@ NSNumber *testNumber;
 
 -(void)testMultiple{
     for (int i=0;i<10;i++){
-        NSLog(@"Pass %i",i);
+        //NSLog(@"Pass %i",i);
         [self setUp];
         [self test10Records];
     }
@@ -114,7 +114,7 @@ NSNumber *testNumber;
     
     [qredoLocalIndex enableSyncWithBlock:^(QredoVaultItemMetadata *vaultMetaData) {
         importCount++;
-        NSLog(@"Incoming %@, %@",[vaultMetaData.summaryValues objectForKey:@"key1"], client1.defaultVault.vaultId);
+        //NSLog(@"Incoming %@, %@",[vaultMetaData.summaryValues objectForKey:@"key1"], client1.defaultVault.vaultId);
         QLog(@"importing %i",importCount);
         if (importCount==testSize) [syncwait fulfill];
     }];
