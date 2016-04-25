@@ -11,10 +11,10 @@ jazzy \
  --sdk iphonesimulator \
  --author Qredo \
  --author_url http://qredo.com \
- --github_url https://github.com/Qredo \
  --framework-root . \
  --source-directory . \
  --umbrella-header QredoSDK/include/Qredo.h \
  --output docs/objc \
- --theme apple
+ --theme apple \
+ --hide-documentation-coverage 
  
