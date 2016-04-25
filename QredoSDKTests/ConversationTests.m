@@ -411,9 +411,6 @@ NSString *secondMessageText;
     //Client1: get Conversation and then call deleteConversationWithCompletionHandler
     //Client2: Receives qredoConversationOtherPartyHasLeft callback in its QredoConversationObserver
     
-    
-    [QredoLogger setLogLevel:0];
-    
     //static NSString *randomTag;
     NSString *randomTag = nil;
     

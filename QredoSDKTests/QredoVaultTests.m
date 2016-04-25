@@ -104,7 +104,6 @@
 
 - (void)setUp {
     [super setUp];
-    [QredoLogger setLogLevel:QredoLogLevelVerbose];
     [self authoriseClient];
 }
 
