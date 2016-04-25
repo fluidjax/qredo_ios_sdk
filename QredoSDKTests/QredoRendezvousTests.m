@@ -439,7 +439,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                [createExpectation fulfill];
                            }];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
 }
@@ -468,7 +468,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                [createExpectation fulfill];
                            }];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
     
@@ -494,7 +494,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
          [createExpectation fulfill];
      }];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
 
@@ -513,7 +513,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                [createExpectation fulfill];
                            }];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
     
@@ -536,7 +536,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
          createdRendezvous = rendezvous;
          [createExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
     
@@ -683,7 +683,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
          rendezvousRef = rendezvous.metadata.rendezvousRef;
          [createExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
     
@@ -701,7 +701,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
          
          [failCreateExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         failCreateExpectation = nil;
     }];
     
@@ -1392,7 +1392,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //                                      [createExpectation fulfill];
 //                                  }];
 //    
-//    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
 //        createExpectation = nil;
 //    }];
 //    
@@ -1431,7 +1431,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //                                      [createExpectation fulfill];
 //                                  }];
 //    
-//    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
 //        createExpectation = nil;
 //    }];
 //    [QredoRendezvousEd25519CreateHelper swizleSigningMethod];
@@ -1479,7 +1479,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //    // which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
 //    [NSThread sleepForTimeInterval:5];
 //    
-//    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
 //        respondExpectation = nil;
 //        listener.expectation = nil;
 //    }];
@@ -1514,7 +1514,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                [createExpectation fulfill];
                            }];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
     }];
     self.randomlyCreatedTag = randomTag;
@@ -1562,7 +1562,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createActivateExpectation = nil;
     }];
 }
@@ -1615,7 +1615,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createActivateExpectation = nil;
     }];
 }
@@ -1646,7 +1646,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createActivateExpectation = nil;
     }];
 }
@@ -1669,7 +1669,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createActivateExpectation = nil;
     }];
 }
@@ -1694,7 +1694,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createActivateExpectation = nil;
     }];
 }
@@ -1718,7 +1718,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         XCTAssert([e.reason isEqualToString:@"CompletionHandlerisNil"]);
         [createActivateExpectation fulfill];
     }
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createActivateExpectation = nil;
     }];
 }
@@ -1742,7 +1742,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createActivateExpectation = nil;
     }];
 }
@@ -1766,7 +1766,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         deactivateExpectation = nil;
     }];
 }
@@ -1802,7 +1802,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         deactivateExpectation = nil;
     }];
 }
@@ -1832,7 +1832,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         [deactivateExpectation fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         deactivateExpectation = nil;
     }];
 }
@@ -1855,7 +1855,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         XCTAssert([e.reason isEqualToString:@"CompletionHandlerisNil"]);
         [deactivateExpectation fulfill];
     }
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         deactivateExpectation = nil;
     }];
 }
@@ -1878,7 +1878,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         deactivateExpectation = nil;
     }];
 }
@@ -1901,7 +1901,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         deactivateExpectation = nil;
     }];
 }
@@ -1928,7 +1928,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
      }];
     
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createRendezvousRefExpectation = nil;
     }];
     
