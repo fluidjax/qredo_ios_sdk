@@ -181,6 +181,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     {
         QredoMutableVaultItemMetadata *newMetadata = [vaultItem.metadata mutableCopy];
         newMetadata.origin = QredoVaultItemOriginServer;
+        newMetadata.dataType = newItemMetadata.dataType;
         newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
                                                                                sequenceValue:newItemMetadata.descriptor.sequenceValue
                                                                                       itemId:itemId];
@@ -356,7 +357,13 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         
          [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
              //we can now put it in the cache
-             if (error){
+             if (error.code==QredoErrorCodeVaultItemHasBeenDeleted){
+                 //special case of item deleted
+                 [self cacheInIndexVaultItem:vaultItem metadata:vaultItem.metadata completionHandler:^(NSError *cacheError) {
+                     QredoLogVerbose(@"deleted vaultItem added to cache");
+                     if (completionHandler)completionHandler(vaultItem, error);
+                 }];
+             }else if (error){
                  QredoLogWarning(@"VaultItem not found on server");
                  if (completionHandler)completionHandler(vaultItem, error);
              }else{

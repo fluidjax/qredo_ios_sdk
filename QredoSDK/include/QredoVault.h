@@ -117,6 +117,10 @@ Constructed when a 'QredoVaultItem` is created and returned from `enumerateVault
  */
 -(id)objectForMetadataKey:(NSString*)key;
 
+
+
+-(BOOL)isDeleted;
+
 @end
 
 

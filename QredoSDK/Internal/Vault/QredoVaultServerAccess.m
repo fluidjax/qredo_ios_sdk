@@ -203,6 +203,7 @@
              }
              QredoMutableVaultItemMetadata *newMetadata = [metadata mutableCopy];
              newMetadata.origin = QredoVaultItemOriginServer;
+             newMetadata.dataType = dataType;
              newMetadata.descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:_sequenceId
                                                                                     sequenceValue:newSequenceValue
                                                                                            itemId:itemId];

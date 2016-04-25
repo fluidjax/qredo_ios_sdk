@@ -266,8 +266,7 @@
     XCTAssertTrue(itemFound, "Item just created was not found during enumeration.(%i items)",count);
     
     // Note: DH - Apparently server returns 50 items, so once 50 items created this test will fail.  Looks like it returns first 50 items, rather than latest 50 items.
-    if (!itemFound && count == 50)
-    {
+    if (!itemFound && count == 50)    {
         XCTFail(@"Created item was not found and 50 items were enumerated. Likely failure was due to server only returning oldest 50 items."); // this has been fixed and the client enumerates all items not just pages of 50
     }
 
@@ -275,10 +274,13 @@
     
     //delete the item
     //delete item
+    
+    __block QredoVaultItemDescriptor *deletedItem=nil;
     __block XCTestExpectation *deleteExpectation = [self expectationWithDescription:@"delete item 1"];
     [vault deleteItem:itemMetadata completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(newItemDescriptor);
+        deletedItem = newItemDescriptor;
         [deleteExpectation fulfill];
     }];
     
@@ -287,8 +289,9 @@
         deleteExpectation = nil;
     }];
     
-
-    // Confirm enumerate finds item we added
+    
+    
+        // Confirm enumerate finds item we added
     __block int count2 = 0;
     __block BOOL itemFound2 = NO;
     __block XCTestExpectation *completionHandlerCalled2 = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
@@ -316,6 +319,110 @@
     
     XCTAssertFalse(itemFound2, "Item just deleted was still found during enumeration.(%i items)",count2);
 
+}
+
+
+-(void)testPutDeleteListen{
+    //create an item
+    //delete the item
+    //check incoming listener item isDeleted = YES
+  
+    [self resetKeychain];
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    // Create an item and store in vault
+    NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    
+    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    
+    __block QredoVaultItemMetadata *itemMetadata = nil;
+    
+    __block XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         item1Descriptor = newItemMetadata.descriptor;
+         itemMetadata = newItemMetadata;
+         [putItemCompletedExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItemCompletedExpectation = nil;
+    }];
+    XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
+    
+    
+    ///wait for listener
+    
+    QredoVaultListener *listener = [[QredoVaultListener alloc] init];
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    
+    [vault removeVaultObserver:listener];
+    
+    
+    //delete item
+    __block QredoVaultItemDescriptor *deletedItem=nil;
+    __block XCTestExpectation *deleteExpectation = [self expectationWithDescription:@"delete item 1"];
+    [vault deleteItem:itemMetadata completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(newItemDescriptor);
+        deletedItem = newItemDescriptor;
+        [deleteExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        deleteExpectation = nil;
+    }];
+    
+    
+    //wait for listener again
+    QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
+    listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener2];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener2.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+
+
+    XCTAssertTrue([listener2.receivedItems count]==1,@"Didnt get the deleted item via listener");
+    
+    QredoVaultItemMetadata *deletedItemMetadata = [listener2.receivedItems firstObject];
+    XCTAssertTrue([deletedItemMetadata isDeleted]==YES,@"Deleted item isn't returning true to isDeleted");
+    [vault removeVaultObserver:listener2];
+    
+    
+    
+    
+    
+    //check its not in the cache
+    __block int count=0;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"vaultMetadata.vaultItem.itemId == %@",[deletedItemMetadata.descriptor.itemId data]];
+    [vault enumerateIndexUsingPredicate:predicate withBlock:^(QredoVaultItemMetadata *vaultMetadata, BOOL *stop) {
+        count++;
+    } completionHandler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+
+    XCTAssertTrue(count==0,@"Count should be zero");
+    XCTAssertTrue(vault.indexSize == 0,@"Index should be emtpy");
+    
+    
 }
 
 
