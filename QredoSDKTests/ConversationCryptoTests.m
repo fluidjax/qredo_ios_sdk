@@ -8,7 +8,7 @@
 #import "CryptoImplV1.h"
 #import "QredoXCTestCase.h"
 #import "NSData+ParseHex.h"
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 
 @interface ConversationCryptoTests : QredoXCTestCase
 {
@@ -153,7 +153,7 @@
     QredoQUID *messageID
     = [[QredoQUID alloc] initWithQUIDString:@"a774a903a9a7481a818fb2afae4aa5beb935120f29c0454681319964f129447a"];
 
-    NSDate* created = [SSLTimeSyncServer date];
+    NSDate* created = [QredoNetworkTime dateTime];
     QredoUTCDateTime* createdDate = [[QredoUTCDateTime alloc] initWithDate: created];
     
     QLFConversationMessageMetadata *metadata

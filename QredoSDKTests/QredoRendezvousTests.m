@@ -18,7 +18,7 @@
 #import "QredoCertificateUtils.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoPrivate.h"
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 
 #import <objc/runtime.h>
 
@@ -457,7 +457,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                XCTAssertNil(error);
                                
                                long expires = [[rendezvous expiresAt] timeIntervalSince1970];
-                               long now     = [[SSLTimeSyncServer date] timeIntervalSince1970];
+                               long now     = [[QredoNetworkTime dateTime] timeIntervalSince1970];
                                long timeUntilExpiry = expires-now;
                                XCTAssert(timeUntilExpiry>80 && timeUntilExpiry<110,@"Expiry time not correctly set after creation %li", timeUntilExpiry);
                                

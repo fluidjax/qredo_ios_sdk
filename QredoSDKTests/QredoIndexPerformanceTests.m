@@ -15,7 +15,7 @@
 #import "QredoLocalIndexDataStore.h"
 #import "QredoIndexVault.h"
 #import "Qredo.h"
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 
 @interface QredoIndexPerformanceTests :QredoXCTestCase
 
@@ -148,7 +148,7 @@ NSNumber *testNumber;
 
 //    [[QredoLocalIndexDataStore sharedQredoLocalIndexDataStore] deleteStore];
     
-    myTestDate = [SSLTimeSyncServer date];
+    myTestDate = [QredoNetworkTime dateTime];
     QLog(@"**************%@",myTestDate);
     testNumber = [NSNumber numberWithInt:3];
     self.continueAfterFailure = YES;

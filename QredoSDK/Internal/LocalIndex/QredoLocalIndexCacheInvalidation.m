@@ -12,7 +12,7 @@
 #import "QredoLocalIndex.h"
 #import "QredoIndexModel.h"
 #import "QredoLoggerPrivate.h"
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 
 @interface QredoLocalIndexCacheInvalidation ()
 @property (strong) QredoIndexVault *qredoIndexVault;
@@ -64,7 +64,7 @@ static const long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage
 
 
 - (void)updateAccessDate:(QredoIndexVaultItemMetadata *)indexVaultItemMetadata {
-    NSDate *now = [SSLTimeSyncServer date];
+    NSDate *now = [QredoNetworkTime dateTime];
     indexVaultItemMetadata.lastAccessed = now;
 }
 

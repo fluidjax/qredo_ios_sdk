@@ -11,7 +11,7 @@
 #import "QredoLoggerPrivate.h"
 #import "Qredo.h"
 #import "QredoPrivate.h"
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 
 // This test should has some commonalities with RendezvousListenerTests, however,
 // the purpose of this test is to cover all edge cases in the conversations:
@@ -419,8 +419,8 @@ NSString *secondMessageText;
     
     if (!randomTag)randomTag= [[QredoQUID QUID] QUIDString];
     
-    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [SSLTimeSyncServer date]];
-    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [SSLTimeSyncServer date]];
+    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [QredoNetworkTime dateTime]];
+    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [QredoNetworkTime dateTime]];
     rvuFulfilledTimes = 0;
     self.didReceiveResponseExpectation = nil;
     
@@ -518,8 +518,8 @@ NSString *secondMessageText;
     
     if (!randomTag)randomTag= [[QredoQUID QUID] QUIDString];
     
-    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [SSLTimeSyncServer date]];
-    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [SSLTimeSyncServer date]];
+    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [QredoNetworkTime dateTime]];
+    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [QredoNetworkTime dateTime]];
     rvuFulfilledTimes = 0;
     self.didReceiveResponseExpectation = nil;
     
@@ -607,8 +607,8 @@ NSString *secondMessageText;
     
     if (!randomTag)randomTag= [[QredoQUID QUID] QUIDString];
     
-    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [SSLTimeSyncServer date]];
-    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [SSLTimeSyncServer date]];
+    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [QredoNetworkTime dateTime]];
+    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [QredoNetworkTime dateTime]];
     rvuFulfilledTimes = 0;
     self.didReceiveResponseExpectation = nil;
     

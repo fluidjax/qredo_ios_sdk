@@ -1,6 +1,5 @@
 //
-//  secureDate.m
-//  IOSTLSDate
+//  QredoNetworkTime
 //
 //  Created by Christopher Morris on 19/04/2016.
 //  Copyright © 2016 Qredo. All rights reserved.
@@ -15,25 +14,25 @@
 // For logic to determine which value is returned
 
 
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 #import "SSLTimeSyncWorker.h"
 #import "ios-ntp.h"
 #import "QredoLogger.h"
 
 static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
 
-@interface SSLTimeSyncServer ()
+@interface QredoNetworkTime ()
 @property (strong) NSMutableArray *serversList;
 @property (nonatomic, strong) dispatch_queue_t queue;
 @property (nonatomic, strong) NetworkClock *netClock;
 @property (assign) int activeCounter;
 @end
 
-@implementation SSLTimeSyncServer
+@implementation QredoNetworkTime
 
 
 +(id)start{
-    static SSLTimeSyncServer *tlsDate = nil;
+    static QredoNetworkTime *tlsDate = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         tlsDate = [[self alloc] init];
@@ -47,7 +46,7 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
 
 +(NSDate*)dateTEST{
     //this returns the guessed date + 33 seconds for testing
-    SSLTimeSyncServer *server = [SSLTimeSyncServer start];
+    QredoNetworkTime *server = [QredoNetworkTime start];
     return [server dateGuessForFirstServeTEST];
 }
 
@@ -67,8 +66,8 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
 }
 
 
-+(NSDate*)date{
-    SSLTimeSyncServer *server = [SSLTimeSyncServer start];
++(NSDate*)dateTime{
+    QredoNetworkTime *server = [QredoNetworkTime start];
     NSDate *tlsDate = [server dateGuessForFirstServer];
     NSDate *ntpDate = [server ntpDate];
     NSDate *localDate =  [NSDate date];
@@ -158,7 +157,7 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
 
 -(void)reportFromDelegate {
     //this is called when the NetworkClock has a time to report (I didnt invent the method name, but can't change it otherwise we cant uses PODs)
-    NSLog(@"LocalTime:%@    NetworkTime:%@     Offset:%f", [SSLTimeSyncServer date], self.netClock.networkTime, self.netClock.networkOffset);
+    NSLog(@"LocalTime:%@    NetworkTime:%@     Offset:%f", [QredoNetworkTime dateTime], self.netClock.networkTime, self.netClock.networkOffset);
 }
 
 

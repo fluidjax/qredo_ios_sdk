@@ -20,7 +20,7 @@
 #import "QredoObserverList.h"
 #import "QredoVaultServerAccess.h"
 #import "QredoLocalIndexDataStore.h"
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
@@ -203,7 +203,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
     
-    NSDate* created = [SSLTimeSyncServer date];
+    NSDate* created = [QredoNetworkTime dateTime];
     // TO DO keep the creation date in the summary values for now since it's used elsewhere
     newSummaryValues[QredoVaultItemMetadataItemDateCreated] = created;
     [self putUpdateOrDeleteItem:vaultItem
@@ -236,7 +236,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoLogDebug(@"Update VaultItem:%@",itemId);
     
     NSMutableDictionary *newSummaryValues = [NSMutableDictionary dictionaryWithDictionary:metadata.summaryValues];
-    NSDate *created = [SSLTimeSyncServer date];
+    NSDate *created = [QredoNetworkTime dateTime];
     
     //TO DO- keep the date in the summary values for now since it's used elsewhere
     newSummaryValues[QredoVaultItemMetadataItemDateModified] = created;
@@ -500,7 +500,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     newSummaryValues[QredoVaultItemMetadataItemDateCreated] = metadata.summaryValues[QredoVaultItemMetadataItemDateCreated];
     
     //TO DO modified not used any more so shouldn't be in summary values ?
-    NSDate* created = [SSLTimeSyncServer date];
+    NSDate* created = [QredoNetworkTime dateTime];
     newSummaryValues[QredoVaultItemMetadataItemDateModified] = created;
     newSummaryValues[QredoVaultItemMetadataItemVersion] = @(metadata.descriptor.sequenceValue); // TODO: not working for int64
     [self putUpdateOrDeleteItem:[QredoVaultItem vaultItemWithMetadata:metadata value:[NSData data]]

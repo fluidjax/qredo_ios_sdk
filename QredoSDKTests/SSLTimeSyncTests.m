@@ -7,7 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 
 @interface SSLTimeSyncTests : XCTestCase
 
@@ -28,16 +28,16 @@
 - (void)testExample {
     //we assume that the local clock on the testing machine is set correctly
     
-    [SSLTimeSyncServer start];
+    [QredoNetworkTime start];
     NSDate *now = [NSDate date];
-    NSDate *unsyncedDate = [SSLTimeSyncServer dateTEST];
+    NSDate *unsyncedDate = [QredoNetworkTime dateTEST];
     
     NSLog(@"Now         %@",now);
     NSLog(@"Unsynced    %@",unsyncedDate);
     
     [NSThread sleepForTimeInterval:5];
     
-    NSDate *syncedDate = [SSLTimeSyncServer dateTEST];
+    NSDate *syncedDate = [QredoNetworkTime dateTEST];
     NSLog(@"Synced    %@",syncedDate);
     
     NSTimeInterval synced = [syncedDate timeIntervalSinceDate:now];

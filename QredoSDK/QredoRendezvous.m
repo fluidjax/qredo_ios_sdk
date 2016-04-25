@@ -26,7 +26,7 @@
 #import "QredoSigner.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoObserverList.h"
-#import "SSLTimeSyncServer.h"
+#import "QredoNetworkTime.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
@@ -347,7 +347,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
-                                                                                    created:[SSLTimeSyncServer date]
+                                                                                    created:[QredoNetworkTime dateTime]
                                                                               summaryValues:@{
                                                                                                kQredoRendezvousVaultItemLabelTag: self.tag,
                                                                                                kQredoRendezvousVaultItemLabelAuthenticationType:[NSNumber numberWithInt:self.authenticationType]
