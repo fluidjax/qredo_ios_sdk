@@ -143,8 +143,8 @@
     XCTAssertFalse([originalTagData1 isEqualToData:originalTagData2]);
 }
 
-- (void)testCreateHelper_Invalid_TagContainsAtSymbol
-{
+- (void)testCreateHelper_Invalid_TagContainsAtSymbol{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
     
     NSString *initialFullTag = @"Anonymous@RendezvousTag"; // Invalid
@@ -167,8 +167,8 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMalformedTag);
 }
 
-- (void)testCreateHelper_Invalid_MissingCrypto
-{
+- (void)testCreateHelper_Invalid_MissingCrypto{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
     
     NSString *initialFullTag = @"AnonymousRendezvousTag";
@@ -184,8 +184,8 @@
                                                                             error:&error]);
 }
 
-- (void)testCreateHelper_Invalid_NilTag
-{
+- (void)testCreateHelper_Invalid_NilTag{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
     
     NSString *initialFullTag = nil; // Invalid
@@ -208,8 +208,8 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
 }
 
-- (void)testCreateHelper_Invalid_NonNilSigningHandler
-{
+- (void)testCreateHelper_Invalid_NonNilSigningHandler{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
     
     NSString *initialFullTag = @"AnonymousRendezvousTag";
@@ -236,8 +236,8 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided);
 }
 
-- (void)testRespondHelper_Invalid_EmptyTag
-{
+- (void)testRespondHelper_Invalid_EmptyTag{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
     
     NSString *initialFullTag = @"";
@@ -257,8 +257,8 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMissingTag);
 }
 
-- (void)testRespondHelper_Invalid_TagContainsAtSymbol
-{
+- (void)testRespondHelper_Invalid_TagContainsAtSymbol{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
     
     NSString *initialFullTag = @"Anonymous@RendezvousTag"; // Invalid
@@ -278,8 +278,8 @@
     XCTAssertEqual(error.code, QredoRendezvousHelperErrorMalformedTag);
 }
 
-- (void)testRespondHelper_Invalid_MissingCrypto
-{
+- (void)testRespondHelper_Invalid_MissingCrypto{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
     
     NSString *initialFullTag = @"AnonymousRendezvousTag";
@@ -292,8 +292,8 @@
                                                                             error:&error]);
 }
 
-- (void)testRespondHelper_Invalid_NilTag
-{
+- (void)testRespondHelper_Invalid_NilTag{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
     
     NSString *initialFullTag = nil; // Invalid

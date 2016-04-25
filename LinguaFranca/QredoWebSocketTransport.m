@@ -117,8 +117,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
     return YES;
 }
 
-- (void)send:(NSData *)payload userData:(id)userData
-{
+- (void)send:(NSData *)payload userData:(id)userData{
 
     if (!_webSocket) {
         @throw [NSException exceptionWithName:NSInternalInconsistencyException

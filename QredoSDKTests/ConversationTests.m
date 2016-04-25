@@ -105,17 +105,17 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
 -(void)tearDown {
     [super tearDown];
-    if (client) {
-        [client closeSession];
-        [anotherClient closeSession];
-    }
+    if (client)[client closeSession];
+    if (anotherClient)[anotherClient closeSession];
 }
+
 
 - (QredoClientOptions *)clientOptions:(BOOL)resetData{
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
     return clientOptions;
 }
+
 
 - (void)authoriseClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
@@ -481,7 +481,7 @@ NSString *secondMessageText;
      //delete the conversation
     __block XCTestExpectation *delcon = [self expectationWithDescription:@"del con"];
     [primaryConveration deleteConversationWithCompletionHandler:^(NSError *error) {
-        NSLog(@"Conversation deleted %@",error);
+        //NSLog(@"Conversation deleted %@",error);
         [delcon fulfill];
     }];
     
@@ -503,8 +503,10 @@ NSString *secondMessageText;
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
-    
-    NSLog(@"here");
+
+   [responderConversation removeConversationObserver:deleteListener];
+   [creatorConversation removeConversationObserver:listener];
+   [rendezvous removeRendezvousObserver:self];
 }
 
 -(void)testConversationWatermark{
@@ -559,34 +561,23 @@ NSString *secondMessageText;
     listener.expectedMessageValue = secondMessageText;
     
     QredoConversationHighWatermark *hwm2 = [self isolatePublishMessage2:listener responderConversation:responderConversation];
-    //    [creatorConversation removeConversationObserver:listener];
+    [creatorConversation removeConversationObserver:listener];
     listener = nil;
-    
 
      //////SETUP COMPLETE -
-    
-    
-    
-    
     //how many messages from beginning
-    NSLog(@"1");
     int messageCount = [self countMessagesOnConversation:responderConversation since:QredoConversationHighWatermarkOrigin];
     XCTAssert(messageCount==2,@"Should have 2 Has %i", messageCount);
     
-
-    
-     NSLog(@"2");
     //how many messages since 1st message
     messageCount = [self countMessagesOnConversation:responderConversation since:hwm1];
     XCTAssert(messageCount==1,@"Should have 1 Has %i", messageCount);
 
-    
-     NSLog(@"3");
     //how many messages since 2nd message
     messageCount = [self countMessagesOnConversation:responderConversation since:hwm2];
     XCTAssert(messageCount==0,@"Should have 0 Has %i", messageCount);
     
-    
+    [rendezvous removeRendezvousObserver:self];
     
 }
 
@@ -610,7 +601,6 @@ NSString *secondMessageText;
 }
 
 - (void)testConversation{
-    [QredoLogger setLogLevel:0];
     
     //static NSString *randomTag;
     NSString *randomTag = nil;
@@ -660,7 +650,9 @@ NSString *secondMessageText;
     listener.expectedMessageValue = secondMessageText;
     
     [self isolatePublishMessage2:listener responderConversation:responderConversation];
-    //    [creatorConversation removeConversationObserver:listener];
+    
+    [rendezvous removeRendezvousObserver:self];
+    [creatorConversation removeConversationObserver:listener];
     listener = nil;
     
  }

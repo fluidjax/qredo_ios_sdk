@@ -21,7 +21,6 @@
 
 - (void)setUp {
     [super setUp];
-    [QredoLogger setLogLevel:QredoLogLevelDebug];
 }
 
 - (void)tearDown {
@@ -41,14 +40,12 @@
 -(void)testLogging{
     [self testSuccessConnectToClient];
     [QredoLogger setLogLevel:QredoLogLevelVerbose];
-    
     QredoLogError  (@"Ignore this intentional error:   %@", ^{ return @"generated error message from block"; }());
     QredoLogWarning(@"Ignore this intentional warning: %@", ^{ return @"generated error message from block"; }());
     QredoLogInfo   (@"Ignore this intentional info:    %@", ^{ return @"generated error message from block"; }());
     QredoLogDebug  (@"Ignore this intentional debug:   %@", ^{ return @"generated error message from block"; }());
     QredoLogVerbose(@"Ignore this intentional verbose: %@", ^{ return @"generated error message from block"; }());
-
-    [self loggingOn]; //restore back to original default state
+    [QredoLogger setLogLevel:QredoLogLevelNone];
 }
 
 
@@ -59,9 +56,6 @@
     QredoClientOptions *options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     options.serverURL = @"https://early1.qredo.me:443/services";
     options.transportType = QredoClientOptionsTransportTypeHTTP;
-    
-    
-    [QredoLogger setLogLevel:QredoLogLevelDebug];
     
     [QredoClient initializeWithAppId:@"test"
                            appSecret:@"cafebabe"
@@ -104,8 +98,6 @@
    
 
     __block QredoClient *client;
-    
-    [QredoLogger setLogLevel:QredoLogLevelDebug];
     
     [QredoClient initializeWithAppId:@"test"
                            appSecret:@"cafebabe"
@@ -163,6 +155,7 @@
 }
 
 -(void)testFailingConnectToClient{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
     [QredoClient initializeWithAppId:@"FAILINGSECRET"

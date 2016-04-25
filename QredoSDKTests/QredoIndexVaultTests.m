@@ -159,8 +159,8 @@ NSNumber *testNumber;
 
 
 -(void)testCacheFill{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     [qredoLocalIndex purgeAll];
-   // [QredoLogger setLogLevel:QredoLogLevelVerbose];
     [vault setMaxCacheSize:280000];
     int recordCount = 100;
 

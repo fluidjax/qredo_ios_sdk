@@ -38,7 +38,7 @@
 
     for (int i = 0; i < 10; i++)
     {
-        QLog(@"run: %i", i);
+        //QLog(@"run: %i", i);
         [super testConversation];
     }
 }

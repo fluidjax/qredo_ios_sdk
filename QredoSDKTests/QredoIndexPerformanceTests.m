@@ -32,9 +32,9 @@ NSNumber *testNumber;
 
 
 -(void)testMultiple{
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     for (int i=0;i<10;i++){
-        //NSLog(@"Pass %i",i);
-        [self setUp];
+        self.continueAfterFailure = YES;
         [self test10Records];
     }
 }
@@ -132,7 +132,7 @@ NSNumber *testNumber;
     XCTAssertTrue(testSize == countAfter-countBefore,@"Failing to import %i items", testSize);
     
     
-    NSLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
+    //NSLog(@"Stats %i %i %i %i",testSize,countBefore, countAfter, importCount);
     
 }
 
@@ -156,6 +156,7 @@ NSNumber *testNumber;
 
 
 - (void)tearDown {
+    [client1 closeSession];
     [super tearDown];
 }
 

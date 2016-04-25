@@ -70,11 +70,7 @@
 {
     NSString *fullTag = nil;
     NSError *error = nil;
-    
-    [self loggingOff];
     QredoAuthenticatedRendezvousTag *tag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:&error];
-    [self loggingOn];
-    
     XCTAssertNil(tag);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -86,9 +82,7 @@
     NSString *fullTag = @"";
     NSError *error = nil;
     
-    [self loggingOff];
     QredoAuthenticatedRendezvousTag *tag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:&error];
-    [self loggingOn];
     XCTAssertNil(tag);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -99,9 +93,7 @@
 {
     NSString *fullTag = @"authenticationTag";
     NSError *error = nil;
-    [self loggingOff];
     QredoAuthenticatedRendezvousTag *tag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:&error];
-    [self loggingOn];
     XCTAssertNil(tag);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);
@@ -112,9 +104,7 @@
 {
     NSString *fullTag = @"@authentication@Tag";
     NSError *error = nil;
-    [self loggingOff];
     QredoAuthenticatedRendezvousTag *tag = [[QredoAuthenticatedRendezvousTag alloc] initWithFullTag:fullTag error:&error];
-    [self loggingOn];
     XCTAssertNil(tag);
     XCTAssertNotNil(error);
     XCTAssertEqualObjects(error.domain, QredoAuthenticatedRendezvousTagErrorDomain);

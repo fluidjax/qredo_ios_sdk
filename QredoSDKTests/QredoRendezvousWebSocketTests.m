@@ -39,7 +39,7 @@
     
     for (int i = 0; i < 20; i++) //passing
     {
-            NSLog(@" run: %i", i);
+            //NSLog(@" run: %i", i);
             [super testCreateAndRespondAnonymousRendezvous];
     }
 }

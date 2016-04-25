@@ -162,6 +162,11 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     if (client) {
         [client closeSession];
     }
+    
+    if (client2) {
+        [client2 closeSession];
+    }
+    
     // Should remove any existing keys after finishing
     [QredoCrypto deleteAllKeysInAppleKeychain];
 }
@@ -454,7 +459,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                long expires = [[rendezvous expiresAt] timeIntervalSince1970];
                                long now     = [[SSLTimeSyncServer date] timeIntervalSince1970];
                                long timeUntilExpiry = expires-now;
-                               XCTAssert(timeUntilExpiry>80 && timeUntilExpiry<101,@"Expiry time not correctly set after creation");
+                               XCTAssert(timeUntilExpiry>80 && timeUntilExpiry<110,@"Expiry time not correctly set after creation %li", timeUntilExpiry);
                                
                                
                                XCTAssertNotNil(rendezvous);
@@ -550,6 +555,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 
+
+
 -(void)testCreateAndFetchAnonymousRendezvous {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
@@ -571,7 +578,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                
                                [createExpectation fulfill];
                            }];
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:20.0 handler:^(NSError *error) {
         createExpectation = nil;
     }];
     
@@ -588,7 +595,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                
                                [failCreateExpectation fulfill];
                            }];
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:20.0 handler:^(NSError *error) {
         failCreateExpectation = nil;
     }];
     
@@ -610,7 +617,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         [didFindStoredRendezvousMetadataExpecttion fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:20.0 handler:^(NSError *error) {
         didFindStoredRendezvousMetadataExpecttion = nil;
     }];
     
@@ -629,7 +636,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         [didFindStoredRendezvous fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:20.0 handler:^(NSError *error) {
         didFindStoredRendezvous = nil;
     }];
     
@@ -649,7 +656,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         [didFetchExpectation fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
+    [self waitForExpectationsWithTimeout:20.0 handler:^(NSError *error) {
         didFetchExpectation = nil;
     }];
     
@@ -1669,9 +1676,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 -(void)testActivateNilRendezvous {
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     QredoRendezvousRef *rendezvousRef = NULL;
     
     __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+    
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     
     
     // now activate the rendezvous
@@ -1715,19 +1725,19 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 -(void)testActivateInvalidDuration {
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     
     QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:20000];
     XCTAssertNotNil(rendezvousRef);
     
     __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
-    
+
     
     // now activate the rendezvous
     [client activateRendezvousWithRef:rendezvousRef duration:-201 completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
         // check the responses
         XCTAssertNotNil(error);
         XCTAssert(error.code == QredoErrorCodeRendezvousInvalidData);
-        
         [createActivateExpectation fulfill];
     }];
     
@@ -1763,7 +1773,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 -(void)testDeactivateExpiredRendezvous {
-    
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:1];
     XCTAssertNotNil(rendezvousRef);
     
@@ -1852,6 +1862,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 -(void)testDeactivateNilRendezvous {
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     QredoRendezvousRef *rendezvousRef = nil;
     
     __block XCTestExpectation *deactivateExpectation = [self expectationWithDescription:@"deactivate nil rendezvous"];
