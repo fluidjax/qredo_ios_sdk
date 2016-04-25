@@ -73,7 +73,9 @@ typedef NS_ENUM (NSInteger, QredoLogLevel) {
  
  */
 
-+(void)logMessage:(NSString * (^)(void))message logLevel:(QredoLogLevel)currentLevel level:(QredoLogLevel)level file:(const char *)file function:(const char *)function line:(NSUInteger)line;
+
+
++(void)logMessage:(NSString * (^)(void))message currentLevel:(QredoLogLevel)currentLevel level:(QredoLogLevel)level file:(const char *)file function:(const char *)function line:(NSUInteger)line;
 
 
 //+(void)setLogHandler:(void (^)(NSString * (^message)(void), QredoLogLevel level, const char *file, const char *function, NSUInteger line))logHandler;
@@ -93,10 +95,11 @@ typedef NS_ENUM (NSInteger, QredoLogLevel) {
 /** Returns the current logging level
  
  @return logLevel The current `QredoLogLevel`
+ */
 
 +(QredoLogLevel)logLevel;
  
- */
+
 
 
 /** Add the class of the specified object to the 'white list' of classes to be used for logging.

@@ -15,7 +15,6 @@
 
 + (NSString *)extractClassName:(NSString *)prettyFunction;
 + (BOOL)isClassOfInterest:(NSString *)className;
-
 + (NSData *)NSDataFromHexString:(NSString*)string;
 + (NSString*)hexRepresentationOfNSData:(NSData*)data;
 + (NSString*)printBytesAsHex:(const unsigned char*)bytes numberOfBytes:(const unsigned int)numberOfBytes;
