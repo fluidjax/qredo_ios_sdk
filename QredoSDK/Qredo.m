@@ -23,7 +23,7 @@
 
 #import "QredoLocalIndexDataStore.h"
 #import "QredoConversationProtocol.h"
-#import "ios-ntp.h"
+
 #import "SSLTimeSyncServer.h"
 
 #import <UIKit/UIKit.h>
@@ -52,7 +52,7 @@ static NSString *const QredoKeychainOperatorAccountId       = @"1234567890";
 static NSString *const QredoKeychainPassword                = @"Password123";
 
 NSString *systemVaultKeychainArchiveIdentifier;
-NetworkClock *netClock;
+
 
 
 
@@ -394,7 +394,7 @@ NetworkClock *netClock;
     // TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
     
     
-    netClock = [NetworkClock sharedNetworkClock];
+    
     
     
     
@@ -1303,10 +1303,7 @@ withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
 
 
 
--(void)reportFromDelegate {
-    //this is called when the NetworkClock has a time to report (I didnt invent the method name, but can't change it otherwise we cant uses PODs)
-    NSLog(@"LocalTime:%@    NetworkTime:%@     Offset:%f", [SSLTimeSyncServer date], netClock.networkTime, netClock.networkOffset);
-}
+
 
 
 

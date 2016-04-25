@@ -104,6 +104,7 @@
 
 - (void)setUp {
     [super setUp];
+    [QredoLogger setLogLevel:QredoLogLevelVerbose];
     [self authoriseClient];
 }
 
@@ -185,10 +186,7 @@
 
 
 -(void)testPutDelete{
-    
     [self resetKeychain];
-    
-    
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
     XCTAssertNotNil(vault);
