@@ -512,45 +512,6 @@ NSNumber *testNumber;
 }
 
 
-- (void)testIndexPutGet {
-    QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:@"value1"];
-    QredoVaultItemMetadata *meta1 = [self createTestItemInVault:vault key1Value:@"chris"];
-    QredoVaultItem *item1 = [self getItemWithDescriptor:meta1 inVault:vault];
-    QredoVaultItemMetadata *meta2 = [self updateItem:item1 inVault:vault];
-    QredoVaultItemMetadata *junk2 = [self createTestItemInVault:vault key1Value:@"value1"];
-    
-    QredoVaultItemDescriptor *searchDescriptorWithOnlyItemId =  [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:nil itemId:meta1.descriptor.itemId];
-    QredoVaultItemMetadata *retrievedFromCacheMetatadata =      [qredoLocalIndex getMetadataFromIndexWithDescriptor:searchDescriptorWithOnlyItemId];
-    
-    XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key1"] isEqualToString:@"chris"],@"Summary data is incorrect");
-    XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key2"] isEqualToString:@"value2"],@"Summary data is incorrect");
-    XCTAssertTrue([[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key3"] isEqual:testNumber],@"Summary data is correct");
-    
-    NSDate *ret =(NSDate*)[retrievedFromCacheMetatadata.summaryValues objectForKey:@"key4"];
-    
-    
-    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"key like %@ && value.date==%@", @"key*", myTestDate];
-    
-    __block int count =0;
-    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
-        //QLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
-        count++;
-    } completionHandler:^(NSError *error) {
-        //QLog(@"Current Values = %i",count);
-    }];
-    
-    
-    count =0;
-    [qredoLocalIndex enumerateSearch:searchTest withBlock:^(QredoVaultItemMetadata *vaultMetaData, BOOL *stop) {
-        //QLog(@"Found a match for %@", vaultMetaData.descriptor.itemId);
-        count++;
-    } completionHandler:^(NSError *error) {
-        
-        //QLog(@"All Values = %i",count);
-    }];
-}
-
-
 
 - (void)testPurge {
     NSInteger before = [qredoLocalIndex count];

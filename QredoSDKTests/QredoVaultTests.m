@@ -1181,7 +1181,7 @@
     
     
     testExpectation = [self expectationWithDescription:@"get item 1 with descriptor"];
-    [vault getItemWithDescriptor:qvid completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
+    [vault getLatestItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
      {
          XCTAssertNil(error);
          XCTAssertNotNil(vaultItem);

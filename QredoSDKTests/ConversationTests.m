@@ -532,11 +532,8 @@ NSString *secondMessageText;
     [NSThread sleepForTimeInterval:0.2];
     
     //static QredoRendezvous *rendezvous;
-    QredoRendezvous *rendezvous=nil;
-    if (!rendezvous){
-        rendezvous= [self isolateCreateRendezvous:randomTag];
-        [rendezvous addRendezvousObserver:self];
-    }
+    QredoRendezvous *rendezvous= [self isolateCreateRendezvous:randomTag];
+    [rendezvous addRendezvousObserver:self];
     
     
     //this is a fix so the observer registers before the rendezvous is responded to.
