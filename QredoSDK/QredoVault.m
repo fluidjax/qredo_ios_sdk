@@ -30,7 +30,7 @@ static NSString *const QredoVaultItemMetadataItemDateCreated = @"_created";
 static NSString *const QredoVaultItemMetadataItemDateModified = @"_modified";
 static NSString *const QredoVaultItemMetadataItemVersion = @"_v";
 
-NSString *const QredoVaultItemMetadataItemTypeTombstone = @"\u220E"; // U+220E END OF PROOF, https://github.com/Qredo/design-docs/wiki/Vault-Item-Tombstone
+
 static NSString *const QredoVaultItemMetadataItemTypeRendezvous = @"com.qredo.rendezvous";
 static NSString *const QredoVaultItemMetadataItemTypeConversation = @"com.qredo.conversation";
 
@@ -327,17 +327,63 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 
-- (QredoQUID *)vaultId
-{
+- (QredoQUID *)vaultId{
     return _vaultKeys.vaultId;
+}
+
+
+- (void)getLatestItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+            completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler{
+    //ItemID specified but ignore SequenceID=nil & SequenceValue=0
+    //It will retrieve the latest value available from the cache and return
+    //If item is not in the cache goes to the server and retirees the specified sequence state
+    //If the latest item is a deleted item (tombstoned) it will return nil
+    QredoVaultItem *vaultItem = [self.localIndex getLatestVaultItemFromIndexWithDescriptor:itemDescriptor];
+    if (vaultItem){
+        //if the metadata is a tombstone return nil
+        if (vaultItem.metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItem=nil;
+        QredoLogInfo(@"Retrieved VaultItem from Index");
+        completionHandler(vaultItem,nil);
+        return;
+    }
+    
+    //Nothing in the index try the server
+    [self getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        if (vaultItem.metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItem=nil;
+        completionHandler(vaultItem,nil);
+    }];
+}
+
+
+- (void)getLatestItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                          completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler{
+    //ItemID specified but ignore SequenceID=nil & SequenceValue=0
+    //It will retrieve the latest value available from the cache and return
+    //If item is not in the cache goes to the server and retirees the specified sequence state
+    //If the latest item is a deleted item (tombstoned) it will return nil
+    QredoVaultItemMetadata *vaultItemMetadata = [self.localIndex getLatestMetadataFromIndexWithDescriptor:itemDescriptor];
+    if (vaultItemMetadata){
+        //if the metadata is a tombstone return nil
+        if (vaultItemMetadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItemMetadata=nil;
+        QredoLogInfo(@"Retrieved VaultItem from Index");
+        completionHandler(vaultItemMetadata,nil);
+        return;
+    }
+    
+    //Nothing in the index try the server
+    [self getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        if (vaultItemMetadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItemMetadata=nil;
+        completionHandler(vaultItemMetadata,nil);
+    }];
 }
 
 
 - (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
             completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler{
-    
     QredoVaultItem *vaultItem = [self.localIndex getVaultItemFromIndexWithDescriptor:itemDescriptor];
     if (vaultItem){
+        //if the metadata is a tombstone return nil
+        
         QredoLogInfo(@"Retrieved VaultItem from Index");
         completionHandler(vaultItem,nil);
     }else{
@@ -380,13 +426,19 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 
+
+
+
 - (void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
                     completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler{
     
     QredoVaultItemMetadata *metadata = [self.localIndex getMetadataFromIndexWithDescriptor:itemDescriptor];
     if (metadata){
+        //if the metadata is a tombstone return nil
+        //if (metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)metadata=nil;
         QredoLogInfo(@"Retrieved VaultMetadata from Index");
         completionHandler(metadata,nil);
+        
     }else{
         QredoLogInfo(@"Retrieved VaultMetadata from server");
         [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
@@ -517,10 +569,14 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                   summaryValues:newSummaryValues
               completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
               if (newItemMetadata) {
-                  [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
-                                                 completionHandler:^(NSError *cacheError){
-                       completionHandler(newItemMetadata.descriptor, error);
-                   }];
+                  [self cacheInIndexVaultItemMetadata:newItemMetadata completionHandler:^(NSError *error) {
+                      completionHandler(newItemMetadata.descriptor, error);
+                  }];
+                  
+//                  [self removeBodyFromCacheWithVaultItemDescriptor:metadata.descriptor
+//                                                 completionHandler:^(NSError *cacheError){
+//                       completionHandler(newItemMetadata.descriptor, error);
+//                   }];
                   
               } else {
 

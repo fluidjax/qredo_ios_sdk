@@ -29,6 +29,7 @@ extern NSString *const QredoVaultItemTypeKeychainAttempt;
 extern NSString *const QredoVaultItemSummaryKeyDeviceName;
 static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 
+
 @class QredoKeychainReceiver, QredoKeychainSender, QredoKeychain;
 
 

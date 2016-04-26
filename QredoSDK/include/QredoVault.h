@@ -234,6 +234,12 @@ Constructed when a 'QredoVaultItem` is created and returned from `enumerateVault
 -(void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
 
 
+
+
+-(void)getLatestItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor  completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
+-(void)getLatestItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
+
+
 #pragma mark - Vault listeners
 
 

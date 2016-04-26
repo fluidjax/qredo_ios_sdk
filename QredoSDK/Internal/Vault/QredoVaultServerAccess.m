@@ -104,7 +104,8 @@
                     completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler
 {
     QLFVaultSequenceId *sequenceId = itemDescriptor.sequenceId;
-    QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
+//    QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
+    QLFVaultSequenceValue sequenceValue =itemDescriptor.sequenceValue;
 
     NSError *error = nil;
 

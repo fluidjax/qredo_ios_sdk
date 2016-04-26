@@ -319,13 +319,7 @@
     XCTAssertFalse(itemFound2, "Item just deleted was still found during enumeration.(%i items)",count2);
 
 }
-
-
--(void)testPutDeleteListen{
-    //create an item
-    //delete the item
-    //check incoming listener item isDeleted = YES
-  
+-(void)testGetLatestMetaDataItemFromIndex{
     [self resetKeychain];
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
@@ -337,24 +331,23 @@
                                          @"key2": @"value2",
                                          @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
-                                                            value:item1Data];
+    QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
+                                                           value:item1Data];
+    
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
-    
-    __block QredoVaultItemMetadata *itemMetadata = nil;
-    
-    __block XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
-    [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+    __block QredoVaultItemMetadata *item1Metadata = nil;
+    __block XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
          XCTAssertNil(error, @"Error occurred during PutItem");
          item1Descriptor = newItemMetadata.descriptor;
-         itemMetadata = newItemMetadata;
-         [putItemCompletedExpectation fulfill];
+         item1Metadata = newItemMetadata;
+         [putItem1CompletedExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
-        putItemCompletedExpectation = nil;
+        putItem1CompletedExpectation = nil;
     }];
     XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
     
@@ -373,172 +366,675 @@
     [vault removeVaultObserver:listener];
     
     
-    //delete item
-    __block QredoVaultItemDescriptor *deletedItem=nil;
-    __block XCTestExpectation *deleteExpectation = [self expectationWithDescription:@"delete item 1"];
-    [vault deleteItem:itemMetadata completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
-        XCTAssertNil(error);
-        XCTAssertNotNil(newItemDescriptor);
-        deletedItem = newItemDescriptor;
-        [deleteExpectation fulfill];
-    }];
     
+    
+    //create a second item and store in the vault
+    
+    
+    __block QredoVaultItemDescriptor *item2Descriptor = nil;
+    __block QredoVaultItemMetadata *item2Metadata = nil;
+    
+    __block XCTestExpectation *putItem2CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         item2Descriptor = newItemMetadata.descriptor;
+         item2Metadata = newItemMetadata;
+         [putItem2CompletedExpectation fulfill];
+     }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
-        deleteExpectation = nil;
+        putItem2CompletedExpectation = nil;
     }];
+    XCTAssertNotNil(item2Descriptor, @"Descriptor returned is nil");
     
     
-    //wait for listener again
+    
+    
     QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
     listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
     [vault addVaultObserver:listener2];
+    
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         listener2.didReceiveVaultItemMetadataExpectation = nil;
     }];
-
-
-    XCTAssertTrue([listener2.receivedItems count]==1,@"Didnt get the deleted item via listener");
     
-    QredoVaultItemMetadata *deletedItemMetadata = [listener2.receivedItems firstObject];
-    XCTAssertTrue([deletedItemMetadata isDeleted]==YES,@"Deleted item isn't returning true to isDeleted");
     [vault removeVaultObserver:listener2];
     
     
     
+    //we now have 2 items in the vault (server & index)
+    //this is getting the first item
+    __block QredoVaultItemMetadata *test1vaultItemMetadata=nil;
+    __block XCTestExpectation *x1 = [self expectationWithDescription:@"get oldest item"];
     
-    
-    //check its not in the cache
-    __block int count=0;
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"vaultMetadata.vaultItem.itemId == %@",[deletedItemMetadata.descriptor.itemId data]];
-    [vault enumerateIndexUsingPredicate:predicate withBlock:^(QredoVaultItemMetadata *vaultMetadata, BOOL *stop) {
-        count++;
-    } completionHandler:^(NSError *error) {
-        XCTAssertNil(error);
+    [vault getItemMetadataWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        test1vaultItemMetadata = vaultItemMetadata;
+        [x1 fulfill];
     }];
-
-    XCTAssertTrue(count==0,@"Count should be zero");
-    XCTAssertTrue(vault.indexSize == 0,@"Index should be emtpy");
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        x1 = nil;
+    }];
+    XCTAssertTrue([item1Metadata.descriptor isEqual:test1vaultItemMetadata.descriptor], @"Retrieved item should be first");
     
+    
+    
+    //this is getting the second item
+    __block QredoVaultItemMetadata *test2vaultItemMetadata=nil;
+    __block XCTestExpectation *x2 = [self expectationWithDescription:@"get latest item1"];
+    
+    [vault getItemMetadataWithDescriptor:item2Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {        test2vaultItemMetadata = vaultItemMetadata;
+        [x2 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        x2 = nil;
+    }];
+    XCTAssertTrue([item2Metadata.descriptor isEqual:test2vaultItemMetadata.descriptor], @"Retrieved item should be second");
+    
+    
+    
+    //get the latest with first descriptor
+    __block QredoVaultItemMetadata *test3vaultItemMetadata=nil;
+    __block XCTestExpectation *x3 = [self expectationWithDescription:@"get latest item2"];
+    
+    [vault getLatestItemMetadataWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        test3vaultItemMetadata = vaultItemMetadata;
+        [x3 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        x3 = nil;
+    }];
+    
+    XCTAssertTrue([item2Metadata.descriptor isEqual:test3vaultItemMetadata.descriptor], @"Retrieved item should be second");
+    
+    
+    //get the latest with second descriptor
+    __block QredoVaultItemMetadata *test4vaultItemMetadata=nil;
+    __block XCTestExpectation *x4 = [self expectationWithDescription:@"get latest item3"];
+    
+    [vault getLatestItemMetadataWithDescriptor:item2Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        test4vaultItemMetadata = vaultItemMetadata;
+        [x4 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        x4 = nil;
+    }];
+    
+    XCTAssertTrue([item2Metadata.descriptor isEqual:test4vaultItemMetadata.descriptor], @"Retrieved item should be second");
     
 }
 
 
--(void)testGetLatestFromIndex{
-    //put some data
-    
+-(void)testGetLatestMetaDataItemFromIndexAfterDelete{
+    [self resetKeychain];
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
     XCTAssertNotNil(vault);
     
-    __block int counter =0;
+    // Create an item and store in vault
+    NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
     
-    NSData *item1Data = [self randomDataWithLength:1024];
-    NSDictionary *item1SummaryValues = @{@"key1": @0};
-    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues] value:item1Data];
+    QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
+                                                           value:item1Data];
     
-    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
     
-    __block QredoVaultItemMetadata *newItemMetadata = nil;
-    
-     [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *incomingMetadata, NSError *error) {
-         XCTAssertNil(error);
-         XCTAssertNotNil(incomingMetadata);
-         [testExpectation fulfill];
-         newItemMetadata = incomingMetadata;
-         counter++;
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    __block QredoVaultItemMetadata *item1Metadata = nil;
+    __block XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         item1Descriptor = newItemMetadata.descriptor;
+         item1Metadata = newItemMetadata;
+         [putItem1CompletedExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
-        testExpectation = nil;
+        putItem1CompletedExpectation = nil;
     }];
-
-    XCTAssertNotNil(newItemMetadata);
-    
-    //update the item with new versions
+    XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
     
     
-    for (int i=1;i<10;i++){
-        QredoVaultItemMetadata *updateMetadata = newItemMetadata;
-        updateMetadata.summaryValues = @{@"key1": [NSNumber numberWithInt:i],
-                                         @"key2": @"updated"};
-
-        __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
-        
-          [vault updateItem:updateMetadata value:item1Data completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-            XCTAssertNil(error);
-            XCTAssertNotNil(newItemMetadata);
-            [testExpectation fulfill];
-            counter++;
-
-        }];
-        
-       [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-            // avoiding exception when 'fulfill' is called after timeout
-            testExpectation = nil;
-        }];
-    }
+    ///wait for listener
     
-    XCTAssertTrue(counter==10,@"Didnt import 10 items");
-    
-
-    //Just get the latest item from the Index
-    QredoVaultItemDescriptor *descriptor = [[QredoVaultItemDescriptor alloc] initWithSequenceId:nil
-                                                                                  sequenceValue:0
-                                                                                         itemId:item1.metadata.descriptor.itemId];
-    __block QredoVaultItem *latestVaultItemFromCache = nil;
-    
-     __block XCTestExpectation *getFromIndexExpectation = [self expectationWithDescription:@"get fromIndex"];
-    [vault getItemWithDescriptor:descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
-        XCTAssertNil(error);
-        XCTAssertNotNil(vaultItem);
-        latestVaultItemFromCache = vaultItem;
-        [getFromIndexExpectation fulfill];
-    }];
+    QredoVaultListener *listener = [[QredoVaultListener alloc] init];
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
-        getFromIndexExpectation = nil;
+        listener.didReceiveVaultItemMetadataExpectation = nil;
     }];
     
+    [vault removeVaultObserver:listener];
     
     
     
-    NSNumber *testVal = [latestVaultItemFromCache objectForMetadataKey:@"key1"];
     
-    XCTAssertTrue([testVal isEqualToNumber:@9],@"Didnt get the latest value from the cache");
-    XCTAssert(latestVaultItemFromCache.metadata.origin == QredoVaultItemOriginCache,@"Metata data in vault item not set correctly");
+    //delete item
+    __block QredoVaultItemDescriptor *deleteItemDescriptor = nil;
     
-  
-    
-    //disable the index
-    [client.defaultVault metadataCacheEnabled:NO];
-    [client.defaultVault valueCacheEnabled:NO];
-    
+    __block XCTestExpectation *putItem2CompletedExpectation = [self expectationWithDescription:@"delete item"];
+    [vault deleteItem:item1Metadata completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+        deleteItemDescriptor=newItemDescriptor;
+        [putItem2CompletedExpectation fulfill];
+    }];
 
-    //get from the server - should report an error
-    __block XCTestExpectation *getFromServerExpectation = [self expectationWithDescription:@"get from Server"];
-    
-    [vault getItemWithDescriptor:descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
-        XCTAssert(error);
-        XCTAssertNil(vaultItem);
-        latestVaultItemFromCache = vaultItem;
-        [getFromServerExpectation fulfill];
+     
+     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItem2CompletedExpectation = nil;
     }];
+    XCTAssertNotNil(deleteItemDescriptor, @"Descriptor returned is nil");
+    
+    
+    
+    
+    QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
+    listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener2];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
-        getFromServerExpectation = nil;
+        listener2.didReceiveVaultItemMetadataExpectation = nil;
     }];
     
+    [vault removeVaultObserver:listener2];
     
     
+    
+    //we now have 2 items in the vault (server & index)
+    //this is getting the first item
+    __block QredoVaultItemMetadata *test1vaultItemMetadata=nil;
+    __block XCTestExpectation *x1 = [self expectationWithDescription:@"get oldest item"];
+    
+    [vault getItemMetadataWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        test1vaultItemMetadata = vaultItemMetadata;
+        [x1 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        x1 = nil;
+    }];
+    XCTAssertTrue([item1Metadata.descriptor isEqual:test1vaultItemMetadata.descriptor], @"Retrieved item should be first");
+    
+    
+    
+    //this is getting the second item
+    __block QredoVaultItemMetadata *test2vaultItemMetadata=nil;
+    __block XCTestExpectation *x2 = [self expectationWithDescription:@"get latest item1"];
+    
+    [vault getItemMetadataWithDescriptor:deleteItemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        test2vaultItemMetadata = vaultItemMetadata;
+        [x2 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        x2 = nil;
+    }];
+    XCTAssertTrue([test2vaultItemMetadata.descriptor isEqual:deleteItemDescriptor], @"Retrieved item should be second");
+    
+    
+    
+    //get the latest with first descriptor
+    __block QredoVaultItemMetadata *test3vaultItemMetadata=nil;
+    __block XCTestExpectation *x3 = [self expectationWithDescription:@"get latest item2"];
+    
+    [vault getLatestItemMetadataWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        test3vaultItemMetadata = vaultItemMetadata;
+        [x3 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        x3 = nil;
+    }];
+    
+    XCTAssertNil(test3vaultItemMetadata,@"Should be nil");
+    
+    
+    //get the latest with second descriptor
+    __block QredoVaultItemMetadata *test4vaultItemMetadata=nil;
+    __block XCTestExpectation *x4 = [self expectationWithDescription:@"get latest item3"];
+    
+    [vault getLatestItemMetadataWithDescriptor:deleteItemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        test4vaultItemMetadata = vaultItemMetadata;
+        [x4 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        x4 = nil;
+    }];
+    
+     XCTAssertNil(test4vaultItemMetadata,@"Should be nil");
     
 }
 
-- (void)testPutItem
-{
+
+
+-(void)testGetLatestItemFromIndexAfterDelete{
+    [self resetKeychain];
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    // Create an item and store in vault
+    NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    
+    QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
+                                                           value:item1Data];
+    
+    
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    __block QredoVaultItemMetadata *item1Metadata = nil;
+    __block XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         item1Descriptor = newItemMetadata.descriptor;
+         item1Metadata = newItemMetadata;
+         [putItem1CompletedExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItem1CompletedExpectation = nil;
+    }];
+    XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
+    
+    
+    ///wait for listener
+    
+    QredoVaultListener *listener = [[QredoVaultListener alloc] init];
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    
+    [vault removeVaultObserver:listener];
+    
+    
+    
+    
+    //delete item
+    __block QredoVaultItemDescriptor *deleteItemDescriptor = nil;
+    
+    __block XCTestExpectation *putItem2CompletedExpectation = [self expectationWithDescription:@"delete item"];
+    [vault deleteItem:item1Metadata completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+        deleteItemDescriptor=newItemDescriptor;
+        [putItem2CompletedExpectation fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItem2CompletedExpectation = nil;
+    }];
+    XCTAssertNotNil(deleteItemDescriptor, @"Descriptor returned is nil");
+    
+    
+    
+    
+    QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
+    listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener2];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener2.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    
+    [vault removeVaultObserver:listener2];
+    
+    
+    
+    //we now have 2 items in the vault (server & index)
+    //this is getting the first item
+    __block QredoVaultItem *test1vaultItem=nil;
+    __block XCTestExpectation *x1 = [self expectationWithDescription:@"get oldest item"];
+    
+    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        test1vaultItem = vaultItem;
+        [x1 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        x1 = nil;
+    }];
+    XCTAssertTrue([item1Metadata.descriptor isEqual:test1vaultItem.metadata.descriptor], @"Retrieved item should be first");
+    
+    
+    
+    //this is getting the second item
+    __block QredoVaultItem *test2vaultItem=nil;
+    __block XCTestExpectation *x2 = [self expectationWithDescription:@"get latest item1"];
+    
+    [vault getItemWithDescriptor:deleteItemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        test2vaultItem = vaultItem;
+        [x2 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        x2 = nil;
+    }];
+    XCTAssertTrue([test2vaultItem.metadata.descriptor isEqual:deleteItemDescriptor], @"Retrieved item should be second");
+    
+    
+    
+    //get the latest with first descriptor
+    __block QredoVaultItem *test3vaultItem=nil;
+    __block XCTestExpectation *x3 = [self expectationWithDescription:@"get latest item2"];
+    
+    [vault getLatestItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        test3vaultItem = vaultItem;
+        [x3 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        x3 = nil;
+    }];
+    
+    XCTAssertNil(test3vaultItem,@"Should be nil");
+    
+    
+    //get the latest with second descriptor
+    __block QredoVaultItem *test4vaultItem=nil;
+    __block XCTestExpectation *x4 = [self expectationWithDescription:@"get latest item3"];
+    
+    [vault getLatestItemWithDescriptor:deleteItemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        test4vaultItem = vaultItem;
+        [x4 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        x4 = nil;
+    }];
+    
+    XCTAssertNil(test4vaultItem,@"Should be nil");
+    
+}
+
+
+
+-(void)testGetLatestVaultItemFromIndex{
+    [self resetKeychain];
+    XCTAssertNotNil(client);
+    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(vault);
+    
+    // Create an item and store in vault
+    NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
+    NSDictionary *item1SummaryValues = @{@"key1": @"value1",
+                                         @"key2": @"value2",
+                                         @"key3": [[NSData qtu_dataWithRandomBytesOfLength:16] description]};
+    
+    QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
+                                                            value:item1Data];
+    
+    
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    __block QredoVaultItemMetadata *item1Metadata = nil;
+    __block XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         item1Descriptor = newItemMetadata.descriptor;
+         item1Metadata = newItemMetadata;
+         [putItem1CompletedExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItem1CompletedExpectation = nil;
+    }];
+    XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
+    
+    
+    ///wait for listener
+    
+    QredoVaultListener *listener = [[QredoVaultListener alloc] init];
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    
+    [vault removeVaultObserver:listener];
+    
+    
+    
+
+    //create a second item and store in the vault
+    
+    
+    __block QredoVaultItemDescriptor *item2Descriptor = nil;
+    __block QredoVaultItemMetadata *item2Metadata = nil;
+    
+    __block XCTestExpectation *putItem2CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
+     {
+         XCTAssertNil(error, @"Error occurred during PutItem");
+         item2Descriptor = newItemMetadata.descriptor;
+         item2Metadata = newItemMetadata;
+         [putItem2CompletedExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        putItem2CompletedExpectation = nil;
+    }];
+    XCTAssertNotNil(item2Descriptor, @"Descriptor returned is nil");
+    
+    
+    
+    
+    QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
+    listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener2];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener2.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    
+    [vault removeVaultObserver:listener2];
+
+
+    
+     //we now have 2 items in the vault (server & index)
+    //this is getting the first item
+    __block QredoVaultItem *test1vaultItem=nil;
+    __block XCTestExpectation *x1 = [self expectationWithDescription:@"get oldest item"];
+
+    [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        test1vaultItem = vaultItem;
+        [x1 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        x1 = nil;
+    }];
+    XCTAssertTrue([item1Metadata.descriptor isEqual:test1vaultItem.metadata.descriptor], @"Retrieved item should be first");
+    
+    
+    
+    //this is getting the second item
+    __block QredoVaultItem *test2vaultItem=nil;
+    __block XCTestExpectation *x2 = [self expectationWithDescription:@"get latest item1"];
+    
+    [vault getItemWithDescriptor:item2Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        test2vaultItem = vaultItem;
+        [x2 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        x2 = nil;
+    }];
+    XCTAssertTrue([item2Metadata.descriptor isEqual:test2vaultItem.metadata.descriptor], @"Retrieved item should be second");
+    
+    
+    
+    //get the latest with first descriptor
+    __block QredoVaultItem *test3vaultItem=nil;
+    __block XCTestExpectation *x3 = [self expectationWithDescription:@"get latest item2"];
+    
+    [vault getLatestItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        test3vaultItem = vaultItem;
+        [x3 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        x3 = nil;
+    }];
+    
+    XCTAssertTrue([item2Metadata.descriptor isEqual:test3vaultItem.metadata.descriptor], @"Retrieved item should be second");
+    
+    
+    //get the latest with second descriptor
+    __block QredoVaultItem *test4vaultItem=nil;
+    __block XCTestExpectation *x4 = [self expectationWithDescription:@"get latest item3"];
+    
+    [vault getLatestItemWithDescriptor:item2Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        test4vaultItem = vaultItem;
+        [x4 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        x4 = nil;
+    }];
+    
+    XCTAssertTrue([item2Metadata.descriptor isEqual:test4vaultItem.metadata.descriptor], @"Retrieved item should be second");
+    
+}
+
+
+//-(void)testGetLatestFromIndex{
+//    //put some data
+//    
+//    XCTAssertNotNil(client);
+//    QredoVault *vault = [client defaultVault];
+//    XCTAssertNotNil(vault);
+//    
+//    __block int counter =0;
+//    
+//    NSData *item1Data = [self randomDataWithLength:1024];
+//    NSDictionary *item1SummaryValues = @{@"key1": @0};
+//    QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues] value:item1Data];
+//    
+//    __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+//    
+//    __block QredoVaultItemMetadata *newItemMetadata = nil;
+//    
+//     [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *incomingMetadata, NSError *error) {
+//         XCTAssertNil(error);
+//         XCTAssertNotNil(incomingMetadata);
+//         [testExpectation fulfill];
+//         newItemMetadata = incomingMetadata;
+//         counter++;
+//     }];
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+//        // avoiding exception when 'fulfill' is called after timeout
+//        testExpectation = nil;
+//    }];
+//
+//    XCTAssertNotNil(newItemMetadata);
+//    
+//    //update the item with new versions
+//    
+//    
+//    for (int i=1;i<10;i++){
+//        QredoVaultItemMetadata *updateMetadata = newItemMetadata;
+//        updateMetadata.summaryValues = @{@"key1": [NSNumber numberWithInt:i],
+//                                         @"key2": @"updated"};
+//
+//        __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
+//        
+//          [vault updateItem:updateMetadata value:item1Data completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+//            XCTAssertNil(error);
+//            XCTAssertNotNil(newItemMetadata);
+//            [testExpectation fulfill];
+//            counter++;
+//
+//        }];
+//        
+//       [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+//            // avoiding exception when 'fulfill' is called after timeout
+//            testExpectation = nil;
+//        }];
+//    }
+//    
+//    XCTAssertTrue(counter==10,@"Didnt import 10 items");
+//    
+//
+//    //Just get the latest item from the Index
+//    QredoVaultItemDescriptor *descriptor = [[QredoVaultItemDescriptor alloc] initWithSequenceId:nil
+//                                                                                  sequenceValue:0
+//                                                                                         itemId:item1.metadata.descriptor.itemId];
+//    __block QredoVaultItem *latestVaultItemFromCache = nil;
+//    
+//     __block XCTestExpectation *getFromIndexExpectation = [self expectationWithDescription:@"get fromIndex"];
+//    [vault getItemWithDescriptor:descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+//        XCTAssertNil(error);
+//        XCTAssertNotNil(vaultItem);
+//        latestVaultItemFromCache = vaultItem;
+//        [getFromIndexExpectation fulfill];
+//    }];
+//    
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+//        // avoiding exception when 'fulfill' is called after timeout
+//        getFromIndexExpectation = nil;
+//    }];
+//    
+//    
+//    
+//    
+//    NSNumber *testVal = [latestVaultItemFromCache objectForMetadataKey:@"key1"];
+//    
+//    XCTAssertTrue([testVal isEqualToNumber:@9],@"Didnt get the latest value from the cache");
+//    XCTAssert(latestVaultItemFromCache.metadata.origin == QredoVaultItemOriginCache,@"Metata data in vault item not set correctly");
+//    
+//  
+//    
+//    //disable the index
+//    [client.defaultVault metadataCacheEnabled:NO];
+//    [client.defaultVault valueCacheEnabled:NO];
+//    
+//
+//    //get from the server - should report an error
+//    __block XCTestExpectation *getFromServerExpectation = [self expectationWithDescription:@"get from Server"];
+//    
+//    [vault getItemWithDescriptor:descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+//        XCTAssert(error);
+//        XCTAssertNil(vaultItem);
+//        latestVaultItemFromCache = vaultItem;
+//        [getFromServerExpectation fulfill];
+//    }];
+//    
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+//        // avoiding exception when 'fulfill' is called after timeout
+//        getFromServerExpectation = nil;
+//    }];
+//    
+//    
+//    
+//    
+//}
+
+
+
+- (void)testPutItem{
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
     XCTAssertNotNil(vault);

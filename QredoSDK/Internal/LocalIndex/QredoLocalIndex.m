@@ -33,7 +33,6 @@
 
 IncomingMetadataBlock incomingMetadatBlock;
 
-
 #pragma mark -
 #pragma mark Public Methods
 
@@ -84,7 +83,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
-- (QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
+- (QredoVaultItem *)getLatestVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     if (self.enableValueCache==NO)return nil;
     if (self.enableMetadataCache==NO)return nil;
     
@@ -92,19 +91,12 @@ IncomingMetadataBlock incomingMetadatBlock;
     [self.managedObjectContext performBlockAndWait:^{
         
         QredoLogInfo(@"vaultItemDescriptor %@", vaultItemDescriptor);
-
-        
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItem entityName]];
         NSCompoundPredicate *searchPredicate;
+        
         NSPredicate *itemIdPredicate = [NSPredicate predicateWithFormat:@"itemId == %@",vaultItemDescriptor.itemId.data];
         NSPredicate *vaultIdPredicate = [NSPredicate predicateWithFormat:@"vault.vaultId == %@",self.qredoIndexVault.vaultId];
-        
-        if (vaultItemDescriptor.sequenceValue) {
-            NSPredicate *seqNumPredicate =  [NSPredicate predicateWithFormat:@"latest.descriptor.sequenceValue == %i",vaultItemDescriptor.sequenceValue];
-            searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[vaultIdPredicate, itemIdPredicate, seqNumPredicate]];
-        }else{
-            searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[vaultIdPredicate, itemIdPredicate]];
-        }
+        searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[vaultIdPredicate, itemIdPredicate]];
         
         fetchRequest.predicate = searchPredicate;
         fetchRequest.fetchLimit = 1;
@@ -129,21 +121,88 @@ IncomingMetadataBlock incomingMetadatBlock;
 }
 
 
+
+- (QredoVaultItemMetadata *)getLatestMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
+    if (self.enableMetadataCache==NO)return nil;
+    __block QredoVaultItemMetadata* retrievedMetadata = nil;
+    
+    [self.managedObjectContext performBlockAndWait:^{
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
+        NSCompoundPredicate *searchPredicate;
+        NSPredicate *itemIdPredicate = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@",vaultItemDescriptor.itemId.data];
+        NSPredicate *vaultIdPredicate = [NSPredicate predicateWithFormat:@"vaultItem.vault.vaultId == %@",self.qredoIndexVault.vaultId];
+        searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[vaultIdPredicate, itemIdPredicate]];
+        fetchRequest.predicate = searchPredicate;
+        fetchRequest.fetchLimit = 1;
+        NSError *error = nil;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [results lastObject];
+        retrievedMetadata = [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
+        QredoLogInfo(@"Retrieve metadata %@ from index", retrievedMetadata.descriptor.itemId);
+        
+        [self.cacheInvalidator updateAccessDate:qredoIndexVaultItemMetadata];
+        
+    }];
+    return retrievedMetadata;
+}
+
+
+- (QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
+    if (self.enableValueCache==NO)return nil;
+    if (self.enableMetadataCache==NO)return nil;
+    
+    __block QredoVaultItem* retrievedVaultItem = nil;
+    [self.managedObjectContext performBlockAndWait:^{
+        
+        QredoLogInfo(@"vaultItemDescriptor %@", vaultItemDescriptor);
+
+        NSCompoundPredicate *searchPredicate;
+        
+        NSFetchRequest *fetchRequest  = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItem entityName]];
+        NSPredicate *itemIdPredicate  = [NSPredicate predicateWithFormat:@"itemId == %@",vaultItemDescriptor.itemId.data];
+        NSPredicate *vaultIdPredicate = [NSPredicate predicateWithFormat:@"vault.vaultId == %@",self.qredoIndexVault.vaultId];
+        NSPredicate *seqNumPredicate  = [NSPredicate predicateWithFormat:@"latest.descriptor.sequenceValue == %i",vaultItemDescriptor.sequenceValue];
+        NSPredicate *seqIDPredicate   = [NSPredicate predicateWithFormat:@"latest.descriptor.sequenceId == %@",[vaultItemDescriptor.sequenceId data]];
+        
+        searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[itemIdPredicate, vaultIdPredicate, seqNumPredicate, seqIDPredicate]];
+        
+        fetchRequest.predicate = searchPredicate;
+        fetchRequest.fetchLimit = 1;
+        NSError *error = nil;
+        NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        QredoIndexVaultItem *qredoIndexVaultItem = [results lastObject];
+        
+        //only return a value if the IndexVaultItem is marked as hasValue=YES, because the value could be intentionally nil
+        if (qredoIndexVaultItem.hasValueValue==NO) {
+            retrievedVaultItem = nil;
+        }else{
+            retrievedVaultItem = [qredoIndexVaultItem buildQredoVaultItem];
+        }
+        
+        QredoLogInfo(@"Retrieve item %@ from index", retrievedVaultItem.metadata.descriptor.itemId);
+        
+        [self.cacheInvalidator updateAccessDate:qredoIndexVaultItem.latest];
+        [self save];
+        
+    }];
+    return retrievedVaultItem;
+}
+
+
+
+
 - (QredoVaultItemMetadata *)getMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     if (self.enableMetadataCache==NO)return nil;
     __block QredoVaultItemMetadata* retrievedMetadata = nil;
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[QredoIndexVaultItemMetadata entityName]];
         NSCompoundPredicate *searchPredicate;
-        NSPredicate *itemIdPredicate = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@",vaultItemDescriptor.itemId.data];
+        NSPredicate *itemIdPredicate  = [NSPredicate predicateWithFormat:@"descriptor.itemId == %@",vaultItemDescriptor.itemId.data];
         NSPredicate *vaultIdPredicate = [NSPredicate predicateWithFormat:@"vaultItem.vault.vaultId == %@",self.qredoIndexVault.vaultId];
+        NSPredicate *seqNumPredicate  = [NSPredicate predicateWithFormat:@"descriptor.sequenceValue == %i",vaultItemDescriptor.sequenceValue];
+        NSPredicate *seqIDPredicate   = [NSPredicate predicateWithFormat:@"descriptor.sequenceId == %@",[vaultItemDescriptor.sequenceId data]];
         
-        if (vaultItemDescriptor.sequenceValue) {
-            NSPredicate *seqNumPredicate =  [NSPredicate predicateWithFormat:@"descriptor.sequenceValue == %i",vaultItemDescriptor.sequenceValue];
-            searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[vaultIdPredicate, itemIdPredicate, seqNumPredicate]];
-        }else{
-            searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[vaultIdPredicate, itemIdPredicate]];
-        }
+        searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[itemIdPredicate, vaultIdPredicate, seqNumPredicate, seqIDPredicate]];
         
         fetchRequest.predicate = searchPredicate;
         
@@ -159,6 +218,8 @@ IncomingMetadataBlock incomingMetadatBlock;
     }];
     return retrievedMetadata;
 }
+
+
 
 
 - (int)count {
@@ -485,9 +546,11 @@ IncomingMetadataBlock incomingMetadatBlock;
     
     [self.managedObjectContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[QredoIndexSummaryValues class] entityName]];
-        NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.vaultItem.vault.vaultId = %@",
-                                                    self.qredoIndexVault.vaultId];
-        NSCompoundPredicate *searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate, restrictToCurrentVault]];
+        NSPredicate *restrictToCurrentVault = [NSPredicate predicateWithFormat:@"vaultMetadata.vaultItem.vault.vaultId = %@", self.qredoIndexVault.vaultId];
+        NSPredicate *ignoreDeleteItems      = [NSPredicate predicateWithFormat:@"vaultMetadata.dataType != %@",QredoVaultItemMetadataItemTypeTombstone ];
+        
+        [fetchRequest setReturnsDistinctResults:YES];
+        NSCompoundPredicate *searchPredicate= [NSCompoundPredicate andPredicateWithSubpredicates:@[predicate,ignoreDeleteItems, restrictToCurrentVault]];
         fetchRequest.predicate = searchPredicate;
         [self enumerateQuery:fetchRequest block:block completionHandler:completionHandler];
     }];
@@ -524,11 +587,23 @@ IncomingMetadataBlock incomingMetadatBlock;
     NSError *error = nil;
     NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
     BOOL stop=NO;
+    
+    
+    //make the QredoIndexVaultItemMetadata distinct
+    NSMutableArray *distinctResults = [[NSMutableArray alloc] init];
     for (QredoIndexSummaryValues *summaryValue in results) {
         QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = summaryValue.vaultMetadata;
+
+        if (![distinctResults containsObject:qredoIndexVaultItemMetadata]){
+            [distinctResults addObject:qredoIndexVaultItemMetadata];
+        }
         [self.cacheInvalidator updateAccessDate:qredoIndexVaultItemMetadata];
-        QredoVaultItemMetadata *qredoVaultItemMetadata= [qredoIndexVaultItemMetadata buildQredoVaultItemMetadata];
-        
+    }
+    
+    
+    //loop and return the VaultItemMetadata from the distinct array
+    for (QredoIndexVaultItemMetadata *metadata in distinctResults) {
+        QredoVaultItemMetadata *qredoVaultItemMetadata= [metadata buildQredoVaultItemMetadata];
         if (block) block(qredoVaultItemMetadata,&stop);
         if (stop) break;
     }

@@ -30,6 +30,9 @@
 - (QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 - (QredoVaultItemMetadata *)getMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
 
+- (QredoVaultItem *)getLatestVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+- (QredoVaultItemMetadata *)getLatestMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor;
+
 /** Enumerates through all vault items in the local index that match the predicate
  The predicate search is performed on the QredoIndexSummaryValues object.
  
