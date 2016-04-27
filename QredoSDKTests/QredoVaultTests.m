@@ -468,7 +468,6 @@
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     __block QredoVaultItemMetadata *item1Metadata = nil;
-    __block XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
     
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
     listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];

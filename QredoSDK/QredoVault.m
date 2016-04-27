@@ -347,6 +347,26 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         return;
     }
     
+    
+    
+    [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
+        //we can now put it in the cache
+        
+        
+        __block QredoVaultItem *serverVaultItem = vaultItem;
+        if (serverVaultItem){
+            [self cacheInIndexVaultItem:serverVaultItem metadata:serverVaultItem.metadata completionHandler:^(NSError *error) {
+                if (serverVaultItem.metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)serverVaultItem=nil;
+                if (completionHandler)completionHandler(serverVaultItem, error);
+            }];
+        }else{
+             if (completionHandler)completionHandler(nil, error);
+        }
+        
+    }];
+
+    
+    
     //Nothing in the index try the server
     [self getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
         if (vaultItem.metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItem=nil;
@@ -371,10 +391,28 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     }
     
     //Nothing in the index try the server
-    [self getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
-        if (vaultItemMetadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItemMetadata=nil;
-        completionHandler(vaultItemMetadata,nil);
+    
+    
+    [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+        if (error){
+            QredoLogWarning(@"VaultMetadata not found on server");
+            if (completionHandler)completionHandler(nil, error);
+        }else{
+            
+            __block QredoVaultItemMetadata *serverMetaData = vaultItemMetadata;
+            [self cacheInIndexVaultItemMetadata:serverMetaData completionHandler:^(NSError *error) {
+                if (serverMetaData.dataType == QredoVaultItemMetadataItemTypeTombstone)serverMetaData=nil;
+                QredoLogVerbose(@"VaultMetadata added to cache");
+                if (completionHandler)completionHandler(serverMetaData, error);
+            }];
+        }
     }];
+
+    
+//    [self getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+//        if (vaultItemMetadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItemMetadata=nil;
+//        completionHandler(vaultItemMetadata,nil);
+//    }];
 }
 
 

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+while [ 1 ]
+do
+    xcrun simctl erase all
+  filename=testresults/output`date '+%Y%m%d%H%M%S'`.txt;
+  xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests build
+  echo $filename
+
+  xctool -reporter pretty:$filename -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme          QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
+
+done
+
