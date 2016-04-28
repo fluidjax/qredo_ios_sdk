@@ -1,0 +1,274 @@
+[Info] Loading settings for scheme 'QredoSDKTests' ... (1166 ms)
+
+[1m=== RUN-TESTS ===[0m
+
+  [Info] Collecting info for testables... (1443 ms)
+  [1mrun-test[0m [4mQredoSDKTests.xctest[0m (iphonesimulator9.3, iPhone 6, application-test)
+    [Info] Prepared 'iPhone 6' simulator to run tests. (9 ms)
+    [Info] Installed 'test'. (2658 ms)
+    [Info] Launched 'test' on 'iPhone 6'. (25 ms)
+    [32m✓[0m -[Base58Tests test_0010_SimpleEncoding] [2m[32m(3 ms)[0m
+    [32m✓[0m -[Base58Tests test_0020_SimpleDecoding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0025_DecodingWithBadChars] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0026_DecodingWithBadCharsNoErrorPointer] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0030_EncodingAndDecoding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0040_EncodingAndDecodingWithZerosPadding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0050_EncodingAndDecodingRandomEquality] [33m(289 ms)[0m
+    [32m✓[0m -[Base58Tests test_0060_DecodingAndEncodingRandomEquality] [33m(376 ms)[0m
+    [32m✓[0m -[Base58Tests test_0070_EncodingRandomInequality] [33m(406 ms)[0m
+    [32m✓[0m -[Base58Tests test_0080_DecodingRandomInequality] [33m(236 ms)[0m
+    [32m✓[0m -[Base58Tests test_0090_EncodingExpansionTest] [33m(200 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testDecrypt] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testEncryptDecrypt] [2m[32m(3 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testGenerateTestVectors] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testVectors] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimeout] [31m(2199 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimeoutWhereStateDoesNotTimeout] [31m(8796 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimoutWhenReturningToTheStateWithTimeout] [31m(7623 ms)[0m
+    [32m✓[0m -[ConversationTests testConversation] [31m(5613 ms)[0m
+    [32m✓[0m -[ConversationTests testConversationCreation] [31m(1571 ms)[0m
+    [32m✓[0m -[ConversationTests testConversationWatermark] [31m(5403 ms)[0m
+    [32m✓[0m -[ConversationTests testOtherPartyHasLeft] [31m(4176 ms)[0m
+    [32m✓[0m -[ConversationTests testRespondingToConversation] [31m(2986 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversation] [31m(8196 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationCreation] [31m(7718 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationMultiple] [31m(29610 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationWatermark] [31m(6067 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testOtherPartyHasLeft] [31m(9420 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testRespondingToConversation] [31m(7259 ms)[0m
+    [32m✓[0m -[HighwatermarksTests testConversationHWMComparison] [2m[32m(0 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedConversations] [31m(5174 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedMessages] [31m(2713 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedRendezvous] [31m(6356 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedVaultItems] [31m(2192 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testCreateOperation] [2m[32m(1 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testDeleteOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testGetOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testListOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_AuthenticationTagButNoAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_EmptyTagNoAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_MultipleAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_NoPrefixOrAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_NoPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_PrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NilPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NilPrefixWithNilAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NoPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NoPrefixWithNoAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithNilAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithoutAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoClientTests testConnectAndClose] [33m(210 ms)[0m
+    [32m✓[0m -[QredoClientTests testConnectAndCloseMultiple] [31m(3385 ms)[0m
+    [32m✓[0m -[QredoClientTests testExplicitServer] [33m(292 ms)[0m
+    [32m✓[0m -[QredoClientTests testFailingConnectToClient] [33m(237 ms)[0m
+      -[QredoClientTests testLogging]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 19:21:14.682 TestHost[5225:164055] ❤️ERROR   Ignore this intentional error:   generated error message from block
+[0m[2m2016-04-27 19:21:14.683 TestHost[5225:164055] 💛WARNING Ignore this intentional warning: generated error message from block
+[0m[2m2016-04-27 19:21:14.683 TestHost[5225:164055] 💚INFO    Ignore this intentional info:    generated error message from block
+[0m[2m2016-04-27 19:21:14.683 TestHost[5225:164055] 💙DEBUG   -[QredoClientTests testLogging]:46 Ignore this intentional debug:   generated error message from block
+[0m[2m2016-04-27 19:21:14.683 TestHost[5225:164055] 💜VERBOSE -[QredoClientTests testLogging]:47 Ignore this intentional verbose: generated error message from block
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoClientTests testLogging] [33m(212 ms)[0m
+    [32m✓[0m -[QredoClientTests testSuccessConnectToClient] [33m(301 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests test100Records] [31m(12619 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests test10Records] [31m(1750 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests testMultiple] [31m(19027 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testCacheFill] [31m(26672 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testCoredataCacheEstimateConstants] [33m(212 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testDisableMetadataCache] [33m(421 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testDisableValueCache] [31m(598 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEmptyPredicate] [31m(551 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEnableValueCache] [33m(475 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEnumerateRandomClient] [31m(599 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testFillCacheAfterMiss] [31m(2150 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testFillWithMetadata] [31m(2427 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testIndexSource] [31m(1048 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testItemDelete] [33m(393 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testLastAccessTimes] [31m(3416 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMetaDataCacheDisable] [31m(547 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMultipleClientsAndVaults] [31m(699 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMultiplePut] [31m(3309 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPersistentFileSize] [31m(1687 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPurge] [31m(789 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType1] [31m(566 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType3] [31m(643 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType4] [31m(927 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testSearch] [31m(33484 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testSimplePut] [31m(4593 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testUpdateAccessDatePut] [31m(1460 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateAndRespondHelpers] [2m[32m(0 ms)[0m
+      -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 19:23:16.063 TestHost[5225:164055] *** Assertion failure in -[QredoRendezvousAnonymousCreateHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_NonNilSigningHandler] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_TagContainsAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Valid_EmptyTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_EmptyTag] [2m[32m(0 ms)[0m
+      -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 19:23:16.065 TestHost[5225:164055] *** Assertion failure in -[QredoRendezvousAnonymousRespondHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_TagContainsAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testDerrivedKeysNotNil_AnonymousRendezvous] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testDerrivedKeysNotNil_TrustedRendezvous] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testGenerateTestVectors] [31m(3383 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorAnonymous1] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorAnonymous2] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorEd25519] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorRsa2048] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorRsa4096] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateExpiredRendezvous] [31m(3914 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateExpiredRendezvousAndFetchFromNewRef] [31m(4001 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateInvalidDuration] [31m(1195 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateNilRendezvous] [31m(762 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnexpiredRendezvous] [31m(2427 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnexpiredRendezvousNilCompletionHandler] [31m(1284 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnknownRendezvous] [31m(830 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndFetchAnonymousRendezvous] [31m(8524 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndRespondAnonymousRendezvous] [31m(4518 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndRespondAnonymousRendezvousPreCreate] [31m(3282 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateDuplicateAndFetchAnonymousRendezvous] [31m(8627 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateRendezvousAndGetResponses] [31m(2593 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateAndRespondToRendezvous] [31m(1868 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateExpiredRendezvous] [31m(3476 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateNilRendezvous] [31m(513 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateRendezvous] [31m(1772 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateRendezvousNilCompletionHandler] [31m(1575 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateUnknownRendezvous] [31m(987 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRandomRandezvous] [31m(2315 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousExpiresAt] [31m(1674 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousLongType] [31m(1244 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousShortType] [31m(2435 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateExpiredRendezvous] [31m(9610 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateExpiredRendezvousAndFetchFromNewRef] [31m(10071 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateInvalidDuration] [31m(7434 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateNilRendezvous] [31m(6691 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnexpiredRendezvous] [31m(7762 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnexpiredRendezvousNilCompletionHandler] [31m(7026 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnknownRendezvous] [31m(6634 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateAndFetchAnonymousRendezvous] [31m(20017 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateAndRespondAnonymousRendezvous] [31m(12350 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateAndRespondAnonymousRendezvousPreCreate] [31m(7416 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateDuplicateAndFetchAnonymousRendezvous] [31m(19262 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvous_NilSigningHandler] [31m(6381 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvous_NoSigningHandler] [31m(6531 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvousAndGetResponses] [31m(4766 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvousMultiple] [31m(114007 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateAndRespondToRendezvous] [31m(4493 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateExpiredRendezvous] [31m(9292 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateNilRendezvous] [31m(6672 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateRendezvous] [31m(7190 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateRendezvousNilCompletionHandler] [31m(7362 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateUnknownRendezvous] [31m(6921 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testQuickCreateRandomRandezvous] [31m(7026 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testQuickCreateRendezvousExpiresAt] [31m(7558 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testQuickCreateRendezvousLongType] [31m(7144 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testQuickCreateRendezvousShortType] [31m(6989 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadAhead] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadWriteComplexStructure] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadWriteEmptyList] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadWriteListOfSingleAtom] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadWriteMultipleAtomList] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoUserCredentialsTests testDataToHexString] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoUserCredentialsTests testGetMasterFromUserUnlock] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoUserCredentialsTests testGetMasterUnlockKey] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoVaultTests testEnumeration] [33m(445 ms)[0m
+    [32m✓[0m -[QredoVaultTests testEnumerationAbortsOnStop] [31m(680 ms)[0m
+    [32m✓[0m -[QredoVaultTests testEnumerationReturnsCreatedItem] [31m(635 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetLatestItemFromIndexAfterDelete] [31m(2883 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetLatestMetaDataItemFromIndex] [31m(2901 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetLatestMetaDataItemFromIndexAfterDelete] [31m(3524 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetLatestVaultItemFromIndex] [31m(1960 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetSetShortcuts] [33m(443 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGettingItems] [31m(681 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGettingItemsFromCache] [31m(757 ms)[0m
+    [32m✓[0m -[QredoVaultTests testListener] [31m(1578 ms)[0m
+    [32m✓[0m -[QredoVaultTests testMenualGet] [31m(532 ms)[0m
+    [32m✓[0m -[QredoVaultTests testMultipleListeners] [31m(1642 ms)[0m
+    [32m✓[0m -[QredoVaultTests testMultiplePutItem] [31m(1445 ms)[0m
+    [32m✓[0m -[QredoVaultTests testMultipleRemovingListenerDurringNotification] [31m(42330 ms)[0m
+    [32m✓[0m -[QredoVaultTests testPersistanceVaultId] [33m(363 ms)[0m
+    [32m✓[0m -[QredoVaultTests testPutDelete] [31m(1285 ms)[0m
+    [32m✓[0m -[QredoVaultTests testPutItem] [33m(377 ms)[0m
+    [32m✓[0m -[QredoVaultTests testPutItemMultiple] [31m(785 ms)[0m
+    [32m✓[0m -[QredoVaultTests testRemovingListenerDurringNotification] [31m(4610 ms)[0m
+    [32m✓[0m -[QredoVaultTests testRemovingNotObservingListener] [33m(323 ms)[0m
+    [32m✓[0m -[QredoVaultTests testVaultItemMetadataAndMutableMetadata] [33m(325 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateTests testDeleteItems] [31m(1375 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateTests testGettingItems] [31m(649 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateTests testPutItems] [31m(768 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateWebSocketTests testDeleteItems] [31m(5655 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateWebSocketTests testGettingItems] [31m(3538 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateWebSocketTests testPutItems] [31m(3965 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testEnumeration] [31m(3251 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testEnumerationAbortsOnStop] [31m(3557 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testEnumerationReturnsCreatedItem] [31m(3521 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetLatestItemFromIndexAfterDelete] [31m(6817 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetLatestMetaDataItemFromIndex] [31m(6012 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetLatestMetaDataItemFromIndexAfterDelete] [31m(6136 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetLatestVaultItemFromIndex] [31m(5361 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetSetShortcuts] [31m(3210 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGettingItems] [31m(3601 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGettingItemsFromCache] [31m(3665 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testListener] [31m(4740 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testMenualGet] [31m(3296 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testMultipleListeners] [31m(1849 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testMultiplePutItem] [31m(4325 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testMultipleRemovingListenerDurringNotification] [31m(45148 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPersistanceVaultId] [31m(3240 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPersistanceVaultIdMultiple] [31m(3793 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPutDelete] [31m(4046 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPutItem] [31m(3286 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPutItemMultiple] [31m(3868 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testRemovingListenerDurringNotification] [31m(7631 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testRemovingNotObservingListener] [31m(3358 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testVaultItemMetadataAndMutableMetadata] [31m(3242 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_Invalid_ExternalKeysMissingSigningHandler] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testCreateHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 19:33:19.359 TestHost[5225:164055] *** Assertion failure in -[QredoRendezvousEd25519CreateHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_Invalid_SeveralAtCharsInTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_InvalidAuthenticationTagPart] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_BadCharsInTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingAtFromStartOfTag] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 19:33:19.360 TestHost[5225:164055] *** Assertion failure in -[QredoRendezvousEd25519RespondHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_SeveralAtCharsInTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Valid_NoPrefixTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Valid_WithPrefixTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testSignatureAndVerification_ExternalKeys] [2m[32m(1 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testSignatureAndVerification_InternalKeys] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testSignatureAndVerificationInvalidSignature] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testSignatureAndVerificationNoPrefixAndNoAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousListenerTests testRendezvousResponder] [31m(3534 ms)[0m
+      -[SSLTimeSyncTests testExample]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 19:33:22.899 TestHost[5225:164055] Now         2016-04-27 18:33:22 +0000
+[0m[2m2016-04-27 19:33:22.899 TestHost[5225:164055] Unsynced    2016-04-27 18:33:56 +0000
+[0m[2m2016-04-27 19:33:27.899 TestHost[5225:164055] Synced    2016-04-27 18:34:01 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[SSLTimeSyncTests testExample] [31m(5000 ms)[0m
+    [32m✓[0m -[VaultCryptoTests testGenerateVaultTestVectors] [2m[32m(8 ms)[0m
+    [32m✓[0m -[VaultCryptoTests testHeaderDecryption] [2m[32m(1 ms)[0m
+    [32m✓[0m -[VaultCryptoTests testItemDecryption] [2m[32m(1 ms)[0m
+    [32m✓[0m -[VaultCryptoTests testVaultKeysTestVectors] [2m[32m(0 ms)[0m
+    [1m230 passed, 0 failed, 0 errored, 230 total (862176 ms)[0m
+
+
+[1m[32m** RUN-TESTS SUCCEEDED: 230 passed, 0 failed, 0 errored, 230 total **[0m [2m(867144 ms)[0m
+

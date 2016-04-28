@@ -1,0 +1,940 @@
+[Info] Loading settings for scheme 'QredoSDKTests' ... (1093 ms)
+
+[1m=== RUN-TESTS ===[0m
+
+  [Info] Collecting info for testables... (1457 ms)
+  [1mrun-test[0m [4mQredoSDKTests.xctest[0m (iphonesimulator9.3, iPhone 6, application-test)
+    [Info] Prepared 'iPhone 6' simulator to run tests. (10 ms)
+    [Info] Installed 'test'. (2658 ms)
+    [Info] Launched 'test' on 'iPhone 6'. (26 ms)
+    [32m✓[0m -[Base58Tests test_0010_SimpleEncoding] [2m[32m(3 ms)[0m
+    [32m✓[0m -[Base58Tests test_0020_SimpleDecoding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0025_DecodingWithBadChars] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0026_DecodingWithBadCharsNoErrorPointer] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0030_EncodingAndDecoding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0040_EncodingAndDecodingWithZerosPadding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0050_EncodingAndDecodingRandomEquality] [33m(301 ms)[0m
+    [32m✓[0m -[Base58Tests test_0060_DecodingAndEncodingRandomEquality] [33m(384 ms)[0m
+    [32m✓[0m -[Base58Tests test_0070_EncodingRandomInequality] [33m(405 ms)[0m
+    [32m✓[0m -[Base58Tests test_0080_DecodingRandomInequality] [33m(226 ms)[0m
+    [32m✓[0m -[Base58Tests test_0090_EncodingExpansionTest] [33m(206 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testDecrypt] [2m[32m(1 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testEncryptDecrypt] [2m[32m(3 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testGenerateTestVectors] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testVectors] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimeout] [31m(2196 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimeoutWhereStateDoesNotTimeout] [31m(8798 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimoutWhenReturningToTheStateWithTimeout] [31m(7698 ms)[0m
+    [32m✓[0m -[ConversationTests testConversation] [31m(5862 ms)[0m
+    [32m✓[0m -[ConversationTests testConversationCreation] [31m(1974 ms)[0m
+    [32m✓[0m -[ConversationTests testConversationWatermark] [31m(6086 ms)[0m
+    [32m✓[0m -[ConversationTests testOtherPartyHasLeft] [31m(3565 ms)[0m
+    [32m✓[0m -[ConversationTests testRespondingToConversation] [31m(2798 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversation] [31m(3190 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationCreation] [31m(1765 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationMultiple] [31m(28036 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationWatermark] [31m(3737 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testOtherPartyHasLeft] [31m(6237 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testRespondingToConversation] [31m(4479 ms)[0m
+    [32m✓[0m -[HighwatermarksTests testConversationHWMComparison] [2m[32m(0 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedConversations] [31m(6009 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedMessages] [31m(3112 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedRendezvous] [31m(7262 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedVaultItems] [31m(1996 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testCreateOperation] [2m[32m(1 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testDeleteOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testGetOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testListOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_AuthenticationTagButNoAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_EmptyTagNoAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_MultipleAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_NoPrefixOrAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_NoPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_PrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NilPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NilPrefixWithNilAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NoPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NoPrefixWithNoAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithNilAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithoutAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoClientTests testConnectAndClose] [31m(812 ms)[0m
+    [32m✓[0m -[QredoClientTests testConnectAndCloseMultiple] [31m(4737 ms)[0m
+    [32m✓[0m -[QredoClientTests testExplicitServer] [33m(419 ms)[0m
+    [32m✓[0m -[QredoClientTests testFailingConnectToClient] [33m(355 ms)[0m
+      -[QredoClientTests testLogging]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 21:59:40.852 TestHost[6877:235795] ❤️ERROR   Ignore this intentional error:   generated error message from block
+[0m[2m2016-04-27 21:59:40.853 TestHost[6877:235795] 💛WARNING Ignore this intentional warning: generated error message from block
+[0m[2m2016-04-27 21:59:40.853 TestHost[6877:235795] 💚INFO    Ignore this intentional info:    generated error message from block
+[0m[2m2016-04-27 21:59:40.853 TestHost[6877:235795] 💙DEBUG   -[QredoClientTests testLogging]:46 Ignore this intentional debug:   generated error message from block
+[0m[2m2016-04-27 21:59:40.853 TestHost[6877:235795] 💜VERBOSE -[QredoClientTests testLogging]:47 Ignore this intentional verbose: generated error message from block
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoClientTests testLogging] [33m(251 ms)[0m
+    [32m✓[0m -[QredoClientTests testSuccessConnectToClient] [31m(609 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests test100Records] [31m(24214 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests test10Records] [31m(2969 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests testMultiple] [31m(30958 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testCacheFill] [31m(28401 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testCoredataCacheEstimateConstants] [33m(331 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testDisableMetadataCache] [31m(561 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testDisableValueCache] [31m(761 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEmptyPredicate] [31m(791 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEnableValueCache] [31m(978 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEnumerateRandomClient] [31m(1068 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testFillCacheAfterMiss] [31m(3139 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testFillWithMetadata] [31m(3376 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testIndexSource] [31m(3067 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testItemDelete] [31m(3119 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testLastAccessTimes] [31m(3703 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMetaDataCacheDisable] [31m(530 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMultipleClientsAndVaults] [31m(1610 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMultiplePut] [31m(3313 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPersistentFileSize] [31m(5077 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPurge] [31m(1195 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType1] [31m(1070 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType3] [31m(683 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType4] [31m(1261 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testSearch] [31m(35399 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testSimplePut] [31m(37768 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testUpdateAccessDatePut] [31m(2574 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateAndRespondHelpers] [2m[32m(0 ms)[0m
+      -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:02:59.397 TestHost[6877:235795] *** Assertion failure in -[QredoRendezvousAnonymousCreateHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_NonNilSigningHandler] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_TagContainsAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Valid_EmptyTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_EmptyTag] [2m[32m(0 ms)[0m
+      -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:02:59.399 TestHost[6877:235795] *** Assertion failure in -[QredoRendezvousAnonymousRespondHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_TagContainsAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testDerrivedKeysNotNil_AnonymousRendezvous] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testDerrivedKeysNotNil_TrustedRendezvous] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testGenerateTestVectors] [31m(5361 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorAnonymous1] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorAnonymous2] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorEd25519] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorRsa2048] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorRsa4096] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateExpiredRendezvous] [31m(4659 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateExpiredRendezvousAndFetchFromNewRef] [31m(3874 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateInvalidDuration] [31m(1451 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateNilRendezvous] [31m(926 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnexpiredRendezvous] [31m(2763 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnexpiredRendezvousNilCompletionHandler] [31m(2042 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnknownRendezvous] [31m(1163 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndFetchAnonymousRendezvous] [31m(9221 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndRespondAnonymousRendezvous] [31m(4261 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndRespondAnonymousRendezvousPreCreate] [31m(3151 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateDuplicateAndFetchAnonymousRendezvous] [31m(8915 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateRendezvousAndGetResponses] [31m(1705 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateAndRespondToRendezvous] [31m(1985 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateExpiredRendezvous] [31m(4271 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateNilRendezvous] [31m(736 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateRendezvous] [31m(1598 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateRendezvousNilCompletionHandler] [31m(1523 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateUnknownRendezvous] [31m(1207 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRandomRandezvous] [31m(1611 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousExpiresAt] [31m(1521 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousLongType] [31m(1565 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousShortType] [31m(1366 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateExpiredRendezvous] [31m(4136 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateExpiredRendezvousAndFetchFromNewRef] [31m(6738 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateInvalidDuration] [31m(4429 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateNilRendezvous] [31m(972 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnexpiredRendezvous] [31m(1678 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnexpiredRendezvousNilCompletionHandler] [31m(4667 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnknownRendezvous] [31m(909 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateAndFetchAnonymousRendezvous] [31m(11431 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateAndRespondAnonymousRendezvous] [31m(6265 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateAndRespondAnonymousRendezvousPreCreate] [31m(2188 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateDuplicateAndFetchAnonymousRendezvous] [31m(11097 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvous_NilSigningHandler] [31m(861 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvous_NoSigningHandler] [31m(933 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvousAndGetResponses] [31m(1815 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvousMultiple] [31m(104522 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateAndRespondToRendezvous] [31m(1827 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateExpiredRendezvous] [31m(6060 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateNilRendezvous] [31m(3497 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateRendezvous] [31m(1595 ms)[0m
+      -[QredoRendezvousWebSocketTests testDeactivateRendezvousNilCompletionHandler]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:07:03.031 TestHost[6877:238233] *** Terminating app due to uncaught exception 'NSRangeException', reason: '*** -[__NSArrayM getObjects:range:]: range {0, 29} extends beyond bounds [0 .. 27]'
+[0m[2m*** First throw call stack:
+[0m[2m(
+[0m[2m	0   CoreFoundation                      0x000000010855dd85 __exceptionPreprocess + 165
+[0m[2m	1   libobjc.A.dylib                     0x00000001077e4deb objc_exception_throw + 48
+[0m[2m	2   CoreFoundation                      0x0000000108446886 -[__NSArrayM getObjects:range:] + 566
+[0m[2m	3   Foundation                          0x00000001073ad94e -[NSArray(NSKeyValueSorting) sortedArrayUsingDescriptors:] + 282
+[0m[2m	4   QredoXDK                            0x00000001157fef95 -[NetworkClock networkOffset] + 149
+[0m[2m	5   QredoXDK                            0x00000001157ff428 -[NetworkClock networkTime] + 72
+[0m[2m	6   QredoXDK                            0x00000001155bacc4 -[QredoNetworkTime ntpDate] + 68
+[0m[2m	7   QredoXDK                            0x00000001155bad65 +[QredoNetworkTime dateTime] + 117
+[0m[2m	8   QredoXDK                            0x000000011561b34e +[QLFOwnershipSignature(FactoryMethods) timestamp] + 46
+[0m[2m	9   QredoXDK                            0x000000011561b4c6 +[QLFOwnershipSignature(FactoryMethods) ownershipSignatureWithSigner:operationType:marshalledData:error:] + 230
+[0m[2m	10  QredoXDK                            0x000000011561c546 +[QLFOwnershipSignature(FactoryMethods) ownershipSignatureForListVaultItemsWithSigner:sequenceStates:error:] + 342
+[0m[2m	11  QredoXDK                            0x000000011563e023 -[QredoVaultServerAccess enumerateVaultItemsPagedUsingBlock:completionHandler:watermarkHandler:since:consolidatingResults:] + 1011
+[0m[2m	12  QredoXDK                            0x000000011563d4c7 -[QredoVaultServerAccess enumerateVaultItemsUsingBlock:completionHandler:watermarkHandler:since:consolidatingResults:] + 887
+[0m[2m	13  QredoXDK                            0x000000011565eeea -[QredoVault qredoUpdateListener:pollWithCompletionHandler:] + 378
+[0m[2m	14  QredoXDK                            0x0000000115643d14 -[QredoUpdateListener startPolling] + 180
+[0m[2m	15  QredoXDK                            0x0000000115643eb6 __35-[QredoUpdateListener startPolling]_block_invoke_2 + 38
+[0m[2m	16  libdispatch.dylib                   0x000000010a87bc89 _dispatch_call_block_and_release + 12
+[0m[2m	17  libdispatch.dylib                   0x000000010a8973d7 _dispatch_client_callout + 8
+[0m[2m	18  libdispatch.dylib                   0x000000010a8803c7 _dispatch_after_timer_callback + 89
+[0m[2m	19  libdispatch.dylib                   0x000000010a8973d7 _dispatch_client_callout + 8
+[0m[2m	20  libdispatch.dylib                   0x000000010a88abd8 _dispatch_source_latch_and_call + 796
+[0m[2m	21  libdispatch.dylib                   0x000000010a886b6c _dispatch_source_invoke + 1051
+[0m[2m	22  libdispatch.dylib                   0x000000010a880ece _dispatch_queue_drain + 718
+[0m[2m	23  libdispatch.dylib                   0x000000010a8809d0 _dispatch_queue_invoke + 595
+[0m[2m	24  libdispatch.dylib                   0x000000010a8822e8 _dispatch_root_queue_drain + 565
+[0m[2m	25  libdispatch.dylib                   0x000000010a8820ac _dispatch_worker_thread3 + 98
+[0m[2m	26  libsystem_pthread.dylib             0x000000010abcf4de _pthread_wqthread + 1129
+[0m[2m	27  libsystem_pthread.dylib             0x000000010abcd341 start_wqthread + 13
+[0m[2m)
+[0m[2mlibc++abi.dylib: terminating with uncaught exception of type NSException
+[0m[2m
+[0m[2mTest crashed while running.
+
+CRASH REPORT: TestHost_2016-04-27-220704_mango.crash
+
+Process:               TestHost [6877]
+Path:                  /Users/USER/Library/Developer/CoreSimulator/Devices/53D0400D-5124-46A8-81CB-F14C6DD78704/data/Containers/Bundle/Application/F59A3D36-6B54-4227-BCFF-8B3116F449FE/TestHost.app/TestHost
+Identifier:            TestHost
+Version:               1.0 (1)
+Code Type:             X86-64 (Native)
+Parent Process:        launchd_sim [4128]
+Responsible:           TestHost [6877]
+User ID:               501
+
+Date/Time:             2016-04-27 22:07:03.079 +0100
+OS Version:            Mac OS X 10.11.4 (15E65)
+Report Version:        11
+Anonymous UUID:        67209B95-9268-16D1-3710-D5795F4B33E1
+
+
+Time Awake Since Boot: 21000 seconds
+
+System Integrity Protection: enabled
+
+Crashed Thread:        11  Dispatch queue: com.qredo.conversation.updates
+
+Exception Type:        EXC_CRASH (SIGABRT)
+Exception Codes:       0x0000000000000000, 0x0000000000000000
+Exception Note:        EXC_CORPSE_NOTIFY
+
+Application Specific Information:
+*** Terminating app due to uncaught exception 'NSRangeException', reason: '*** -[__NSArrayM getObjects:range:]: range {0, 29} extends beyond bounds [0 .. 27]'
+terminating with uncaught exception of type NSException
+abort() called
+CoreSimulator 209.19 - Device: iPhone 6 - Runtime: iOS 9.3 (13E230) - DeviceType: iPhone 6
+
+Application Specific Backtrace 1:
+0   CoreFoundation                      0x000000010855dd85 __exceptionPreprocess + 165
+1   libobjc.A.dylib                     0x00000001077e4deb objc_exception_throw + 48
+2   CoreFoundation                      0x0000000108446886 -[__NSArrayM getObjects:range:] + 566
+3   Foundation                          0x00000001073ad94e -[NSArray(NSKeyValueSorting) sortedArrayUsingDescriptors:] + 282
+4   QredoXDK                            0x00000001157fef95 -[NetworkClock networkOffset] + 149
+5   QredoXDK                            0x00000001157ff428 -[NetworkClock networkTime] + 72
+6   QredoXDK                            0x00000001155bacc4 -[QredoNetworkTime ntpDate] + 68
+7   QredoXDK                            0x00000001155bad65 +[QredoNetworkTime dateTime] + 117
+8   QredoXDK                            0x000000011561b34e +[QLFOwnershipSignature(FactoryMethods) timestamp] + 46
+9   QredoXDK                            0x000000011561b4c6 +[QLFOwnershipSignature(FactoryMethods) ownershipSignatureWithSigner:operationType:marshalledData:error:] + 230
+10  QredoXDK                            0x000000011561c546 +[QLFOwnershipSignature(FactoryMethods) ownershipSignatureForListVaultItemsWithSigner:sequenceStates:error:] + 342
+11  QredoXDK                            0x000000011563e023 -[QredoVaultServerAccess enumerateVaultItemsPagedUsingBlock:completionHandler:watermarkHandler:since:consolidatingResults:] + 1011
+12  QredoXDK                            0x000000011563d4c7 -[QredoVaultServerAccess enumerateVaultItemsUsingBlock:completionHandler:watermarkHandler:since:consolidatingResults:] + 887
+13  QredoXDK                            0x000000011565eeea -[QredoVault qredoUpdateListener:pollWithCompletionHandler:] + 378
+14  QredoXDK                            0x0000000115643d14 -[QredoUpdateListener startPolling] + 180
+15  QredoXDK                            0x0000000115643eb6 __35-[QredoUpdateListener startPolling]_block_invoke_2 + 38
+16  libdispatch.dylib                   0x000000010a87bc89 _dispatch_call_block_and_release + 12
+17  libdispatch.dylib                   0x000000010a8973d7 _dispatch_client_callout + 8
+18  libdispatch.dylib                   0x000000010a8803c7 _dispatch_after_timer_callback + 89
+19  libdispatch.dylib                   0x000000010a8973d7 _dispatch_client_callout + 8
+20  libdispatch.dylib                   0x000000010a88abd8 _dispatch_source_latch_and_call + 796
+21  libdispatch.dylib                   0x000000010a886b6c _dispatch_source_invoke + 1051
+22  libdispatch.dylib                   0x000000010a880ece _dispatch_queue_drain + 718
+23  libdispatch.dylib                   0x000000010a8809d0 _dispatch_queue_invoke + 595
+24  libdispatch.dylib                   0x000000010a8822e8 _dispatch_root_queue_drain + 565
+25  libdispatch.dylib                   0x000000010a8820ac _dispatch_worker_thread3 + 98
+26  libsystem_pthread.dylib             0x000000010abcf4de _pthread_wqthread + 1129
+27  libsystem_pthread.dylib             0x000000010abcd341 start_wqthread + 13
+
+Thread 0:: Dispatch queue: com.apple.main-thread
+0   libsystem_kernel.dylib        	0x000000010ac0b10a __semwait_signal + 10
+1   libsystem_c.dylib             	0x000000010a98dcab nanosleep + 199
+2   com.apple.Foundation          	0x00000001073f2991 +[NSThread sleepForTimeInterval:] + 156
+3   com.qredo.QredoXDK            	0x000000011568fbe8 -[QredoWebSocketTransport send:userData:] + 376 (QredoWebSocketTransport.m:138)
+4   com.qredo.QredoXDK            	0x00000001156887a4 -[QredoServiceInvoker invokeService:operation:requestWriter:responseReader:errorHandler:multiResponse:] + 3524 (QredoServiceInvoker.m:176)
+5   com.qredo.QredoXDK            	0x0000000115617c03 -[QLFVault putItemWithItem:signature:completionHandler:] + 563 (QredoClient.m:8083)
+6   com.qredo.QredoXDK            	0x000000011563cb88 -[QredoVaultServerAccess putUpdateOrDeleteItem:itemId:dataType:created:summaryValues:completionHandler:] + 1640 (QredoVaultServerAccess.m:194)
+7   com.qredo.QredoXDK            	0x0000000115657478 -[QredoVault(Private) putUpdateOrDeleteItem:itemId:dataType:created:summaryValues:completionHandler:] + 600 (QredoVault.m:175)
+8   com.qredo.QredoXDK            	0x0000000115657d00 -[QredoVault(Private) strictlyPutNewItem:completionHandler:] + 1040 (QredoVault.m:210)
+9   com.qredo.QredoXDK            	0x000000011565d559 -[QredoVault putItem:completionHandler:] + 361 (QredoVault.m:569)
+10  com.qredo.QredoXDK            	0x0000000115655822 -[QredoClient addDeviceToVaultWithCompletionHandler:] + 450 (Qredo.m:1141)
+11  com.qredo.QredoXDK            	0x0000000115655c80 -[QredoClient createSystemVaultWithUserCredentials:completionHandler:] + 192 (Qredo.m:1190)
+12  com.qredo.QredoXDK            	0x000000011564be81 +[QredoClient initializeWithAppId:appSecret:userId:userSecret:options:completionHandler:] + 2369 (Qredo.m:460)
+13  QredoSDKTests                 	0x000000011537a3b1 -[QredoRendezvousTests authoriseClient] + 481 (QredoRendezvousTests.m:315)
+14  QredoSDKTests                 	0x000000011537052b -[QredoRendezvousTests setUp] + 267 (QredoRendezvousTests.m:156)
+15  QredoSDKTests                 	0x000000011536f2b5 -[QredoRendezvousWebSocketTests setUp] + 85 (QredoRendezvousWebSocketTests.m:12)
+16  com.apple.dt.XCTest           	0x0000000111d7be04 __24-[XCTestCase invokeTest]_block_invoke_2 + 123
+17  com.apple.dt.XCTest           	0x0000000111db0613 -[XCTestContext performInScope:] + 190
+18  com.apple.dt.XCTest           	0x0000000111d7bd78 -[XCTestCase invokeTest] + 169
+19  com.apple.dt.XCTest           	0x0000000111d7c3a2 -[XCTestCase performTest:] + 459
+20  otest-shim-ios.dylib          	0x0000000107352896 XCPerformTestWithSuppressedExpectedAssertionFailures + 461
+21  com.apple.dt.XCTest           	0x0000000111d79cf7 -[XCTestSuite performTest:] + 396
+22  com.apple.dt.XCTest           	0x0000000111d79cf7 -[XCTestSuite performTest:] + 396
+23  com.apple.dt.XCTest           	0x0000000111d79cf7 -[XCTestSuite performTest:] + 396
+24  com.apple.dt.XCTest           	0x0000000111d87b4c -[XCTestObservationCenter _observeTestExecutionForBlock:] + 640
+25  com.apple.dt.XCTest           	0x0000000111db1c40 _XCTestMain + 1050
+26  com.apple.CoreFoundation      	0x00000001084832ec __CFRUNLOOP_IS_CALLING_OUT_TO_A_BLOCK__ + 12
+27  com.apple.CoreFoundation      	0x0000000108478f75 __CFRunLoopDoBlocks + 341
+28  com.apple.CoreFoundation      	0x00000001084786d2 __CFRunLoopRun + 850
+29  com.apple.CoreFoundation      	0x00000001084780f8 CFRunLoopRunSpecific + 488
+30  com.apple.GraphicsServices    	0x000000010b98dad2 GSEventRunModal + 161
+31  com.apple.UIKit               	0x00000001089dff09 UIApplicationMain + 171
+32  test                          	0x00000001072c2f7f main + 111 (main.m:14)
+33  libdyld.dylib                 	0x000000010a8c692d start + 1
+
+Thread 1:: Dispatch queue: com.apple.libdispatch-manager
+0   libsystem_kernel.dylib        	0x000000010ac0bee2 kevent64 + 10
+1   libdispatch.dylib             	0x000000010a8877f0 _dispatch_mgr_invoke + 260
+2   libdispatch.dylib             	0x000000010a88758a _dispatch_mgr_thread + 54
+
+Thread 2:: com.apple.NSURLConnectionLoader
+0   libsystem_kernel.dylib        	0x000000010ac04f72 mach_msg_trap + 10
+1   libsystem_kernel.dylib        	0x000000010ac043b3 mach_msg + 55
+2   com.apple.CoreFoundation      	0x0000000108479434 __CFRunLoopServiceMachPort + 212
+3   com.apple.CoreFoundation      	0x000000010847888f __CFRunLoopRun + 1295
+4   com.apple.CoreFoundation      	0x00000001084780f8 CFRunLoopRunSpecific + 488
+5   com.apple.CFNetwork           	0x0000000107cd0d24 +[NSURLConnection(Loader) _resourceLoadLoop:] + 412
+6   com.apple.Foundation          	0x000000010746d12b __NSThread__start__ + 1198
+7   libsystem_pthread.dylib       	0x000000010abcf99d _pthread_body + 131
+8   libsystem_pthread.dylib       	0x000000010abcf91a _pthread_start + 168
+9   libsystem_pthread.dylib       	0x000000010abcd351 thread_start + 13
+
+Thread 3:: com.apple.CFSocket.private
+0   libsystem_kernel.dylib        	0x000000010ac0b07a __select + 10
+1   com.apple.CoreFoundation      	0x00000001084be5ea __CFSocketManager + 746
+2   libsystem_pthread.dylib       	0x000000010abcf99d _pthread_body + 131
+3   libsystem_pthread.dylib       	0x000000010abcf91a _pthread_start + 168
+4   libsystem_pthread.dylib       	0x000000010abcd351 thread_start + 13
+
+Thread 4:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 5:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 6:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 7:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 8:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 9:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 10:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 11 Crashed:: Dispatch queue: com.qredo.conversation.updates
+0   libsystem_kernel.dylib        	0x000000010ac0af06 __pthread_kill + 10
+1   libsystem_pthread.dylib       	0x000000010abd24ec pthread_kill + 90
+2   libsystem_c.dylib             	0x000000010a96cd8c __abort + 145
+3   libsystem_c.dylib             	0x000000010a96ccfb abort + 144
+4   libc++abi.dylib               	0x000000010a775051 abort_message + 257
+5   libc++abi.dylib               	0x000000010a79aac9 default_terminate_handler() + 267
+6   libobjc.A.dylib               	0x00000001077e5046 _objc_terminate() + 103
+7   libc++abi.dylib               	0x000000010a79826e std::__terminate(void (*)()) + 8
+8   libc++abi.dylib               	0x000000010a7982e3 std::terminate() + 51
+9   libdispatch.dylib             	0x000000010a8973eb _dispatch_client_callout + 28
+10  libdispatch.dylib             	0x000000010a8803c7 _dispatch_after_timer_callback + 89
+11  libdispatch.dylib             	0x000000010a8973d7 _dispatch_client_callout + 8
+12  libdispatch.dylib             	0x000000010a88abd8 _dispatch_source_latch_and_call + 796
+13  libdispatch.dylib             	0x000000010a886b6c _dispatch_source_invoke + 1051
+14  libdispatch.dylib             	0x000000010a880ece _dispatch_queue_drain + 718
+15  libdispatch.dylib             	0x000000010a8809d0 _dispatch_queue_invoke + 595
+16  libdispatch.dylib             	0x000000010a8822e8 _dispatch_root_queue_drain + 565
+17  libdispatch.dylib             	0x000000010a8820ac _dispatch_worker_thread3 + 98
+18  libsystem_pthread.dylib       	0x000000010abcf4de _pthread_wqthread + 1129
+19  libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 12:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 13:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 14:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 15:: Dispatch queue: com.apple.root.default-qos
+0   libsystem_kernel.dylib        	0x000000010ac04f72 mach_msg_trap + 10
+1   libsystem_kernel.dylib        	0x000000010ac043b3 mach_msg + 55
+2   com.apple.CoreFoundation      	0x0000000108479434 __CFRunLoopServiceMachPort + 212
+3   com.apple.CoreFoundation      	0x000000010847888f __CFRunLoopRun + 1295
+4   com.apple.CoreFoundation      	0x00000001084780f8 CFRunLoopRunSpecific + 488
+5   com.apple.Foundation          	0x00000001073cea31 -[NSRunLoop(NSRunLoop) runMode:beforeDate:] + 267
+6   com.qredo.QredoXDK            	0x00000001158046c9 -[JFRWebSocket initStreamsWithData:port:] + 2665 (JFRWebSocket.m:271)
+7   com.qredo.QredoXDK            	0x0000000115803ac9 -[JFRWebSocket createHTTPRequest] + 2281 (JFRWebSocket.m:222)
+8   com.qredo.QredoXDK            	0x0000000115802e2a __23-[JFRWebSocket connect]_block_invoke.44 + 106 (JFRWebSocket.m:135)
+9   libdispatch.dylib             	0x000000010a87bc89 _dispatch_call_block_and_release + 12
+10  libdispatch.dylib             	0x000000010a8973d7 _dispatch_client_callout + 8
+11  libdispatch.dylib             	0x000000010a88242d _dispatch_root_queue_drain + 890
+12  libdispatch.dylib             	0x000000010a8820ac _dispatch_worker_thread3 + 98
+13  libsystem_pthread.dylib       	0x000000010abcf4de _pthread_wqthread + 1129
+14  libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 16:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 17:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 18:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 19:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 20:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 21:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 22:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 23:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 24:
+
+Thread 11 crashed with X86 Thread State (64-bit):
+  rax: 0x0000000000000000  rbx: 0x0000000000000006  rcx: 0x00007000008c3618  rdx: 0x0000000000000000
+  rdi: 0x00000000000179e3  rsi: 0x0000000000000006  rbp: 0x00007000008c3640  rsp: 0x00007000008c3618
+   r8: 0x0000000000000000   r9: 0x0000000000989680  r10: 0x000000000c000000  r11: 0x0000000000000206
+  r12: 0x00007000008c37d0  r13: 0x0000000112204000  r14: 0x00007000008c4000  r15: 0x00007000008c36b0
+  rip: 0x000000010ac0af06  rfl: 0x0000000000000206  cr2: 0x000000010bf00000
+  
+Logical CPU:     0
+Error Code:      0x02000148
+Trap Number:     133[0m
+[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [31m☂[0m -[QredoRendezvousWebSocketTests testDeactivateRendezvousNilCompletionHandler] [31m(2365 ms)[0m (0)
+    [Info] Prepared 'iPhone 6' simulator to run tests. (5 ms)
+    [Info] Installed 'test'. (2641 ms)
+    [Info] Launched 'test' on 'iPhone 6'. (26 ms)
+    [32m✓[0m -[QredoRendezvousWebSocketTests testDeactivateUnknownRendezvous] [31m(928 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testQuickCreateRandomRandezvous] [31m(1478 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testQuickCreateRendezvousExpiresAt] [31m(1775 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testQuickCreateRendezvousLongType] [31m(1606 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testQuickCreateRendezvousShortType] [31m(1670 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadAhead] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadWriteComplexStructure] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadWriteEmptyList] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadWriteListOfSingleAtom] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoSExpressionTests testReadWriteMultipleAtomList] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoUserCredentialsTests testDataToHexString] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoUserCredentialsTests testGetMasterFromUserUnlock] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoUserCredentialsTests testGetMasterUnlockKey] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoVaultTests testEnumeration] [31m(625 ms)[0m
+    [32m✓[0m -[QredoVaultTests testEnumerationAbortsOnStop] [31m(984 ms)[0m
+    [32m✓[0m -[QredoVaultTests testEnumerationReturnsCreatedItem] [31m(784 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetLatestItemFromIndexAfterDelete] [31m(3224 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetLatestMetaDataItemFromIndex] [31m(3409 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetLatestMetaDataItemFromIndexAfterDelete] [31m(3278 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetLatestVaultItemFromIndex] [31m(2095 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGetSetShortcuts] [33m(419 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGettingItems] [31m(838 ms)[0m
+    [32m✓[0m -[QredoVaultTests testGettingItemsFromCache] [31m(1225 ms)[0m
+    [32m✓[0m -[QredoVaultTests testListener] [31m(2323 ms)[0m
+      -[QredoVaultTests testMenualGet]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:07:33.973 TestHost[6893:239437] ❤️ERROR   Remote operation 'queryItemHeaders' Error Tried to send after the transport has been closed.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoVaultTests testMenualGet] [33m(406 ms)[0m
+      -[QredoVaultTests testMultipleListeners]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:07:36.890 TestHost[6893:239327] ❤️ERROR   Remote operation 'queryItemHeaders' Error Tried to send after the transport has been closed.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoVaultTests testMultipleListeners] [31m(2510 ms)[0m
+    [32m✓[0m -[QredoVaultTests testMultiplePutItem] [31m(1247 ms)[0m
+    [32m✓[0m -[QredoVaultTests testMultipleRemovingListenerDurringNotification] [31m(44132 ms)[0m
+    [32m✓[0m -[QredoVaultTests testPersistanceVaultId] [31m(626 ms)[0m
+    [32m✓[0m -[QredoVaultTests testPutDelete] [31m(714 ms)[0m
+    [32m✓[0m -[QredoVaultTests testPutItem] [31m(606 ms)[0m
+    [32m✓[0m -[QredoVaultTests testPutItemMultiple] [31m(923 ms)[0m
+    [32m✓[0m -[QredoVaultTests testRemovingListenerDurringNotification] [31m(5106 ms)[0m
+    [32m✓[0m -[QredoVaultTests testRemovingNotObservingListener] [33m(398 ms)[0m
+      -[QredoVaultTests testVaultItemMetadataAndMutableMetadata]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:08:30.696 TestHost[6893:239437] ❤️ERROR   Remote operation 'queryItemHeaders' Error Received data after the transport has been closed.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoVaultTests testVaultItemMetadataAndMutableMetadata] [31m(520 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateTests testDeleteItems] [31m(1210 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateTests testGettingItems] [31m(538 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateTests testPutItems] [31m(950 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateWebSocketTests testDeleteItems] [31m(1069 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateWebSocketTests testGettingItems] [31m(656 ms)[0m
+    [32m✓[0m -[QredoVaultUpdateWebSocketTests testPutItems] [31m(714 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testEnumeration] [31m(634 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testEnumerationAbortsOnStop] [31m(733 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testEnumerationReturnsCreatedItem] [31m(817 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetLatestItemFromIndexAfterDelete] [31m(3330 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetLatestMetaDataItemFromIndex] [31m(6232 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetLatestMetaDataItemFromIndexAfterDelete] [31m(6230 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetLatestVaultItemFromIndex] [31m(5095 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGetSetShortcuts] [31m(3310 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGettingItems] [31m(762 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testGettingItemsFromCache] [31m(798 ms)[0m
+      -[QredoVaultWebSocketTests testListener]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:09:06.497 TestHost[6893:239501] ❤️ERROR   Remote operation 'queryItemHeaders' Error Tried to send after the transport has been closed.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testListener] [31m(2240 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testMenualGet] [31m(3331 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testMultipleListeners] [31m(2221 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testMultiplePutItem] [31m(4309 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testMultipleRemovingListenerDurringNotification] [31m(44285 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPersistanceVaultId] [31m(3486 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPersistanceVaultIdMultiple] [31m(3574 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPutDelete] [31m(3682 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPutItem] [31m(513 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testPutItemMultiple] [31m(863 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testRemovingListenerDurringNotification] [31m(5094 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testRemovingNotObservingListener] [31m(3246 ms)[0m
+    [32m✓[0m -[QredoVaultWebSocketTests testVaultItemMetadataAndMutableMetadata] [33m(450 ms)[0m
+      -[RendezvousEd25519HelperTests testCreateHelper_Invalid_ExternalKeysMissingSigningHandler]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.560 TestHost[6893:239322] ❤️ERROR   Provided an authentication tag (public key) but signing handler is nil.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_Invalid_ExternalKeysMissingSigningHandler] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testCreateHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.561 TestHost[6893:239322] *** Assertion failure in -[QredoRendezvousEd25519CreateHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testCreateHelper_Invalid_NilTag]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.561 TestHost[6893:239322] ❤️ERROR   Full tag is nil.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_Invalid_NilTag] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testCreateHelper_Invalid_SeveralAtCharsInTag]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.561 TestHost[6893:239322] ❤️ERROR   Invalid number (2) of @ characters present. Require exactly 1. Full tag: 'MyTestRendez@Vous@'
+[0m[2m2016-04-27 22:10:21.561 TestHost[6893:239322] ❤️ERROR   Failed to split up full tag successfully.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_Invalid_SeveralAtCharsInTag] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testCreateHelper_InvalidAuthenticationTagPart]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.562 TestHost[6893:239322] ❤️ERROR   Nil Ed25519 verify key returned for authentication tag: 'Vous'.
+[0m[2m2016-04-27 22:10:21.562 TestHost[6893:239322] ❤️ERROR   Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: 'Vous'
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testCreateHelper_InvalidAuthenticationTagPart] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testRespondHelper_Invalid_BadCharsInTag]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.562 TestHost[6893:239322] ❤️ERROR   Base58 decode of authentication tag was nil or 0 length. Authentication Tag: '1234567890123456789012345678901234567890tv+-'.
+[0m[2m2016-04-27 22:10:21.562 TestHost[6893:239322] ❤️ERROR   Base58 decode returned NSError: Error Domain=QredoBase58ErrorDomain Code=1 "(null)"
+[0m[2m2016-04-27 22:10:21.563 TestHost[6893:239322] ❤️ERROR   Nil verify key was returned by verifyKeyFromAuthenticationTag. Authentication Tag: '1234567890123456789012345678901234567890tv+-'
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_BadCharsInTag] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingAtFromStartOfTag]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.563 TestHost[6893:239322] ❤️ERROR   Invalid number (0) of @ characters present. Require exactly 1. Full tag: 'AZVZXcTD5Qw6x6goPoRbfifq6MaHJys4xmmyEKozpact'
+[0m[2m2016-04-27 22:10:21.563 TestHost[6893:239322] ❤️ERROR   Failed to split up full tag successfully.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingAtFromStartOfTag] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.563 TestHost[6893:239322] *** Assertion failure in -[QredoRendezvousEd25519RespondHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingTag]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.564 TestHost[6893:239322] ❤️ERROR   Full tag is nil.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_MissingTag] [2m[32m(0 ms)[0m
+      -[RendezvousEd25519HelperTests testRespondHelper_Invalid_SeveralAtCharsInTag]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:21.564 TestHost[6893:239322] ❤️ERROR   Invalid number (2) of @ characters present. Require exactly 1. Full tag: 'MyTestRendez@Vous@'
+[0m[2m2016-04-27 22:10:21.564 TestHost[6893:239322] ❤️ERROR   Failed to split up full tag successfully.
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Invalid_SeveralAtCharsInTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Valid_NoPrefixTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testRespondHelper_Valid_WithPrefixTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testSignatureAndVerification_ExternalKeys] [2m[32m(1 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testSignatureAndVerification_InternalKeys] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testSignatureAndVerificationInvalidSignature] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousEd25519HelperTests testSignatureAndVerificationNoPrefixAndNoAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[RendezvousListenerTests testRendezvousResponder] [31m(3056 ms)[0m
+      -[SSLTimeSyncTests testExample]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:10:24.626 TestHost[6893:239322] Now         2016-04-27 21:10:24 +0000
+[0m[2m2016-04-27 22:10:24.626 TestHost[6893:239322] Unsynced    2016-04-27 21:10:57 +0000
+[0m[2m2016-04-27 22:10:29.627 TestHost[6893:239322] Synced    2016-04-27 21:11:02 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[SSLTimeSyncTests testExample] [31m(5001 ms)[0m
+    [32m✓[0m -[VaultCryptoTests testGenerateVaultTestVectors] [2m[32m(8 ms)[0m
+    [32m✓[0m -[VaultCryptoTests testHeaderDecryption] [2m[32m(1 ms)[0m
+    [32m✓[0m -[VaultCryptoTests testItemDecryption] [2m[32m(1 ms)[0m
+    [32m✓[0m -[VaultCryptoTests testVaultKeysTestVectors] [2m[32m(0 ms)[0m
+    [1m229 passed, 0 failed, 1 errored, 230 total (761716 ms)[0m
+
+
+[1mFailures:[0m
+
+  0) -[QredoRendezvousWebSocketTests testDeactivateRendezvousNilCompletionHandler] (QredoSDKTests.xctest)
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-27 22:07:03.031 TestHost[6877:238233] *** Terminating app due to uncaught exception 'NSRangeException', reason: '*** -[__NSArrayM getObjects:range:]: range {0, 29} extends beyond bounds [0 .. 27]'
+*** First throw call stack:
+(
+	0   CoreFoundation                      0x000000010855dd85 __exceptionPreprocess + 165
+	1   libobjc.A.dylib                     0x00000001077e4deb objc_exception_throw + 48
+	2   CoreFoundation                      0x0000000108446886 -[__NSArrayM getObjects:range:] + 566
+	3   Foundation                          0x00000001073ad94e -[NSArray(NSKeyValueSorting) sortedArrayUsingDescriptors:] + 282
+	4   QredoXDK                            0x00000001157fef95 -[NetworkClock networkOffset] + 149
+	5   QredoXDK                            0x00000001157ff428 -[NetworkClock networkTime] + 72
+	6   QredoXDK                            0x00000001155bacc4 -[QredoNetworkTime ntpDate] + 68
+	7   QredoXDK                            0x00000001155bad65 +[QredoNetworkTime dateTime] + 117
+	8   QredoXDK                            0x000000011561b34e +[QLFOwnershipSignature(FactoryMethods) timestamp] + 46
+	9   QredoXDK                            0x000000011561b4c6 +[QLFOwnershipSignature(FactoryMethods) ownershipSignatureWithSigner:operationType:marshalledData:error:] + 230
+	10  QredoXDK                            0x000000011561c546 +[QLFOwnershipSignature(FactoryMethods) ownershipSignatureForListVaultItemsWithSigner:sequenceStates:error:] + 342
+	11  QredoXDK                            0x000000011563e023 -[QredoVaultServerAccess enumerateVaultItemsPagedUsingBlock:completionHandler:watermarkHandler:since:consolidatingResults:] + 1011
+	12  QredoXDK                            0x000000011563d4c7 -[QredoVaultServerAccess enumerateVaultItemsUsingBlock:completionHandler:watermarkHandler:since:consolidatingResults:] + 887
+	13  QredoXDK                            0x000000011565eeea -[QredoVault qredoUpdateListener:pollWithCompletionHandler:] + 378
+	14  QredoXDK                            0x0000000115643d14 -[QredoUpdateListener startPolling] + 180
+	15  QredoXDK                            0x0000000115643eb6 __35-[QredoUpdateListener startPolling]_block_invoke_2 + 38
+	16  libdispatch.dylib                   0x000000010a87bc89 _dispatch_call_block_and_release + 12
+	17  libdispatch.dylib                   0x000000010a8973d7 _dispatch_client_callout + 8
+	18  libdispatch.dylib                   0x000000010a8803c7 _dispatch_after_timer_callback + 89
+	19  libdispatch.dylib                   0x000000010a8973d7 _dispatch_client_callout + 8
+	20  libdispatch.dylib                   0x000000010a88abd8 _dispatch_source_latch_and_call + 796
+	21  libdispatch.dylib                   0x000000010a886b6c _dispatch_source_invoke + 1051
+	22  libdispatch.dylib                   0x000000010a880ece _dispatch_queue_drain + 718
+	23  libdispatch.dylib                   0x000000010a8809d0 _dispatch_queue_invoke + 595
+	24  libdispatch.dylib                   0x000000010a8822e8 _dispatch_root_queue_drain + 565
+	25  libdispatch.dylib                   0x000000010a8820ac _dispatch_worker_thread3 + 98
+	26  libsystem_pthread.dylib             0x000000010abcf4de _pthread_wqthread + 1129
+	27  libsystem_pthread.dylib             0x000000010abcd341 start_wqthread + 13
+)
+libc++abi.dylib: terminating with uncaught exception of type NSException
+
+Test crashed while running.
+
+CRASH REPORT: TestHost_2016-04-27-220704_mango.crash
+
+Process:               TestHost [6877]
+Path:                  /Users/USER/Library/Developer/CoreSimulator/Devices/53D0400D-5124-46A8-81CB-F14C6DD78704/data/Containers/Bundle/Application/F59A3D36-6B54-4227-BCFF-8B3116F449FE/TestHost.app/TestHost
+Identifier:            TestHost
+Version:               1.0 (1)
+Code Type:             X86-64 (Native)
+Parent Process:        launchd_sim [4128]
+Responsible:           TestHost [6877]
+User ID:               501
+
+Date/Time:             2016-04-27 22:07:03.079 +0100
+OS Version:            Mac OS X 10.11.4 (15E65)
+Report Version:        11
+Anonymous UUID:        67209B95-9268-16D1-3710-D5795F4B33E1
+
+
+Time Awake Since Boot: 21000 seconds
+
+System Integrity Protection: enabled
+
+Crashed Thread:        11  Dispatch queue: com.qredo.conversation.updates
+
+Exception Type:        EXC_CRASH (SIGABRT)
+Exception Codes:       0x0000000000000000, 0x0000000000000000
+Exception Note:        EXC_CORPSE_NOTIFY
+
+Application Specific Information:
+*** Terminating app due to uncaught exception 'NSRangeException', reason: '*** -[__NSArrayM getObjects:range:]: range {0, 29} extends beyond bounds [0 .. 27]'
+terminating with uncaught exception of type NSException
+abort() called
+CoreSimulator 209.19 - Device: iPhone 6 - Runtime: iOS 9.3 (13E230) - DeviceType: iPhone 6
+
+Application Specific Backtrace 1:
+0   CoreFoundation                      0x000000010855dd85 __exceptionPreprocess + 165
+1   libobjc.A.dylib                     0x00000001077e4deb objc_exception_throw + 48
+2   CoreFoundation                      0x0000000108446886 -[__NSArrayM getObjects:range:] + 566
+3   Foundation                          0x00000001073ad94e -[NSArray(NSKeyValueSorting) sortedArrayUsingDescriptors:] + 282
+4   QredoXDK                            0x00000001157fef95 -[NetworkClock networkOffset] + 149
+5   QredoXDK                            0x00000001157ff428 -[NetworkClock networkTime] + 72
+6   QredoXDK                            0x00000001155bacc4 -[QredoNetworkTime ntpDate] + 68
+7   QredoXDK                            0x00000001155bad65 +[QredoNetworkTime dateTime] + 117
+8   QredoXDK                            0x000000011561b34e +[QLFOwnershipSignature(FactoryMethods) timestamp] + 46
+9   QredoXDK                            0x000000011561b4c6 +[QLFOwnershipSignature(FactoryMethods) ownershipSignatureWithSigner:operationType:marshalledData:error:] + 230
+10  QredoXDK                            0x000000011561c546 +[QLFOwnershipSignature(FactoryMethods) ownershipSignatureForListVaultItemsWithSigner:sequenceStates:error:] + 342
+11  QredoXDK                            0x000000011563e023 -[QredoVaultServerAccess enumerateVaultItemsPagedUsingBlock:completionHandler:watermarkHandler:since:consolidatingResults:] + 1011
+12  QredoXDK                            0x000000011563d4c7 -[QredoVaultServerAccess enumerateVaultItemsUsingBlock:completionHandler:watermarkHandler:since:consolidatingResults:] + 887
+13  QredoXDK                            0x000000011565eeea -[QredoVault qredoUpdateListener:pollWithCompletionHandler:] + 378
+14  QredoXDK                            0x0000000115643d14 -[QredoUpdateListener startPolling] + 180
+15  QredoXDK                            0x0000000115643eb6 __35-[QredoUpdateListener startPolling]_block_invoke_2 + 38
+16  libdispatch.dylib                   0x000000010a87bc89 _dispatch_call_block_and_release + 12
+17  libdispatch.dylib                   0x000000010a8973d7 _dispatch_client_callout + 8
+18  libdispatch.dylib                   0x000000010a8803c7 _dispatch_after_timer_callback + 89
+19  libdispatch.dylib                   0x000000010a8973d7 _dispatch_client_callout + 8
+20  libdispatch.dylib                   0x000000010a88abd8 _dispatch_source_latch_and_call + 796
+21  libdispatch.dylib                   0x000000010a886b6c _dispatch_source_invoke + 1051
+22  libdispatch.dylib                   0x000000010a880ece _dispatch_queue_drain + 718
+23  libdispatch.dylib                   0x000000010a8809d0 _dispatch_queue_invoke + 595
+24  libdispatch.dylib                   0x000000010a8822e8 _dispatch_root_queue_drain + 565
+25  libdispatch.dylib                   0x000000010a8820ac _dispatch_worker_thread3 + 98
+26  libsystem_pthread.dylib             0x000000010abcf4de _pthread_wqthread + 1129
+27  libsystem_pthread.dylib             0x000000010abcd341 start_wqthread + 13
+
+Thread 0:: Dispatch queue: com.apple.main-thread
+0   libsystem_kernel.dylib        	0x000000010ac0b10a __semwait_signal + 10
+1   libsystem_c.dylib             	0x000000010a98dcab nanosleep + 199
+2   com.apple.Foundation          	0x00000001073f2991 +[NSThread sleepForTimeInterval:] + 156
+3   com.qredo.QredoXDK            	0x000000011568fbe8 -[QredoWebSocketTransport send:userData:] + 376 (QredoWebSocketTransport.m:138)
+4   com.qredo.QredoXDK            	0x00000001156887a4 -[QredoServiceInvoker invokeService:operation:requestWriter:responseReader:errorHandler:multiResponse:] + 3524 (QredoServiceInvoker.m:176)
+5   com.qredo.QredoXDK            	0x0000000115617c03 -[QLFVault putItemWithItem:signature:completionHandler:] + 563 (QredoClient.m:8083)
+6   com.qredo.QredoXDK            	0x000000011563cb88 -[QredoVaultServerAccess putUpdateOrDeleteItem:itemId:dataType:created:summaryValues:completionHandler:] + 1640 (QredoVaultServerAccess.m:194)
+7   com.qredo.QredoXDK            	0x0000000115657478 -[QredoVault(Private) putUpdateOrDeleteItem:itemId:dataType:created:summaryValues:completionHandler:] + 600 (QredoVault.m:175)
+8   com.qredo.QredoXDK            	0x0000000115657d00 -[QredoVault(Private) strictlyPutNewItem:completionHandler:] + 1040 (QredoVault.m:210)
+9   com.qredo.QredoXDK            	0x000000011565d559 -[QredoVault putItem:completionHandler:] + 361 (QredoVault.m:569)
+10  com.qredo.QredoXDK            	0x0000000115655822 -[QredoClient addDeviceToVaultWithCompletionHandler:] + 450 (Qredo.m:1141)
+11  com.qredo.QredoXDK            	0x0000000115655c80 -[QredoClient createSystemVaultWithUserCredentials:completionHandler:] + 192 (Qredo.m:1190)
+12  com.qredo.QredoXDK            	0x000000011564be81 +[QredoClient initializeWithAppId:appSecret:userId:userSecret:options:completionHandler:] + 2369 (Qredo.m:460)
+13  QredoSDKTests                 	0x000000011537a3b1 -[QredoRendezvousTests authoriseClient] + 481 (QredoRendezvousTests.m:315)
+14  QredoSDKTests                 	0x000000011537052b -[QredoRendezvousTests setUp] + 267 (QredoRendezvousTests.m:156)
+15  QredoSDKTests                 	0x000000011536f2b5 -[QredoRendezvousWebSocketTests setUp] + 85 (QredoRendezvousWebSocketTests.m:12)
+16  com.apple.dt.XCTest           	0x0000000111d7be04 __24-[XCTestCase invokeTest]_block_invoke_2 + 123
+17  com.apple.dt.XCTest           	0x0000000111db0613 -[XCTestContext performInScope:] + 190
+18  com.apple.dt.XCTest           	0x0000000111d7bd78 -[XCTestCase invokeTest] + 169
+19  com.apple.dt.XCTest           	0x0000000111d7c3a2 -[XCTestCase performTest:] + 459
+20  otest-shim-ios.dylib          	0x0000000107352896 XCPerformTestWithSuppressedExpectedAssertionFailures + 461
+21  com.apple.dt.XCTest           	0x0000000111d79cf7 -[XCTestSuite performTest:] + 396
+22  com.apple.dt.XCTest           	0x0000000111d79cf7 -[XCTestSuite performTest:] + 396
+23  com.apple.dt.XCTest           	0x0000000111d79cf7 -[XCTestSuite performTest:] + 396
+24  com.apple.dt.XCTest           	0x0000000111d87b4c -[XCTestObservationCenter _observeTestExecutionForBlock:] + 640
+25  com.apple.dt.XCTest           	0x0000000111db1c40 _XCTestMain + 1050
+26  com.apple.CoreFoundation      	0x00000001084832ec __CFRUNLOOP_IS_CALLING_OUT_TO_A_BLOCK__ + 12
+27  com.apple.CoreFoundation      	0x0000000108478f75 __CFRunLoopDoBlocks + 341
+28  com.apple.CoreFoundation      	0x00000001084786d2 __CFRunLoopRun + 850
+29  com.apple.CoreFoundation      	0x00000001084780f8 CFRunLoopRunSpecific + 488
+30  com.apple.GraphicsServices    	0x000000010b98dad2 GSEventRunModal + 161
+31  com.apple.UIKit               	0x00000001089dff09 UIApplicationMain + 171
+32  test                          	0x00000001072c2f7f main + 111 (main.m:14)
+33  libdyld.dylib                 	0x000000010a8c692d start + 1
+
+Thread 1:: Dispatch queue: com.apple.libdispatch-manager
+0   libsystem_kernel.dylib        	0x000000010ac0bee2 kevent64 + 10
+1   libdispatch.dylib             	0x000000010a8877f0 _dispatch_mgr_invoke + 260
+2   libdispatch.dylib             	0x000000010a88758a _dispatch_mgr_thread + 54
+
+Thread 2:: com.apple.NSURLConnectionLoader
+0   libsystem_kernel.dylib        	0x000000010ac04f72 mach_msg_trap + 10
+1   libsystem_kernel.dylib        	0x000000010ac043b3 mach_msg + 55
+2   com.apple.CoreFoundation      	0x0000000108479434 __CFRunLoopServiceMachPort + 212
+3   com.apple.CoreFoundation      	0x000000010847888f __CFRunLoopRun + 1295
+4   com.apple.CoreFoundation      	0x00000001084780f8 CFRunLoopRunSpecific + 488
+5   com.apple.CFNetwork           	0x0000000107cd0d24 +[NSURLConnection(Loader) _resourceLoadLoop:] + 412
+6   com.apple.Foundation          	0x000000010746d12b __NSThread__start__ + 1198
+7   libsystem_pthread.dylib       	0x000000010abcf99d _pthread_body + 131
+8   libsystem_pthread.dylib       	0x000000010abcf91a _pthread_start + 168
+9   libsystem_pthread.dylib       	0x000000010abcd351 thread_start + 13
+
+Thread 3:: com.apple.CFSocket.private
+0   libsystem_kernel.dylib        	0x000000010ac0b07a __select + 10
+1   com.apple.CoreFoundation      	0x00000001084be5ea __CFSocketManager + 746
+2   libsystem_pthread.dylib       	0x000000010abcf99d _pthread_body + 131
+3   libsystem_pthread.dylib       	0x000000010abcf91a _pthread_start + 168
+4   libsystem_pthread.dylib       	0x000000010abcd351 thread_start + 13
+
+Thread 4:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 5:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 6:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 7:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 8:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 9:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 10:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 11 Crashed:: Dispatch queue: com.qredo.conversation.updates
+0   libsystem_kernel.dylib        	0x000000010ac0af06 __pthread_kill + 10
+1   libsystem_pthread.dylib       	0x000000010abd24ec pthread_kill + 90
+2   libsystem_c.dylib             	0x000000010a96cd8c __abort + 145
+3   libsystem_c.dylib             	0x000000010a96ccfb abort + 144
+4   libc++abi.dylib               	0x000000010a775051 abort_message + 257
+5   libc++abi.dylib               	0x000000010a79aac9 default_terminate_handler() + 267
+6   libobjc.A.dylib               	0x00000001077e5046 _objc_terminate() + 103
+7   libc++abi.dylib               	0x000000010a79826e std::__terminate(void (*)()) + 8
+8   libc++abi.dylib               	0x000000010a7982e3 std::terminate() + 51
+9   libdispatch.dylib             	0x000000010a8973eb _dispatch_client_callout + 28
+10  libdispatch.dylib             	0x000000010a8803c7 _dispatch_after_timer_callback + 89
+11  libdispatch.dylib             	0x000000010a8973d7 _dispatch_client_callout + 8
+12  libdispatch.dylib             	0x000000010a88abd8 _dispatch_source_latch_and_call + 796
+13  libdispatch.dylib             	0x000000010a886b6c _dispatch_source_invoke + 1051
+14  libdispatch.dylib             	0x000000010a880ece _dispatch_queue_drain + 718
+15  libdispatch.dylib             	0x000000010a8809d0 _dispatch_queue_invoke + 595
+16  libdispatch.dylib             	0x000000010a8822e8 _dispatch_root_queue_drain + 565
+17  libdispatch.dylib             	0x000000010a8820ac _dispatch_worker_thread3 + 98
+18  libsystem_pthread.dylib       	0x000000010abcf4de _pthread_wqthread + 1129
+19  libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 12:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 13:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 14:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 15:: Dispatch queue: com.apple.root.default-qos
+0   libsystem_kernel.dylib        	0x000000010ac04f72 mach_msg_trap + 10
+1   libsystem_kernel.dylib        	0x000000010ac043b3 mach_msg + 55
+2   com.apple.CoreFoundation      	0x0000000108479434 __CFRunLoopServiceMachPort + 212
+3   com.apple.CoreFoundation      	0x000000010847888f __CFRunLoopRun + 1295
+4   com.apple.CoreFoundation      	0x00000001084780f8 CFRunLoopRunSpecific + 488
+5   com.apple.Foundation          	0x00000001073cea31 -[NSRunLoop(NSRunLoop) runMode:beforeDate:] + 267
+6   com.qredo.QredoXDK            	0x00000001158046c9 -[JFRWebSocket initStreamsWithData:port:] + 2665 (JFRWebSocket.m:271)
+7   com.qredo.QredoXDK            	0x0000000115803ac9 -[JFRWebSocket createHTTPRequest] + 2281 (JFRWebSocket.m:222)
+8   com.qredo.QredoXDK            	0x0000000115802e2a __23-[JFRWebSocket connect]_block_invoke.44 + 106 (JFRWebSocket.m:135)
+9   libdispatch.dylib             	0x000000010a87bc89 _dispatch_call_block_and_release + 12
+10  libdispatch.dylib             	0x000000010a8973d7 _dispatch_client_callout + 8
+11  libdispatch.dylib             	0x000000010a88242d _dispatch_root_queue_drain + 890
+12  libdispatch.dylib             	0x000000010a8820ac _dispatch_worker_thread3 + 98
+13  libsystem_pthread.dylib       	0x000000010abcf4de _pthread_wqthread + 1129
+14  libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 16:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 17:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 18:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 19:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 20:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 21:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 22:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 23:
+0   libsystem_kernel.dylib        	0x000000010ac0b5e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x000000010abcf578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x000000010abcd341 start_wqthread + 13
+
+Thread 24:
+
+Thread 11 crashed with X86 Thread State (64-bit):
+  rax: 0x0000000000000000  rbx: 0x0000000000000006  rcx: 0x00007000008c3618  rdx: 0x0000000000000000
+  rdi: 0x00000000000179e3  rsi: 0x0000000000000006  rbp: 0x00007000008c3640  rsp: 0x00007000008c3618
+   r8: 0x0000000000000000   r9: 0x0000000000989680  r10: 0x000000000c000000  r11: 0x0000000000000206
+  r12: 0x00007000008c37d0  r13: 0x0000000112204000  r14: 0x00007000008c4000  r15: 0x00007000008c36b0
+  rip: 0x000000010ac0af06  rfl: 0x0000000000000206  cr2: 0x000000010bf00000
+  
+Logical CPU:     0
+Error Code:      0x02000148
+Trap Number:     133[0m
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+
+[1m[31m** RUN-TESTS FAILED: 229 passed, 0 failed, 1 errored, 230 total **[0m [2m(766770 ms)[0m
+

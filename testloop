@@ -1,13 +1,16 @@
 #!/bin/bash
 
+xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests    build
+
 while [ 1 ]
 do
-    xcrun simctl erase all
+  xcrun simctl shutdown F6303388-F8ED-4F03-8ACC-60FE8DBB2397
+  xcrun simctl erase F6303388-F8ED-4F03-8ACC-60FE8DBB2397
   filename=testresults/output`date '+%Y%m%d%H%M%S'`.txt;
-  xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests build
   echo $filename
+#  xctool -reporter pretty:$filename -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme          QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
+  xctool -reporter pretty:$filename -sdk iphonesimulator -destination 'id=F6303388-F8ED-4F03-8ACC-60FE8DBB2397' -workspace QredoSDK.xcworkspace -scheme QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
 
-  xctool -reporter pretty:$filename -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme          QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
 
 done
 

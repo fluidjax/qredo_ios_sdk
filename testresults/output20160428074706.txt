@@ -1,0 +1,4 @@
+[Info] Loading settings for scheme 'QredoSDKTests' ... (1576 ms)
+
+[1m=== RUN-TESTS ===[0m
+
