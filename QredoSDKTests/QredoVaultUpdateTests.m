@@ -191,7 +191,7 @@
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     
-    NSDate *beforeFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:-1];
+    NSDate *beforeFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:-30];
     
     testExpectation = [self expectationWithDescription:@"First put"];
     [vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
@@ -206,7 +206,7 @@
     }];
    
     
-    NSDate *afterFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:+1];
+    NSDate *afterFirstPutDate = [NSDate dateWithTimeIntervalSinceNow:+30];
     
     testExpectation = [self expectationWithDescription:@"Get"];
     [vault getItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
