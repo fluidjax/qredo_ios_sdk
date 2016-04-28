@@ -501,12 +501,13 @@ NSString *secondMessageText;
         XCTAssertNil(error);
     }];
 
-    [client closeSession];
+   [responderConversation removeConversationObserver:deleteListener];
+   [creatorConversation removeConversationObserver:listener];
+   [rendezvous removeRendezvousObserver:self];
+   [client closeSession];
 }
 
 -(void)testConversationWatermark{
-
-    
     //static NSString *randomTag;
     NSString *randomTag = nil;
     
@@ -552,7 +553,8 @@ NSString *secondMessageText;
     listener.expectedMessageValue = secondMessageText;
     
     QredoConversationHighWatermark *hwm2 = [self isolatePublishMessage2:listener responderConversation:responderConversation];
-    listener = nil;
+    
+
 
      //////SETUP COMPLETE -
     //how many messages from beginning
@@ -567,6 +569,8 @@ NSString *secondMessageText;
     messageCount = [self countMessagesOnConversation:responderConversation since:hwm2];
     XCTAssert(messageCount==0,@"Should have 0 Has %i", messageCount);
     
+    [creatorConversation removeConversationObserver:listener];
+    [rendezvous removeRendezvousObserver:self];
     [client closeSession];
     
 }
@@ -641,7 +645,10 @@ NSString *secondMessageText;
     
     [self isolatePublishMessage2:listener responderConversation:responderConversation];
     
-    [client closeSession];
+    [rendezvous removeRendezvousObserver:self];
+    [creatorConversation removeConversationObserver:listener];
+    listener = nil;
+    
  }
 
 // Rendezvous Delegate
