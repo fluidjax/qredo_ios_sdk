@@ -1,16 +1,18 @@
 #!/bin/bash
 
-xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests    build
+#this is the device ID obtained using 
+# xcrun simctl list 
+id='4CC5B23B-6289-43C3-90FF-B888B55964E4'
+
+#xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests    build
+xcodebuild -sdk iphonesimulator -destination "id=$id" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests    build
 
 while [ 1 ]
 do
-  xcrun simctl shutdown F6303388-F8ED-4F03-8ACC-60FE8DBB2397
-  xcrun simctl erase F6303388-F8ED-4F03-8ACC-60FE8DBB2397
+  xcrun simctl shutdown $id
+  xcrun simctl erase $id
   filename=testresults/output`date '+%Y%m%d%H%M%S'`.txt;
   echo $filename
-#  xctool -reporter pretty:$filename -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme          QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
-  xctool -reporter pretty:$filename -sdk iphonesimulator -destination 'id=F6303388-F8ED-4F03-8ACC-60FE8DBB2397' -workspace QredoSDK.xcworkspace -scheme QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
-
-
+  xctool -reporter pretty:$filename -sdk iphonesimulator -destination "id=$id" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
 done
 

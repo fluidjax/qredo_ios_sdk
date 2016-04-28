@@ -1,0 +1,593 @@
+[Info] Loading settings for scheme 'QredoSDKTests' ... (1478 ms)
+
+[1m=== RUN-TESTS ===[0m
+
+  [Info] Collecting info for testables... (1042 ms)
+  [1mrun-test[0m [4mQredoSDKTests.xctest[0m (iphonesimulator9.3, iPhone 6s Plus, application-test)
+    [Warning] Failed to prepare 'iPhone 6s Plus' simulator to run tests. (3114 ms)
+    [Info] Preparing test environment failed; will retry 2 more times (0 ms)
+    [Info] Verified iOS Simulators... (0 ms)
+    [Info] Shut down iOS Simulator... (2 ms)
+    [Info] Stopped any existing iOS simulator jobs to get a fresh simulator. (116 ms)
+    [Info] Reset iOS simulator content and settings at path "/Users/chris/Library/Developer/CoreSimulator/Devices/4CC5B23B-6289-43C3-90FF-B888B55964E4/data" (68 ms)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (226 ms)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (5 ms)
+    [Info] Installed 'test'. (4523 ms)
+    [Info] Launched 'test' on 'iPhone 6s Plus'. (8265 ms)
+    [32m✓[0m -[Base58Tests test_0010_SimpleEncoding] [2m[32m(3 ms)[0m
+    [32m✓[0m -[Base58Tests test_0020_SimpleDecoding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0025_DecodingWithBadChars] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0026_DecodingWithBadCharsNoErrorPointer] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0030_EncodingAndDecoding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0040_EncodingAndDecodingWithZerosPadding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0050_EncodingAndDecodingRandomEquality] [33m(361 ms)[0m
+    [32m✓[0m -[Base58Tests test_0060_DecodingAndEncodingRandomEquality] [33m(420 ms)[0m
+    [32m✓[0m -[Base58Tests test_0070_EncodingRandomInequality] [33m(452 ms)[0m
+    [32m✓[0m -[Base58Tests test_0080_DecodingRandomInequality] [33m(261 ms)[0m
+    [32m✓[0m -[Base58Tests test_0090_EncodingExpansionTest] [33m(228 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testDecrypt] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testEncryptDecrypt] [2m[32m(3 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testGenerateTestVectors] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testVectors] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimeout] [31m(2197 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimeoutWhereStateDoesNotTimeout] [31m(7999 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimoutWhenReturningToTheStateWithTimeout] [31m(7418 ms)[0m
+      -[ConversationTests testConversation]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:15:44.156 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:44 +0000
+[0m[2m2016-04-28 09:15:44.157 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:44 +0000
+[0m[2m2016-04-28 09:15:44.158 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:44 +0000
+[0m[2m2016-04-28 09:15:44.350 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:44 +0000
+[0m[2m2016-04-28 09:15:44.350 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:44 +0000
+[0m[2m2016-04-28 09:15:44.352 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:44 +0000
+[0m[2m2016-04-28 09:15:44.456 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:44 +0000
+[0m[2m2016-04-28 09:15:44.457 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:44 +0000
+[0m[2m2016-04-28 09:15:45.598 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:45 +0000
+[0m[2m2016-04-28 09:15:45.599 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:45 +0000
+[0m[2m2016-04-28 09:15:45.601 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:45 +0000
+[0m[2m2016-04-28 09:15:45.671 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:45 +0000
+[0m[2m2016-04-28 09:15:45.951 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:45 +0000
+[0m[2m2016-04-28 09:15:45.951 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:45 +0000
+[0m[2m2016-04-28 09:15:45.953 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:45 +0000
+[0m[2m2016-04-28 09:15:46.011 TestHost[6741:276040] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:46 +0000
+[0m[2m2016-04-28 09:15:46.013 TestHost[6741:276040] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:46 +0000
+[0m[2m2016-04-28 09:15:46.851 TestHost[6741:276040] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:46 +0000
+[0m[2m2016-04-28 09:15:46.934 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:46 +0000
+[0m[2m2016-04-28 09:15:46.934 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:46 +0000
+[0m[2m2016-04-28 09:15:46.936 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:46 +0000
+[0m[2m2016-04-28 09:15:46.991 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:46 +0000
+[0m[2m2016-04-28 09:15:46.992 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:46 +0000
+[0m[2m2016-04-28 09:15:47.024 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:47 +0000
+[0m[2m2016-04-28 09:15:47.226 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:47 +0000
+[0m[2m2016-04-28 09:15:47.227 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:47 +0000
+[0m[2m2016-04-28 09:15:47.228 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:47 +0000
+[0m[2m2016-04-28 09:15:47.279 TestHost[6741:276040] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:47 +0000
+[0m[2m2016-04-28 09:15:48.123 TestHost[6741:276604] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:48 +0000
+[0m[2m2016-04-28 09:15:48.123 TestHost[6741:276040] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:48 +0000
+[0m[2m2016-04-28 09:15:48.160 TestHost[6741:276989] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:48 +0000
+[0m[2m2016-04-28 09:15:48.163 TestHost[6741:276989] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:48 +0000
+[0m[2m2016-04-28 09:15:48.216 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:48 +0000
+[0m[2m2016-04-28 09:15:48.217 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:48 +0000
+[0m[2m2016-04-28 09:15:48.219 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:48 +0000
+[0m[2m2016-04-28 09:15:48.281 TestHost[6741:276989] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:48 +0000
+[0m[2m2016-04-28 09:15:49.300 TestHost[6741:276711] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:49.300 TestHost[6741:276040] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:49.343 TestHost[6741:276989] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:49.345 TestHost[6741:276989] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[ConversationTests testConversation] [31m(5274 ms)[0m
+      -[ConversationTests testConversationCreation]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:15:49.424 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:49.425 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:49.426 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:49.564 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:49.565 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:49.566 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:49 +0000
+[0m[2m2016-04-28 09:15:50.392 TestHost[6741:276604] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m2016-04-28 09:15:50.392 TestHost[6741:276604] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m2016-04-28 09:15:50.394 TestHost[6741:276604] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[ConversationTests testConversationCreation] [31m(1028 ms)[0m
+      -[ConversationTests testConversationWatermark]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:15:50.455 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m2016-04-28 09:15:50.455 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m2016-04-28 09:15:50.457 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m2016-04-28 09:15:50.579 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m2016-04-28 09:15:50.579 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m2016-04-28 09:15:50.581 TestHost[6741:275994] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:15:50 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[ConversationTests testConversationWatermark] [31m(5182 ms)[0m
+    [32m✓[0m -[ConversationTests testOtherPartyHasLeft] [31m(2806 ms)[0m
+    [32m✓[0m -[ConversationTests testRespondingToConversation] [31m(3336 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversation] [31m(8131 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationCreation] [31m(6823 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationMultiple] [31m(24913 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationWatermark] [31m(8575 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testOtherPartyHasLeft] [31m(9103 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testRespondingToConversation] [31m(7578 ms)[0m
+    [32m✓[0m -[HighwatermarksTests testConversationHWMComparison] [2m[32m(2 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedConversations] [31m(3633 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedMessages] [31m(2991 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedRendezvous] [31m(4941 ms)[0m
+    [32m✓[0m -[MultiPageMessageTest testPagedVaultItems] [31m(1334 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testCreateOperation] [2m[32m(3 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testDeleteOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testGetOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[OwnershipSignatureTests testListOperation] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_AuthenticationTagButNoAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_EmptyTagNoAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_MultipleAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_NoPrefixOrAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_NoPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithFullTag_Valid_PrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NilPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NilPrefixWithNilAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NoPrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_NoPrefixWithNoAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithNilAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoAuthenticatedRendezvousTagTests testInitWithPrefix_Valid_PrefixWithoutAuthenticationTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoClientTests testConnectAndClose] [33m(252 ms)[0m
+    [32m✓[0m -[QredoClientTests testConnectAndCloseMultiple] [31m(1857 ms)[0m
+    [32m✓[0m -[QredoClientTests testExplicitServer] [32m(185 ms)[0m
+    [32m✓[0m -[QredoClientTests testFailingConnectToClient] [32m(101 ms)[0m
+      -[QredoClientTests testLogging]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:17:22.349 TestHost[6741:275994] ❤️ERROR   Ignore this intentional error:   generated error message from block
+[0m[2m2016-04-28 09:17:22.350 TestHost[6741:275994] 💛WARNING Ignore this intentional warning: generated error message from block
+[0m[2m2016-04-28 09:17:22.350 TestHost[6741:275994] 💚INFO    Ignore this intentional info:    generated error message from block
+[0m[2m2016-04-28 09:17:22.350 TestHost[6741:275994] 💙DEBUG   -[QredoClientTests testLogging]:46 Ignore this intentional debug:   generated error message from block
+[0m[2m2016-04-28 09:17:22.350 TestHost[6741:275994] 💜VERBOSE -[QredoClientTests testLogging]:47 Ignore this intentional verbose: generated error message from block
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoClientTests testLogging] [32m(147 ms)[0m
+    [32m✓[0m -[QredoClientTests testSuccessConnectToClient] [33m(201 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests test100Records] [31m(9795 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests test10Records] [31m(1091 ms)[0m
+    [32m✓[0m -[QredoIndexPerformanceTests testMultiple] [31m(11074 ms)[0m
+      -[QredoIndexVaultTests testCacheFill]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:17:54.799 TestHost[6741:275994] Clock•Drop: [170.210.222.2]
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoIndexVaultTests testCacheFill] [31m(15473 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testCoredataCacheEstimateConstants] [32m(131 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testDisableMetadataCache] [33m(291 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testDisableValueCache] [33m(305 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEmptyPredicate] [33m(411 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEnableValueCache] [33m(217 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testEnumerateRandomClient] [31m(1750 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testFillCacheAfterMiss] [31m(1501 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testFillWithMetadata] [31m(1419 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testIndexSource] [31m(521 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testItemDelete] [33m(328 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testLastAccessTimes] [31m(3207 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMetaDataCacheDisable] [33m(373 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMultipleClientsAndVaults] [33m(445 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testMultiplePut] [31m(1716 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPersistentFileSize] [31m(810 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPurge] [33m(474 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType1] [33m(393 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType3] [33m(297 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testPutItemType4] [33m(432 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testSearch] [31m(23987 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testSimplePut] [31m(1704 ms)[0m
+    [32m✓[0m -[QredoIndexVaultTests testUpdateAccessDatePut] [31m(2761 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateAndRespondHelpers] [2m[32m(0 ms)[0m
+      -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:18:43.477 TestHost[6741:275994] *** Assertion failure in -[QredoRendezvousAnonymousCreateHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_MissingCrypto] [2m[32m(1 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_NonNilSigningHandler] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Invalid_TagContainsAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testCreateHelper_Valid_EmptyTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_EmptyTag] [2m[32m(0 ms)[0m
+      -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_MissingCrypto]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:18:43.480 TestHost[6741:275994] *** Assertion failure in -[QredoRendezvousAnonymousRespondHelper initWithCrypto:], /Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Rendezvous/QredoRendezvousHelper.m:14
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_MissingCrypto] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_NilTag] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousAnonymousHelperTests testRespondHelper_Invalid_TagContainsAtSymbol] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testDerrivedKeysNotNil_AnonymousRendezvous] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testDerrivedKeysNotNil_TrustedRendezvous] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testGenerateTestVectors] [31m(5879 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorAnonymous1] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorAnonymous2] [2m[32m(6 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorEd25519] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorRsa2048] [2m[32m(0 ms)[0m
+    [32m✓[0m -[QredoRendezvousCryptoTest testVectorRsa4096] [2m[32m(0 ms)[0m
+      -[QredoRendezvousTests testActivateExpiredRendezvous]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:18:49.656 TestHost[6741:275994] Clock•Drop: [171.66.97.126]
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateExpiredRendezvous] [31m(3768 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateExpiredRendezvousAndFetchFromNewRef] [31m(5007 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateInvalidDuration] [31m(1511 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateNilRendezvous] [33m(263 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnexpiredRendezvous] [31m(1176 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnexpiredRendezvousNilCompletionHandler] [31m(812 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testActivateUnknownRendezvous] [33m(409 ms)[0m
+      -[QredoRendezvousTests testCreateAndFetchAnonymousRendezvous]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:19:10.293 TestHost[6741:287155] Clock•Drop: [107.20.168.69]
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndFetchAnonymousRendezvous] [31m(8316 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndRespondAnonymousRendezvous] [31m(3412 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateAndRespondAnonymousRendezvousPreCreate] [31m(2089 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateDuplicateAndFetchAnonymousRendezvous] [31m(7724 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testCreateRendezvousAndGetResponses] [31m(873 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateAndRespondToRendezvous] [31m(1512 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateExpiredRendezvous] [31m(3227 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateNilRendezvous] [33m(294 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateRendezvous] [31m(1779 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateRendezvousNilCompletionHandler] [31m(1166 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testDeactivateUnknownRendezvous] [33m(429 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRandomRandezvous] [31m(1479 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousExpiresAt] [31m(1018 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousLongType] [31m(1230 ms)[0m
+    [32m✓[0m -[QredoRendezvousTests testQuickCreateRendezvousShortType] [31m(879 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateExpiredRendezvous] [31m(9754 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateExpiredRendezvousAndFetchFromNewRef] [31m(9462 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateInvalidDuration] [31m(7058 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateNilRendezvous] [31m(6276 ms)[0m
+      -[QredoRendezvousWebSocketTests testActivateUnexpiredRendezvous]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:20:16.957 TestHost[6741:290819] Clock•Drop: [45.79.10.228]
+[0m[2m2016-04-28 09:20:16.957 TestHost[6741:290817] Clock•Drop: [45.79.10.228]
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnexpiredRendezvous] [31m(7549 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnexpiredRendezvousNilCompletionHandler] [31m(6863 ms)[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testActivateUnknownRendezvous] [31m(6283 ms)[0m
+      -[QredoRendezvousWebSocketTests testCreateAndFetchAnonymousRendezvous]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m
+[0m[2mTest crashed while running.
+
+CRASH REPORT: blued_2016-04-28-092046_quince.crash
+
+Process:               blued [4159]
+Path:                  /usr/sbin/blued
+Identifier:            blued
+Version:               4404.4.4
+Code Type:             X86-64 (Native)
+Parent Process:        launchd [1]
+Responsible:           blued [4159]
+User ID:               0
+
+Date/Time:             2016-04-28 09:20:46.354 +0100
+OS Version:            Mac OS X 10.11.4 (15E65)
+Report Version:        11
+Anonymous UUID:        9A02C7C2-0192-628C-F80E-2B1FE3168B08
+
+Sleep/Wake UUID:       CEFF5EEC-B2B0-4E92-8A90-BD519026A7F4
+
+Time Awake Since Boot: 6800 seconds
+Time Since Wake:       1200 seconds
+
+System Integrity Protection: enabled
+
+Crashed Thread:        0  Dispatch queue: com.apple.main-thread
+
+Exception Type:        EXC_BAD_ACCESS (SIGSEGV)
+Exception Codes:       KERN_INVALID_ADDRESS at 0x0000000000000018
+Exception Note:        EXC_CORPSE_NOTIFY
+
+VM Regions Near 0x18:
+--> 
+    __TEXT                 000000010cc77000-000000010cd1e000 [  668K] r-x/rwx SM=COW  /usr/sbin/blued
+
+Application Specific Information:
+objc_msgSend() selector name: setL2capChannel:
+
+
+Thread 0 Crashed:: Dispatch queue: com.apple.main-thread
+0   libobjc.A.dylib               	0x00007fff854064dd objc_msgSend + 29
+1   com.apple.Bluetooth           	0x00007fff95629a2a -[IOBluetoothObject setIOService:] + 78
+2   com.apple.Bluetooth           	0x00007fff95629cd7 -[IOBluetoothObject ioServiceTerminated:] + 32
+3   com.apple.Bluetooth           	0x00007fff95629bc1 IOBluetoothObjectServiceTerminated + 91
+4   com.apple.framework.IOKit     	0x00007fff9395b641 IODispatchCalloutFromCFMessage + 256
+5   com.apple.framework.IOKit     	0x00007fff9395b721 _IODispatchCalloutWithDispatch + 33
+6   libdispatch.dylib             	0x00007fff91764a4b dispatch_mig_server + 403
+7   libdispatch.dylib             	0x00007fff9175040b _dispatch_client_callout + 8
+8   libdispatch.dylib             	0x00007fff91760675 _dispatch_source_latch_and_call + 2235
+9   libdispatch.dylib             	0x00007fff91754a83 _dispatch_source_invoke + 983
+10  libdispatch.dylib             	0x00007fff9176372d _dispatch_main_queue_callback_4CF + 422
+11  com.apple.CoreFoundation      	0x00007fff8bc729e9 __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__ + 9
+12  com.apple.CoreFoundation      	0x00007fff8bc318dd __CFRunLoopRun + 1949
+13  com.apple.CoreFoundation      	0x00007fff8bc30ed8 CFRunLoopRunSpecific + 296
+14  com.apple.Foundation          	0x00007fff8a4eedd9 -[NSRunLoop(NSRunLoop) runMode:beforeDate:] + 270
+15  com.apple.Foundation          	0x00007fff8a4eecb8 -[NSRunLoop(NSRunLoop) run] + 74
+16  blued                         	0x000000010cc99af7 0x10cc77000 + 142071
+17  libdyld.dylib                 	0x00007fff86b795ad start + 1
+
+Thread 1:: Dispatch queue: com.apple.libdispatch-manager
+0   libsystem_kernel.dylib        	0x00007fff92fc4efa kevent_qos + 10
+1   libdispatch.dylib             	0x00007fff91756165 _dispatch_mgr_invoke + 216
+2   libdispatch.dylib             	0x00007fff91755dcd _dispatch_mgr_thread + 52
+
+Thread 2:: com.apple.CFSocket.private
+0   libsystem_kernel.dylib        	0x00007fff92fc407a __select + 10
+1   com.apple.CoreFoundation      	0x00007fff8bc6f4fa __CFSocketManager + 762
+2   libsystem_pthread.dylib       	0x00007fff8353f99d _pthread_body + 131
+3   libsystem_pthread.dylib       	0x00007fff8353f91a _pthread_start + 168
+4   libsystem_pthread.dylib       	0x00007fff8353d351 thread_start + 13
+
+Thread 3:
+0   libsystem_kernel.dylib        	0x00007fff92fc45e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x00007fff8353f578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x00007fff8353d341 start_wqthread + 13
+
+Thread 4:: Dispatch queue: com.apple.root.utility-qos.overcommit
+0   libsystem_platform.dylib      	0x00007fff8336f7c7 os_lock_lock + 3
+1   libobjc.A.dylib               	0x00007fff8540cd5c objc_destructInstance + 124
+2   libsystem_blocks.dylib        	0x00007fff926676ba _Block_release + 137
+3   libdispatch.dylib             	0x00007fff9175040b _dispatch_client_callout + 8
+4   libdispatch.dylib             	0x00007fff9175429b _dispatch_root_queue_drain + 1890
+5   libdispatch.dylib             	0x00007fff91753b00 _dispatch_worker_thread3 + 91
+6   libsystem_pthread.dylib       	0x00007fff8353f4de _pthread_wqthread + 1129
+7   libsystem_pthread.dylib       	0x00007fff8353d341 start_wqthread + 13
+
+Thread 5:
+
+Thread 0 crashed with X86 Thread State (64-bit):
+  rax: 0x00007fff854064c0  rbx: 0x00007ff8600f80f0  rcx: 0x0000000000000003  rdx: 0x0000000000000000
+  rdi: 0x00007ff85e706d50  rsi: 0x000000010ccfe8ae  rbp: 0x00007fff52f83d10  rsp: 0x00007fff52f83c98
+   r8: 0x0000000000001000   r9: 0x0000000000000003  r10: 0x000000010ccfe8ae  r11: 0x0000000000000000
+  r12: 0x00007fff854064c0  r13: 0x00007fff52f83e00  r14: 0x2f006d669d9bf875  r15: 0x0000000000000038
+  rip: 0x00007fff854064dd  rfl: 0x0000000000010246  cr2: 0x0000000000000018
+  
+Logical CPU:     6
+Error Code:      0x00000004
+Trap Number:     14
+
+
+CRASH REPORT: Simulator_2016-04-28-092049_quince.crash
+
+Process:               Simulator [6607]
+Path:                  /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator
+Identifier:            com.apple.iphonesimulator
+Version:               9.3 (645.9)
+Build Info:            Indigo-645009000000000~27
+Code Type:             X86-64 (Native)
+Parent Process:        ??? [1]
+Responsible:           Simulator [6607]
+User ID:               501
+
+Date/Time:             2016-04-28 09:20:49.513 +0100
+OS Version:            Mac OS X 10.11.4 (15E65)
+Report Version:        11
+Anonymous UUID:        9A02C7C2-0192-628C-F80E-2B1FE3168B08
+
+Sleep/Wake UUID:       CEFF5EEC-B2B0-4E92-8A90-BD519026A7F4
+
+Time Awake Since Boot: 6800 seconds
+Time Since Wake:       1200 seconds
+
+System Integrity Protection: enabled
+
+Crashed Thread:        0  Dispatch queue: com.apple.main-thread
+
+Exception Type:        EXC_BAD_ACCESS (SIGSEGV)
+Exception Codes:       KERN_INVALID_ADDRESS at 0x0000000000000010
+Exception Note:        EXC_CORPSE_NOTIFY
+
+VM Regions Near 0x10:
+--> 
+    __TEXT                 000000010edff000-000000010ee2d000 [  184K] r-x/rwx SM=COW  /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator
+
+Thread 0 Crashed:: Dispatch queue: com.apple.main-thread
+0   com.apple.Foundation          	0x00007fff8a56f229 invalidateProxy + 324
+1   com.apple.Foundation          	0x00007fff8a56f08d -[NSDistantObject dealloc] + 60
+2   com.apple.CoreFoundation      	0x00007fff8bbd6a4d -[__NSArrayM dealloc] + 205
+3   libobjc.A.dylib               	0x00007fff8540d288 objc_object::sidetable_release(bool) + 242
+4   com.apple.Foundation          	0x00007fff8a6198df invalidateConnection + 961
+5   com.apple.Foundation          	0x00007fff8a605407 -[NSConnection invalidate] + 887
+6   com.apple.CoreFoundation      	0x00007fff8bc48bbc __CFNOTIFICATIONCENTER_IS_CALLING_OUT_TO_AN_OBSERVER__ + 12
+7   com.apple.CoreFoundation      	0x00007fff8bc48b4f ___CFXRegistrationPost_block_invoke + 63
+8   com.apple.CoreFoundation      	0x00007fff8bc48ac7 _CFXRegistrationPost + 407
+9   com.apple.CoreFoundation      	0x00007fff8bc48832 ___CFXNotificationPost_block_invoke + 50
+10  com.apple.CoreFoundation      	0x00007fff8bc055e2 -[_CFXNotificationRegistrar find:object:observer:enumerator:] + 1922
+11  com.apple.CoreFoundation      	0x00007fff8bc04835 _CFXNotificationPost + 693
+12  com.apple.Foundation          	0x00007fff8a4d0fda -[NSNotificationCenter postNotificationName:object:userInfo:] + 66
+13  com.apple.Foundation          	0x00007fff8a594967 _NSPortDeathNotify + 76
+14  com.apple.CoreFoundation      	0x00007fff8bc9a465 ____CFMachPortChecker_block_invoke + 69
+15  libdispatch.dylib             	0x00007fff9175b93d _dispatch_call_block_and_release + 12
+16  libdispatch.dylib             	0x00007fff9175040b _dispatch_client_callout + 8
+17  libdispatch.dylib             	0x00007fff91763c1c _dispatch_main_queue_callback_4CF + 1685
+18  com.apple.CoreFoundation      	0x00007fff8bc729e9 __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__ + 9
+19  com.apple.CoreFoundation      	0x00007fff8bc318dd __CFRunLoopRun + 1949
+20  com.apple.CoreFoundation      	0x00007fff8bc30ed8 CFRunLoopRunSpecific + 296
+21  com.apple.HIToolbox           	0x00007fff8683e935 RunCurrentEventLoopInMode + 235
+22  com.apple.HIToolbox           	0x00007fff8683e76f ReceiveNextEventCommon + 432
+23  com.apple.HIToolbox           	0x00007fff8683e5af _BlockUntilNextEventMatchingListInModeWithFilter + 71
+24  com.apple.AppKit              	0x00007fff8d6baefa _DPSNextEvent + 1067
+25  com.apple.AppKit              	0x00007fff8d6ba32a -[NSApplication _nextEventMatchingEventMask:untilDate:inMode:dequeue:] + 454
+26  com.apple.AppKit              	0x00007fff8d6aee84 -[NSApplication run] + 682
+27  com.apple.AppKit              	0x00007fff8d67846c NSApplicationMain + 1176
+28  libdyld.dylib                 	0x00007fff86b795ad start + 1
+
+Thread 1:: Dispatch queue: com.apple.libdispatch-manager
+0   libsystem_kernel.dylib        	0x00007fff92fc4efa kevent_qos + 10
+1   libdispatch.dylib             	0x00007fff91756165 _dispatch_mgr_invoke + 216
+2   libdispatch.dylib             	0x00007fff91755dcd _dispatch_mgr_thread + 52
+
+Thread 2:: com.apple.NSEventThread
+0   libsystem_kernel.dylib        	0x00007fff92fbdf72 mach_msg_trap + 10
+1   libsystem_kernel.dylib        	0x00007fff92fbd3b3 mach_msg + 55
+2   com.apple.CoreFoundation      	0x00007fff8bc321c4 __CFRunLoopServiceMachPort + 212
+3   com.apple.CoreFoundation      	0x00007fff8bc3168c __CFRunLoopRun + 1356
+4   com.apple.CoreFoundation      	0x00007fff8bc30ed8 CFRunLoopRunSpecific + 296
+5   com.apple.AppKit              	0x00007fff8d810e99 _NSEventThread + 149
+6   libsystem_pthread.dylib       	0x00007fff8353f99d _pthread_body + 131
+7   libsystem_pthread.dylib       	0x00007fff8353f91a _pthread_start + 168
+8   libsystem_pthread.dylib       	0x00007fff8353d351 thread_start + 13
+
+Thread 3:
+0   libsystem_kernel.dylib        	0x00007fff92fc45e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x00007fff8353f578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x00007fff8353d341 start_wqthread + 13
+
+Thread 4:
+0   libsystem_kernel.dylib        	0x00007fff92fc45e2 __workq_kernreturn + 10
+1   libsystem_pthread.dylib       	0x00007fff8353f578 _pthread_wqthread + 1283
+2   libsystem_pthread.dylib       	0x00007fff8353d341 start_wqthread + 13
+
+Thread 0 crashed with X86 Thread State (64-bit):
+  rax: 0x0000000000000010  rbx: 0x0000000000000000  rcx: 0x00007fb030f62580  rdx: 0x0000000000000018
+  rdi: 0x00007fb0332f6ec8  rsi: 0x0000000000000006  rbp: 0x00007fff50dfded0  rsp: 0x00007fff50dfddc0
+   r8: 0x0000000000000010   r9: 0xffffffff00000000  r10: 0x00007fb03100bce0  r11: 0x00007fff72d345c8
+  r12: 0x0000000000000013  r13: 0x0000000000000004  r14: 0x0000000000000000  r15: 0x0000000000000001
+  rip: 0x00007fff8a56f229  rfl: 0x0000000000010246  cr2: 0x0000000000000010
+  
+Logical CPU:     5
+Error Code:      0x00000004
+Trap Number:     14[0m
+[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [31m☂[0m -[QredoRendezvousWebSocketTests testCreateAndFetchAnonymousRendezvous] [31m(18988 ms)[0m (0)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (25 ms)
+    [Warning] Failed to install the test host app 'test'. (1 ms)
+    [Info] Preparing test environment failed; will retry 2 more times (0 ms)
+    [Info] Verified iOS Simulators... (0 ms)
+    [Info] Shut down iOS Simulator... (1833 ms)
+    [Info] Stopped any existing iOS simulator jobs to get a fresh simulator. (114 ms)
+    [Info] Reset iOS simulator content and settings at path "/Users/chris/Library/Developer/CoreSimulator/Devices/4CC5B23B-6289-43C3-90FF-B888B55964E4/data" (256 ms)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (212 ms)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (5 ms)
+    [Info] Installed 'test'. (4376 ms)
+    [Info] Launched 'test' on 'iPhone 6s Plus'. (8387 ms)
+      -[QredoRendezvousWebSocketTests testCreateAndRespondAnonymousRendezvous]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:21:10.148 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:10 +0000
+[0m[2m2016-04-28 09:21:10.149 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:10 +0000
+[0m[2m2016-04-28 09:21:10.150 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:10 +0000
+[0m[2m2016-04-28 09:21:14.027 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:14 +0000
+[0m[2m2016-04-28 09:21:14.027 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:14 +0000
+[0m[2m2016-04-28 09:21:14.029 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:14 +0000
+[0m[2m2016-04-28 09:21:14.080 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:14 +0000
+[0m[2m2016-04-28 09:21:14.203 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:14 +0000
+[0m[2m2016-04-28 09:21:14.203 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:14 +0000
+[0m[2m2016-04-28 09:21:14.205 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:14 +0000
+[0m[2m2016-04-28 09:21:18.331 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.331 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.331 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.332 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.333 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.334 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.439 TestHost[7023:296641] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.441 TestHost[7023:296641] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.443 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.444 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateAndRespondAnonymousRendezvous] [31m(11475 ms)[0m
+      -[QredoRendezvousWebSocketTests testCreateAndRespondAnonymousRendezvousPreCreate]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:21:18.507 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.507 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:18.508 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:18 +0000
+[0m[2m2016-04-28 09:21:21.601 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:21 +0000
+[0m[2m2016-04-28 09:21:21.601 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:21 +0000
+[0m[2m2016-04-28 09:21:21.602 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:21 +0000
+[0m[2m2016-04-28 09:21:25.217 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.217 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.219 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.299 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.602 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.603 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.604 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.604 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.604 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.606 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.702 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.703 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.717 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.719 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateAndRespondAnonymousRendezvousPreCreate] [31m(7256 ms)[0m
+      -[QredoRendezvousWebSocketTests testCreateDuplicateAndFetchAnonymousRendezvous]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:21:25.763 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.764 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:25.765 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:25 +0000
+[0m[2m2016-04-28 09:21:28.869 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:28 +0000
+[0m[2m2016-04-28 09:21:28.869 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:28 +0000
+[0m[2m2016-04-28 09:21:28.871 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:28 +0000
+[0m[2m2016-04-28 09:21:32.549 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:32 +0000
+[0m[2m2016-04-28 09:21:32.549 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:32 +0000
+[0m[2m2016-04-28 09:21:32.552 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:32 +0000
+[0m[2m2016-04-28 09:21:33.919 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:33 +0000
+[0m[2m2016-04-28 09:21:33.965 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:33 +0000
+[0m[2m2016-04-28 09:21:34.058 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:34 +0000
+[0m[2m2016-04-28 09:21:34.110 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:34 +0000
+[0m[2m2016-04-28 09:21:34.183 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:34 +0000
+[0m[2m2016-04-28 09:21:34.184 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:34 +0000
+[0m[2m2016-04-28 09:21:34.185 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:34 +0000
+[0m[2m2016-04-28 09:21:37.246 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:37 +0000
+[0m[2m2016-04-28 09:21:39.317 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.317 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.318 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.318 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.320 TestHost[7023:296803] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.320 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.390 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.391 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.392 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.393 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.438 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.509 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.509 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.511 TestHost[7023:297852] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.562 TestHost[7023:297855] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.563 TestHost[7023:297855] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.596 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.657 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.657 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:39.658 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:39 +0000
+[0m[2m2016-04-28 09:21:42.736 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:42 +0000
+[0m[2m2016-04-28 09:21:44.815 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.815 TestHost[7023:296641] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.815 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.816 TestHost[7023:296641] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.819 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.819 TestHost[7023:296641] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.904 TestHost[7023:296641] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.906 TestHost[7023:296641] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.909 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.911 TestHost[7023:297356] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:44.956 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:44 +0000
+[0m[2m2016-04-28 09:21:45.032 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:45 +0000
+[0m[2m2016-04-28 09:21:45.032 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:45 +0000
+[0m[2m2016-04-28 09:21:45.034 TestHost[7023:296670] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:45 +0000
+[0m[2m2016-04-28 09:21:45.086 TestHost[7023:296661] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:45 +0000
+[0m[2m2016-04-28 09:21:45.088 TestHost[7023:296661] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:45 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateDuplicateAndFetchAnonymousRendezvous] [31m(19377 ms)[0m
+      -[QredoRendezvousWebSocketTests testCreateRendezvous_NilSigningHandler]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:21:45.144 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:45 +0000
+[0m[2m2016-04-28 09:21:45.144 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:45 +0000
+[0m[2m2016-04-28 09:21:45.146 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:45 +0000
+[0m[2m2016-04-28 09:21:48.226 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:48 +0000
+[0m[2m2016-04-28 09:21:48.227 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:48 +0000
+[0m[2m2016-04-28 09:21:48.228 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:48 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvous_NilSigningHandler] [31m(6186 ms)[0m
+      -[QredoRendezvousWebSocketTests testCreateRendezvous_NoSigningHandler]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:21:51.326 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:51 +0000
+[0m[2m2016-04-28 09:21:51.326 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:51 +0000
+[0m[2m2016-04-28 09:21:51.327 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:51 +0000
+[0m[2m2016-04-28 09:21:54.482 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:54 +0000
+[0m[2m2016-04-28 09:21:54.482 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:54 +0000
+[0m[2m2016-04-28 09:21:54.484 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:54 +0000
+[0m[2m━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+    [32m✓[0m -[QredoRendezvousWebSocketTests testCreateRendezvous_NoSigningHandler] [31m(6236 ms)[0m
+      -[QredoRendezvousWebSocketTests testCreateRendezvousAndGetResponses]
+[2m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[2m2016-04-28 09:21:57.562 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:57 +0000
+[0m[2m2016-04-28 09:21:57.562 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:57 +0000
+[0m[2m2016-04-28 09:21:57.564 TestHost[7023:296613] ❤️ERROR   DATE: NTP fails sanity - Using local 2016-04-28 08:21:57 +0000
+[0m
