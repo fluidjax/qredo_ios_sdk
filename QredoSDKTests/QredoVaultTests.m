@@ -542,7 +542,8 @@
         // avoiding exception when 'fulfill' is called after timeout
         x2 = nil;
     }];
-    XCTAssertTrue([test2vaultItemMetadata.descriptor isEqual:deleteItemDescriptor], @"Retrieved item should be second");
+   
+    XCTAssertNil(test2vaultItemMetadata,@"metadata of deleted item should retirve as nil");
     
     
     
@@ -669,12 +670,8 @@
         // avoiding exception when 'fulfill' is called after timeout
         x2 = nil;
     }];
-    XCTAssertTrue([test2vaultItem.metadata.descriptor isEqual:deleteItemDescriptor], @"Retrieved item should be second");
-    
-    if (![test2vaultItem.metadata.descriptor isEqual:deleteItemDescriptor]){
-        NSLog(@"error should be here");
-        
-    }
+
+    XCTAssertNil(test2vaultItem,@"Deleted item get should return nil");
     
     
     
