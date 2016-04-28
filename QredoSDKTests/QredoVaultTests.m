@@ -353,7 +353,7 @@
         // avoiding exception when 'fulfill' is called after timeout
         listener.didReceiveVaultItemMetadataExpectation = nil;
     }];
-    [vault removeVaultObserver:listener];
+   // [vault removeVaultObserver:listener];
     
     
     
@@ -380,7 +380,7 @@
         listener2.didReceiveVaultItemMetadataExpectation = nil;
     }];
     
-    [vault removeVaultObserver:listener2];
+    //[vault removeVaultObserver:listener2];
     
     
     
@@ -446,7 +446,7 @@
     }];
     
     XCTAssertTrue([item2Metadata.descriptor isEqual:test4vaultItemMetadata.descriptor], @"Retrieved item should be second");
-    
+    [client closeSession];
 }
 
 
@@ -488,7 +488,7 @@
         listener.didReceiveVaultItemMetadataExpectation = nil;
     }];
     
-    [vault removeVaultObserver:listener];
+    //[vault removeVaultObserver:listener];
     
     
     
@@ -509,7 +509,7 @@
         listener2.didReceiveVaultItemMetadataExpectation = nil;
     }];
     
-    [vault removeVaultObserver:listener2];
+    //[vault removeVaultObserver:listener2];
     
     
     
@@ -576,6 +576,7 @@
     }];
     
      XCTAssertNil(test4vaultItemMetadata,@"Should be nil");
+    [client closeSession];
     
 }
 
@@ -584,6 +585,7 @@
 -(void)testGetLatestItemFromIndexAfterDelete{
     [self resetKeychain];
     XCTAssertNotNil(client);
+    [self authoriseClient];
     QredoVault *vault = [client defaultVault];
     XCTAssertNotNil(vault);
     
@@ -614,7 +616,7 @@
         listener.didReceiveVaultItemMetadataExpectation = nil;
     }];
     
-    [vault removeVaultObserver:listener];
+   
     
     
     
@@ -634,7 +636,7 @@
         listener2.didReceiveVaultItemMetadataExpectation = nil;
     }];
     
-    [vault removeVaultObserver:listener2];
+    
     
     
     
@@ -669,6 +671,12 @@
     }];
     XCTAssertTrue([test2vaultItem.metadata.descriptor isEqual:deleteItemDescriptor], @"Retrieved item should be second");
     
+    if (![test2vaultItem.metadata.descriptor isEqual:deleteItemDescriptor]){
+        NSLog(@"error should be here");
+        
+    }
+    
+    
     
     
     //get the latest with first descriptor
@@ -677,12 +685,16 @@
     
     [vault getLatestItemWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
         test3vaultItem = vaultItem;
+        if (test3vaultItem){
+            NSLog(@"we shouldnt be here!!");
+        }
         [x3 fulfill];
     }];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         x3 = nil;
     }];
+    
     
     XCTAssertNil(test3vaultItem,@"Should be nil");
     
@@ -701,7 +713,8 @@
     }];
     
     XCTAssertNil(test4vaultItem,@"Should be nil");
-    
+
+    [client closeSession];
 }
 
 
@@ -750,7 +763,7 @@
         listener.didReceiveVaultItemMetadataExpectation = nil;
     }];
     
-    [vault removeVaultObserver:listener];
+//    [vault removeVaultObserver:listener];
     
     
     
@@ -1426,6 +1439,7 @@
         // avoiding exception when 'fulfill' is called after timeout
         testExpectation = nil;
     }];
+    [client closeSession];
 }
 
 - (void)testEnumeration
@@ -1657,7 +1671,8 @@
     XCTAssertTrue(listener.receivedItems.count > 0);
 
 
-    [vault removeVaultObserver:listener];
+//    [vault removeVaultObserver:listener];
+    [client closeSession];
 }
 
 - (void)testMultipleListeners
@@ -1705,8 +1720,8 @@
     XCTAssertTrue(listener2.receivedItems.count > 0);
 
     
-    [vault removeVaultObserver:listener1];
-    [vault removeVaultObserver:listener2];
+//    [vault removeVaultObserver:listener1];
+//    [vault removeVaultObserver:listener2];
     
     
     [client closeSession];

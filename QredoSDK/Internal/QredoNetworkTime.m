@@ -67,34 +67,35 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
 
 
 +(NSDate*)dateTime{
-    QredoNetworkTime *server = [QredoNetworkTime start];
-    NSDate *tlsDate = [server dateGuessForFirstServer];
-    NSDate *ntpDate = [server ntpDate];
-    NSDate *localDate =  [NSDate date];
-
-    
-    //best case return ntpdate santinty checked with tlsdate
-    if (tlsDate && ntpDate){
-        //do sanity check
-        if ([server sanityCheck:ntpDate with:tlsDate]){
-            QredoLogDebug(@"DATE: Using sanity checked NTP Date %@", ntpDate);
-            return ntpDate;
-        }else{
-            //ntpDate is more than X seconds off - this shouldnt be happening
-            QredoLogError(@"DATE: NTP fails sanity - Using local %@", localDate);
-            return localDate;
-        }
-    }
-    
-    //return tlsdate its better than the local date
-    if (tlsDate && !ntpDate){
-        QredoLogWarning(@"DATE: Using TLS Date (no NTP) %@", tlsDate);
-        return tlsDate;
-    }
-    
-    QredoLogWarning(@"DATE: Fallback to Local date %@", localDate);
-    //return the local date
-    return localDate;
+    return [NSDate date];
+//    QredoNetworkTime *server = [QredoNetworkTime start];
+//    NSDate *tlsDate = [server dateGuessForFirstServer];
+//    NSDate *ntpDate = [server ntpDate];
+//    NSDate *localDate =  [NSDate date];
+//
+//    
+//    //best case return ntpdate santinty checked with tlsdate
+//    if (tlsDate && ntpDate){
+//        //do sanity check
+//        if ([server sanityCheck:ntpDate with:tlsDate]){
+//            QredoLogDebug(@"DATE: Using sanity checked NTP Date %@", ntpDate);
+//            return ntpDate;
+//        }else{
+//            //ntpDate is more than X seconds off - this shouldnt be happening
+//            QredoLogWarning(@"DATE: NTP fails sanity - Using local %@", localDate);
+//            return localDate;
+//        }
+//    }
+//    
+//    //return tlsdate its better than the local date
+//    if (tlsDate && !ntpDate){
+//        QredoLogWarning(@"DATE: Using TLS Date (no NTP) %@", tlsDate);
+//        return tlsDate;
+//    }
+//    
+//    QredoLogWarning(@"DATE: Fallback to Local date %@", localDate);
+//    //return the local date
+//    return localDate;
 }
 
 

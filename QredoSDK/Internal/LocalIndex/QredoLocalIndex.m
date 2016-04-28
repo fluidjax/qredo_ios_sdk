@@ -626,8 +626,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 - (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error {
-
-    //The index doesn't really care if the vault operation failed or not
+   //The index doesn't really care if the vault operation failed or not
 }
 
 

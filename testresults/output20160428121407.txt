@@ -1,0 +1,16 @@
+[Info] Loading settings for scheme 'QredoSDKTests' ... (1641 ms)
+
+[1m=== RUN-TESTS ===[0m
+
+  [Info] Collecting info for testables... (1047 ms)
+  [1mrun-test[0m [4mQredoSDKTests.xctest[0m (iphonesimulator9.3, iPhone 6s Plus, application-test)
+    [Warning] Failed to prepare 'iPhone 6s Plus' simulator to run tests. (3098 ms)
+    [Info] Preparing test environment failed; will retry 2 more times (0 ms)
+    [Info] Verified iOS Simulators... (0 ms)
+    [Info] Shut down iOS Simulator... (2 ms)
+    [Info] Stopped any existing iOS simulator jobs to get a fresh simulator. (114 ms)
+    [Info] Reset iOS simulator content and settings at path "/Users/chris/Library/Developer/CoreSimulator/Devices/4CC5B23B-6289-43C3-90FF-B888B55964E4/data" (79 ms)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (230 ms)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (6 ms)
+    [Info] Installed 'test'. (4568 ms)
+    [Info] Launched 'test' on 'iPhone 6s Plus'. (10272 ms)

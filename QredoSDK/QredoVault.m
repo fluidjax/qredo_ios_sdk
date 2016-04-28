@@ -337,11 +337,15 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     //ItemID specified but ignore SequenceID=nil & SequenceValue=0
     //It will retrieve the latest value available from the cache and return
     //If item is not in the cache goes to the server and retirees the specified sequence state
-    //If the latest item is a deleted item (tombstoned) it will return nil
+    //If the latest item is a deleted item it will return nil
     QredoVaultItem *vaultItem = [self.localIndex getLatestVaultItemFromIndexWithDescriptor:itemDescriptor];
+    
+    
+    
+    //if item in in the index
     if (vaultItem){
         //if the metadata is a tombstone return nil
-        if (vaultItem.metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItem=nil;
+        if ([vaultItem.metadata isDeleted])vaultItem=nil;
         QredoLogInfo(@"Retrieved VaultItem from Index");
         completionHandler(vaultItem,nil);
         return;
@@ -349,28 +353,17 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
     
     
+    //get from the server
     [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
-        //we can now put it in the cache
-        
-        
         __block QredoVaultItem *serverVaultItem = vaultItem;
         if (serverVaultItem){
             [self cacheInIndexVaultItem:serverVaultItem metadata:serverVaultItem.metadata completionHandler:^(NSError *error) {
-                if (serverVaultItem.metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)serverVaultItem=nil;
+                if ([serverVaultItem.metadata isDeleted])serverVaultItem=nil;
                 if (completionHandler)completionHandler(serverVaultItem, error);
             }];
         }else{
              if (completionHandler)completionHandler(nil, error);
         }
-        
-    }];
-
-    
-    
-    //Nothing in the index try the server
-    [self getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
-        if (vaultItem.metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItem=nil;
-        completionHandler(vaultItem,nil);
     }];
 }
 
@@ -382,17 +375,17 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     //If item is not in the cache goes to the server and retirees the specified sequence state
     //If the latest item is a deleted item (tombstoned) it will return nil
     QredoVaultItemMetadata *vaultItemMetadata = [self.localIndex getLatestMetadataFromIndexWithDescriptor:itemDescriptor];
+    
+    
+    //if in the index
     if (vaultItemMetadata){
-        //if the metadata is a tombstone return nil
-        if (vaultItemMetadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItemMetadata=nil;
+        if ([vaultItemMetadata isDeleted])vaultItemMetadata=nil;
         QredoLogInfo(@"Retrieved VaultItem from Index");
         completionHandler(vaultItemMetadata,nil);
         return;
     }
     
-    //Nothing in the index try the server
-    
-    
+     //get from the server
     [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
         if (error){
             QredoLogWarning(@"VaultMetadata not found on server");
@@ -401,51 +394,34 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
             
             __block QredoVaultItemMetadata *serverMetaData = vaultItemMetadata;
             [self cacheInIndexVaultItemMetadata:serverMetaData completionHandler:^(NSError *error) {
-                if (serverMetaData.dataType == QredoVaultItemMetadataItemTypeTombstone)serverMetaData=nil;
+                if ([serverMetaData isDeleted])serverMetaData=nil;
                 QredoLogVerbose(@"VaultMetadata added to cache");
                 if (completionHandler)completionHandler(serverMetaData, error);
             }];
         }
     }];
-
-    
-//    [self getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
-//        if (vaultItemMetadata.dataType == QredoVaultItemMetadataItemTypeTombstone)vaultItemMetadata=nil;
-//        completionHandler(vaultItemMetadata,nil);
-//    }];
 }
 
 
 - (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
             completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler{
+    
+    
     QredoVaultItem *vaultItem = [self.localIndex getVaultItemFromIndexWithDescriptor:itemDescriptor];
     if (vaultItem){
-        //if the metadata is a tombstone return nil
-        
+         if ([vaultItem.metadata isDeleted])vaultItem=nil;
         QredoLogInfo(@"Retrieved VaultItem from Index");
         completionHandler(vaultItem,nil);
     }else{
         QredoLogInfo(@"Retrieved VaultItem from server");
         
-
-        //report API server limitation
-        if (itemDescriptor.sequenceId==nil){
-            NSError *error = [NSError errorWithDomain:QredoErrorDomain
-                                                 code:QredoErrorCodeVaultInsufficientParameters
-                                             userInfo:@{ NSLocalizedDescriptionKey : @"Cant retrieve item from server without Sequece ID & Value" }];
-            if (completionHandler)completionHandler(nil, error);
-            return;
-        }
-        
-        
-        
          [_vaultServerAccess getItemWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
              //we can now put it in the cache
-             if (error.code==QredoErrorCodeVaultItemHasBeenDeleted){
-                 //special case of item deleted
+             if (error.code==QredoErrorCodeVaultItemHasBeenDeleted || [vaultItem.metadata isDeleted]==YES){
+                 //special case of item deleted - cache and return nil
                  [self cacheInIndexVaultItem:vaultItem metadata:vaultItem.metadata completionHandler:^(NSError *cacheError) {
                      QredoLogVerbose(@"deleted vaultItem added to cache");
-                     if (completionHandler)completionHandler(vaultItem, error);
+                     if (completionHandler)completionHandler(nil, error);
                  }];
              }else if (error){
                  QredoLogWarning(@"VaultItem not found on server");
@@ -456,11 +432,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                      if (completionHandler)completionHandler(vaultItem, error);
                  }];
              }
-             
          }];
-
     }
-    
 }
 
 
@@ -472,18 +445,25 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     
     QredoVaultItemMetadata *metadata = [self.localIndex getMetadataFromIndexWithDescriptor:itemDescriptor];
     if (metadata){
-        //if the metadata is a tombstone return nil
-        //if (metadata.dataType == QredoVaultItemMetadataItemTypeTombstone)metadata=nil;
+        if ([metadata isDeleted])metadata=nil;
         QredoLogInfo(@"Retrieved VaultMetadata from Index");
         completionHandler(metadata,nil);
-        
     }else{
         QredoLogInfo(@"Retrieved VaultMetadata from server");
         [_vaultServerAccess getItemMetadataWithDescriptor:itemDescriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
             
-            if (error){
+            if (error.code==QredoErrorCodeVaultItemHasBeenDeleted || [vaultItemMetadata isDeleted]==YES){
+                //special case of item deleted - cache and return nil
+                [self cacheInIndexVaultItemMetadata:vaultItemMetadata completionHandler:^(NSError *error) {
+                    QredoLogVerbose(@"deleted vaultItemMetadata added to cache");
+                    if (completionHandler)completionHandler(vaultItemMetadata, error);
+                }];
+                
+                
+            }else if (error){
                 QredoLogWarning(@"VaultMetadata not found on server");
                 if (completionHandler)completionHandler(vaultItemMetadata, error);
+                
             }else{
                 [self cacheInIndexVaultItemMetadata:vaultItemMetadata completionHandler:^(NSError *error) {
                      QredoLogVerbose(@"VaultMetadata added to cache");

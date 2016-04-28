@@ -270,7 +270,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
 
     QLog(@"\nStopping listening");
-    [rendezvous removeRendezvousObserver:self];
+    [client closeSession];
 
 }
 
