@@ -664,7 +664,7 @@
 		0AA0CAD819D9B92B0025DD4D /* QredoConversationCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoConversationCrypto.m; sourceTree = "<group>"; };
 		0AA38FCF1AD6E8E000D2F391 /* VaultCryptoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VaultCryptoTests.m; sourceTree = "<group>"; };
 		0AAB39731AB1DA8D00460797 /* QredoClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoClient.h; sourceTree = "<group>"; };
-		0AAB39741AB1DA8D00460797 /* QredoClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClient.m; sourceTree = "<group>"; };
+		0AAB39741AB1DA8D00460797 /* QredoClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = QredoClient.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		0AAB39781AB1E0C000460797 /* NSDictionary+IndexableSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+IndexableSet.h"; sourceTree = "<group>"; };
 		0AAB39791AB1E0C000460797 /* NSDictionary+IndexableSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+IndexableSet.m"; sourceTree = "<group>"; };
 		0AB62A9319F553CD005C4B0C /* QredoRendezvous.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRendezvous.h; sourceTree = "<group>"; };

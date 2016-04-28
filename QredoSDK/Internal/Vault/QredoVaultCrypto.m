@@ -238,7 +238,7 @@
                                               userInfo:nil];
         }
 
-        completionHandler(nil, decryptionError);
+        if (completionHandler)completionHandler(nil, decryptionError);
         return ;
     }
 
@@ -259,11 +259,11 @@
 
     if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
         error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
-        completionHandler(nil, error);
+        if (completionHandler)completionHandler(nil, error);
     }
     else {
         QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:vaultItemLF.body];
-        completionHandler(vaultItem, nil);
+        if (completionHandler)completionHandler(vaultItem, nil);
     }
 }
 
@@ -284,7 +284,7 @@
                                               userInfo:nil];
         }
 
-        completionHandler(nil, decryptionError);
+        if (completionHandler)completionHandler(nil, decryptionError);
         return;
     }
 
@@ -304,10 +304,10 @@
     metadata.origin = origin;
     if ([metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
         error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemHasBeenDeleted userInfo:nil];
-        completionHandler(nil, error);
+        if (completionHandler)completionHandler(nil, error);
     }
     else {
-        completionHandler(metadata, nil);
+        if (completionHandler)completionHandler(metadata, nil);
     }
 }
 

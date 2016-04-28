@@ -247,7 +247,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     if (!rendezvousHelper) {
         // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
         // be to much information.
-        completionHandler(error);
+        if (completionHandler)completionHandler(error);
         return;
     }
     _tag = [rendezvousHelper tag];
@@ -291,7 +291,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         if (!authSignature) {
             // TODO: [GR]: Filter what errors we pass to the user. What we are currently passing may
             // be to much information.
-            completionHandler(error);
+            if (completionHandler)completionHandler(error);
             return;
         }
         authType = [QLFRendezvousAuthType rendezvousTrustedWithSignature:authSignature];
@@ -314,7 +314,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     [_rendezvous createWithCreationInfo:_creationInfo
                       completionHandler:^(QLFRendezvousCreateResult *result, NSError *error) {
                           if (error) {
-                              completionHandler(error);
+                              if (completionHandler)completionHandler(error);
                               return;
                           }
                           
@@ -330,10 +330,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                                 ownershipKeyPair:ownershipKeyPair];
                               self.configuration.expiresAt = [[expiresAt anyObject] asDate];
                               [self storeWithCompletionHandler:^(NSError *error) {
-                                  completionHandler(error);
+                                  if (completionHandler)completionHandler(error);
                               }];
                           } ifRendezvousAlreadyExists:^{
-                              completionHandler([NSError errorWithDomain:QredoErrorDomain
+                              if (completionHandler)completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                                     code:QredoErrorCodeRendezvousAlreadyExists
                                                                 userInfo:@{NSLocalizedDescriptionKey: @"Rendezvous with the specified tag already exists"}]);
                           }];
@@ -364,7 +364,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                       authenticationType:self.authenticationType
                                                            rendezvousRef:rendezvousRef];
         }
-        completionHandler(error);
+        if (completionHandler)completionHandler(error);
     }];
 }
 
@@ -393,7 +393,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                   error:&error];
     
     if (error) {
-        completionHandler(error);
+        if (completionHandler)completionHandler(error);
         return;
     }
     
@@ -403,14 +403,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                      completionHandler:^(QLFRendezvousActivated *result, NSError *error){
                          if (error) {
                               QredoLogError(@"Error activating rendezvous %@",error);
-                             completionHandler(error);
+                             if (completionHandler)completionHandler(error);
                              return;
                          }
                          
                          NSSet* expiresAt = [result expiresAt];
                          [self updateRendezvousWithDuration: duration expiresAt: expiresAt completionHandler:^(NSError *error) {
                              QredoLogInfo(@"Rendezvous Activated");
-                             completionHandler(error);
+                             if (completionHandler)completionHandler(error);
                          }];
                      }];
 }
@@ -440,7 +440,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     [_client.systemVault getItemMetadataWithDescriptor: self.metadata.rendezvousRef.vaultItemDescriptor
                                      completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error){
                                          if (error) {
-                                             completionHandler(error);
+                                             if (completionHandler)completionHandler(error);
                                              return;
                                          }
                                          
@@ -456,7 +456,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                          // add the item to the Vault. This will be the same Rendezvous but will update the sequence value
                                          [_client.systemVault strictlyUpdateItem: newVaultItem completionHandler: ^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
                                              if (error) {
-                                                 completionHandler(error);
+                                                 if (completionHandler)completionHandler(error);
                                                  return;
                                              }
                                              
@@ -475,7 +475,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                                                                            expiresAt:[expiresAt anyObject]];
                                                  
                                              }
-                                             completionHandler(error);
+                                             if (completionHandler)completionHandler(error);
                                          }];
                                      }];
 }
@@ -498,7 +498,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                   error:&error];
     
     if (error) {
-        completionHandler(error);
+        if (completionHandler)completionHandler(error);
         return;
     }
     
@@ -507,7 +507,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                signature:ownershipSignature
                        completionHandler:^(QLFRendezvousDeactivated *result, NSError *error)
      {
-         completionHandler(error);
+         if (completionHandler)completionHandler(error);
      }
      ];
 }
@@ -617,7 +617,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
      }
                     completionHandler:^(NSError *error) {
                             QredoLogInfo(@"Enumerate Conversations complete");
-                        completionHandler(error);
+                        if (completionHandler)completionHandler(error);
                     }           since:sinceWatermark
                  highWatermarkHandler:highWatermarkHandler];
 }
@@ -644,7 +644,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                   error:&error];
     
     if (error) {
-        completionHandler(error);
+        if (completionHandler)completionHandler(error);
         return;
     }
     
@@ -654,7 +654,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                          completionHandler:^(QLFRendezvousResponsesResult *result, NSError *error)
      {
          if (error) {
-             completionHandler(error);
+             if (completionHandler)completionHandler(error);
              return;
          }
          
@@ -677,7 +677,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
             highWatermarkHandler(result.sequenceValue);
         }
         
-        completionHandler(nil);
+        if (completionHandler)completionHandler(nil);
     };
     
     void (^continueToNextItem)() = ^{
@@ -715,7 +715,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
          }
          
          if (error) {
-             completionHandler(error);
+             if (completionHandler)completionHandler(error);
              return;
          }
          
@@ -743,10 +743,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                      rendezvousOwner:YES
                                    completionHandler:^(NSError *error){
                                        if (error) {
-                                           completionHandler(nil, error);
+                                           if (completionHandler)completionHandler(nil, error);
                                            return;
                                        }
-                                       completionHandler(conversation, nil);
+                                       if (completionHandler)completionHandler(conversation, nil);
                                    }];
 }
 
@@ -791,7 +791,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                     error:&error];
     
     if (error) {
-        completionHandler(error);
+        if (completionHandler)completionHandler(error);
         return;
     }
     [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
@@ -799,13 +799,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                  completionHandler:^(QLFRendezvousResponseWithSequenceValue *result, NSError *error){
                                      if (error) {
                                          [_updateListener didTerminateSubscriptionWithError:error];
-                                         completionHandler(error);
+                                         if (completionHandler)completionHandler(error);
                                          return;
                                      }
                                      [self createConversationAndStoreKeysForResponse:result.response
                                                                    completionHandler:^(QredoConversation *conversation, NSError *creationError){
                                                                        if (creationError) {
-                                                                           completionHandler(error);
+                                                                           if (completionHandler)completionHandler(error);
                                                                            return;
                                                                        }
                                                                        [_updateListener processSingleItem:conversation sequenceValue:@(result.sequenceValue)];
@@ -819,7 +819,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     // TODO: ownership
     //    [_rendezvous unsubscribeWithCorrelationId:_subscriptionCorrelationId completionHandler:^(NSError *error) {
     //        _subscriptionCorrelationId = nil;
-    //        completionHandler(error);
+    //        if (completionHandler)completionHandler(error);
     //    }];
     
     [[NSNotificationCenter defaultCenter] removeObserver:updateListener name:@"resubscribe" object:nil];

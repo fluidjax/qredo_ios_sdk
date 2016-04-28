@@ -1,0 +1,42 @@
+[Info] Loading settings for scheme 'QredoSDKTests' ... (1576 ms)
+
+[1m=== RUN-TESTS ===[0m
+
+  [Info] Collecting info for testables... (991 ms)
+  [1mrun-test[0m [4mQredoSDKTests.xctest[0m (iphonesimulator9.3, iPhone 6s Plus, application-test)
+    [Warning] Failed to prepare 'iPhone 6s Plus' simulator to run tests. (3100 ms)
+    [Info] Preparing test environment failed; will retry 2 more times (0 ms)
+    [Info] Verified iOS Simulators... (0 ms)
+    [Info] Shut down iOS Simulator... (2 ms)
+    [Info] Stopped any existing iOS simulator jobs to get a fresh simulator. (117 ms)
+    [Info] Reset iOS simulator content and settings at path "/Users/chris/Library/Developer/CoreSimulator/Devices/4CC5B23B-6289-43C3-90FF-B888B55964E4/data" (81 ms)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (227 ms)
+    [Info] Prepared 'iPhone 6s Plus' simulator to run tests. (5 ms)
+    [Info] Installed 'test'. (4541 ms)
+    [Info] Launched 'test' on 'iPhone 6s Plus'. (9778 ms)
+    [32m✓[0m -[Base58Tests test_0010_SimpleEncoding] [2m[32m(5 ms)[0m
+    [32m✓[0m -[Base58Tests test_0020_SimpleDecoding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0025_DecodingWithBadChars] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0026_DecodingWithBadCharsNoErrorPointer] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0030_EncodingAndDecoding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0040_EncodingAndDecodingWithZerosPadding] [2m[32m(0 ms)[0m
+    [32m✓[0m -[Base58Tests test_0050_EncodingAndDecodingRandomEquality] [33m(319 ms)[0m
+    [32m✓[0m -[Base58Tests test_0060_DecodingAndEncodingRandomEquality] [33m(393 ms)[0m
+    [32m✓[0m -[Base58Tests test_0070_EncodingRandomInequality] [33m(432 ms)[0m
+    [32m✓[0m -[Base58Tests test_0080_DecodingRandomInequality] [33m(247 ms)[0m
+    [32m✓[0m -[Base58Tests test_0090_EncodingExpansionTest] [33m(255 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testDecrypt] [2m[32m(3 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testEncryptDecrypt] [2m[32m(2 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testGenerateTestVectors] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationCryptoTests testVectors] [2m[32m(0 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimeout] [31m(2001 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimeoutWhereStateDoesNotTimeout] [31m(7999 ms)[0m
+    [32m✓[0m -[ConversationProtocolTest testTimoutWhenReturningToTheStateWithTimeout] [31m(7000 ms)[0m
+    [32m✓[0m -[ConversationTests testConversation] [31m(5012 ms)[0m
+    [32m✓[0m -[ConversationTests testConversationCreation] [31m(1037 ms)[0m
+    [32m✓[0m -[ConversationTests testConversationWatermark] [31m(5719 ms)[0m
+    [32m✓[0m -[ConversationTests testOtherPartyHasLeft] [31m(3225 ms)[0m
+    [32m✓[0m -[ConversationTests testRespondingToConversation] [31m(2745 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversation] [31m(7904 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationCreation] [31m(7533 ms)[0m
+    [32m✓[0m -[ConversationWebSocketTests testConversationMultiple] [31m(23686 ms)[0m

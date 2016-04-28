@@ -176,13 +176,13 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         
         NSURLCredential *credential = credentialForTrustUsingPinnedCertificate(trust, self.pinnedCertificate.certificate);
         if (credential) {
-            completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+            if (completionHandler)completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
             return;
         }
         
     }
     
-    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+    if (completionHandler)completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
 }
 
 

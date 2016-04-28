@@ -75,7 +75,7 @@
                                                  vaultItemSequenceValues:sequenceValues
                                                                    error:&error];
     if (error) {
-        completionHandler(nil, error);
+        if (completionHandler)completionHandler(nil, error);
         return;
     }
 
@@ -95,7 +95,7 @@
              if (!error) {
                  error = [NSError errorWithDomain:QredoErrorDomain code:QredoErrorCodeVaultItemNotFound userInfo:nil];
              }
-             completionHandler(nil, error);
+             if (completionHandler)completionHandler(nil, error);
          }
      }];
 }
@@ -117,7 +117,7 @@
                                                  vaultItemSequenceValues:sequenceValues
                                                                    error:&error];
     if (error) {
-        completionHandler(nil, error);
+        if (completionHandler)completionHandler(nil, error);
         return;
     }
 
@@ -141,7 +141,7 @@
                                              code:QredoErrorCodeVaultItemNotFound
                                          userInfo:@{NSLocalizedDescriptionKey: @"Vault item not found"}];
              }
-             completionHandler(nil, error);
+             if (completionHandler)completionHandler(nil, error);
          }
      }];
 }
@@ -187,7 +187,7 @@
                                                     error:&error];
 
     if (error) {
-        completionHandler(nil, nil, error);
+        if (completionHandler)completionHandler(nil, nil, error);
         return;
     }
 
@@ -209,9 +209,9 @@
                                                                                     sequenceValue:newSequenceValue
                                                                                            itemId:itemId];
 
-             completionHandler(newMetadata, encryptedVaultItem, nil);
+             if (completionHandler)completionHandler(newMetadata, encryptedVaultItem, nil);
          } else {
-             completionHandler(nil, nil, error);
+             if (completionHandler)completionHandler(nil, nil, error);
          }
      }];
 }
@@ -278,7 +278,7 @@
                                                                      error:&error];
 
     if (error) {
-        completionHandler(error);
+        if (completionHandler)completionHandler(error);
         return;
     }
 
@@ -290,7 +290,7 @@
      {
          if (error) {
              if (completionHandler) {
-                 completionHandler(error);
+                 if (completionHandler)completionHandler(error);
              }
              return;
          }
@@ -437,7 +437,7 @@
                                 consolidatingResults:shouldConsolidateResults];
              });
          } else {
-             completionHandler(nil);
+             if (completionHandler)completionHandler(nil);
          }
      }];
 }
