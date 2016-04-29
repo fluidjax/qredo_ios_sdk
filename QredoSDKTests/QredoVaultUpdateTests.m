@@ -386,8 +386,10 @@
         testExpectation = nil;
     }];
     
-    XCTAssertEqual(numberOfFetchedMetadata, systemItemsCount);
-    XCTAssertNil(fetchedMetadata);
+    
+    //items will still be there
+    XCTAssertEqual(numberOfFetchedMetadata, systemItemsCount+2);
+    XCTAssertNotNil(fetchedMetadata);
     
     
     

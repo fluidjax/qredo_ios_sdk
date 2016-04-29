@@ -399,9 +399,19 @@
 
              // Return all items in the vault, ie. all permutaions of itmes ids, sequence ids and sequence values.
 
-             enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
-                 block(vaultItemMetadata, stop);
-             });
+            NSMutableDictionary *metadataRefMap = [NSMutableDictionary dictionary];
+            NSMutableArray *metadataArray = [NSMutableArray array];
+            enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
+                metadataRefMap[vaultItemMetadata.descriptor] = vaultItemMetadata;
+                [metadataArray addObject:vaultItemMetadata];
+            });
+         
+         
+            for (QredoVaultItemMetadata* metadata in metadataArray) {
+                BOOL stop = NO;
+                block(metadata, &stop);
+                if (stop)break;
+            }
 
   //       }
 

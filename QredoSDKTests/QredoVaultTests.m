@@ -606,9 +606,11 @@
         completionHandlerCalled2 = nil;
     }];
     
-    XCTAssertFalse(itemFound2, "Item just deleted was still found during enumeration.(%i items)",count2);
-
+    XCTAssertTrue(itemFound2, "Item just deleted but should still be present in an enumeration from the server");
 }
+
+
+
 -(void)testGetLatestMetaDataItemFromIndex{
     [self resetKeychain];
     XCTAssertNotNil(client);
