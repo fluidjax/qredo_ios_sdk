@@ -42,7 +42,7 @@
     
     NSTimeInterval synced = [syncedDate timeIntervalSinceDate:now];
     //this value is 33 (test offset) + sleep 5 seconds, + time take to do HTTPS get request
-    XCTAssertTrue(synced>35 && synced<45,@"The date from the server is too different to the local date");
+    XCTAssertTrue(synced>20 && synced<45,@"The date from the server is too different to the local date");
     
     
 }

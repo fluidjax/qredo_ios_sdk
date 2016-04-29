@@ -270,7 +270,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
     }];
 
     QLog(@"\nStopping listening");
-    [rendezvous removeRendezvousObserver:self];
+    [client closeSession];
 
 }
 
@@ -504,12 +504,10 @@ NSString *secondMessageText;
    [responderConversation removeConversationObserver:deleteListener];
    [creatorConversation removeConversationObserver:listener];
    [rendezvous removeRendezvousObserver:self];
+   [client closeSession];
 }
 
 -(void)testConversationWatermark{
-    
-    [QredoLogger setLogLevel:0];
-    
     //static NSString *randomTag;
     NSString *randomTag = nil;
     
@@ -555,8 +553,8 @@ NSString *secondMessageText;
     listener.expectedMessageValue = secondMessageText;
     
     QredoConversationHighWatermark *hwm2 = [self isolatePublishMessage2:listener responderConversation:responderConversation];
-    [creatorConversation removeConversationObserver:listener];
-    listener = nil;
+    
+
 
      //////SETUP COMPLETE -
     //how many messages from beginning
@@ -571,7 +569,9 @@ NSString *secondMessageText;
     messageCount = [self countMessagesOnConversation:responderConversation since:hwm2];
     XCTAssert(messageCount==0,@"Should have 0 Has %i", messageCount);
     
+    [creatorConversation removeConversationObserver:listener];
     [rendezvous removeRendezvousObserver:self];
+    [client closeSession];
     
 }
 

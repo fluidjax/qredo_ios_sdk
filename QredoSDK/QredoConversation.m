@@ -281,7 +281,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     [self storeWithCompletionHandler:^(NSError *error)
     {
         if (error) {
-            completionHandler(error);
+            if (completionHandler)completionHandler(error);
             return;
         }
 
@@ -294,7 +294,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
         [self publishMessage:joinedControlMessage
            completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-               completionHandler(error);
+               if (completionHandler)completionHandler(error);
            }];
     }];
     
@@ -425,19 +425,19 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                 
             } else {
                 
-                completionHandler([NSError errorWithDomain:QredoErrorDomain
+                if (completionHandler)completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                       code:QredoErrorCodeRendezvousWrongAuthenticationCode
                                                   userInfo:@{NSLocalizedDescriptionKey: @"Authentication codes don't match"}]);
                 return ;
             }
 
         } else if ([result isKindOfClass:[QLFRendezvousResponseUnknownTag class]]) {
-            completionHandler([NSError errorWithDomain:QredoErrorDomain
+            if (completionHandler)completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                   code:QredoErrorCodeRendezvousUnknownResponse
                                               userInfo:@{NSLocalizedDescriptionKey: @"Unknown rendezvous tag"}]);
 
         } else {
-            completionHandler([NSError errorWithDomain:QredoErrorDomain
+            if (completionHandler)completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                   code:QredoErrorCodeRendezvousUnknownResponse
                                               userInfo:@{NSLocalizedDescriptionKey: @"Unknown response from the server"}]);
         }
@@ -490,7 +490,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                 [[QredoConversationRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
                                                                     vault:self.client.systemVault];
             }
-            completionHandler(error);
+            if (completionHandler)completionHandler(error);
         }];
     }
 }
@@ -530,7 +530,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     error:&error];
 
     if (error) {
-        completionHandler(error);
+        if (completionHandler)completionHandler(error);
         return ;
     }
 
@@ -541,12 +541,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                               completionHandler:^(QLFConversationQueryItemsResult *result, NSError *error)
      {
          if (error) {
-             completionHandler(error);
+             if (completionHandler)completionHandler(error);
              return;
          }
 
          if (!result) {
-             completionHandler([NSError errorWithDomain:QredoErrorDomain
+             if (completionHandler)completionHandler([NSError errorWithDomain:QredoErrorDomain
                                                    code:QredoErrorCodeConversationUnknown
                                                userInfo:@{NSLocalizedDescriptionKey: @"Empty result"}]);
              return;
@@ -601,7 +601,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
             highWatermarkHandler([[QredoConversationHighWatermark alloc] initWithSequenceValue:result.maxSequenceValue]);
         }
 
-        completionHandler(nil);
+        if (completionHandler)completionHandler(nil);
     };
 
     void (^deliverMessage)(QredoConversationMessage *message) = ^(QredoConversationMessage *message)
@@ -635,7 +635,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                              error:&decryptionError];
 
     if (decryptionError) {
-        completionHandler(decryptionError);
+        if (completionHandler)completionHandler(decryptionError);
         return;
     }
 
@@ -668,7 +668,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
          completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error)
          {
              if (error) {
-                 completionHandler(error);
+                 if (completionHandler)completionHandler(error);
                  return ;
              }
 
@@ -707,7 +707,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:metadata value:message.value];
 
     [self.store putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-        completionHandler(newItemMetadata.descriptor, error);
+        if (completionHandler)completionHandler(newItemMetadata.descriptor, error);
     }];
 }
 
@@ -766,7 +766,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     error:&error];
 
     if (error) {
-        completionHandler(nil, error);
+        if (completionHandler)completionHandler(nil, error);
         return;
     }
 
@@ -779,12 +779,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
      {
          QredoLogVerbose(@"Completion start publishWithQueueId");
          if (error) {
-             completionHandler(QredoConversationHighWatermarkOrigin, error);
+             if (completionHandler)completionHandler(QredoConversationHighWatermarkOrigin, error);
              return;
          }
 
          if (!result) {
-             completionHandler(QredoConversationHighWatermarkOrigin,
+             if (completionHandler)completionHandler(QredoConversationHighWatermarkOrigin,
                                [NSError errorWithDomain:QredoErrorDomain
                                                    code:QredoErrorCodeConversationUnknown
                                                userInfo:@{NSLocalizedDescriptionKey: @"Empty result"}]);
@@ -793,7 +793,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
          QredoConversationHighWatermark *watermark = [[QredoConversationHighWatermark alloc] initWithSequenceValue:result.sequenceValue];
 
-         completionHandler(watermark, error);
+         if (completionHandler)completionHandler(watermark, error);
          QredoLogVerbose(@"Completion end publishWithQueueId");
      }];
 }
@@ -804,7 +804,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoLogVerbose(@"Start publish message");
     if (_deleted) {
         QredoLogVerbose(@"deleted is true");
-        completionHandler(nil, [NSError errorWithDomain:QredoErrorDomain
+        if (completionHandler)completionHandler(nil, [NSError errorWithDomain:QredoErrorDomain
                                                    code:QredoErrorCodeConversationDeleted
                                                userInfo:@{NSLocalizedDescriptionKey: @"Conversation has been deleted"}]);
         return;
@@ -834,7 +834,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     {
         if (error) {
             QredoLogVerbose(@"store Message Error");
-            completionHandler(nil, error);
+            if (completionHandler)completionHandler(nil, error);
             return ;
         }
         [summaryValues setObject:newItemDescriptor.sequenceId forKey:kQredoConversationSequenceId];
@@ -890,7 +890,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     [self publishMessage:leftControlMessage
        completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error){
         if (error) {
-            completionHandler(error);
+            if (completionHandler)completionHandler(error);
             return ;
         }
         
@@ -904,14 +904,14 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
             if (error) {
                 QredoLogError(@"Delete Conversation failed with error %@",error);
 
-                completionHandler(error);
+                if (completionHandler)completionHandler(error);
                 return ;
             }
 
             [vault deleteItem:vaultItemMetadata
             completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
                 
-                completionHandler(error);
+                if (completionHandler)completionHandler(error);
             }];
             
         }];

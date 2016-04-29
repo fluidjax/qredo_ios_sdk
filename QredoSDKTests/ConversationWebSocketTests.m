@@ -26,12 +26,10 @@
     //see "docs/bugs/IOS SDK Rendezvous Subscribe Failure.pdf"
 
     self.continueAfterFailure = YES;
-
+    
+    
     for (int i = 0; i < 10; i++){ //failing
-        //NSLog(@"Run number: %@", @(i));
-        @autoreleasepool {
-            [super testConversation];
-        }
+         [super testConversation];
     }
 }
 

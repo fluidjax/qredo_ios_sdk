@@ -81,7 +81,7 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
             return ntpDate;
         }else{
             //ntpDate is more than X seconds off - this shouldnt be happening
-            QredoLogError(@"DATE: NTP fails sanity - Using local %@", localDate);
+            QredoLogWarning(@"DATE: NTP fails sanity - Using local %@", localDate);
             return localDate;
         }
     }

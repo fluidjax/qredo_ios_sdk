@@ -231,11 +231,11 @@
             if (!error) {
                 [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error){
                     if (completionHandler)
-                        completionHandler(error);
+                        if (completionHandler)completionHandler(error);
                 }];
             } else {
                 if (completionHandler)
-                    completionHandler(error);
+                    if (completionHandler)completionHandler(error);
         }}];
     }
 }

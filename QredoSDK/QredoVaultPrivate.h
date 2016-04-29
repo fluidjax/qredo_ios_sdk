@@ -37,12 +37,9 @@ static NSString *const QredoVaultItemMetadataItemTypeTombstone = @"\u220E"; // U
 + (instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState;
 @end
 
-typedef NS_ENUM(NSInteger, QredoVaultItemOrigin)
-{
+typedef NS_ENUM(NSInteger, QredoVaultItemOrigin){
     QredoVaultItemOriginServer,
     QredoVaultItemOriginCache,
-    QredoVaultItemOriginLocal
-    
 };
 
 @interface QredoVaultItemMetadata ()

@@ -185,7 +185,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
                                          completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,
                                                              NSError *error)
      {
-         completionHandler(error);
+         if (completionHandler)completionHandler(error);
      }];
 }
 
