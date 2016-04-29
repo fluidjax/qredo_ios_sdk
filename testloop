@@ -3,8 +3,6 @@
 #this is the device ID obtained using 
 # xcrun simctl list 
 id='4CC5B23B-6289-43C3-90FF-B888B55964E4'
-
-#xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests    build
 xcodebuild -sdk iphonesimulator -destination "id=$id" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests    build
 
 while [ 1 ]

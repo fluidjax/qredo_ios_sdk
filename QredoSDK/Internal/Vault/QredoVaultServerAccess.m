@@ -348,54 +348,54 @@
          };
 
 
-         if (shouldConsolidateResults) {
-
-
-             // Filter out all items wich are pointed ot by back pointers.
-
-             /*
-              TODO: [GR] This agorithm can use high levels of memory if the vault contains many items. Hence it
-              is advisable to revise this algorithm in connection with caching, and certainly before release.
-              */
-
-             NSMutableDictionary *metadataRefMap = [NSMutableDictionary dictionary];
-             NSMutableArray *metadataArray = [NSMutableArray array];
-             enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
-                 metadataRefMap[vaultItemMetadata.descriptor] = vaultItemMetadata;
-                 [metadataArray addObject:vaultItemMetadata];
-             });
-
-             QredoVaultItemDescriptor *(^backpointerOfMetadata)(QredoVaultItemMetadata *metadata)
-             = ^QredoVaultItemDescriptor *(QredoVaultItemMetadata *metadata) {
-                 NSNumber *previousSequenceValue = metadata.summaryValues[@"_v"];
-                 if (!previousSequenceValue) {
-                     return nil;
-                 }
-                 QredoVaultItemDescriptor *descriptor = metadata.descriptor;
-                 return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:descriptor.sequenceId
-                                                                      sequenceValue:[previousSequenceValue longValue]
-                                                                             itemId:descriptor.itemId];
-             };
-
-             for (QredoVaultItemMetadata* metadata in metadataArray) {
-                 QredoVaultItemDescriptor *backPointer = backpointerOfMetadata(metadata);
-                 if (backPointer) {
-                     [metadataRefMap removeObjectForKey:backPointer];
-                 }
-             }
-
-             for (QredoVaultItemMetadata* metadata in metadataArray) {
-                 BOOL stop = NO;
-                 if (metadataRefMap[metadata.descriptor] && ![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
-                     block(metadata, &stop);
-                     if (stop) {
-                         break;
-                     }
-                 }
-             }
-
-         }
-         else {
+//         if (shouldConsolidateResults) {
+//
+//
+//             // Filter out all items wich are pointed ot by back pointers.
+//
+//             /*
+//              TODO: [GR] This agorithm can use high levels of memory if the vault contains many items. Hence it
+//              is advisable to revise this algorithm in connection with caching, and certainly before release.
+//              */
+//
+//             NSMutableDictionary *metadataRefMap = [NSMutableDictionary dictionary];
+//             NSMutableArray *metadataArray = [NSMutableArray array];
+//             enumerateResultsWithHandler(^(QredoVaultItemMetadata* vaultItemMetadata, BOOL *stop) {
+//                 metadataRefMap[vaultItemMetadata.descriptor] = vaultItemMetadata;
+//                 [metadataArray addObject:vaultItemMetadata];
+//             });
+//
+//             QredoVaultItemDescriptor *(^backpointerOfMetadata)(QredoVaultItemMetadata *metadata)
+//             = ^QredoVaultItemDescriptor *(QredoVaultItemMetadata *metadata) {
+//                 NSNumber *previousSequenceValue = metadata.summaryValues[@"_v"];
+//                 if (!previousSequenceValue) {
+//                     return nil;
+//                 }
+//                 QredoVaultItemDescriptor *descriptor = metadata.descriptor;
+//                 return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:descriptor.sequenceId
+//                                                                      sequenceValue:[previousSequenceValue longValue]
+//                                                                             itemId:descriptor.itemId];
+//             };
+//
+//             for (QredoVaultItemMetadata* metadata in metadataArray) {
+//                 QredoVaultItemDescriptor *backPointer = backpointerOfMetadata(metadata);
+//                 if (backPointer) {
+//                     [metadataRefMap removeObjectForKey:backPointer];
+//                 }
+//             }
+//
+//             for (QredoVaultItemMetadata* metadata in metadataArray) {
+//                 BOOL stop = NO;
+//                 if (metadataRefMap[metadata.descriptor] && ![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {
+//                     block(metadata, &stop);
+//                     if (stop) {
+//                         break;
+//                     }
+//                 }
+//             }
+//
+//         }
+//         else {
 
              // Return all items in the vault, ie. all permutaions of itmes ids, sequence ids and sequence values.
 
@@ -403,7 +403,7 @@
                  block(vaultItemMetadata, stop);
              });
 
-         }
+  //       }
 
 
          BOOL discoveredNewSequence = NO;

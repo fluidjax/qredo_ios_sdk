@@ -878,27 +878,32 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [NSThread sleepForTimeInterval:0.1];
     XCTAssertNotNil(createdRendezvous);
       listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
-    
-    
     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
+    
+    
+    [NSThread sleepForTimeInterval:1];
+
+    
+    //complete build rendezvous & listener for response
+    
+    
+    
+    
     
     [client2 respondWithTag:randomTag
           completionHandler:^(QredoConversation *conversation, NSError *error) {
               XCTAssertNil(error);
               [respondExpectation fulfill];
           }];
-    
-    // Give time for the subscribe/getResponses process to process - they could internally produce duplicates which we need to ensure don't surface to listener.  This needs to be done before waiting for expectations.
-    //    [NSThread sleepForTimeInterval:5];
-    
-    QLog(@"transport: %@", client.serviceInvoker.transport);
-    
+   
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         respondExpectation = nil;
         listener.expectation = nil;
     }];
     
     [createdRendezvous removeRendezvousObserver:listener];
+    [client closeSession];
+    [client2 closeSession];
 }
 
 
