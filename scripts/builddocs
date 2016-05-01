@@ -27,20 +27,17 @@ jazzy/bin/jazzy \
 
 path=docs/objc/Classes
 
-
 #both in Conversation
 awk '/'UnsafeMutablePointer'/{sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoConversationHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)")}1' $path/QredoConversation.html > $path/x.html
 mv $path/x.html $path/QredoConversation.html
 
 
 #1st in Rendezvous
-awk '/'UnsafeMutablePointer'/{c++;if(c==1){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;completionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoRendezvous.html > $path/x.html
+awk '/'UnsafeMutablePointer'/{c++;if(c==1){sub("UnsafeMutablePointer","QredoConversation!,<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoRendezvousHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoRendezvous.html > $path/x.html
 mv $path/x.html $path/QredoRendezvous.html
 
-
-
 #2nd in Rendezvous
-awk '/'UnsafeMutablePointer'/{c++;if(c==2){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoRendezvousHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoRendezvous.html > $path/x.html
+awk '/'UnsafeMutablePointer'/{c++;if(c==2){sub("UnsafeMutablePointer","QredoConversation!,<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoRendezvousHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoRendezvous.html > $path/x.html
 mv $path/x.html $path/QredoRendezvous.html
 
 
@@ -48,22 +45,13 @@ mv $path/x.html $path/QredoRendezvous.html
 awk '/'UnsafeMutablePointer'/{c++;if(c==1){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;completionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoVault.html > $path/x.html
 mv $path/x.html $path/QredoVault.html
 
-
 #2nd in Vault
 awk '/'UnsafeMutablePointer'/{c++;if(c==2){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoVaultHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoVault.html > $path/x.html
 mv $path/x.html $path/QredoVault.html
 
-
-
 #3rd in Vault
 awk '/'UnsafeMutablePointer'/{c++;if(c==3){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoVaultHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoVault.html > $path/x.html
 mv $path/x.html $path/QredoVault.html
-
-
-awk '/"withBlock block:"/{sub("withBlock block:","withBlock")}1' $path/QredoVault.html > $path/x.html
-mv $path/x.html $path/QredoVault.html
-
-
 
 #both in Client
 awk '/'UnsafeMutablePointer'/{sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;completionHandler: ((NSError!) -> Void)!)")}1' $path/QredoClient.html > $path/x.html

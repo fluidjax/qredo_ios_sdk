@@ -1,7 +1,7 @@
 ##Qredo SDK API Reference
 (Release 0.99)
 
-This reference includes all the classes and methods available to developers using the Qredo iOS SDK. API documentation is provided in Objective-C, with links to the relevant sections of both the Objective-C and Swift versions of the programming guides for more information and code snippets. 
+This reference includes all the classes and methods available to developers using the Qredo iOS SDK. API documentation is provided in both Objective-C and Swift. with links to the relevant sections of the programming guides for more information and code snippets. 
 
 ####Programming guides
 
