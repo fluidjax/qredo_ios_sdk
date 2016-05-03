@@ -51,9 +51,14 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @end
 
 
-/** Identifies a vault item. Developers do not create this objects directly. Stored in the `QredoVaultItemMetadata` 
+/** Identifies a specific version of a vault item. 
  
- Used to retrieve a vault item with `getItemWithDescriptor` and the metadata with `getItemMetadataWithDescriptor`
+ Developers do not create this objects directly. Stored in the [QredoVaultItemMetadata](QredoVaultItemMetadata.html)
+ Used to retrieve a vault item with [getItemWithDescriptor](QredoVault.html#/c:objc(cs)QredoVault(im)getItemWithDescriptor:completionHandler:),
+ [getItemMetadataWithDescriptor](QredoVault.html#/c:objc(cs)QredoVault(im)getItemMetadataWithDescriptor:completionHandler:),
+ [getLatestItemWithDescriptor](QredoVault.html#/c:objc(cs)QredoVault(im)getLatestItemWithDescriptor:completionHandler:) and
+ [getLatestItemMetadataWithDescriptor](QredoVault.html#/c:objc(cs)QredoVault(im)getLatestItemMetadataWithDescriptor:completionHandler:)
+
  */
 
 @interface QredoVaultItemDescriptor :NSObject
@@ -77,7 +82,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 
 /** Information about a vault item. These properties are read only.
-Constructed when a 'QredoVaultItem` is created and returned from `enumerateVaultItemsUsingBlock` */
+Constructed when a `QredoVaultItem` is created and returned from `enumerateVaultItemsUsingBlock` */
 @interface QredoVaultItemMetadata :NSObject<NSCopying, NSMutableCopying>
 
 #pragma mark - Properties
@@ -118,6 +123,19 @@ Constructed when a 'QredoVaultItem` is created and returned from `enumerateVault
  */
 -(id)objectForMetadataKey:(NSString*)key;
 
+
+
+/** Call this to determine if this metadata refers to a deleted item
+
+ @note When you request that an item is deleted, Qredo will actually create a new item with the same `QredoVaultItemDescriptor`, but marked as deleted. This allows you to update any of your own data structures that may refer to this item.
+ 
+ There are two cases where you may need to call this method: when you are sent a deleted item in the Vault item listener
+ [didReceiveVaultItemMetadata](../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:) method
+ or when you are enumerated through all vault items on the server using [enumerateVaultItemsUsingBlock](QredoVault.html#/c:objc(cs)QredoVault(im)enumerateVaultItemsUsingBlock:completionHandler:)
+ 
+ @return YES if this is a deleted item
+
+ */
 
 
 -(BOOL)isDeleted;
@@ -216,28 +234,63 @@ Constructed when a 'QredoVaultItem` is created and returned from `enumerateVault
 #pragma mark - Retrieving Vault items
 
 /** Retrieves the item with the given descriptor from the Vault 
+
  @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
  @param completionHandler Returns the vaultItem or an error if it cannot be found or some other error occurs.
  
  @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ 
+ @note Retrieves the specific version of the vault item referred to by the descriptor. If the item has been updated or deleted, then this will not be the latest version of the vault item. The [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property can be used to compare versions.
+
+ 
 */
 
 -(void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
 
-/** Retrieves the metadata for the vault item with the given descriptor
+
+
+/** Retrieves the metadata for the vault item specified by the given descriptor
+ 
  @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
- @param completionHandler Returns the vault item metadata or an error if it cannot be found
+ @param completionHandler Returns the vaultItem or an error if it cannot be found or some other error occurs.
  
  @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ 
+ @note Retrieves the metadata for the specific version of the vault item referred to by the descriptor. If the item has been updated or deleted, then this will not be the latest version of the vault item. The [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property can be used to compare versions.
+ 
+ 
  */
 
 -(void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
 
 
+/** Retrieves the latest version of the vault item with the given descriptor
+ 
+ @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
+ @param completionHandler Returns the vaultItem, nil if the item has been deleted, or an error if it cannot be found or some other error occurs.
+ 
+ @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ 
+ @note Call this method if you have a reference to a vault item, but are not sure if it is the latest one. The item may have been updated or deleted by the same user from another device, for example. You can use the [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property to compare versions.
+ 
+ */
 
+
+-(void)getLatestItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
+
+
+/** Retrieves the metadata for the latest version of the vault item with the given descriptor
+ 
+ @param itemDescriptor The descriptor for the item to retrieve.
+ @param completionHandler Returns the vault item metadata, nil if the item has been deleted, or an error if it cannot be found
+ 
+ @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ 
+ @note Call this method if you have a reference to a vault item, but are not sure if it is the latest one and want to get the metadata before deciding whether to retrieve the vailt item value. The item may have been updated or deleted by the same user from another device, for example. You can use the [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property to compare versions.
+ */
 
 -(void)getLatestItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor  completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
--(void)getLatestItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
+
 
 
 #pragma mark - Vault listeners
