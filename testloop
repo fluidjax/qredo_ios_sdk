@@ -11,6 +11,6 @@ do
   xcrun simctl erase $id
   filename=testresults/output`date '+%Y%m%d%H%M%S'`.txt;
   echo $filename
-  xctool -reporter pretty:$filename -sdk iphonesimulator -destination "id=$id" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
+  xctool -reporter pretty:$filename -sdk iphonesimulator -destination "id=$id" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600 QREDO_SERVER_URL=early1.qredo.me QREDO_DEBUG_LEVEL=6 
 done
 

@@ -1,6 +1,11 @@
 #!/bin/bash
 xcrun simctl erase all
-  xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests build
-  xctool -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme          QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
+
+#xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests build
+#xctool -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600
 
 
+
+
+#xcodebuild -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests QREDO_SERVER_URL=hello QREDO_DEBUG_LEVEL=4 build test
+xctool -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 6,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests build run-tests -only QredoSDKTests  -parallelize -logicTestBucketSize 20 -testTimeout 600 QREDO_SERVER_URL=early1.qredo.me QREDO_DEBUG_LEVEL=6 

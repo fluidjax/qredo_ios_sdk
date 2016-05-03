@@ -36,13 +36,20 @@ NSString *const QredoVaultItemSummaryKeyDeviceName          = @"device-name";
 NSString *const QredoClientOptionCreateNewSystemVault       = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL                 = @"com.qredo.option.serviceUrl";
 
-//static NSString *const QredoClientDefaultServiceURL       = @"https://suchlog.qredo.me:443/services";
-//static NSString *const QredoClientMQTTServiceURL          = @"ssl://suchlog.qredo.me:8883";
-//static NSString *const QredoClientWebSocketsServiceURL    = @"wss://suchlog.qredo.me:443/services";
-static NSString *const QredoClientDefaultServiceURL         = @"https://early1.qredo.me:443/services";
-static NSString *const QredoClientMQTTServiceURL            = @"ssl://early1.qredo.me:8883";
-static NSString *const QredoClientWebSocketsServiceURL      = @"wss://early1.qredo.me:443/services";
 
+//static NSString *const QredoClientDefaultServiceURL         = @"https://early1.qredo.me:443/services";
+//static NSString *const QredoClientMQTTServiceURL            = @"ssl://early1.qredo.me:8883";
+//static NSString *const QredoClientWebSocketsServiceURL      = @"wss://early1.qredo.me:443/services";
+
+
+
+// The  directive QREDO_SERVER_URL is defined in BuildSettings -> User_define ->QREDO_SERVER_URL (early1.qredo.me)
+// This allows it to be overridden  on a command line xcodebuild using a pram such as QREDO_SERVER_URL=early1.qredo.me
+//See script 'testonce' to see sample usage
+
+static NSString *const QredoClientDefaultServiceURL         = @"https://" QREDO_SERVER_URL  @":443/services";
+static NSString *const QredoClientMQTTServiceURL            = @"ssl://"   QREDO_SERVER_URL  @":8883";
+static NSString *const QredoClientWebSocketsServiceURL      = @"wss://"   QREDO_SERVER_URL  @":443/services";
 
 
 NSString *const QredoRendezvousURIProtocol                  = @"qrp:";

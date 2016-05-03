@@ -15,6 +15,10 @@
 - (void)setUp {
     [super setUp];
     [QredoLogger colour:NO];
+    [QredoLogger setLogLevel:QREDO_DEBUG_LEVEL];
+   //NSLog(@"*** QREDO_SERVER_URL  %@",QREDO_SERVER_URL);
+   // NSLog(@"*** QREDO_DEBUG_LEVEL %i",QREDO_DEBUG_LEVEL);
+   
 }
 
 -(void)setLogLevel{
@@ -27,7 +31,12 @@
         [QredoLogger setLogLevel:QredoLogLevelVerbose];
         [QredoLogger setLogLevel:QredoLogLevelInfo];
  */
-        [QredoLogger setLogLevel:QredoLogLevelError];
+    [QredoLogger setLogLevel:QredoLogLevelError];
+ 
+    
+    
+
+    
 }
 
 

@@ -25,6 +25,7 @@
 static NSString *const kMessageType = @"com.qredo.text";
 static NSString *const kMessageTestValue = @"(1)hello, world";
 static NSString *const kMessageTestValue2 = @"(2)another hello, world";
+static float delayInterval = 0.4;
 
 @interface ConversationMessageListener : NSObject <QredoConversationObserver>
 
@@ -241,7 +242,7 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 
     QLog(@"\nStarting listening");
     [rendezvous addRendezvousObserver:self];
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     XCTAssertNotNil(anotherClient);
     
@@ -430,7 +431,7 @@ NSString *secondMessageText;
     
     
     //Create Rendezvous
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     //static QredoRendezvous *rendezvous;
     QredoRendezvous *rendezvous=nil;
@@ -441,14 +442,14 @@ NSString *secondMessageText;
     
     
     //this is a fix so the observer registers before the rendezvous is responded to.
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     
     //Respond to Rendezvous
     QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
     
     [creatorConversation addConversationObserver:listener];
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     //Response to Rendezvous
     
@@ -507,8 +508,21 @@ NSString *secondMessageText;
    [client closeSession];
 }
 
+
+
+
+-(void)testMultipleConversationWatermark{
+    for (int i=0;i<1000;i++){
+        [self testConversationWatermark];
+    }
+}
+
+
 -(void)testConversationWatermark{
     //static NSString *randomTag;
+    float delayInterval = 0.4;
+    
+    
     NSString *randomTag = nil;
     
     if (!randomTag)randomTag= [[QredoQUID QUID] QUIDString];
@@ -527,7 +541,7 @@ NSString *secondMessageText;
     
     
     //Create Rendezvous
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     //static QredoRendezvous *rendezvous;
     QredoRendezvous *rendezvous= [self isolateCreateRendezvous:randomTag];
@@ -535,14 +549,14 @@ NSString *secondMessageText;
     
     
     //this is a fix so the observer registers before the rendezvous is responded to.
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     
     //Respond to Rendezvous
     QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
     
     [creatorConversation addConversationObserver:listener];
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     //Response to Rendezvous
     QredoConversationHighWatermark *hwm1 = [self isolatePublishMessage1:listener responderConversation:responderConversation];
@@ -615,7 +629,7 @@ NSString *secondMessageText;
     
     
     //Create Rendezvous
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     //static QredoRendezvous *rendezvous;
     QredoRendezvous *rendezvous=nil;
@@ -626,14 +640,14 @@ NSString *secondMessageText;
     
     
     //this is a fix so the observer registers before the rendezvous is responded to.
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
 
     //Respond to Rendezvous
     QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
     
     [creatorConversation addConversationObserver:listener];
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:delayInterval];
     
     //Response to Rendezvous
     [self isolatePublishMessage1:listener responderConversation:responderConversation];
