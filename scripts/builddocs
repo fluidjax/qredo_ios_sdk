@@ -53,6 +53,19 @@ mv $path/x.html $path/QredoVault.html
 awk '/'UnsafeMutablePointer'/{c++;if(c==3){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoVaultHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoVault.html > $path/x.html
 mv $path/x.html $path/QredoVault.html
 
+
 #both in Client
 awk '/'UnsafeMutablePointer'/{sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;completionHandler: ((NSError!) -> Void)!)")}1' $path/QredoClient.html > $path/x.html
 mv $path/x.html $path/QredoClient.html
+
+#in Logger
+awk '/'UnsafePointer'/{sub("UnsafePointer","UnsafePointer\\&ltInt8\\&gt, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;function: UnsafePointer\\&ltInt8\\&gt, line: Uint)")}1' $path/QredoLogger.html > $path/x.html
+mv $path/x.html $path/QredoLogger.html
+
+#4th in Vault
+sed 's|<span class="nv">block</span><span class="p">||' $path/QredoVault.html  > $path/x.html
+mv $path/x.html $path/QredoVault.html
+
+
+
+
