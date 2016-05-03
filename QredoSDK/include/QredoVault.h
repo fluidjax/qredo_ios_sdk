@@ -350,6 +350,8 @@ Goes through the items in this Vault and calls the specified code block on each 
  
 @param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
 @param completionHandler will be called when the enumeration is complete or if an error occurs
+ 
+@note Returns all versions of all items in the vault, including deleted ones. Call [enumerateIndexUsingPredicate](#/c:objc(cs)QredoVault(im)enumerateIndexUsingPredicate:withBlock:completionHandler:) to enumerate only the latest version of each item
 
  */
 
@@ -364,8 +366,11 @@ Goes through the items in this Vault and calls the specified code block on each 
  @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
- @param sinceWatermark The `QredoVaultHighWatermark` specifying the location in the Vault to search from. Set this to `QredoVaultHighWatermarkOrigin` to start the enumeration from the beginning or use the `highWatermark` method to get the current watermark
+ @param since The `QredoVaultHighWatermark` specifying the location in the Vault to search from. Set this to `QredoVaultHighWatermarkOrigin` to start the enumeration from the beginning or use the `highWatermark` method to get the current watermark
  @param completionHandler will be called when the enumeration is complete or if an error occurs
+ 
+ @note Returns all versions of all items in the vault from the specified highwatermark, including deleted ones. Call [enumerateIndexUsingPredicate](#/c:objc(cs)QredoVault(im)enumerateIndexUsingPredicate:withBlock:completionHandler:) to enumerate only the latest version of each item
+
  
  */
 
