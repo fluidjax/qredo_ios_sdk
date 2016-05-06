@@ -149,22 +149,34 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 
-//-(void)testRendezvous{
-//    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-//    __block QredoRendezvous *createdRendezvous = nil;
-//    
-//    [client createAnonymousRendezvousWithRandomTagCompletionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
-//        XCTAssertNil(error);
-//        XCTAssertNotNil(rendezvous.tag);
-//        XCTAssertNotNil(rendezvous);
-//        createdRendezvous = rendezvous;
-//        [createExpectation fulfill];
-//    }];
-//    
-//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//        createExpectation = nil;
-//    }];
-//}
+-(void)testReadableTags{
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    
+    [client createAnonymousRendezvousWithTagType:MEDIUM_SECURITY
+                               completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+        XCTAssertNotNil(rendezvous.tag);
+        XCTAssertNotNil(rendezvous);
+        createdRendezvous = rendezvous;
+        [createExpectation fulfill];
+                                   
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    
+    NSString *tag = createdRendezvous.tag;
+    NSString *readableTag       = [QredoRendezvous tagToReadable:tag];
+    NSString *readableTagDirect = createdRendezvous.readableTag;
+    NSString *backToTag   = [QredoRendezvous readableToTag:readableTagDirect];
+    
+    XCTAssertTrue(tag.length == MEDIUM_SECURITY*2,@"Tag is the wrong length");
+    XCTAssertTrue([readableTag isEqualToString: readableTagDirect],@"Tags should be the same");
+    XCTAssertTrue([backToTag isEqualToString: tag],@"Tags should be the same");
+  
+}
 
 
 
@@ -481,7 +493,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithRandomTagCompletionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+    [client createAnonymousRendezvousWithCompletionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous.tag);
                                XCTAssertNotNil(rendezvous);
@@ -500,7 +512,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTag:[[QredoQUID QUID] QUIDString]
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                     duration:100
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error){
@@ -529,7 +541,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTag:[[QredoQUID QUID] QUIDString]
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error){
@@ -555,7 +567,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTag:[[QredoQUID QUID] QUIDString]
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error){
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous);
@@ -576,7 +588,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
-    [client createAnonymousRendezvousWithTag:randomTag
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
@@ -608,13 +620,13 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 -(void)testCreateAndFetchAnonymousRendezvous {
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    __block NSString *randomTag = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
     __block QredoRendezvousRef *rendezvousRef = nil;
     
-    [client createAnonymousRendezvousWithTag:randomTag
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
@@ -623,7 +635,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                
                                XCTAssertNotNil(rendezvous.metadata);
                                XCTAssertNotNil(rendezvous.metadata.rendezvousRef);
-                               
+                               randomTag = rendezvous.tag;
                                rendezvousRef = rendezvous.metadata.rendezvousRef;
                                
                                [createExpectation fulfill];
@@ -718,12 +730,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 -(void)testCreateDuplicateAndFetchAnonymousRendezvous {
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    __block NSString *randomTag = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvousRef *rendezvousRef = nil;
     
-    [client createAnonymousRendezvousWithTag:randomTag
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
@@ -731,6 +743,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
          XCTAssertNil(error);
          XCTAssertNotNil(rendezvous);
          rendezvousRef = rendezvous.metadata.rendezvousRef;
+         randomTag = rendezvous.tag;
          [createExpectation fulfill];
      }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
@@ -824,19 +837,20 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 -(void)testCreateAndRespondAnonymousRendezvous {
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    __block NSString *randomTag =nil;
     
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTag:randomTag
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                       duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous);
                                createdRendezvous = rendezvous;
+                               randomTag = rendezvous.tag;
                                [createExpectation fulfill];
                            }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
@@ -904,17 +918,18 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 -(void)testCreateAndRespondAnonymousRendezvousPreCreate {
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    __block NSString *randomTag = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTag:randomTag
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                       duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous);
+                               randomTag = rendezvous.tag;
                                createdRendezvous = rendezvous;
                                [createExpectation fulfill];
                            }];
@@ -1546,7 +1561,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //
 
 -(QredoRendezvousRef*)createRendezvousWithDuration:(int)testDuration {
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
+    __block NSString *randomTag = nil;
     
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
@@ -1554,7 +1569,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block QredoRendezvousRef *rendezvousRef = nil;
     
     
-    [client createAnonymousRendezvousWithTag:randomTag
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                     duration:testDuration
                           unlimitedResponses:NO
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
@@ -1563,7 +1578,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                
                                XCTAssertNotNil(rendezvous.metadata);
                                XCTAssertNotNil(rendezvous.metadata.rendezvousRef);
-                               
+                               randomTag = rendezvous.tag;
                                rendezvousRef = rendezvous.metadata.rendezvousRef;
                                
                                [createExpectation fulfill];

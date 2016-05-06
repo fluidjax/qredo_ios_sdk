@@ -27,6 +27,8 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoObserverList.h"
 #import "QredoNetworkTime.h"
+#import "ReadableKeys.h"
+#import "NSData+ParseHex.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 
@@ -312,11 +314,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                                        encryptedResponderInfo:encryptedResponderInfo];
     
     
-    NSLog(@"*****KEYDUMP****");
-    NSLog(@"Ownership = %@",ownershipPublicKeyBytes);
-    NSLog(@"Request = %@",requesterPublicKeyBytes);
-    NSLog(@"*****KEYDUMP****");
-    
+//    NSLog(@"*****KEYDUMP****");
+//    NSLog(@"Ownership = %@",ownershipPublicKeyBytes);
+//    NSLog(@"Request = %@",requesterPublicKeyBytes);
+//    NSLog(@"*****KEYDUMP****");
+//    
     
     
     [_rendezvous createWithCreationInfo:_creationInfo
@@ -526,6 +528,19 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 @implementation QredoRendezvous
 
 
++(NSString *)readableToTag:(NSString *)readableText{
+    NSData *key = [ReadableKeys eng2Key:readableText];
+    return [ReadableKeys dataToHexString:key];
+}
+
+
+
++(NSString *)tagToReadable:(NSString *)tag{
+    NSData *dataTag = [NSData dataWithHexString:tag];
+    return [ReadableKeys key2Eng:dataTag];
+}
+
+
 
 -(NSString*)conversationType{
     return self.configuration.conversationType;
@@ -546,6 +561,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 -(NSString *)tag{
     return _tag;
 }
+
+
+-(NSString *)readableTag{
+    return [QredoRendezvous tagToReadable:[self tag]];
+}
+
 
 
 

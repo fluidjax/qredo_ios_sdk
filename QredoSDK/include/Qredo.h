@@ -20,7 +20,8 @@
 @class QredoCertificate;
 
 
-/* Generated TAG lengths
+/* 
+ Generated TAG lengths - use to define the key length when creating a rendezvous
  */
 typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
     MEDIUM_SECURITY=6,
@@ -100,13 +101,13 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
  
  
- @param tag The specified tag as a string.
+ @param tagSecurityLevel Use QredoSecurityLevel (HIGH_SECURITY or MEDIUM_SECURITY), to define the Security Level of the generated Tag.
  @param completionhandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousAlreadyExists` if a rendezvous with the specified tag already exists and `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
  
  */
 
 
--(void)createAnonymousRendezvousWithTag:(NSString *)tag
+-(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
@@ -121,7 +122,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  */
 
--(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+-(void)createAnonymousRendezvousWithCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
 /** Creates an anonymous rendezvous with the specified tag, duration and response count.
@@ -132,7 +133,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
  
  
- @param tag The specified tag as a string.
+ @param tagSecurityLevel Use QredoSecurityLevel (HIGH_SECURITY or MEDIUM_SECURITY), to define the Security Level of the generated Tag.
  @param duration the duration in seconds after which the Rendezvous will expire. Expired Rendezvous can no longer be responded to, but messages can still be sent within existing Conversations created from it. Expired Rendezvous can be reactivated by calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
  @param unlimitedResponses Set to YES if there can be an unlimited numbers of response to the Rendezvous. If the parameter is NO, then there can only be one response after which the Rendezvous will expire. Calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
  will set the response count to unlimited.
@@ -141,10 +142,10 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  */
 
 
--(void)createAnonymousRendezvousWithTag:(NSString *)tag
-                               duration:(long)duration
-                     unlimitedResponses:(BOOL)unlimitedResponses
-                      completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+-(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
+                                   duration:(long)duration
+                         unlimitedResponses:(BOOL)unlimitedResponses
+                          completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
 

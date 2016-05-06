@@ -117,6 +117,17 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 @property (readonly) QredoRendezvousHighWatermark highWatermark;
 
+
+/** Convert a readable tag into a hex tag */
++(NSString *)readableToTag:(NSString *)readableText;
+
+/** The Rendezvous tag as a readbale string */
+-(NSString *)readableTag;
+
+/** Convert a hex tag into a readable string */
++(NSString *)tagToReadable:(NSString *)tag;
+
+
 /** Resets the highwatermark so that the next enumeration starts from the first Conversation created from this Rendezvous */
 -(void)resetHighWatermark;
 

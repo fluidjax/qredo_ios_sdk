@@ -63,6 +63,13 @@ static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 -(QredoUserCredentials *)userCredentials;
 -(QredoAppCredentials *)appCredentials;
 
+
+-(void)createAnonymousRendezvousWithTag:(NSString*)tag
+                               duration:(long)duration
+                     unlimitedResponses:(BOOL)unlimitedResponses
+                      completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+
+
 -(void)createSystemVaultWithUserCredentials:(QredoUserCredentials*)userCredentials  completionHandler:(void(^)(NSError *error))completionHandler;
 -(BOOL)saveStateWithError:(NSError **)error;
 -(BOOL)deleteCurrentDataWithError:(NSError **)error;

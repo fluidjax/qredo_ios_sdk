@@ -182,13 +182,11 @@ static float delayInterval = 0.4;
 
 
 - (void)testConversationCreation {
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
-    
     __block QredoRendezvous *rendezvous = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
-    [client createAnonymousRendezvousWithTag:randomTag
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
                                     duration:600
                           unlimitedResponses:NO
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
@@ -211,29 +209,30 @@ static float delayInterval = 0.4;
 
 
 - (void)testRespondingToConversation {
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
     
     __block QredoRendezvous *rendezvous = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block NSString *randomTag = nil;
+    
     
     QLog(@"\nCreating rendezvous");
     
     
     
-    [client createAnonymousRendezvousWithTag:randomTag
-                                    duration:600
-                          unlimitedResponses:NO
-                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               QLog(@"\nRendezvous creation completion handler entered");
-                               XCTAssertNil(error);
-                               XCTAssertNotNil(_rendezvous);
-                               
-                               rendezvous = _rendezvous;
-                               
-                               [createExpectation fulfill];
-                           }];
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+                                        duration:600
+                              unlimitedResponses:NO
+                               completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                                   QLog(@"\nRendezvous creation completion handler entered");
+                                   XCTAssertNil(error);
+                                   XCTAssertNotNil(_rendezvous);
+                                   randomTag = rendezvous.tag;
+                                   rendezvous = _rendezvous;
+                                   
+                                   [createExpectation fulfill];
+                               }];
     QLog(@"\nWaiting for creation expectations");
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
@@ -280,24 +279,26 @@ static float delayInterval = 0.4;
 
 
 
-- (QredoRendezvous *)isolateCreateRendezvous:(NSString *)randomTag {
+- (QredoRendezvous *)isolateCreateRendezvous{
     
     __block QredoRendezvous *rendezvous = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block NSString *randomTag = nil;
+    
     QredoLogDebug(@"Creating Rendezvous (with client 1)");
     
-    [client createAnonymousRendezvousWithTag:randomTag
-                                    duration:3600
-                          unlimitedResponses:YES
-                           completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-                               QredoLogDebug(@"Create rendezvous completion handler called.");
-                               XCTAssertNil(error);
-                               XCTAssertNotNil(_rendezvous);
-                               
-                               rendezvous = _rendezvous;
-                               
-                               [createExpectation fulfill];
-                           }];
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+                                        duration:3600
+                              unlimitedResponses:YES
+                               completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
+                                   QredoLogDebug(@"Create rendezvous completion handler called.");
+                                   XCTAssertNil(error);
+                                   XCTAssertNotNil(_rendezvous);
+                                   randomTag = rendezvous.tag;
+                                   rendezvous = _rendezvous;
+                                   
+                                   [createExpectation fulfill];
+                               }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         createExpectation = nil;
@@ -413,9 +414,6 @@ NSString *secondMessageText;
     //Client2: Receives qredoConversationOtherPartyHasLeft callback in its QredoConversationObserver
     
     //static NSString *randomTag;
-    NSString *randomTag = nil;
-    
-    if (!randomTag)randomTag= [[QredoQUID QUID] QUIDString];
     
     firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [QredoNetworkTime dateTime]];
     secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [QredoNetworkTime dateTime]];
@@ -436,10 +434,11 @@ NSString *secondMessageText;
     //static QredoRendezvous *rendezvous;
     QredoRendezvous *rendezvous=nil;
     if (!rendezvous){
-        rendezvous= [self isolateCreateRendezvous:randomTag];
+        rendezvous= [self isolateCreateRendezvous];
         [rendezvous addRendezvousObserver:self];
     }
     
+    NSString *randomTag = rendezvous.tag;
     
     //this is a fix so the observer registers before the rendezvous is responded to.
     [NSThread sleepForTimeInterval:delayInterval];
@@ -523,9 +522,8 @@ NSString *secondMessageText;
     float delayInterval = 0.4;
     
     
-    NSString *randomTag = nil;
     
-    if (!randomTag)randomTag= [[QredoQUID QUID] QUIDString];
+    
     
     firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [QredoNetworkTime dateTime]];
     secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [QredoNetworkTime dateTime]];
@@ -544,9 +542,10 @@ NSString *secondMessageText;
     [NSThread sleepForTimeInterval:delayInterval];
     
     //static QredoRendezvous *rendezvous;
-    QredoRendezvous *rendezvous= [self isolateCreateRendezvous:randomTag];
+    QredoRendezvous *rendezvous= [self isolateCreateRendezvous];
     [rendezvous addRendezvousObserver:self];
     
+    NSString *randomTag = rendezvous.tag;
     
     //this is a fix so the observer registers before the rendezvous is responded to.
     [NSThread sleepForTimeInterval:delayInterval];
@@ -634,8 +633,9 @@ NSString *secondMessageText;
     //static QredoRendezvous *rendezvous;
     QredoRendezvous *rendezvous=nil;
     if (!rendezvous){
-        rendezvous= [self isolateCreateRendezvous:randomTag];
+        rendezvous= [self isolateCreateRendezvous];
         [rendezvous addRendezvousObserver:self];
+        randomTag = rendezvous.tag;
     }
     
     

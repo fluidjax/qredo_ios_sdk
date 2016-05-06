@@ -23,5 +23,6 @@
 
 
 +(NSData *)randomKey:(NSUInteger)size;
++(NSString*)dataToHexString:(NSData*)data;
 
 @end

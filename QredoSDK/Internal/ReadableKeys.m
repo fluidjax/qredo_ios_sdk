@@ -681,5 +681,17 @@ char *keyout,*eng;
     
 }
 
+
++(NSString*)dataToHexString:(NSData*)data{
+    NSUInteger capacity = data.length * 2;
+    NSMutableString *sbuf = [NSMutableString stringWithCapacity:capacity];
+    const unsigned char *buf = data.bytes;
+    for (int i=0; i<data.length; i++) {
+        [sbuf appendFormat:@"%02X", (unsigned int)buf[i]];
+    }
+    return [sbuf copy];
+}
+
+
 @end
 
