@@ -58,7 +58,7 @@
                                                           signingHandler:(signDataBlock)signingHandler
                                                                    error:(NSError **)error;
 
-- (NSData *)masterKeyWithTag:(NSString *)tag;
+- (NSData *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId;
 - (QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey;
 - (NSData *)encryptionKeyWithMasterKey:(NSData *)masterKey;
 - (NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey;

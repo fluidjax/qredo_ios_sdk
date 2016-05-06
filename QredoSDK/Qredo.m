@@ -25,6 +25,7 @@
 #import "QredoConversationProtocol.h"
 
 #import "QredoNetworkTime.h"
+#import "ReadableKeys.h"
 
 #import <UIKit/UIKit.h>
 
@@ -327,6 +328,10 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
+-(QredoAppCredentials *)appCredentials{
+    return _appCredentials;
+}
+
 -(QredoUserCredentials *)userCredentials{
     return _userCredentials;
 }
@@ -499,6 +504,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     if (!self) return nil;
     
     _userCredentials = userCredentials;
+    _appCredentials = appCredentials;
     _serviceURL = serviceURL;
     if (_serviceURL) {
         _serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:_serviceURL pinnedCertificate:certificate appCredentials:appCredentials];
@@ -574,6 +580,17 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 
+
+-(NSData*)createTagWithSecurityLevel:(QredoSecurityLevel)securityLevel{
+    NSData *key = [ReadableKeys randomKey:securityLevel];
+    return key;
+}
+
+
+
+
+
+
 -(void)createAnonymousRendezvousWithRandomTagCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
     [self createAnonymousRendezvousWithTag:[QredoClient randomStringWithLength:32]
                                   duration:0
@@ -622,6 +639,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   trustedRootPems:[[NSArray alloc] init]
                           crlPems:[[NSArray alloc] init]
                    signingHandler:nil
+                   appCredentials:self.appCredentials
                 completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                     QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@", tag);
                     if (completionHandler)completionHandler(rendezvous,error);
@@ -643,6 +661,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   trustedRootPems:[[NSArray alloc] init]
                           crlPems:[[NSArray alloc] init]
                    signingHandler:nil
+                   appCredentials:self.appCredentials
                 completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                     QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@", tag);
                     if (completionHandler)completionHandler(rendezvous,error);
@@ -696,6 +715,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   trustedRootPems:[[NSArray alloc] init]
                           crlPems:[[NSArray alloc] init]
                    signingHandler:nil
+                   appCredentials:self.appCredentials
                 completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                     QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@", prefixedTag);
                     if (completionHandler)completionHandler(rendezvous,error);
@@ -773,6 +793,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   trustedRootPems:trustedRootPems
                           crlPems:crlPems
                    signingHandler:signingHandler
+                   appCredentials:self.appCredentials
                 completionHandler:completionHandler];
 }
 
@@ -783,6 +804,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                trustedRootPems:(NSArray *)trustedRootPems
                        crlPems:(NSArray *)crlPems
                 signingHandler:(signDataBlock)signingHandler
+                appCredentials:(QredoAppCredentials *)appCredentials
              completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler {
     // although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
     
@@ -800,6 +822,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                             trustedRootPems:trustedRootPems
                                     crlPems:crlPems
                              signingHandler:signingHandler
+                             appCredentials:appCredentials
                           completionHandler:^(NSError *error) {
                               if (error) {
                                   if (completionHandler)completionHandler(nil, error);
@@ -979,6 +1002,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
         [conversation respondToRendezvousWithTag:tag
                                  trustedRootPems:trustedRootPems
                                          crlPems:crlPems
+                                  appCredentials:self.appCredentials
                                completionHandler:^(NSError *error) {
                                    if (error) {
                                        if (completionHandler)completionHandler(nil, error);

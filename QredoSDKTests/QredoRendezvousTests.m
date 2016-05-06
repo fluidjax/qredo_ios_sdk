@@ -12,6 +12,8 @@
 #import "QredoClient.h"
 
 #import "QredoCrypto.h"
+#import "QredoRendezvousCrypto.h"
+
 #import "CryptoImplV1.h"
 #import "QredoBase58.h"
 #import "TestCertificates.h"
@@ -19,6 +21,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
+#import "NSData+ParseHex.h"
 
 #import <objc/runtime.h>
 
@@ -79,6 +82,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 @implementation QredoRendezvousEd25519CreateHelper (QredoRendezvousTests)
 
+
+
+
+
+
+
 -(QLFRendezvousAuthSignature *)QredoRendezvousTests_signatureWithData:(NSData *)data error:(NSError **)error {
     QLFRendezvousAuthSignature *signature = [self QredoRendezvousTests_signatureWithData:data error:error];
     
@@ -137,6 +146,47 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 @end
 
 @implementation QredoRendezvousTests
+
+
+
+//-(void)testRendezvous{
+//    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+//    __block QredoRendezvous *createdRendezvous = nil;
+//    
+//    [client createAnonymousRendezvousWithRandomTagCompletionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+//        XCTAssertNil(error);
+//        XCTAssertNotNil(rendezvous.tag);
+//        XCTAssertNotNil(rendezvous);
+//        createdRendezvous = rendezvous;
+//        [createExpectation fulfill];
+//    }];
+//    
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+//        createExpectation = nil;
+//    }];
+//}
+
+
+
+-(void)testGenerateMasterKeyWithTag{
+    QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
+    [self measureBlock:^{
+        [rendCrypto masterKeyWithTag:@"123456789012345678901234567890" appId:@"123456789012345678901234567890"];
+    }];
+}
+
+
+
+-(void)testGenerateMasterKeyWithTagAndAppId{
+    QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
+    NSString *tag   = @"ABC";
+    NSString *appId = @"123";
+    NSData * res = [rendCrypto masterKeyWithTag:tag appId:appId];
+    NSData *testVal = [NSData dataWithHexString:@"ba4f5f1d 299c8e4d 8eed2c0c 27bc8e71 5a2b6260 6950088d d7fcb922 07fa3320"];
+    XCTAssertTrue([testVal isEqualToData: res],@"Master Key derived from Tag is incorrect");
+}
+
+
 
 -(void)setUp {
     [super setUp];

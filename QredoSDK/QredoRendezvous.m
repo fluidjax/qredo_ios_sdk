@@ -218,6 +218,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                trustedRootPems:(NSArray *)trustedRootPems
                        crlPems:(NSArray *)crlPems
                 signingHandler:(signDataBlock)signingHandler
+                 appCredentials:(QredoAppCredentials*)appCredentials
              completionHandler:(void (^)(NSError *error))completionHandler {
     QredoLogVerbose(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.", tag, (unsigned long)trustedRootPems.count);
     
@@ -253,7 +254,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _tag = [rendezvousHelper tag];
     
     // Hash the tag.
-    NSData *masterKey = [crypto masterKeyWithTag:_tag];
+    NSData *masterKey = [crypto masterKeyWithTag:_tag appId:appCredentials.appId];
     QLFAuthenticationCode *authKey = [crypto authenticationKeyWithMasterKey:masterKey];
     _hashedTag  = [crypto hashedTagWithMasterKey:masterKey];
     NSData *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
@@ -309,6 +310,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                                            responseCountLimit:responseCount
                                                                                            ownershipPublicKey:ownershipPublicKeyBytes
                                                                                        encryptedResponderInfo:encryptedResponderInfo];
+    
+    
+    NSLog(@"*****KEYDUMP****");
+    NSLog(@"Ownership = %@",ownershipPublicKeyBytes);
+    NSLog(@"Request = %@",requesterPublicKeyBytes);
+    NSLog(@"*****KEYDUMP****");
+    
     
     
     [_rendezvous createWithCreationInfo:_creationInfo

@@ -67,6 +67,7 @@
                 trustedRootPems:(NSArray *)trustedRootPems
                         crlPems:(NSArray *)crlPems
                  signingHandler:(signDataBlock)signingHandler
+                 appCredentials:(QredoAppCredentials*)appCredentials
               completionHandler:(void(^)(NSError *error))completionHandler;
 - (void)activateRendezvous:(long)duration completionHandler:(void (^)(NSError *error))completionHandler;
 - (void)updateRendezvousWithDuration:(long)duration expiresAt:(NSSet*)expiresAt completionHandler:(void (^)(NSError *error))completionHandler;

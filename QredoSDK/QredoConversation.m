@@ -359,12 +359,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
                    trustedRootPems:(NSArray *)trustedRootPems
                            crlPems:(NSArray *)crlPems
+                    appCredentials:(QredoAppCredentials*)appCredentials
                  completionHandler:(void(^)(NSError *error))completionHandler
 {
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
     QLFRendezvous *_rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:self.client.serviceInvoker];
 
-    NSData *masterKey = [_rendezvousCrypto masterKeyWithTag:rendezvousTag];
+    NSData *masterKey = [_rendezvousCrypto masterKeyWithTag:rendezvousTag appId:appCredentials.appId];
     NSData *authKey = [_rendezvousCrypto authenticationKeyWithMasterKey:masterKey];
 
     QLFRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithMasterKey:masterKey];

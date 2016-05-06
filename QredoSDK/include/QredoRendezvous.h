@@ -24,6 +24,12 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
  */
 
+
+
+;
+
+
+
 @class QredoRendezvous;
 
 /** The protocol that must implemented by the object that listens for new messages received within a `QredoConversation`

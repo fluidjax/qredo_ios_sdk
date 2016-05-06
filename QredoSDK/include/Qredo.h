@@ -20,6 +20,14 @@
 @class QredoCertificate;
 
 
+/* Generated TAG lengths
+ */
+typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
+    MEDIUM_SECURITY=6,
+    HIGH_SECURITY=32
+};
+
+
 /**
  Used to manage connections to Qredo and create, manage and respond to Rendezvous.
  
@@ -185,7 +193,8 @@
  @param ref The `QredoRendevousRef` for the required `QredoRendevous`.
  @param completionHandler rendezvous will be set to the `QredoRendezvous` represented by the `QredoRendezvousRef` . If the Rendezvous cannot be found, then an error will be non nil and  error.code will be `QredoErrorCodeRendezvousNotFound`
  
- */-(void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
+ */
+-(void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
                completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
