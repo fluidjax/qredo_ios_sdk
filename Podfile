@@ -34,7 +34,7 @@ target 'QredoXDK' do
     pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium'
-    pod 'ios-ntp', :git => 'https://github.com/fluidjax/ios-ntp.git'    
+    pod 'ios-ntp', :git => 'https://github.com/qredo/SSL-NTP-Time-Sync'    
 end
 
 post_install do |installer_representation|
