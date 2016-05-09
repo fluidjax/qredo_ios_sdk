@@ -566,7 +566,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
                                 since:(QredoVaultHighWatermark*)sinceWatermark
                     completionHandler:(void(^)(NSError *error))completionHandler{
     dispatch_async(_queue, ^{
-        [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
+        [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:NO];
         
     });
 }

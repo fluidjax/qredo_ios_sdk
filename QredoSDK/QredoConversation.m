@@ -231,8 +231,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _myPublicKey   = [[QredoDhPublicKey alloc] initWithData:[descriptor.myKey.pubKey bytes]];
 
     // this method is called when we are loading the conversation from the vault, therefore, we don't need to store it again. Only generating keys here
-//    [self generateKeysWithPrivateKey:_myPrivateKey publicKey:_yourPublicKey rendezvousOwner:_metadata.amRendezvousOwner];
-
     [self generateKeysWithPrivateKey:_myPrivateKey publicKey:_yourPublicKey  myPublicKey:_myPublicKey rendezvousOwner:_metadata.amRendezvousOwner];
     
 
