@@ -110,7 +110,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFRendezvous *_rendezvous;
     QredoVault *_vault;
     QredoDhPrivateKey *_requesterPrivateKey;
-    NSData *_myPublicKey;
+    QredoDhPublicKey *_requesterPublicKey;
     QLFRendezvousHashedTag *_hashedTag;
     QLFRendezvousDescriptor *_descriptor;
     
@@ -173,6 +173,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _tag = _descriptor.tag;
     _hashedTag = _descriptor.hashedTag;
     _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:descriptor.requesterKeyPair.privKey.bytes];
+    _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
     _ownershipPrivateKey = [[QredoRendezvousCrypto instance] accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
     
     return self;
@@ -272,16 +273,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFKeyPairLF *requesterKeyPair     = [crypto newRequesterKeyPair];
     
     _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData: requesterKeyPair.privKey.bytes];
+    _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData: requesterKeyPair.pubKey.bytes];
     
     _ownershipPrivateKey = [crypto accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
     
     NSData *ownershipPublicKeyBytes      = [[ownershipKeyPair pubKey] bytes];
-    
-    
-    
-
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];
-    _myPublicKey = requesterPublicKeyBytes;
+
     
     QLFRendezvousResponderInfo *responderInfo = [QLFRendezvousResponderInfo rendezvousResponderInfoWithRequesterPublicKey:requesterPublicKeyBytes
                                                                                                          conversationType:configuration.conversationType
@@ -769,7 +767,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
                                            publicKey:responderPublicKey
-                                         myPublicKeyData:_myPublicKey
+                                         myPublicKey:_requesterPublicKey
                                      rendezvousOwner:YES
                                    completionHandler:^(NSError *error){
                                        if (error) {
