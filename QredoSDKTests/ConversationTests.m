@@ -228,8 +228,9 @@ static float delayInterval = 0.4;
                                    QLog(@"\nRendezvous creation completion handler entered");
                                    XCTAssertNil(error);
                                    XCTAssertNotNil(_rendezvous);
-                                   randomTag = rendezvous.tag;
                                    rendezvous = _rendezvous;
+                                   randomTag = _rendezvous.tag;
+                                   
                                    
                                    [createExpectation fulfill];
                                }];

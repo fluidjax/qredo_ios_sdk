@@ -30,6 +30,7 @@ static int kRendezvousTestDurationSeconds = 120; // 2 minutes
 @interface RendezvousListener :NSObject <QredoRendezvousObserver>
 
 @property XCTestExpectation *expectation;
+@property QredoConversation *incomingConversation;
 
 @end
 
@@ -41,6 +42,7 @@ XCTestExpectation *timeoutExpectation;
 
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     if (self.expectation) {
+        self.incomingConversation = conversation;
         [self.expectation fulfill];
     }
 }
@@ -917,6 +919,98 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 
+
+-(void)testFingerPrints {
+    __block NSString *randomTag = nil;
+    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
+    __block QredoRendezvous *createdRendezvous = nil;
+    
+    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+                                        duration:kRendezvousTestDurationSeconds
+                              unlimitedResponses:YES
+                               completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                                   XCTAssertNil(error);
+                                   XCTAssertNotNil(rendezvous);
+                                   randomTag = rendezvous.tag;
+                                   createdRendezvous = rendezvous;
+                                   [createExpectation fulfill];
+                                   
+                               }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        createExpectation = nil;
+    }];
+    
+    // Listening for responses and respond from another client
+    RendezvousListener *listener = [[RendezvousListener alloc] init];
+    [createdRendezvous addRendezvousObserver:listener];
+    [NSThread sleepForTimeInterval:0.1];
+    XCTAssertNotNil(createdRendezvous);
+    listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
+    __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"verify: respond to rendezvous"];
+    
+    
+    [NSThread sleepForTimeInterval:1];
+    
+    
+    //complete build rendezvous & listener for response
+    
+    __block QredoConversation *client2Conversation;
+    
+    
+    [client2 respondWithTag:randomTag
+          completionHandler:^(QredoConversation *conversation, NSError *error) {
+              XCTAssertNil(error);
+              [respondExpectation fulfill];
+              client2Conversation = conversation;
+          }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        respondExpectation = nil;
+        listener.expectation = nil;
+    }];
+
+    
+    
+    QredoConversation *client1Conversation = listener.incomingConversation;
+    
+    
+    
+    XCTAssertNotNil(client1Conversation);
+    XCTAssertNotNil(client2Conversation);
+    
+    NSString *client1CreatorFingerprint     = [client1Conversation creatorFingerPrint];
+    NSString *client1ResponderFingerprint   = [client1Conversation responderFingerPrint];
+    NSString *client2CreatorFingerprint     = [client2Conversation creatorFingerPrint];
+    NSString *client2ResponderFingerprint   = [client2Conversation responderFingerPrint];
+    
+    
+    NSString *client1FingerprintPair        = [client2Conversation fingerPrintPair];
+    NSString *client2FingerprintPair        = [client2Conversation fingerPrintPair];
+    
+    
+    
+    XCTAssertTrue([client1CreatorFingerprint isEqualToString:client2CreatorFingerprint],@"fingerprints dont match");
+    XCTAssertTrue([client1ResponderFingerprint isEqualToString:client2ResponderFingerprint],@"fingerprints dont match");
+    XCTAssertTrue([client1FingerprintPair isEqualToString:client2FingerprintPair],@"fingerprints dont match");
+    
+
+    
+    
+    
+    [createdRendezvous removeRendezvousObserver:listener];
+    [client closeSession];
+    [client2 closeSession];
+    
+    
+    
+    
+    
+    
+}
+
+
+
 -(void)testCreateAndRespondAnonymousRendezvousPreCreate {
     __block NSString *randomTag = nil;
     
@@ -932,6 +1026,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
                                randomTag = rendezvous.tag;
                                createdRendezvous = rendezvous;
                                [createExpectation fulfill];
+                               
                            }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         createExpectation = nil;
@@ -969,6 +1064,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [createdRendezvous removeRendezvousObserver:listener];
     [client closeSession];
     [client2 closeSession];
+    
+    
+    
+    
+    
+    
 }
 
 

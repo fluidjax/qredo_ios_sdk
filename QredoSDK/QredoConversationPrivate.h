@@ -32,6 +32,7 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 // Generate the keys, conversation ID, queue IDs and will save in the vault
 - (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
                                  publicKey:(QredoDhPublicKey*)publicKey
+                           myPublicKeyData:(NSData*)myPublicKeyData
                            rendezvousOwner:(BOOL)rendezvousOwner
                          completionHandler:(void(^)(NSError *error))completionHandler;
 

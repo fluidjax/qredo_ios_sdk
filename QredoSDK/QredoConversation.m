@@ -30,6 +30,7 @@
 #import "QredoVaultCrypto.h"
 #import "QredoObserverList.h"
 #import "QredoNetworkTime.h"
+#import "ReadableKeys.h"
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
 NSString *const kQredoConversationVaultItemType = @"com.qredo.conversation";
@@ -128,8 +129,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @end
 
 
-@interface QredoConversation () <QredoUpdateListenerDelegate, QredoUpdateListenerDataSource>
-{
+@interface QredoConversation () <QredoUpdateListenerDelegate, QredoUpdateListenerDataSource>{
+    
+    NSData *_myPublicKey;
+    
     id<CryptoImpl> _crypto;
     QredoConversationCrypto *_conversationCrypto;
     QLFConversations *_conversationService;
@@ -154,6 +157,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoDhPublicKey *_yourPublicKey;
     QredoDhPrivateKey *_myPrivateKey;
 
+    
     QLFRendezvousAuthType *_authenticationType;
     QredoConversationMetadata *_metadata;
 
@@ -170,6 +174,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @end
 
 @implementation QredoConversation (Private)
+
 
 - (instancetype)initWithClient:(QredoClient *)client
 {
@@ -274,8 +279,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 - (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
                                  publicKey:(QredoDhPublicKey*)publicKey
+                           myPublicKeyData:(NSData*)myPublicKeyData
                            rendezvousOwner:(BOOL)rendezvousOwner
                          completionHandler:(void(^)(NSError *error))completionHandler{
+    
+    _myPublicKey = myPublicKeyData;
+    
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey rendezvousOwner:rendezvousOwner];
 
     [self storeWithCompletionHandler:^(NSError *error)
@@ -372,12 +381,14 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     // Generate the rendezvous key pairs.
     QLFKeyPairLF *responderKeyPair     = [_rendezvousCrypto newRequesterKeyPair];
+    
     NSData *responderPublicKeyBytes    = [[responderKeyPair pubKey] bytes];
+    _myPublicKey = responderPublicKeyBytes;
+    
 
-    QLFAuthenticationCode *responderAuthenticationCode
-    = [_rendezvousCrypto responderAuthenticationCodeWithHashedTag:hashedTag
-                                                authenticationKey:authKey
-                                               responderPublicKey:responderPublicKeyBytes];
+    QLFAuthenticationCode *responderAuthenticationCode   = [_rendezvousCrypto responderAuthenticationCodeWithHashedTag:hashedTag
+                                                                                                     authenticationKey:authKey
+                                                                                                    responderPublicKey:responderPublicKeyBytes];
 
 
     QLFRendezvousResponse *response = [QLFRendezvousResponse rendezvousResponseWithHashedTag:hashedTag
@@ -421,6 +432,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
                 [self generateAndStoreKeysWithPrivateKey:responderPrivateKey
                                                publicKey:requesterPublicKey
+                                         myPublicKeyData:_myPublicKey
                                          rendezvousOwner:NO
                                        completionHandler:completionHandler];
                 
@@ -480,7 +492,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
 
-    //csm
     @synchronized(self) {
 
         [self.client.systemVault strictlyPutNewItem:vaultItem
@@ -729,6 +740,49 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 @implementation QredoConversation
+
+
+
+-(NSString*)creatorFingerPrint{
+    NSData *fp =  [QredoCrypto sha256:[self creatorPublicKey]];
+    return [ReadableKeys dataToHexString:fp];
+}
+
+
+-(NSString*)responderFingerPrint{
+    NSData *fp = [QredoCrypto sha256:[self responderPublicKey]];
+    return [ReadableKeys dataToHexString:fp];
+}
+
+
+
+-(NSString*)fingerPrintPair{
+    NSMutableData *fingerPrintData = [[NSMutableData alloc] init];
+    [fingerPrintData appendData:[self creatorPublicKey]];
+    [fingerPrintData appendData:[self responderPublicKey]];
+    NSData *fp = [QredoCrypto sha256:fingerPrintData];
+    return [ReadableKeys dataToHexString:fp];
+}
+
+
+-(NSData*)creatorPublicKey{
+    if ([self.metadata amRendezvousOwner]==YES){
+        return _myPublicKey;
+    }else{
+        return _yourPublicKey.data;
+    }
+}
+
+
+-(NSData*)responderPublicKey{
+    if ([self.metadata amRendezvousOwner]==NO){
+        return _myPublicKey;
+    }else{
+        return _yourPublicKey.data;
+    }
+    
+}
+
 
 - (instancetype)copyWithZone:(NSZone *)zone {
     return self; // for immutable objects

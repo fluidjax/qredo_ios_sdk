@@ -231,4 +231,13 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 
 
+
+/**
+ Generate Hex String Fingerprints of the Public Conversation keys
+ **/
+
+-(NSString*)creatorFingerPrint;
+-(NSString*)responderFingerPrint;
+-(NSString*)fingerPrintPair;
+
 @end

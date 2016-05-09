@@ -110,6 +110,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFRendezvous *_rendezvous;
     QredoVault *_vault;
     QredoDhPrivateKey *_requesterPrivateKey;
+    NSData *_myPublicKey;
     QLFRendezvousHashedTag *_hashedTag;
     QLFRendezvousDescriptor *_descriptor;
     
@@ -138,6 +139,9 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 @end
 
 @implementation QredoRendezvous (Private)
+
+
+
 
 -(instancetype)initWithClient:(QredoClient *)client {
     self = [super init];
@@ -272,12 +276,16 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _ownershipPrivateKey = [crypto accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
     
     NSData *ownershipPublicKeyBytes      = [[ownershipKeyPair pubKey] bytes];
+    
+    
+    
+
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];
+    _myPublicKey = requesterPublicKeyBytes;
     
     QLFRendezvousResponderInfo *responderInfo = [QLFRendezvousResponderInfo rendezvousResponderInfoWithRequesterPublicKey:requesterPublicKeyBytes
                                                                                                          conversationType:configuration.conversationType
                                                                                                                  transCap:[NSSet set]];
-    
     NSData *encryptedResponderData = [crypto encryptResponderInfo:responderInfo
                                                     encryptionKey:responderInfoEncKey];
     
@@ -312,14 +320,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                                            responseCountLimit:responseCount
                                                                                            ownershipPublicKey:ownershipPublicKeyBytes
                                                                                        encryptedResponderInfo:encryptedResponderInfo];
-    
-    
-//    NSLog(@"*****KEYDUMP****");
-//    NSLog(@"Ownership = %@",ownershipPublicKeyBytes);
-//    NSLog(@"Request = %@",requesterPublicKeyBytes);
-//    NSLog(@"*****KEYDUMP****");
-//    
-    
     
     [_rendezvous createWithCreationInfo:_creationInfo
                       completionHandler:^(QLFRendezvousCreateResult *result, NSError *error) {
@@ -769,6 +769,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
                                            publicKey:responderPublicKey
+                                         myPublicKeyData:_myPublicKey
                                      rendezvousOwner:YES
                                    completionHandler:^(NSError *error){
                                        if (error) {
