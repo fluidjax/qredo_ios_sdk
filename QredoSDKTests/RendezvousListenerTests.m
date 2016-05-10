@@ -44,7 +44,7 @@
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                              options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
@@ -100,7 +100,7 @@
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                                        options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
                              completionHandler:^(QredoClient *clientArg, NSError *error) {
                                  XCTAssertNil(error);

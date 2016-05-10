@@ -120,7 +120,7 @@
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     clientOptions.transportType = self.transportType;
   
-    savedPassword = [QredoTestUtils randomPassword];
+    savedPassword = [self randomPassword];
     
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET

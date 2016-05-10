@@ -59,7 +59,7 @@ NSNumber *testNumber;
 
 -(void)testUpdateAccessDatePut{
     NSInteger before = [qredoLocalIndex count];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:1024];
+    NSString *randomKeyValue = [self randomStringWithLength:1024];
     long long startSize = [vault cacheFileSize];
     [self createLarge1MTestItem:vault];
     NSInteger after = [qredoLocalIndex count];
@@ -177,7 +177,7 @@ NSNumber *testNumber;
 -(void)testLastAccessTimes{
     //Test to ensure that different types of cache access cause the last access date/time to be updated
     NSInteger before = [qredoLocalIndex count];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:1024];
+    NSString *randomKeyValue = [self randomStringWithLength:1024];
     long long startSize = [vault cacheFileSize];
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     [qredoLocalIndex saveAndWait];
@@ -213,7 +213,7 @@ NSNumber *testNumber;
 -(void)testDisableMetadataCache{
     NSInteger before = [qredoLocalIndex count];
     [vault metadataCacheEnabled:NO];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before ,@"Item shouldn't be added to cache as it is disabled Before %ld After %ld", (long)before, (long)after);
@@ -224,7 +224,7 @@ NSNumber *testNumber;
     [vault metadataCacheEnabled:NO];
     NSInteger before = [qredoLocalIndex count];
     
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     NSInteger after = [qredoLocalIndex count];
@@ -257,7 +257,7 @@ NSNumber *testNumber;
 
 -(void)testEnableValueCache{
     NSInteger before = [qredoLocalIndex count];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     NSInteger after = [qredoLocalIndex count];
@@ -289,7 +289,7 @@ NSNumber *testNumber;
 -(void)testDisableValueCache{
     NSInteger before = [qredoLocalIndex count];
     [vault valueCacheEnabled:NO];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     NSInteger after = [qredoLocalIndex count];
@@ -321,7 +321,7 @@ NSNumber *testNumber;
 
 -(void)testPersistentFileSize{
     long long initialSize = [vault cacheFileSize];
-    NSString * randomVal = [QredoTestUtils randomStringWithLength:4096];
+    NSString * randomVal = [self randomStringWithLength:4096];
     for (int i=0; i<10; i++) {
         [self createTestItemInVault:vault key1Value:randomVal];
     }
@@ -335,7 +335,7 @@ NSNumber *testNumber;
 
 - (void)testEmptyPredicate {
     NSInteger before = [qredoLocalIndex count];
-    NSString * randomTag = [QredoTestUtils randomStringWithLength:32];
+    NSString * randomTag = [self randomStringWithLength:32];
     
     QredoVaultItemMetadata *item1 = [self createTestItemInVault:vault key1Value:randomTag];
     QredoVaultItemMetadata *item2 = [self createTestItemInVault:vault key1Value:randomTag];
@@ -355,7 +355,7 @@ NSNumber *testNumber;
 
 
 - (void)testMultipleClientsAndVaults {
-    [self authoriseSecondClient:[QredoTestUtils randomPassword]];
+    [self authoriseSecondClient:[self randomPassword]];
     
     XCTAssertNotEqual(client1, client2,@"Error creating clients");
     XCTAssertNotEqual(vault, vault2,@"Error creating vaults");
@@ -364,7 +364,7 @@ NSNumber *testNumber;
     NSInteger client1count1 = [qredoLocalIndex count];
     NSInteger client2count1 = [qredoLocalIndex2 count];
     
-    [self createTestItemInVault:vault key1Value:[QredoTestUtils randomStringWithLength:32]];
+    [self createTestItemInVault:vault key1Value:[self randomStringWithLength:32]];
     
     NSInteger client1count2 = [qredoLocalIndex count];
     NSInteger client2count2 = [qredoLocalIndex2 count];
@@ -372,7 +372,7 @@ NSNumber *testNumber;
     XCTAssertTrue(client1count2 == client1count1+1,@"failed to insert new item");
     XCTAssertTrue(client2count1 == client2count2,@"incorrectly added new item to the wrong client");
     
-    [self createTestItemInVault:vault2 key1Value:[QredoTestUtils randomStringWithLength:32]];
+    [self createTestItemInVault:vault2 key1Value:[self randomStringWithLength:32]];
     NSInteger client1count3 = [qredoLocalIndex count];
     NSInteger client2count3 = [qredoLocalIndex2 count];
     
@@ -392,7 +392,7 @@ NSNumber *testNumber;
     
     //check item is in index
     NSInteger before = [qredoLocalIndex count];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld", (long)before, (long)after);
@@ -438,7 +438,7 @@ NSNumber *testNumber;
 - (void)testSimplePut {
     int testCount = 10;
     NSInteger before = [qredoLocalIndex count];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     [client1.defaultVault addMetadataIndexObserver];
     
     for (int i=0;i<testCount;i++){
@@ -457,7 +457,7 @@ NSNumber *testNumber;
     NSInteger before = [qredoLocalIndex count];
     int addCount = 20;
     for (int i=0; i<addCount; i++) {
-        NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+        NSString *randomKeyValue = [self randomStringWithLength:32];
         QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     }
     NSInteger after = [qredoLocalIndex count];
@@ -469,7 +469,7 @@ NSNumber *testNumber;
 - (void)testEnumerateRandomClient {
     NSInteger before = [qredoLocalIndex count];
     //QLog(@"Count before %ld", (long)before);
-    NSString * randomTag = [QredoTestUtils randomStringWithLength:32];
+    NSString * randomTag = [self randomStringWithLength:32];
     
     QredoVaultItemMetadata *item1 = [self createTestItemInVault:vault key1Value:randomTag];
     QredoVaultItemMetadata *item2 = [self createTestItemInVault:vault key1Value:randomTag];
@@ -544,7 +544,7 @@ NSNumber *testNumber;
     myTestDate = [QredoNetworkTime dateTime];
     testNumber = [NSNumber numberWithInt:3];
     self.continueAfterFailure = YES;
-    [self authoriseClient:[QredoTestUtils randomPassword]];
+    [self authoriseClient:[self randomPassword]];
 }
 
 
@@ -575,7 +575,7 @@ NSNumber *testNumber;
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
@@ -605,7 +605,7 @@ NSNumber *testNumber;
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);
@@ -678,14 +678,14 @@ NSNumber *testNumber;
     NSMutableDictionary *item1SummaryValues = [[NSMutableDictionary alloc] init];
     for (int i=0;i<metadataRecords;i++){
         NSString *key = [NSString stringWithFormat:@"key%i",i];
-        NSString *metadataString          = [QredoTestUtils randomStringWithLength:metadataSize];
+        NSString *metadataString          = [self randomStringWithLength:metadataSize];
         [item1SummaryValues setObject:metadataString forKey:key];
     }
     
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues];
     
     
-    NSString *valueString             = [QredoTestUtils randomStringWithLength:vaultItemSize];
+    NSString *valueString             = [self randomStringWithLength:vaultItemSize];
     NSData* item1Data                 = [valueString dataUsingEncoding:NSUTF8StringEncoding];
 
     
@@ -712,9 +712,9 @@ NSNumber *testNumber;
 
 - (QredoVaultItemMetadata *)createVaultItemSize:(int)vaultItemSize metadataSize:(int)metadataSize{
     //create a vault item with a specific size (both value & metadata)
-    NSString *valueString             = [QredoTestUtils randomStringWithLength:vaultItemSize];
+    NSString *valueString             = [self randomStringWithLength:vaultItemSize];
     NSData* item1Data                 = [valueString dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *metadataString          = [QredoTestUtils randomStringWithLength:metadataSize];
+    NSString *metadataString          = [self randomStringWithLength:metadataSize];
     
     NSDictionary *item1SummaryValues = @{@"key": metadataString};
     
@@ -746,7 +746,7 @@ NSNumber *testNumber;
 
 - (QredoVaultItemMetadata *)createLarge1MTestItem:(QredoVault *)vault{
    
-    NSString *str = [QredoTestUtils randomStringWithLength:1048576];
+    NSString *str = [self randomStringWithLength:1048576];
     
     NSData* item1Data = [str dataUsingEncoding:NSUTF8StringEncoding];
     
@@ -836,7 +836,7 @@ NSNumber *testNumber;
 
 -(void)testPutItemType1{
      NSInteger before = [qredoLocalIndex count];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     [client1.defaultVault addMetadataIndexObserver];
     
     
@@ -869,7 +869,7 @@ NSNumber *testNumber;
     //So this must be a new version of a locally created item
     
     NSInteger before = [qredoLocalIndex count];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     [client1.defaultVault addMetadataIndexObserver];
     
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -927,12 +927,12 @@ NSNumber *testNumber;
 -(void)testPutItemType4{
     //There is an itemID with the same Sequence ID & Sequqnce Number
     //So this is an existing item, sets its value
-    [self authoriseSecondClient:[QredoTestUtils randomPassword]];
+    [self authoriseSecondClient:[self randomPassword]];
     
     
     
     NSInteger before = [qredoLocalIndex count];
-    NSString *randomKeyValue = [QredoTestUtils randomStringWithLength:32];
+    NSString *randomKeyValue = [self randomStringWithLength:32];
     [client1.defaultVault addMetadataIndexObserver];
     [client2.defaultVault addMetadataIndexObserver];
 

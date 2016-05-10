@@ -379,7 +379,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                                  options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -401,7 +401,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                                  options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -427,7 +427,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -875,7 +875,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -931,8 +931,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
     
     
-    NSString *client1Password =[QredoTestUtils randomPassword];
-    NSString *client2Password =[QredoTestUtils randomPassword];
+    NSString *client1Password =[self randomPassword];
+    NSString *client2Password =[self randomPassword];
     
     
     __block XCTestExpectation *clientExpectation1 = [self expectationWithDescription:@"create client1"];
@@ -1433,7 +1433,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //    [QredoClient initializeWithAppId:k_APPID
 //                appSecret:k_APPSECRET
 //                userId:k_USERID
-//                userSecret:[QredoTestUtils randomPassword]
+//                userSecret:[self randomPassword]
 //
 //                                 options:[self clientOptions:YES]
 //                       completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -1531,7 +1531,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //    
 //    [QredoClient initializeWithAppSecret:k_APPSECRET
 //                                  userId:k_USERID
-//                              userSecret:[QredoTestUtils randomPassword]
+//                              userSecret:[self randomPassword]
 //                                 options:[self clientOptions:YES]
 //                       completionHandler:^(QredoClient *clientArg, NSError *error) {
 //                           XCTAssertNil(error);
@@ -1935,7 +1935,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 //    
 //    [QredoClient initializeWithAppSecret:k_APPSECRET
 //                                  userId:k_USERID
-//                              userSecret:[QredoTestUtils randomPassword]
+//                              userSecret:[self randomPassword]
 //                                 options:[self clientOptions:YES]
 //                       completionHandler:^(QredoClient *clientArg, NSError *error) {
 //                           XCTAssertNil(error);

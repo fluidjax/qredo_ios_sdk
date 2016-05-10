@@ -131,7 +131,10 @@
             expectedEncryptedResponderData:(NSData *)expectedEncryptedResponderData
                 expectedAuthenticationCode:(NSData *)expectedAuthenticationCode
 {
-    NSData *masterKey = [rendezvousCrypto masterKeyWithTag:rendezvousTag appId:@"test"];
+    
+    //we use an emtpy AppID - this makes the test backwards compatible with the pre AppID version
+    //This allows all the hardcoded pre-calculated data to continue working
+    NSData *masterKey = [rendezvousCrypto masterKeyWithTag:rendezvousTag appId:@""];
     XCTAssertEqualObjects(masterKey, expectedMasterKey);
 
     QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKey];

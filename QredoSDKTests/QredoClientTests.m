@@ -60,7 +60,7 @@
     [QredoClient initializeWithAppId:@"test"
                            appSecret:@"cafebabe"
                               userId:@"testuser"
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                              options:options
      
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -102,7 +102,7 @@
     [QredoClient initializeWithAppId:@"test"
                            appSecret:@"cafebabe"
                               userId:@"testuser"
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                              options:nil
 
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -135,7 +135,7 @@
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                         //   XCTAssertNil(error);
                          //  XCTAssertNotNil(clientArg);
@@ -161,7 +161,7 @@
     [QredoClient initializeWithAppId:@"FAILINGSECRET"
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNotNil(error);
                            XCTAssertNil(clientArg);

@@ -344,7 +344,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 - (NSData *)masterKeyWithTag:(NSString *)tag  appId:(NSString *)appId{
     NSAssert(appId,@"AppID should not be nil");
-    NSString *compositeTag = [NSString stringWithFormat:@"%@:%@",appId,tag];
+    NSString *compositeTag = [NSString stringWithFormat:@"%@%@",appId,tag];
     
     NSData *tagData = [compositeTag dataUsingEncoding:NSUTF8StringEncoding];
     if ([QredoAuthenticatedRendezvousTag isAuthenticatedTag:tag]) {

@@ -42,7 +42,7 @@ NSNumber *testNumber;
 -(void)test10Records{
     int testSize = 10;
     
-    NSString *clientPass = [QredoTestUtils randomStringWithLength:32];
+    NSString *clientPass = [self randomStringWithLength:32];
     [self authoriseClient:clientPass];
     qredoLocalIndex = client1.defaultVault.localIndex;
     [qredoLocalIndex purgeAll];
@@ -93,7 +93,7 @@ NSNumber *testNumber;
 
 -(void)test100Records{
     int testSize = 100;
-    NSString *clientPass = [QredoTestUtils randomStringWithLength:32];
+    NSString *clientPass = [self randomStringWithLength:32];
     [self authoriseClient:clientPass];
     XCTAssertNotNil(client1);
     [self addTestItems:testSize];
@@ -168,7 +168,7 @@ NSNumber *testNumber;
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
                            XCTAssertNotNil(clientArg);

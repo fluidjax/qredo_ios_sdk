@@ -124,7 +124,7 @@ static float delayInterval = 0.4;
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
@@ -155,7 +155,7 @@ static float delayInterval = 0.4;
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
-                          userSecret:[QredoTestUtils randomPassword]
+                          userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -510,7 +510,7 @@ NSString *secondMessageText;
 
 
 -(void)testMultipleConversationWatermark{
-    for (int i=0;i<1000;i++){
+    for (int i=0;i<10;i++){
         [self testConversationWatermark];
     }
 }
