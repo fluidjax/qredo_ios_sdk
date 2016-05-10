@@ -56,14 +56,16 @@
 
         [valueSV ifSBool:^(BOOL value) {
             v = @(value);
-        } ifSInt64:^(int64_t value) {
-            v = @(value);
+        } ifSInt64:^(int64_t  value) {
+             v = @(value);
         } ifSDT:^(QredoUTCDateTime *value) {
             QredoUTCDateTime *qdate = (QredoUTCDateTime*)value;
             v = qdate.asDate;
-        } ifSQUID:^(QredoQUID *value) {
+        } ifSQUID:^(QredoQUID * value) {
             v = value;
-        } ifSString:^(NSString *value) {
+        } ifSString:^(NSString * value) {
+            v = value;
+        } ifSBytes:^(NSData * value) {
             v = value;
         }];
 

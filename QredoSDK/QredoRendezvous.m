@@ -27,7 +27,6 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoObserverList.h"
 #import "QredoNetworkTime.h"
-#import "ReadableKeys.h"
 #import "NSData+ParseHex.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
@@ -527,15 +526,15 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 
 +(NSString *)readableToTag:(NSString *)readableText{
-    NSData *key = [ReadableKeys eng2Key:readableText];
-    return [ReadableKeys dataToHexString:key];
+    NSData *key = [QredoUtils eng2Key:readableText];
+    return [QredoUtils dataToHexString:key];
 }
 
 
 
 +(NSString *)tagToReadable:(NSString *)tag{
     NSData *dataTag = [NSData dataWithHexString:tag];
-    return [ReadableKeys key2Eng:dataTag];
+    return [QredoUtils key2Eng:dataTag];
 }
 
 

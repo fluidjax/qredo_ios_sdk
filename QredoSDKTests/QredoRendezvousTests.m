@@ -155,7 +155,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTagType:MEDIUM_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_MEDIUM_SECURITY
                                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
         XCTAssertNotNil(rendezvous.tag);
         XCTAssertNotNil(rendezvous);
@@ -174,7 +174,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSString *readableTagDirect = createdRendezvous.readableTag;
     NSString *backToTag   = [QredoRendezvous readableToTag:readableTagDirect];
     
-    XCTAssertTrue(tag.length == MEDIUM_SECURITY*2,@"Tag is the wrong length");
+    XCTAssertTrue(tag.length == QREDO_MEDIUM_SECURITY*2,@"Tag is the wrong length");
     XCTAssertTrue([readableTag isEqualToString: readableTagDirect],@"Tags should be the same");
     XCTAssertTrue([backToTag isEqualToString: tag],@"Tags should be the same");
   
@@ -514,7 +514,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:100
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error){
@@ -543,7 +543,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error){
@@ -569,7 +569,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error){
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous);
@@ -590,7 +590,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
@@ -628,7 +628,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     __block QredoRendezvousRef *rendezvousRef = nil;
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
@@ -737,7 +737,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvousRef *rendezvousRef = nil;
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
@@ -845,7 +845,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                       duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
@@ -981,7 +981,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [clientPersistent1 createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [clientPersistent1 createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                                    duration:kRendezvousTestDurationSeconds
                                          unlimitedResponses:YES
                                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
@@ -1186,12 +1186,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 
--(void)testFingerPrints {
+-(void)testFingerPrintsAndTrafficLights {
     __block NSString *randomTag = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:kRendezvousTestDurationSeconds
                               unlimitedResponses:YES
                                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
@@ -1242,6 +1242,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     
     
+    
+    
     XCTAssertNotNil(client1Conversation);
     XCTAssertNotNil(client2Conversation);
     
@@ -1279,6 +1281,43 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
     
+
+
+    XCTAssertTrue([client1Conversation authTrafficLight]==QREDO_RED,@"unauth'd should be red");
+    XCTAssertTrue([client2Conversation authTrafficLight]==QREDO_RED,@"unauth'd should be red");
+
+    
+     //check local finger print
+    __block XCTestExpectation *localFingerprintCheck1 = [self expectationWithDescription:@"fingerprintcheck1"];
+    [client1Conversation localFingerPrintCheckedRemotely:^(NSError *error) {
+        XCTAssertNil(error,@"error should be nil");
+        XCTAssertTrue([client1Conversation authTrafficLight]==QREDO_GREEN,@"auth'd should be green");
+        XCTAssertTrue([client2Conversation authTrafficLight]==QREDO_RED,@"unauth'd should be red");
+        [localFingerprintCheck1 fulfill];
+        
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        localFingerprintCheck1 =nil;
+    }];
+
+    
+    
+    //check local finger print
+    __block XCTestExpectation *localFingerprintCheck2 = [self expectationWithDescription:@"fingerprintcheck2"];
+    [client2Conversation localFingerPrintCheckedRemotely:^(NSError *error) {
+        XCTAssertNil(error,@"error should be nil");
+        XCTAssertTrue([client1Conversation authTrafficLight]==QREDO_GREEN,@"auth'd should be green");
+        XCTAssertTrue([client2Conversation authTrafficLight]==QREDO_GREEN,@"auth'd should be green");
+        [localFingerprintCheck2 fulfill];
+        
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        localFingerprintCheck2 =nil;
+    }];
+
+    
     
     
     
@@ -1302,7 +1341,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                       duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
@@ -1949,7 +1988,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block QredoRendezvousRef *rendezvousRef = nil;
     
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:testDuration
                           unlimitedResponses:NO
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {

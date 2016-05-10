@@ -8,6 +8,18 @@
 @class QredoVault;
 @class QredoQUID;
 
+
+
+/*
+ 
+ */
+typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
+    QREDO_RED=0,
+    QREDO_AMBER=1,
+    QREDO_GREEN=2,
+};
+
+
 extern NSString *const kQredoConversationVaultItemType;
 
 /** A constant used to specify the start of the Conversation. Used when enumerating Conversation messages  */
@@ -228,6 +240,17 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 -(void)enumerateSentMessagesUsingBlock:(void (^)(QredoConversationMessage *message, BOOL *stop))block
                                  since:(QredoConversationHighWatermark*)sinceWatermark
                      completionHandler:(void (^)(NSError *error))completionHandler;
+
+
+
+
+
+
+-(void)remoteFingerPrintCheckedLocally:(void (^)(NSError *error))completionHandler;
+-(void)localFingerPrintCheckedRemotely:(void (^)(NSError *error))completionHandler;
+
+
+-(QredoAuthenticationStatus)authTrafficLight;
 
 
 

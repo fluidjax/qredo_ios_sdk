@@ -4332,10 +4332,10 @@
 
 
 
-+ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey
++ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus
 {
 
-    return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey];
+    return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey authStatus:authStatus];
        
 }
 
@@ -4344,6 +4344,10 @@
     return ^(id element, QredoWireFormatWriter *writer) {
         QLFConversationDescriptor *e = (QLFConversationDescriptor *)element;
         [writer writeConstructorStartWithObjectName:@"ConversationDescriptor"];
+            [writer writeFieldStartWithFieldName:@"authStatus"];
+                [QredoPrimitiveMarshallers int32Marshaller]([NSNumber numberWithLong: [e authStatus]], writer);
+            [writer writeEnd];
+
             [writer writeFieldStartWithFieldName:@"authenticationType"];
                 [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
             [writer writeEnd];
@@ -4380,6 +4384,9 @@
 {
     return ^id(QredoWireFormatReader *reader) {
         [reader readConstructorStart];// TODO assert that constructor name is 'ConversationDescriptor'
+            [reader readFieldStart]; // TODO assert that field name is 'authStatus'
+                int32_t authStatus = (int32_t )[[QredoPrimitiveMarshallers int32Unmarshaller](reader) longValue];
+            [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
                 QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
             [reader readEnd];
@@ -4402,11 +4409,11 @@
                 QLFKeyLF *yourPublicKey = (QLFKeyLF *)[QLFKeyLF unmarshaller](reader);
             [reader readEnd];
         [reader readEnd];
-        return [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey];
+        return [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey authStatus:authStatus];
     };
 }
 
-- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey
+- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus
 {
 
     self = [super init];
@@ -4418,6 +4425,7 @@
         _authenticationType = authenticationType;
         _myKey = myKey;
         _yourPublicKey = yourPublicKey;
+        _authStatus = authStatus;
     }
     return self;
        
@@ -4433,6 +4441,7 @@
     QREDO_COMPARE_OBJECT(authenticationType);
     QREDO_COMPARE_OBJECT(myKey);
     QREDO_COMPARE_OBJECT(yourPublicKey);
+    QREDO_COMPARE_SCALAR(authStatus);
     return NSOrderedSame;
        
 }
@@ -4465,6 +4474,8 @@
         return NO;
     if (_yourPublicKey != other.yourPublicKey && ![_yourPublicKey isEqual:other.yourPublicKey])
         return NO;
+    if (_authStatus != other.authStatus)
+        return NO;
     return YES;
        
 }
@@ -4480,6 +4491,7 @@
     hash = hash * 31u + [_authenticationType hash];
     hash = hash * 31u + [_myKey hash];
     hash = hash * 31u + [_yourPublicKey hash];
+    hash = hash * 31u + (NSUInteger)_authStatus;
     return hash;
        
 }
@@ -5244,6 +5256,128 @@
 
 @end
 
+@implementation QLFRendezvousInfo
+
+
+
++ (QLFRendezvousInfo *)rendezvousInfoWithNumOfResponses:(QLFRendezvousNumOfResponses)numOfResponses responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit expiresAt:(NSSet *)expiresAt deactivatedAt:(NSSet *)deactivatedAt
+{
+
+    return [[QLFRendezvousInfo alloc] initWithNumOfResponses:numOfResponses responseCountLimit:responseCountLimit expiresAt:expiresAt deactivatedAt:deactivatedAt];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFRendezvousInfo *e = (QLFRendezvousInfo *)element;
+        [writer writeConstructorStartWithObjectName:@"RendezvousInfo"];
+            [writer writeFieldStartWithFieldName:@"deactivatedAt"];
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers utcDateTimeMarshaller]]([e deactivatedAt], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"expiresAt"];
+                [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers utcDateTimeMarshaller]]([e expiresAt], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"numOfResponses"];
+                [QredoPrimitiveMarshallers int64Marshaller]([NSNumber numberWithLongLong: [e numOfResponses]], writer);
+            [writer writeEnd];
+
+            [writer writeFieldStartWithFieldName:@"responseCountLimit"];
+                [QLFRendezvousResponseCountLimit marshaller]([e responseCountLimit], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        [reader readConstructorStart];// TODO assert that constructor name is 'RendezvousInfo'
+            [reader readFieldStart]; // TODO assert that field name is 'deactivatedAt'
+                NSSet *deactivatedAt = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers utcDateTimeUnmarshaller]](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'expiresAt'
+                NSSet *expiresAt = (NSSet *)[QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QredoPrimitiveMarshallers utcDateTimeUnmarshaller]](reader);
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'numOfResponses'
+                QLFRendezvousNumOfResponses numOfResponses = (QLFRendezvousNumOfResponses )[[QredoPrimitiveMarshallers int64Unmarshaller](reader) longLongValue];
+            [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'responseCountLimit'
+                QLFRendezvousResponseCountLimit *responseCountLimit = (QLFRendezvousResponseCountLimit *)[QLFRendezvousResponseCountLimit unmarshaller](reader);
+            [reader readEnd];
+        [reader readEnd];
+        return [QLFRendezvousInfo rendezvousInfoWithNumOfResponses:numOfResponses responseCountLimit:responseCountLimit expiresAt:expiresAt deactivatedAt:deactivatedAt];
+    };
+}
+
+- (instancetype)initWithNumOfResponses:(QLFRendezvousNumOfResponses)numOfResponses responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit expiresAt:(NSSet *)expiresAt deactivatedAt:(NSSet *)deactivatedAt
+{
+
+    self = [super init];
+    if (self) {
+        _numOfResponses = numOfResponses;
+        _responseCountLimit = responseCountLimit;
+        _expiresAt = expiresAt;
+        _deactivatedAt = deactivatedAt;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFRendezvousInfo *)other
+{
+
+    QREDO_COMPARE_SCALAR(numOfResponses);
+    QREDO_COMPARE_OBJECT(responseCountLimit);
+    QREDO_COMPARE_OBJECT(expiresAt);
+    QREDO_COMPARE_OBJECT(deactivatedAt);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToRendezvousInfo:other];
+       
+}
+
+- (BOOL)isEqualToRendezvousInfo:(QLFRendezvousInfo *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_numOfResponses != other.numOfResponses)
+        return NO;
+    if (_responseCountLimit != other.responseCountLimit && ![_responseCountLimit isEqual:other.responseCountLimit])
+        return NO;
+    if (_expiresAt != other.expiresAt && ![_expiresAt isEqual:other.expiresAt])
+        return NO;
+    if (_deactivatedAt != other.deactivatedAt && ![_deactivatedAt isEqual:other.deactivatedAt])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + (NSUInteger)_numOfResponses;
+    hash = hash * 31u + [_responseCountLimit hash];
+    hash = hash * 31u + [_expiresAt hash];
+    hash = hash * 31u + [_deactivatedAt hash];
+    return hash;
+       
+}
+
+@end
+
 @implementation QLFSV
 
 
@@ -5283,6 +5417,13 @@
        
 }
 
++ (QLFSV *)sBytesWithV:(NSData *)v
+{
+
+    return [[QLFSBytes alloc] initWithV:v];
+       
+}
+
 + (QredoMarshaller)marshaller
 {
     return ^(id element, QredoWireFormatWriter *writer) {
@@ -5296,6 +5437,8 @@
             [QLFSQUID marshaller](element, writer);
         } else if ([element isKindOfClass:[QLFSString class]]) {
             [QLFSString marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFSBytes class]]) {
+            [QLFSBytes marshaller](element, writer);
         } else {
             // TODO throw exception instead
         }
@@ -5337,12 +5480,18 @@
             return _temp;
         }
 
+        if ([constructorSymbol isEqualToString:@"SBytes"]) {
+            QLFSV *_temp = [QLFSBytes unmarshaller](reader);
+            [reader readEnd];
+            return _temp;
+        }
+
        return nil;// TODO throw exception instead?
     };
 
 }
 
-- (void)ifSBool:(void (^)(BOOL ))ifSBoolBlock ifSInt64:(void (^)(int64_t ))ifSInt64Block ifSDT:(void (^)(QredoUTCDateTime *))ifSDTBlock ifSQUID:(void (^)(QredoQUID *))ifSQUIDBlock ifSString:(void (^)(NSString *))ifSStringBlock
+- (void)ifSBool:(void (^)(BOOL ))ifSBoolBlock ifSInt64:(void (^)(int64_t ))ifSInt64Block ifSDT:(void (^)(QredoUTCDateTime *))ifSDTBlock ifSQUID:(void (^)(QredoQUID *))ifSQUIDBlock ifSString:(void (^)(NSString *))ifSStringBlock ifSBytes:(void (^)(NSData *))ifSBytesBlock
 {
     if ([self isKindOfClass:[QLFSBool class]]) {
         ifSBoolBlock([((QLFSBool *) self) v]);
@@ -5354,6 +5503,8 @@
         ifSQUIDBlock([((QLFSQUID *) self) v]);
     } else if ([self isKindOfClass:[QLFSString class]]) {
         ifSStringBlock([((QLFSString *) self) v]);
+    } else if ([self isKindOfClass:[QLFSBytes class]]) {
+        ifSBytesBlock([((QLFSBytes *) self) v]);
     }
 }
 
@@ -5806,6 +5957,96 @@
 }
 
 - (BOOL)isEqualToSString:(QLFSString *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_v != other.v && ![_v isEqual:other.v])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + [_v hash];
+    return hash;
+       
+}
+
+@end
+
+@implementation QLFSBytes
+
+
+
++ (QLFSV *)sBytesWithV:(NSData *)v
+{
+
+    return [[QLFSBytes alloc] initWithV:v];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFSBytes *e = (QLFSBytes *)element;
+        [writer writeConstructorStartWithObjectName:@"SBytes"];
+            [writer writeFieldStartWithFieldName:@"v"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e v], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        
+            [reader readFieldStart]; // TODO assert that field name is 'v'
+                NSData *v = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+        
+        return [QLFSV sBytesWithV:v];
+    };
+}
+
+- (instancetype)initWithV:(NSData *)v
+{
+
+    self = [super init];
+    if (self) {
+        _v = v;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFSBytes *)other
+{
+    if ([other isKindOfClass:[QLFSV class]] && ![other isKindOfClass:[QLFSBytes class]]) {
+        // N.B. impose an ordering among subtypes of SV
+        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
+    }
+
+    QREDO_COMPARE_OBJECT(v);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToSBytes:other];
+       
+}
+
+- (BOOL)isEqualToSBytes:(QLFSBytes *)other
 {
 
     if (other == self)
@@ -7783,10 +8024,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFConversationPublishResult *result = [QLFConversationPublishResult unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -7805,10 +8046,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFConversationQueryItemsResult *result = [QLFConversationQueryItemsResult unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -7826,10 +8067,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFConversationAckResult *result = [QLFConversationAckResult unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -7846,10 +8087,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFConversationItemWithSequenceValue *result = [QLFConversationItemWithSequenceValue unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:YES];
          
@@ -7891,10 +8132,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                BOOL result = [[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(NO, error);
+                 completionHandler(NO, error);
             }
            multiResponse:NO];
          
@@ -7936,10 +8177,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFRendezvousCreateResult *result = [QLFRendezvousCreateResult unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -7957,10 +8198,30 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFRendezvousActivated *result = [QLFRendezvousActivated unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
+            }
+           multiResponse:NO];
+         
+}
+
+- (void)getInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousInfo *result, NSError *error))completionHandler
+{
+
+ [_invoker invokeService:@"Rendezvous"
+               operation:@"getInfo"
+           requestWriter:^(QredoWireFormatWriter *writer) {
+                  [QredoPrimitiveMarshallers quidMarshaller](hashedTag, writer);
+                  [QLFOwnershipSignature marshaller](signature, writer);
+           }
+          responseReader:^(QredoWireFormatReader *reader) {
+               QLFRendezvousInfo *result = [QLFRendezvousInfo unmarshaller](reader);
+               completionHandler(result, nil);
+          }
+            errorHandler:^(NSError *error) {
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -7976,10 +8237,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFRendezvousRespondResult *result = [QLFRendezvousRespondResult unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -7997,10 +8258,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFRendezvousResponsesResult *result = [QLFRendezvousResponsesResult unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -8009,23 +8270,18 @@ QredoServiceInvoker *_invoker;
 - (void)subscribeToResponsesWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousResponseWithSequenceValue *result, NSError *error))completionHandler
 {
 
-    [_invoker invokeService:@"Rendezvous"
+ [_invoker invokeService:@"Rendezvous"
                operation:@"subscribeToResponses"
            requestWriter:^(QredoWireFormatWriter *writer) {
-                   //NSLog(@"   !!!subscribe writer tag=%@ port=%i",hashedTag, _invoker.transport.port);
-               
                   [QredoPrimitiveMarshallers quidMarshaller](hashedTag, writer);
                   [QLFOwnershipSignature marshaller](signature, writer);
            }
           responseReader:^(QredoWireFormatReader *reader) {
-               //NSLog(@"   !!!subscribe reader tag=%@ port=%i",hashedTag, _invoker.transport.port);
                QLFRendezvousResponseWithSequenceValue *result = [QLFRendezvousResponseWithSequenceValue unmarshaller](reader);
-              
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                  // NSLog(@"   !!!subscribe error tag=%@ port=%i",hashedTag, _invoker.transport.port);
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:YES];
          
@@ -8042,10 +8298,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFRendezvousDeactivated *result = [QLFRendezvousDeactivated unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -8088,10 +8344,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                BOOL result = [[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(NO, error);
+                 completionHandler(NO, error);
             }
            multiResponse:NO];
          
@@ -8111,10 +8367,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                NSSet *result = [QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QLFEncryptedVaultItem unmarshaller]](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -8134,10 +8390,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                NSSet *result = [QredoPrimitiveMarshallers setUnmarshallerWithElementUnmarshaller:[QLFEncryptedVaultItemHeader unmarshaller]](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -8155,10 +8411,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFVaultItemQueryResults *result = [QLFVaultItemQueryResults unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:NO];
          
@@ -8175,10 +8431,10 @@ QredoServiceInvoker *_invoker;
            }
           responseReader:^(QredoWireFormatReader *reader) {
                QLFEncryptedVaultItemHeader *result = [QLFEncryptedVaultItemHeader unmarshaller](reader);
-               if (completionHandler)completionHandler(result, nil);
+               completionHandler(result, nil);
           }
             errorHandler:^(NSError *error) {
-                 if (completionHandler)completionHandler(nil, error);
+                 completionHandler(nil, error);
             }
            multiResponse:YES];
          

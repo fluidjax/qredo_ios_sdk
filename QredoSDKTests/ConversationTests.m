@@ -179,14 +179,12 @@ static float delayInterval = 0.4;
 
 
 
-
-
 - (void)testConversationCreation {
     __block QredoRendezvous *rendezvous = nil;
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:600
                           unlimitedResponses:NO
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
@@ -221,7 +219,7 @@ static float delayInterval = 0.4;
     
     
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:600
                               unlimitedResponses:NO
                                completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
@@ -288,7 +286,7 @@ static float delayInterval = 0.4;
     
     QredoLogDebug(@"Creating Rendezvous (with client 1)");
     
-    [client createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:3600
                               unlimitedResponses:YES
                                completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {

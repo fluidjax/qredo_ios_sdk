@@ -25,7 +25,6 @@
 #import "QredoConversationProtocol.h"
 
 #import "QredoNetworkTime.h"
-#import "ReadableKeys.h"
 
 #import <UIKit/UIKit.h>
 
@@ -582,7 +581,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(NSData*)createTagWithSecurityLevel:(QredoSecurityLevel)securityLevel{
-    NSData *key = [ReadableKeys randomKey:securityLevel];
+    NSData *key = [QredoUtils randomKey:securityLevel];
     return key;
 }
 
@@ -593,7 +592,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(void)createAnonymousRendezvousWithCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler{
-    [self createAnonymousRendezvousWithTagType:HIGH_SECURITY
+    [self createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                   duration:0
                         unlimitedResponses:YES
                          completionHandler:completionHandler];
@@ -654,8 +653,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
     // Anonymous Rendezvous are created using the full tag. Signing handler, trustedRootPems and crlPems are unused
 
 
-    NSData *dataTag = [ReadableKeys randomKey:tagSecurityLevel];
-    NSString *tag = [ReadableKeys dataToHexString:dataTag];
+    NSData *dataTag = [QredoUtils randomKey:tagSecurityLevel];
+    NSString *tag = [QredoUtils dataToHexString:dataTag];
     
     
     QredoLogVerbose(@"Start createAnonymousRendezvousWithTag %@", tag);

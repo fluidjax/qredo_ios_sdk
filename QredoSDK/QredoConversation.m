@@ -30,7 +30,7 @@
 #import "QredoVaultCrypto.h"
 #import "QredoObserverList.h"
 #import "QredoNetworkTime.h"
-#import "ReadableKeys.h"
+
 
 QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigin = nil;
 NSString *const kQredoConversationVaultItemType = @"com.qredo.conversation";
@@ -40,6 +40,13 @@ NSString *const kQredoConversationVaultItemLabelId = @"id";
 NSString *const kQredoConversationVaultItemLabelTag = @"tag";
 NSString *const kQredoConversationVaultItemLabelHwm = @"hwm";
 NSString *const kQredoConversationVaultItemLabelType = @"type";
+
+
+// Bit 0   //Your public key has been dictated to you over the phone by the other party
+// Bit 1   //You have dictated the remote public key to the other party over the phone
+
+NSString *const kQredoConversationVaultItemLabelAuthStatus = @"as";
+
 
 static NSString *const kQredoConversationMessageKeyCreated = @"_created";
 
@@ -68,6 +75,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @property (readwrite) QredoQUID *conversationId;
 @property (readwrite) BOOL amRendezvousOwner;
 @property (readwrite) NSString *rendezvousTag;
+@property (readwrite) int authStatus;
 
 @end
 
@@ -225,6 +233,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.amRendezvousOwner = descriptor.rendezvousOwner;
     _metadata.rendezvousTag = descriptor.rendezvousTag;
     _metadata.type = descriptor.conversationType;
+    _metadata.authStatus = descriptor.authStatus;
 
     _yourPublicKey = [[QredoDhPublicKey alloc] initWithData:[descriptor.yourPublicKey bytes]];
     _myPrivateKey  = [[QredoDhPrivateKey alloc] initWithData:[descriptor.myKey.privKey bytes]];
@@ -361,6 +370,73 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];
 }
 
+
+-(void)updateConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler{
+    QLFKeyPairLF *myKey = [QLFKeyPairLF keyPairLFWithPubKey:[QLFKeyLF keyLFWithBytes:[_myPublicKey data]]
+                                                    privKey:[QLFKeyLF keyLFWithBytes:[_myPrivateKey data]]];
+    
+    
+    QLFConversationDescriptor *descriptor =
+    [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
+                                                       rendezvousOwner:_metadata.amRendezvousOwner
+                                                        conversationId:_metadata.conversationId
+                                                      conversationType:_metadata.type
+                                                    authenticationType:_authenticationType
+                                                                 myKey:myKey
+                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
+                                                            authStatus:_metadata.authStatus];
+    
+    NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
+                                                                 marshaller:[QLFConversationDescriptor marshaller]];
+    
+    NSDictionary *summaryValues = @{
+                                    kQredoConversationVaultItemLabelAmOwner: [NSNumber numberWithBool:_metadata.amRendezvousOwner],
+                                    kQredoConversationVaultItemLabelId: _metadata.conversationId,
+                                    kQredoConversationVaultItemLabelTag: _metadata.rendezvousTag,
+                                    kQredoConversationVaultItemLabelType: _metadata.type,
+                                    kQredoConversationVaultItemLabelAuthStatus:[NSNumber numberWithInteger:_metadata.authStatus]
+                                    };
+    
+    QredoVault *sysvault = [self.client systemVault];
+    
+    
+    @synchronized(self) {
+        [sysvault getItemMetadataWithDescriptor:self.metadata.conversationRef.vaultItemDescriptor
+                           completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+             if (error) {
+                 QredoLogError(@"Update Conversation failed with error %@",error);
+                 
+                 if (completionHandler)completionHandler(error);
+                 return ;
+             }
+             
+              
+             QredoVaultItemMetadata *metadataCopy = [vaultItemMetadata mutableCopy];
+             metadataCopy.created = [QredoNetworkTime dateTime];
+             metadataCopy.summaryValues = summaryValues;
+                               
+                               
+             QredoVaultItem *newVaultItem = [QredoVaultItem vaultItemWithMetadata:metadataCopy value:serializedDescriptor];
+                               
+                               
+                               
+             [sysvault strictlyUpdateItem:newVaultItem
+                                       completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+                                       if (newItemMetadata) {
+                                            self.metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
+                                                                                                                                 vault:self.client.systemVault];
+                                       }
+                                       if (completionHandler)completionHandler(error);
+             }];
+
+         }];
+
+    }
+}
+
+
+
+
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
                    trustedRootPems:(NSArray *)trustedRootPems
                            crlPems:(NSArray *)crlPems
@@ -454,7 +530,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 - (void)storeWithCompletionHandler:(void(^)(NSError *error))completionHandler{
     NSAssert(!self.metadata.conversationRef, @"Conversation has been already stored");
-    QLFKeyPairLF *myKey = [QLFKeyPairLF keyPairLFWithPubKey:[QLFKeyLF keyLFWithBytes:[_myPublicKey data]] /* should be empty */
+    QLFKeyPairLF *myKey = [QLFKeyPairLF keyPairLFWithPubKey:[QLFKeyLF keyLFWithBytes:[_myPublicKey data]] 
                                                         privKey:[QLFKeyLF keyLFWithBytes:[_myPrivateKey data]]];
 
 
@@ -465,7 +541,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                       conversationType:_metadata.type
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
-                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]];
+                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
+                                                            authStatus:_metadata.authStatus];
 
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
@@ -724,16 +801,35 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @implementation QredoConversation
 
 
+-(void)remoteFingerPrintCheckedLocally:(void (^)(NSError *error))completionHandler{
+    self.metadata.authStatus |= 2;
+    [self updateConversationWithCompletionHandler:completionHandler];
+}
+
+-(void)localFingerPrintCheckedRemotely:(void (^)(NSError *error))completionHandler{
+    self.metadata.authStatus |= 1;
+    [self updateConversationWithCompletionHandler:completionHandler];
+}
+
+
+-(QredoAuthenticationStatus)authTrafficLight{
+    if (self.metadata.authStatus && 1 == 1)return QREDO_GREEN;
+    
+    return QREDO_RED;
+}
+
+
+
 
 -(NSString*)creatorFingerPrint{
     NSData *fp =  [QredoCrypto sha256:[self creatorPublicKey]];
-    return [ReadableKeys dataToHexString:fp];
+    return [QredoUtils dataToHexString:fp];
 }
 
 
 -(NSString*)responderFingerPrint{
     NSData *fp = [QredoCrypto sha256:[self responderPublicKey]];
-    return [ReadableKeys dataToHexString:fp];
+    return [QredoUtils dataToHexString:fp];
 }
 
 
@@ -742,7 +838,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     [fingerPrintData appendData:[self creatorPublicKey]];
     [fingerPrintData appendData:[self responderPublicKey]];
     NSData *fp = [QredoCrypto sha256:fingerPrintData];
-    return [ReadableKeys dataToHexString:fp];
+    return [QredoUtils dataToHexString:fp];
 }
 
 

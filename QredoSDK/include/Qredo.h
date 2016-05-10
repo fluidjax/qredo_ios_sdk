@@ -13,7 +13,7 @@
 #import "QredoRendezvous.h"
 #import "QredoQUID.h"
 #import <CoreData/CoreData.h>
-
+#import "QredoUtils.h"
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
@@ -24,8 +24,8 @@
  Generated TAG lengths - use to define the key length when creating a rendezvous
  */
 typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
-    MEDIUM_SECURITY=6,
-    HIGH_SECURITY=32
+    QREDO_MEDIUM_SECURITY=6,
+    QREDO_HIGH_SECURITY=32
 };
 
 
@@ -101,7 +101,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
  
  
- @param tagSecurityLevel Use QredoSecurityLevel (HIGH_SECURITY or MEDIUM_SECURITY), to define the Security Level of the generated Tag.
+ @param tagSecurityLevel Use QredoSecurityLevel (QREDO_HIGH_SECURITY or QREDO_MEDIUM_SECURITY), to define the Security Level of the generated Tag.
  @param completionhandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousAlreadyExists` if a rendezvous with the specified tag already exists and `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
  
  */
@@ -133,7 +133,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
  
  
- @param tagSecurityLevel Use QredoSecurityLevel (HIGH_SECURITY or MEDIUM_SECURITY), to define the Security Level of the generated Tag.
+ @param tagSecurityLevel Use QredoSecurityLevel (QREDO_HIGH_SECURITY or QREDO_MEDIUM_SECURITY), to define the Security Level of the generated Tag.
  @param duration the duration in seconds after which the Rendezvous will expire. Expired Rendezvous can no longer be responded to, but messages can still be sent within existing Conversations created from it. Expired Rendezvous can be reactivated by calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
  @param unlimitedResponses Set to YES if there can be an unlimited numbers of response to the Rendezvous. If the parameter is NO, then there can only be one response after which the Rendezvous will expire. Calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
  will set the response count to unlimited.
