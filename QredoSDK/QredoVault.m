@@ -70,6 +70,22 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 @implementation QredoVault (Private)
 
 
+- (void)enumerateConsolidatedVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                completionHandler:(void(^)(NSError *error))completionHandler{
+    [self enumerateConsolidatedVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
+}
+
+
+- (void)enumerateConsolidatedVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                            since:(QredoVaultHighWatermark*)sinceWatermark
+                                completionHandler:(void(^)(NSError *error))completionHandler{
+    dispatch_async(_queue, ^{
+        [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
+        
+    });
+}
+
+
 -(QredoUserCredentials*)userCredentials{
     return _userCredentials;
 }
@@ -570,6 +586,13 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
         
     });
 }
+
+
+
+
+
+
+
 
 
 - (void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler

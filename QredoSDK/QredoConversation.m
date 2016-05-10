@@ -249,7 +249,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 - (void)loadHighestHWMWithCompletionHandler:(void(^)(NSError *error))completionHandler
 {
     if (self.metadata.isPersistent) {
-        [self.store enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        [self.store enumerateConsolidatedVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
 
             NSDictionary *summaryValues = vaultItemMetadata.summaryValues;
             id isMineObj = [summaryValues objectForKey:kQredoConversationItemIsMine];
