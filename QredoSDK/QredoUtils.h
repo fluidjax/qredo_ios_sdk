@@ -33,7 +33,7 @@
  1) Device 1 send publicKey to Device 2
  2) Device 2 send publicKey to Device 1
  3) Device 1 send message generated with encrypt to Device 2
- 4) Device 2 use decrypt message
+ 4) Device 2 decrypt message from device 1
  */
 
 
@@ -44,9 +44,11 @@
 /* Sets the public key for the remote device */
 -(void)setRemotePublicKey:(NSString*)key;
 
-/* Encrypt/decrypt data of ruse in the DF channel */
+/* Encrypt/decrypt data of ruse in the DF channel
+   NSString methods wrap up the NSData versions for ease of use*/
 -(NSString*)encryptString:(NSString*)message;
 -(NSString*)decryptString:(NSString*)cipherText;
+
 -(NSData*)encrypt:(NSData*)message;
 -(NSData*)decrypt:(NSData*)cipherText;
 @end
