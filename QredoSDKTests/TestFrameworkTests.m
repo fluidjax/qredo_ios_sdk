@@ -43,5 +43,34 @@
 }
 
 
+-(void)testConversationEnum{
+    [self buildStack1];
+    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
+    XCTAssertTrue([self countConversationsOnClient:testClient1]==1,@"Should be 1 conversation");
+    XCTAssertTrue([self countConversationsOnClient:testClient2]==1,@"Should be 1 conversation");
+
+}
+
+
+
+-(void)testVault{
+    [self createClient1];
+    XCTAssertTrue([self countEnumAllVaultItemsOnServer]==0,@"Vault should be empty");
+    
+    QredoVaultItemMetadata *itemMetadata = [self createVaultItem];
+    XCTAssertTrue([self countEnumAllVaultItemsOnServer]==1,@"Vault should have 1 item");
+    QredoVaultItem *item = [self getVaultItem:itemMetadata.descriptor];
+    
+    
+    QredoVaultItemMetadata *updatedMetadata =  [self updateVaultItem:item];
+    XCTAssertTrue([self countEnumAllVaultItemsOnServer]==2,@"Vault should have 2 items");
+    
+    
+    QredoVaultItemDescriptor *deletedDescriptor =  [self deleteVaultItem:updatedMetadata];
+    XCTAssertTrue([self countEnumAllVaultItemsOnServer]==3,@"Vault should have 3 items");
+    
+    
+
+}
 
 @end

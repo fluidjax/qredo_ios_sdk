@@ -25,9 +25,21 @@ static int wsrch __ARGS((char *w,int low,int high));
 
 +(NSData*)eng2Key:(NSString*)english{
     //Non RFC1751 implementation
+    NSString *sanitized = [english copy];
+    
+    long oldLen = english.length;
+    long newLen = 0;
+    
+    while (newLen!=oldLen){
+        oldLen = sanitized.length;
+        sanitized = [[sanitized stringByReplacingOccurrencesOfString:@"  " withString:@""] lowercaseString];
+        newLen = sanitized.length;
+    }
+        
+
     
     BOOL keyEndsWithZero = NO;
-    NSString *words = [english copy];
+    NSString *words = [sanitized copy];
     
     //get the last word
     NSRange lastSpaceLocation = [words rangeOfString:@" " options:NSBackwardsSearch];

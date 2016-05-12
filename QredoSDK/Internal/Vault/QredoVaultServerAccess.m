@@ -349,7 +349,7 @@
 
 
          if (shouldConsolidateResults) {
-             // Filter out all items wich are pointed ot by back pointers.
+             // Filter out all items wich are pointed to by back pointers.
              /*
               TODO: [GR] This agorithm can use high levels of memory if the vault contains many items. Hence it
               is advisable to revise this algorithm in connection with caching, and certainly before release.
@@ -380,7 +380,8 @@
                      [metadataRefMap removeObjectForKey:backPointer];
                  }
              }
-
+             
+             
              for (QredoVaultItemMetadata* metadata in metadataArray) {
                  BOOL stop = NO;
                  if (metadataRefMap[metadata.descriptor] && ![metadata.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone]) {

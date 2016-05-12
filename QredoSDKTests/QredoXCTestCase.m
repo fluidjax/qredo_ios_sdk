@@ -7,68 +7,9 @@
 //
 
 #import "QredoXCTestCase.h"
-
-
-
-@interface TestRendezvousListener :NSObject <QredoRendezvousObserver>
-
-@property XCTestExpectation *expectation;
-@property QredoConversation *incomingConversation;
-@end
-
-@implementation TestRendezvousListener
-XCTestExpectation *timeoutExpectation;
-
--(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
-    if (self.expectation) {
-        self.incomingConversation = conversation;
-        [self.expectation fulfill];
-    }
-}
-
-@end
-
-
-
-
-@interface TestConversationMessageListener : NSObject <QredoConversationObserver>
-
-@property QredoXCTestCase *test;
-@property NSString *expectedMessageValue;
-@property BOOL failed;
-@property BOOL listening;
-@property XCTestExpectation *expectation;
-@property NSNumber *fulfilledtime;
-
-@end
-
-@implementation TestConversationMessageListener
-
-
-- (void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message{
-    // Can't use XCTAsset, because this class is not QredoXCTestCase
-    
-    @synchronized(_test) {
-        if (_listening) {
-            self.failed |= (message == nil);
-            self.failed |= !([message.value isEqualToData:[self.expectedMessageValue dataUsingEncoding:NSUTF8StringEncoding]]);
-            
-            _fulfilledtime = @(_fulfilledtime.intValue + 1);
-            _listening = NO;
-            [_expectation fulfill];
-        }
-    }
-}
-
-@end
-
-
-
-
-
-
-
-
+#import "Qredo.h"
+#import "QredoPrivate.h"
+#import "QredoXCTestListeners.h"
 
 
 
@@ -194,17 +135,17 @@ static const int testTimeOut = 30;
 
 
 -(void)createClients{
-    [self initClient1];
-    [self initClient2];
+    [self createClient1];
+    [self createClient2];
 }
 
 
--(void)initClient1{
+-(void)createClient1{
     testClient1Password = [self randomPassword];
     testClient1 = [self createClient:testClient1Password];
 }
 
--(void)initClient2{
+-(void)createClient2{
     testClient2Password = [self randomPassword];
     testClient2 = [self createClient:testClient2Password];
     
@@ -321,6 +262,7 @@ static const int testTimeOut = 30;
     }];
     
     conversation1 = listener.incomingConversation;
+    [rendezvous1 removeRendezvousObserver:listener];
     XCTAssertNotNil(conversation1);
     XCTAssertNotNil(conversation2);
 }
@@ -341,7 +283,6 @@ static const int testTimeOut = 30;
     TestConversationMessageListener *listener = [[TestConversationMessageListener alloc] init];
     listener.expectation = [self expectationWithDescription:@"wait for incoming message"];
     listener.expectedMessageValue = message;
-    listener.test = self;
     listener.listening = YES;
     
     [toConversation addConversationObserver:listener];
@@ -360,6 +301,213 @@ static const int testTimeOut = 30;
     [self waitForExpectationsWithTimeout:testTimeOut handler:^(NSError *error) {
     }];
     
+}
+
+
+-(int)countConversationsOnRendezvous:(QredoRendezvous*)rendezvous{
+    __block XCTestExpectation *countConvExpectation = [self expectationWithDescription:@"count conversation"];
+    __block int count =0;
+    
+    [rendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
+        XCTAssertNotNil(conversation);
+        count++;
+    } completionHandler:^(NSError *error) {
+        [countConvExpectation fulfill];
+        XCTAssertNil(error);
+    }];
+    
+    [self waitForExpectationsWithTimeout:testTimeOut handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+
+    return count;
+}
+
+
+
+-(int)countConversationsOnClient:(QredoClient*)client{
+    __block XCTestExpectation *countConvExpectation = [self expectationWithDescription:@"count conversation"];
+    __block int count =0;
+    
+    [client enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        XCTAssertNotNil(conversationMetadata);
+        count++;
+    } completionHandler:^(NSError *error) {
+        [countConvExpectation fulfill];
+        XCTAssertNil(error);
+    }];
+     
+    
+    [self waitForExpectationsWithTimeout:testTimeOut handler:^(NSError *error) {
+        XCTAssertNil(error);
+    }];
+    
+    return count;
+}
+
+
+
+/* Vault */
+-(QredoVaultItemMetadata *)createVaultItem{
+    
+    QredoVault *vault = testClient1.defaultVault;
+    
+    NSString *testString = @"my test string";
+    
+    NSData *item1Data = [QredoUtils randomBytesOfLength:64];
+    NSDictionary *item1SummaryValues = @{@"key1": testString};
+    QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
+                                                           value:item1Data];
+    
+    
+    __block QredoVaultItemDescriptor *item1Descriptor = nil;
+    __block QredoVaultItemMetadata *item1Metadata = nil;
+    
+    TestVaultListener *listener = [[TestVaultListener alloc] init];
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener];
+    
+    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+        XCTAssertNil(error, @"Error occurred during PutItem");
+        item1Descriptor = newItemMetadata.descriptor;
+        item1Metadata = newItemMetadata;
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:testTimeOut handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    
+    XCTAssertNotNil(item1Descriptor);
+    XCTAssertNotNil(item1Metadata);
+    
+    NSString *val = [item1Metadata objectForMetadataKey:@"key1"];
+    XCTAssertTrue([val isEqualToString:testString],@"Incorrect metadata string");
+    
+    return item1Metadata;
+
+}
+
+
+-(QredoVaultItemMetadata*)updateVaultItem:(QredoVaultItem*)originalItem{
+    
+    QredoVault *vault = testClient1.defaultVault;
+    
+    NSString *testString = @"changed test";
+    NSDictionary *item1SummaryValues = @{@"key1": testString};
+    QredoMutableVaultItemMetadata *updatedMetadata = [originalItem.metadata mutableCopy];
+    [updatedMetadata setSummaryValue:testString forKey:@"key1"];
+    
+    
+   
+    
+    TestVaultListener *listener = [[TestVaultListener alloc] init];
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener];
+    
+    
+    __block QredoVaultItemMetadata *updatedItemMetadata = nil;
+    
+    
+    [vault updateItem:updatedMetadata value:originalItem.value completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
+        XCTAssertNotNil(newItemMetadata);
+        updatedItemMetadata = newItemMetadata;
+
+    }];
+     
+     
+    [self waitForExpectationsWithTimeout:testTimeOut handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    
+    XCTAssertNotNil(updatedItemMetadata);
+
+    QredoVaultItemDescriptor *oldDescriptor = originalItem.metadata.descriptor;
+    QredoVaultItemDescriptor *newDescriptor = updatedItemMetadata.descriptor;
+    
+    
+    
+    XCTAssertFalse([oldDescriptor isEqual:newDescriptor],@"Descriptors are the same");
+    return updatedItemMetadata;
+    
+}
+
+
+-(QredoVaultItemDescriptor*)deleteVaultItem:(QredoVaultItemMetadata*)originalMetadata{
+     QredoVault *vault = testClient1.defaultVault;
+    
+    __block QredoVaultItemDescriptor *deleteItemDescriptor = nil;
+    
+    TestVaultListener *listener = [[TestVaultListener alloc] init];
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener];
+    
+    
+    [vault deleteItem:originalMetadata completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
+        deleteItemDescriptor=newItemDescriptor;
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:testTimeOut handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        listener.didReceiveVaultItemMetadataExpectation = nil;
+    }];
+    return deleteItemDescriptor;
+    
+    
+}
+
+
+-(int)countEnumAllVaultItemsOnServer{
+    QredoVault *vault = testClient1.defaultVault;
+    __block int count=0;
+    __block NSMutableArray *enumArray = [[NSMutableArray alloc] init];
+    __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
+    
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        count++;
+    } completionHandler:^(NSError *error) {
+        [completionHandlerCalled fulfill];
+        completionHandlerCalled = nil;
+    }];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        completionHandlerCalled = nil;
+    }];
+    
+    return count;
+}
+
+
+-(QredoVaultItem*)getVaultItem:(QredoVaultItemDescriptor*)descriptor{
+    QredoVault *vault = testClient1.defaultVault;
+    __block QredoVaultItem *returnVaultItem = nil;
+    __block XCTestExpectation *completeExpectation = [self expectationWithDescription:@"getVaultItem"];
+
+    
+    [vault getItemWithDescriptor:descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error){
+         XCTAssertNil(error);
+         XCTAssertNotNil(vaultItem);
+        returnVaultItem = vaultItem;
+         [completeExpectation fulfill];
+     }];
+    [self waitForExpectationsWithTimeout:testTimeOut handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        completeExpectation = nil;
+    }];
+    
+    return returnVaultItem;
+    
+    
+}
+
+
+
+/* Index */
+-(int)countMetadataItemsInIndex{
+        return 0;;
 }
 
 

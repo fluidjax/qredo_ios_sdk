@@ -291,7 +291,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                          completionHandler:(void(^)(NSError *error))completionHandler{
     
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey  myPublicKey:myPublicKey rendezvousOwner:rendezvousOwner];
-
+    
     [self storeWithCompletionHandler:^(NSError *error){
         if (error) {
             if (completionHandler)completionHandler(error);
@@ -810,7 +810,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     self.metadata.authStatus |= 1;
     [self updateConversationWithCompletionHandler:completionHandler];
 }
-
 
 -(QredoAuthenticationStatus)authTrafficLight{
     if (self.metadata.authStatus && 1 == 1)return QREDO_GREEN;

@@ -28,6 +28,7 @@
 
     //rendezvous
     QredoRendezvous *rendezvous1;
+    
     NSString *rendezvous1Tag;
     
     
@@ -40,43 +41,65 @@
     
 }
 
-
-@property (strong) XCTestExpectation *testDidReceiveResponseExpectation;
-@property (strong) XCTestExpectation *testDidReceiveMessageExpectation;
-@property (strong) XCTestExpectation *testDidRecieveOtherPartyHasLeft;
+/* -------------------------------------------------------------------------------------------------------------------------------- */
 
 
+/* Build the pre-defined test stacks  */
 -(void)buildStack1; //2 clients - create rendezvous, respond to rendezvous
 -(void)buildStack2; //2 clients - create rendezvous, respond to rendezvous, C2 message to C1, C1 message to C2
 
 
+/* -------------------------------------------------------------------------------------------------------------------------------- */
+
+/* Generate Clients */
+-(void)createClients;
+-(void)createClient1;
+-(void)createClient2;
+-(QredoClient*)createClient:(NSString*)userSecret;
 
 
+/* Rendezvous */
+-(void)createRendezvous;
+-(QredoConversation*)simpleRespondToRendezvous:(NSString*)tag;
+-(void)respondToRendezvous;
+-(int)countConversationsOnRendezvous:(QredoRendezvous*)rendezvous;
+-(int)countConversationsOnClient:(QredoClient*)client;
+
+
+
+/* Messages */
+-(void)sendConversationMessageFrom1to2;
+-(void)sendConversationMessageFrom2to1;
+-(void)sendMessageFrom:(QredoConversation*)fromConversation to:(QredoConversation*)toConversation;
+
+
+/* Vault */
+-(QredoVaultItemMetadata*)createVaultItem;
+-(QredoVaultItemMetadata*)updateVaultItem:(QredoVaultItem*)originalItem;
+-(QredoVaultItemDescriptor*)deleteVaultItem:(QredoVaultItemMetadata*)originalMetadata;
+-(QredoVaultItem*)getVaultItem:(QredoVaultItemDescriptor*)descriptor;
+-(int)countEnumAllVaultItemsOnServer;
+
+/* Index */
+-(int)countMetadataItemsInIndex;
+
+
+
+
+
+
+/* -------------------------------------------------------------------------------------------------------------------------------- */
+
+
+/* Utility Methods for Gewneral Testing */
 -(void)loggingOff;
 -(void)loggingOn;
-
-
-- (void)resetKeychain;
-- (void)deleteAllKeysForSecClass:(CFTypeRef)secClass;
+-(void)resetKeychain;
+-(void)deleteAllKeysForSecClass:(CFTypeRef)secClass;
 
 -(NSData*)randomDataWithLength:(int)length;
 -(NSString *)randomStringWithLength:(int)len;
 -(NSString *)randomPassword;
 
 
--(void)createClients;
--(void)initClient1;
--(void)initClient2;
-
-
-
--(QredoClient*)createClient:(NSString*)userSecret;
--(void)createRendezvous;
--(QredoConversation*)simpleRespondToRendezvous:(NSString*)tag;
--(void)respondToRendezvous;
--(void)sendConversationMessageFrom1to2;
--(void)sendConversationMessageFrom2to1;
-
-
--(void)sendMessageFrom:(QredoConversation*)fromConversation to:(QredoConversation*)toConversation;
 @end

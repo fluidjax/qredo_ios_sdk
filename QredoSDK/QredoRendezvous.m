@@ -642,19 +642,21 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
          block(conversation, stop);
      }
                     completionHandler:^(NSError *error) {
-                            QredoLogInfo(@"Enumerate Conversations complete");
-                        if (completionHandler)completionHandler(error);
-                    }           since:sinceWatermark
+                                        QredoLogInfo(@"Enumerate Conversations complete");
+                                        if (completionHandler)completionHandler(error);
+                                       }
+                          saveToVault:NO
+                                since:sinceWatermark
                  highWatermarkHandler:highWatermarkHandler];
 }
 
 
 -(void)enumerateResponsesWithBlock:(void (^)(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop))block
                  completionHandler:(void (^)(NSError *error))completionHandler
+                       saveToVault:(BOOL)saveToVault
                              since:(QredoRendezvousHighWatermark)sinceWatermark
               highWatermarkHandler:(void (^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler {
     NSError *error = nil;
-    
     NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:nil
                                                         marshaller:^(id element, QredoWireFormatWriter *writer)
                            {
@@ -683,9 +685,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
              if (completionHandler)completionHandler(error);
              return;
          }
-         
+
          [self processRendezvousResponseResult:result
                                  responseIndex:0
+                                   saveToVault:saveToVault
                        rendezvousResponseBlock:block
                           highWatermarkHandler:highWatermarkHandler
                              completionHandler:completionHandler];
@@ -695,6 +698,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 -(void)processRendezvousResponseResult:(QLFRendezvousResponsesResult *)result
                          responseIndex:(NSUInteger)responseIndex
+                           saveToVault:(BOOL)saveToVault
                rendezvousResponseBlock:(void (^)(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop))rendezvousResponseBlock
                   highWatermarkHandler:(void (^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler
                      completionHandler:(void (^)(NSError *error))completionHandler {
@@ -710,6 +714,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         dispatch_async(_enumerationQueue, ^{
             [self processRendezvousResponseResult:result
                                     responseIndex:responseIndex + 1
+                                      saveToVault:saveToVault
                           rendezvousResponseBlock:rendezvousResponseBlock
                              highWatermarkHandler:highWatermarkHandler
                                 completionHandler:completionHandler];
@@ -724,6 +729,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFRendezvousResponse *response = [result.responses objectAtIndex:responseIndex];
     
     [self createConversationAndStoreKeysForResponse:response
+                                        saveToVault:saveToVault
                                   completionHandler:^(QredoConversation *conversation, NSError *error)
      {
          if (error && error.code == QredoErrorCodeVaultItemNotFound) {
@@ -758,11 +764,21 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 
 -(void)createConversationAndStoreKeysForResponse:(QLFRendezvousResponse *)response
+                                     saveToVault:(BOOL)saveToVault
                                completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler {
+    
+    
     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
                                                              authenticationType:_lfAuthType
                                                                   rendezvousTag:_tag
                                                                 converationType:_configuration.conversationType];
+    
+    
+    if (saveToVault==NO){
+        if (completionHandler)completionHandler(conversation, nil);
+        return;
+    }
+    
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
                                            publicKey:responderPublicKey
@@ -790,6 +806,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         [_updateListener processSingleItem:conversation sequenceValue:@(rendezvousResponse.sequenceValue)];
     }
                     completionHandler:completionHandler
+                          saveToVault:YES
                                 since:self.highWatermark
                  highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark)
      {
@@ -830,6 +847,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                          return;
                                      }
                                      [self createConversationAndStoreKeysForResponse:result.response
+                                                                         saveToVault:YES
                                                                    completionHandler:^(QredoConversation *conversation, NSError *creationError){
                                                                        if (creationError) {
                                                                            if (completionHandler)completionHandler(error);

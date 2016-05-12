@@ -508,14 +508,6 @@ NSString *secondMessageText;
 
 
 
-
--(void)testMultipleConversationWatermark{
-    for (int i=0;i<10;i++){
-        [self testConversationWatermark];
-    }
-}
-
-
 -(void)testConversationWatermark{
     //static NSString *randomTag;
     float delayInterval = 0.4;

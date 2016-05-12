@@ -196,7 +196,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSString *tag   = @"ABC";
     NSString *appId = @"123";
     NSData * res = [rendCrypto masterKeyWithTag:tag appId:appId];
-    NSData *testVal = [NSData dataWithHexString:@"ba4f5f1d 299c8e4d 8eed2c0c 27bc8e71 5a2b6260 6950088d d7fcb922 07fa3320"];
+    NSData *testVal = [NSData dataWithHexString:@"b7dd94ba 22f5eba2 a1010144 00e65c11 0d3e69b7 098a5b88 9d44cea0 e96c944f"];
     XCTAssertTrue([testVal isEqualToData: res],@"Master Key derived from Tag is incorrect");
 }
 
