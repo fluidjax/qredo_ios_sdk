@@ -645,7 +645,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                         QredoLogInfo(@"Enumerate Conversations complete");
                                         if (completionHandler)completionHandler(error);
                                        }
-                          saveToVault:NO
+                          saveToVault:YES
                                 since:sinceWatermark
                  highWatermarkHandler:highWatermarkHandler];
 }
