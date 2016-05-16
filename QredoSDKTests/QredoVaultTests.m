@@ -1023,37 +1023,30 @@
     QredoVaultItem *item = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues]
                                                             value:item1Data];
     
+
+    QredoVaultListener *listener = [[QredoVaultListener alloc] init];
+    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener];
+
     
     __block QredoVaultItemDescriptor *item1Descriptor = nil;
     __block QredoVaultItemMetadata *item1Metadata = nil;
-    __block XCTestExpectation *putItem1CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
-    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
-     {
+
+    
+    [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
          XCTAssertNil(error, @"Error occurred during PutItem");
          item1Descriptor = newItemMetadata.descriptor;
          item1Metadata = newItemMetadata;
-         [putItem1CompletedExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        putItem1CompletedExpectation = nil;
-    }];
-    XCTAssertNotNil(item1Descriptor, @"Descriptor returned is nil");
     
     
     ///wait for listener
     
-    QredoVaultListener *listener = [[QredoVaultListener alloc] init];
-    listener.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
-    [vault addVaultObserver:listener];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
         listener.didReceiveVaultItemMetadataExpectation = nil;
     }];
-    
-//    [vault removeVaultObserver:listener];
-    
     
     
 
@@ -1062,27 +1055,17 @@
     
     __block QredoVaultItemDescriptor *item2Descriptor = nil;
     __block QredoVaultItemMetadata *item2Metadata = nil;
+    QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
+    listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
+    [vault addVaultObserver:listener2];
     
-    __block XCTestExpectation *putItem2CompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
+    
     [vault putItem:item completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error)
      {
          XCTAssertNil(error, @"Error occurred during PutItem");
          item2Descriptor = newItemMetadata.descriptor;
          item2Metadata = newItemMetadata;
-         [putItem2CompletedExpectation fulfill];
      }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        putItem2CompletedExpectation = nil;
-    }];
-    XCTAssertNotNil(item2Descriptor, @"Descriptor returned is nil");
-    
-    
-    
-    
-    QredoVaultListener *listener2 = [[QredoVaultListener alloc] init];
-    listener2.didReceiveVaultItemMetadataExpectation = [self expectationWithDescription:@"Received the VaultItemMetadata"];
-    [vault addVaultObserver:listener2];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         // avoiding exception when 'fulfill' is called after timeout
