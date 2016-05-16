@@ -40,6 +40,10 @@ static int kRendezvousTestDurationSeconds = 120; // 2 minutes
 XCTestExpectation *timeoutExpectation;
 
 
+
+
+
+
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     if (self.expectation) {
         self.incomingConversation = conversation;
@@ -131,8 +135,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 
-@interface QredoRendezvousTests ()
-{
+@interface QredoRendezvousTests (){
     QredoClient *client;
     QredoClient *client2;
 }
@@ -149,6 +152,39 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 @implementation QredoRendezvousTests
 
+
+-(void)setUp {
+    [super setUp];
+    
+    // Want tests to abort if error occurrs
+    self.continueAfterFailure = NO;
+    
+    // Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
+    [self setupRootCertificates];
+    [self setupCrls];
+    self.cryptoImpl = [[CryptoImplV1 alloc] init];
+    
+    // Must remove any existing keys before starting
+    [QredoCrypto deleteAllKeysInAppleKeychain];
+    
+    [self authoriseClient];
+    [self authoriseClient2];
+}
+
+
+-(void)tearDown {
+    [super tearDown];
+    if (client) {
+        [client closeSession];
+    }
+    
+    if (client2) {
+        [client2 closeSession];
+    }
+    
+    // Should remove any existing keys after finishing
+    [QredoCrypto deleteAllKeysInAppleKeychain];
+}
 
 
 -(void)testReadableTags{
@@ -202,38 +238,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 
--(void)setUp {
-    [super setUp];
-    
-    // Want tests to abort if error occurrs
-    self.continueAfterFailure = NO;
-    
-    // Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
-    [self setupRootCertificates];
-    [self setupCrls];
-    self.cryptoImpl = [[CryptoImplV1 alloc] init];
-    
-    // Must remove any existing keys before starting
-    [QredoCrypto deleteAllKeysInAppleKeychain];
-    
-    [self authoriseClient];
-    [self authoriseClient2];
-}
-
-
--(void)tearDown {
-    [super tearDown];
-    if (client) {
-        [client closeSession];
-    }
-    
-    if (client2) {
-        [client2 closeSession];
-    }
-    
-    // Should remove any existing keys after finishing
-    [QredoCrypto deleteAllKeysInAppleKeychain];
-}
 
 
 -(QredoSecKeyRefPair *)setupKeypairForPublicKeyData:(NSData *)publicKeyData privateKeyData:(NSData *)privateKeyData keySizeBits:(NSInteger)keySizeBits {
