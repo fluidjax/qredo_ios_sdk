@@ -177,7 +177,9 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     }
     @catch (NSException * e) {
         if (errorHandler){
-            errorHandler([[NSError alloc]initWithDomain:@"chris error" code:8888 userInfo:nil]);
+            errorHandler([[NSError alloc]initWithDomain:[NSString stringWithFormat:@"Error sending data to Transport - %@",e]
+                                                                              code:QredoTransportErrorUnknown
+                                                                        userInfo:nil]);
         }
     }
 

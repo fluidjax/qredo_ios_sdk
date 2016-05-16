@@ -13,7 +13,7 @@ typedef NS_ENUM (NSInteger, QredoErrorCode) {
     QredoErrorCodeRemoteOperationFailure,
     QredoErrorCodeAppNotAuthorized,
     QredoErrorCodeMalformedOrTamperedData,
-    
+        
     // Vault errors
     QredoErrorCodeVaultUnknown = 2000,
     QredoErrorCodeVaultItemNotFound,
