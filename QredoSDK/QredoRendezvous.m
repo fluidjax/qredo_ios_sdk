@@ -645,7 +645,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                         QredoLogInfo(@"Enumerate Conversations complete");
                                         if (completionHandler)completionHandler(error);
                                        }
-                          saveToVault:YES
+                          saveToVault:NO
                                 since:sinceWatermark
                  highWatermarkHandler:highWatermarkHandler];
 }
@@ -773,17 +773,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                   rendezvousTag:_tag
                                                                 converationType:_configuration.conversationType];
     
-    
-    if (saveToVault==NO){
-        if (completionHandler)completionHandler(conversation, nil);
-        return;
-    }
-    
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
+    
     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
                                            publicKey:responderPublicKey
                                          myPublicKey:_requesterPublicKey
                                      rendezvousOwner:YES
+                                    saveToVault:saveToVault
                                    completionHandler:^(NSError *error){
                                        if (error) {
                                            if (completionHandler)completionHandler(nil, error);
