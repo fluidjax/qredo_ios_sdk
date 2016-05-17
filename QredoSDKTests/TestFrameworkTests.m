@@ -47,12 +47,15 @@
 // Line 648 QredoRendezvous.h -
 // Fix before release
 //
-//-(void)testConversationEnum{
-//    [self buildStack1];
-//    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
-//    XCTAssertTrue([self countConversationsOnClient:testClient1]==1,@"Should be 1 conversation");
-//    XCTAssertTrue([self countConversationsOnClient:testClient2]==1,@"Should be 1 conversation");
-//}
+-(void)testConversationEnum{
+    [self buildStack1];
+    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
+    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
+    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
+    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
+    XCTAssertTrue([self countConversationsOnClient:testClient1]==1,@"Should be 1 conversation");
+    XCTAssertTrue([self countConversationsOnClient:testClient2]==1,@"Should be 1 conversation");
+}
 
 
 

@@ -331,6 +331,10 @@ static const int testTimeOut = 30;
     
     [client enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
         XCTAssertNotNil(conversationMetadata);
+        NSLog(@"CONV %@", conversationMetadata.conversationRef);
+        NSLog(@"TAG %@", conversationMetadata.rendezvousTag);
+        NSLog(@"TAG %@", conversationMetadata.conversationId);
+        NSLog(@"----------------");
         count++;
     } completionHandler:^(NSError *error) {
         [countConvExpectation fulfill];
