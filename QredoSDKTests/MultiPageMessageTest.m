@@ -276,6 +276,8 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
 }
 
 - (void)tearDown {
+    [client1 closeSession];
+    [client2 closeSession];
     [super tearDown];
 }
 

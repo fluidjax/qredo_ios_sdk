@@ -621,8 +621,56 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
+
+
+-(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *metadata, BOOL *stop))block
+                    completionHandler:(void (^)(NSError *error))completionHandler{
+    
+    QredoVault *systemVault = _vault;
+    NSMutableArray *dedup = [[NSMutableArray alloc] init];
+    
+    
+    [systemVault enumerateConsolidatedVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+        if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
+            
+            
+            
+            QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
+            // TODO: DH - populate metadata.rendezvousMetadata
+            metadata.conversationId = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelId];
+            metadata.amRendezvousOwner = [[vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelAmOwner] boolValue];
+            metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];
+            metadata.rendezvousTag = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelTag];
+            metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor vault:systemVault];
+
+            
+            //ignore any rendezvous which are not for this rendezvous's tag
+            BOOL correctRendezvous      = [metadata.rendezvousTag isEqualToString:_tag];
+            BOOL duplicateConversation  = [dedup containsObject:metadata.conversationId];
+            BOOL stopObjectEnumeration  = NO; // here we lose the feature when *stop == YES, then we are on the last object
+            
+            if (correctRendezvous && !duplicateConversation){
+                [dedup addObject:metadata.conversationId];
+                block(metadata, &stopObjectEnumeration);
+            }
+            
+            *stopVaultEnumeration = stopObjectEnumeration;
+        }
+    } completionHandler:^(NSError *error) {
+        QredoLogInfo(@"Enumermate Conversation Complete");
+        if (completionHandler)completionHandler(error);
+    }];
+    
+    
+    
+}
+
+
+
+
+
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
-                     completionHandler:(void (^)(NSError *))completionHandler {
+                     completionHandlerX:(void (^)(NSError *))completionHandler {
     [self enumerateConversationsWithBlock:block since:QredoRendezvousHighWatermarkOrigin completionHandler:completionHandler];
 }
 
@@ -645,7 +693,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                         QredoLogInfo(@"Enumerate Conversations complete");
                                         if (completionHandler)completionHandler(error);
                                        }
-                          saveToVault:YES
+                          saveToVault:NO
                                 since:sinceWatermark
                  highWatermarkHandler:highWatermarkHandler];
 }
@@ -773,17 +821,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                   rendezvousTag:_tag
                                                                 converationType:_configuration.conversationType];
     
-    
-    if (saveToVault==NO){
-        if (completionHandler)completionHandler(conversation, nil);
-        return;
-    }
-    
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
+    
     [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
                                            publicKey:responderPublicKey
                                          myPublicKey:_requesterPublicKey
                                      rendezvousOwner:YES
+                                    saveToVault:saveToVault
                                    completionHandler:^(NSError *error){
                                        if (error) {
                                            if (completionHandler)completionHandler(nil, error);

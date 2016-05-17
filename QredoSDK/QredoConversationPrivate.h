@@ -34,6 +34,7 @@ extern NSString *const kQredoConversationVaultItemLabelType;
                                  publicKey:(QredoDhPublicKey*)publicKey
                                myPublicKey:(QredoDhPublicKey*)myPublicKey
                            rendezvousOwner:(BOOL)rendezvousOwner
+                               saveToVault:(BOOL)saveToVault
                          completionHandler:(void(^)(NSError *error))completionHandler;
 
 - (void)respondToRendezvousWithTag:(NSString *)rendezvousTag

@@ -458,12 +458,12 @@ NSString *secondMessageText;
     //get primary conversation
     
     
-    __block QredoConversation *primaryConveration  = nil;
+    __block QredoConversationMetadata *primaryConverationMetadata  = nil;
     __block XCTestExpectation *getPrimaryConv = [self expectationWithDescription:@"get first conversation"];
     
     
-    [rendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
-        primaryConveration = conversation;
+    [rendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        primaryConverationMetadata = conversationMetadata;
     } completionHandler:^(NSError *error) {
         [getPrimaryConv fulfill];
         XCTAssertNil(error);
@@ -476,10 +476,10 @@ NSString *secondMessageText;
     
      //delete the conversation
     __block XCTestExpectation *delcon = [self expectationWithDescription:@"del con"];
-    [primaryConveration deleteConversationWithCompletionHandler:^(NSError *error) {
-        //NSLog(@"Conversation deleted %@",error);
-        [delcon fulfill];
-    }];
+    [client deleteConversationWithRef:primaryConverationMetadata.conversationRef
+                    completionHandler:^(NSError *error) {
+                        [delcon fulfill];
+                    }];
     
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {

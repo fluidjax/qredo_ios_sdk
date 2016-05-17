@@ -288,29 +288,30 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                  publicKey:(QredoDhPublicKey*)publicKey
                                myPublicKey:(QredoDhPublicKey*)myPublicKey
                            rendezvousOwner:(BOOL)rendezvousOwner
+                               saveToVault:(BOOL)saveToVault
                          completionHandler:(void(^)(NSError *error))completionHandler{
     
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey  myPublicKey:myPublicKey rendezvousOwner:rendezvousOwner];
     
-    [self storeWithCompletionHandler:^(NSError *error){
-        if (error) {
-            if (completionHandler)completionHandler(error);
-            return;
-        }
-
-        NSData *qrvValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRV]
-                                                         marshaller:[QLFCtrl marshaller]];
-
-        QredoConversationMessage *joinedControlMessage = [[QredoConversationMessage alloc] initWithValue:qrvValue
-                                                                                                dataType:kQredoConversationMessageTypeControl
-                                                                                           summaryValues:nil];
-
-        [self publishMessage:joinedControlMessage
-           completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-               if (completionHandler)completionHandler(error);
-           }];
-    }];
     
+        [self storeWithCompletionHandler:^(NSError *error){
+            if (error) {
+                if (completionHandler)completionHandler(error);
+                return;
+            }
+
+            NSData *qrvValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRV]
+                                                             marshaller:[QLFCtrl marshaller]];
+
+            QredoConversationMessage *joinedControlMessage = [[QredoConversationMessage alloc] initWithValue:qrvValue
+                                                                                                    dataType:kQredoConversationMessageTypeControl
+                                                                                               summaryValues:nil];
+
+            [self publishMessage:joinedControlMessage
+               completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+                   if (completionHandler)completionHandler(error);
+               }];
+        }];
 }
 
 - (void)generateKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
@@ -504,6 +505,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                publicKey:requesterPublicKey
                                              myPublicKey:_myPublicKey
                                          rendezvousOwner:NO
+                                             saveToVault:YES
                                        completionHandler:completionHandler];
                 
             } else {

@@ -40,6 +40,10 @@ static int kRendezvousTestDurationSeconds = 120; // 2 minutes
 XCTestExpectation *timeoutExpectation;
 
 
+
+
+
+
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     if (self.expectation) {
         self.incomingConversation = conversation;
@@ -131,8 +135,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 
-@interface QredoRendezvousTests ()
-{
+@interface QredoRendezvousTests (){
     QredoClient *client;
     QredoClient *client2;
 }
@@ -149,6 +152,39 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 @implementation QredoRendezvousTests
 
+
+-(void)setUp {
+    [super setUp];
+    
+    // Want tests to abort if error occurrs
+    self.continueAfterFailure = NO;
+    
+    // Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
+    [self setupRootCertificates];
+    [self setupCrls];
+    self.cryptoImpl = [[CryptoImplV1 alloc] init];
+    
+    // Must remove any existing keys before starting
+    [QredoCrypto deleteAllKeysInAppleKeychain];
+    
+    [self authoriseClient];
+    [self authoriseClient2];
+}
+
+
+-(void)tearDown {
+    [super tearDown];
+    if (client) {
+        [client closeSession];
+    }
+    
+    if (client2) {
+        [client2 closeSession];
+    }
+    
+    // Should remove any existing keys after finishing
+    [QredoCrypto deleteAllKeysInAppleKeychain];
+}
 
 
 -(void)testReadableTags{
@@ -202,38 +238,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
 
 
--(void)setUp {
-    [super setUp];
-    
-    // Want tests to abort if error occurrs
-    self.continueAfterFailure = NO;
-    
-    // Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
-    [self setupRootCertificates];
-    [self setupCrls];
-    self.cryptoImpl = [[CryptoImplV1 alloc] init];
-    
-    // Must remove any existing keys before starting
-    [QredoCrypto deleteAllKeysInAppleKeychain];
-    
-    [self authoriseClient];
-    [self authoriseClient2];
-}
-
-
--(void)tearDown {
-    [super tearDown];
-    if (client) {
-        [client closeSession];
-    }
-    
-    if (client2) {
-        [client2 closeSession];
-    }
-    
-    // Should remove any existing keys after finishing
-    [QredoCrypto deleteAllKeysInAppleKeychain];
-}
 
 
 -(QredoSecKeyRefPair *)setupKeypairForPublicKeyData:(NSData *)publicKeyData privateKeyData:(NSData *)privateKeyData keySizeBits:(NSInteger)keySizeBits {
@@ -470,8 +474,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     // Making sure that we can enumerate responses
     __block BOOL found = false;
     __block XCTestExpectation *didEnumerateExpectation = [self expectationWithDescription:@"verify: enumerate conversation from loaded rendezvous"];
-    [rendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
-        XCTAssertNotNil(conversation);
+    [rendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        XCTAssertNotNil(conversationMetadata);
         *stop = YES;
         found = YES;
     } completionHandler:^(NSError *error) {
@@ -607,7 +611,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     __block XCTestExpectation *enumerationExpectation = [self expectationWithDescription:@"enumerate responses"];
     
-    [createdRendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
+    [createdRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
     } completionHandler:^(NSError *error) {
         XCTAssertNil(error);
         [enumerationExpectation fulfill];
@@ -919,6 +923,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 
+
+
+
 -(void)testPublicKeyPersistence{
     self.continueAfterFailure=YES;
     
@@ -974,6 +981,52 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         // avoiding exception when 'fulfill' is called after timeout
         clientExpectation2 = nil;
     }];
+    
+    
+    
+    
+    
+    //open new clients and see if the public keys are still there for the conversations
+    __block XCTestExpectation *clientExpectation3 = [self expectationWithDescription:@"create client1"];
+    
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:client1Password
+                             options:[self clientOptions:YES]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
+                       XCTAssertNil(error);
+                       XCTAssertNotNil(clientArg);
+                       clientPersistent3 = clientArg;
+                       [clientExpectation3 fulfill];
+                   }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation3 = nil;
+    }];
+    
+    
+    
+    __block XCTestExpectation *clientExpectation4 = [self expectationWithDescription:@"create client2"];
+    
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:client2Password
+                             options:[self clientOptions:YES]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
+                       XCTAssertNil(error);
+                       XCTAssertNotNil(clientArg);
+                       clientPersistent4 = clientArg;
+                       [clientExpectation4 fulfill];
+                   }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation4 = nil;
+    }];
+
     
 
     //Create Rendezvous
@@ -1054,14 +1107,20 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     
     __block XCTestExpectation *conversationEnumExpectation = [self expectationWithDescription:@"conversationEnumExpectation"];
-    [createdRendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
-        XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
-        XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
-        XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
+    [createdRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        
+        [clientPersistent1 fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
+            XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
+        }];
+        
     } completionHandler:^(NSError *error) {
         [conversationEnumExpectation fulfill];
         XCTAssertNil(error);
     }];
+    
+    
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         conversationEnumExpectation =nil;
@@ -1072,47 +1131,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [clientPersistent2 closeSession];
  
     
-    //open new clients and see if the public keys are still there for the conversations
-    __block XCTestExpectation *clientExpectation3 = [self expectationWithDescription:@"create client1"];
-    
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
-                          userSecret:client1Password
-                             options:[self clientOptions:YES]
-                   completionHandler:^(QredoClient *clientArg, NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       clientPersistent3 = clientArg;
-                       [clientExpectation3 fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        clientExpectation3 = nil;
-    }];
-    
-    
-    
-    __block XCTestExpectation *clientExpectation4 = [self expectationWithDescription:@"create client2"];
-    
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
-                          userSecret:client2Password
-                             options:[self clientOptions:YES]
-                   completionHandler:^(QredoClient *clientArg, NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       clientPersistent4 = clientArg;
-                       [clientExpectation4 fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        clientExpectation4 = nil;
-    }];
-
+  
     
     __block QredoRendezvous *previousRendezvous = nil;
     
@@ -1134,38 +1153,42 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     
     //enumerate the client and see if we have the first conversation
+    [NSThread sleepForTimeInterval:2];
     
-     __block QredoConversation *conv = nil;
+    __block QredoConversation *conv = nil;
+    __block QredoConversationMetadata *convMeta = nil;
     __block XCTestExpectation *previousConversationEnumExpectation = [self expectationWithDescription:@"conversationEnumExpectation"];
-    [previousRendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
-        XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
-        XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
-        XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
-        conv = conversation;
+    
+    [previousRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        convMeta = conversationMetadata;
+        [clientPersistent3 fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
+            XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
+            conv = conversation;
+        }];
     } completionHandler:^(NSError *error) {
         [previousConversationEnumExpectation fulfill];
         XCTAssertNil(error);
     }];
-    
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         previousConversationEnumExpectation =nil;
     }];
     
     XCTAssertNotNil(conv);
-
-    
-    
     
     //enumerate the client4 and see if we have the first conversation
     
     __block QredoConversation *conv4 = nil;
     __block XCTestExpectation *previousConversationEnumExpectation4 = [self expectationWithDescription:@"conversationEnumExpectation"];
-    [previousRendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
-        XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
-        XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
-        XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
-        conv4 = conversation;
+    [clientPersistent4 enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        [clientPersistent4 fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
+            XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
+           conv4 = conversation;
+        }];
     } completionHandler:^(NSError *error) {
         [previousConversationEnumExpectation4 fulfill];
         XCTAssertNil(error);
@@ -1266,10 +1289,13 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     
        __block XCTestExpectation *conversationEnumExpectation = [self expectationWithDescription:@"conversationEnumExpectation"];
-    [createdRendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
-        XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
-        XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
-        XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
+    [createdRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        [client fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
+            XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
+        }];
+
     } completionHandler:^(NSError *error) {
         [conversationEnumExpectation fulfill];
         XCTAssertNil(error);

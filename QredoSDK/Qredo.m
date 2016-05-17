@@ -506,8 +506,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)closeSession {
     // Need to terminate transport, which ends associated threads and subscriptions etc.
     QredoLogInfo(@"Close session");
-    [_serviceInvoker terminate];
     [self.defaultVault removeAllObservers];
+    [_serviceInvoker terminate];
+
     
     // TODO: DH - somehow indicate that the client has been closed and therefore cannot be used again.
 }
@@ -1052,8 +1053,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoVault *vault = [self systemVault];
     
     [vault getItemWithDescriptor:conversationRef.vaultItemDescriptor
-               completionHandler:^(QredoVaultItem *vaultItem, NSError *error)
-     {
+               completionHandler:^(QredoVaultItem *vaultItem, NSError *error){
          if (error) {
              if (completionHandler)completionHandler(nil, error);
              return;
@@ -1061,6 +1061,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
          
          NSError *parsingError = nil;
          QredoConversation *conversation = [self conversationFromVaultItem:vaultItem error:&parsingError];
+         conversation.metadata.conversationRef = conversationRef;
          QredoLogInfo(@"Fetch Conversation with Ref complete");
          if (completionHandler)completionHandler(conversation, parsingError);
      }];

@@ -308,8 +308,8 @@ static const int testTimeOut = 30;
     __block XCTestExpectation *countConvExpectation = [self expectationWithDescription:@"count conversation"];
     __block int count =0;
     
-    [rendezvous enumerateConversationsWithBlock:^(QredoConversation *conversation, BOOL *stop) {
-        XCTAssertNotNil(conversation);
+    [rendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        XCTAssertNotNil(conversationMetadata);
         count++;
     } completionHandler:^(NSError *error) {
         [countConvExpectation fulfill];

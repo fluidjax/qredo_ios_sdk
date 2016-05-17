@@ -549,6 +549,14 @@ NSNumber *testNumber;
 
 
 - (void)tearDown {
+    [client1 closeSession];
+    [client2 closeSession];
+    
+    NSDate *myTestDate;
+    NSNumber *testNumber;
+
+    
+    
     [super tearDown];
 }
 
