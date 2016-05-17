@@ -610,7 +610,6 @@
 }
 
 
-
 -(void)testGetLatestMetaDataItemFromIndex{
     [self resetKeychain];
     XCTAssertNotNil(client);
@@ -711,17 +710,24 @@
     //get the latest with first descriptor
     __block QredoVaultItemMetadata *test3vaultItemMetadata=nil;
     __block XCTestExpectation *x3 = [self expectationWithDescription:@"get latest item2"];
+    __block int count=0;
     
     [vault getLatestItemMetadataWithDescriptor:item1Descriptor completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
         test3vaultItemMetadata = vaultItemMetadata;
         [x3 fulfill];
+        count++;
     }];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         x3 = nil;
     }];
     
+    if (![item2Metadata.descriptor isEqual:test3vaultItemMetadata.descriptor]){
+        NSLog(@"stop here %i", count);
+    }
+    
     XCTAssertTrue([item2Metadata.descriptor isEqual:test3vaultItemMetadata.descriptor], @"Retrieved item should be second");
+    
     
     
     //get the latest with second descriptor

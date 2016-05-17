@@ -979,6 +979,52 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         clientExpectation2 = nil;
     }];
     
+    
+    
+    
+    
+    //open new clients and see if the public keys are still there for the conversations
+    __block XCTestExpectation *clientExpectation3 = [self expectationWithDescription:@"create client1"];
+    
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:client1Password
+                             options:[self clientOptions:YES]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
+                       XCTAssertNil(error);
+                       XCTAssertNotNil(clientArg);
+                       clientPersistent3 = clientArg;
+                       [clientExpectation3 fulfill];
+                   }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation3 = nil;
+    }];
+    
+    
+    
+    __block XCTestExpectation *clientExpectation4 = [self expectationWithDescription:@"create client2"];
+    
+    [QredoClient initializeWithAppId:k_APPID
+                           appSecret:k_APPSECRET
+                              userId:k_USERID
+                          userSecret:client2Password
+                             options:[self clientOptions:YES]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
+                       XCTAssertNil(error);
+                       XCTAssertNotNil(clientArg);
+                       clientPersistent4 = clientArg;
+                       [clientExpectation4 fulfill];
+                   }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation4 = nil;
+    }];
+
+    
 
     //Create Rendezvous
     __block NSString *randomTag = nil;
@@ -1082,47 +1128,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [clientPersistent2 closeSession];
  
     
-    //open new clients and see if the public keys are still there for the conversations
-    __block XCTestExpectation *clientExpectation3 = [self expectationWithDescription:@"create client1"];
-    
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
-                          userSecret:client1Password
-                             options:[self clientOptions:YES]
-                   completionHandler:^(QredoClient *clientArg, NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       clientPersistent3 = clientArg;
-                       [clientExpectation3 fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        clientExpectation3 = nil;
-    }];
-    
-    
-    
-    __block XCTestExpectation *clientExpectation4 = [self expectationWithDescription:@"create client2"];
-    
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
-                          userSecret:client2Password
-                             options:[self clientOptions:YES]
-                   completionHandler:^(QredoClient *clientArg, NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       clientPersistent4 = clientArg;
-                       [clientExpectation4 fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        clientExpectation4 = nil;
-    }];
-
+  
     
     __block QredoRendezvous *previousRendezvous = nil;
     
@@ -1157,7 +1163,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
             XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
             conv = conversation;
         }];
-           } completionHandler:^(NSError *error) {
+    } completionHandler:^(NSError *error) {
         [previousConversationEnumExpectation fulfill];
         XCTAssertNil(error);
     }];

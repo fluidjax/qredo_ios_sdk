@@ -104,16 +104,30 @@ static const NSUInteger maxNumberOfConnections = 10;
                                      userInfo:nil];
     }
     
-    dispatch_sync(self.sendQueue, ^{
-
-        if (self.transportClosed)
-        {
+    
+    
+    if (self.transportClosed){
+        dispatch_sync(self.sendQueue, ^{
             [self notifyListenerOfErrorCode:QredoTransportErrorSendAfterTransportClosed userData:userData];
             return;
-        }
-        
-        [self sendPayloadInternal:payload userData:userData];
-    });
+        });
+    }else{
+        dispatch_sync(self.sendQueue, ^{
+            [self sendPayloadInternal:payload userData:userData];
+        });
+    }
+    
+    
+    
+    
+//    dispatch_sync(self.sendQueue, ^{
+//
+//        if (self.transportClosed){
+//            [self notifyListenerOfErrorCode:QredoTransportErrorSendAfterTransportClosed userData:userData];
+//            return;
+//        }
+//        [self sendPayloadInternal:payload userData:userData];
+//    });
 }
 
 - (void)close
