@@ -923,6 +923,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 }
 
 
+
+
+
 -(void)testPublicKeyPersistence{
     self.continueAfterFailure=YES;
     
@@ -1150,13 +1153,14 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     
     //enumerate the client and see if we have the first conversation
+    [NSThread sleepForTimeInterval:2];
     
-     __block QredoConversation *conv = nil;
+    __block QredoConversation *conv = nil;
+    __block QredoConversationMetadata *convMeta = nil;
     __block XCTestExpectation *previousConversationEnumExpectation = [self expectationWithDescription:@"conversationEnumExpectation"];
     
-    
-    
     [previousRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        convMeta = conversationMetadata;
         [clientPersistent3 fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
             XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
             XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
@@ -1168,20 +1172,13 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
         XCTAssertNil(error);
     }];
     
-    
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         previousConversationEnumExpectation =nil;
     }];
     
     XCTAssertNotNil(conv);
-
-    
-    
     
     //enumerate the client4 and see if we have the first conversation
-    
-    
-    
     
     __block QredoConversation *conv4 = nil;
     __block XCTestExpectation *previousConversationEnumExpectation4 = [self expectationWithDescription:@"conversationEnumExpectation"];
