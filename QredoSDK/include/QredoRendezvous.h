@@ -173,7 +173,9 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
  @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
  */
 
--(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
+
+
+-(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler;
 
 /**

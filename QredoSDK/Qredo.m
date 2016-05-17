@@ -1061,6 +1061,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
          
          NSError *parsingError = nil;
          QredoConversation *conversation = [self conversationFromVaultItem:vaultItem error:&parsingError];
+         conversation.metadata.conversationRef = conversationRef;
          QredoLogInfo(@"Fetch Conversation with Ref complete");
          if (completionHandler)completionHandler(conversation, parsingError);
      }];

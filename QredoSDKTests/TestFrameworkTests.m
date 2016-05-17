@@ -50,12 +50,19 @@
 -(void)testConversationEnum{
     [self buildStack1];
     XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
-    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
-    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
-    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
-    XCTAssertTrue([self countConversationsOnClient:testClient1]==1,@"Should be 1 conversation");
     XCTAssertTrue([self countConversationsOnClient:testClient2]==1,@"Should be 1 conversation");
+    
+    [self createRendezvous];
+    [self respondToRendezvous];
+    
+    
+    XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");
+    XCTAssertTrue([self countConversationsOnClient:testClient2]==2,@"Should be 1 conversation");
+    
+    
 }
+
+
 
 
 
