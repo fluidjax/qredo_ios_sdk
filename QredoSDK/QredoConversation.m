@@ -288,7 +288,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                  publicKey:(QredoDhPublicKey*)publicKey
                                myPublicKey:(QredoDhPublicKey*)myPublicKey
                            rendezvousOwner:(BOOL)rendezvousOwner
-                               saveToVault:(BOOL)saveToVault
                          completionHandler:(void(^)(NSError *error))completionHandler{
     
     [self generateKeysWithPrivateKey:privateKey publicKey:publicKey  myPublicKey:myPublicKey rendezvousOwner:rendezvousOwner];
@@ -505,7 +504,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                publicKey:requesterPublicKey
                                              myPublicKey:_myPublicKey
                                          rendezvousOwner:NO
-                                             saveToVault:YES
                                        completionHandler:completionHandler];
                 
             } else {

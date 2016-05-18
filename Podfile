@@ -9,9 +9,7 @@ target 'TestHost' do
     pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium'
-    pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
-
-end
+    pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'end
 
 target 'QredoSDKTests' do
   pod 'libsodium'
@@ -19,6 +17,7 @@ target 'QredoSDKTests' do
 end
 
 target 'LinguaFrancaTests' do
+   pod 'libsodium'
    pod 'jetfire'
 
 end
@@ -36,6 +35,15 @@ target 'QredoXDK' do
     pod 'libsodium'
     pod 'ios-ntp', :git => 'https://github.com/qredo/SSL-NTP-Time-Sync'    
 end
+
+
+target 'QredoXDK_Universal' do
+    pod 'jetfire'
+    pod 'OpenSSL', '~> 1.0'
+    pod 'libsodium'
+    pod 'ios-ntp', :git => 'https://github.com/qredo/SSL-NTP-Time-Sync'    
+end
+
 
 post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
