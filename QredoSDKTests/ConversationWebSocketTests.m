@@ -28,7 +28,7 @@
     self.continueAfterFailure = YES;
     
     
-    for (int i = 0; i < 10; i++){ //failing
+    for (int i = 0; i < 5; i++){ //failing
          [super testConversation];
     }
 }

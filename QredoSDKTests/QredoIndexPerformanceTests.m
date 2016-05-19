@@ -33,7 +33,7 @@ NSNumber *testNumber;
 
 -(void)testMultiple{
     [QredoLogger setLogLevel:QredoLogLevelNone];
-    for (int i=0;i<10;i++){
+    for (int i=0;i<5;i++){
         self.continueAfterFailure = YES;
         [self test10Records];
     }

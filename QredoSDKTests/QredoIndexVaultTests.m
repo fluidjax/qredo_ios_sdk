@@ -455,7 +455,7 @@ NSNumber *testNumber;
 
 - (void)testMultiplePut {
     NSInteger before = [qredoLocalIndex count];
-    int addCount = 20;
+    int addCount = 5;
     for (int i=0; i<addCount; i++) {
         NSString *randomKeyValue = [self randomStringWithLength:32];
         QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];

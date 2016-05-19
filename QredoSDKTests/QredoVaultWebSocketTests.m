@@ -14,7 +14,7 @@
 - (void)testPersistanceVaultIdMultiple {
     self.continueAfterFailure = NO;
     
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 5; i++)
     {
         QLog(@"Run number: %@", @(i));
         

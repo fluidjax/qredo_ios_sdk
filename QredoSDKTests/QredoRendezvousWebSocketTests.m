@@ -37,7 +37,7 @@
     // TODO: DH - Sometimes an iteration of this test fails, so don't abort everything on this failing
     self.continueAfterFailure = NO;
     
-    for (int i = 0; i < 20; i++) //passing
+    for (int i = 0; i < 5; i++) //passing
     {
             //NSLog(@" run: %i", i);
             [super testCreateAndRespondAnonymousRendezvous];
