@@ -666,20 +666,24 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
+//-(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
+//                                 since:(QredoRendezvousHighWatermark)sinceWatermark
+//                     completionHandler:(void (^)(NSError *error))completionHandler{
+//    
+//}
 
 
-
--(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
-                     completionHandlerX:(void (^)(NSError *))completionHandler {
-    [self enumerateConversationsWithBlock:block since:QredoRendezvousHighWatermarkOrigin completionHandler:completionHandler];
-}
-
-
--(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
-                                 since:(QredoRendezvousHighWatermark)sinceWatermark
-                     completionHandler:(void (^)(NSError *error))completionHandler {
-    [self enumerateConversationsWithBlock:block completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:nil];
-}
+//-(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
+//                     completionHandlerX:(void (^)(NSError *))completionHandler {
+//    [self enumerateConversationsWithBlock:block since:QredoRendezvousHighWatermarkOrigin completionHandler:completionHandler];
+//}
+//
+//
+//-(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
+//                                 since:(QredoRendezvousHighWatermark)sinceWatermark
+//                     completionHandler:(void (^)(NSError *error))completionHandler {
+//    [self enumerateConversationsWithBlock:block completionHandler:completionHandler since:sinceWatermark highWatermarkHandler:nil];
+//}
 
 
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block

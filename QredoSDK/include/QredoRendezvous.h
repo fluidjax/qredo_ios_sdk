@@ -178,20 +178,6 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler;
 
-/**
- 
- Goes through the Conversations created from this Rendezvous since the specified highwatermark and calls the specified code block for each one
- 
- @see Listing Conversations created from a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html)
- 
- @param block Called for each `QredoConversation`. Set `stop` to YES to terminate the enumeration
- @param sinceWatermark the point at which to start the search. Use `QredoRendezvousHighWatermarkOrigin` to start from the first Conversation
- @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
- */
--(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation, BOOL *stop))block
-                                 since:(QredoRendezvousHighWatermark)sinceWatermark
-                     completionHandler:(void (^)(NSError *error))completionHandler;
-
 
 #pragma mark - Other methods
 
