@@ -163,8 +163,7 @@ NSNumber *testNumber;
 
 - (void)authoriseClient:(NSString*)password {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
-    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-    clientOptions.resetData = YES;
+   
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID

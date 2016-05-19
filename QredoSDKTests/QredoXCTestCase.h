@@ -41,6 +41,9 @@
     
 }
 
+
+@property (nonatomic) QredoClientOptionsTransportType transportType;
+
 /* -------------------------------------------------------------------------------------------------------------------------------- */
 
 
@@ -83,6 +86,8 @@
 /* Index */
 -(int)countMetadataItemsInIndex;
 
+
+-(QredoClientOptions *)clientOptions:(BOOL)resetData;
 
 
 

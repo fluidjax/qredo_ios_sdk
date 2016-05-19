@@ -166,7 +166,7 @@ static const int testTimeOut = 30;
                            appSecret:k_TEST_APPSECRET
                               userId:k_TEST_USERID
                           userSecret:userSecret
-                             options:[[QredoClientOptions alloc] initDefaultPinnnedCertificate]
+                             options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -183,6 +183,13 @@ static const int testTimeOut = 30;
     XCTAssertNotNil(client.systemVault.vaultId);
     return client;
     
+}
+
+
+- (QredoClientOptions *)clientOptions:(BOOL)resetData{
+    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+    clientOptions.transportType = self.transportType;
+    return clientOptions;
 }
 
 

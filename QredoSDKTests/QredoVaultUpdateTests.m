@@ -35,12 +35,6 @@
     }
 }
 
-- (QredoClientOptions *)clientOptions:(BOOL)resetData
-{
-    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-    clientOptions.transportType = self.transportType;
-    return clientOptions;
-}
 
 - (void)authoriseClient
 {

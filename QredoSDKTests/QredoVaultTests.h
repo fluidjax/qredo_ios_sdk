@@ -4,7 +4,6 @@
 
 @interface QredoVaultTests : QredoXCTestCase
 
-@property (nonatomic) QredoClientOptionsTransportType transportType;
 
 - (void)authoriseClient;
 - (void)testPersistanceVaultId;

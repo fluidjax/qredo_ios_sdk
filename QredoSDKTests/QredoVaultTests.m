@@ -117,8 +117,6 @@
 - (void)authoriseClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-    clientOptions.transportType = self.transportType;
   
     savedPassword = [self randomPassword];
     
@@ -126,7 +124,7 @@
                            appSecret:k_APPSECRET
                               userId:k_USERID
                           userSecret:savedPassword
-                             options:clientOptions
+                             options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -156,14 +154,11 @@
 
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-    clientOptions.transportType = self.transportType;
-    
     [QredoClient initializeWithAppId:k_APPID
                            appSecret:k_APPSECRET
                               userId:k_USERID
                           userSecret:savedPassword
-                             options:clientOptions
+                             options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);

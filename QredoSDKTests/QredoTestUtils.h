@@ -19,15 +19,6 @@ extern NSString *k_USERID;
 
 @end
 
-@interface QredoClientOptions(QredoTestUtils)
-
-+ (instancetype)qtu_clientOptionsWithResetData:(BOOL)resetData;
-
-+ (instancetype)qtu_clientOptionsWithTransportType:(QredoClientOptionsTransportType)transportType
-                                         resetData:(BOOL)resetData;
-
-
-@end
 
 
 

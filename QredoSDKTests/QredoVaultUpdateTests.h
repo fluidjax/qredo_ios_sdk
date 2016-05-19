@@ -4,7 +4,6 @@
 
 @interface QredoVaultUpdateTests : QredoXCTestCase
 
-@property (nonatomic) QredoClientOptionsTransportType transportType;
 
 - (void)authoriseClient;
 - (void)testGettingItems;

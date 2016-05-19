@@ -7,14 +7,9 @@
 
 @interface QredoRendezvousTests : QredoXCTestCase
 
-@property (nonatomic) QredoClientOptionsTransportType transportType;
 
 - (void)authoriseClient;
-
-
-
 - (void)testCreateRendezvousAndGetResponses;
-
 - (void)testCreateAndFetchAnonymousRendezvous;
 - (void)testCreateDuplicateAndFetchAnonymousRendezvous;
 - (void)testCreateAndRespondAnonymousRendezvous;

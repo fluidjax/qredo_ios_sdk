@@ -30,7 +30,6 @@
     QredoConversation *creatorConversation;
 }
 
-@property (nonatomic) QredoClientOptionsTransportType transportType;
 
 @end
 
@@ -45,7 +44,7 @@
                            appSecret:k_APPSECRET
                               userId:k_USERID
                           userSecret:[self randomPassword]
-                             options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
+                             options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(clientArg);
@@ -101,7 +100,7 @@
                            appSecret:k_APPSECRET
                               userId:k_USERID
                           userSecret:[self randomPassword]
-                                       options:[QredoClientOptions qtu_clientOptionsWithTransportType:self.transportType resetData:YES]
+                                       options:[self clientOptions:YES]
                              completionHandler:^(QredoClient *clientArg, NSError *error) {
                                  XCTAssertNil(error);
                                  XCTAssertNotNil(clientArg);

@@ -31,21 +31,4 @@ NSString *k_USERID        = @"testUserId";
 @end
 
 
-@implementation QredoClientOptions(QredoTestUtils)
-
-+ (instancetype)qtu_clientOptionsWithResetData:(BOOL)resetData
-{
-    QredoClientOptions* clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-    return clientOptions;
-}
-
-+ (instancetype)qtu_clientOptionsWithTransportType:(QredoClientOptionsTransportType)transportType
-                                         resetData:(BOOL)resetData
-{
-    QredoClientOptions* clientOptions = [QredoClientOptions qtu_clientOptionsWithResetData:resetData];
-    clientOptions.transportType = transportType;
-    return clientOptions;
-}
-
-@end
 

@@ -183,12 +183,23 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition,
                              NSURLCredential *credential))completionHandler
 {
+
     NSURLProtectionSpace *protectionSpace = [challenge protectionSpace];
     if ([protectionSpace authenticationMethod] == NSURLAuthenticationMethodServerTrust) {
         
         SecTrustRef trust = [protectionSpace serverTrust];
+        NSURLCredential *credential = nil;
         
-        NSURLCredential *credential = credentialForTrustUsingPinnedCertificate(trust, self.pinnedCertificate.certificate);
+        if (self.pinnedCertificate){
+            //using pinned certificate
+            credential = credentialForTrustUsingPinnedCertificate(trust, self.pinnedCertificate.certificate);
+        }else{
+            //this is used when we use Trusted Roots
+            credential = [[NSURLCredential alloc] initWithTrust:trust];
+        }
+        
+
+        
         if (credential) {
             if (completionHandler)completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
             return;

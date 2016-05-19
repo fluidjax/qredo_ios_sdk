@@ -47,6 +47,14 @@ NSString *const QredoClientOptionServiceURL                 = @"com.qredo.option
 // This allows it to be overridden  on a command line xcodebuild using a pram such as QREDO_SERVER_URL=early1.qredo.me
 //See script 'testonce' to see sample usage
 
+//#define QREDO_SERVER_URL @"api-m8.oderq.com"
+//#define QREDO_SERVER_URL @"api-m7.oderq.com"
+//#define QREDO_SERVER_URL @"early1.qredo.me"
+
+//#define QREDO_SERVER_URL @"expired.badssl.com"
+//#define QREDO_SERVER_URL @"self-signed.badssl.com"
+
+
 static NSString *const QredoClientDefaultServiceURL         = @"https://" QREDO_SERVER_URL  @":443/services";
 static NSString *const QredoClientMQTTServiceURL            = @"ssl://"   QREDO_SERVER_URL  @":8883";
 static NSString *const QredoClientWebSocketsServiceURL      = @"wss://"   QREDO_SERVER_URL  @":443/services";
@@ -260,6 +268,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoCertificate *qredoCert = [QredoCertificate certificateWithSecCertificateRef:secCert];
     CFRelease(secCert);
     return qredoCert;
+    return nil;
 }
 
 
@@ -410,6 +419,13 @@ NSString *systemVaultKeychainArchiveIdentifier;
     NSURL *serviceURL = [self chooseServiceURL:options];
 
     __block NSError *error = nil;
+    
+//    __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL
+//                                                           appCredentials:appCredentials
+//                                                          userCredentials:userCredentials];
+//    
+    
+    
     __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL
                                                         pinnedCertificate:options.certificate
                                                            appCredentials:appCredentials
