@@ -49,6 +49,38 @@
 }
 
 
+-(void)testDefaultClient{
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block QredoClient *client;
+    
+    
+    [QredoClient initializeWithAppId:@"test"
+                           appSecret:@"cafebabe"
+                              userId:@"testuser"
+                          userSecret:[self randomPassword]
+                   completionHandler:^(QredoClient *clientArg, NSError *error) {
+                       
+                       XCTAssertNil(error);
+                       XCTAssertNotNil(clientArg);
+                       [clientExpectation fulfill];
+                       client = clientArg;
+                       
+                       QLog(@"Version is  %@",[clientArg versionString]);
+                       QLog(@"Build is    %@",[clientArg buildString]);
+                       
+                       
+                   }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        // avoiding exception when 'fulfill' is called after timeout
+        clientExpectation = nil;
+    }];
+    
+    [client closeSession];
+}
+
+
+
 -(void)testExplicitServerWithPinnedCertificate{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     __block QredoClient *client;

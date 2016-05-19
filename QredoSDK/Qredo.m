@@ -396,7 +396,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     
     if (!options) {
-        options = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+        options = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
     }
     
     
