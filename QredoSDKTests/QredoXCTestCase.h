@@ -82,6 +82,7 @@
 -(QredoVaultItemDescriptor*)deleteVaultItem:(QredoVaultItemMetadata*)originalMetadata;
 -(QredoVaultItem*)getVaultItem:(QredoVaultItemDescriptor*)descriptor;
 -(int)countEnumAllVaultItemsOnServer;
+-(int)countEnumAllVaultItemsOnServerFromWatermark:(QredoVaultHighWatermark*)highWatermark;
 
 /* Index */
 -(int)countMetadataItemsInIndex;

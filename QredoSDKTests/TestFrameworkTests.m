@@ -43,6 +43,58 @@
 }
 
 
+
+
+-(void)testHighwaterMark{
+    [self createClient1];
+    QredoVault *vault = testClient1.defaultVault;
+
+    //nothing in the vault
+    XCTAssertTrue([self countEnumAllVaultItemsOnServer]==0);
+    //Highwater mark is nil
+    XCTAssertNil(vault.highWatermark);
+
+    
+
+    [self createVaultItem];
+    //1 item in the vault
+    XCTAssertTrue([self countEnumAllVaultItemsOnServer]==1);
+    //water mark is now not nil
+    XCTAssertNotNil(vault.highWatermark);
+    
+    //save a copy of the watermark
+    QredoVaultHighWatermark *savedWaterMark = vault.highWatermark;
+    
+    
+    //Add another vault item
+    [self createVaultItem];
+    
+    //2 items in the vault
+    XCTAssertTrue([self countEnumAllVaultItemsOnServer]==2);
+    
+    //Count all items from current high water mark, should be 0 as we have a listener which is updating the Highwater mark internally
+    XCTAssertTrue([self countEnumAllVaultItemsOnServerFromWatermark:vault.highWatermark]==0);
+    
+    //1 new item since the saved water mark
+    XCTAssertTrue([self countEnumAllVaultItemsOnServerFromWatermark:savedWaterMark]==1);
+    [self createVaultItem];
+    //2 new item since the  saved water mark
+    XCTAssertTrue([self countEnumAllVaultItemsOnServerFromWatermark:savedWaterMark]==2);
+
+    
+    //Sanity checks
+    //Still listener is receieving the incoming items and the internal HWM is up to date, so nothing to retirve
+    XCTAssertTrue([self countEnumAllVaultItemsOnServerFromWatermark:vault.highWatermark]==0);
+    
+    //Total number of items in vault
+    XCTAssertTrue([self countEnumAllVaultItemsOnServer]==3);
+    
+    
+    
+}
+
+
+
 -(void)testConversationEnum{
     [self buildStack1];
     XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");

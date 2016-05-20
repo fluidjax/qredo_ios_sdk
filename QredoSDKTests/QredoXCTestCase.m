@@ -468,14 +468,22 @@ static const int testTimeOut = 30;
 
 
 -(int)countEnumAllVaultItemsOnServer{
+    return [self countEnumAllVaultItemsOnServerFromWatermark:QredoVaultHighWatermarkOrigin];
+}
+
+
+
+
+-(int)countEnumAllVaultItemsOnServerFromWatermark:(QredoVaultHighWatermark*)highWatermark{
     QredoVault *vault = testClient1.defaultVault;
     __block int count=0;
     __block NSMutableArray *enumArray = [[NSMutableArray alloc] init];
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     
+    
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
-    } completionHandler:^(NSError *error) {
+    } since:highWatermark completionHandler:^(NSError *error) {
         [completionHandlerCalled fulfill];
         completionHandlerCalled = nil;
     }];
@@ -486,6 +494,7 @@ static const int testTimeOut = 30;
     
     return count;
 }
+
 
 
 -(QredoVaultItem*)getVaultItem:(QredoVaultItemDescriptor*)descriptor{

@@ -56,8 +56,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     QredoUpdateListener *_updateListener;
     
     QredoLocalIndex *_localIndex;
-    QredoVaultHighWatermark *_savedHighWaterMark;;
-
     QredoUserCredentials *_userCredentials;
 }
 
