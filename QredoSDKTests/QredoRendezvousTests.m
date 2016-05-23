@@ -493,7 +493,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
     
-    [client createAnonymousRendezvousWithCompletionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
+                               completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous.tag);
                                XCTAssertNotNil(rendezvous);

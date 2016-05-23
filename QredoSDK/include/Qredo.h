@@ -111,19 +111,6 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 
-/** Creates an anonymous rendezvous with a random tag (32 characters alphanumeric)
- The duration and response count will be set to unlimited.
- 
- @see Creating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
- 
- 
- @param completionhandler returns a `QredoRendezvous` or nil if an error occurs.`error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
- 
- */
-
--(void)createAnonymousRendezvousWithCompletionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
-
 
 /** Creates an anonymous rendezvous with the specified tag, duration and response count.
  
