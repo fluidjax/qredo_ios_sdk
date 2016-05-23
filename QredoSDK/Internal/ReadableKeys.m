@@ -158,26 +158,53 @@ char *e;
 
 
 +(NSData*)rfc1751Eng2Key:(NSString*)english{
-    NSMutableData *keyout = [[NSMutableData alloc] initWithCapacity:128];
-    char *cpy = calloc([english length]+1, 1);
-    const char *c = [english UTF8String];
-    strncpy(cpy, c, [english length]);
-    char *output = keyout.mutableBytes;
-    int res =  eng2key(output,cpy);
-    free(cpy);
-    if (res!=1){
-        return nil;
+    NSMutableData *retData = [[NSMutableData alloc] init];
+    NSArray *words = [english componentsSeparatedByString:@" "];
+    
+    for (int i=0;i<words.count;i+=12){
+        NSArray *subWords =  [words subarrayWithRange:NSMakeRange(i, 12)];
+        NSString *subEnglish = [subWords componentsJoinedByString:@" "];
+        
+        NSMutableData *keyout = [[NSMutableData alloc] initWithCapacity:128];
+        char *cpy = calloc([subEnglish length]+1, 1);
+        const char *c = [subEnglish UTF8String];
+        strncpy(cpy, c, [subEnglish length]);
+        char *output = keyout.mutableBytes;
+        int res =  eng2key(output,cpy);
+        free(cpy);
+        if (res!=1){
+            return nil;
+        }
+        [retData appendData:[NSData dataWithBytes:output length:16]];
     }
-    return [NSData dataWithBytes:output length:16];
+    
+    return retData;
 }
 
 
 
 +(NSString*)rfc1751Key2Eng:(NSData*)key{
-    NSMutableData *dat = [[NSMutableData alloc] initWithCapacity:128];
-    char *keyArr = [[key mutableCopy] mutableBytes];
-    char * res = key2eng(dat.mutableBytes,keyArr);
-    return [NSString stringWithUTF8String:res];
+    NSMutableString *resString = [[NSMutableString alloc] init];
+    
+    BOOL firstPass = YES;
+    
+    for (int i=0;i<key.length;i+=16){
+        NSMutableData *dat = [[NSMutableData alloc] initWithCapacity:128];
+        
+        NSData *subKey = [key subdataWithRange:NSMakeRange(i,16)];
+        
+        char *keyArr = [[subKey mutableCopy] mutableBytes];
+        char * res = key2eng(dat.mutableBytes,keyArr);
+
+        if (firstPass==YES){
+            firstPass=NO;
+        }else{
+            [resString appendString:@" "];
+        }
+        [resString appendString:[NSString stringWithUTF8String:res]];
+    }
+         
+    return resString;
 }
 
 

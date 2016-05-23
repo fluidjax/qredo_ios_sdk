@@ -79,6 +79,17 @@
 
 
 
+-(void)testRFCtoEng{
+    NSData *myPrivateKeyData = [QredoUtils hexStringToData:@"e87376b2 4a36c447 8d012a8e 337ebba5 df064f34 5ebbce08 2a2d88a9 5f5bb08b"];
+    NSString *english = [QredoUtils rfc1751Key2Eng:myPrivateKeyData];
+    NSData *hexdata = [[QredoUtils rfc1751Eng2Key:english] copy];
+    XCTAssert([@"TECH HOYT LEER HAST CRAY LEA GLOW BUN JUDY CITY TILE ROUT SLIM PAW RAYS MODE MITT AUK MUM CRAY MY MOOR MILD WON" isEqualToString:english],@"Key doesn't encode correctly");
+    XCTAssert([myPrivateKeyData isEqualToData:hexdata],@"Key doesn't decode correctly");
+    
+
+}
+
+
 -(void)testHexToDatatoHex1{
     NSString *start = @"aabbcc  CCDeedd eef fccdd aa 1123 245 237 23634 4   537";
     NSString *stripped = [[start stringByReplacingOccurrencesOfString:@" " withString:@""] uppercaseString];
