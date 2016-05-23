@@ -246,21 +246,16 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 
 
--(void)remoteFingerPrintCheckedLocally:(void (^)(NSError *error))completionHandler;
--(void)localFingerPrintCheckedRemotely:(void (^)(NSError *error))completionHandler;
-
-
+-(void)otherPartyHasMyFingerPrint:(void (^)(NSError *error))completionHandler;
+-(void)iHaveRemoteFingerPrint:(void (^)(NSError *error))completionHandler;
 -(QredoAuthenticationStatus)authTrafficLight;
-
-
 
 
 /**
  Generate Hex String Fingerprints of the Public Conversation keys
  **/
+-(NSString*)showMyFingerPrint;
+-(NSString*)showRemoteFingerPrint;
 
--(NSString*)creatorFingerPrint;
--(NSString*)responderFingerPrint;
--(NSString*)fingerPrintPair;
 
 @end

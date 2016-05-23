@@ -1082,20 +1082,15 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     XCTAssertNotNil(client1Conversation);
     XCTAssertNotNil(client2Conversation);
     
-    NSString *client1CreatorFingerprint     = [client1Conversation creatorFingerPrint];
-    NSString *client1ResponderFingerprint   = [client1Conversation responderFingerPrint];
-    NSString *client2CreatorFingerprint     = [client2Conversation creatorFingerPrint];
-    NSString *client2ResponderFingerprint   = [client2Conversation responderFingerPrint];
+    NSString *client1Myingerprint     = [client1Conversation showMyFingerPrint];
+    NSString *client1RemoteFingerprint   = [client1Conversation showRemoteFingerPrint];
+    
+    NSString *client2MyFingerprint     = [client2Conversation showMyFingerPrint];
+    NSString *client2TheirFingerprint   = [client2Conversation showRemoteFingerPrint];
     
     
-    NSString *client1FingerprintPair        = [client2Conversation fingerPrintPair];
-    NSString *client2FingerprintPair        = [client2Conversation fingerPrintPair];
-    
-    
-    
-    XCTAssertTrue([client1CreatorFingerprint isEqualToString:client2CreatorFingerprint],@"fingerprints dont match");
-    XCTAssertTrue([client1ResponderFingerprint isEqualToString:client2ResponderFingerprint],@"fingerprints dont match");
-    XCTAssertTrue([client1FingerprintPair isEqualToString:client2FingerprintPair],@"fingerprints dont match");
+    XCTAssertTrue([client1Myingerprint isEqualToString:client2TheirFingerprint],@"fingerprints dont match");
+    XCTAssertTrue([client1RemoteFingerprint isEqualToString:client2MyFingerprint],@"fingerprints dont match");
     
     
     
@@ -1104,9 +1099,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [createdRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
         
         [clientPersistent1 fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
-            XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
-            XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
-            XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation showMyFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation showRemoteFingerPrint],@"finger print shoud not be nil");
         }];
         
     } completionHandler:^(NSError *error) {
@@ -1156,9 +1150,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [previousRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
         convMeta = conversationMetadata;
         [clientPersistent3 fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
-            XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
-            XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
-            XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
             conv = conversation;
         }];
     } completionHandler:^(NSError *error) {
@@ -1178,9 +1169,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     __block XCTestExpectation *previousConversationEnumExpectation4 = [self expectationWithDescription:@"conversationEnumExpectation"];
     [clientPersistent4 enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
         [clientPersistent4 fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
-            XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
-            XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
-            XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
            conv4 = conversation;
         }];
     } completionHandler:^(NSError *error) {
@@ -1264,20 +1252,19 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     XCTAssertNotNil(client1Conversation);
     XCTAssertNotNil(client2Conversation);
     
-    NSString *client1CreatorFingerprint     = [client1Conversation creatorFingerPrint];
-    NSString *client1ResponderFingerprint   = [client1Conversation responderFingerPrint];
-    NSString *client2CreatorFingerprint     = [client2Conversation creatorFingerPrint];
-    NSString *client2ResponderFingerprint   = [client2Conversation responderFingerPrint];
+
+    
+    NSString *client1Myingerprint       = [client1Conversation showMyFingerPrint];
+    NSString *client1RemoteFingerprint   = [client1Conversation showRemoteFingerPrint];
     
     
-    NSString *client1FingerprintPair        = [client2Conversation fingerPrintPair];
-    NSString *client2FingerprintPair        = [client2Conversation fingerPrintPair];
+    NSString *client2MyFingerprint     = [client2Conversation showMyFingerPrint];
+    NSString *client2TheirFingerprint   = [client2Conversation showRemoteFingerPrint];
     
     
     
-    XCTAssertTrue([client1CreatorFingerprint isEqualToString:client2CreatorFingerprint],@"fingerprints dont match");
-    XCTAssertTrue([client1ResponderFingerprint isEqualToString:client2ResponderFingerprint],@"fingerprints dont match");
-    XCTAssertTrue([client1FingerprintPair isEqualToString:client2FingerprintPair],@"fingerprints dont match");
+    XCTAssertTrue([client1Myingerprint isEqualToString:client2TheirFingerprint],@"fingerprints dont match");
+    XCTAssertTrue([client1RemoteFingerprint isEqualToString:client2MyFingerprint],@"fingerprints dont match");
     
 
     
@@ -1285,9 +1272,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
        __block XCTestExpectation *conversationEnumExpectation = [self expectationWithDescription:@"conversationEnumExpectation"];
     [createdRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
         [client fetchConversationWithRef:conversationMetadata.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
-            XCTAssertNotNil([conversation creatorFingerPrint],@"finger print shoud not be nil");
-            XCTAssertNotNil([conversation responderFingerPrint],@"finger print shoud not be nil");
-            XCTAssertNotNil([conversation fingerPrintPair],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation showMyFingerPrint],@"finger print shoud not be nil");
+            XCTAssertNotNil([conversation showRemoteFingerPrint],@"finger print shoud not be nil");
         }];
 
     } completionHandler:^(NSError *error) {
@@ -1309,9 +1295,9 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
      //check local finger print
     __block XCTestExpectation *localFingerprintCheck1 = [self expectationWithDescription:@"fingerprintcheck1"];
-    [client1Conversation localFingerPrintCheckedRemotely:^(NSError *error) {
+    [client1Conversation otherPartyHasMyFingerPrint:^(NSError *error) {
         XCTAssertNil(error,@"error should be nil");
-        XCTAssertTrue([client1Conversation authTrafficLight]==QREDO_GREEN,@"auth'd should be green");
+        XCTAssertTrue([client1Conversation authTrafficLight]==QREDO_AMBER,@"auth'd should be green");
         XCTAssertTrue([client2Conversation authTrafficLight]==QREDO_RED,@"unauth'd should be red");
         [localFingerprintCheck1 fulfill];
         
@@ -1323,12 +1309,15 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
 
     
     
+    
+    
+    
     //check local finger print
     __block XCTestExpectation *localFingerprintCheck2 = [self expectationWithDescription:@"fingerprintcheck2"];
-    [client2Conversation localFingerPrintCheckedRemotely:^(NSError *error) {
+    [client1Conversation iHaveRemoteFingerPrint:^(NSError *error) {
         XCTAssertNil(error,@"error should be nil");
         XCTAssertTrue([client1Conversation authTrafficLight]==QREDO_GREEN,@"auth'd should be green");
-        XCTAssertTrue([client2Conversation authTrafficLight]==QREDO_GREEN,@"auth'd should be green");
+        XCTAssertTrue([client2Conversation authTrafficLight]==QREDO_RED,@"auth'd should be green");
         [localFingerprintCheck2 fulfill];
         
     }];

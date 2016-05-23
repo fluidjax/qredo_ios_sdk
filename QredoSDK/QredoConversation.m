@@ -801,18 +801,44 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @implementation QredoConversation
 
 
--(void)remoteFingerPrintCheckedLocally:(void (^)(NSError *error))completionHandler{
-    self.metadata.authStatus |= 2;
-    [self updateConversationWithCompletionHandler:completionHandler];
+//V2
+
+
+-(NSString*)showMyFingerPrint{
+    NSData *fp =  [QredoCrypto sha256:_myPublicKey.data];
+    return [QredoUtils dataToHexString:fp];
 }
 
--(void)localFingerPrintCheckedRemotely:(void (^)(NSError *error))completionHandler{
+
+-(NSString*)showRemoteFingerPrint{
+    NSData *fp = [QredoCrypto sha256:_yourPublicKey.data];
+    return [QredoUtils dataToHexString:fp];
+}
+
+
+//otherPartyHasMyFingerPrint - they have my public key - I can received securely
+//if they have my publickey, everthing sent to me is encrypted with my public key
+-(void)otherPartyHasMyFingerPrint:(void (^)(NSError *error))completionHandler{
     self.metadata.authStatus |= 1;
     [self updateConversationWithCompletionHandler:completionHandler];
 }
 
+
+//iHaveRemoteFingerPrint - I have the other partys public key - I can securely
+//if I have their public key, everything I send to them can only be decrytped by them
+-(void)iHaveRemoteFingerPrint:(void (^)(NSError *error))completionHandler{
+    self.metadata.authStatus |= 2;
+    [self updateConversationWithCompletionHandler:completionHandler];
+}
+
+
+
 -(QredoAuthenticationStatus)authTrafficLight{
-    if (self.metadata.authStatus && 1 == 1)return QREDO_GREEN;
+    if ((self.metadata.authStatus & 3) == 0)return QREDO_RED;
+    if ((self.metadata.authStatus & 3) == 1)return QREDO_AMBER;
+    if ((self.metadata.authStatus & 3) == 2)return QREDO_AMBER;
+    if ((self.metadata.authStatus & 3) == 3)return QREDO_GREEN;
+    
     
     return QREDO_RED;
 }
@@ -820,43 +846,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 
--(NSString*)creatorFingerPrint{
-    NSData *fp =  [QredoCrypto sha256:[self creatorPublicKey]];
-    return [QredoUtils dataToHexString:fp];
-}
 
-
--(NSString*)responderFingerPrint{
-    NSData *fp = [QredoCrypto sha256:[self responderPublicKey]];
-    return [QredoUtils dataToHexString:fp];
-}
-
-
--(NSString*)fingerPrintPair{
-    NSMutableData *fingerPrintData = [[NSMutableData alloc] init];
-    [fingerPrintData appendData:[self creatorPublicKey]];
-    [fingerPrintData appendData:[self responderPublicKey]];
-    NSData *fp = [QredoCrypto sha256:fingerPrintData];
-    return [QredoUtils dataToHexString:fp];
-}
-
-
--(NSData*)creatorPublicKey{
-    if ([self.metadata amRendezvousOwner]==YES){
-        return _myPublicKey.data;
-    }else{
-        return _yourPublicKey.data;
-    }
-}
-
-
--(NSData*)responderPublicKey{
-    if ([self.metadata amRendezvousOwner]==NO){
-        return _myPublicKey.data;
-    }else{
-        return _yourPublicKey.data;
-    }
-}
 
 
 - (instancetype)copyWithZone:(NSZone *)zone {
