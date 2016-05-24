@@ -627,14 +627,9 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                     completionHandler:(void (^)(NSError *error))completionHandler{
     
     QredoVault *systemVault = _vault;
-    NSMutableArray *dedup = [[NSMutableArray alloc] init];
-    
     
     [systemVault enumerateConsolidatedVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
-            
-            
-            
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
             // TODO: DH - populate metadata.rendezvousMetadata
             metadata.conversationId = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelId];
@@ -646,11 +641,9 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
             
             //ignore any rendezvous which are not for this rendezvous's tag
             BOOL correctRendezvous      = [metadata.rendezvousTag isEqualToString:_tag];
-            BOOL duplicateConversation  = [dedup containsObject:metadata.conversationId];
             BOOL stopObjectEnumeration  = NO; // here we lose the feature when *stop == YES, then we are on the last object
             
-            if (correctRendezvous && !duplicateConversation){
-                [dedup addObject:metadata.conversationId];
+            if (correctRendezvous){
                 block(metadata, &stopObjectEnumeration);
             }
             

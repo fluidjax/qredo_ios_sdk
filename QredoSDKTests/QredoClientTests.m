@@ -54,8 +54,8 @@
     __block QredoClient *client;
     
     
-    [QredoClient initializeWithAppId:@"test"
-                           appSecret:@"cafebabe"
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
                               userId:@"testuser"
                           userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -89,8 +89,8 @@
     options.serverURL = @"https://early1.qredo.me:443/services";
     options.transportType = QredoClientOptionsTransportTypeHTTP;
     
-    [QredoClient initializeWithAppId:@"test"
-                           appSecret:@"cafebabe"
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
                               userId:@"testuser"
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
@@ -117,79 +117,79 @@
 }
 
 
--(void)testExplicitServerWithTrustedRootCertificates{
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    __block QredoClient *client;
-    
-    QredoClientOptions *options = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
-    options.serverURL = @"https://early1.qredo.me:443/services";
-    options.transportType = QredoClientOptionsTransportTypeHTTP;
-    
-    [QredoClient initializeWithAppId:@"test"
-                           appSecret:@"cafebabe"
-                              userId:@"testuser"
-                          userSecret:[self randomPassword]
-                             options:options
-     
-                   completionHandler:^(QredoClient *clientArg, NSError *error) {
-                       
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       [clientExpectation fulfill];
-                       client = clientArg;
-                       
-                       QLog(@"Version is  %@",[clientArg versionString]);
-                       QLog(@"Build is    %@",[clientArg buildString]);
-                       
-                       
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        clientExpectation = nil;
-    }];
-    
-    [client closeSession];
-}
+//-(void)testExplicitServerWithTrustedRootCertificates{
+//    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+//    __block QredoClient *client;
+//    
+//    QredoClientOptions *options = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
+//    options.serverURL = @"https://early1.qredo.me:443/services";
+//    options.transportType = QredoClientOptionsTransportTypeHTTP;
+//    
+//    [QredoClient initializeWithAppId:k_TEST_APPID
+//                           appSecret:k_TEST_APPSECRET
+//                              userId:@"testuser"
+//                          userSecret:[self randomPassword]
+//                             options:options
+//     
+//                   completionHandler:^(QredoClient *clientArg, NSError *error) {
+//                       
+//                       XCTAssertNil(error);
+//                       XCTAssertNotNil(clientArg);
+//                       [clientExpectation fulfill];
+//                       client = clientArg;
+//                       
+//                       QLog(@"Version is  %@",[clientArg versionString]);
+//                       QLog(@"Build is    %@",[clientArg buildString]);
+//                       
+//                       
+//                   }];
+//    
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+//        // avoiding exception when 'fulfill' is called after timeout
+//        clientExpectation = nil;
+//    }];
+//    
+//    [client closeSession];
+//}
 
 
 
 
 
--(void)testExplicitServer{
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    __block QredoClient *client;
-    
-    QredoClientOptions *options = [self clientOptions:YES];
-    options.serverURL = @"https://early1.qredo.me:443/services";
-    options.transportType = QredoClientOptionsTransportTypeHTTP;
-    
-    [QredoClient initializeWithAppId:@"test"
-                           appSecret:@"cafebabe"
-                              userId:@"testuser"
-                          userSecret:[self randomPassword]
-                             options:options
-     
-                   completionHandler:^(QredoClient *clientArg, NSError *error) {
-                       
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       [clientExpectation fulfill];
-                       client = clientArg;
-                       
-                       QLog(@"Version is  %@",[clientArg versionString]);
-                       QLog(@"Build is    %@",[clientArg buildString]);
-                       
-                       
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        clientExpectation = nil;
-    }];
-    
-    [client closeSession];
-}
+//-(void)testExplicitServer{
+//    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+//    __block QredoClient *client;
+//    
+//    QredoClientOptions *options = [self clientOptions:YES];
+//    options.serverURL = @"https://early1.qredo.me:443/services";
+//    options.transportType = QredoClientOptionsTransportTypeHTTP;
+//    
+//    [QredoClient initializeWithAppId:k_TEST_APPID
+//                           appSecret:k_TEST_APPSECRET
+//                              userId:@"testuser"
+//                          userSecret:[self randomPassword]
+//                             options:options
+//     
+//                   completionHandler:^(QredoClient *clientArg, NSError *error) {
+//                       
+//                       XCTAssertNil(error);
+//                       XCTAssertNotNil(clientArg);
+//                       [clientExpectation fulfill];
+//                       client = clientArg;
+//                       
+//                       QLog(@"Version is  %@",[clientArg versionString]);
+//                       QLog(@"Build is    %@",[clientArg buildString]);
+//                       
+//                       
+//                   }];
+//    
+//    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+//        // avoiding exception when 'fulfill' is called after timeout
+//        clientExpectation = nil;
+//    }];
+//    
+//    [client closeSession];
+//}
 
 
 
@@ -206,8 +206,8 @@
 
     __block QredoClient *client;
     
-    [QredoClient initializeWithAppId:@"test"
-                           appSecret:@"cafebabe"
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
                               userId:@"testuser"
                           userSecret:[self randomPassword]
                              options:nil
@@ -239,9 +239,9 @@
 -(void)testSuccessConnectToClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                         //   XCTAssertNil(error);
@@ -266,8 +266,8 @@
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
     [QredoClient initializeWithAppId:@"FAILINGSECRET"
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNotNil(error);

@@ -24,10 +24,19 @@ static const int testTimeOut = 30;
     [QredoLogger colour:NO];
     [QredoLogger setLogLevel:QREDO_DEBUG_LEVEL];
     
-    k_TEST_APPID         = @"test";
-    k_TEST_APPSECRET     = @"cafebabe";
+
+    //APP ID        com.qredo.device.ios.test
+    k_TEST_APPID         = @"com.qredo.device.ios.test";
+    k_TEST_APPSECRET     = @"074af11737f877505167177726501aa0";       //production
+//  k_TEST_APPSECRET     = @"a23469be8be13768c74ca0937cec47d1";       //dev staging
     k_TEST_USERID        = @"testUserId";
     
+
+
+//    k_TEST_APPID         = @"test";
+//    k_TEST_APPSECRET     = @"cafebabe";
+//    k_TEST_USERID        = @"testUserId";
+//    
    //NSLog(@"*** QREDO_SERVER_URL  %@",QREDO_SERVER_URL);
    // NSLog(@"*** QREDO_DEBUG_LEVEL %i",QREDO_DEBUG_LEVEL);
    
@@ -187,7 +196,8 @@ static const int testTimeOut = 30;
 
 
 - (QredoClientOptions *)clientOptions:(BOOL)resetData{
-    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+//    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
     clientOptions.transportType = self.transportType;
     return clientOptions;
 }

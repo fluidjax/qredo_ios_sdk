@@ -43,6 +43,13 @@ NSString *const QredoClientOptionServiceURL                 = @"com.qredo.option
 
 
 
+
+
+#define QREDO_SERVER_URL @"api.oderq.com" //dev staging
+//#define QREDO_SERVER_URL @"api.qredo.com" //production
+
+
+
 // The  directive QREDO_SERVER_URL is defined in BuildSettings -> User_define ->QREDO_SERVER_URL (early1.qredo.me)
 // This allows it to be overridden  on a command line xcodebuild using a pram such as QREDO_SERVER_URL=early1.qredo.me
 //See script 'testonce' to see sample usage
@@ -118,6 +125,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(QredoCertificate *)createDefaultPinnedCertificate {
+    return nil;
     /*
      
      This is the server self signed test certificate using an RSA Public Key: (4096 bit).
@@ -268,7 +276,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoCertificate *qredoCert = [QredoCertificate certificateWithSecCertificateRef:secCert];
     CFRelease(secCert);
     return qredoCert;
-    return nil;
+
 }
 
 
@@ -1043,10 +1051,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
                      completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *vault = [self systemVault];
     
-    
-    NSMutableArray *dedup = [[NSMutableArray alloc] init];
-
-    
     [vault enumerateConsolidatedVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
@@ -1056,15 +1060,10 @@ NSString *systemVaultKeychainArchiveIdentifier;
             metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];
             metadata.rendezvousTag = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelTag];
             metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor vault:vault];
-         
             
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
-            BOOL duplicateConversation  = [dedup containsObject:metadata.conversationId];
             
-            if (!duplicateConversation){
-                [dedup addObject:metadata.conversationId];
-                block(metadata, &stopObjectEnumeration);
-            }
+            block(metadata, &stopObjectEnumeration);
             *stopVaultEnumeration = stopObjectEnumeration;
         }
     } completionHandler:^(NSError *error) {

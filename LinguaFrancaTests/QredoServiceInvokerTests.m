@@ -52,7 +52,7 @@
 
 - (QredoServiceInvoker *)commonTestInit:(NSURL *)serviceURL
 {
-    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test" appSecret:[NSData dataWithHexString:@"cafebabe"]];
+    QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:k_TEST_APPID appSecret:[NSData dataWithHexString:k_TEST_APPSECRET]];
    
     QredoServiceInvoker *serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials];
     XCTAssertNotNil(serviceInvoker);
@@ -117,7 +117,7 @@
     XCTAssertNil(serviceURL);
 
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:@"test~"
-                                                                             appSecret:[NSData dataWithHexString:@"cafebabe"]];
+                                                                             appSecret:[NSData dataWithHexString:k_TEST_APPSECRET]];
     
     
     XCTAssertThrowsSpecificNamed( [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials],

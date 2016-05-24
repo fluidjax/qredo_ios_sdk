@@ -28,7 +28,7 @@
 
 - (void)common_TestDerrivedKeysNotNilWithTag:(NSString *)tag
 {
-    NSData *masterKey = [rendezvousCrypto masterKeyWithTag:tag appId:@"test"];
+    NSData *masterKey = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
     XCTAssertNotNil(masterKey, @"Master key should not be nil");
 
     QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKey];
@@ -53,7 +53,7 @@
 
 
 - (void)common_TestVectorsWithTag:(NSString *)tag {
-    NSData *masterKey = [rendezvousCrypto masterKeyWithTag:tag appId:@"test"];
+    NSData *masterKey = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
     
     QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKey];
     

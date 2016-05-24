@@ -120,9 +120,9 @@
   
     savedPassword = [self randomPassword];
     
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:savedPassword
                              options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -154,9 +154,9 @@
 
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:savedPassword
                              options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {

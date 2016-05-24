@@ -13,6 +13,7 @@
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
 
+
 // This test should has some commonalities with RendezvousListenerTests, however,
 // the purpose of this test is to cover all edge cases in the conversations:
 // - publish message
@@ -112,14 +113,85 @@ static float delayInterval = 0.4;
 
 
 
+-(void)testEnumerateConversaionsOnClient{
+    [self buildStack2];
+    XCTAssert([self countConversationsOnClient:testClient1]==1);
+    __block  XCTestExpectation *fp = [self expectationWithDescription:@"fingerprint"];
+    [conversation1 iHaveRemoteFingerPrint:^(NSError *error) {
+        XCTAssertNil(error);
+        [fp fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        fp = nil;
+    }];
+    
+    XCTAssert([self countConversationsOnClient:testClient1]==1);
+}
+
+
+
+-(void)testEnumerateConversaionsOnRendezvous{
+    [self buildStack2];
+    XCTAssert([self countConversationsOnRendezvous:rendezvous1]==1);
+
+    XCTAssert([conversation1 authTrafficLight]==QREDO_RED);
+    __block  XCTestExpectation *fp = [self expectationWithDescription:@"fingerprint"];
+    
+    NSLog(@"conversation1 %@", conversation1.metadata.conversationRef);
+
+    [conversation1 iHaveRemoteFingerPrint:^(NSError *error) {
+        XCTAssertNil(error);
+        [fp fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        fp = nil;
+    }];
+    XCTAssert([self countConversationsOnRendezvous:rendezvous1]==1);
+   
+     NSLog(@"conversation1 %@", conversation1.metadata.conversationRef);
+    
+    
+    __block  QredoConversationMetadata *updatedMetaData;
+     __block  XCTestExpectation *fp2 = [self expectationWithDescription:@"fingerprint"];
+    [rendezvous1 enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        updatedMetaData = conversationMetadata;
+    } completionHandler:^(NSError *error) {
+        [fp2 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        fp2 = nil;
+    }];
+
+    
+    
+     __block  XCTestExpectation *fp3 = [self expectationWithDescription:@"fingerprint"];
+    [testClient1 fetchConversationWithRef:updatedMetaData.conversationRef completionHandler:^(QredoConversation *conversation, NSError *error) {
+         XCTAssert([conversation authTrafficLight]==QREDO_AMBER);
+        [fp3 fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        fp3 = nil;
+    }];
+
+    
+    NSLog(@"here");
+    
+    
+    
+}
+
+
+
 
 
 - (void)authoriseClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -148,9 +220,9 @@ static float delayInterval = 0.4;
 - (void)authoriseAnotherClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
@@ -594,6 +666,7 @@ NSString *secondMessageText;
     return messageCount;
 }
 
+#warning This fails too much now
 - (void)testConversation{
     
     //static NSString *randomTag;
@@ -649,7 +722,6 @@ NSString *secondMessageText;
     [rendezvous removeRendezvousObserver:self];
     [creatorConversation removeConversationObserver:listener];
     listener = nil;
-    
  }
 
 // Rendezvous Delegate

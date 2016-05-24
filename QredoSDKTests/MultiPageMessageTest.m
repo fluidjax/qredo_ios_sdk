@@ -229,9 +229,9 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
     
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
@@ -246,9 +246,9 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     
     __block XCTestExpectation *client2Expectation = [self expectationWithDescription:@"create client2"];
     
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);

@@ -256,6 +256,8 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     //TO DO- keep the date in the summary values for now since it's used elsewhere
     newSummaryValues[QredoVaultItemMetadataItemDateModified] = created;
     newSummaryValues[QredoVaultItemMetadataItemVersion] = @(metadata.descriptor.sequenceValue);
+    
+    NSLog(@"Metatdata %@",metadata);
     [self putUpdateOrDeleteItem:vaultItem
                          itemId:itemId
                        dataType:metadata.dataType

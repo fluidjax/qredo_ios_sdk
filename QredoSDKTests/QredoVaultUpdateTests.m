@@ -40,9 +40,9 @@
 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                        completionHandler:^(QredoClient *clientArg, NSError *error) {

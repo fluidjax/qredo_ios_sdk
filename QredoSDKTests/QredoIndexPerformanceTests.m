@@ -164,9 +164,9 @@ NSNumber *testNumber;
 - (void)authoriseClient:(NSString*)password {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
    
-    [QredoClient initializeWithAppId:k_APPID
-                           appSecret:k_APPSECRET
-                              userId:k_USERID
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg, NSError *error) {
                            XCTAssertNil(error);
