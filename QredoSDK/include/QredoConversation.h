@@ -10,12 +10,16 @@
 
 
 
-/*
+/** Represents the authentication status of a Conversation.
+ This will be red, amber or green and is set by calling [otherPartyHasMyFingerPrint](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)otherPartyHasMyFingerPrint:) or [iHaveRemoteFingerPrint](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)iHaveRemoteFingerPrint:)
  
  */
 typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
+    /** Neither party has confirmed their Conversationpublic key fingerprint */
     QREDO_RED=0,
+    /** Only one party has confirmed their Conversation public key fingerprint */
     QREDO_AMBER=1,
+    /** Both parties have confirmed their Conversation public key fingerprints. The Conversation is fully authenticated */
     QREDO_GREEN=2,
 };
 
@@ -117,6 +121,9 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
  - responding to a Rendezvous by calling [respondWithTag](QredoClient.html#/c:objc(cs)QredoClient(im)respondWithTag:completionHandler:)
  - enumerating the list of Conversations that the current user is a party to by calling [enumerateConversationsWithBlock](QredoClient.html#/c:objc(cs)QredoClient(im)enumerateConversationsWithBlock:completionHandler:)
+ 
+ @note When a Conversation is established between two parties, as a result of one user responding to a Rendezvous, a Diffie-Hellman key exchange takes place between the creator and the responder. These keys are randomly generated and used to derive a further set of keys that are used to encrypt messages in such a way that only the two parties in the Conversation are able to read the messages. 
+  All of this is handled behind the scenes by the Qredo SDK, but you can use the fingerprints of the public keys to authenticate the Conversation and ensure that there has not been a 'man-in-the-middle' attack. See the [Authenticating a Conversation](#/Authenticating%20a%20Conversation) methods later in this section.
  
 */
 
@@ -243,18 +250,26 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 
 
+#pragma mark - Authenticating a Conversation
 
 
-
+/** Call if the other party in the Conversation confirms that they have the fingerprint to your Conversation public key */
 -(void)otherPartyHasMyFingerPrint:(void (^)(NSError *error))completionHandler;
+
+/** Call this if the other party to the Conversation confirms that you have their fingerprint */
 -(void)iHaveRemoteFingerPrint:(void (^)(NSError *error))completionHandler;
+
+/** Retrieve the Conversation [authentication status](../Enums/QredoAuthenticationStatus.html). 
+ This will be red if neither party has confirmed their fingerprint, amber if only one party has and green if both parties have confirmed their fingerprint and the conversation is fully authenticated
+ 
+ @return The Conversation authentication status: red, amber or green */
 -(QredoAuthenticationStatus)authTrafficLight;
 
 
-/**
- Generate Hex String Fingerprints of the Public Conversation keys
- **/
+/** Show my public key fingerprint as a hex string */
 -(NSString*)showMyFingerPrint;
+
+/** Show the other party's public key fingerprint as a hex string */
 -(NSString*)showRemoteFingerPrint;
 
 
