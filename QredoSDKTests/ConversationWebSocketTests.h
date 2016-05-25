@@ -13,7 +13,7 @@
 - (void)testConversationCreation;
 - (void)testRespondingToConversation;
 - (void)testConversation;
-- (void)testConversationMultiple;
+//- (void)testConversationMultiple;
 //- (void)testMetadataOfEphemeralConversation;
 //- (void)testMetadataOfPersistentConversation;
 

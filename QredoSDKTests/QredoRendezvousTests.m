@@ -1142,7 +1142,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     
     
     //enumerate the client and see if we have the first conversation
-    [NSThread sleepForTimeInterval:2];
+    [NSThread sleepForTimeInterval:5];
     
     __block QredoConversation *conv = nil;
     __block QredoConversationMetadata *convMeta = nil;

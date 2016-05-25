@@ -449,7 +449,7 @@ NSString *secondMessageText;
     
     
     __block QredoConversationHighWatermark *hwm = nil;
-    
+      [NSThread sleepForTimeInterval:delayInterval];
     [responderConversation publishMessage:secondMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
                             QredoLogDebug(@"Publish message (after listening started) completion handler called.");
@@ -582,7 +582,7 @@ NSString *secondMessageText;
 
 -(void)testConversationWatermark{
     //static NSString *randomTag;
-    float delayInterval = 3.0;
+    float delayInterval = 5.0;
     
     
     
