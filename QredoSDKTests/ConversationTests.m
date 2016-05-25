@@ -211,11 +211,8 @@ static float delayInterval = 0.4;
     
     //NSLog(@"Client1 system Vault %@",client.systemVault.vaultId);
     //NSLog(@"Client1 default Vault %@",client.defaultVault.vaultId);
-
-    
-    
-    
 }
+
 
 - (void)authoriseAnotherClient{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
@@ -245,6 +242,10 @@ static float delayInterval = 0.4;
 }
 
 
+-(void)closeClientSessions{
+    [client closeSession];
+    [anotherClient closeSession];
+}
 
 
 - (void)testConversationCreation {
@@ -415,6 +416,9 @@ NSString *secondMessageText;
     listener.listening = YES;
     __block QredoConversationHighWatermark *hwm = nil;
     
+    
+    [NSThread sleepForTimeInterval:5];
+    
     [responderConversation publishMessage:firstMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
                             QredoLogDebug(@"Publish message (before setting up listener) completion handler called.");
@@ -578,7 +582,7 @@ NSString *secondMessageText;
 
 -(void)testConversationWatermark{
     //static NSString *randomTag;
-    float delayInterval = 0.4;
+    float delayInterval = 3.0;
     
     
     

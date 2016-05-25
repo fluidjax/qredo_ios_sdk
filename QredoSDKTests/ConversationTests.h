@@ -10,7 +10,8 @@
 @property (atomic) XCTestExpectation *didRecieveOtherPartyHasLeft;
 
 -(void)authoriseClient;
-- (void)authoriseAnotherClient;
+-(void)authoriseAnotherClient;
+-(void)closeClientSessions;
 -(void)testConversationCreation;
 -(void)testRespondingToConversation;
 -(void)testConversation;

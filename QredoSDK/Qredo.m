@@ -20,13 +20,11 @@
 
 #import "QredoCertificate.h"
 #import "QredoUserCredentials.h"
-
 #import "QredoLocalIndexDataStore.h"
 #import "QredoConversationProtocol.h"
-
 #import "QredoNetworkTime.h"
-
 #import <UIKit/UIKit.h>
+#import "MasterConfig.h"
 
 NSString *const QredoVaultItemTypeKeychain                  = @"com.qredo.keychain.device-name";
 NSString *const QredoVaultItemTypeKeychainAttempt           = @"com.qredo.keychain.transfer-attempt";
@@ -37,38 +35,12 @@ NSString *const QredoClientOptionCreateNewSystemVault       = @"com.qredo.option
 NSString *const QredoClientOptionServiceURL                 = @"com.qredo.option.serviceUrl";
 
 
-//static NSString *const QredoClientDefaultServiceURL         = @"https://early1.qredo.me:443/services";
-//static NSString *const QredoClientMQTTServiceURL            = @"ssl://early1.qredo.me:8883";
-//static NSString *const QredoClientWebSocketsServiceURL      = @"wss://early1.qredo.me:443/services";
-
-
-
-
-
-#define QREDO_SERVER_URL @"api.oderq.com" //dev staging
-//#define QREDO_SERVER_URL @"api.qredo.com" //production
-
-
-
-// The  directive QREDO_SERVER_URL is defined in BuildSettings -> User_define ->QREDO_SERVER_URL (early1.qredo.me)
-// This allows it to be overridden  on a command line xcodebuild using a pram such as QREDO_SERVER_URL=early1.qredo.me
-//See script 'testonce' to see sample usage
-
-//#define QREDO_SERVER_URL @"api-m8.oderq.com"
-//#define QREDO_SERVER_URL @"api-m7.oderq.com"
-//#define QREDO_SERVER_URL @"early1.qredo.me"
-
-//#define QREDO_SERVER_URL @"expired.badssl.com"
-//#define QREDO_SERVER_URL @"self-signed.badssl.com"
-
-
 static NSString *const QredoClientDefaultServiceURL         = @"https://" QREDO_SERVER_URL  @":443/services";
 static NSString *const QredoClientMQTTServiceURL            = @"ssl://"   QREDO_SERVER_URL  @":8883";
 static NSString *const QredoClientWebSocketsServiceURL      = @"wss://"   QREDO_SERVER_URL  @":443/services";
 
 
 NSString *const QredoRendezvousURIProtocol                  = @"qrp:";
-
 static NSString *const QredoKeychainOperatorName            = @"Qredo Mock Operator";
 static NSString *const QredoKeychainOperatorAccountId       = @"1234567890";
 static NSString *const QredoKeychainPassword                = @"Password123";

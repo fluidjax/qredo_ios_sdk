@@ -25,11 +25,17 @@
     //The pauses in this test are required to fix subscribe delay issue.
     //see "docs/bugs/IOS SDK Rendezvous Subscribe Failure.pdf"
 
-    self.continueAfterFailure = YES;
+    self.continueAfterFailure = NO;
     
     
     for (int i = 0; i < 5; i++){ //failing
-         [super testConversation];
+        NSLog(@"Run %i",i);
+        [self authoriseClient];
+        [self authoriseAnotherClient];
+        [super testConversation];
+        [self closeClientSessions];
+        
+        
     }
 }
 
