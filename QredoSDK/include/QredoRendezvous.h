@@ -165,11 +165,11 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /**
  
- Goes through the Conversations created from this Rendezvous and calls the specified code block for each one
+ Goes through the Conversations created from this Rendezvous and calls the specified code block for each one passing the `QredoConversationMetadata`
  
  @see Listing Conversations created from a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html)
  
- @param block Called for each `QredoConversation`. Set `stop` to YES to terminate the enumeration
+ @param block Called for each conversation. Set `stop` to YES to terminate the enumeration
  @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
  */
 
