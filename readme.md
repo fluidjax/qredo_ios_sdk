@@ -7,14 +7,25 @@ This reference includes all the classes and methods available to developers usin
 
 Here you can find more information about the core Qredo concepts of Vault, Rendezvous and Conversation, code snippets and coding guidelines.
 
-- [Qredo iOS Programming Guide for Objective-C] (https://qredo.com/docs/ios/objective-c/programming_guide/html/)
-- [Qredo iOS Programming Guide for Swift] (https://qredo.com/docs/ios/swift/programming_guide/html/)
+- [Qredo iOS Programming Guide for Objective-C] (https://docs.qredo.com/ios/objective-c/programming_guide/html/index.html)
+- [Qredo iOS Programming Guide for Swift] (https://docs.qredo.com/ios/swift/programming_guide/html/index.html)
 
 
 ####Tutorials
 
 You can find the step by step tutorial instructions on our website for 
-[iOS (Swift)] (https://qredo.com/docs/ios/swift/tutorials/) and [iOS  (Objective-C)] (https://qredo.com/docs/ios/objective-c/tutorials/)
+
+Swift:
+
+[Getting Started Tutorial](https://docs.qredo.com/ios/swift/tutorials/your_first_qredo_app/html/index.html)
+
+[Rendezvous Tutorial](https://docs.qredo.com/ios/swift/tutorials/rendezvous/html/index.html)
+
+Objective-C:
+
+[Getting Started Tutorial](https://docs.qredo.com/ios/objective-c/tutorials/your_first_qredo_app/html/index.html)
+
+[Rendezvous Tutorial](https://docs.qredo.com/ios/objective-c/tutorials/rendezvous/html/index.html)
 
 While you don’t have to work through each tutorial step by step, and completed versions of each app are included in the tutorials folder in the release repository, we do recommend at least reading through each tutorial.
 

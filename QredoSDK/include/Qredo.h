@@ -58,8 +58,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  @note if a `QredoClient` object is returned this means that your app has been successfully initialised with Qredo and your credentials are correct.
  Subsequent calls to Qredo services such as Vault and Rendezvous will fail if you do not have a network connection, so always check the error codes returned from all Qredo functions.
  
- @see Connecting to Qredo: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/connecting_to_qredo/index.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/connecting_to_qredo/index.html)
+ @see Connecting to Qredo: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/connecting_to_qredo/index.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/connecting_to_qredo/index.html)
  
  @param appSecret  a hex String supplied by Qredo. This is your API key for Qredo services.
  @param appSecret  a hex String supplied by Qredo. This uniquely identifies your app to Qredo
@@ -107,8 +107,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  @note We recommend using a security level of QREDO_MEDIUM_SECURITY only for testing during development
  
- @see Creating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
+ @see Creating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
  
  
  @param tagSecurityLevel Use [QredoSecurityLevel](../Enums/QredoSecurityLevel.html) (QREDO_HIGH_SECURITY or QREDO_MEDIUM_SECURITY), to define the Security Level of the generated tag
@@ -126,8 +126,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
 
  @note We recommend using a security level of QREDO_MEDIUM_SECURITY only for testing during development
  
- @see Creating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
+ @see Creating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
  
  
  @param tagSecurityLevel Use [QredoSecurityLevel](../Enums/QredoSecurityLevel.html) (QREDO_HIGH_SECURITY or QREDO_MEDIUM_SECURITY), to define the Security Level of the generated tag
@@ -154,8 +154,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  @param stop. Set this value to YES to stop the enumeration.
  @param completionHandler error will be non nil if an error occurs.
  
- @see Retrieving a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html)
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
+ @see Retrieving a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html)
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
  
  */
 
@@ -171,8 +171,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  @param tag A string containing the tag of the `QredoRendezvous` to retrieve
  @param completionHandler rendezvous will be set to the QredoRendezvous or nil if it cannot be retrieved. If the Rendezvous cannot be found, then an error will be returned.
  
- @see Retrieving a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
+ @see Retrieving a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
  
  */
 
@@ -185,8 +185,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  @note The `QredoRendezvousRef` can be retrieved from the `QredoRendezvousMetadata`.
  
- @see Retrieving a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
+ @see Retrieving a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
  
  @param ref The `QredoRendevousRef` for the required `QredoRendevous`.
  @param completionHandler rendezvous will be set to the `QredoRendezvous` represented by the `QredoRendezvousRef` . If the Rendezvous cannot be found, then an error will be non nil and  error.code will be `QredoErrorCodeRendezvousNotFound`
@@ -200,8 +200,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  @note The `QredoRendezvousMetadata` can be retrieved from the `QredoRendezvous`. The metadata for each Rendezvous can be retrieved by calling `enumerateRendezvousWithBlock`
  
- @see Retrieving a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
+ @see Retrieving a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/listing_your_rendezvous.html)
  
  @param metadata The `QredoRendezvousMetadata` for the required `QredoRendevous`.
  @param completionHandler rendezvous will be set to the `QredoRendezvous` represented by the `QredoRendezvousMetadata` . If the Rendezvous cannot be found, then an error will be non nil and  error.code will be `QredoErrorCodeRendezvousNotFound`
@@ -216,8 +216,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
 /** Respond to the Rendezvous with the specified tag. A secure `QredoConversation` will automatically be created between the creator and responder which you can then use to send and receive `QredoConversationMessage` objects
  
  
- @see Responding to a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/responding_to_a_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/responding_to_a_rendezvous.html)
+ @see Responding to a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/responding_to_a_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/responding_to_a_rendezvous.html)
  
  @param tag The string representing the tag of the Rendezvous to respond to.
  @param completionHandler conversation will be the QredoConversation created or nil if an error occured. error.code will be `QredoErrorCodeRendezvousNotFound`
@@ -235,8 +235,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  @note This method can be called for any Rendezvous, irrespective of whether the Rendezvous has expired.
  
- @see Activating and Deactivating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
+ @see Activating and Deactivating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
  
  
  @param tag The string representing the tag of the Rendezvous to respond to.
@@ -252,8 +252,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  @note Existing conversations established with this Rendezvous will still be available and are NOT closed.
  New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again by calling `activateRendezvousWithRef`
  
- @see Activating and Deactivating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
+ @see Activating and Deactivating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
  
  @param ref The `QredoRendezvousRef` for the Rendezvous to be deactivated
  @param completionHandler error will be non nil if an error occurs. error.code will be `QredoErrorCodeRendezvousNotFound` if a Rendezvous with the specified `QredoRendezvousRef` cannot be found.
@@ -272,8 +272,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  @note This method lists all Conversations that this user is a party to, whether as a result of responding to a Rendezvous or another user responding to a Rendezvous that this user created
  
- @see Listing all Conversations: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html),
- [Swift](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html)
+ @see Listing all Conversations: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html),
+ [Swift](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html)
  
  @param conversationMetadata The `QredoConversationMetadata` for the current Conversation being enumerated. The `QredoConversationRef` can be extracted from the metadata.
  @param stop Set to YES to stop the enumeration.
@@ -306,8 +306,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
 
 /** Returns an object used to access the app user's Vault.
  
- @see The Vault [Objective-C](https://www.qredo.com/docs/android/programming_guide/html/the_vault/index.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/index.html)
+ @see The Vault [Objective-C](https://docs.qredo.com/android/programming_guide/html/the_vault/index.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/index.html)
  
  @warning If there is a problem initialising the app or connecting to the Qredo service, the default Vault will be nil, so always check before using it.
  

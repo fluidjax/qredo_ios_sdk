@@ -80,7 +80,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 /** The protocol that must implemented by the object that listens for new messages received within a `QredoConversation`
  
- @see Listening for Conversation Messages: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
+ @see Listening for Conversation Messages: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
 
 */
 
@@ -162,7 +162,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  @param message The `QredoConversationMessage` to send.
  @param completionHandler Returns the new `QredoConversationHighWatermark` within this Conversation. error will be non nil if an error occurs.
  
- @see Sending a Conversation Message: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/sending_a_conversation_message.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/sending_a_conversation_message.html)
+ @see Sending a Conversation Message: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/sending_a_conversation_message.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/sending_a_conversation_message.html)
 
  */
 
@@ -179,7 +179,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  Adds an observer that adopts the `QredoConversationObserver` protocol. The [qredoConversation](../Protocols/QredoConversationObserver.html#/c:objc(pl)QredoConversationObserver(im)qredoConversation:didReceiveNewMessage:
  ) method must be implemented.
  
- @see Listening for Conversation Messages: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
+ @see Listening for Conversation Messages: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
  
  @param observer The object that implements the QredoConversationObserver protocol.
  
@@ -221,7 +221,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  
  Goes through the messages received in a conversation and calls the specified code block for each one.
  
- @see Listing Conversation Messages: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_conversation_messages.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listing_conversation_messages.html)
+ @see Listing Conversation Messages: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listing_conversation_messages.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listing_conversation_messages.html)
  
  @param block Called for each `QredoConversationMessage`. Set `stop` to YES to terminate the enumeration
  @param sinceWatermark the point at which to start the search. Use `QredoConversationHighWatermarkOrigin` to start from the beginning of the Conversation
@@ -236,7 +236,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  
  Goes through the messages sent in a conversation and calls the specified code block for each one.
  
- @see Listing Conversation Messages: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_conversation_messages.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listing_conversation_messages.html)
+ @see Listing Conversation Messages: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listing_conversation_messages.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listing_conversation_messages.html)
 
  @param block Called for each `QredoConversationMessage`. Set `stop` to YES to terminate the enumeration
  @param sinceWatermark the point at which to start the search. Use `QredoConversationHighWatermarkOrigin` to start from the beginning of the Conversation
