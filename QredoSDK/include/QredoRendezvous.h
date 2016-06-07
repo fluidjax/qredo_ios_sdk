@@ -17,7 +17,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** Used to establish a secure Conversation between two app users using just a string tag.
- Objects of this class are returned by `createAnonymousRendezvousWithTag`.
+ Objects of this class are returned by `createAnonymousRendezvousWithTagType`.
  
  @see Creating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
  [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
@@ -26,7 +26,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 
 
-;
+
 
 
 
@@ -86,7 +86,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** 
  Represents a Rendezvous. 
- Created with [createAnonymousRendezvousWithTag](QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithTag:completionHandler:) and [createAnonymousRendezvousWithRandomTag](QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithRandomTagCompletionHandler:)
+ Created with [createAnonymousRendezvousWithTagType](QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithTagType:completionHandler:)
  */
 
 
