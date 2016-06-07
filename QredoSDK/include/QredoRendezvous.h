@@ -17,16 +17,16 @@ extern NSString *const kQredoRendezvousVaultItemLabelTag;
 extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** Used to establish a secure Conversation between two app users using just a string tag.
- Objects of this class are returned by `createAnonymousRendezvousWithTag`.
+ Objects of this class are returned by `createAnonymousRendezvousWithTagType`.
  
- @see Creating a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
- [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
+ @see Creating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/creating_a_rendezvous.html)
 
  */
 
 
 
-;
+
 
 
 
@@ -34,7 +34,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** The protocol that must implemented by the object that listens for new messages received within a `QredoConversation`
  
- @see Listening for Conversation Messages: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
+ @see Listening for Conversation Messages: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
  
  */
 
@@ -86,7 +86,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** 
  Represents a Rendezvous. 
- Created with [createAnonymousRendezvousWithTag](QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithTag:completionHandler:) and [createAnonymousRendezvousWithRandomTag](QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithRandomTagCompletionHandler:)
+ Created with [createAnonymousRendezvousWithTagType](QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithTagType:completionHandler:)
  */
 
 
@@ -140,7 +140,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
  
  Adds an observer that adopts the `QredoRendezvousObserver` protocol. The [qredoRendezvous:didReceiveReponse](../Protocols/QredoRendezvousObserver.html#/c:objc(pl)QredoRendezvousObserver(im)qredoRendezvous:didReceiveReponse:) method must be implemented.
  
- @see Listening for Responses: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/listening_for_responses.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/rendezvous/listening_for_responses.html)
+ @see Listening for Responses: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/listening_for_responses.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/listening_for_responses.html)
  
  @param observer The object that implements the QredoRendezvousObserver protocol.
  
@@ -167,7 +167,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
  
  Goes through the Conversations created from this Rendezvous and calls the specified code block for each one passing the `QredoConversationMetadata`
  
- @see Listing Conversations created from a Rendezvous: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html)
+ @see Listing Conversations created from a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listing_conversations_created_with_a_rendezvous.html)
  
  @param block Called for each conversation. Set `stop` to YES to terminate the enumeration
  @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
@@ -183,7 +183,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** Deletes a Rendezvous. Not yet implemented.
  Use `deactivateRendezvous`
- @see [Deactivating a Rendezvous](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
+ @see [Deactivating a Rendezvous](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
  */
 -(void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 

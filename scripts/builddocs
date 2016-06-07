@@ -5,22 +5,20 @@ rm -rf objc
 mkdir objc
 cd ..
 jazzy\
- --module QredoXDK \
+ --module QredoSDK \
  --objc \
  --clean \
  --sdk iphonesimulator \
- --author Qredo \
+ --author Qredo Ltd \
  --author_url http://qredo.com \
  --framework-root . \
  --source-directory . \
  --umbrella-header QredoSDK/include/Qredo.h \
  --output docs/objc \
- --theme apple \
- --hide-documentation-coverage 
+ --theme fullwidth \
+ --hide-documentation-coverage \
+ --copyright "@[Qredo](https://qredo.com) Ltd 2016. All rights reserved. API version 0.99" 
  
-
-
-
 #awk '/'UnsafeMutablePointer'/{c++;if(c==2){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoConversationHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=0}}1' docs/objc/Classes/QredoConversation.html > docs/objc/Classes/x.html
 
 

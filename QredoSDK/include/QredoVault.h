@@ -24,7 +24,7 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 /** The protocol that must implemented by the object that listens for new items added to the Vault
  
- @see Vault listeners: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/vault_listeners.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/vault_listeners.html)
+ @see Vault listeners: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/vault_listeners.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/vault_listeners.html)
  
  */
 
@@ -104,7 +104,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  @param summaryValues a dictionary of key/value pairs
  @return the newly created metadata
  
- @see Adding an item to the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/adding_an_item_to_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/adding_an_item_to_the_vault.html)
+ @see Adding an item to the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/adding_an_item_to_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/adding_an_item_to_the_vault.html)
  
  */
 +(instancetype)vaultItemMetadataWithSummaryValues:(NSDictionary *)summaryValues;
@@ -166,7 +166,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
 
 /** Represents a VaultItem. Contains properties for the vault item's data and metadata
  
- @see Vault classes: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/vault_classes.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/vault_classes.html)
+ @see Vault classes: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/vault_classes.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/vault_classes.html)
  
  */
 
@@ -238,7 +238,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
  @param completionHandler Returns the vaultItem or an error if it cannot be found or some other error occurs.
  
- @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @note Retrieves the specific version of the vault item referred to by the descriptor. If the item has been updated or deleted, then this will not be the latest version of the vault item. The [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property can be used to compare versions.
 
@@ -254,7 +254,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
  @param completionHandler Returns the vaultItem or an error if it cannot be found or some other error occurs.
  
- @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @note Retrieves the metadata for the specific version of the vault item referred to by the descriptor. If the item has been updated or deleted, then this will not be the latest version of the vault item. The [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property can be used to compare versions.
  
@@ -269,7 +269,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
  @param completionHandler Returns the vaultItem, nil if the item has been deleted, or an error if it cannot be found or some other error occurs.
  
- @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @note Call this method if you have a reference to a vault item, but are not sure if it is the latest one. The item may have been updated or deleted by the same user from another device, for example. You can use the [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property to compare versions.
  
@@ -284,7 +284,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  @param itemDescriptor The descriptor for the item to retrieve.
  @param completionHandler Returns the vault item metadata, nil if the item has been deleted, or an error if it cannot be found
  
- @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @note Call this method if you have a reference to a vault item, but are not sure if it is the latest one and want to get the metadata before deciding whether to retrieve the vailt item value. The item may have been updated or deleted by the same user from another device, for example. You can use the [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property to compare versions.
  */
@@ -302,7 +302,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  
  Adds an observer that adopts the `QredoVaultObserver` protocol. The [didReceiveVaultItemMetadata](../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:) method must be implemented
  
- @see Vault listeners: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/vault_listeners.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/vault_listeners.html)
+ @see Vault listeners: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/vault_listeners.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/vault_listeners.html)
  
  @param observer The object that implements the `QredoVaultObserver` protocol.
  
@@ -332,7 +332,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  
  @note If the vault item is successfully added, the `QredoVaultItemMetadata` will contain the `QredoVaultItemDescriptor` used to retrieve the item later
  
- @see Adding an item to the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/adding_an_item_to_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/adding_an_item_to_the_vault.html)
+ @see Adding an item to the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/adding_an_item_to_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/adding_an_item_to_the_vault.html)
 
  
 */
@@ -346,7 +346,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
 
 Goes through the items in this Vault and calls the specified code block on each one
  
-@see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+@see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
 @param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
 @param completionHandler will be called when the enumeration is complete or if an error occurs
@@ -363,7 +363,7 @@ Goes through the items in this Vault and calls the specified code block on each 
  
  Goes through the items in this Vault at the point after the specified highwatermark and calls the specified code block on each one
  
- @see Retrieving an item from the Vault: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
  @param since The `QredoVaultHighWatermark` specifying the location in the Vault to search from. Set this to `QredoVaultHighWatermarkOrigin` to start the enumeration from the beginning or use the `highWatermark` method to get the current watermark
@@ -397,7 +397,7 @@ Goes through the items in this Vault and calls the specified code block on each 
  @param metadata The `QredoVaultItemMetadata` of the item to delete
  @param completionHandler Called with the `QredoVaultItemDescriptor` of the deleted item if the delete is successful or an error.
  
- @see Deleting a Vault item: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/deleting_a_vault_item.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/deleting_a_vault_item.html)
+ @see Deleting a Vault item: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/deleting_a_vault_item.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/deleting_a_vault_item.html)
  
  
  */
@@ -413,7 +413,7 @@ Goes through the items in this Vault and calls the specified code block on each 
  @param completionHandler Invoked with a new meta data object for the updated vault item or an error.
  
  @note To store a reference to the updated vault item, use `newItemMetadata.descriptor`
- @see Updating a vault item: [Objective-C](https://www.qredo.com/docs/ios/objective-c/programming_guide/html/the_vault/updating_a_vaultitem.html), [Swift](https://www.qredo.com/docs/ios/swift/programming_guide/html/the_vault/updating_a_vaultitem.html)
+ @see Updating a vault item: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/updating_a_vaultitem.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/updating_a_vaultitem.html)
  */
 -(void)updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
 completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
