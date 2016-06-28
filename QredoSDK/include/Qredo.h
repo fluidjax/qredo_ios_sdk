@@ -14,6 +14,7 @@
 #import "QredoQUID.h"
 #import <CoreData/CoreData.h>
 #import "QredoUtils.h"
+#import "QredoIndexSummaryValues.h"
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
