@@ -744,6 +744,60 @@ NSString *secondMessageText;
     }
 }
 
+
+
+-(void)testUpdatedConversationSummaryValues{
+    [self buildStack1];
+    QredoConversation *conversation = conversation1;
+    
+    NSDictionary *summaryValues = conversation.metadata.summaryValues;
+    
+    
+    XCTAssert(summaryValues==nil,@"Summary values should be nil");
+    
+    
+    
+    NSDictionary *testDictionary =  @{ @"testKey" : @"testValue" };
+     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"update conversation"];
+    
+    
+    [conversation updateConversationWithSummaryValues:testDictionary completionHandler:^(NSError *error) {
+        NSLog(@"Conversation %@", conversation);
+        XCTAssertNil(summaryValues,@"Summary values should be nil");
+        [didRespondExpectation fulfill];
+    }];
+    
+    
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+               didRespondExpectation = nil;
+    }];
+    
+    QredoConversationRef *ref = conversation.metadata.conversationRef;
+    
+    
+    //now retrieve that conversation again from the vault
+     __block XCTestExpectation *didCheckConversation = [self expectationWithDescription:@"retrieve conversation"];
+    
+    [testClient1 fetchConversationWithRef:ref completionHandler:^(QredoConversation *conversation, NSError *error) {
+        NSDictionary *summaryValues = conversation.metadata.summaryValues;
+        XCTAssertNotNil(summaryValues,@"Updated summary values should not be nil");
+        XCTAssert([[summaryValues objectForKey:@"testKey"] isEqualToString:@"testValue"],@"Value doesnt exist in updated conversation");
+        XCTAssert(![[summaryValues objectForKey:@"junkValue"] isEqualToString:@"junkValue"],@"Value shouldn't exist");
+        [didCheckConversation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        didRespondExpectation = nil;
+    }];
+    
+        
+        
+}
+    
+
+    
+
+
 //- (void)testMetadataOfEphemeralConversation {
 //    
 //    NSString *randomTag = [[QredoQUID QUID] QUIDString];

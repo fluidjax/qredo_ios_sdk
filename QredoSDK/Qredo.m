@@ -1032,6 +1032,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
             metadata.type = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelType];
             metadata.rendezvousTag = [vaultItemMetadata.summaryValues objectForKey:kQredoConversationVaultItemLabelTag];
             metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:vaultItemMetadata.descriptor vault:vault];
+            metadata.summaryValues =  vaultItemMetadata.summaryValues;
             
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
             
@@ -1059,6 +1060,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
          NSError *parsingError = nil;
          QredoConversation *conversation = [self conversationFromVaultItem:vaultItem error:&parsingError];
          conversation.metadata.conversationRef = conversationRef;
+         conversation.metadata.summaryValues = vaultItem.metadata.summaryValues;
          QredoLogInfo(@"Fetch Conversation with Ref complete");
          if (completionHandler)completionHandler(conversation, parsingError);
      }];

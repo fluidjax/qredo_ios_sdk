@@ -59,6 +59,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 @interface QredoConversationMetadata :NSObject
 
+
 /**
  Pass this to [fetchConversationWithRef](QredoClient.html#/c:objc(cs)QredoClient(im)fetchConversationWithRef:completionHandler:) to retrieve the `QredoConversation`
 */
@@ -75,6 +76,10 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 /** The Rendezvous tag for the Rendezvous from which this Conversation was created */
 @property (readonly) NSString *rendezvousTag;
+
+/** User dictionary of key/values associated with a conversation */
+@property (readonly) NSDictionary *summaryValues;
+
 @end
 
 
@@ -139,6 +144,9 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 #pragma mark - Methods
 
+
+
+-(void)updateConversationWithSummaryValues:(NSDictionary*)summaryValues completionHandler:(void (^)(NSError *error))completionHandler;
 
 /**
  @return the `QredoConversationMetadata` for this Conversation.
@@ -271,6 +279,9 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 /** Show the other party's public key fingerprint as a hex string */
 -(NSString*)showRemoteFingerPrint;
+
+
+
 
 
 @end

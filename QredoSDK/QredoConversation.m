@@ -76,6 +76,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @property (readwrite) BOOL amRendezvousOwner;
 @property (readwrite) NSString *rendezvousTag;
 @property (readwrite) int authStatus;
+@property (readwrite) NSDictionary *summaryValues;
 
 @end
 
@@ -370,70 +371,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];
 }
 
-
 -(void)updateConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler{
-    QLFKeyPairLF *myKey = [QLFKeyPairLF keyPairLFWithPubKey:[QLFKeyLF keyLFWithBytes:[_myPublicKey data]]
-                                                    privKey:[QLFKeyLF keyLFWithBytes:[_myPrivateKey data]]];
-    
-    
-    QLFConversationDescriptor *descriptor =
-    [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
-                                                       rendezvousOwner:_metadata.amRendezvousOwner
-                                                        conversationId:_metadata.conversationId
-                                                      conversationType:_metadata.type
-                                                    authenticationType:_authenticationType
-                                                                 myKey:myKey
-                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                            authStatus:_metadata.authStatus];
-    
-    NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
-                                                                 marshaller:[QLFConversationDescriptor marshaller]];
-    
-    NSDictionary *summaryValues = @{
-                                    kQredoConversationVaultItemLabelAmOwner: [NSNumber numberWithBool:_metadata.amRendezvousOwner],
-                                    kQredoConversationVaultItemLabelId: _metadata.conversationId,
-                                    kQredoConversationVaultItemLabelTag: _metadata.rendezvousTag,
-                                    kQredoConversationVaultItemLabelType: _metadata.type,
-                                    kQredoConversationVaultItemLabelAuthStatus:[NSNumber numberWithInteger:_metadata.authStatus]
-                                    };
-    
-    QredoVault *sysvault = [self.client systemVault];
-    
-    
-    @synchronized(self) {
-        [sysvault getItemMetadataWithDescriptor:self.metadata.conversationRef.vaultItemDescriptor
-                           completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
-             if (error) {
-                 QredoLogError(@"Update Conversation failed with error %@",error);
-                 
-                 if (completionHandler)completionHandler(error);
-                 return ;
-             }
-             
-              
-             QredoVaultItemMetadata *metadataCopy = [vaultItemMetadata mutableCopy];
-             metadataCopy.created = [QredoNetworkTime dateTime];
-             metadataCopy.summaryValues = summaryValues;
-                               
-                               
-             QredoVaultItem *newVaultItem = [QredoVaultItem vaultItemWithMetadata:metadataCopy value:serializedDescriptor];
-                               
-                               
-                               
-             [sysvault strictlyUpdateItem:newVaultItem
-                                       completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
-                                       if (newItemMetadata) {
-                                            self.metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
-                                                                                                                                 vault:self.client.systemVault];
-                                       }
-                                       if (completionHandler)completionHandler(error);
-             }];
-
-         }];
-
-    }
+    [self updateConversationWithSummaryValues:self.metadata.summaryValues completionHandler:completionHandler];
 }
-
 
 
 
@@ -838,8 +778,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     if ((self.metadata.authStatus & 3) == 1)return QREDO_AMBER;
     if ((self.metadata.authStatus & 3) == 2)return QREDO_AMBER;
     if ((self.metadata.authStatus & 3) == 3)return QREDO_GREEN;
-    
-    
     return QREDO_RED;
 }
 
@@ -1031,6 +969,87 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         }];
     }];
 }
+
+
+-(void)updateConversationWithSummaryValues:(NSDictionary*)summaryValues completionHandler:(void (^)(NSError *error))completionHandler{
+    QLFKeyPairLF *myKey = [QLFKeyPairLF keyPairLFWithPubKey:[QLFKeyLF keyLFWithBytes:[_myPublicKey data]]
+                                                    privKey:[QLFKeyLF keyLFWithBytes:[_myPrivateKey data]]];
+    
+    
+    QLFConversationDescriptor *descriptor =
+    [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
+                                                       rendezvousOwner:_metadata.amRendezvousOwner
+                                                        conversationId:_metadata.conversationId
+                                                      conversationType:_metadata.type
+                                                    authenticationType:_authenticationType
+                                                                 myKey:myKey
+                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
+                                                            authStatus:_metadata.authStatus];
+    
+    NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
+                                                                 marshaller:[QLFConversationDescriptor marshaller]];
+    
+
+    
+    NSMutableDictionary *newValues;
+    if (summaryValues){
+        newValues = [summaryValues mutableCopy];
+    }else{
+        newValues = [[NSMutableDictionary alloc] init];
+    }
+   
+
+    NSDictionary *vaultSummaryValues = @{
+                                         kQredoConversationVaultItemLabelAmOwner: [NSNumber numberWithBool:_metadata.amRendezvousOwner],
+                                         kQredoConversationVaultItemLabelId: _metadata.conversationId,
+                                         kQredoConversationVaultItemLabelTag: _metadata.rendezvousTag,
+                                         kQredoConversationVaultItemLabelType: _metadata.type,
+                                         kQredoConversationVaultItemLabelAuthStatus:[NSNumber numberWithInteger:_metadata.authStatus]
+                                         };
+    
+    [newValues addEntriesFromDictionary:vaultSummaryValues];
+    
+    
+    QredoVault *sysvault = [self.client systemVault];
+    
+    
+    @synchronized(self) {
+        [sysvault getItemMetadataWithDescriptor:self.metadata.conversationRef.vaultItemDescriptor
+                              completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error) {
+                                  if (error) {
+                                      QredoLogError(@"Update Conversation failed with error %@",error);
+                                      
+                                      if (completionHandler)completionHandler(error);
+                                      return ;
+                                  }
+                                  
+                                  
+                                  QredoVaultItemMetadata *metadataCopy = [vaultItemMetadata mutableCopy];
+                                  metadataCopy.created = [QredoNetworkTime dateTime];
+                                  metadataCopy.summaryValues = newValues;
+                                  
+                                  
+                                  QredoVaultItem *newVaultItem = [QredoVaultItem vaultItemWithMetadata:metadataCopy value:serializedDescriptor];
+                                  
+                                  
+                                  
+                                  [sysvault strictlyUpdateItem:newVaultItem
+                                             completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+                                                 if (newItemMetadata) {
+                                                     self.metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
+                                                                                                                                         vault:self.client.systemVault];
+                                                     self.metadata.summaryValues = newValues;
+                                                 }
+                                                 if (completionHandler)completionHandler(error);
+                                             }];
+                                  
+                              }];
+        
+    }
+}
+
+
+
 
 // TODO: DH - Reorder parameters to be consistent with enumerate methods? (i.e. move 'since' to 2nd argument as reads better)
 - (void)subscribeToMessagesWithBlock:(void(^)(QredoConversationMessage *message))block
