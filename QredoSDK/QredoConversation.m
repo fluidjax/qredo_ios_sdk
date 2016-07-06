@@ -989,8 +989,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
     
-
-    
     NSMutableDictionary *newValues;
     if (summaryValues){
         newValues = [summaryValues mutableCopy];
@@ -1004,8 +1002,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                          kQredoConversationVaultItemLabelId: _metadata.conversationId,
                                          kQredoConversationVaultItemLabelTag: _metadata.rendezvousTag,
                                          kQredoConversationVaultItemLabelType: _metadata.type,
-                                         kQredoConversationVaultItemLabelAuthStatus:[NSNumber numberWithInteger:_metadata.authStatus]
-                                         };
+                                         kQredoConversationVaultItemLabelAuthStatus:[NSNumber numberWithInteger:_metadata.authStatus],
+                                         @"_v": [NSNumber numberWithLongLong:_metadata.conversationRef.vaultItemDescriptor.sequenceValue]  };
     
     [newValues addEntriesFromDictionary:vaultSummaryValues];
     

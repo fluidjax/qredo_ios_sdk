@@ -256,8 +256,7 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
     //TO DO- keep the date in the summary values for now since it's used elsewhere
     newSummaryValues[QredoVaultItemMetadataItemDateModified] = created;
     newSummaryValues[QredoVaultItemMetadataItemVersion] = @(metadata.descriptor.sequenceValue);
-    
-    NSLog(@"Metatdata %@",metadata);
+
     [self putUpdateOrDeleteItem:vaultItem
                          itemId:itemId
                        dataType:metadata.dataType
@@ -542,15 +541,16 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 }
 
 
+
 -(void)updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
                                         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler{
     
     //this builds a new vault item metadata removes the SequenceValue (Num & Value) from the descriptor
-    QredoQUID *itemID = metadata.descriptor.itemId;
-    QredoVaultItemDescriptor *deSequencedDescriptor = [[QredoVaultItemDescriptor alloc] initWithSequenceId:nil sequenceValue:0 itemId:itemID];
-    QredoVaultItemMetadata *newMetadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:metadata.summaryValues];
-    newMetadata.descriptor = deSequencedDescriptor;
-    QredoVaultItem *cleanedVaultItem = [[QredoVaultItem alloc] initWithMetadata:newMetadata value:value];
+//    QredoQUID *itemID = metadata.descriptor.itemId;
+//    QredoVaultItemDescriptor *deSequencedDescriptor = [[QredoVaultItemDescriptor alloc] initWithSequenceId:nil sequenceValue:0 itemId:itemID];
+//    QredoVaultItemMetadata *newMetadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:metadata.summaryValues];
+//    newMetadata.descriptor = deSequencedDescriptor;
+    QredoVaultItem *cleanedVaultItem = [[QredoVaultItem alloc] initWithMetadata:metadata value:value];
     [self strictlyUpdateItem:cleanedVaultItem completionHandler:completionHandler];
 }
 

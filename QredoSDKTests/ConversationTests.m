@@ -756,29 +756,59 @@ NSString *secondMessageText;
     XCTAssert(summaryValues==nil,@"Summary values should be nil");
     
     
-    
-    NSDictionary *testDictionary =  @{ @"testKey" : @"testValue" };
-     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"update conversation"];
-    
-    
-    [conversation updateConversationWithSummaryValues:testDictionary completionHandler:^(NSError *error) {
-        NSLog(@"Conversation %@", conversation);
+    //update 1
+    NSDictionary *testDictionary1 =  @{ @"testKey" : @"testValue" };
+     __block XCTestExpectation *didRespondExpectation1 = [self expectationWithDescription:@"update conversation"];
+    [conversation updateConversationWithSummaryValues:testDictionary1 completionHandler:^(NSError *error) {
+        NSLog(@"Conversation1 %@", conversation.metadata.conversationRef);
+        NSLog(@"Conversation1 %@", conversation.metadata.summaryValues);
         XCTAssertNil(summaryValues,@"Summary values should be nil");
-        [didRespondExpectation fulfill];
+        [didRespondExpectation1 fulfill];
     }];
-    
-    
     [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-               didRespondExpectation = nil;
+               didRespondExpectation1 = nil;
     }];
+    QredoConversationRef *ref1 = conversation.metadata.conversationRef;
+
     
-    QredoConversationRef *ref = conversation.metadata.conversationRef;
+    //update 2
+    NSDictionary *testDictionary2 =  conversation.metadata.summaryValues;
+    __block XCTestExpectation *didRespondExpectation2 = [self expectationWithDescription:@"update conversation"];
+    [conversation updateConversationWithSummaryValues:testDictionary2 completionHandler:^(NSError *error) {
+        NSLog(@"Conversation2 %@", conversation.metadata.conversationRef);
+        NSLog(@"Conversation2 %@", conversation.metadata.summaryValues);
+        XCTAssertNil(summaryValues,@"Summary values should be nil");
+        [didRespondExpectation2 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        didRespondExpectation2 = nil;
+    }];
+    QredoConversationRef *ref2 = conversation.metadata.conversationRef;
+
+    
+    //update 3
+      NSDictionary *testDictionary3 =  conversation.metadata.summaryValues;
+    __block XCTestExpectation *didRespondExpectation3 = [self expectationWithDescription:@"update conversation"];
+    [conversation updateConversationWithSummaryValues:testDictionary3 completionHandler:^(NSError *error) {
+        NSLog(@"Conversation3 %@", conversation.metadata.conversationRef);
+        NSLog(@"Conversation3 %@", conversation.metadata.summaryValues);
+
+        XCTAssertNil(summaryValues,@"Summary values should be nil");
+        [didRespondExpectation3 fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        didRespondExpectation3 = nil;
+    }];
+    QredoConversationRef *ref3 = conversation.metadata.conversationRef;
+
+    
+    
     
     
     //now retrieve that conversation again from the vault
      __block XCTestExpectation *didCheckConversation = [self expectationWithDescription:@"retrieve conversation"];
     
-    [testClient1 fetchConversationWithRef:ref completionHandler:^(QredoConversation *conversation, NSError *error) {
+    [testClient1 fetchConversationWithRef:ref3 completionHandler:^(QredoConversation *conversation, NSError *error) {
         NSDictionary *summaryValues = conversation.metadata.summaryValues;
         XCTAssertNotNil(summaryValues,@"Updated summary values should not be nil");
         XCTAssert([[summaryValues objectForKey:@"testKey"] isEqualToString:@"testValue"],@"Value doesnt exist in updated conversation");
@@ -786,13 +816,32 @@ NSString *secondMessageText;
         [didCheckConversation fulfill];
     }];
     
-    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-        didRespondExpectation = nil;
+    [self waitForExpectationsWithTimeout:30.0 handler:^(NSError *error) {
+        didCheckConversation=nil;
     }];
     
-        
-        
+    
+    __block int count=0;
+    
+    //count number of conversation items
+     __block XCTestExpectation *itemCountExpectation = [self expectationWithDescription:@"item count"];
+    
+    [testClient1 enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
+        count++;
+    } completionHandler:^(NSError *error) {
+        [itemCountExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+        itemCountExpectation = nil;
+    }];
+    
+    
+    XCTAssert(count==1,@"More than one conversation item retrieved");
+    
+    
 }
+
     
 
     
