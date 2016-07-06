@@ -628,7 +628,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     QredoVault *systemVault = _vault;
     
-    [systemVault enumerateConsolidatedVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+    [systemVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
             // TODO: DH - populate metadata.rendezvousMetadata

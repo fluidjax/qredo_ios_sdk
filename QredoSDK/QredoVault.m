@@ -68,20 +68,6 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 @implementation QredoVault (Private)
 
 
-- (void)enumerateConsolidatedVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                                completionHandler:(void(^)(NSError *error))completionHandler{
-    [self enumerateConsolidatedVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
-}
-
-
-- (void)enumerateConsolidatedVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                                            since:(QredoVaultHighWatermark*)sinceWatermark
-                                completionHandler:(void(^)(NSError *error))completionHandler{
-    dispatch_async(_queue, ^{
-        [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
-        
-    });
-}
 
 
 -(QredoUserCredentials*)userCredentials{
@@ -573,12 +559,14 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 
-- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+//Enumerate the vault items from the server without Consolidation - ie. All Verisions - deleted & historic
+
+- (void)enumerateVaultItemsAllVersionsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                     completionHandler:(void(^)(NSError *error))completionHandler{
-    [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
+    [self enumerateVaultItemsAllVersionsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
 }
 
-- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+- (void)enumerateVaultItemsAllVersionsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                                 since:(QredoVaultHighWatermark*)sinceWatermark
                     completionHandler:(void(^)(NSError *error))completionHandler{
     dispatch_async(_queue, ^{
@@ -589,6 +577,20 @@ static const double kQredoVaultUpdateInterval = 1.0; // seconds
 
 
 
+- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                completionHandler:(void(^)(NSError *error))completionHandler{
+    [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
+}
+
+
+- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                            since:(QredoVaultHighWatermark*)sinceWatermark
+                                completionHandler:(void(^)(NSError *error))completionHandler{
+    dispatch_async(_queue, ^{
+        [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
+        
+    });
+}
 
 
 

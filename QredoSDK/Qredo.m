@@ -922,7 +922,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *vault = [self systemVault];
     
-    [vault enumerateConsolidatedVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoRendezvousVaultItemType]) {
             NSString *tag = [vaultItemMetadata.summaryValues objectForKey:kQredoRendezvousVaultItemLabelTag];
             QredoRendezvousAuthenticationType authenticationType  = [[vaultItemMetadata.summaryValues
@@ -1023,7 +1023,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                      completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *vault = [self systemVault];
     
-    [vault enumerateConsolidatedVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
         if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]) {
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
             // TODO: DH - populate metadata.rendezvousMetadata

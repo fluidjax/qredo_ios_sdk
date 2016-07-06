@@ -226,7 +226,7 @@
     __block NSMutableArray *enumArray = [[NSMutableArray alloc] init];
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
     } completionHandler:^(NSError *error) {
         [completionHandlerCalled fulfill];
@@ -240,6 +240,34 @@
     
     XCTAssertTrue(count==1,@"there should be 1 item in the vault");
 
+   
+    
+    
+    //enumerate the items in the vault consolidated
+    
+    __block int count4=0;
+    __block XCTestExpectation *count4consolidated = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
+    
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        count4++;
+    } completionHandler:^(NSError *error) {
+        [count4consolidated fulfill];
+        count4consolidated = nil;
+        //complete
+    }];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        count4consolidated = nil;
+    }];
+    
+    XCTAssertTrue(count4==1,@"there should be 1 item in the vault");
+    
+
+    
+    
+    
+    
+    
     
     
     
@@ -271,7 +299,7 @@
     __block int count2 =0;
     __block XCTestExpectation *completionHandlerCalled2 = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count2++;
         if ([vaultItemMetadata isDeleted]==YES)itemDeleted++;
         if ([vaultItemMetadata isDeleted]==NO )itemNotDeleted++;
@@ -289,8 +317,36 @@
      XCTAssertTrue(itemNotDeleted==1,@"there should be 1 not deleted Item");
      XCTAssertTrue(count2==2,@"there should be 2 items in the vault ");
   
-    [client closeSession];
     
+    
+    //check the items in the vault consolidated
+    
+    __block int count3 =0;
+    itemDeleted =0;
+    itemNotDeleted =0;
+    
+    __block XCTestExpectation *completionHandlerCalled3 = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
+    
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        count3++;
+        if ([vaultItemMetadata isDeleted]==YES)itemDeleted++;
+        if ([vaultItemMetadata isDeleted]==NO )itemNotDeleted++;
+    } completionHandler:^(NSError *error) {
+        [completionHandlerCalled3 fulfill];
+        completionHandlerCalled3 = nil;
+        //complete
+    }];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        completionHandlerCalled3 = nil;
+    }];
+    
+    XCTAssertTrue(count3==0,@"there should be 0 items in the vault "); //first has a new version, 2nd is deleted
+
+
+    
+    
+    [client closeSession];
 
     
     
@@ -352,7 +408,7 @@
     __block NSMutableArray *enumArray = [[NSMutableArray alloc] init];
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
          //NSLog(@"GET 1%@",vaultItemMetadata.descriptor);
     } completionHandler:^(NSError *error) {
@@ -396,7 +452,7 @@
     __block int count2 =0;
     __block XCTestExpectation *completionHandlerCalled2 = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count2++;
         //NSLog(@"GET2 %@",vaultItemMetadata.descriptor);
     } completionHandler:^(NSError *error) {
@@ -439,7 +495,7 @@
     __block int count3 =0;
     __block XCTestExpectation *completionHandlerCalled3 = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count3++;
         //NSLog(@"ENUM after delete %@",vaultItemMetadata.descriptor);
     } completionHandler:^(NSError *error) {
@@ -525,7 +581,7 @@
     __block int count = 0;
     __block BOOL itemFound = NO;
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
         XCTAssertNotNil(vaultItemMetadata);
@@ -579,7 +635,7 @@
     __block int count2 = 0;
     __block BOOL itemFound2 = NO;
     __block XCTestExpectation *completionHandlerCalled2 = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count2++;
         
         XCTAssertNotNil(vaultItemMetadata);
@@ -1724,7 +1780,7 @@
     __block NSError *error = nil;
     __block int count = 0;
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"Enumerate"];
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
 
     } completionHandler:^(NSError *errorBlock) {
@@ -1798,7 +1854,7 @@
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
 
     
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
         XCTAssertNotNil(vaultItemMetadata);
@@ -1882,7 +1938,7 @@
     __block int count = 0;
     __block BOOL stopWasSet = NO;
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
         
         XCTAssertNotNil(vaultItemMetadata);

@@ -494,7 +494,7 @@ static const int testTimeOut = 30;
     __block XCTestExpectation *completionHandlerCalled = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
     
     
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         count++;
     } since:highWatermark completionHandler:^(NSError *error) {
         [completionHandlerCalled fulfill];

@@ -63,7 +63,7 @@
     QredoVault *vault = [client defaultVault];
     systemItemDescriptors = [NSMutableArray array];
     systemItemsCount = 0;
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         systemItemsCount++;
         [systemItemDescriptors addObject:vaultItemMetadata.descriptor];
     } completionHandler:^(NSError *error) {
@@ -226,7 +226,7 @@
     __block QredoVaultItemMetadata *fetchedMetadata = nil;
     __block NSUInteger numberOfFetchedMetadata = 0;
     testExpectation = [self expectationWithDescription:@"Enumerate"];
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         if (![systemItemDescriptors containsObject:vaultItemMetadata.descriptor]) {
             fetchedMetadata = vaultItemMetadata;
         }
@@ -324,7 +324,7 @@
     __block QredoVaultItemMetadata *fetchedMetadata = nil;
     __block NSUInteger numberOfFetchedMetadata = 0;
     testExpectation = [self expectationWithDescription:@"enumerate before delete"];
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         if (![systemItemDescriptors containsObject:vaultItemMetadata.descriptor]) {
             fetchedMetadata = vaultItemMetadata;
         }
@@ -366,7 +366,7 @@
     fetchedMetadata = nil;
     numberOfFetchedMetadata = 0;
     testExpectation = [self expectationWithDescription:@"enumerate after delete"];
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+    [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
         if (![systemItemDescriptors containsObject:vaultItemMetadata.descriptor]) {
             fetchedMetadata = vaultItemMetadata;
         }
