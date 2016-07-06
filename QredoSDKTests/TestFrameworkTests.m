@@ -95,6 +95,9 @@
 
 
 
+
+
+
 -(void)testConversationEnum{
     [self buildStack1];
     XCTAssertTrue([self countConversationsOnRendezvous:rendezvous1]==1,@"Should be 1 conversation");

@@ -351,8 +351,7 @@ Goes through the items in this Vault and calls the specified code block on each 
 @param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
 @param completionHandler will be called when the enumeration is complete or if an error occurs
  
-@note Returns all versions of all items in the vault, including deleted ones. Call [enumerateIndexUsingPredicate](#/c:objc(cs)QredoVault(im)enumerateIndexUsingPredicate:withBlock:completionHandler:) to enumerate only the latest version of each item
-
+@note Returns all items in the vault, but not ones that have been deleted or have more recent versions
  */
 
 -(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
@@ -369,7 +368,7 @@ Goes through the items in this Vault and calls the specified code block on each 
  @param since The `QredoVaultHighWatermark` specifying the location in the Vault to search from. Set this to `QredoVaultHighWatermarkOrigin` to start the enumeration from the beginning or use the `highWatermark` method to get the current watermark
  @param completionHandler will be called when the enumeration is complete or if an error occurs
  
- @note Returns all versions of all items in the vault from the specified highwatermark, including deleted ones. Call [enumerateIndexUsingPredicate](#/c:objc(cs)QredoVault(im)enumerateIndexUsingPredicate:withBlock:completionHandler:) to enumerate only the latest version of each item
+ @note  Returns all items in the vault, but not ones that have been deleted or have more recent versions
 
  
  */
@@ -377,6 +376,24 @@ Goes through the items in this Vault and calls the specified code block on each 
 -(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
                                since:(QredoVaultHighWatermark*)sinceWatermark
                    completionHandler:(void (^)(NSError *error))completionHandler;
+
+
+
+/** Functionality similar to the enumerateVaultItemsUsingBlock, but this will return all vault items icluding, all deleted items and any previous versions which have been superceeded with a update.
+ */
+-(void)enumerateVaultItemsAllVersionsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                              completionHandler:(void (^)(NSError *error))completionHandler;
+
+
+/** Functionality similar to the enumerateVaultItemsUsingBlock, but this will return all vault items icluding, all deleted items and any previous versions which have been superceeded with a update.
+ */
+-(void)enumerateVaultItemsAllVersionsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+                                          since:(QredoVaultHighWatermark*)sinceWatermark
+                              completionHandler:(void (^)(NSError *error))completionHandler;
+
+
+
+
 
 /** The current highwatermark for this Vault. 
  
@@ -387,6 +404,8 @@ Goes through the items in this Vault and calls the specified code block on each 
  If a `QredoVaultObserver` has been added, the [didReceiveVaultItemMetadata](../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:) will be invoked with all items in the Vault
  */
  -(void)resetWatermark;
+
+
 
 
 #pragma mark - Deleting Vault items

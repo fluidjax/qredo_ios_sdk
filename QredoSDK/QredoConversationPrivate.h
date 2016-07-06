@@ -66,5 +66,5 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 @property (readwrite) QredoQUID *conversationId;
 @property (readwrite) BOOL amRendezvousOwner;
 @property (readwrite) NSString *rendezvousTag;
-
+@property (readwrite) NSDictionary *summaryValues;
 @end

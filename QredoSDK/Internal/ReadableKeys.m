@@ -32,11 +32,9 @@ static int wsrch __ARGS((char *w,int low,int high));
     
     while (newLen!=oldLen){
         oldLen = sanitized.length;
-        sanitized = [[sanitized stringByReplacingOccurrencesOfString:@"  " withString:@""] lowercaseString];
+        sanitized = [[sanitized stringByReplacingOccurrencesOfString:@"  " withString:@" "] lowercaseString];
         newLen = sanitized.length;
     }
-        
-
     
     BOOL keyEndsWithZero = NO;
     NSString *words = [sanitized copy];
