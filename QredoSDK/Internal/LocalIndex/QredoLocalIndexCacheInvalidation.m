@@ -122,7 +122,7 @@ static const long  COREDATA_BASE_SQLLITE_OVERHEAD = 143360;            //storage
     }else if ([value isKindOfClass:[NSDate class]]) {
         return 8;
     }
-    @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type in summarydata value" userInfo:nil];
+    @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type in summaryValues value" userInfo:nil];
 }
 
 

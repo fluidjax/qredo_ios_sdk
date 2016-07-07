@@ -46,7 +46,7 @@
         self.valueTypeValue = IndexSummaryValueDataType_NSDate;
         
     }else{
-        @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type in summarydata value" userInfo:nil];
+        @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type in summaryValues value" userInfo:nil];
     }
 }
 

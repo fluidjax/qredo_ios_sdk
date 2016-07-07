@@ -14,6 +14,10 @@
 //Use this file to specify the Server
 //Note: For Tests the  AppID,AppSecret, & UserID are all specified in the file "QredoXCTestCase.m"
 
+#ifdef QREDO_SERVER_URL
+#undef QREDO_SERVER_URL
+#endif
+
 
 //#define QREDO_SERVER_URL @"api.oderq.com" //dev staging
 #define QREDO_SERVER_URL @"api.qredo.com" //production

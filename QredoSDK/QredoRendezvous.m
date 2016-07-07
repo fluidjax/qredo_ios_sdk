@@ -364,6 +364,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         newValues = [[NSMutableDictionary alloc] init];
     }
     
+    //overrite these values
     [newValues setObject:self.tag forKey:kQredoRendezvousVaultItemLabelTag];
     [newValues setObject:[NSNumber numberWithInt:self.authenticationType] forKey:kQredoRendezvousVaultItemLabelAuthenticationType];
     

@@ -214,7 +214,7 @@ static const int testTimeOut = 30;
     [testClient1 createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:600
                               unlimitedResponses:YES
-                                     summaryData:nil     
+                                     summaryValues:nil     
                                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                    XCTAssertNil(error);
                                    XCTAssertNotNil(rendezvous);

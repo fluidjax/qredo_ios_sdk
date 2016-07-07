@@ -198,7 +198,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_MEDIUM_SECURITY
                                         duration:10000
                               unlimitedResponses:YES
-                                     summaryData:summaryValues
+                                     summaryValues:summaryValues
                                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                    XCTAssertNotNil(rendezvous.tag);
                                    XCTAssertNotNil(rendezvous);
@@ -573,7 +573,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:100
                           unlimitedResponses:YES
-                                 summaryData:nil
+                                 summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error){
                                XCTAssertNil(error);
                                
@@ -603,7 +603,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
-                                 summaryData:nil
+                                 summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error){
          XCTAssertNil(error);
          XCTAssertNotNil(rendezvous);
@@ -651,7 +651,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
-                                 summaryData:nil
+                                 summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
      {
          XCTAssertNil(error);
@@ -690,7 +690,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
-                                 summaryData:nil
+                                 summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous);
@@ -800,7 +800,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
-                                 summaryData:nil
+                                 summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error)
      {
          XCTAssertNil(error);
@@ -909,7 +909,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                       duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
-                                 summaryData:nil
+                                 summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous);
@@ -1103,7 +1103,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [clientPersistent1 createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                                    duration:kRendezvousTestDurationSeconds
                                          unlimitedResponses:YES
-                                                summaryData:nil
+                                                summaryValues:nil
                                           completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                               XCTAssertNil(error);
                                               XCTAssertNotNil(rendezvous);
@@ -1272,7 +1272,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:kRendezvousTestDurationSeconds
                               unlimitedResponses:YES
-                                     summaryData:nil     
+                                     summaryValues:nil     
                                completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                    XCTAssertNil(error);
                                    XCTAssertNotNil(rendezvous);
@@ -1427,7 +1427,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                       duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
-                                 summaryData:nil
+                                 summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous);
@@ -2075,7 +2075,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:testDuration
                           unlimitedResponses:NO
-                                 summaryData:nil
+                                 summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(rendezvous);

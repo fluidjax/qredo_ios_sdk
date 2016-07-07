@@ -133,17 +133,18 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  @param tagSecurityLevel Use [QredoSecurityLevel](../Enums/QredoSecurityLevel.html) (QREDO_HIGH_SECURITY or QREDO_MEDIUM_SECURITY), to define the Security Level of the generated tag
  @param duration the duration in seconds after which the Rendezvous will expire. Expired Rendezvous can no longer be responded to, but messages can still be sent within existing Conversations created from it. Expired Rendezvous can be reactivated by calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
- @param unlimitedResponses Set to YES if there can be an unlimited numbers of response to the Rendezvous. If the parameter is NO, then there can only be one response after which the Rendezvous will expire. Calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
- will set the response count to unlimited.
+ @param unlimitedResponses Set to YES if there can be an unlimited numbers of response to the Rendezvous. If the parameter is NO, then there can only be one response after which the Rendezvous will expire. Calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:) 
+     will set the response count to unlimited.
+ @param summaryValues a dictionary of key/value pairs
+ @note The summaryValues can contain anything you like, but must be of one of `NSNumber`, `NSDate` or `NSString`
  @param completionhandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
- 
  */
 
 
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                                    duration:(long)duration
                          unlimitedResponses:(BOOL)unlimitedResponses
-                                summaryData:(NSDictionary*)summaryData
+                                summaryValues:(NSDictionary*)summaryValues
                           completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 

@@ -101,15 +101,4 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin){
 -(void)removeMetadataIndexObserver;
 -(void)removeAllObservers;
 
-
-//These are similar to the enumberVaultsItems methods expect they consolidate the returned items, removed any updated & deleted items
-- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                                completionHandler:(void(^)(NSError *error))completionHandler;
-
-- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                                            since:(QredoVaultHighWatermark*)sinceWatermark
-                                completionHandler:(void(^)(NSError *error))completionHandler;
-
-
-
 @end
