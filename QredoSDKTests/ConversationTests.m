@@ -256,6 +256,7 @@ static float delayInterval = 0.4;
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                     duration:600
                           unlimitedResponses:NO
+                                 summaryData:nil
                            completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                                QLog(@"Create rendezvous completion handler called.");
                                XCTAssertNil(error);
@@ -291,6 +292,7 @@ static float delayInterval = 0.4;
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:600
                               unlimitedResponses:NO
+                                     summaryData:nil
                                completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                                    QLog(@"\nRendezvous creation completion handler entered");
                                    XCTAssertNil(error);
@@ -358,6 +360,7 @@ static float delayInterval = 0.4;
     [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:3600
                               unlimitedResponses:YES
+                                     summaryData:nil
                                completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
                                    QredoLogDebug(@"Create rendezvous completion handler called.");
                                    XCTAssertNil(error);

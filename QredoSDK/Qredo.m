@@ -563,6 +563,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     [self createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                   duration:0
                         unlimitedResponses:YES
+                               summaryData:nil
                          completionHandler:completionHandler];
 }
 
@@ -574,6 +575,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     [self createAnonymousRendezvousWithTagType:tagSecurityLevel
                                   duration:0
                         unlimitedResponses:YES
+                               summaryData:nil
                          completionHandler:completionHandler];
 }
 
@@ -584,6 +586,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     [self createAnonymousRendezvousWithTagType:tagSecurityLevel
                                   duration:duration
                         unlimitedResponses:YES
+                               summaryData:nil
                          completionHandler:completionHandler];
 }
 
@@ -597,6 +600,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc]
                                                    initWithConversationType:@""
                                                    durationSeconds:duration
+                                                   summaryValues:nil
                                                    isUnlimitedResponseCount:unlimitedResponses];
     
     [self createRendezvousWithTag:tag
@@ -617,6 +621,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                                duration:(long)duration
                      unlimitedResponses:(BOOL)unlimitedResponses
+                            summaryData:(NSDictionary*)summaryData
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler {
     // Anonymous Rendezvous are created using the full tag. Signing handler, trustedRootPems and crlPems are unused
 
@@ -626,9 +631,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     
     QredoLogVerbose(@"Start createAnonymousRendezvousWithTag %@", tag);
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc]
-                                                   initWithConversationType:@""
+    QredoRendezvousConfiguration *configuration =  [[QredoRendezvousConfiguration alloc] initWithConversationType:@""
                                                    durationSeconds:duration
+                                                   summaryValues:summaryData
                                                    isUnlimitedResponseCount:unlimitedResponses];
     
     
@@ -933,7 +938,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
             
             QredoRendezvousMetadata *metadata = [[QredoRendezvousMetadata alloc] initWithTag:tag
                                                                           authenticationType:authenticationType
-                                                                               rendezvousRef:rendezvousRef];
+                                                                               rendezvousRef:rendezvousRef
+                                                                                summaryValues:vaultItemMetadata.summaryValues];
             
             BOOL stopObjectEnumeration = NO; // here we lose the feature when *stop == YES, then we are on the last object
             block(metadata, &stopObjectEnumeration);

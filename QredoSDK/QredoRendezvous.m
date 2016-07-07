@@ -53,13 +53,15 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 -(instancetype)initWithTag:(NSString*)tag
         authenticationType:(QredoRendezvousAuthenticationType)authenticationType
-             rendezvousRef:(QredoRendezvousRef *)rendezvousRef {
+             rendezvousRef:(QredoRendezvousRef *)rendezvousRef
+             summaryValues:(NSDictionary*)summaryValues{
     self = [super init];
     if (!self) return nil;
     
     _tag = [tag copy];
     _authenticationType = authenticationType;
     self.rendezvousRef = rendezvousRef;
+    self.summaryValues = summaryValues;
     
     return self;
 }
@@ -71,11 +73,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 -(instancetype)initWithConversationType:(NSString*)conversationType
                         durationSeconds:(long)durationSeconds
+                          summaryValues:(NSDictionary*)summaryValues
                isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount{
     self = [super init];
     if (!self) return nil;
     
-    
+     _summaryValues = [summaryValues copy];
     _conversationType = [conversationType copy];
     _durationSeconds = durationSeconds;
     _isUnlimitedResponseCount = isUnlimitedResponseCount;
@@ -87,11 +90,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 -(instancetype)initWithConversationType:(NSString*)conversationType
                         durationSeconds:(long)durationSeconds
                isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount
+                          summaryValues:(NSDictionary*)summaryValues
                               expiresAt:(NSDate*)expiresAt{
     self = [super init];
     if (!self) return nil;
     
-
+    _summaryValues = [summaryValues copy];
     _conversationType = [conversationType copy];
     _durationSeconds = durationSeconds;
     _isUnlimitedResponseCount = isUnlimitedResponseCount;
@@ -127,8 +131,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 // making the properties read/write for private use
 @property QredoRendezvousConfiguration *configuration;
-
-
 @property (readwrite, copy) NSString *tag;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 @property  QredoRendezvousMetadata *metadata;
@@ -197,6 +199,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     self.configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:descriptor.conversationType
                                                                         durationSeconds:[[descriptor.durationSeconds anyObject] intValue]
+                                                                          summaryValues:vaultItem.metadata.summaryValues
                                                                isUnlimitedResponseCount:isUnlimitedResponseCount];
     
     
@@ -211,7 +214,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:descriptor.tag
                                               authenticationType:authenticationType
-                                                   rendezvousRef:rendezvousRef];
+                                                   rendezvousRef:rendezvousRef
+                                                   summaryValues:vaultItem.metadata.summaryValues];
     
     return self;
 }
@@ -353,12 +357,19 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                  marshaller:[QLFRendezvousDescriptor marshaller]];
     
     
+    NSMutableDictionary *newValues;
+    if (self.configuration.summaryValues){
+        newValues = [self.configuration.summaryValues mutableCopy];
+    }else{
+        newValues = [[NSMutableDictionary alloc] init];
+    }
+    
+    [newValues setObject:self.tag forKey:kQredoRendezvousVaultItemLabelTag];
+    [newValues setObject:[NSNumber numberWithInt:self.authenticationType] forKey:kQredoRendezvousVaultItemLabelAuthenticationType];
+    
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDataType:kQredoRendezvousVaultItemType
                                                                                     created:[QredoNetworkTime dateTime]
-                                                                              summaryValues:@{
-                                                                                               kQredoRendezvousVaultItemLabelTag: self.tag,
-                                                                                               kQredoRendezvousVaultItemLabelAuthenticationType:[NSNumber numberWithInt:self.authenticationType]
-                                                                                               }];
+                                                                              summaryValues:newValues];
     
     QredoVaultItem *vaultItem = [QredoVaultItem vaultItemWithMetadata:metadata value:serializedDescriptor];
     
@@ -366,10 +377,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         if (newItemMetadata) {
             QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
                                                                                                   vault:_client.systemVault];
-            
             self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:self.tag
                                                       authenticationType:self.authenticationType
-                                                           rendezvousRef:rendezvousRef];
+                                                           rendezvousRef:rendezvousRef
+                                                           summaryValues:newValues];
+           
         }
         if (completionHandler)completionHandler(error);
     }];
@@ -474,11 +486,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                                                                                        vault:_client.systemVault];
                                                  self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:self.tag
                                                                                            authenticationType:self.authenticationType
-                                                                                                rendezvousRef:rendezvousRef];
+                                                                                                rendezvousRef:rendezvousRef
+                                                                                                summaryValues:vaultItemMetadata.summaryValues];
                                                  
                                                  self.configuration = [[QredoRendezvousConfiguration alloc]  initWithConversationType:_descriptor.conversationType
                                                                                                                       durationSeconds:duration
                                                                                                             isUnlimitedResponseCount:TRUE
+                                                                                                                        summaryValues:metadataCopy.summaryValues
                                                                                                                            expiresAt:[expiresAt anyObject]];
                                                  
                                              }

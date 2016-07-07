@@ -143,6 +143,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                                    duration:(long)duration
                          unlimitedResponses:(BOOL)unlimitedResponses
+                                summaryData:(NSDictionary*)summaryData
                           completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
 

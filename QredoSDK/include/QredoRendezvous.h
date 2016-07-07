@@ -80,6 +80,10 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** The Rendezvous tag */
 @property (readonly, copy) NSString *tag;
+
+/** User dictionary of key/values associated with a Rendezvous */
+@property (readonly) NSDictionary *summaryValues;
+
 @end
 
 
@@ -110,6 +114,9 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** The Rendezvous tag */
 @property (readonly) NSString *tag;
+
+
+
 
 /** Used to store the mark to search from when enumerating Conversations created for this Rendezvous
  Pass this as a parameter to [enumerateConversationsWithBlock](#/c:objc(cs)QredoRendezvous(im)enumerateConversationsWithBlock:completionHandler:

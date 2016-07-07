@@ -11,13 +11,16 @@
 
 @interface QredoRendezvousMetadata ()
 
+
 @property (readwrite) QredoRendezvousRef *rendezvousRef;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 @property (readwrite, copy) NSString *tag;
+@property (readwrite) NSDictionary *summaryValues;
 
 - (instancetype)initWithTag:(NSString*)tag
          authenticationType:(QredoRendezvousAuthenticationType)authenticationType
-              rendezvousRef:(QredoRendezvousRef *)rendezvousRef;
+              rendezvousRef:(QredoRendezvousRef *)rendezvousRef
+              summaryValues:(NSDictionary*)summaryValues;
 
 @end
 
@@ -33,6 +36,7 @@
 @property (readwrite) long durationSeconds;
 @property (readwrite) BOOL isUnlimitedResponseCount;
 @property (readwrite) NSDate *expiresAt;
+@property (readwrite) NSDictionary *summaryValues;
 
 
 
@@ -42,10 +46,12 @@
 - (instancetype)initWithConversationType:(NSString*)conversationType
                          durationSeconds:(long)durationSeconds
                 isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount
+                           summaryValues:(NSDictionary*)summaryValues
                                expiresAt:(NSDate*)expiresAt;
 
 - (instancetype)initWithConversationType:(NSString*)conversationType
                          durationSeconds:(long)durationSeconds
+                           summaryValues:(NSDictionary*)summaryValues
                 isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount;
 
 
