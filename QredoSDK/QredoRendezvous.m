@@ -436,6 +436,9 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
+
+
+
 -(void)updateRendezvousWithDuration: (long)duration expiresAt:(NSSet*)expiresAt completionHandler:(void (^)(NSError *error))completionHandler {
     NSSet *durationSeconds = [self maybe:duration];
     
@@ -840,6 +843,76 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                        if (completionHandler)completionHandler(conversation, nil);
                                    }];
 }
+
+
+
+
+-(void)updateRendezvousWithSummaryValues:(NSDictionary*)summaryValues completionHandler:(void (^)(NSError *error))completionHandler{
+    //this updates the vault item version of the rendezvous with new summaryValues
+    
+    // get the vault item metadata from the vaultitemdescriptor stored in the rendezvous ref
+    [_client.systemVault getItemMetadataWithDescriptor: self.metadata.rendezvousRef.vaultItemDescriptor
+                                     completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error){
+                                         if (error) {
+                                             if (completionHandler)completionHandler(error);
+                                             return;
+                                         }
+                                         
+                                         // serialize the updated rendezvous descriptor into a NSData object
+                                         NSData* updatedRendezvousData = [QredoPrimitiveMarshallers marshalObject:_descriptor
+                                                                                                       marshaller:[QLFRendezvousDescriptor marshaller]];
+                                         
+                                         QredoVaultItemMetadata *metadataCopy = [vaultItemMetadata mutableCopy];
+                                         
+                                         NSDictionary *originalSummaryValues = metadataCopy.summaryValues;
+                                         
+                                         
+                                         NSMutableDictionary *updatedValues = [[NSMutableDictionary alloc] init];
+                                         [updatedValues addEntriesFromDictionary:summaryValues];
+                                         
+                                         //force in the essential metadata
+                                         [updatedValues setObject:self.tag forKey:kQredoRendezvousVaultItemLabelTag];
+                                         [updatedValues setObject:[NSNumber numberWithInt:self.authenticationType] forKey:kQredoRendezvousVaultItemLabelAuthenticationType];
+                                         [updatedValues setObject:[originalSummaryValues objectForKey:@"_created"] forKey:@"_created"];
+                                         [updatedValues setObject:[NSDate date] forKey:@"_updated"];
+                                         
+                                         metadataCopy.summaryValues = updatedValues;
+                                         
+                                         
+                                         // create a new vault item with the same metadata and updated rendezvous data
+                                         QredoVaultItem *newVaultItem = [QredoVaultItem vaultItemWithMetadata:metadataCopy value: updatedRendezvousData];
+                                         
+                                         // add the item to the Vault. This will be the same Rendezvous but will update the sequence value
+                                         [_client.systemVault strictlyUpdateItem: newVaultItem completionHandler: ^(QredoVaultItemMetadata *newItemMetadata, NSError *error){
+                                             if (error) {
+                                                 if (completionHandler)completionHandler(error);
+                                                 return;
+                                             }
+                                             
+                                             // the update will create new metadata so we need to update the rendezvous ref and metadata
+                                             // the actual vault item data will be the same, with just a new sequence value
+                                             if (newItemMetadata) {
+                                                 QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
+                                                                                                                                       vault:_client.systemVault];
+                                                 self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:self.tag
+                                                                                           authenticationType:self.authenticationType
+                                                                                                rendezvousRef:rendezvousRef
+                                                                                                summaryValues:updatedValues];
+                                                 
+                                                 self.configuration = [[QredoRendezvousConfiguration alloc]  initWithConversationType:_descriptor.conversationType
+                                                                                                                      durationSeconds:self.duration
+                                                                                                             isUnlimitedResponseCount:TRUE
+                                                                                                                        summaryValues:updatedValues
+                                                                                                                            expiresAt:self.expiresAt];
+                                                 
+                                             }
+                                             if (completionHandler)completionHandler(error);
+                                         }];
+                                     }];
+    
+    
+}
+
 
 
 #pragma mark -

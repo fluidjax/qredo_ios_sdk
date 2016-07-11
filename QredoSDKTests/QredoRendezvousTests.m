@@ -240,6 +240,45 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector, SEL swizzledSelector
     NSDictionary *retDict = retrievedMetadata.summaryValues;
     XCTAssertTrue([[retDict objectForKey:@"item2"] isEqualToString:@"value2"],@"Failed to store summary values in rendezvous");
 
+    
+    
+    //now update the summary values
+    NSDictionary *modifiedDict = @{@"modifiedKey":@"modifiedValue"};
+    
+      __block XCTestExpectation *modifyExpectation = [self expectationWithDescription:@"mod rendezvous"];
+    [createdRendezvous  updateRendezvousWithSummaryValues:modifiedDict completionHandler:^(NSError *error) {
+        //rendezvous is updated
+        [modifyExpectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        retrieveExpectation = nil;
+    }];
+     
+     XCTAssert([[createdRendezvous.metadata.summaryValues objectForKey:@"modifiedKey"] isEqualToString:@"modifiedValue"],@"Modify rendezvous summaryValues didnt work");
+
+    
+    
+    //re-enumerate the vault and check the rendezvous stored
+    
+    __block XCTestExpectation *retrieve2Expectation = [self expectationWithDescription:@"ret rendezvous2"];
+    
+    __block QredoRendezvousMetadata *rendezvousMetadata2;
+    
+    [client enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop) {
+        rendezvousMetadata2 = rendezvousMetadata;
+        
+    } completionHandler:^(NSError *error) {
+        [retrieve2Expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
+        retrieve2Expectation = nil;
+    }];
+
+     XCTAssert([[rendezvousMetadata2.summaryValues objectForKey:@"modifiedKey"] isEqualToString:@"modifiedValue"],@"Modify rendezvous summaryValues didnt work");
+    
+    
 }
 
 

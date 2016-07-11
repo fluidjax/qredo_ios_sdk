@@ -195,4 +195,9 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 -(void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
 
+
+/** Update the Rendezvous with new summary Values
+ */
+-(void)updateRendezvousWithSummaryValues:(NSDictionary*)summaryValues completionHandler:(void (^)(NSError *error))completionHandler;
+
 @end
