@@ -28,14 +28,14 @@ static const int testTimeOut = 30;
 
     if ([QREDO_SERVER_URL isEqualToString:@"api.oderq.com"]){
         //STAGING
-        k_TEST_APPID         = @"com.qredo.device.ios.test";
-        k_TEST_APPSECRET     = @"a23469be8be13768c74ca0937cec47d1";       //dev staging
-        k_TEST_USERID        = @"testUserId";
+        k_TEST_APPID         = STAGING_TEST_APPID;
+        k_TEST_APPSECRET     = STAGING_TEST_APPSECRET;       //dev staging
+        k_TEST_USERID        = STAGING_TEST_USERID;
     }else if ([QREDO_SERVER_URL isEqualToString:@"api.qredo.com"]){
         //PRODUCTION
-        k_TEST_APPID         = @"com.qredo.device.ios.test";
-        k_TEST_APPSECRET     = @"074af11737f877505167177726501aa0";       //production
-        k_TEST_USERID        = @"testUserId";        
+        k_TEST_APPID         = PRODUCTION_TEST_APPID;
+        k_TEST_APPSECRET     = PRODUCTION_TEST_APPSECRET;       //production
+        k_TEST_USERID        = PRODUCTION_TEST_USERID;
     }else{
         NSAssert(false,@"Invalid server specified in MasterConfig.h");
     }

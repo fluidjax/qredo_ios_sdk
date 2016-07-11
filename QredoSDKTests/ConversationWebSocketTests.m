@@ -1,6 +1,6 @@
 #import "ConversationWebSocketTests.h"
 
-
+@implementation ConversationWebSocketTests
 
 - (void)setUp {
     self.transportType = QredoClientOptionsTransportTypeWebSockets;
