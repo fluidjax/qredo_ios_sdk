@@ -1,0 +1,24 @@
+{
+  "int": {
+    "files": 283, 
+    "MEMORY_LEAK": 7, 
+    "RETAIN_CYCLE": 3, 
+    "BAD_POINTER_COMPARISON": 3, 
+    "lines": 0, 
+    "IVAR_NOT_NULL_CHECKED": 5, 
+    "PARAMETER_NOT_NULL_CHECKED": 34, 
+    "NULL_DEREFERENCE": 6, 
+    "procedures": 0, 
+    "DIRECT_ATOMIC_PROPERTY_ACCESS": 659
+  }, 
+  "float": {
+    "reporting_time": 1.030644178390503, 
+    "analysis_time": 42.14872884750366, 
+    "capture_time": 0.0, 
+    "makefile_generation_time": 0.09405303001403809
+  }, 
+  "normal": {
+    "infer_version": "unknown", 
+    "analyzer": "infer"
+  }
+}

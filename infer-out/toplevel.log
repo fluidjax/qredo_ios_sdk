@@ -1,0 +1,22 @@
+[INFO] Running command /usr/local/bin/infer -- xcodebuild -workspace QredoSDK.xcworkspace -scheme QredoXDK ONLY_ACTIVE_ARCH=NO -configuration Debug -sdk iphoneos
+[INFO] Path to infer script /usr/local/bin/infer (/usr/local/Cellar/infer/0.8.0/libexec/infer/lib/python/infer)
+[INFO] Infer version v0.8.0
+Copyright 2009 - present Facebook. All Rights Reserved.
+
+
+[INFO] Platform: Darwin-15.5.0-x86_64-i386-64bit
+[INFO] PATH=/opt/local/bin:/opt/local/sbin:/usr/local/bin:/Users/chris/scripts:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/go/bin:/usr/local/MacGPG2/bin:/Library/TeX/texbin:/Users/chris/Development/work/Qredo/android-sdk/platform-tools:/Users/chris/Development/work/Qredo/android-sdk/tools:.:/usr/local/opt/go/libexec/bin:/Users/chris/projects/bin
+[INFO] SHELL=/bin/bash
+[INFO] PWD=/Users/chris/Development/work/Qredo/qredo_ios_sdk
+[INFO] Xcode version:
+Xcode 7.3.1
+Build version 7D1014
+
+[INFO] clang version:
+Apple LLVM version 7.3.0 (clang-703.0.31)
+Target: x86_64-apple-darwin15.5.0
+Thread model: posix
+InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+
+[INFO] Capture phase was successful
+[INFO] Starting analysis
