@@ -12,6 +12,7 @@
 #import "Qredo.h"
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
+#import "QredoXCTestListeners.h"
 
 
 // This test should has some commonalities with RendezvousListenerTests, however,
@@ -28,6 +29,16 @@ static NSString *const kMessageTestValue = @"(1)hello, world";
 static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 static float delayInterval = 0.4;
 
+
+
+
+
+
+
+
+
+
+
 @interface ConversationMessageListener : NSObject <QredoConversationObserver>
 
 @property ConversationTests *test;
@@ -37,6 +48,10 @@ static float delayInterval = 0.4;
 @property NSNumber *fulfilledtime;
 
 @end
+
+
+
+
 
 @implementation ConversationMessageListener
 
@@ -745,6 +760,99 @@ NSString *secondMessageText;
         rvuFulfilledTimes = @(rvuFulfilledTimes.intValue + 1);
         QLog(@"CALLS TO FULFILL RVU: %d", rvuFulfilledTimes.intValue);
     }
+}
+
+
+-(void)testConversationListenerReturnsSummaryValues{
+    //this is to test if after an update using
+    //conversation updateConversationWithSummaryValues
+    //the conversation returned using
+    //-(void)qredoRendezvous:(QredoRendezvous*)rendezvous  didReceiveReponse:(QredoConversation *)conversation
+    //contains those summary values (as previously it has been creating a new conversation object in the value in error)
+    
+    [self createClients];
+    [self createRendezvous];
+        //[self respondToRendezvous];
+    
+    // Listening for responses and respond from another client
+    TestRendezvousListener *listener = [[TestRendezvousListener alloc] init];
+    XCTAssertNotNil(rendezvous1);
+    
+    [rendezvous1 addRendezvousObserver:listener];
+    [NSThread sleepForTimeInterval:0.1];
+    
+    
+    listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
+    [NSThread sleepForTimeInterval:0.1];
+    
+    
+    [testClient2 respondWithTag:rendezvous1Tag
+              completionHandler:^(QredoConversation *conversation, NSError *error) {
+                  XCTAssertNil(error);
+                  conversation2 = conversation;
+              }];
+    
+    
+    //wait for the 1st client to receive the rendezvous
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        listener.expectation = nil;
+    }];
+    
+    conversation1 = listener.incomingConversation;
+    
+    
+    
+//    [rendezvous1 removeRendezvousObserver:listener];
+//    XCTAssertNotNil(conversation1);
+//    XCTAssertNotNil(conversation2);
+//
+//    
+//
+//    
+//    
+//    
+//    __block XCTestExpectation *rendezvousConversationIncoming = [self expectationWithDescription:@"waiting for incoming conversation"];
+//    TestRendezvousListener *trl = [[TestRendezvousListener alloc] init];
+//    trl.expectation = rendezvousConversationIncoming;
+//    [rendezvous1 addRendezvousObserver:trl];
+//    
+//    
+//    QredoConversation *conversation = conversation1;
+//    NSDictionary *summaryValues = conversation.metadata.summaryValues;
+//    XCTAssert(summaryValues==nil,@"Summary values should be nil");
+//    
+//    
+//    //update 1
+//    NSDictionary *testDictionary1 =  @{ @"testKey" : @"testValue" };
+//    __block XCTestExpectation *didRespondExpectation1 = [self expectationWithDescription:@"update conversation"];
+//    
+//    [conversation updateConversationWithSummaryValues:testDictionary1 completionHandler:^(NSError *error) {
+//        NSLog(@"Conversation1 %@", conversation.metadata.conversationRef);
+//        NSLog(@"Conversation1 %@", conversation.metadata.summaryValues);
+//        XCTAssertNil(summaryValues,@"Summary values should be nil");
+//        [didRespondExpectation1 fulfill];
+//    }];
+//    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+//        didRespondExpectation1 = nil;
+//    }];
+//    
+//    NSString *expected = [conversation.metadata.summaryValues objectForKey:@"testKey"];
+//    
+//    XCTAssertTrue([expected isEqualToString:@"testValue"],@"Incorrect summary value");
+//    QredoConversationRef *ref1 = conversation.metadata.conversationRef;
+//    
+//    ///test listener
+    
+    
+
+//    
+//    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
+//        rendezvousConversationIncoming = nil;
+//    }];
+    
+    
+    
+    
 }
 
 

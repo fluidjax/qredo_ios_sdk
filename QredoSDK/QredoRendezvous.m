@@ -142,6 +142,30 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 @implementation QredoRendezvous (Private)
 
 
+-(void)loadHWM{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if (!self.tag){
+        self->_highWatermark = QredoRendezvousHighWatermarkOrigin;
+        return;
+    }
+    
+    NSNumber *hwmNum = [defaults objectForKey:self.tag];
+    if (!hwmNum){
+        self->_highWatermark = QredoRendezvousHighWatermarkOrigin;
+    }else{
+        self->_highWatermark = [hwmNum longLongValue];
+    }
+
+    
+}
+
+-(void)saveHWM{
+    NSUserDefaults  *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(self.highWatermark) forKey:self.tag];
+    
+}
+
 
 
 -(instancetype)initWithClient:(QredoClient *)client {
@@ -161,7 +185,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _updateListener.dataSource = self;
     _updateListener.pollInterval = kQredoRendezvousUpdateInterval;
     _updateListener.renewSubscriptionInterval = kQredoRendezvousRenewSubscriptionInterval;
-    
     return self;
 }
 
@@ -176,7 +199,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:descriptor.requesterKeyPair.privKey.bytes];
     _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
     _ownershipPrivateKey = [[QredoRendezvousCrypto instance] accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
-    
+    [self loadHWM];
     return self;
 }
 
@@ -216,7 +239,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                               authenticationType:authenticationType
                                                    rendezvousRef:rendezvousRef
                                                    summaryValues:vaultItem.metadata.summaryValues];
-    
+    [self loadHWM];
     return self;
 }
 
@@ -926,11 +949,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     [self enumerateResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse, QredoConversation *conversation, BOOL *stop) {
         [_updateListener processSingleItem:conversation sequenceValue:@(rendezvousResponse.sequenceValue)];
     }
-                    completionHandler:completionHandler
-                                since:self.highWatermark
-                 highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark)
-     {
+    completionHandler:completionHandler
+    since:self.highWatermark
+    highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark){
          self->_highWatermark = newWatermark;
+        [self saveHWM];
      }];
 }
 
@@ -959,8 +982,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         return;
     }
     [_rendezvous subscribeToResponsesWithHashedTag:_hashedTag
-                                         signature:ownershipSignature
-                                 completionHandler:^(QLFRendezvousResponseWithSequenceValue *result, NSError *error){
+    signature:ownershipSignature
+    completionHandler:^(QLFRendezvousResponseWithSequenceValue *result, NSError *error){
                                      if (error) {
                                          [_updateListener didTerminateSubscriptionWithError:error];
                                          if (completionHandler)completionHandler(error);
@@ -975,6 +998,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                        [_updateListener processSingleItem:conversation sequenceValue:@(result.sequenceValue)];
                                                                    }];
                                      self->_highWatermark = result.sequenceValue;
+                                    [self saveHWM];
                                  }];
 }
 

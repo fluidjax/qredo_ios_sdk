@@ -70,7 +70,7 @@ NSNumber *testNumber;
 
 
 
--(void)testCoredataCacheEstimateConstants{
+//-(void)testCoredataCacheEstimateConstants{
     //This test was used as a utility (with rolling modifications) to determine the constants in QredoLocalIndexCacheInvalidation
     //so the estimate of the coredata file size can be more accurate
     //there is no need to run this as a standard test
@@ -108,7 +108,7 @@ NSNumber *testNumber;
     QLog(@"*** Difference between estimate & actual %0.2f",(float)endFile/(float)[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
  */
     
-}
+//}
     
 
 

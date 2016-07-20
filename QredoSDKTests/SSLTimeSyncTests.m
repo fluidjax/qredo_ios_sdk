@@ -25,6 +25,14 @@
     [super tearDown];
 }
 
+
+//-(void)testExampleMultiple{
+//    for (int i=0;i<100;i++){
+//        NSLog(@"Count %i",i);
+//        [self testExample];
+//    }
+//}
+
 - (void)testExample {
     //we assume that the local clock on the testing machine is set correctly
     
