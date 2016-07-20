@@ -145,9 +145,6 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 #pragma mark - Methods
 
 
-
--(void)updateConversationWithSummaryValues:(NSDictionary*)summaryValues completionHandler:(void (^)(NSError *error))completionHandler;
-
 /**
  @return the `QredoConversationMetadata` for this Conversation.
  */
@@ -159,6 +156,26 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  */
 
 -(void)resetHighWatermark;
+
+
+#pragma mark - Updating Conversation Metadata
+
+/**
+ Sets up or updates the summaryValues stored in the `QredoConversationMetadata` for this Conversation.
+ 
+ @param summaryValues A dictionary of key/value pairs. This will replace any existing summaryValues.
+
+ @param completionHandler When this method completes error will be non nil if an error occurs.
+ 
+ @note When the update is successful, the `QredoConversationRef` will be updated so you will need to update any stored references to this value.
+ 
+ @see Updating Conversation Metadata: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/updating_a_conversation.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/updating_a_conversation)
+ 
+ */
+
+
+-(void)updateConversationWithSummaryValues:(NSDictionary*)summaryValues completionHandler:(void (^)(NSError *error))completionHandler;
+
 
 
 #pragma mark - Sending a message

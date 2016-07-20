@@ -62,7 +62,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  @see Connecting to Qredo: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/connecting_to_qredo/index.html),
  [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/connecting_to_qredo/index.html)
  
- @param appSecret  a hex String supplied by Qredo. This is your API key for Qredo services.
+ @param appId  a hex String supplied by Qredo. This is your API key for Qredo services.
  @param appSecret  a hex String supplied by Qredo. This uniquely identifies your app to Qredo
  @param userId     a unique identifier for a user of the App, usually username or email address
  @param userSecret a password for the user of the App.
@@ -117,7 +117,6 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  */
 
-
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                       completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
 
@@ -135,18 +134,17 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  @param duration the duration in seconds after which the Rendezvous will expire. Expired Rendezvous can no longer be responded to, but messages can still be sent within existing Conversations created from it. Expired Rendezvous can be reactivated by calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
  @param unlimitedResponses Set to YES if there can be an unlimited numbers of response to the Rendezvous. If the parameter is NO, then there can only be one response after which the Rendezvous will expire. Calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:) 
      will set the response count to unlimited.
- @param summaryValues a dictionary of key/value pairs
- @note The summaryValues can contain anything you like, but must be of one of `NSNumber`, `NSDate` or `NSString`
+ @param summaryValues a dictionary of key/value pairs. 
  @param completionhandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
+ 
+ 
  */
-
 
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                                    duration:(long)duration
                          unlimitedResponses:(BOOL)unlimitedResponses
                                 summaryValues:(NSDictionary*)summaryValues
                           completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
-
 
 
 #pragma mark - Retrieving a Rendezvous
@@ -238,8 +236,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  @note This method can be called for any Rendezvous, irrespective of whether the Rendezvous has expired.
  
- @see Activating and Deactivating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html),
- [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
+ @see Activating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/updating_rendezvous.html#activate),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/updating_rendezvous.html#activate)
  
  
  @param tag The string representing the tag of the Rendezvous to respond to.
@@ -255,8 +253,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  @note Existing conversations established with this Rendezvous will still be available and are NOT closed.
  New responses to the Rendezvous will fail. To accept new responses, activate the Rendezous again by calling `activateRendezvousWithRef`
  
- @see Activating and Deactivating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html),
- [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
+ @see Deactivating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/updating_rendezvous.html#deactivate),
+ [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/updating_rendezvous.html#deactivate)
  
  @param ref The `QredoRendezvousRef` for the Rendezvous to be deactivated
  @param completionHandler error will be non nil if an error occurs. error.code will be `QredoErrorCodeRendezvousNotFound` if a Rendezvous with the specified `QredoRendezvousRef` cannot be found.
