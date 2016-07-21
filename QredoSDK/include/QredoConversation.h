@@ -223,7 +223,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 -(void)removeConversationObserver:(id<QredoConversationObserver>)observer;
 
 
-#pragma mark - Deleting messages
+#pragma mark - Deleting Conversations
 
 /**
  Deletes the specified Conversation. No further messages can be sent and received within this Conversation.
