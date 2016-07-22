@@ -81,7 +81,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 /** The Rendezvous tag */
 @property (readonly, copy) NSString *tag;
 
-/** User dictionary of key/values associated with a Rendezvous */
+/** User dictionary of key/value pairs associated with a Rendezvous */
 @property (readonly) NSDictionary *summaryValues;
 
 @end
@@ -190,13 +190,20 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 
 /** Deletes a Rendezvous. Not yet implemented.
  Use `deactivateRendezvous`
- @see [Deactivating a Rendezvous](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/activating_and_deactivating_rendezvous.html)
+ @see Deactivating a Rendezvous [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/updating_rendezvous.html#deactivate), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/updating_rendezvous.html#deactivate)
  */
 -(void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
 
 
-/** Update the Rendezvous with new summary Values
+/**
+ 
+ Updates the summaryValues for this Rendezvous
+ 
+ @see Updating Rendezvous metadata: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/updating_rendezvous.html#update), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/updating_rendezvous.html#update)
+ 
+ @param summaryValues A dictionary of key/value pairs. This will replace any existing summaryValues
+ @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
  */
 -(void)updateRendezvousWithSummaryValues:(NSDictionary*)summaryValues completionHandler:(void (^)(NSError *error))completionHandler;
 
