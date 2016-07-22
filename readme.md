@@ -35,4 +35,8 @@ This tutorial shows how to implement secure messaging using Rendezvous and Conve
 
 ####Sample apps
 
-The SDK includes *QatChat*, a messaging app, *QatPics* which demonstrates the Vault, *CustomerLookup* which shows how to retrieve items using metadata and *QRCodeRendezvous* and *BLERendezvous*, which demonstrate how to publish a Rendezvous in a QR code or BLE beacon respectively. For more details on building the examples, see either language version of the *Qredo iOS Programming Guide.*
+The SDK includes *QatChat*, a messaging app, *QatPics* which demonstrates the Vault, *CustomerLookup* which shows how to retrieve items using metadata and *QRCodeRendezvous* and *BLERendezvous*, which demonstrate how to publish a Rendezvous in a QR code or BLE beacon respectively. 
+
+Also included is *Epiq*, a word game for 1 or 2 players that demonstrates Vault, Rendezvous and Conversation and shows how to publish Rendezvous tags using QR Codes and Messages. Epiq is a great place to start getting ideas for your own apps.
+
+For more details on building the examples, see either language version of the *Qredo iOS Programming Guide.*
