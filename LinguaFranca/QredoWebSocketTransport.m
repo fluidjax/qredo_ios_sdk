@@ -42,9 +42,8 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; // 1 second 
     return canHandle;
 }
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate
-{
-    self = [super initWithServiceURL:serviceURL pinnedCertificate:certificate];
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL{
+    self = [super initWithServiceURL:serviceURL];
     if (self) {
         [self startWebSocket];
     }

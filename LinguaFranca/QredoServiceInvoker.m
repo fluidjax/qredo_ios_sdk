@@ -39,12 +39,11 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 
 
 + (instancetype)serviceInvokerWithServiceURL:(NSURL *)serviceURL
-                           pinnedCertificate:(QredoCertificate *)certificate
                               appCredentials:(QredoAppCredentials *)appCredentials{
-    return [[self alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate appCredentials:appCredentials];
+    return [[self alloc] initWithServiceURL:serviceURL appCredentials:appCredentials];
 }
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate appCredentials:(QredoAppCredentials *)appCredentials{
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL appCredentials:(QredoAppCredentials *)appCredentials{
     
     self = [super init];
     
@@ -57,7 +56,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         // Concurrent queue - will have synch reads, and async writes (with a barrier to block any concurrent reads)
         _callbacksDictionaryQueue = dispatch_queue_create("com.qredo.serviceInvoker.callbacks", DISPATCH_QUEUE_CONCURRENT);
 
-        _transport = [QredoTransport transportForServiceURL:serviceURL pinnedCertificate:certificate];
+        _transport = [QredoTransport transportForServiceURL:serviceURL];
         _appCredentials = appCredentials;
         
         

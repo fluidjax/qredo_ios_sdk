@@ -90,13 +90,6 @@ MQTTSessionTrustValidator trustValidatorWithTrustedCert(SecCertificateRef truste
     };
 }
 
-NSURLCredential *credentialForTrustUsingPinnedCertificate(SecTrustRef trust, SecCertificateRef trustedCert)
-{
-    trust = setAnchorForTrust(trust, trustedCert);
-    if (checkTrust(trust)) {
-        return [NSURLCredential credentialForTrust:trust];
-    }
-    return nil;
-}
+
 
 

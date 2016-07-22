@@ -42,8 +42,6 @@ static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 
 
 -(instancetype)initWithDefaultTrustedRoots;
--(instancetype)initDefaultPinnnedCertificate;
--(instancetype)initWithPinnedCertificate:(QredoCertificate *)certificate;
 
 @end
 

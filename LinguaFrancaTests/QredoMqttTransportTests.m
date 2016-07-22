@@ -67,7 +67,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:@"tcp://test.host.qredo.com:8765/path/to/somewhere"];
     
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     [transport close];
@@ -77,7 +77,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:@"tcp://test.host.qredo.com:8765"];
     
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     [transport close];
@@ -87,7 +87,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:@"ssl://test.host.qredo.com:8765/path/to/somewhere"];
     
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     [transport close];
@@ -97,7 +97,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:@"ssl://test.host.qredo.com:8765"];
     
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     [transport close];
@@ -107,7 +107,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:@"http://test.host.qredo.com:8765/path/to/somewhere"];
     
-    XCTAssertThrowsSpecificNamed([[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil], NSException, NSInvalidArgumentException, @"Provided unsupported URL scheme to QredoMqttTransport class but NSInvalidArgumentException not thrown.");
+    XCTAssertThrowsSpecificNamed([[QredoMqttTransport alloc] initWithServiceURL:serviceURL], NSException, NSInvalidArgumentException, @"Provided unsupported URL scheme to QredoMqttTransport class but NSInvalidArgumentException not thrown.");
 }
 
 - (void)testConnectsToServer
@@ -116,7 +116,7 @@
     const double MAX_POLL_DURATION = 2.0;
     
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     
     XCTAssertNotNil(transport, "Transport should not be nil.");
 
@@ -157,7 +157,7 @@
     const double MAX_POLL_DURATION = 2.0;
     
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     
     XCTAssertNotNil(transport, "Transport should not be nil.");
     
@@ -194,7 +194,7 @@
 - (void)testSupportsMultiResponse
 {
     NSURL *serviceURL = [NSURL URLWithString:@"tcp://early1.qredo.me"];
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     
     BOOL canHandle = [transport supportsMultiResponse];
     XCTAssertTrue(canHandle, @"MQTT transport should support multi-response");
@@ -206,7 +206,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
     
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     TransportListener *listener = [[TransportListener alloc] init];
@@ -225,7 +225,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
     
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     [transport configureReceivedResponseBlock:^(NSData *data, id userData) {}];
@@ -254,7 +254,7 @@
     const double MAX_POLL_DURATION = 2.0;
     
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     
     XCTAssertNotNil(transport, "Transport should not be nil.");
     
@@ -325,7 +325,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
     
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
 
     // Use a non-nil payload
@@ -341,7 +341,7 @@
     const double MAX_POLL_DURATION = 20.0;
     
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     
     XCTAssertNotNil(transport, "Transport should not be nil.");
     
@@ -396,7 +396,7 @@
     const double MAX_POLL_DURATION = 2.0;
     
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoMqttTransport *transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     
     XCTAssertNotNil(transport, "Transport should not be nil.");
     

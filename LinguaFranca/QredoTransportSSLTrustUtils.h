@@ -10,8 +10,3 @@
 
 
 MQTTSessionTrustValidator trustValidatorWithTrustedCert(SecCertificateRef trustedCert);
-
-NSURLCredential *credentialForTrustUsingPinnedCertificate(SecTrustRef trust, SecCertificateRef trustedCert);
-
-
-

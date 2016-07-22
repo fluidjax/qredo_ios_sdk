@@ -40,20 +40,16 @@ static const NSUInteger maxNumberOfConnections = 10;
     return canHandle;
 }
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate
-{
-    if (!serviceURL)
-    {
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL{
+    if (!serviceURL){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"Service URL argument is nil"]
                                      userInfo:nil];
     }
     
-    self = [super initWithServiceURL:serviceURL pinnedCertificate:certificate];
-    if (self)
-    {
-        if (![[self class] canHandleServiceURL:serviceURL])
-        {
+    self = [super initWithServiceURL:serviceURL];
+    if (self){
+        if (![[self class] canHandleServiceURL:serviceURL]){
             // Unsupported URL scheme
             @throw [NSException exceptionWithName:NSInvalidArgumentException
                                            reason:[NSString stringWithFormat:@"Class '%@' does not support provided URL scheme. Service URL: %@", [self class], serviceURL]
@@ -190,15 +186,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         SecTrustRef trust = [protectionSpace serverTrust];
         NSURLCredential *credential = nil;
         
-        if (self.pinnedCertificate){
-            //using pinned certificate
-            credential = credentialForTrustUsingPinnedCertificate(trust, self.pinnedCertificate.certificate);
-        }else{
-            //this is used when we use Trusted Roots
-            credential = [[NSURLCredential alloc] initWithTrust:trust];
-        }
-        
-
+        credential = [[NSURLCredential alloc] initWithTrust:trust];
         
         if (credential) {
             if (completionHandler)completionHandler(NSURLSessionAuthChallengeUseCredential, credential);

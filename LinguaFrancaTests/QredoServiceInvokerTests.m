@@ -54,7 +54,7 @@
 {
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:k_TEST_APPID appSecret:[NSData dataWithHexString:k_TEST_APPSECRET]];
    
-    QredoServiceInvoker *serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials];
+    QredoServiceInvoker *serviceInvoker = [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL appCredentials:appCredentials];
     XCTAssertNotNil(serviceInvoker);
     
     // Give time for any threading needed to setup transport etc
@@ -120,7 +120,7 @@
                                                                              appSecret:[NSData dataWithHexString:k_TEST_APPSECRET]];
     
     
-    XCTAssertThrowsSpecificNamed( [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL pinnedCertificate:nil appCredentials:appCredentials],
+    XCTAssertThrowsSpecificNamed( [[QredoServiceInvoker alloc] initWithServiceURL:serviceURL appCredentials:appCredentials],
                                  NSException,
                                  NSInvalidArgumentException,
                                  @"Nil NSURL but NSInvalidArgumentException not thrown.");

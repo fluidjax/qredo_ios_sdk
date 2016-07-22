@@ -60,8 +60,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
     return canHandle;
 }
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate
-{
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL{
     if (!serviceURL)
     {
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -69,7 +68,7 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
                                      userInfo:nil];
     }
     
-    self = [super initWithServiceURL:serviceURL pinnedCertificate:certificate];
+    self = [super initWithServiceURL:serviceURL];
     if (self)
     {
         if (![[self class] canHandleServiceURL:serviceURL])
@@ -316,17 +315,10 @@ static const NSTimeInterval MqttCancellationCheckPeriod = 0.5; // Frequency to c
 - (void)connectToServerUsingSession:(MQTTSession *)mqttSession
 {
     if (self.usingSsl) {
-        if (self.pinnedCertificate) {
-            [mqttSession connectToHost:self.host
-                                  port:self.port
- usingSSLWithStreamSocketSecurityLevel:kCFStreamSocketSecurityLevelTLSv1
-                        trustValidator:trustValidatorWithTrustedCert(self.pinnedCertificate.certificate)];
-        } else {
             [mqttSession connectToHost:self.host
                                   port:self.port
  usingSSLWithStreamSocketSecurityLevel:kCFStreamSocketSecurityLevelTLSv1
                         trustValidator:nil];
-        }
     } else {
         [mqttSession connectToHost:self.host port:self.port];
     }

@@ -15,7 +15,6 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
 @interface QredoTransport ()
 
 @property (strong) NSURL *serviceURL;
-@property (strong) QredoCertificate *pinnedCertificate;
 @property (strong) QredoClientId *clientId;
 
 @property (copy) ReceivedResponseBlock receivedResponseBlock;
@@ -26,8 +25,7 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
 
 @implementation QredoTransport
 
-+ (instancetype)transportForServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate
-{
++ (instancetype)transportForServiceURL:(NSURL *)serviceURL{
     if (!serviceURL)
     {
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -40,16 +38,16 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     if ([QredoMqttTransport canHandleServiceURL:serviceURL])
     {
         // Create the MQTT transport
-        transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate];
+        transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
     }
     else if([QredoHttpTransport canHandleServiceURL:serviceURL])
     {
         // Create the HTTP transport
-        transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate];
+        transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     }
     else if ([QredoWebSocketTransport canHandleServiceURL:serviceURL])
     {
-        transport = [[QredoWebSocketTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:certificate];
+        transport = [[QredoWebSocketTransport alloc] initWithServiceURL:serviceURL];
     }
     else
     {
@@ -82,8 +80,7 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     return nil;
 }
 
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate
-{
+- (instancetype)initWithServiceURL:(NSURL *)serviceURL{
     if (!serviceURL)
     {
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -98,7 +95,6 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
         _notificationQueue = dispatch_queue_create("com.qredo.transport.notifications", DISPATCH_QUEUE_CONCURRENT);
 
         _serviceURL = serviceURL;
-        _pinnedCertificate = certificate;
         _clientId = [QredoClientId randomClientId];
     }
     

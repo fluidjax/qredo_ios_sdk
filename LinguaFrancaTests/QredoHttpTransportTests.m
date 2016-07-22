@@ -46,7 +46,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:@"http://test.host.qredo.com:8765/path/to/somewhere"];
     
-    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     [transport close];
@@ -56,13 +56,13 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
     
-    XCTAssertThrowsSpecificNamed([[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil], NSException, NSInvalidArgumentException, @"Provided unsupported URL scheme to QredoHttpTransport class but NSInvalidArgumentException not thrown.");
+    XCTAssertThrowsSpecificNamed([[QredoHttpTransport alloc] initWithServiceURL:serviceURL], NSException, NSInvalidArgumentException, @"Provided unsupported URL scheme to QredoHttpTransport class but NSInvalidArgumentException not thrown.");
 }
 
 - (void)testSupportsMultiResponse
 {
     NSURL *serviceURL = [NSURL URLWithString:@"http://early1.qredo.me:8080/services"];
-    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL ];
     
     BOOL canHandle = [transport supportsMultiResponse];
     XCTAssertFalse(canHandle, @"HTTP transport should not support multi-response");
@@ -74,7 +74,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     
-    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     transport.responseDelegate = self;
@@ -92,7 +92,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     
-    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     [transport configureReceivedResponseBlock:^(NSData *data, id userData) {}];
@@ -111,7 +111,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     
-    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     id userData = [NSData dataWithRandomBytesOfLength:16];
@@ -143,7 +143,7 @@
 {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     
-    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL pinnedCertificate:nil];
+    QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     XCTAssertNotNil(transport, @"Transport should not be nil.");
     
     // Use a non-nil payload

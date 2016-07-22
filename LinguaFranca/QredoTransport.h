@@ -41,7 +41,6 @@ typedef void (^ReceivedErrorBlock)(NSError *error, id userData);
 }
 
 @property (readonly, strong) NSURL *serviceURL;
-@property (readonly, strong) QredoCertificate *pinnedCertificate;
 @property (readonly, strong) QredoClientId *clientId;
 @property (readonly, assign) BOOL transportClosed;
 
@@ -50,9 +49,9 @@ typedef void (^ReceivedErrorBlock)(NSError *error, id userData);
 @property (readonly, copy) ReceivedResponseBlock receivedResponseBlock;
 @property (readonly, copy) ReceivedErrorBlock receivedErrorBlock;
 
-+ (instancetype)transportForServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate;
++ (instancetype)transportForServiceURL:(NSURL *)serviceURL;
 + (BOOL)canHandleServiceURL:(NSURL *)serviceURL;
-- (instancetype)initWithServiceURL:(NSURL *)serviceURL pinnedCertificate:(QredoCertificate *)certificate;
+- (instancetype)initWithServiceURL:(NSURL *)serviceUR;
 - (BOOL)supportsMultiResponse;
 - (void)send:(NSData*)payload userData:(id)userData;
 - (void)close;
