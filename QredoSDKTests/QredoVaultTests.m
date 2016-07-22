@@ -1,3 +1,4 @@
+
 /*
  *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
  */
@@ -470,6 +471,36 @@
     
     
     
+    
+    
+    
+    //enumerate the items in the valut (!Note not all versions - so should only retrun the latest) - ie. consolidated
+    __block int count4 =0;
+    __block XCTestExpectation *completionHandlerCalled4 = [self expectationWithDescription:@"EnumerateVaultItems completion handler called"];
+    
+    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop) {
+        count4++;
+        //NSLog(@"ENUM after delete %@",vaultItemMetadata.descriptor);
+    } completionHandler:^(NSError *error) {
+        [completionHandlerCalled4 fulfill];
+        completionHandlerCalled4 = nil;
+        //complete
+    }];
+    
+    [self waitForExpectationsWithTimeout:30 handler:^(NSError *error) {
+        completionHandlerCalled4 = nil;
+    }];
+    
+    
+    XCTAssertTrue(count4==1,@"there should be 1 items in the vault there are %i", count4);
+    
+    
+  
+    
+
+    
+    
+    
     //now delete the item
     // delete item
     __block QredoVaultItemDescriptor *deleteItemDescriptor = nil;
@@ -512,13 +543,11 @@
     XCTAssertTrue(count3==3,@"there should be 3 items in the vault there are %i", count3);
     
     
-    [client closeSession];
     
     
     
     
-    
-    
+      [client closeSession];
 }
 
 

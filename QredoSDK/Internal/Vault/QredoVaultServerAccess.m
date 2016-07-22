@@ -364,6 +364,8 @@
 
              QredoVaultItemDescriptor *(^backpointerOfMetadata)(QredoVaultItemMetadata *metadata) = ^QredoVaultItemDescriptor *(QredoVaultItemMetadata *metadata) {
                  NSNumber *previousSequenceValue = metadata.summaryValues[@"_v"];
+                 
+                 
                  if (!previousSequenceValue) {
                      return nil;
                  }

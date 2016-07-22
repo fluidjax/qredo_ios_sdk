@@ -938,31 +938,26 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoConversationMessage *leftControlMessage = [[QredoConversationMessage alloc] initWithValue:qrtValue
                                                                                             dataType:kQredoConversationMessageTypeControl
                                                                                        summaryValues:nil];
-
     [self publishMessage:leftControlMessage
        completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error){
         if (error) {
             if (completionHandler)completionHandler(error);
             return ;
         }
-        
         _deleted = YES;
         
         QredoVault *vault = [_client systemVault];
 
         [vault getItemMetadataWithDescriptor:self.metadata.conversationRef.vaultItemDescriptor
-                           completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error)
-        {
-            if (error) {
+                           completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata, NSError *error){
+            if (error){
                 QredoLogError(@"Delete Conversation failed with error %@",error);
-
                 if (completionHandler)completionHandler(error);
                 return ;
             }
 
             [vault deleteItem:vaultItemMetadata
-            completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error) {
-                
+            completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor, NSError *error){
                 if (completionHandler)completionHandler(error);
             }];
             

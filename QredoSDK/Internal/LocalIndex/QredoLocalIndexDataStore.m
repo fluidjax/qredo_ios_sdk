@@ -102,8 +102,6 @@ static NSMutableDictionary *dataStoreDictionary;
     
     BOOL isDir;
     
-    
-    
     if(![fileManager fileExistsAtPath:[qredoDirectory path] isDirectory:&isDir])
         if(![fileManager createDirectoryAtPath:[qredoDirectory path] withIntermediateDirectories:NO attributes:nil error:NULL])
             NSLog(@"Error: Create folder failed %@", qredoDirectory);
@@ -120,6 +118,7 @@ static NSMutableDictionary *dataStoreDictionary;
     
     NSURL *storeURL = [qredoDirectory URLByAppendingPathComponent:filename];
     _storeUrl = _storeUrl;
+
     return storeURL;
 }
 
@@ -166,6 +165,11 @@ static NSMutableDictionary *dataStoreDictionary;
     
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];
+
+
+
+
+    
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
     //Persistent Store Coordinator
@@ -188,6 +192,9 @@ static NSMutableDictionary *dataStoreDictionary;
     
     NSURL *storeURL = [QredoLocalIndexDataStore storeURL:self.userCredentials];
     
+
+    
+    
     NSError *error = nil;
     [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error];
     NSAssert(psc,@"MetadataIndex: Failed to initialize NSPersistentStoreCoordinator: %@\n%@", [error localizedDescription], [error userInfo]);
@@ -199,9 +206,13 @@ static NSMutableDictionary *dataStoreDictionary;
     [self setPrivateContext:privateMoc];
     [self setManagedObjectContext:moc];
     
-    QredoLogDebug(@"Store URL: %@",storeURL);
-    QredoLogDebug(@"Model URL: %@",modelURL);
-
+   
+#if (TARGET_OS_SIMULATOR)
+    NSLog(@"Store URL: %@",storeURL);
+    NSLog(@"Model URL: %@",modelURL);
+#endif
+    
+    
 }
 
 @end
