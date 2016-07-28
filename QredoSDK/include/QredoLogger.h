@@ -43,7 +43,7 @@ typedef NS_ENUM (NSInteger, QredoLogLevel) {
  
  Logs diagnostic output to the console.
  
- By default logging will be reported for all objects, however you can restrict logging to a list of permitted classes using [addLoggingForObject](#/c:objc(cs)QredoLogger(cm)addLoggingForObject:) or [addLoggingForObject](#/c:objc(cs)QredoLogger(cm)addLoggingForClassName:)
+ By default logging will be reported for all objects, however you can restrict logging to a list of permitted classes using [addLoggingForObject](#/c:objc(cs)QredoLogger(cm)addLoggingForObject:) or [addLoggingForClassName](#/c:objc(cs)QredoLogger(cm)addLoggingForClassName:)
  
  You can use logging in two ways:
  

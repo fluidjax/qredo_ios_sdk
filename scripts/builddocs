@@ -17,6 +17,7 @@ jazzy\
  --output docs/objc \
  --theme fullwidth \
  --hide-documentation-coverage \
+ --skip-undocumented \
  --copyright "@[Qredo](https://qredo.com) Ltd 2016. All rights reserved. API version 0.99.1" 
  
 #awk '/'UnsafeMutablePointer'/{c++;if(c==2){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoConversationHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=0}}1' docs/objc/Classes/QredoConversation.html > docs/objc/Classes/x.html
