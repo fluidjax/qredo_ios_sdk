@@ -60,6 +60,12 @@ mv $path/x.html $path/QredoLogger.html
 sed 's|<span class="nv">block</span><span class="p">||' $path/QredoVault.html  > $path/x.html
 mv $path/x.html $path/QredoVault.html
 
+#Add our edited jazzy.css file
+rm -f  docs/objc/css/jazzy.css
+cp scripts/jazzy.css docs/objc/css
+mv docs/objc docs/apireference
+
+
 
 
 
