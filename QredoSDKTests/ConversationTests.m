@@ -396,7 +396,7 @@ static float delayInterval = 0.4;
 - (QredoConversation *)isolateRespondToRendezvous:(NSString *)randomTag rendezvous:(QredoRendezvous *)rendezvous{
     // Responding to the rendezvous
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
-    self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
+    self.didReceiveResponseExpectation = didRespondExpectation;//[self expectationWithDescription:@"received response in the creator's delegate"];
     
     QredoLogDebug(@"Responding to Rendezvous");
     __block QredoConversation *responderConversation = nil;
@@ -426,7 +426,7 @@ NSString *firstMessageText;
 NSString *secondMessageText;
 - (QredoConversationHighWatermark *)isolatePublishMessage1:(ConversationMessageListener *)listener responderConversation:(QredoConversation *)responderConversation {
     __block XCTestExpectation *didPublishMessageExpectation = [self expectationWithDescription:@"published 1 message before listener started"];
-    self.didReceiveMessageExpectation = [self expectationWithDescription:@"received 1 message published before listening"];
+    self.didReceiveMessageExpectation = didPublishMessageExpectation;//[self expectationWithDescription:@"received 1 message published before listening"];
     
     QredoConversationMessage *firstMessage = [[QredoConversationMessage alloc] initWithValue:[firstMessageText dataUsingEncoding:NSUTF8StringEncoding]
                                                                                     dataType:kMessageType
@@ -461,20 +461,19 @@ NSString *secondMessageText;
 
 - (QredoConversationHighWatermark *)isolatePublishMessage2:(ConversationMessageListener *)listener responderConversation:(QredoConversation *)responderConversation {
     QredoConversationMessage *secondMessage = [[QredoConversationMessage alloc] initWithValue:[secondMessageText dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
-    __block XCTestExpectation *didPublishMessageExpectation2 = [self expectationWithDescription:@"published a message after listener started"];
-    
+   // __block XCTestExpectation *didPublishMessageExpectation2 = [self expectationWithDescription:@"published a message after listener started"];
     listener.listening = YES;
-    
-    
     __block QredoConversationHighWatermark *hwm = nil;
       [NSThread sleepForTimeInterval:delayInterval];
+    
     [responderConversation publishMessage:secondMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
                             QredoLogDebug(@"Publish message (after listening started) completion handler called.");
                             XCTAssertNil(error);
                             XCTAssertNotNil(messageHighWatermark);
                             QredoLogDebug(@"Message 2 published. %@", messageHighWatermark);
-                            [didPublishMessageExpectation2 fulfill];
+                           //[didPublishMessageExpectation2 fulfill];
+                            [self.didReceiveMessageExpectation fulfill];
                             hwm = messageHighWatermark;
                         }];
     
@@ -482,7 +481,7 @@ NSString *secondMessageText;
         if (error){
             NSLog(@"error");
         }
-        didPublishMessageExpectation2 = nil;
+       // didPublishMessageExpectation2 = nil;
         
         @synchronized(listener) {
             listener.listening = NO;
@@ -496,104 +495,36 @@ NSString *secondMessageText;
 
 
 -(void)testOtherPartyHasLeft{
+    [self buildStack1];
     
-    //Client1: Create Rendezvous
-    //Client2: Respond to Rendezvous
-    //Client1: get Conversation and then call deleteConversationWithCompletionHandler
-    //Client2: Receives qredoConversationOtherPartyHasLeft callback in its QredoConversationObserver
-    
-    //static NSString *randomTag;
-    
-    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue, [QredoNetworkTime dateTime]];
-    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@", kMessageTestValue2, [QredoNetworkTime dateTime]];
-    rvuFulfilledTimes = 0;
-    self.didReceiveResponseExpectation = nil;
-    
-    // NSLog(@"TAG %@",randomTag);
-    
-    //register listener
-    ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
-    listener.expectedMessageValue = firstMessageText;
-    listener.test = self;
-    
-    
-    //Create Rendezvous
-    [NSThread sleepForTimeInterval:delayInterval];
-    
-    //static QredoRendezvous *rendezvous;
-    QredoRendezvous *rendezvous=nil;
-    if (!rendezvous){
-        rendezvous= [self isolateCreateRendezvous];
-        [rendezvous addRendezvousObserver:self];
-    }
-    
-    NSString *randomTag = rendezvous.tag;
-    
-    //this is a fix so the observer registers before the rendezvous is responded to.
-    [NSThread sleepForTimeInterval:delayInterval];
-    
-    
-    //Respond to Rendezvous
-    QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
-    
-    [creatorConversation addConversationObserver:listener];
-    [NSThread sleepForTimeInterval:delayInterval];
-    
-    //Response to Rendezvous
-    
-    //////SETUP COMPLETE -
-    
-    
-    
-    //get primary conversation
-    
-    
-    __block QredoConversationMetadata *primaryConverationMetadata  = nil;
-    __block XCTestExpectation *getPrimaryConv = [self expectationWithDescription:@"get first conversation"];
-    
-    
-    [rendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata, BOOL *stop) {
-        primaryConverationMetadata = conversationMetadata;
-    } completionHandler:^(NSError *error) {
-        [getPrimaryConv fulfill];
-        XCTAssertNil(error);
-    }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-        XCTAssertNil(error);
-    }];
+    __block XCTestExpectation *deletdConv = [self expectationWithDescription:@"Delet 1st conversation"];
 
     
-     //delete the conversation
-    __block XCTestExpectation *delcon = [self expectationWithDescription:@"del con"];
-    [client deleteConversationWithRef:primaryConverationMetadata.conversationRef
+    
+    [testClient1 deleteConversationWithRef:conversation1.metadata.conversationRef
                     completionHandler:^(NSError *error) {
-                        [delcon fulfill];
+                        XCTAssertNil(error);
+                        [deletdConv fulfill];
                     }];
     
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         XCTAssertNil(error);
+        deletdConv=nil;
     }];
-
     
-    //wait for the observer to get the qredoConversationOtherPartyHasLeft callback
     
     ConversationMessageListener *deleteListener = [[ConversationMessageListener alloc] init];
-    deleteListener.expectedMessageValue = @"hello";
-    deleteListener.test = self;
     self.didRecieveOtherPartyHasLeft = [self expectationWithDescription:@"wait to be notified of other party has left"];
+    deleteListener.expectedMessageValue = @"Message";
+    deleteListener.test = self;
     deleteListener.listening = YES;
-    [responderConversation addConversationObserver:deleteListener];
+    [conversation2 addConversationObserver:deleteListener];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
         XCTAssertNil(error);
     }];
-
-   [responderConversation removeConversationObserver:deleteListener];
-   [creatorConversation removeConversationObserver:listener];
-   [rendezvous removeRendezvousObserver:self];
-   [client closeSession];
+    
 }
 
 

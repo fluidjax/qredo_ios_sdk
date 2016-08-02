@@ -402,7 +402,7 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
     idleTimer++;
     if (idleTimer >= keepAliveInterval) {
         if ([encoder status] == MQTTEncoderStatusReady) {
-            QredoLogError(@"sending PINGREQ");
+            QredoLogDebug(@"sending PINGREQ");
             [encoder encodeMessage:[MQTTMessage pingreqMessage]];
             idleTimer = 0;
         }
@@ -421,13 +421,13 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
 }
 
 - (void)encoder:(MQTTEncoder*)sender handleEvent:(MQTTEncoderEvent) eventCode {
-   QredoLogError(@"encoder:(MQTTEncoder*)sender handleEvent:(MQTTEncoderEvent) eventCode ");
+   QredoLogDebug(@"encoder:(MQTTEncoder*)sender handleEvent:(MQTTEncoderEvent) eventCode ");
     if(sender == encoder) {
         switch (eventCode) {
             case MQTTEncoderEventReady:
                 switch (status) {
                     case MQTTSessionStatusCreated:
-                        QredoLogError(@"Encoder has been created. Sending Auth Message");
+                        QredoLogDebug(@"Encoder has been created. Sending Auth Message");
                         [sender encodeMessage:connectMessage];
                         status = MQTTSessionStatusConnecting;
                         break;
@@ -452,7 +452,7 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
 }
 
 - (void)decoder:(MQTTDecoder*)sender handleEvent:(MQTTDecoderEvent)eventCode {
-    QredoLogError(@"decoder:(MQTTDecoder*)sender handleEvent:(MQTTDecoderEvent)eventCode");
+    QredoLogDebug(@"decoder:(MQTTDecoder*)sender handleEvent:(MQTTDecoderEvent)eventCode");
     if(sender == decoder) {
         MQTTSessionEvent event;
         switch (eventCode) {
@@ -471,7 +471,7 @@ streamSocketSecurityLevel:(CFStringRef)streamSocketSecurityLevel
 }
 
 - (void)decoder:(MQTTDecoder*)sender newMessage:(MQTTMessage*)msg {
-    QredoLogError(@"decoder:(MQTTDecoder*)sender newMessage:(MQTTMessage*)msg ");
+    QredoLogDebug(@"decoder:(MQTTDecoder*)sender newMessage:(MQTTMessage*)msg ");
     if(sender == decoder){
         switch (status) {
             case MQTTSessionStatusConnecting:
