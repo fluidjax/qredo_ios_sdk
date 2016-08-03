@@ -71,9 +71,6 @@
                <Test
                   Identifier = "QredoVaultUpdateMQTTTests">
                </Test>
-               <Test
-                  Identifier = "SSLTimeSyncTests/testExample">
-               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
