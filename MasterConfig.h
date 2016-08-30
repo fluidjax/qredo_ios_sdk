@@ -1,5 +1,5 @@
 //
-//  config.h
+//  MasterConfig
 //  QredoSDK
 //
 //  Created by Christopher Morris on 25/05/2016.
