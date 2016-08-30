@@ -8,6 +8,8 @@
 #import "QredoHttpTransport.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoLoggerPrivate.h"
+#import "MasterConfig.h"
+
 
 @interface QredoHttpTransportTests : XCTestCase<QredoTransportDelegate>
 
@@ -59,9 +61,11 @@
     XCTAssertThrowsSpecificNamed([[QredoHttpTransport alloc] initWithServiceURL:serviceURL], NSException, NSInvalidArgumentException, @"Provided unsupported URL scheme to QredoHttpTransport class but NSInvalidArgumentException not thrown.");
 }
 
-- (void)testSupportsMultiResponse
-{
-    NSURL *serviceURL = [NSURL URLWithString:@"http://early1.qredo.me:8080/services"];
+- (void)testSupportsMultiResponse{
+    
+
+    
+    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL ];
     
     BOOL canHandle = [transport supportsMultiResponse];
