@@ -3,13 +3,14 @@
  */
 
 #import <XCTest/XCTest.h>
+#import "QredoXCTestCase.h"
 #import "QredoServiceInvoker.h"
 #import "QredoTestConfiguration.h"
 #import "QredoClient.h"
 #import "NSData+QredoRandomData.h"
 #import "NSData+ParseHex.h"
 
-@interface QredoServiceInvokerTests : XCTestCase
+@interface QredoServiceInvokerTests : QredoXCTestCase
 
 @property NSUInteger pingSuccessResponseCount;
 @property NSUInteger pingErrorResponseCount;

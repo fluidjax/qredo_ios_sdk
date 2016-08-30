@@ -1,11 +1,12 @@
 #import <XCTest/XCTest.h>
+#import "QredoXCTestCase.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoWireFormat.h"
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
 #import "NSData+ParseHex.h"
 
-@interface QredoWireFormatTests : XCTestCase
+@interface QredoWireFormatTests : QredoXCTestCase
 
 @end
 
