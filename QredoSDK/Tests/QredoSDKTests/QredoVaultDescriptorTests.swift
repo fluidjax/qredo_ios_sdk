@@ -3,7 +3,6 @@ import XCTest
 
 class QredoVaultDescriptorTests: XCTestCase {
     var client : QredoClient! = nil
-    var useMQTT = false
     var itemDescriptor : QredoVaultItemDescriptor? = nil
 
     let initialSummaryValues = ["key 1" : "value 1"]

@@ -18,7 +18,6 @@
 
 typedef NS_ENUM (NSUInteger, QredoClientOptionsTransportType) {
     QredoClientOptionsTransportTypeHTTP,
-    QredoClientOptionsTransportTypeMQTT,
     QredoClientOptionsTransportTypeWebSockets,
 };
 

@@ -44,8 +44,6 @@
 // to make sure that nothing has been missed from the subscribe results
 @property (nonatomic) NSTimeInterval pollIntervalDuringSubscribe;
 
-// on MQTT there is no confirmation that subscribtion has been successful. (not sure yet if it is the case with WebSockets)
-// therefore, we need to unsubscribe and subscribe from time to time
 @property (nonatomic) NSTimeInterval renewSubscriptionInterval;
 
 @property (nonatomic) BOOL enumerateAfterSubscription;

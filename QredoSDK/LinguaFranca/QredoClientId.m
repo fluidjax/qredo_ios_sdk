@@ -17,9 +17,9 @@ const int ReturnChannelIdSize = 16;
 + (instancetype)randomClientId
 {
     NSData *randomData = [QredoClientId secureRandomWithSize:ReturnChannelIdSize];
-    QredoClientId *mqttClientId = [QredoClientId clientIdFromData:randomData];
+    QredoClientId *clientId = [QredoClientId clientIdFromData:randomData];
     
-    return mqttClientId;
+    return clientId;
 }
 
 + (NSData *)secureRandomWithSize:(NSUInteger)size
@@ -54,9 +54,9 @@ const int ReturnChannelIdSize = 16;
     NSString *base64String = [data base64EncodedStringWithOptions:0];
     NSString *topicSafe = [QredoClientId getTopicSafeStringFromBase64:base64String];
     NSString *noPadding = [QredoClientId dropPaddingFromBase64String:topicSafe];
-    QredoClientId *mqttClientId = [[QredoClientId alloc] initWithClientIdSafeString:noPadding];
+    QredoClientId *clientID = [[QredoClientId alloc] initWithClientIdSafeString:noPadding];
     
-    return mqttClientId;
+    return clientID;
 }
 
 + (NSString *)dropPaddingFromBase64String:(NSString *)base64String

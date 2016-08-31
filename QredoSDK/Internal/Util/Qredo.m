@@ -36,7 +36,6 @@ NSString *const QredoClientOptionServiceURL                 = @"com.qredo.option
 
 
 static NSString *const QredoClientDefaultServiceURL         = @"https://" QREDO_SERVER_URL  @":443/services";
-static NSString *const QredoClientMQTTServiceURL            = @"ssl://"   QREDO_SERVER_URL  @":8883";
 static NSString *const QredoClientWebSocketsServiceURL      = @"wss://"   QREDO_SERVER_URL  @":443/services";
 
 
@@ -173,11 +172,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     switch (transportType) {
         case QredoClientOptionsTransportTypeHTTP:
-            
             serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
-            break;
-        case QredoClientOptionsTransportTypeMQTT:
-            serviceURL = [NSURL URLWithString:QredoClientMQTTServiceURL];
             break;
         case QredoClientOptionsTransportTypeWebSockets:
             serviceURL = [NSURL URLWithString:QredoClientWebSocketsServiceURL];

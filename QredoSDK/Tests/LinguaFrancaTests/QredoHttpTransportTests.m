@@ -54,12 +54,6 @@
     [transport close];
 }
 
-- (void)testInitWithServiceURL_IncorrectMqttUrl
-{
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    
-    XCTAssertThrowsSpecificNamed([[QredoHttpTransport alloc] initWithServiceURL:serviceURL], NSException, NSInvalidArgumentException, @"Provided unsupported URL scheme to QredoHttpTransport class but NSInvalidArgumentException not thrown.");
-}
 
 - (void)testSupportsMultiResponse{
     

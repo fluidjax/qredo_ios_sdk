@@ -207,7 +207,6 @@
 		66E6F8E51BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; };
 		66F774B21BD64AFC00F01A2C /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B4B1BD5266700EC8D6C /* TestCertificates.m */; };
 		66F775391BD653F800F01A2C /* QredoHttpTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573E81A2DEC0500D5502E /* QredoHttpTransportTests.m */; };
-		66F7753A1BD653F800F01A2C /* QredoMqttTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573E91A2DEC0500D5502E /* QredoMqttTransportTests.m */; };
 		66F7753B1BD653F800F01A2C /* QredoSExpressionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573EA1A2DEC0500D5502E /* QredoSExpressionTests.m */; };
 		66F7753D1BD653F800F01A2C /* QredoTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573EC1A2DEC0500D5502E /* QredoTransportTests.m */; };
 		66F7753E1BD653F800F01A2C /* QredoWireFormatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573ED1A2DEC0500D5502E /* QredoWireFormatTests.m */; };
@@ -289,7 +288,6 @@
 		83480B4C1D51F4B70034090E /* NSDictionary+Contains.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573FA1A2F3B7200D5502E /* NSDictionary+Contains.m */; };
 		83480B4D1D51F4B70034090E /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
 		83480B4E1D51F4B70034090E /* QredoRendezvousCryptoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */; };
-		83480B4F1D51F4B70034090E /* ConversationMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573F41A2F3B7200D5502E /* ConversationMQTTTests.m */; };
 		83480B501D51F4B70034090E /* TestFrameworkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EDB5CF1CE2236A00F4F556 /* TestFrameworkTests.m */; };
 		83480B511D51F4B70034090E /* QredoVaultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6574081A2F3B7200D5502E /* QredoVaultTests.m */; };
 		83480B521D51F4B70034090E /* QredoClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E6CFED1C1AE80000A501D8 /* QredoClientTests.m */; };
@@ -297,16 +295,13 @@
 		83480B541D51F4B70034090E /* ConversationWebSocketTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 782D15C81AEAEF3200E13B92 /* ConversationWebSocketTests.m */; };
 		83480B551D51F4B70034090E /* ConversationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573F61A2F3B7200D5502E /* ConversationTests.m */; };
 		83480B561D51F4B70034090E /* QredoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EDB5C71CE20E1300F4F556 /* QredoUtils.m */; };
-		83480B571D51F4B70034090E /* QredoRendezvousMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573FC1A2F3B7200D5502E /* QredoRendezvousMQTTTests.m */; };
 		83480B581D51F4B70034090E /* QredoRendezvousWebSocketTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 782D15CA1AEAF4F700E13B92 /* QredoRendezvousWebSocketTests.m */; };
 		83480B591D51F4B70034090E /* QredoRendezvousTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573FE1A2F3B7200D5502E /* QredoRendezvousTests.m */; };
 		83480B5A1D51F4B70034090E /* QredoSExpressionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6574001A2F3B7200D5502E /* QredoSExpressionTests.m */; };
 		83480B5B1D51F4B70034090E /* QredoTestUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6574031A2F3B7200D5502E /* QredoTestUtils.m */; };
 		83480B5C1D51F4B70034090E /* ReadableKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 8346FF9A1CDB775500A4CEAE /* ReadableKeys.m */; };
-		83480B5D1D51F4B70034090E /* QredoVaultMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6574061A2F3B7200D5502E /* QredoVaultMQTTTests.m */; };
 		83480B5E1D51F4B70034090E /* QredoIndexVaultTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 837526AD1C0F4F3A004DDDB2 /* QredoIndexVaultTests.m */; };
 		83480B5F1D51F4B70034090E /* QredoVaultWebSocketTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7805FF6C1AEA5B12006AF2FE /* QredoVaultWebSocketTests.m */; };
-		83480B601D51F4B70034090E /* QredoVaultUpdateMQTTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6574091A2F3B7200D5502E /* QredoVaultUpdateMQTTTests.m */; };
 		83480B611D51F4B70034090E /* QredoVaultUpdateWebSocketTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 782D15CC1AEAFCC800E13B92 /* QredoVaultUpdateWebSocketTests.m */; };
 		83480B621D51F4B70034090E /* QredoXCTestListeners.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B023421CE2338A00431532 /* QredoXCTestListeners.m */; };
 		83480B631D51F4B70034090E /* HighwatermarksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573F81A2F3B7200D5502E /* HighwatermarksTests.m */; };
@@ -726,29 +721,24 @@
 		0A6573E11A2DEBA300D5502E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A6573E71A2DEC0500D5502E /* QredoClientIdTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClientIdTests.m; sourceTree = "<group>"; };
 		0A6573E81A2DEC0500D5502E /* QredoHttpTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoHttpTransportTests.m; sourceTree = "<group>"; };
-		0A6573E91A2DEC0500D5502E /* QredoMqttTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoMqttTransportTests.m; sourceTree = "<group>"; };
 		0A6573EA1A2DEC0500D5502E /* QredoSExpressionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoSExpressionTests.m; sourceTree = "<group>"; };
 		0A6573EB1A2DEC0500D5502E /* QredoTestConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoTestConfiguration.h; sourceTree = "<group>"; };
 		0A6573EC1A2DEC0500D5502E /* QredoTransportTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoTransportTests.m; sourceTree = "<group>"; };
 		0A6573ED1A2DEC0500D5502E /* QredoWireFormatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoWireFormatTests.m; sourceTree = "<group>"; };
-		0A6573F41A2F3B7200D5502E /* ConversationMQTTTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationMQTTTests.m; sourceTree = "<group>"; };
 		0A6573F51A2F3B7200D5502E /* ConversationTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationTests.h; sourceTree = "<group>"; };
 		0A6573F61A2F3B7200D5502E /* ConversationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationTests.m; sourceTree = "<group>"; };
 		0A6573F81A2F3B7200D5502E /* HighwatermarksTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighwatermarksTests.m; sourceTree = "<group>"; };
 		0A6573F91A2F3B7200D5502E /* NSDictionary+Contains.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Contains.h"; sourceTree = "<group>"; };
 		0A6573FA1A2F3B7200D5502E /* NSDictionary+Contains.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Contains.m"; sourceTree = "<group>"; };
 		0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousCryptoTest.m; sourceTree = "<group>"; };
-		0A6573FC1A2F3B7200D5502E /* QredoRendezvousMQTTTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousMQTTTests.m; sourceTree = "<group>"; };
 		0A6573FD1A2F3B7200D5502E /* QredoRendezvousTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoRendezvousTests.h; sourceTree = "<group>"; };
 		0A6573FE1A2F3B7200D5502E /* QredoRendezvousTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousTests.m; sourceTree = "<group>"; };
 		0A6573FF1A2F3B7200D5502E /* QredoSDKTests-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "QredoSDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		0A6574001A2F3B7200D5502E /* QredoSExpressionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoSExpressionTests.m; sourceTree = "<group>"; };
 		0A6574021A2F3B7200D5502E /* QredoTestUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoTestUtils.h; sourceTree = "<group>"; };
 		0A6574031A2F3B7200D5502E /* QredoTestUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoTestUtils.m; sourceTree = "<group>"; };
-		0A6574061A2F3B7200D5502E /* QredoVaultMQTTTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultMQTTTests.m; sourceTree = "<group>"; };
 		0A6574071A2F3B7200D5502E /* QredoVaultTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoVaultTests.h; sourceTree = "<group>"; };
 		0A6574081A2F3B7200D5502E /* QredoVaultTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultTests.m; sourceTree = "<group>"; };
-		0A6574091A2F3B7200D5502E /* QredoVaultUpdateMQTTTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultUpdateMQTTTests.m; sourceTree = "<group>"; };
 		0A65740A1A2F3B7200D5502E /* QredoVaultUpdateTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoVaultUpdateTests.h; sourceTree = "<group>"; };
 		0A65740B1A2F3B7200D5502E /* QredoVaultUpdateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoVaultUpdateTests.m; sourceTree = "<group>"; };
 		0A65740C1A2F3B7200D5502E /* RendezvousListenerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RendezvousListenerTests.m; sourceTree = "<group>"; };
@@ -1250,24 +1240,20 @@
 				DC1B55131A81244400D2F8B1 /* Internal */,
 				0A65741E1A2F3C8800D5502E /* Categories */,
 				0A6573FB1A2F3B7200D5502E /* QredoRendezvousCryptoTest.m */,
-				0A6573F41A2F3B7200D5502E /* ConversationMQTTTests.m */,
 				782D15C81AEAEF3200E13B92 /* ConversationWebSocketTests.m */,
 				66C46CD61BF38AF60078B3C0 /* ConversationWebSocketTests.h */,
 				0A6573F51A2F3B7200D5502E /* ConversationTests.h */,
 				0A6573F61A2F3B7200D5502E /* ConversationTests.m */,
 				0A6573F81A2F3B7200D5502E /* HighwatermarksTests.m */,
-				0A6573FC1A2F3B7200D5502E /* QredoRendezvousMQTTTests.m */,
 				782D15CA1AEAF4F700E13B92 /* QredoRendezvousWebSocketTests.m */,
 				0A6573FD1A2F3B7200D5502E /* QredoRendezvousTests.h */,
 				0A6573FE1A2F3B7200D5502E /* QredoRendezvousTests.m */,
 				0A6574001A2F3B7200D5502E /* QredoSExpressionTests.m */,
 				0A6574021A2F3B7200D5502E /* QredoTestUtils.h */,
 				0A6574031A2F3B7200D5502E /* QredoTestUtils.m */,
-				0A6574061A2F3B7200D5502E /* QredoVaultMQTTTests.m */,
 				7805FF6C1AEA5B12006AF2FE /* QredoVaultWebSocketTests.m */,
 				0A6574071A2F3B7200D5502E /* QredoVaultTests.h */,
 				0A6574081A2F3B7200D5502E /* QredoVaultTests.m */,
-				0A6574091A2F3B7200D5502E /* QredoVaultUpdateMQTTTests.m */,
 				782D15CC1AEAFCC800E13B92 /* QredoVaultUpdateWebSocketTests.m */,
 				0A65740A1A2F3B7200D5502E /* QredoVaultUpdateTests.h */,
 				0A65740B1A2F3B7200D5502E /* QredoVaultUpdateTests.m */,
@@ -1327,7 +1313,6 @@
 				66828EBC1BDFBB6B00067431 /* QredoServiceInvokerTests.m */,
 				0A6573E71A2DEC0500D5502E /* QredoClientIdTests.m */,
 				0A6573E81A2DEC0500D5502E /* QredoHttpTransportTests.m */,
-				0A6573E91A2DEC0500D5502E /* QredoMqttTransportTests.m */,
 				0A6573EA1A2DEC0500D5502E /* QredoSExpressionTests.m */,
 				0A6573EB1A2DEC0500D5502E /* QredoTestConfiguration.h */,
 				0A6573EC1A2DEC0500D5502E /* QredoTransportTests.m */,
@@ -3215,7 +3200,6 @@
 				8384A49E1D75866100B8D9C2 /* QredoXCTestListeners.m in Sources */,
 				83303D951C7C7876006814A3 /* QredoClientIdTests.m in Sources */,
 				66F775391BD653F800F01A2C /* QredoHttpTransportTests.m in Sources */,
-				66F7753A1BD653F800F01A2C /* QredoMqttTransportTests.m in Sources */,
 				66F7753B1BD653F800F01A2C /* QredoSExpressionTests.m in Sources */,
 				66F7753D1BD653F800F01A2C /* QredoTransportTests.m in Sources */,
 				66F7753E1BD653F800F01A2C /* QredoWireFormatTests.m in Sources */,
@@ -3232,7 +3216,6 @@
 				83480B4C1D51F4B70034090E /* NSDictionary+Contains.m in Sources */,
 				83480B4D1D51F4B70034090E /* NSData+ParseHex.m in Sources */,
 				83480B4E1D51F4B70034090E /* QredoRendezvousCryptoTest.m in Sources */,
-				83480B4F1D51F4B70034090E /* ConversationMQTTTests.m in Sources */,
 				83480B501D51F4B70034090E /* TestFrameworkTests.m in Sources */,
 				83480B511D51F4B70034090E /* QredoVaultTests.m in Sources */,
 				83480B521D51F4B70034090E /* QredoClientTests.m in Sources */,
@@ -3240,16 +3223,13 @@
 				83480B541D51F4B70034090E /* ConversationWebSocketTests.m in Sources */,
 				83480B551D51F4B70034090E /* ConversationTests.m in Sources */,
 				83480B561D51F4B70034090E /* QredoUtils.m in Sources */,
-				83480B571D51F4B70034090E /* QredoRendezvousMQTTTests.m in Sources */,
 				83480B581D51F4B70034090E /* QredoRendezvousWebSocketTests.m in Sources */,
 				83480B591D51F4B70034090E /* QredoRendezvousTests.m in Sources */,
 				83480B5A1D51F4B70034090E /* QredoSExpressionTests.m in Sources */,
 				83480B5B1D51F4B70034090E /* QredoTestUtils.m in Sources */,
 				83480B5C1D51F4B70034090E /* ReadableKeys.m in Sources */,
-				83480B5D1D51F4B70034090E /* QredoVaultMQTTTests.m in Sources */,
 				83480B5E1D51F4B70034090E /* QredoIndexVaultTests.m in Sources */,
 				83480B5F1D51F4B70034090E /* QredoVaultWebSocketTests.m in Sources */,
-				83480B601D51F4B70034090E /* QredoVaultUpdateMQTTTests.m in Sources */,
 				83480B611D51F4B70034090E /* QredoVaultUpdateWebSocketTests.m in Sources */,
 				83480B621D51F4B70034090E /* QredoXCTestListeners.m in Sources */,
 				83480B631D51F4B70034090E /* HighwatermarksTests.m in Sources */,
