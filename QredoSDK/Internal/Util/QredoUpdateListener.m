@@ -99,7 +99,6 @@
 
     // Setup re-subscribe timer first
     
-    // NOTE: Only for MQTT. Check for transport type (MQTT) needs to be made accessible first..
     
     
     @synchronized (self) {

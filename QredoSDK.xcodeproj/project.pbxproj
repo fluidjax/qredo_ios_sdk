@@ -109,7 +109,6 @@
 		66605C451BD55B2800EC8D6C /* QredoEllipticCurvePointTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B431BD5266700EC8D6C /* QredoEllipticCurvePointTests.m */; };
 		66605C461BD55B2800EC8D6C /* QredoOpenSSLCertificateUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B441BD5266700EC8D6C /* QredoOpenSSLCertificateUtilsTests.m */; };
 		66605C471BD55B2800EC8D6C /* QredoPSSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B451BD5266700EC8D6C /* QredoPSSTests.m */; };
-		66605C481BD55B2800EC8D6C /* QredoRsaBlindSignatureTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B461BD5266700EC8D6C /* QredoRsaBlindSignatureTests.m */; };
 		66605C491BD55B2800EC8D6C /* QredoRsaPrivateKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B471BD5266700EC8D6C /* QredoRsaPrivateKeyTests.m */; };
 		66605C4A1BD55B2800EC8D6C /* QredoRsaPublicKeyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B481BD5266700EC8D6C /* QredoRsaPublicKeyTests.m */; };
 		66605C4B1BD55B2800EC8D6C /* QredoSecKeyRefPairTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B491BD5266700EC8D6C /* QredoSecKeyRefPairTests.m */; };
@@ -822,7 +821,6 @@
 		66605B431BD5266700EC8D6C /* QredoEllipticCurvePointTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoEllipticCurvePointTests.m; sourceTree = "<group>"; };
 		66605B441BD5266700EC8D6C /* QredoOpenSSLCertificateUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoOpenSSLCertificateUtilsTests.m; sourceTree = "<group>"; };
 		66605B451BD5266700EC8D6C /* QredoPSSTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoPSSTests.m; sourceTree = "<group>"; };
-		66605B461BD5266700EC8D6C /* QredoRsaBlindSignatureTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRsaBlindSignatureTests.m; sourceTree = "<group>"; };
 		66605B471BD5266700EC8D6C /* QredoRsaPrivateKeyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRsaPrivateKeyTests.m; sourceTree = "<group>"; };
 		66605B481BD5266700EC8D6C /* QredoRsaPublicKeyTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRsaPublicKeyTests.m; sourceTree = "<group>"; };
 		66605B491BD5266700EC8D6C /* QredoSecKeyRefPairTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoSecKeyRefPairTests.m; sourceTree = "<group>"; };
@@ -1465,7 +1463,6 @@
 				66605B431BD5266700EC8D6C /* QredoEllipticCurvePointTests.m */,
 				66605B441BD5266700EC8D6C /* QredoOpenSSLCertificateUtilsTests.m */,
 				66605B451BD5266700EC8D6C /* QredoPSSTests.m */,
-				66605B461BD5266700EC8D6C /* QredoRsaBlindSignatureTests.m */,
 				66605B471BD5266700EC8D6C /* QredoRsaPrivateKeyTests.m */,
 				66605B481BD5266700EC8D6C /* QredoRsaPublicKeyTests.m */,
 				66605B491BD5266700EC8D6C /* QredoSecKeyRefPairTests.m */,
@@ -3047,7 +3044,6 @@
 				66605C451BD55B2800EC8D6C /* QredoEllipticCurvePointTests.m in Sources */,
 				66605C461BD55B2800EC8D6C /* QredoOpenSSLCertificateUtilsTests.m in Sources */,
 				66605C471BD55B2800EC8D6C /* QredoPSSTests.m in Sources */,
-				66605C481BD55B2800EC8D6C /* QredoRsaBlindSignatureTests.m in Sources */,
 				8384A49D1D75866100B8D9C2 /* QredoXCTestListeners.m in Sources */,
 				8384A49C1D75863100B8D9C2 /* QredoXCTestCase.m in Sources */,
 				66605C491BD55B2800EC8D6C /* QredoRsaPrivateKeyTests.m in Sources */,

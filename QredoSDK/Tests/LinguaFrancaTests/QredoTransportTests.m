@@ -43,41 +43,6 @@
     XCTAssertTrue([transport isKindOfClass:[QredoHttpTransport class]]);
 }
 
-- (void)testTransportForServiceURL_TcpLowercaseGetsMqtt
-{
-    NSURL *serviceURL = [NSURL URLWithString:@"tcp://test.host.qredo.com:8765"];
-    
-    QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
-    XCTAssertTrue([transport isMemberOfClass:NSClassFromString(@"QredoMqttTransport")]);
-}
-
-- (void)testTransportForServiceURL_TcpUppercaseGetsMqtt
-{
-    NSURL *serviceURL = [NSURL URLWithString:@"TCP://test.host.qredo.com:8765"];
-    
-    QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
-    XCTAssertTrue([transport isMemberOfClass:NSClassFromString(@"QredoMqttTransport")]);
-}
-
-- (void)testTransportForServiceURL_SslLowercaseGetsMqtt
-{
-    NSURL *serviceURL = [NSURL URLWithString:@"ssl://test.host.qredo.com:8765/path/to/somewhere"];
-    
-    QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
-    XCTAssertTrue([transport isMemberOfClass:NSClassFromString(@"QredoMqttTransport")]);
-}
-
-- (void)testTransportForServiceURL_SslUppercaseGetsMqtt
-{
-    NSURL *serviceURL = [NSURL URLWithString:@"SSL://test.host.qredo.com:8765/path/to/somewhere"];
-    
-    QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
-    XCTAssertTrue([transport isMemberOfClass:NSClassFromString(@"QredoMqttTransport")]);
-}
 
 - (void)testTransportForServiceURL_UnsupportedFTP
 {
@@ -107,21 +72,7 @@
     XCTAssertTrue(canHandle, @"Transport should be able to handle provided service URL");
 }
 
-- (void)testCanHandleServiceURL_MQTT
-{
-    NSURL *serviceURL = [NSURL URLWithString:@"tcp://test.host.qredo.com:8765"];
-    
-    BOOL canHandle = [QredoTransport canHandleServiceURL:serviceURL];
-    XCTAssertTrue(canHandle, @"Transport should be able to handle provided service URL");
-}
 
-- (void)testCanHandleServiceURL_MQTTwithSSL
-{
-    NSURL *serviceURL = [NSURL URLWithString:@"ssl://test.host.qredo.com:8765/path/to/somewhere"];
-    
-    BOOL canHandle = [QredoTransport canHandleServiceURL:serviceURL];
-    XCTAssertTrue(canHandle, @"Transport should be able to handle provided service URL");
-}
 
 - (void)testCanHandleServiceURL_Unsupported
 {

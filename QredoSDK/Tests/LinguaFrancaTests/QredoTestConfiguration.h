@@ -12,11 +12,9 @@
 
 //Production
 #define QREDO_HTTP_SERVICE_URL @"https://api.qredo.com:443/services"
-#define QREDO_MQTT_SERVICE_URL @"ssl://api.qredo.com:8883"
 
 
 //Dev/Staging
 //#define QREDO_HTTP_SERVICE_URL @"https://api.oderq.com:443/services"
-//#define QREDO_MQTT_SERVICE_URL @"ssl://api.oderq.com:8883"
 
 #endif

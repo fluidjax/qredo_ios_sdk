@@ -94,21 +94,6 @@
     serviceInvoker = nil;
 }
 
-- (void)testInit_MQTTUrl
-{
-    // Test using the MQTT URL
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    XCTAssertNotNil(serviceURL);
-    
-    QredoServiceInvoker *serviceInvoker = [self commonTestInit:serviceURL];
-    XCTAssertNotNil(serviceInvoker);
-    
-    // MQTT supports multi-response
-    XCTAssertTrue(serviceInvoker.supportsMultiResponse);
-    
-    serviceInvoker = nil;
-}
-
 
 
 
@@ -140,16 +125,7 @@
     XCTAssertTrue(serviceInvoker.isTerminated);
 }
 
-- (void)testTerminate_MQTTUrl
-{
-    // Test using the MQTT URL
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    XCTAssertNotNil(serviceURL);
-    
-    QredoServiceInvoker *serviceInvoker = [self commonTestInitThenTerminate:serviceURL];
-    XCTAssertNotNil(serviceInvoker);
-    XCTAssertTrue(serviceInvoker.isTerminated);
-}
+
 
 - (void)commonInvokeService_Ping:(QredoServiceInvoker *)serviceInvoker readerCompletedExpectation:(XCTestExpectation *)readerCompletedExpectation
 {
@@ -194,24 +170,7 @@
     }];
 }
 
-- (void)testInvokeService_Ping_MQTTUrl
-{
-    // Test using the MQTT URL
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_MQTT_SERVICE_URL];
-    XCTAssertNotNil(serviceURL);
-    
-    QredoServiceInvoker *serviceInvoker = [self commonTestInit:serviceURL];
-    XCTAssertNotNil(serviceInvoker);
-    
-    __block XCTestExpectation *readerCompletedExpectation = [self expectationWithDescription:@"Reader completed"];
-    [self commonInvokeService_Ping:serviceInvoker readerCompletedExpectation:readerCompletedExpectation];
 
-    // Allow 10 seconds for the operation to return
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        // avoiding exception when 'fulfill' is called after timeout
-        readerCompletedExpectation = nil;
-    }];
-}
 
 - (void)commonInvokeService_ConcurrentOperationsWithServiceURL:(NSURL *)serviceURL iterations:(NSUInteger)iterations intervalPerIteration:(NSTimeInterval)intervalPerIteration
 {
@@ -269,19 +228,7 @@
                                             intervalPerIteration:interval];
 }
 
-- (void)testInvokeService_ConcurrentOperations_MQTTUrl
-{
-    // Note: 7500 iterations takes long time, but had previously caused hangs before transport concurrency issues resolved
-    const int requiredIterations = 50;
-    
-    // Give time for the process to complete (for MQTT, 0.09 seconds per iteration appears enough time, // more like 0.9...
-    // otherwise will terminate/close transport whilst still in use and trigger errors)
-    NSTimeInterval interval = 0.9;
-    
-    [self commonInvokeService_ConcurrentOperationsWithServiceURL:[NSURL URLWithString:QREDO_MQTT_SERVICE_URL]
-                                                      iterations:requiredIterations
-                                            intervalPerIteration:interval];
-}
+
 
 // TODO: DH - Invoke non-existant service
 // TODO: DH - Invoke non-existant operation
