@@ -7,7 +7,6 @@
 #import "QredoTestConfiguration.h"
 #import "QredoTransport.h"
 #import "QredoHttpTransport.h"
-#import "QredoMqttTransport.h"
 
 @interface QredoTransportTests : XCTestCase
 

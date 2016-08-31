@@ -5,7 +5,6 @@
 #import "QredoTransport.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoHttpTransport.h"
-#import "QredoMqttTransport.h"
 #import "QredoWebSocketTransport.h"
 #import "QredoTransportErrorUtils.h"
 #import "QredoCertificate.h"
@@ -35,12 +34,7 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     
     QredoTransport *transport;
     
-    if ([QredoMqttTransport canHandleServiceURL:serviceURL])
-    {
-        // Create the MQTT transport
-        transport = [[QredoMqttTransport alloc] initWithServiceURL:serviceURL];
-    }
-    else if([QredoHttpTransport canHandleServiceURL:serviceURL])
+    if([QredoHttpTransport canHandleServiceURL:serviceURL])
     {
         // Create the HTTP transport
         transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
@@ -60,16 +54,9 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     return transport;
 }
 
-+ (BOOL)canHandleServiceURL:(NSURL *)serviceURL
-{
++ (BOOL)canHandleServiceURL:(NSURL *)serviceURL{
     // Check all subclasses we know about to see whether they're supported
     BOOL canHandle = [QredoHttpTransport canHandleServiceURL:serviceURL];
-    
-    if (!canHandle)
-    {
-        canHandle = [QredoMqttTransport canHandleServiceURL:serviceURL];
-    }
-    
     return canHandle;
 }
 

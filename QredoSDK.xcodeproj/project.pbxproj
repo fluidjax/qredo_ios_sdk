@@ -22,11 +22,6 @@
 		6602D9BF1C24239500CB5794 /* QredoConversationMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A68F7501A77B2AC0045D21D /* QredoConversationMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		661BA5C11BF6465500FDAD29 /* QredoXDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665148EB1BF6037E003491CA /* QredoXDK.framework */; };
 		661BA5C41BF6467A00FDAD29 /* QredoXDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 665148EB1BF6037E003491CA /* QredoXDK.framework */; };
-		665149091BF60432003491CA /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
-		6651490A1BF60432003491CA /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
-		6651490B1BF60432003491CA /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; };
-		6651490C1BF60432003491CA /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; };
-		6651490D1BF60432003491CA /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; };
 		6651490E1BF60432003491CA /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B111BD5073A00EC8D6C /* NSArray+QredoArrayEquality.m */; };
 		6651490F1BF60432003491CA /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B151BD5073A00EC8D6C /* NSData+QredoDataEquality.m */; };
 		665149101BF60432003491CA /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */; };
@@ -92,7 +87,6 @@
 		6651495A1BF60433003491CA /* QredoClientId.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C11BD64CE200F01A2C /* QredoClientId.m */; };
 		6651495B1BF60433003491CA /* QredoDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C31BD64CE200F01A2C /* QredoDateTime.m */; };
 		6651495C1BF60433003491CA /* QredoHttpTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C61BD64CE200F01A2C /* QredoHttpTransport.m */; };
-		6651495E1BF60433003491CA /* QredoMqttTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CB1BD64CE200F01A2C /* QredoMqttTransport.m */; };
 		6651495F1BF60433003491CA /* QredoPrimitiveMarshallers.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CD1BD64CE200F01A2C /* QredoPrimitiveMarshallers.m */; };
 		665149601BF60433003491CA /* QredoQUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CF1BD64CE200F01A2C /* QredoQUID.m */; };
 		665149611BF60433003491CA /* QredoServiceInvoker.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D11BD64CE200F01A2C /* QredoServiceInvoker.m */; };
@@ -195,16 +189,6 @@
 		6692A5BA1BED0A480063C394 /* QredoStreamExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D51BD64CE200F01A2C /* QredoStreamExtensions.m */; };
 		66BE627B1BF632D000FA15F7 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B131BD5073A00EC8D6C /* NSData+Conversion.m */; };
 		66BE627F1BF634B800FA15F7 /* NSData+ParseHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0693BA1AC3253700E3ECD4 /* NSData+ParseHex.m */; };
-		66E6F8D01BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
-		66E6F8D11BD65AC600319BC9 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
-		66E6F8D51BD65AC600319BC9 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
-		66E6F8D61BD65AC600319BC9 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
-		66E6F8DA1BD65AC600319BC9 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; };
-		66E6F8DB1BD65AC600319BC9 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; };
-		66E6F8DF1BD65AC600319BC9 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; };
-		66E6F8E01BD65AC600319BC9 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; };
-		66E6F8E41BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; };
-		66E6F8E51BD65AC600319BC9 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; };
 		66F774B21BD64AFC00F01A2C /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B4B1BD5266700EC8D6C /* TestCertificates.m */; };
 		66F775391BD653F800F01A2C /* QredoHttpTransportTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573E81A2DEC0500D5502E /* QredoHttpTransportTests.m */; };
 		66F7753B1BD653F800F01A2C /* QredoSExpressionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573EA1A2DEC0500D5502E /* QredoSExpressionTests.m */; };
@@ -215,7 +199,6 @@
 		66F775421BD6545200F01A2C /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B111BD5073A00EC8D6C /* NSArray+QredoArrayEquality.m */; };
 		66F775431BD6545200F01A2C /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B151BD5073A00EC8D6C /* NSData+QredoDataEquality.m */; };
 		66F775441BD6545200F01A2C /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */; };
-		66F775491BD655E400F01A2C /* QredoMqttTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CB1BD64CE200F01A2C /* QredoMqttTransport.m */; };
 		66F7754A1BD655E400F01A2C /* QredoWebSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DD1BD64CE200F01A2C /* QredoWebSocketTransport.m */; };
 		66FCEC141C1848C200C865FE /* QredoTransportSSLTrustUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DA1BD64CE200F01A2C /* QredoTransportSSLTrustUtils.h */; };
 		830A3EF01BFF38EC002CE210 /* MultiPageMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A3EEF1BFF38EC002CE210 /* MultiPageMessageTest.m */; };
@@ -434,11 +417,6 @@
 		839F70841CF46992007C2F52 /* QredoUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 839F70831CF46992007C2F52 /* QredoUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83A0F0311CEC926D0079EAFB /* QredoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EDB5C71CE20E1300F4F556 /* QredoUtils.m */; };
 		83A0F0321CEC92870079EAFB /* ReadableKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 8346FF9A1CDB775500A4CEAE /* ReadableKeys.m */; };
-		83ADC4D31C3BF0EF00C34A76 /* MQTTDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */; };
-		83ADC4D41C3BF0EF00C34A76 /* MQTTEncoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */; };
-		83ADC4D51C3BF0EF00C34A76 /* MQTTMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */; };
-		83ADC4D61C3BF0EF00C34A76 /* MQTTSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8C91BD65AC600319BC9 /* MQTTSession.m */; };
-		83ADC4D71C3BF0EF00C34A76 /* MQttTxFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */; };
 		83ADC4D81C3BF0EF00C34A76 /* NSArray+QredoArrayEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B111BD5073A00EC8D6C /* NSArray+QredoArrayEquality.m */; };
 		83ADC4D91C3BF0EF00C34A76 /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B131BD5073A00EC8D6C /* NSData+Conversion.m */; };
 		83ADC4DA1C3BF0EF00C34A76 /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B151BD5073A00EC8D6C /* NSData+QredoDataEquality.m */; };
@@ -522,7 +500,6 @@
 		83ADC55C1C3BF0F000C34A76 /* QredoClientId.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C11BD64CE200F01A2C /* QredoClientId.m */; };
 		83ADC55D1C3BF0F000C34A76 /* QredoDateTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C31BD64CE200F01A2C /* QredoDateTime.m */; };
 		83ADC55E1C3BF0F000C34A76 /* QredoHttpTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774C61BD64CE200F01A2C /* QredoHttpTransport.m */; };
-		83ADC5601C3BF0F000C34A76 /* QredoMqttTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CB1BD64CE200F01A2C /* QredoMqttTransport.m */; };
 		83ADC5611C3BF0F000C34A76 /* QredoPrimitiveMarshallers.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CD1BD64CE200F01A2C /* QredoPrimitiveMarshallers.m */; };
 		83ADC5621C3BF0F000C34A76 /* QredoQUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774CF1BD64CE200F01A2C /* QredoQUID.m */; };
 		83ADC5631C3BF0F000C34A76 /* QredoServiceInvoker.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774D11BD64CE200F01A2C /* QredoServiceInvoker.m */; };
@@ -918,17 +895,6 @@
 		66605C901BD6402E00EC8D6C /* QredoSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QredoSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		66828EBC1BDFBB6B00067431 /* QredoServiceInvokerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoServiceInvokerTests.m; sourceTree = "<group>"; };
 		66C46CD61BF38AF60078B3C0 /* ConversationWebSocketTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationWebSocketTests.h; sourceTree = "<group>"; };
-		66E6F8C21BD65AC600319BC9 /* MQTTDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTDecoder.h; sourceTree = "<group>"; };
-		66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTTDecoder.m; sourceTree = "<group>"; };
-		66E6F8C41BD65AC600319BC9 /* MQTTEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTEncoder.h; sourceTree = "<group>"; };
-		66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTTEncoder.m; sourceTree = "<group>"; };
-		66E6F8C61BD65AC600319BC9 /* MQTTMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTMessage.h; sourceTree = "<group>"; };
-		66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTTMessage.m; sourceTree = "<group>"; };
-		66E6F8C81BD65AC600319BC9 /* MQTTSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTSession.h; sourceTree = "<group>"; };
-		66E6F8C91BD65AC600319BC9 /* MQTTSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTTSession.m; sourceTree = "<group>"; };
-		66E6F8CA1BD65AC600319BC9 /* MQttTxFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQttTxFlow.h; sourceTree = "<group>"; };
-		66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQttTxFlow.m; sourceTree = "<group>"; };
-		66E6F8CC1BD65AC600319BC9 /* MQTTTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTTTypes.h; sourceTree = "<group>"; };
 		66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+QredoArrayEquality.h"; sourceTree = "<group>"; };
 		66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+QredoArrayEquality.m"; sourceTree = "<group>"; };
 		66F774B61BD64CE200F01A2C /* NSData+Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Conversion.h"; sourceTree = "<group>"; };
@@ -949,8 +915,6 @@
 		66F774C51BD64CE200F01A2C /* QredoHttpTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoHttpTransport.h; sourceTree = "<group>"; };
 		66F774C61BD64CE200F01A2C /* QredoHttpTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoHttpTransport.m; sourceTree = "<group>"; };
 		66F774C91BD64CE200F01A2C /* QredoMarshallable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoMarshallable.h; sourceTree = "<group>"; };
-		66F774CA1BD64CE200F01A2C /* QredoMqttTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoMqttTransport.h; sourceTree = "<group>"; };
-		66F774CB1BD64CE200F01A2C /* QredoMqttTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoMqttTransport.m; sourceTree = "<group>"; };
 		66F774CC1BD64CE200F01A2C /* QredoPrimitiveMarshallers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoPrimitiveMarshallers.h; sourceTree = "<group>"; };
 		66F774CD1BD64CE200F01A2C /* QredoPrimitiveMarshallers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoPrimitiveMarshallers.m; sourceTree = "<group>"; };
 		66F774CF1BD64CE200F01A2C /* QredoQUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoQUID.m; sourceTree = "<group>"; };
@@ -1688,25 +1652,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		66E6F8C11BD65AC600319BC9 /* MQttClient */ = {
-			isa = PBXGroup;
-			children = (
-				66E6F8C21BD65AC600319BC9 /* MQTTDecoder.h */,
-				66E6F8C31BD65AC600319BC9 /* MQTTDecoder.m */,
-				66E6F8C41BD65AC600319BC9 /* MQTTEncoder.h */,
-				66E6F8C51BD65AC600319BC9 /* MQTTEncoder.m */,
-				66E6F8C61BD65AC600319BC9 /* MQTTMessage.h */,
-				66E6F8C71BD65AC600319BC9 /* MQTTMessage.m */,
-				66E6F8C81BD65AC600319BC9 /* MQTTSession.h */,
-				66E6F8C91BD65AC600319BC9 /* MQTTSession.m */,
-				66E6F8CA1BD65AC600319BC9 /* MQttTxFlow.h */,
-				66E6F8CB1BD65AC600319BC9 /* MQttTxFlow.m */,
-				66E6F8CC1BD65AC600319BC9 /* MQTTTypes.h */,
-			);
-			name = MQttClient;
-			path = QredoSDK/Internal/MQttClient;
-			sourceTree = "<group>";
-		};
 		66F774B31BD64CE100F01A2C /* LinguaFranca */ = {
 			isa = PBXGroup;
 			children = (
@@ -1730,8 +1675,6 @@
 				66F774C51BD64CE200F01A2C /* QredoHttpTransport.h */,
 				66F774C61BD64CE200F01A2C /* QredoHttpTransport.m */,
 				66F774C91BD64CE200F01A2C /* QredoMarshallable.h */,
-				66F774CA1BD64CE200F01A2C /* QredoMqttTransport.h */,
-				66F774CB1BD64CE200F01A2C /* QredoMqttTransport.m */,
 				66F774CC1BD64CE200F01A2C /* QredoPrimitiveMarshallers.h */,
 				66F774CD1BD64CE200F01A2C /* QredoPrimitiveMarshallers.m */,
 				66F774CF1BD64CE200F01A2C /* QredoQUID.m */,
@@ -1946,7 +1889,6 @@
 		839D42B41C7C744F006180DD /* Legacy */ = {
 			isa = PBXGroup;
 			children = (
-				66E6F8C11BD65AC600319BC9 /* MQttClient */,
 			);
 			name = Legacy;
 			path = ..;
@@ -2883,11 +2825,6 @@
 				83ADC5751C3BF16900C34A76 /* QredoRsaBlindSignature.c in Sources */,
 				83ADC5761C3BF16900C34A76 /* rsapss.c in Sources */,
 				83A0F0311CEC926D0079EAFB /* QredoUtils.m in Sources */,
-				83ADC4D31C3BF0EF00C34A76 /* MQTTDecoder.m in Sources */,
-				83ADC4D41C3BF0EF00C34A76 /* MQTTEncoder.m in Sources */,
-				83ADC4D51C3BF0EF00C34A76 /* MQTTMessage.m in Sources */,
-				83ADC4D61C3BF0EF00C34A76 /* MQTTSession.m in Sources */,
-				83ADC4D71C3BF0EF00C34A76 /* MQttTxFlow.m in Sources */,
 				83ADC4D81C3BF0EF00C34A76 /* NSArray+QredoArrayEquality.m in Sources */,
 				83ADC4D91C3BF0EF00C34A76 /* NSData+Conversion.m in Sources */,
 				83ADC4DA1C3BF0EF00C34A76 /* NSData+QredoDataEquality.m in Sources */,
@@ -2976,7 +2913,6 @@
 				83ADC55C1C3BF0F000C34A76 /* QredoClientId.m in Sources */,
 				83ADC55D1C3BF0F000C34A76 /* QredoDateTime.m in Sources */,
 				83ADC55E1C3BF0F000C34A76 /* QredoHttpTransport.m in Sources */,
-				83ADC5601C3BF0F000C34A76 /* QredoMqttTransport.m in Sources */,
 				83ADC5611C3BF0F000C34A76 /* QredoPrimitiveMarshallers.m in Sources */,
 				83ADC5621C3BF0F000C34A76 /* QredoQUID.m in Sources */,
 				83ADC5631C3BF0F000C34A76 /* QredoServiceInvoker.m in Sources */,
@@ -2999,11 +2935,6 @@
 				66BE627F1BF634B800FA15F7 /* NSData+ParseHex.m in Sources */,
 				83E54D3E1C2AA3EF00476515 /* QredoIndexVaultItemPayload.m in Sources */,
 				66BE627B1BF632D000FA15F7 /* NSData+Conversion.m in Sources */,
-				665149091BF60432003491CA /* MQTTDecoder.m in Sources */,
-				6651490A1BF60432003491CA /* MQTTEncoder.m in Sources */,
-				6651490B1BF60432003491CA /* MQTTMessage.m in Sources */,
-				6651490C1BF60432003491CA /* MQTTSession.m in Sources */,
-				6651490D1BF60432003491CA /* MQttTxFlow.m in Sources */,
 				6651490E1BF60432003491CA /* NSArray+QredoArrayEquality.m in Sources */,
 				6651490F1BF60432003491CA /* NSData+QredoDataEquality.m in Sources */,
 				665149101BF60432003491CA /* NSData+QredoRandomData.m in Sources */,
@@ -3090,7 +3021,6 @@
 				6651495B1BF60433003491CA /* QredoDateTime.m in Sources */,
 				833980191CE4D35500D5A592 /* QredoSecureChannel.m in Sources */,
 				6651495C1BF60433003491CA /* QredoHttpTransport.m in Sources */,
-				6651495E1BF60433003491CA /* QredoMqttTransport.m in Sources */,
 				6651495F1BF60433003491CA /* QredoPrimitiveMarshallers.m in Sources */,
 				83AF3A471C11DEFF003B258F /* QredoIndexVariableValue.m in Sources */,
 				665149601BF60433003491CA /* QredoQUID.m in Sources */,
@@ -3112,7 +3042,6 @@
 				66023CDA1C189C06008B18AD /* NSData+QredoRandomData.m in Sources */,
 				66023CDB1C189C06008B18AD /* NSData+Conversion.m in Sources */,
 				66605C421BD55B2800EC8D6C /* CryptoImplV1Tests.m in Sources */,
-				66E6F8E41BD65AC600319BC9 /* MQttTxFlow.m in Sources */,
 				839D42B21C7C7416006180DD /* QredoCryptoTests.m in Sources */,
 				66605C431BD55B2800EC8D6C /* QredoCertificateUtilsTests.m in Sources */,
 				66605C451BD55B2800EC8D6C /* QredoEllipticCurvePointTests.m in Sources */,
@@ -3121,12 +3050,8 @@
 				66605C481BD55B2800EC8D6C /* QredoRsaBlindSignatureTests.m in Sources */,
 				8384A49D1D75866100B8D9C2 /* QredoXCTestListeners.m in Sources */,
 				8384A49C1D75863100B8D9C2 /* QredoXCTestCase.m in Sources */,
-				66E6F8DA1BD65AC600319BC9 /* MQTTMessage.m in Sources */,
-				66E6F8DF1BD65AC600319BC9 /* MQTTSession.m in Sources */,
 				66605C491BD55B2800EC8D6C /* QredoRsaPrivateKeyTests.m in Sources */,
 				83F05A5E1BF108E100003FF2 /* NSData+ParseHex.m in Sources */,
-				66E6F8D01BD65AC600319BC9 /* MQTTDecoder.m in Sources */,
-				66E6F8D51BD65AC600319BC9 /* MQTTEncoder.m in Sources */,
 				66605C4A1BD55B2800EC8D6C /* QredoRsaPublicKeyTests.m in Sources */,
 				66605C4B1BD55B2800EC8D6C /* QredoSecKeyRefPairTests.m in Sources */,
 				66605C4C1BD55B2800EC8D6C /* TestCertificates.m in Sources */,
@@ -3182,28 +3107,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				6692A5BA1BED0A480063C394 /* QredoStreamExtensions.m in Sources */,
-				66F775491BD655E400F01A2C /* QredoMqttTransport.m in Sources */,
 				8384A49B1D75863000B8D9C2 /* QredoXCTestCase.m in Sources */,
 				66F7754A1BD655E400F01A2C /* QredoWebSocketTransport.m in Sources */,
 				66F775421BD6545200F01A2C /* NSArray+QredoArrayEquality.m in Sources */,
 				833980181CE4D35500D5A592 /* QredoSecureChannel.m in Sources */,
 				66F775431BD6545200F01A2C /* NSData+QredoDataEquality.m in Sources */,
-				66E6F8D11BD65AC600319BC9 /* MQTTDecoder.m in Sources */,
 				66F775441BD6545200F01A2C /* NSSet+QredoSetEquality.m in Sources */,
 				66F7753F1BD6543C00F01A2C /* NSData+Conversion.m in Sources */,
 				83EDB5CC1CE20E1300F4F556 /* QredoUtils.m in Sources */,
 				66F775401BD6543C00F01A2C /* NSData+QredoRandomData.m in Sources */,
-				66E6F8DB1BD65AC600319BC9 /* MQTTMessage.m in Sources */,
 				837FB2A41BED013700C66FC8 /* QredoServiceInvokerTests.m in Sources */,
-				66E6F8D61BD65AC600319BC9 /* MQTTEncoder.m in Sources */,
-				66E6F8E51BD65AC600319BC9 /* MQttTxFlow.m in Sources */,
 				8384A49E1D75866100B8D9C2 /* QredoXCTestListeners.m in Sources */,
 				83303D951C7C7876006814A3 /* QredoClientIdTests.m in Sources */,
 				66F775391BD653F800F01A2C /* QredoHttpTransportTests.m in Sources */,
 				66F7753B1BD653F800F01A2C /* QredoSExpressionTests.m in Sources */,
 				66F7753D1BD653F800F01A2C /* QredoTransportTests.m in Sources */,
 				66F7753E1BD653F800F01A2C /* QredoWireFormatTests.m in Sources */,
-				66E6F8E01BD65AC600319BC9 /* MQTTSession.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
