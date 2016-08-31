@@ -277,67 +277,21 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                         fullTag:(NSString *)tag
                                                 trustedRootPems:(NSArray *)trustedRootPems
                                                         crlPems:(NSArray *)crlPems
-                                                          error:(NSError **)error
-{
+                                                          error:(NSError **)error{
     __block id<QredoRendezvousRespondHelper> rendezvousHelper = nil;
 
-    [authType ifRendezvousAnonymous:^{
-        rendezvousHelper
-        = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
-                                                                fullTag:tag
-                                                                 crypto:_crypto
-                                                        trustedRootPems:trustedRootPems
-                                                                crlPems:crlPems
-                                                                  error:error];
+    
+    if (authType == QredoRendezvousAuthenticationTypeAnonymous){
+        rendezvousHelper =[QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
+                                                                     fullTag:tag
+                                                                      crypto:_crypto
+                                                             trustedRootPems:trustedRootPems
+                                                                     crlPems:crlPems
+                                                                       error:error];
+    }
 
-    } ifRendezvousTrusted:^(QLFRendezvousAuthSignature *signature) {
-        [signature ifRendezvousAuthX509_PEM:^(NSData *signature) {
-            rendezvousHelper
-            = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509Pem
-                                                                    fullTag:tag
-                                                                     crypto:_crypto
-                                                            trustedRootPems:trustedRootPems
-                                                                    crlPems:crlPems
-                                                                      error:error];
-
-        } ifRendezvousAuthX509_PEM_SELFSIGNED:^(NSData *signature) {
-            rendezvousHelper
-            = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeX509PemSelfsigned
-                                                                    fullTag:tag
-                                                                     crypto:_crypto
-                                                            trustedRootPems:trustedRootPems
-                                                                    crlPems:crlPems
-                                                                      error:error];
-
-        } ifRendezvousAuthED25519:^(NSData *signature) {
-            rendezvousHelper
-            = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeEd25519
-                                                                    fullTag:tag
-                                                                     crypto:_crypto
-                                                            trustedRootPems:trustedRootPems
-                                                                    crlPems:crlPems
-                                                                      error:error];
-
-        } ifRendezvousAuthRSA2048_PEM:^(NSData *signature) {
-            rendezvousHelper
-            = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa2048Pem
-                                                                    fullTag:tag
-                                                                     crypto:_crypto
-                                                            trustedRootPems:trustedRootPems
-                                                                    crlPems:crlPems
-                                                                      error:error];
-
-        } ifRendezvousAuthRSA4096_PEM:^(NSData *signature) {
-            rendezvousHelper
-            = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeRsa4096Pem
-                                                                    fullTag:tag
-                                                                     crypto:_crypto
-                                                            trustedRootPems:trustedRootPems
-                                                                    crlPems:crlPems
-                                                                      error:error];
-
-        }];
-    }];
+    
+    
     
     return rendezvousHelper;
 }

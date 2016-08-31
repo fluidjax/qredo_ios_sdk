@@ -515,16 +515,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
         if (completionHandler)completionHandler(nil, error);
         
         return;
-    } else if (authenticationType == QredoRendezvousAuthenticationTypeX509Pem ||
-               authenticationType == QredoRendezvousAuthenticationTypeX509PemSelfsigned) {
-        // X.509 authenticated rendezvous MUST use externally generated certificates, so MUST use method with signingHandler
-        NSString *message = @"'X.509' is invalid, use the method dedicated to externally generated keys/certs which has a signing handler.";
-        QredoLogError(@"%@", message);
-        NSError *error = [NSError errorWithDomain:QredoErrorDomain
-                                             code:QredoErrorCodeRendezvousInvalidData
-                                         userInfo:@{ NSLocalizedDescriptionKey : message }];
-        if (completionHandler)completionHandler(nil, error);
-        return;
     }
     
     // Authenticated Rendezvous with internally generated keys are created using just the optional prefix.
@@ -573,28 +563,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                          userInfo:@{ NSLocalizedDescriptionKey : message }];
         if (completionHandler)completionHandler(nil, error);
         return;
-    }
-    else if (authenticationType == QredoRendezvousAuthenticationTypeX509Pem) {
-        if (!trustedRootPems) {
-            // Cannot have nil trusted root PEMs
-            NSString *message = @"TrustedRootPems cannot be nil when creating X.509 authenicated rendezvous, as creation will fail.";
-            QredoLogError(@"%@", message);
-            NSError *error = [NSError errorWithDomain:QredoErrorDomain
-                                                 code:QredoErrorCodeRendezvousInvalidData
-                                             userInfo:@{ NSLocalizedDescriptionKey : message }];
-            if (completionHandler)completionHandler(nil, error);
-            return;
-        }
-        else if (trustedRootPems.count == 0) {
-            // Cannot have no trusted root refs
-            NSString *message = @"TrustedRootPems cannot be empty when creating X.509 authenicated rendezvous, as creation will fail.";
-            QredoLogError(@"%@", message);
-            NSError *error = [NSError errorWithDomain:QredoErrorDomain
-                                                 code:QredoErrorCodeRendezvousInvalidData
-                                             userInfo:@{ NSLocalizedDescriptionKey : message }];
-            if (completionHandler)completionHandler(nil, error);
-            return;
-        }
     }
     
     // TODO: DH - validate that the configuration provided is an authenticated rendezvous, and that public key is present
