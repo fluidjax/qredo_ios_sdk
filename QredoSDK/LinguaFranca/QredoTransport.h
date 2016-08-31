@@ -23,14 +23,13 @@ typedef NS_ENUM(NSInteger, QredoTransportError) {
     QredoTransportErrorMultiResponseNotSupported
 };
 
-// Note: For HTTP transports, userData within the following blocks and delegates will contain the correlationID of the original outgoing message associated with this response/error. For MQTT transports, this value is likely to be nil due to the inability to link up the original message with any response/error.
+// Note: For HTTP transports, userData within the following blocks and delegates will contain the correlationID of the original outgoing message associated with this response/error.
 
 typedef void (^ReceivedResponseBlock)(NSData * data, id userData);
 typedef void (^ReceivedErrorBlock)(NSError *error, id userData);
 
 @protocol QredoTransportDelegate <NSObject>
 @required
-// for multiple responses ('subscribe' in MQTT) this method will be called for each received response
 - (void)didReceiveResponseData:(NSData *)data userData:(id)userData;
 - (void)didReceiveError:(NSError *)error userData:(id)userData;
 @end

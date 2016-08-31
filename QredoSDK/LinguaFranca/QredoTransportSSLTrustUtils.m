@@ -66,29 +66,9 @@ static BOOL checkTrust(SecTrustRef trust)
 
 }
 
-static BOOL checkTrustOfStreamUsingCertificate(NSStream *aStream, SecCertificateRef trustedCert)
-{
-    SecTrustRef trust = (__bridge SecTrustRef)[aStream propertyForKey: (__bridge NSString *)kCFStreamPropertySSLPeerTrust];
-    
-    /* Because you don't want the array of certificates to keep
-     growing, you should add the anchor to the trust list only
-     upon the initial receipt of data (rather than every time).
-     */
-    NSNumber *alreadyAdded = [aStream propertyForKey: kAnchorAlreadyAdded];
-    if (!alreadyAdded || ![alreadyAdded boolValue]) {
-        trust = setAnchorForTrust(trust, trustedCert);
-        [aStream setProperty: [NSNumber numberWithBool: YES] forKey: kAnchorAlreadyAdded];
-    }
-    
-    return checkTrust(trust);
-}
 
-MQTTSessionTrustValidator trustValidatorWithTrustedCert(SecCertificateRef trustedCert)
-{
-    return ^BOOL(NSStream *stream) {
-        return checkTrustOfStreamUsingCertificate(stream, trustedCert);
-    };
-}
+
+
 
 
 
