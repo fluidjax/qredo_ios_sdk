@@ -2,18 +2,18 @@
 #import <Foundation/Foundation.h>
 
 
-@interface QredoUserCredentials : NSObject
+@interface QredoUserCredentials :NSObject
 
 
--(instancetype)initWithAppId:(NSString*)appId
-                      userId:(NSString*)userId
-                  userSecure:(NSString*)userSecure;
+-(instancetype)initWithAppId:(NSString *)appId
+                      userId:(NSString *)userId
+                  userSecure:(NSString *)userSecure;
 
--(NSData*)userUnlockKey;
+-(NSData *)userUnlockKey;
 -(NSData *)masterKey:(NSData *)userUnlockKey;
--(NSData*)masterKey;
--(NSString*)createSystemVaultIdentifier;
--(NSString*)dataToHexString:(NSData*)data;
--(NSString*)buildIndexName;
--(NSString*)buildIndexKey;
+-(NSData *)masterKey;
+-(NSString *)createSystemVaultIdentifier;
+-(NSString *)dataToHexString:(NSData *)data;
+-(NSString *)buildIndexName;
+-(NSString *)buildIndexKey;
 @end

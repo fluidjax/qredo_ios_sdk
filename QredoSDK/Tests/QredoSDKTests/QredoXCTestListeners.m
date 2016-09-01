@@ -10,7 +10,7 @@
 XCTestExpectation *timeoutExpectation;
 
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
-    if (self.expectation) {
+    if (self.expectation){
         self.incomingConversation = conversation;
         [self.expectation fulfill];
     }
@@ -22,11 +22,11 @@ XCTestExpectation *timeoutExpectation;
 @implementation TestConversationMessageListener
 
 
-- (void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message{
-    // Can't use XCTAsset, because this class is not QredoXCTestCase
+-(void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message {
+    //Can't use XCTAsset, because this class is not QredoXCTestCase
     
     @synchronized(self) {
-        if (_listening) {
+        if (_listening){
             self.failed |= (message == nil);
             self.failed |= !([message.value isEqualToData:[self.expectedMessageValue dataUsingEncoding:NSUTF8StringEncoding]]);
             
@@ -44,23 +44,22 @@ XCTestExpectation *timeoutExpectation;
 
 @implementation TestVaultListener
 
-- (void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error{
+-(void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error {
     self.error = error;
     
-    if (self.didFailWithErrorExpectation) {
+    if (self.didFailWithErrorExpectation){
         [self.didFailWithErrorExpectation fulfill];
     }
 }
 
-- (void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata
-{
-    if (!self.receivedItems) {
+-(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
+    if (!self.receivedItems){
         self.receivedItems = [NSMutableArray array];
     }
     
     [self.receivedItems addObject:itemMetadata];
     
-    if (self.didReceiveVaultItemMetadataExpectation) {
+    if (self.didReceiveVaultItemMetadataExpectation){
         [self.didReceiveVaultItemMetadataExpectation fulfill];
     }
 }

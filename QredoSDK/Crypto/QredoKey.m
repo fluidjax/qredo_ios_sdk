@@ -7,10 +7,9 @@
 
 @implementation QredoKey
 
-- (NSData*)convertKeyToNSData
-{
+-(NSData *)convertKeyToNSData {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass",NSStringFromSelector(_cmd)]
                                  userInfo:nil];
 }
 

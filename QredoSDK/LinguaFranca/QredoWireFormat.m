@@ -8,123 +8,125 @@
 
 @implementation QredoMarkedAtom
 
-+ (instancetype)markedAtomWithAtom:(QredoAtom *)atom {
++(instancetype)markedAtomWithAtom:(QredoAtom *)atom {
     return [[QredoMarkedAtom alloc] initWithAtom:atom];
 }
 
-+ (instancetype)markedAtomWithBoolean:(NSNumber *)boolean {
++(instancetype)markedAtomWithBoolean:(NSNumber *)boolean {
     return [[QredoMarkedAtom alloc] initWithBoolean:boolean];
 }
 
-+ (instancetype)markedAtomWithByteSequence:(NSData *)data {
++(instancetype)markedAtomWithByteSequence:(NSData *)data {
     return [[QredoMarkedAtom alloc] initWithByteSequence:data];
 }
 
-+ (instancetype)markedAtomWithDate:(QredoDate *)date {
++(instancetype)markedAtomWithDate:(QredoDate *)date {
     return [[QredoMarkedAtom alloc] initWithDate:date];
 }
 
-+ (instancetype)markedAtomWithGenericDateTime:(QredoDateTime *)dateTime {
++(instancetype)markedAtomWithGenericDateTime:(QredoDateTime *)dateTime {
     return [[QredoMarkedAtom alloc] initWithGenericDateTime:dateTime];
 }
 
-+ (instancetype)markedAtomWithInt32:(NSNumber *)int32 {
++(instancetype)markedAtomWithInt32:(NSNumber *)int32 {
     return [[QredoMarkedAtom alloc] initWithInt32:int32];
 }
 
-+ (instancetype)markedAtomWithInt64:(NSNumber *)int64 {
++(instancetype)markedAtomWithInt64:(NSNumber *)int64 {
     return [[QredoMarkedAtom alloc] initWithInt64:int64];
 }
 
-+ (instancetype)markedAtomWithLocalDateTime:(QredoLocalDateTime *)localDateTime {
++(instancetype)markedAtomWithLocalDateTime:(QredoLocalDateTime *)localDateTime {
     return [[QredoMarkedAtom alloc] initWithLocalDateTime:localDateTime];
 }
 
-+ (instancetype)markedAtomWithString:(NSString *)string {
++(instancetype)markedAtomWithString:(NSString *)string {
     return [[QredoMarkedAtom alloc] initWithString:string];
 }
 
-+ (instancetype)markedAtomWithSymbol:(NSString *)symbol {
++(instancetype)markedAtomWithSymbol:(NSString *)symbol {
     return [[QredoMarkedAtom alloc] initWithSymbol:symbol];
 }
 
-+ (instancetype)markedAtomWithTime:(QredoTime *)time {
++(instancetype)markedAtomWithTime:(QredoTime *)time {
     return [[QredoMarkedAtom alloc] initWithTime:time];
 }
 
-+ (instancetype)markedAtomWithQUID:(QredoQUID *)quid {
++(instancetype)markedAtomWithQUID:(QredoQUID *)quid {
     return [[QredoMarkedAtom alloc] initWithQUID:quid];
 }
 
-+ (instancetype)markedAtomWithUTCDateTime:(QredoUTCDateTime *)utcDateTime {
++(instancetype)markedAtomWithUTCDateTime:(QredoUTCDateTime *)utcDateTime {
     return [[QredoMarkedAtom alloc] initWithUTCDateTime:utcDateTime];
 }
 
-- (instancetype)initWithAtom:(QredoAtom *)atom {
+-(instancetype)initWithAtom:(QredoAtom *)atom {
     self = [super init];
     uint8_t *bytes = (uint8_t *)[atom bytes];
     _marker = (QredoMarker)bytes[0];
-    _data   = [NSData dataWithBytes:bytes+1 length:[atom length] - 1];
+    _data   = [NSData dataWithBytes:bytes + 1 length:[atom length] - 1];
     return self;
 }
 
-- (instancetype)initWithBoolean:(NSNumber *)boolean {
+-(instancetype)initWithBoolean:(NSNumber *)boolean {
     self = [super init];
     _marker = [boolean boolValue] ? QredoMarkerBooleanTrue : QredoMarkerBooleanFalse;
     _data   = [NSData new];
     return self;
 }
 
-- (instancetype)initWithByteSequence:(NSData *)data {
+-(instancetype)initWithByteSequence:(NSData *)data {
     self = [super init];
     _marker = QredoMarkerByteSequence;
     _data   = data;
     return self;
 }
 
-- (instancetype)initWithDate:(QredoDate *)date {
+-(instancetype)initWithDate:(QredoDate *)date {
     self = [super init];
     _marker = QredoMarkerDate;
     uint16_t year  = CFSwapInt16HostToBig(date.year);
-    uint8_t  month = date.month;
-    uint8_t  day   = date.day;
+    uint8_t month = date.month;
+    uint8_t day   = date.day;
     NSMutableData *dateBytes = [NSMutableData new];
-    [dateBytes appendBytes:&year  length:sizeof(year)];
+    [dateBytes appendBytes:&year length:sizeof(year)];
     [dateBytes appendBytes:&month length:sizeof(month)];
-    [dateBytes appendBytes:&day   length:sizeof(day)];
+    [dateBytes appendBytes:&day length:sizeof(day)];
     _data = [NSData dataWithData:dateBytes];
     return self;
 }
 
-- (instancetype)initWithGenericDateTime:(QredoDateTime *)dateTime {
+-(instancetype)initWithGenericDateTime:(QredoDateTime *)dateTime {
     self = [super init];
     _marker = QredoMarkerDateTime;
     QredoDate *date = [dateTime date];
     QredoTime *time = [dateTime time];
     uint16_t year  = CFSwapInt16HostToBig(date.year);
-    uint8_t  month = date.month;
-    uint8_t  day   = date.day;
+    uint8_t month = date.month;
+    uint8_t day   = date.day;
     uint32_t millisSinceMidnight = CFSwapInt32HostToBig((uint32_t)time.millisSinceMidnight);
     NSMutableData *dateTimeBytes = [NSMutableData new];
-    [dateTimeBytes appendBytes:&year  length:sizeof(year)];
+    [dateTimeBytes appendBytes:&year length:sizeof(year)];
     [dateTimeBytes appendBytes:&month length:sizeof(month)];
-    [dateTimeBytes appendBytes:&day   length:sizeof(day)];
+    [dateTimeBytes appendBytes:&day length:sizeof(day)];
     [dateTimeBytes appendBytes:&millisSinceMidnight length:sizeof(millisSinceMidnight)];
-    if ([dateTime isMemberOfClass:[QredoLocalDateTime class]]) {
+    
+    if ([dateTime isMemberOfClass:[QredoLocalDateTime class]]){
         [dateTimeBytes appendBytes:"L" length:sizeof(char)];
-    } else if ([dateTime isMemberOfClass:[QredoUTCDateTime class]]) {
+    } else if ([dateTime isMemberOfClass:[QredoUTCDateTime class]]){
         [dateTimeBytes appendBytes:"U" length:sizeof(char)];
     } else {
         @throw [NSException exceptionWithName:@"QredoUnexpectedMarkerException"
                                        reason:[NSString stringWithFormat:@"Unexpected QredoDateTime subclass '%@'.",
-                                                       [[dateTime class] description]]
+                                               [[dateTime class] description]]
                                      userInfo:nil];
     }
+    
     _data = [NSData dataWithData:dateTimeBytes];
     return self;
 }
 
-- (instancetype)initWithInt32:(NSNumber *)int32 {
+-(instancetype)initWithInt32:(NSNumber *)int32 {
     self = [super init];
     _marker = QredoMarkerInt;
     int32_t data = CFSwapInt32HostToBig([int32 intValue]);
@@ -132,7 +134,7 @@
     return self;
 }
 
-- (instancetype)initWithInt64:(NSNumber *)int64 {
+-(instancetype)initWithInt64:(NSNumber *)int64 {
     self = [super init];
     _marker = QredoMarkerInt;
     int64_t data = CFSwapInt64HostToBig([int64 longLongValue]);
@@ -140,39 +142,41 @@
     return self;
 }
 
-- (instancetype)initWithLocalDateTime:(QredoLocalDateTime *)localDateTime {
+-(instancetype)initWithLocalDateTime:(QredoLocalDateTime *)localDateTime {
     return [self initWithGenericDateTime:localDateTime];
 }
 
-- (instancetype)initWithString:(NSString *)string {
+-(instancetype)initWithString:(NSString *)string {
     self = [super init];
     _marker = QredoMarkerString;
     _data   = [string dataUsingEncoding:NSUTF8StringEncoding];
     return self;
 }
 
-- (instancetype)initWithSymbol:(NSString *)symbol {
+-(instancetype)initWithSymbol:(NSString *)symbol {
     self = [super init];
     NSRegularExpression *regex =
-            [NSRegularExpression regularExpressionWithPattern:@"[a-zA-Z_][a-zA-Z_0-9]*"
-                                                      options:0
-                                                        error:nil];
+    [NSRegularExpression regularExpressionWithPattern:@"[a-zA-Z_][a-zA-Z_0-9]*"
+                                              options:0
+                                                error:nil];
     NSTextCheckingResult *result =
-            [regex firstMatchInString:symbol
-                              options:0
-                                range:NSMakeRange(0, symbol.length)];
-    if ([symbol isEqualToString:[symbol substringWithRange:[result range]]]) {
+    [regex firstMatchInString:symbol
+                      options:0
+                        range:NSMakeRange(0,symbol.length)];
+    
+    if ([symbol isEqualToString:[symbol substringWithRange:[result range]]]){
         _marker = QredoMarkerSymbol;
         _data   = [symbol dataUsingEncoding:NSUTF8StringEncoding];
     } else {
         @throw [NSException exceptionWithName:@"QredoInvalidSymbol"
-                                       reason:[NSString stringWithFormat:@"Symbols must match [a-zA-Z_][a-zA-Z_0-9]*, but \"%@\" doesn't.", symbol]
+                                       reason:[NSString stringWithFormat:@"Symbols must match [a-zA-Z_][a-zA-Z_0-9]*, but \"%@\" doesn't.",symbol]
                                      userInfo:nil];
     }
+    
     return self;
 }
 
-- (instancetype)initWithTime:(QredoTime *)time {
+-(instancetype)initWithTime:(QredoTime *)time {
     self = [super init];
     _marker = QredoMarkerTime;
     uint32_t data = CFSwapInt32HostToBig((uint32_t)time.millisSinceMidnight);
@@ -180,7 +184,7 @@
     return self;
 }
 
-- (instancetype)initWithQUID:(QredoQUID *)quid {
+-(instancetype)initWithQUID:(QredoQUID *)quid {
     self = [super init];
     _marker = QredoMarkerQUID;
     uint8_t bytes[32];
@@ -189,86 +193,91 @@
     return self;
 }
 
-- (instancetype)initWithUTCDateTime:(QredoUTCDateTime *)utcDateTime {
+-(instancetype)initWithUTCDateTime:(QredoUTCDateTime *)utcDateTime {
     return [self initWithGenericDateTime:utcDateTime];
 }
 
-- (NSNumber *)asBoolean {
-    switch (_marker) {
+-(NSNumber *)asBoolean {
+    switch (_marker){
         case QredoMarkerBooleanTrue:
             return @TRUE;
+            
         case QredoMarkerBooleanFalse:
             return @FALSE;
+            
         default:
             @throw [NSException exceptionWithName:@"QredoUnexpectedMarkerException"
-                                           reason:[NSString stringWithFormat:@"Expected Boolean marker, got '%c'.", _marker]
+                                           reason:[NSString stringWithFormat:@"Expected Boolean marker, got '%c'.",_marker]
                                          userInfo:nil];
     }
 }
 
-- (NSData *)asByteSequence {
+-(NSData *)asByteSequence {
     [self expectMarker:QredoMarkerByteSequence];
     return _data;
 }
 
-- (NSData *)asData {
+-(NSData *)asData {
     NSMutableData *data = [NSMutableData dataWithBytes:&_marker length:1];
-    if ([_data length] > 0) {
+    
+    if ([_data length] > 0){
         [data appendData:_data];
     }
+    
     return [data copy];
 }
 
-- (QredoDate *)asDate {
+-(QredoDate *)asDate {
     [self expectMarker:QredoMarkerDate];
     [self expectLength:4];
     uint16_t year;
-    uint8_t  month;
-    uint8_t  day;
-    [_data getBytes:&year  range:NSMakeRange(0, sizeof(year))];
-    [_data getBytes:&month range:NSMakeRange(2, sizeof(month))];
-    [_data getBytes:&day   range:NSMakeRange(3, sizeof(day))];
+    uint8_t month;
+    uint8_t day;
+    [_data getBytes:&year range:NSMakeRange(0,sizeof(year))];
+    [_data getBytes:&month range:NSMakeRange(2,sizeof(month))];
+    [_data getBytes:&day range:NSMakeRange(3,sizeof(day))];
     return [QredoDate dateWithYear:CFSwapInt16BigToHost(year)
                              month:month
                                day:day];
 }
 
-- (QredoDateTime *)asGenericDateTime {
-    
+-(QredoDateTime *)asGenericDateTime {
     [self expectMarker:QredoMarkerDateTime];
     [self expectLength:9];
     
     uint16_t year;
-    uint8_t  month;
-    uint8_t  day;
-    [_data getBytes:&year  range:NSMakeRange(0, sizeof(year))];
-    [_data getBytes:&month range:NSMakeRange(2, sizeof(month))];
-    [_data getBytes:&day   range:NSMakeRange(3, sizeof(day))];
+    uint8_t month;
+    uint8_t day;
+    [_data getBytes:&year range:NSMakeRange(0,sizeof(year))];
+    [_data getBytes:&month range:NSMakeRange(2,sizeof(month))];
+    [_data getBytes:&day range:NSMakeRange(3,sizeof(day))];
     QredoDate *date = [QredoDate dateWithYear:CFSwapInt16BigToHost(year)
                                         month:month
                                           day:day];
     
     uint32_t millisSinceMidnight;
-    [_data getBytes:&millisSinceMidnight range:NSMakeRange(4, 4)];
+    [_data getBytes:&millisSinceMidnight range:NSMakeRange(4,4)];
     QredoTime *time = [QredoTime timeWithMillisSinceMidnight:CFSwapInt32BigToHost(millisSinceMidnight)];
     
     uint8_t timeZoneMarker = ((uint8_t *)[_data bytes])[8];
-    switch (timeZoneMarker) {
+    switch (timeZoneMarker){
         case QredoMarkerLocalTimezone:
             return [QredoDateTime dateTimeWithDate:date time:time isUTC:false];
+            
         case QredoMarkerUTCTimezone:
             return [QredoDateTime dateTimeWithDate:date time:time isUTC:true];
+            
         default:
             [NSException exceptionWithName:@"QredoUnexpectedMarkerException"
-                                    reason:[NSString stringWithFormat:@"Unexpected timezone marker '%c'.", _marker]
+                                    reason:[NSString stringWithFormat:@"Unexpected timezone marker '%c'.",_marker]
                                   userInfo:nil];
             return nil;
     }
-
 }
 
-- (NSNumber *)asInt32 {
+-(NSNumber *)asInt32 {
     int32_t int32;
+    
     [self expectMarker:QredoMarkerInt];
     [self expectLength:sizeof(int32)];
     [_data getBytes:&int32 length:sizeof(int32)];
@@ -276,8 +285,9 @@
     return @(int32);
 }
 
-- (NSNumber *)asInt64 {
+-(NSNumber *)asInt64 {
     int64_t int64;
+    
     [self expectMarker:QredoMarkerInt];
     [self expectLength:sizeof(int64)];
     [_data getBytes:&int64 length:sizeof(int64)];
@@ -285,29 +295,30 @@
     return @(int64);
 }
 
-- (QredoLocalDateTime *)asLocalDateTime {
+-(QredoLocalDateTime *)asLocalDateTime {
     [self expectMarker:QredoMarkerDateTime];
     [self expectLength:9];
     [self expectDateTimeMarker:QredoMarkerLocalTimezone];
     return (QredoLocalDateTime *)[self asGenericDateTime];
 }
 
-- (NSString *)asString {
+-(NSString *)asString {
     [self expectMarker:QredoMarkerString];
     NSMutableData *stringBytes = [NSMutableData dataWithData:_data];
     [stringBytes appendBytes:"" length:1];
     return [NSString stringWithUTF8String:[stringBytes bytes]];
 }
 
-- (NSString *)asSymbol {
+-(NSString *)asSymbol {
     [self expectMarker:QredoMarkerSymbol];
     NSMutableData *symbolBytes = [NSMutableData dataWithData:_data];
     [symbolBytes appendBytes:"" length:1];
     return [NSString stringWithUTF8String:[symbolBytes bytes]];
 }
 
-- (QredoTime *)asTime {
+-(QredoTime *)asTime {
     uint32_t time;
+    
     [self expectMarker:QredoMarkerTime];
     [self expectLength:4];
     [_data getBytes:&time length:sizeof(time)];
@@ -315,67 +326,68 @@
     return [QredoTime timeWithMillisSinceMidnight:time];
 }
 
-- (QredoQUID *)asQUID {
+-(QredoQUID *)asQUID {
     [self expectMarker:QredoMarkerQUID];
     [self expectLength:32];
     return [[QredoQUID alloc] initWithQUIDBytes:[_data bytes]];
 }
 
-- (QredoUTCDateTime *)asUTCDateTime {
+-(QredoUTCDateTime *)asUTCDateTime {
     [self expectMarker:QredoMarkerDateTime];
     [self expectLength:9];
     [self expectDateTimeMarker:QredoMarkerUTCTimezone];
     return (QredoUTCDateTime *)[self asGenericDateTime];
 }
 
-- (void)expectDateTimeMarker:(QredoMarker)expectedMarker {;
+-(void)expectDateTimeMarker:(QredoMarker)expectedMarker {
     uint8_t actualMarker = ((uint8_t *)[_data bytes])[8];
-    if (actualMarker != expectedMarker) {
+    
+    if (actualMarker != expectedMarker){
         @throw [NSException exceptionWithName:@"QredoUnexpectedMarkerException"
-                                       reason:[NSString stringWithFormat:@"Expected date/time marker '%c', got '%c'.", expectedMarker, actualMarker]
+                                       reason:[NSString stringWithFormat:@"Expected date/time marker '%c', got '%c'.",expectedMarker,actualMarker]
                                      userInfo:nil];
     }
 }
 
-- (void)expectMarker:(QredoMarker)expectedMarker {
-    if (_marker != expectedMarker) {
+-(void)expectMarker:(QredoMarker)expectedMarker {
+    if (_marker != expectedMarker){
         @throw [NSException exceptionWithName:@"QredoUnexpectedMarkerException"
-                                       reason:[NSString stringWithFormat:@"Expected marker '%c' (0x%02X), got '%c' (0x%02X).", expectedMarker, expectedMarker, _marker, _marker]
+                                       reason:[NSString stringWithFormat:@"Expected marker '%c' (0x%02X), got '%c' (0x%02X).",expectedMarker,expectedMarker,_marker,_marker]
                                      userInfo:nil];
     }
 }
 
-- (void)expectLength:(int)expectedLength {
-    if ([_data length] != expectedLength) {
+-(void)expectLength:(int)expectedLength {
+    if ([_data length] != expectedLength){
         @throw [NSException exceptionWithName:@"QredoUnexpectedLengthException"
-                                       reason:[NSString stringWithFormat:@"Expected length %d, got %d.", expectedLength, (unsigned int)[_data length]]
+                                       reason:[NSString stringWithFormat:@"Expected length %d, got %d.",expectedLength,(unsigned int)[_data length]]
                                      userInfo:nil];
     }
 }
 
-- (BOOL)isEqual:(id)other {
-    if (other == self)
-        return YES;
-    if (!other || ![[other class] isEqual:[self class]])
-        return NO;
-
+-(BOOL)isEqual:(id)other {
+    if (other == self)return YES;
+    
+    if (!other || ![[other class] isEqual:[self class]])return NO;
+    
     return [self isEqualToAtom:other];
 }
 
-- (BOOL)isEqualToAtom:(QredoMarkedAtom *)atom {
-    if (self == atom)
-        return YES;
-    if (atom == nil)
-        return NO;
-    if (self.marker != atom.marker)
-        return NO;
-    if (self.data != atom.data && ![self.data isEqualToData:atom.data])
-        return NO;
+-(BOOL)isEqualToAtom:(QredoMarkedAtom *)atom {
+    if (self == atom)return YES;
+    
+    if (atom == nil)return NO;
+    
+    if (self.marker != atom.marker)return NO;
+    
+    if (self.data != atom.data && ![self.data isEqualToData:atom.data])return NO;
+    
     return YES;
 }
 
-- (NSUInteger)hash {
-    NSUInteger hash = (NSUInteger) self.marker;
+-(NSUInteger)hash {
+    NSUInteger hash = (NSUInteger)self.marker;
+    
     hash = hash * 31u + [self.data hash];
     return hash;
 }
@@ -384,11 +396,11 @@
 
 @implementation QredoVersion
 
-+ (instancetype)versionWithMajor:(NSNumber *)major minor:(NSNumber *)minor patch:(NSNumber *)patch {
++(instancetype)versionWithMajor:(NSNumber *)major minor:(NSNumber *)minor patch:(NSNumber *)patch {
     return [[self alloc] initWithMajor:major minor:minor patch:patch];
 }
 
-- (instancetype)initWithMajor:(NSNumber *)major minor:(NSNumber *)minor patch:(NSNumber *)patch {
+-(instancetype)initWithMajor:(NSNumber *)major minor:(NSNumber *)minor patch:(NSNumber *)patch {
     self = [super init];
     _major = major;
     _minor = minor;
@@ -396,98 +408,96 @@
     return self;
 }
 
-- (BOOL)isEqual:(id)other {
-    if (other == self)
-        return YES;
-    if (!other || ![[other class] isEqual:[self class]])
-        return NO;
-
+-(BOOL)isEqual:(id)other {
+    if (other == self)return YES;
+    
+    if (!other || ![[other class] isEqual:[self class]])return NO;
+    
     return [self isEqualToVersion:other];
 }
 
-- (BOOL)isEqualToVersion:(QredoVersion *)version {
-    if (self == version)
-        return YES;
-    if (version == nil)
-        return NO;
-    if (self.major != version.major && ![self.major isEqualToNumber:version.major])
-        return NO;
-    if (self.minor != version.minor && ![self.minor isEqualToNumber:version.minor])
-        return NO;
-    if (self.patch != version.patch && ![self.patch isEqualToNumber:version.patch])
-        return NO;
+-(BOOL)isEqualToVersion:(QredoVersion *)version {
+    if (self == version)return YES;
+    
+    if (version == nil)return NO;
+    
+    if (self.major != version.major && ![self.major isEqualToNumber:version.major])return NO;
+    
+    if (self.minor != version.minor && ![self.minor isEqualToNumber:version.minor])return NO;
+    
+    if (self.patch != version.patch && ![self.patch isEqualToNumber:version.patch])return NO;
+    
     return YES;
 }
 
-- (NSUInteger)hash {
+-(NSUInteger)hash {
     NSUInteger hash = [self.major hash];
+    
     hash = hash * 31u + [self.minor hash];
     hash = hash * 31u + [self.patch hash];
     return hash;
 }
 
-
 @end
 
 @implementation QredoMessageHeader
 
-+ (instancetype)messageHeaderWithProtocolVersion:(QredoVersion *)protocolVersion releaseVersion:(QredoVersion *)releaseVersion {
++(instancetype)messageHeaderWithProtocolVersion:(QredoVersion *)protocolVersion releaseVersion:(QredoVersion *)releaseVersion {
     return [[self alloc] initWithProtocolVersion:protocolVersion releaseVersion:releaseVersion];
 }
 
-- (instancetype)initWithProtocolVersion:(QredoVersion *)protocolVersion releaseVersion:(QredoVersion *)releaseVersion {
+-(instancetype)initWithProtocolVersion:(QredoVersion *)protocolVersion releaseVersion:(QredoVersion *)releaseVersion {
     self = [super init];
     _protocolVersion = protocolVersion;
     _releaseVersion  = releaseVersion;
     return self;
 }
 
-- (BOOL)isEqual:(id)other {
-    if (other == self)
-        return YES;
-    if (!other || ![[other class] isEqual:[self class]])
-        return NO;
-
+-(BOOL)isEqual:(id)other {
+    if (other == self)return YES;
+    
+    if (!other || ![[other class] isEqual:[self class]])return NO;
+    
     return [self isEqualToHeader:other];
 }
 
-- (BOOL)isEqualToHeader:(QredoMessageHeader *)header {
-    if (self == header)
-        return YES;
-    if (header == nil)
-        return NO;
-    if (self.protocolVersion != header.protocolVersion && ![self.protocolVersion isEqualToVersion:header.protocolVersion])
-        return NO;
-    if (self.releaseVersion != header.releaseVersion && ![self.releaseVersion isEqualToVersion:header.releaseVersion])
-        return NO;
+-(BOOL)isEqualToHeader:(QredoMessageHeader *)header {
+    if (self == header)return YES;
+    
+    if (header == nil)return NO;
+    
+    if (self.protocolVersion != header.protocolVersion && ![self.protocolVersion isEqualToVersion:header.protocolVersion])return NO;
+    
+    if (self.releaseVersion != header.releaseVersion && ![self.releaseVersion isEqualToVersion:header.releaseVersion])return NO;
+    
     return YES;
 }
 
-- (NSUInteger)hash {
+-(NSUInteger)hash {
     NSUInteger hash = [self.protocolVersion hash];
+    
     hash = hash * 31u + [self.releaseVersion hash];
     return hash;
 }
-
 
 @end
 
 @implementation QredoInterchangeHeader
 
-+ (instancetype)interchangeHeaderWithReturnChannelID:(NSData *)returnChannelID
-                                                   correlationID:(NSData *)correlationID
-                                                     serviceName:(NSString *)serviceName
-                                                   operationName:(NSString *)operationName {
++(instancetype)interchangeHeaderWithReturnChannelID:(NSData *)returnChannelID
+                                      correlationID:(NSData *)correlationID
+                                        serviceName:(NSString *)serviceName
+                                      operationName:(NSString *)operationName {
     return [[self alloc] initWithReturnChannelID:returnChannelID
                                    correlationID:correlationID
                                      serviceName:serviceName
                                    operationName:operationName];
 }
 
-- (instancetype)initWithReturnChannelID:(NSData *)returnChannelID
-                                      correlationID:(NSData *)correlationID
-                                        serviceName:(NSString *)serviceName
-                                      operationName:(NSString *)operationName {
+-(instancetype)initWithReturnChannelID:(NSData *)returnChannelID
+                         correlationID:(NSData *)correlationID
+                           serviceName:(NSString *)serviceName
+                         operationName:(NSString *)operationName {
     self = [super init];
     _returnChannelID = returnChannelID;
     _correlationID   = correlationID;
@@ -496,33 +506,33 @@
     return self;
 }
 
-- (BOOL)isEqual:(id)other {
-    if (other == self)
-        return YES;
-    if (!other || ![[other class] isEqual:[self class]])
-        return NO;
-
+-(BOOL)isEqual:(id)other {
+    if (other == self)return YES;
+    
+    if (!other || ![[other class] isEqual:[self class]])return NO;
+    
     return [self isEqualToHeader:other];
 }
 
-- (BOOL)isEqualToHeader:(QredoInterchangeHeader *)header {
-    if (self == header)
-        return YES;
-    if (header == nil)
-        return NO;
-    if (self.returnChannelID != header.returnChannelID && ![self.returnChannelID isEqual:header.returnChannelID])
-        return NO;
-    if (self.correlationID != header.correlationID && ![self.correlationID isEqual:header.correlationID])
-        return NO;
-    if (self.serviceName != header.serviceName && ![self.serviceName isEqualToString:header.serviceName])
-        return NO;
-    if (self.operationName != header.operationName && ![self.operationName isEqualToString:header.operationName])
-        return NO;
+-(BOOL)isEqualToHeader:(QredoInterchangeHeader *)header {
+    if (self == header)return YES;
+    
+    if (header == nil)return NO;
+    
+    if (self.returnChannelID != header.returnChannelID && ![self.returnChannelID isEqual:header.returnChannelID])return NO;
+    
+    if (self.correlationID != header.correlationID && ![self.correlationID isEqual:header.correlationID])return NO;
+    
+    if (self.serviceName != header.serviceName && ![self.serviceName isEqualToString:header.serviceName])return NO;
+    
+    if (self.operationName != header.operationName && ![self.operationName isEqualToString:header.operationName])return NO;
+    
     return YES;
 }
 
-- (NSUInteger)hash {
+-(NSUInteger)hash {
     NSUInteger hash = [self.returnChannelID hash];
+    
     hash = hash * 31u + [self.correlationID hash];
     hash = hash * 31u + [self.serviceName hash];
     hash = hash * 31u + [self.operationName hash];
@@ -533,48 +543,49 @@
 
 @implementation QredoAppCredentials
 
-+ (QredoAppCredentials *)empty {
++(QredoAppCredentials *)empty {
     NSString *emptyAppId   = @"";
     NSData *emptyAppSecret = [NSData data];
+    
     return [[self alloc] initWithAppId:emptyAppId appSecret:emptyAppSecret];
 }
 
-+ (QredoAppCredentials *)appCredentialsWithAppId:(NSString *)appId
-                                       appSecret:(NSData *)appSecret{
++(QredoAppCredentials *)appCredentialsWithAppId:(NSString *)appId
+                                      appSecret:(NSData *)appSecret {
     return [[self alloc] initWithAppId:appId appSecret:appSecret];
 }
 
-- (QredoAppCredentials *)initWithAppId:(NSString *)appId
-                             appSecret:(NSData *)appSecret {
+-(QredoAppCredentials *)initWithAppId:(NSString *)appId
+                            appSecret:(NSData *)appSecret {
     self = [super init];
     _appId     = appId;
     _appSecret = appSecret;
     return self;
 }
 
-- (BOOL)isEqual:(id)other {
-    if (other == self)
-        return YES;
-    if (!other || ![[other class] isEqual:[self class]])
-        return NO;
-
+-(BOOL)isEqual:(id)other {
+    if (other == self)return YES;
+    
+    if (!other || ![[other class] isEqual:[self class]])return NO;
+    
     return [self isEqualToAppCredentials:other];
 }
 
-- (BOOL)isEqualToAppCredentials:(QredoAppCredentials *)appCredentials {
-    if (self == appCredentials)
-        return YES;
-    if (appCredentials == nil)
-        return NO;
-    if (self.appId != appCredentials.appId && ![self.appId isEqualToString:appCredentials.appId])
-        return NO;
-    if (self.appSecret != appCredentials.appSecret && ![self.appSecret isEqualToData:appCredentials.appSecret])
-        return NO;
+-(BOOL)isEqualToAppCredentials:(QredoAppCredentials *)appCredentials {
+    if (self == appCredentials)return YES;
+    
+    if (appCredentials == nil)return NO;
+    
+    if (self.appId != appCredentials.appId && ![self.appId isEqualToString:appCredentials.appId])return NO;
+    
+    if (self.appSecret != appCredentials.appSecret && ![self.appSecret isEqualToData:appCredentials.appSecret])return NO;
+    
     return YES;
 }
 
-- (NSUInteger)hash {
+-(NSUInteger)hash {
     NSUInteger hash = [self.appId hash];
+    
     hash = hash * 31u + [self.appSecret hash];
     return hash;
 }
@@ -584,21 +595,21 @@
 
 @implementation QredoResultHeader
 
-+ (instancetype)resultHeaderWithStatus:(NSNumber *)status {
++(instancetype)resultHeaderWithStatus:(NSNumber *)status {
     return [[self alloc] initWithStatus:status];
 }
 
-- (instancetype)initWithStatus:(NSNumber *)status {
+-(instancetype)initWithStatus:(NSNumber *)status {
     self = [super init];
     _status = status;
     return self;
 }
 
-- (BOOL)isFailure {
+-(BOOL)isFailure {
     return [_status isEqualToNumber:@(QredoMarkerOperationFailure)];
 }
 
-- (BOOL)isSuccess {
+-(BOOL)isSuccess {
     return [_status isEqualToNumber:@(QredoMarkerOperationSuccess)];
 }
 
@@ -606,58 +617,57 @@
 
 @implementation QredoDebugInfo
 
-+ (QredoDebugInfo *)debugInfoWithKey:(NSString *)key value:(NSString *)value {
++(QredoDebugInfo *)debugInfoWithKey:(NSString *)key value:(NSString *)value {
     return [[self alloc] initWithKey:key value:value];
 }
 
-- (QredoDebugInfo *)initWithKey:(NSString *)key value:(NSString *)value {
+-(QredoDebugInfo *)initWithKey:(NSString *)key value:(NSString *)value {
     self = [super init];
     _key = key;
     _value = value;
     return self;
 }
 
-- (BOOL)isEqual:(id)other {
-    if (other == self)
-        return YES;
-    if (!other || ![[other class] isEqual:[self class]])
-        return NO;
-
+-(BOOL)isEqual:(id)other {
+    if (other == self)return YES;
+    
+    if (!other || ![[other class] isEqual:[self class]])return NO;
+    
     return [self isEqualToInfo:other];
 }
 
-- (BOOL)isEqualToInfo:(QredoDebugInfo *)info {
-    if (self == info)
-        return YES;
-    if (info == nil)
-        return NO;
-    if (self.key != info.key && ![self.key isEqualToString:info.key])
-        return NO;
-    if (self.value != info.value && ![self.value isEqualToString:info.value])
-        return NO;
+-(BOOL)isEqualToInfo:(QredoDebugInfo *)info {
+    if (self == info)return YES;
+    
+    if (info == nil)return NO;
+    
+    if (self.key != info.key && ![self.key isEqualToString:info.key])return NO;
+    
+    if (self.value != info.value && ![self.value isEqualToString:info.value])return NO;
+    
     return YES;
 }
 
-- (NSUInteger)hash {
+-(NSUInteger)hash {
     NSUInteger hash = [self.key hash];
+    
     hash = hash * 31u + [self.value hash];
     return hash;
 }
-
 
 @end
 
 @implementation QredoErrorInfo
 
-+ (instancetype)errorInfoWithCode:(NSInteger)code
-                         debugMessage:(NSString *)debugMessage
-                            debugInfo:(NSArray *)debugInfo {
++(instancetype)errorInfoWithCode:(NSInteger)code
+                    debugMessage:(NSString *)debugMessage
+                       debugInfo:(NSArray *)debugInfo {
     return [[self alloc] initWithCode:code debugMessage:debugMessage debugInfo:debugInfo];
 }
 
-- (instancetype)initWithCode:(NSInteger)code
-                    debugMessage:(NSString *)debugMessage
-                       debugInfo:(NSArray *)debugInfo {
+-(instancetype)initWithCode:(NSInteger)code
+               debugMessage:(NSString *)debugMessage
+                  debugInfo:(NSArray *)debugInfo {
     self = [super init];
     _code = code;
     _debugMessage = debugMessage;
@@ -665,36 +675,35 @@
     return self;
 }
 
-- (BOOL)isEqual:(id)other {
-    if (other == self)
-        return YES;
-    if (!other || ![[other class] isEqual:[self class]])
-        return NO;
-
+-(BOOL)isEqual:(id)other {
+    if (other == self)return YES;
+    
+    if (!other || ![[other class] isEqual:[self class]])return NO;
+    
     return [self isEqualToInfo:other];
 }
 
-- (BOOL)isEqualToInfo:(QredoErrorInfo *)info {
-    if (self == info)
-        return YES;
-    if (info == nil)
-        return NO;
-    if (self.code != info.code)
-        return NO;
-    if (self.debugMessage != info.debugMessage && ![self.debugMessage isEqualToString:info.debugMessage])
-        return NO;
-    if (self.debugInfo != info.debugInfo && ![self.debugInfo isEqualToArray:info.debugInfo])
-        return NO;
+-(BOOL)isEqualToInfo:(QredoErrorInfo *)info {
+    if (self == info)return YES;
+    
+    if (info == nil)return NO;
+    
+    if (self.code != info.code)return NO;
+    
+    if (self.debugMessage != info.debugMessage && ![self.debugMessage isEqualToString:info.debugMessage])return NO;
+    
+    if (self.debugInfo != info.debugInfo && ![self.debugInfo isEqualToArray:info.debugInfo])return NO;
+    
     return YES;
 }
 
-- (NSUInteger)hash {
+-(NSUInteger)hash {
     NSUInteger hash = self.code;
+    
     hash = hash * 31u + [self.debugMessage hash];
     hash = hash * 31u + [self.debugInfo hash];
     return hash;
 }
-
 
 @end
 
@@ -703,70 +712,71 @@
     QredoSExpressionReader *_reader;
 }
 
-+ (instancetype)wireFormatReaderWithInputStream:(NSInputStream *)inputStream {
++(instancetype)wireFormatReaderWithInputStream:(NSInputStream *)inputStream {
     return [[QredoWireFormatReader alloc] initWithInputStream:inputStream];
 }
 
-- (instancetype)initWithInputStream:(NSInputStream *)inputStream {
+-(instancetype)initWithInputStream:(NSInputStream *)inputStream {
     self = [super init];
     _reader = [QredoSExpressionReader sexpressionReaderForInputStream:inputStream];
     return self;
 }
 
-- (NSNumber *)readBoolean {
+-(NSNumber *)readBoolean {
     return [[self readMarkedAtom] asBoolean];
 }
 
-- (NSNumber *)readByte {
+-(NSNumber *)readByte {
     uint8_t *bytes = (uint8_t *)[[_reader readAtom] bytes];
+    
     return @(bytes[0]);
 }
 
-- (NSData *)readByteSequence {
+-(NSData *)readByteSequence {
     return [[self readMarkedAtom] asByteSequence];
 }
 
-- (QredoDate *)readDate {
+-(QredoDate *)readDate {
     return [[self readMarkedAtom] asDate];
 }
 
-- (QredoDateTime *)readGenericDateTime {
+-(QredoDateTime *)readGenericDateTime {
     return [[self readMarkedAtom] asGenericDateTime];
 }
 
-- (NSNumber *)readInt32 {
+-(NSNumber *)readInt32 {
     return [[self readMarkedAtom] asInt32];
 }
 
-- (NSNumber *)readInt64 {
+-(NSNumber *)readInt64 {
     return [[self readMarkedAtom] asInt64];
 }
 
-- (QredoLocalDateTime *)readLocalDateTime {
+-(QredoLocalDateTime *)readLocalDateTime {
     return [[self readMarkedAtom] asLocalDateTime];
 }
 
-- (NSString *)readString {
+-(NSString *)readString {
     return [[self readMarkedAtom] asString];
 }
 
-- (NSString *)readSymbol {
+-(NSString *)readSymbol {
     return [[self readMarkedAtom] asSymbol];
 }
 
-- (QredoTime *)readTime {
+-(QredoTime *)readTime {
     return [[self readMarkedAtom] asTime];
 }
 
-- (QredoQUID *)readQUID {
+-(QredoQUID *)readQUID {
     return [[self readMarkedAtom] asQUID];
 }
 
-- (QredoUTCDateTime *)readUTCDateTime {
+-(QredoUTCDateTime *)readUTCDateTime {
     return [[self readMarkedAtom] asUTCDateTime];
 }
 
-- (QredoMessageHeader *)readMessageHeader {
+-(QredoMessageHeader *)readMessageHeader {
     [self readStart];
     QredoVersion *protocolVersion = [self readVersion];
     QredoVersion *releaseVersion  = [self readVersion];
@@ -774,16 +784,16 @@
                                                  releaseVersion:releaseVersion];
 }
 
-- (QredoVersion *)readVersion {
+-(QredoVersion *)readVersion {
     NSData *versionBytes = [self readByteSequence];
     
     uint16_t majorInt;
     uint16_t minorInt;
     uint16_t patchInt;
     
-    [versionBytes getBytes:&majorInt range:NSMakeRange(0, 2)];
-    [versionBytes getBytes:&minorInt range:NSMakeRange(2, 2)];
-    [versionBytes getBytes:&patchInt range:NSMakeRange(4, 2)];
+    [versionBytes getBytes:&majorInt range:NSMakeRange(0,2)];
+    [versionBytes getBytes:&minorInt range:NSMakeRange(2,2)];
+    [versionBytes getBytes:&patchInt range:NSMakeRange(4,2)];
     
     NSNumber *major = @(CFSwapInt16BigToHost(majorInt));
     NSNumber *minor = @(CFSwapInt16BigToHost(minorInt));
@@ -792,12 +802,11 @@
     return [QredoVersion versionWithMajor:major minor:minor patch:patch];
 }
 
-- (QredoInterchangeHeader *)readInterchangeHeader {
-    
+-(QredoInterchangeHeader *)readInterchangeHeader {
     [self expectMarkedListWithMarker:QredoMarkerInterchange];
     
-    NSData   *returnChannelID = [self readByteSequence];
-    NSData   *correlationID   = [self readByteSequence];
+    NSData *returnChannelID = [self readByteSequence];
+    NSData *correlationID   = [self readByteSequence];
     NSString *serviceName     = [self readSymbol];
     NSString *operationName   = [self readSymbol];
     
@@ -805,41 +814,41 @@
                                                           correlationID:correlationID
                                                             serviceName:serviceName
                                                           operationName:operationName];
-    
 }
 
-- (QredoAppCredentials *)readInvocationHeader {
+-(QredoAppCredentials *)readInvocationHeader {
     [self expectMarkedListWithMarker:QredoMarkerOperationInvocation];
     NSString *appId   = [self readString];
     NSData *appSecret = [self readByteSequence];
     return [QredoAppCredentials appCredentialsWithAppId:appId appSecret:appSecret];
 }
 
-- (NSArray *)readErrorInfoItems {
+-(NSArray *)readErrorInfoItems {
     NSMutableArray *errorInfoItems = [NSMutableArray new];
+    
     [self readSequenceStart];
-    while (![self atEnd]) {
+    
+    while (![self atEnd])
         [errorInfoItems addObject:[self readErrorInfoItem]];
-    }
     [self readEnd];
     return [errorInfoItems copy];
 }
 
-- (QredoErrorInfo *)readErrorInfoItem {
+-(QredoErrorInfo *)readErrorInfoItem {
     [self readStart];
     NSNumber *code = [self readInt32];
     NSString *debugMessage = [self readString];
     NSMutableArray *debugInfoItems = [NSMutableArray new];
-    while (![self atEnd]) {
+    
+    while (![self atEnd])
         [debugInfoItems addObject:[self readDebugInfoItem]];
-    }
     [self readEnd];
     return [QredoErrorInfo errorInfoWithCode:code.integerValue
                                 debugMessage:debugMessage
                                    debugInfo:[debugInfoItems copy]];
 }
 
-- (QredoDebugInfo *)readDebugInfoItem {
+-(QredoDebugInfo *)readDebugInfoItem {
     [self readStart];
     NSString *key = [self readString];
     NSString *value = [self readString];
@@ -848,56 +857,57 @@
                                       value:value];
 }
 
-- (QredoResultHeader *)readResultStart {
+-(QredoResultHeader *)readResultStart {
     [self readStart];
     NSNumber *status = [self readByte];
     return [QredoResultHeader resultHeaderWithStatus:status];
 }
 
-- (void)readSequenceStart {
+-(void)readSequenceStart {
     [self expectMarkedListWithMarker:QredoMarkerSequence];
 }
 
-- (void)readSetStart {
+-(void)readSetStart {
     [self expectMarkedListWithMarker:QredoMarkerSet];
 }
 
-- (NSString *)readConstructorStart {
+-(NSString *)readConstructorStart {
     [self expectMarkedListWithMarker:QredoMarkerConstructor];
     return [self readSymbol];
 }
 
-- (NSString *)readFieldStart {
+-(NSString *)readFieldStart {
     [self readStart];
     return [self readSymbol];
 }
 
-- (BOOL)atEnd {
+-(BOOL)atEnd {
     return ([_reader lookAhead] == QredoTokenRParen);
 }
 
-- (void)readStart {
+-(void)readStart {
     [_reader readLeftParen];
 }
 
-- (void)readEnd {
+-(void)readEnd {
     [_reader readRightParen];
 }
 
-- (QredoMarkedAtom *)readMarkedAtom {
+-(QredoMarkedAtom *)readMarkedAtom {
     return [QredoMarkedAtom markedAtomWithAtom:[_reader readAtom]];
 }
 
-- (void)expectMarkedListWithMarker:(QredoMarker)expectedMarker {
+-(void)expectMarkedListWithMarker:(QredoMarker)expectedMarker {
     [self readStart];
     [self expectMarker:expectedMarker];
 }
 
-- (void)expectMarker:(QredoMarker)expectedMarker {
+-(void)expectMarker:(QredoMarker)expectedMarker {
     NSNumber *actualMarker = [self readByte];
-    if ([actualMarker intValue] != expectedMarker) {
+    
+    if ([actualMarker intValue] != expectedMarker){
         @throw [NSException exceptionWithName:@"QredoUnexpectedMarkedListException"
-                                       reason:[NSString stringWithFormat:@"Expected marker '%c' (0x%02X), got '%c' (0x%02X).", expectedMarker, expectedMarker, [actualMarker charValue], [actualMarker charValue]]
+                                       reason:[NSString stringWithFormat:@"Expected marker '%c' (0x%02X), got '%c' (0x%02X).",expectedMarker,expectedMarker,[actualMarker charValue],[actualMarker charValue]]
                                      userInfo:nil];
     }
 }
@@ -911,89 +921,90 @@
     QredoSExpressionWriter *_writer;
 }
 
-+ (instancetype)wireFormatWriterWithOutputStream:(NSOutputStream *)outputStream {
++(instancetype)wireFormatWriterWithOutputStream:(NSOutputStream *)outputStream {
     return [[self alloc] initWithOutputStream:outputStream];
 }
 
-- (instancetype)initWithOutputStream:(NSOutputStream *)outputStream {
+-(instancetype)initWithOutputStream:(NSOutputStream *)outputStream {
     self = [super init];
     _writer = [QredoSExpressionWriter sexpressionWriterForOutputStream:outputStream];
     return self;
 }
 
-- (void)writeBoolean:(NSNumber *)boolean {
+-(void)writeBoolean:(NSNumber *)boolean {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithBoolean:boolean] asData]];
 }
 
-- (void)writeByte:(NSNumber *)byte {
+-(void)writeByte:(NSNumber *)byte {
     uint8_t rawByte = [byte unsignedCharValue];
+    
     [_writer writeAtom:[NSData dataWithBytes:&rawByte length:sizeof(rawByte)]];
 }
 
-- (void)writeByteSequence:(NSData *)data {
+-(void)writeByteSequence:(NSData *)data {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithByteSequence:data] asData]];
 }
 
-- (void)writeDate:(QredoDate *)date {
+-(void)writeDate:(QredoDate *)date {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithDate:date] asData]];
 }
 
-- (void)writeGenericDateTime:(QredoDateTime *)dateTime {
+-(void)writeGenericDateTime:(QredoDateTime *)dateTime {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithGenericDateTime:dateTime] asData]];
 }
 
-- (void)writeInt32:(NSNumber *)int32 {
+-(void)writeInt32:(NSNumber *)int32 {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithInt32:int32] asData]];
 }
 
-- (void)writeInt64:(NSNumber *)int64 {
+-(void)writeInt64:(NSNumber *)int64 {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithInt64:int64] asData]];
 }
 
-- (void)writeLocalDateTime:(QredoLocalDateTime *)localDateTime {
+-(void)writeLocalDateTime:(QredoLocalDateTime *)localDateTime {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithLocalDateTime:localDateTime] asData]];
 }
 
-- (void)writeString:(NSString *)string {
+-(void)writeString:(NSString *)string {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithString:string] asData]];
 }
 
-- (void)writeSymbol:(NSString *)symbol {
+-(void)writeSymbol:(NSString *)symbol {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithSymbol:symbol] asData]];
 }
 
-- (void)writeTime:(QredoTime *)time {
+-(void)writeTime:(QredoTime *)time {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithTime:time] asData]];
 }
 
-- (void)writeQUID:(QredoQUID *)quid {
+-(void)writeQUID:(QredoQUID *)quid {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithQUID:quid] asData]];
 }
 
-- (void)writeUTCDateTime:(QredoUTCDateTime *)utcDateTime {
+-(void)writeUTCDateTime:(QredoUTCDateTime *)utcDateTime {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithUTCDateTime:utcDateTime] asData]];
 }
 
-- (void)writeMessageHeader:(QredoMessageHeader *)messageHeader {
+-(void)writeMessageHeader:(QredoMessageHeader *)messageHeader {
     [_writer writeLeftParen];
     [self writeVersion:[messageHeader protocolVersion]];
     [self writeVersion:[messageHeader releaseVersion]];
 }
 
-- (void)writeVersion:(QredoVersion *)version {
+-(void)writeVersion:(QredoVersion *)version {
     NSMutableData *data = [NSMutableData new];
     uint16_t major = CFSwapInt16HostToBig([[version major] unsignedShortValue]);
     uint16_t minor = CFSwapInt16HostToBig([[version minor] unsignedShortValue]);
     uint16_t patch = CFSwapInt16HostToBig([[version patch] unsignedShortValue]);
-
-
+    
+    
     [data appendBytes:&major length:sizeof(major)];
     [data appendBytes:&minor length:sizeof(minor)];
     [data appendBytes:&patch length:sizeof(patch)];
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithByteSequence:data] asData]];
 }
 
-- (void)writeInterchangeHeader:(QredoInterchangeHeader *)interchangeHeader {
+-(void)writeInterchangeHeader:(QredoInterchangeHeader *)interchangeHeader {
     [self writeMarkedListWithMarker:QredoMarkerInterchange];
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithByteSequence:[interchangeHeader returnChannelID]] asData]];
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithByteSequence:[interchangeHeader correlationID]] asData]];
@@ -1001,72 +1012,75 @@
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithSymbol:[interchangeHeader operationName]] asData]];
 }
 
-- (void)writeInvocationHeader:(QredoAppCredentials *)appCredentials {
+-(void)writeInvocationHeader:(QredoAppCredentials *)appCredentials {
     [self writeMarkedListWithMarker:QredoMarkerOperationInvocation];
     [self writeString:appCredentials.appId];
     [self writeByteSequence:appCredentials.appSecret];
 }
 
-- (void)writeErrorInfoItems:(NSArray *)errorInfoItems {
+-(void)writeErrorInfoItems:(NSArray *)errorInfoItems {
     [self writeSequenceStart];
-    for (QredoErrorInfo *errorInfoItem in errorInfoItems) {
+    
+    for (QredoErrorInfo *errorInfoItem in errorInfoItems){
         [self writeErrorInfoItem:errorInfoItem];
     }
+    
     [self writeEnd];
 }
 
-- (void)writeResultStart:(QredoResultHeader *)resultHeader {
+-(void)writeResultStart:(QredoResultHeader *)resultHeader {
     [self writeStart];
     [self writeByte:[resultHeader status]];
 }
 
-- (void)writeErrorInfoItem:(QredoErrorInfo *)errorInfoItem {
+-(void)writeErrorInfoItem:(QredoErrorInfo *)errorInfoItem {
     [self writeStart];
     [self writeInt32:@([errorInfoItem code])];
     [self writeString:[errorInfoItem debugMessage]];
-    for (QredoDebugInfo *debugInfoItem in [errorInfoItem debugInfo]) {
+    
+    for (QredoDebugInfo *debugInfoItem in [errorInfoItem debugInfo]){
         [self writeDebugInfoItem:debugInfoItem];
     }
+    
     [self writeEnd];
 }
 
-- (void)writeDebugInfoItem:(QredoDebugInfo *)debugInfoItem {
+-(void)writeDebugInfoItem:(QredoDebugInfo *)debugInfoItem {
     [self writeStart];
     [self writeString:[debugInfoItem key]];
     [self writeString:[debugInfoItem value]];
     [self writeEnd];
 }
 
-- (void)writeSequenceStart {
+-(void)writeSequenceStart {
     [self writeMarkedListWithMarker:QredoMarkerSequence];
 }
 
-- (void)writeSetStart {
+-(void)writeSetStart {
     [self writeMarkedListWithMarker:QredoMarkerSet];
 }
 
-- (void)writeConstructorStartWithObjectName:(NSString *)objectName {
+-(void)writeConstructorStartWithObjectName:(NSString *)objectName {
     [self writeMarkedListWithMarker:QredoMarkerConstructor];
     [self writeSymbol:objectName];
 }
 
-- (void)writeFieldStartWithFieldName:(NSString *)fieldName {
+-(void)writeFieldStartWithFieldName:(NSString *)fieldName {
     [self writeStart];
     [self writeSymbol:fieldName];
 }
 
-- (void)writeStart {
+-(void)writeStart {
     [_writer writeLeftParen];
 }
 
-- (void)writeEnd {
+-(void)writeEnd {
     [_writer writeRightParen];
 }
 
-- (void)writeMarkedListWithMarker:(uint8_t)marker {
+-(void)writeMarkedListWithMarker:(uint8_t)marker {
     [_writer writeLeftParen];
     [self writeByte:@(marker)];
 }
 
 @end
-

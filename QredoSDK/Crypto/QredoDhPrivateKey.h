@@ -3,10 +3,10 @@
 #import <Foundation/Foundation.h>
 #import "QredoPrivateKey.h"
 
-@interface QredoDhPrivateKey : QredoPrivateKey
+@interface QredoDhPrivateKey :QredoPrivateKey
 
-@property (nonatomic, copy, readonly) NSData *data;
+@property (nonatomic,copy,readonly) NSData *data;
 
-- (instancetype)initWithData:(NSData*)data;
+-(instancetype)initWithData:(NSData *)data;
 
 @end

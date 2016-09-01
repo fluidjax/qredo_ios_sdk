@@ -2,22 +2,21 @@
 
 @implementation ConversationWebSocketTests
 
-- (void)setUp {
+-(void)setUp {
     self.transportType = QredoClientOptionsTransportTypeWebSockets;
     [super setUp];
 }
 
-- (void)testConversationCreation{
+-(void)testConversationCreation {
     [super testConversationCreation];
 }
 
-- (void)testRespondingToConversation{
+-(void)testRespondingToConversation {
     [super testRespondingToConversation];
 }
 
-- (void)testConversation{
+-(void)testConversation {
     [super testConversation];
 }
-
 
 @end

@@ -3,11 +3,11 @@
 #import "QredoPublicKey.h"
 #import "QredoPrivateKey.h"
 
-@interface QredoKeyPair : NSObject
+@interface QredoKeyPair :NSObject
 
-@property (nonatomic, strong, readonly) QredoPublicKey *publicKey;
-@property (nonatomic, strong, readonly) QredoPrivateKey *privateKey;
+@property (nonatomic,strong,readonly) QredoPublicKey *publicKey;
+@property (nonatomic,strong,readonly) QredoPrivateKey *privateKey;
 
-- (instancetype)initWithPublicKey:(QredoPublicKey*)publicKey privateKey:(QredoPrivateKey*)privateKey;
+-(instancetype)initWithPublicKey:(QredoPublicKey *)publicKey privateKey:(QredoPrivateKey *)privateKey;
 
 @end

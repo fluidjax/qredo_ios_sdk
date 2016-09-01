@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
-@interface TestCertificates : NSObject
+@interface TestCertificates :NSObject
 
 extern NSString *const TestCertJavaSdkRootPem;
 extern NSString *const TestCertJavaSdkIntermediatePem;
@@ -25,10 +25,10 @@ extern unsigned char TestPubKeyJavaSdkClient4096X509DerArray[550];
 extern unsigned char TestPrivKeyJavaSdkClient4096Pkcs1DerArray[2349];
 extern unsigned char TestPubKeyJavaSdkClient4096Pkcs1DerArray[526];
 
-+ (NSString *)fetchStringResource:(NSString *)resource ofType:(NSString *)type error:(NSError **)error;
-+ (NSData *)fetchDataResource:(NSString *)resource ofType:(NSString *)type error:(NSError **)error;
-+ (NSString *)fetchPemCertificateFromResource:(NSString *)pemResource error:(NSError **)error;
-+ (NSString *)fetchPemForResource:(NSString *)pemResource error:(NSError **)error;
-+ (NSData *)fetchPfxForResource:(NSString *)pfxResource error:(NSError **)error;
++(NSString *)fetchStringResource:(NSString *)resource ofType:(NSString *)type error:(NSError **)error;
++(NSData *)fetchDataResource:(NSString *)resource ofType:(NSString *)type error:(NSError **)error;
++(NSString *)fetchPemCertificateFromResource:(NSString *)pemResource error:(NSError **)error;
++(NSString *)fetchPemForResource:(NSString *)pemResource error:(NSError **)error;
++(NSData *)fetchPfxForResource:(NSString *)pfxResource error:(NSError **)error;
 
 @end

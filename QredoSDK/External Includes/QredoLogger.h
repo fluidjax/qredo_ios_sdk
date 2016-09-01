@@ -1,15 +1,15 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
-#define QredoLog(_level, _message)   [QredoLogger logMessage:(_message) currentLevel:[QredoLogger logLevel] level:(_level) file:__FILE__ function: __PRETTY_FUNCTION__ line: __LINE__]
-#define QredoLogError(format, ...)   QredoLog(QredoLogLevelError,   (^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
-#define QredoLogWarning(format, ...) QredoLog(QredoLogLevelWarning, (^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
-#define QredoLogInfo(format, ...)    QredoLog(QredoLogLevelInfo,    (^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
-#define QredoLogDebug(format, ...)   QredoLog(QredoLogLevelDebug,   (^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
-#define QredoLogVerbose(format, ...) QredoLog(QredoLogLevelVerbose, (^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
+#define QredoLog(_level,_message)   [QredoLogger logMessage: (_message)currentLevel:[QredoLogger logLevel] level: (_level)file: __FILE__ function: __PRETTY_FUNCTION__ line: __LINE__]
+#define QredoLogError(format,...)   QredoLog(QredoLogLevelError,(^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
+#define QredoLogWarning(format,...) QredoLog(QredoLogLevelWarning,(^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
+#define QredoLogInfo(format,...)    QredoLog(QredoLogLevelInfo,(^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
+#define QredoLogDebug(format,...)   QredoLog(QredoLogLevelDebug,(^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
+#define QredoLogVerbose(format,...) QredoLog(QredoLogLevelVerbose,(^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
 
 
-/** 
+/**
  The current logging level.
  
  Set this with [setLogLevel](../Classes/QredoLogger.html#/c:objc(cs)QredoLogger(cm)setLogLevel:)
@@ -17,7 +17,7 @@
  Use this to control what level of logging is written
  
  */
-typedef NS_ENUM (NSInteger, QredoLogLevel) {
+typedef NS_ENUM (NSInteger,QredoLogLevel) {
     /** no logging */
     QredoLogLevelNone,
     /** Log messages with `QredoLogError` */
@@ -41,27 +41,27 @@ typedef NS_ENUM (NSInteger, QredoLogLevel) {
  
  You can use logging in two ways:
  
-- `QredoLogError(@"My car is %@",car.colour]);`
+ - `QredoLogError(@"My car is %@",car.colour]);`
  
  This is similar to NSLog - here the car.colour is calculated each time the line is encountered, whether or not the message is displayed.
-
+ 
  In this case the logging will only be output if the logging level is `QredoLogLevelError` or above.
  
  For other logging levels, use `QredoLogWarning`, `QredoLogInfo`, `QredoLogDebug` or `QredoLogVerbose`
  
-- For a more flexible version of logging, you can specify a code block that will be executed only when the current logging level requires it.
+ - For a more flexible version of logging, you can specify a code block that will be executed only when the current logging level requires it.
  
-  For example, the following code takes a code block that will only be executed when the logging level is QredoLogLevelDebug or above. The block will return a value that is displayed in the log.
+ For example, the following code takes a code block that will only be executed when the logging level is QredoLogLevelDebug or above. The block will return a value that is displayed in the log.
  
  `QredoLogDebug(@"Index item count : %i", ^{ return [self count];}());`
-
-  Use this method of logging if calculating the required logging output will take a long time to process.
+ 
+ Use this method of logging if calculating the required logging output will take a long time to process.
  
  */
 
 @interface QredoLogger :NSObject
 
-/** Log a message to the console. You do not normally need to use this method. 
+/** Log a message to the console. You do not normally need to use this method.
  Use `QredoLogError`, `QredoLogWarning`, `QredoLogInfo`, `QredoLogDebug` or `QredoLogVerbose` instead.
  See the notes at the top of this file for examples
  
@@ -92,7 +92,7 @@ typedef NS_ENUM (NSInteger, QredoLogLevel) {
  */
 
 +(QredoLogLevel)logLevel;
- 
+
 
 
 
@@ -101,10 +101,10 @@ typedef NS_ENUM (NSInteger, QredoLogLevel) {
  @note If no classes have been added to the white list, a new white list is setup and from that point, only logging output from methods of the classes on the white list will be shown.
  
  @param ob An object of the class to add to the logging white list
-
+ 
  
  */
-+(void)addLoggingForObject:(NSObject*)ob;
++(void)addLoggingForObject:(NSObject *)ob;
 
 /** Add the class to the 'white list' of classes to be used for logging.
  
@@ -114,7 +114,7 @@ typedef NS_ENUM (NSInteger, QredoLogLevel) {
  
  */
 
-+(void)addLoggingForClassName:(NSString*)className;
++(void)addLoggingForClassName:(NSString *)className;
 
 /** Clear whitelist and return to producing logging for all classes according to the logging level
  */

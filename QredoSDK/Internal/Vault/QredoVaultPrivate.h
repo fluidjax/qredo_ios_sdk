@@ -6,32 +6,32 @@
 #import "QredoQUIDPrivate.h"
 
 
-// This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
-// It shall be included only in the implementation files
+//This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
+//It shall be included only in the implementation files
 
 
-static NSString *const QredoVaultItemMetadataItemTypeTombstone = @"\u220E"; // U+220E END OF PROOF, https://github.com/Qredo/design-docs/wiki/Vault-Item-Tombstone
+static NSString *const QredoVaultItemMetadataItemTypeTombstone = @"\u220E"; //U+220E END OF PROOF, https://github.com/Qredo/design-docs/wiki/Vault-Item-Tombstone
 
 
-@class QredoClient, QredoKeychain, QredoVaultKeys, QredoLocalIndex, QredoUserCredentials;
+@class QredoClient,QredoKeychain,QredoVaultKeys,QredoLocalIndex,QredoUserCredentials;
 
-@interface QredoVaultItemDescriptor()<NSCopying>
+@interface QredoVaultItemDescriptor ()<NSCopying>
 @property (readonly) QLFVaultSequenceValue sequenceValue;
 
-+ (instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QredoQUID *)itemId;
++(instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QredoQUID *)itemId;
 @end
 
 
-// Opaque Class. Keeping interface only here
-@interface QredoVaultHighWatermark()
-// key: SequenceId (QredoQUID*), value: SequenceValue (NSNumber*)
-// TODO: WARNING NSNumber on 32-bit systems can keep maximum 32-bit integers, but we need 64. Kept NSNumber because in the LF code we use NSNumber right now
+//Opaque Class. Keeping interface only here
+@interface QredoVaultHighWatermark ()
+//key: SequenceId (QredoQUID*), value: SequenceValue (NSNumber*)
+//TODO: WARNING NSNumber on 32-bit systems can keep maximum 32-bit integers, but we need 64. Kept NSNumber because in the LF code we use NSNumber right now
 @property NSMutableDictionary *sequenceState;
-- (NSSet*)vaultSequenceState;
-+ (instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState;
+-(NSSet *)vaultSequenceState;
++(instancetype)watermarkWithSequenceState:(NSDictionary *)sequenceState;
 @end
 
-typedef NS_ENUM(NSInteger, QredoVaultItemOrigin){
+typedef NS_ENUM (NSInteger,QredoVaultItemOrigin) {
     QredoVaultItemOriginServer,
     QredoVaultItemOriginCache,
 };
@@ -42,15 +42,15 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin){
 @property (copy) NSString *dataType;
 @property NSDate *created;
 @property QredoAccessLevel accessLevel;
-@property (copy) NSDictionary *summaryValues; // string -> string | NSNumber | QredoQUID
+@property (copy) NSDictionary *summaryValues; //string -> string | NSNumber | QredoQUID
 @property QredoVaultItemOrigin origin;
 
-// private method. the developer should not specify the date
-+ (instancetype)vaultItemMetadataWithDataType:(NSString *)dataType created:(NSDate*)created summaryValues:(NSDictionary *)summaryValues;
+//private method. the developer should not specify the date
++(instancetype)vaultItemMetadataWithDataType:(NSString *)dataType created:(NSDate *)created summaryValues:(NSDictionary *)summaryValues;
 
 +(instancetype)vaultItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)descriptor
                                       dataType:(NSString *)dataType
-                                       created: (NSDate*)created
+                                       created:(NSDate *)created
                                  summaryValues:(NSDictionary *)summaryValues;
 
 
@@ -64,27 +64,27 @@ typedef NS_ENUM(NSInteger, QredoVaultItemOrigin){
 
 @property (strong) QredoUserCredentials *userCredentials;
 
-// this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
+//this constructor is used mainly internally to create object retreived from the server. It can be hidden in private header file
 
-- (QredoLocalIndex *)localIndex;
-- (QredoQUID *)sequenceId;
-- (QredoVaultKeys *)vaultKeys;
+-(QredoLocalIndex *)localIndex;
+-(QredoQUID *)sequenceId;
+-(QredoVaultKeys *)vaultKeys;
 
-- (instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing;
+-(instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing;
 
-- (QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
-- (QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;
-
-
-// public method doesn't allow to specify itemId
-- (void)strictlyPutNewItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
-
-// update a vault item, update the modification date and sequence value
-- (void)strictlyUpdateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+-(QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
+-(QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;
 
 
-// Destroys all data, including sequenceId record. Vault objects is not supposed to be used after that
-- (void)clearAllData;
+//public method doesn't allow to specify itemId
+-(void)strictlyPutNewItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler;
+
+//update a vault item, update the modification date and sequence value
+-(void)strictlyUpdateItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler;
+
+
+//Destroys all data, including sequenceId record. Vault objects is not supposed to be used after that
+-(void)clearAllData;
 
 
 /** Registers & removes the Metadata index database as a listener to incoming vault items

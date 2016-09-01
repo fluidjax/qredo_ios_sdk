@@ -12,10 +12,6 @@ extern NSString *k_USERID;
 
 @interface NSData (QredoTestUtils)
 
-+ (NSData*)qtu_dataWithRandomBytesOfLength:(int)length;
++(NSData *)qtu_dataWithRandomBytesOfLength:(int)length;
 
 @end
-
-
-
-

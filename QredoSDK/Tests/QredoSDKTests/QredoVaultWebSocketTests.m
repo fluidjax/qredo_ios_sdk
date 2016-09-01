@@ -1,81 +1,80 @@
 /* HEADER GOES HERE */
 #import "QredoVaultTests.h"
 
-@interface QredoVaultWebSocketTests : QredoVaultTests
+@interface QredoVaultWebSocketTests :QredoVaultTests
 
 @end
 
 @implementation QredoVaultWebSocketTests
 
-- (void)setUp {
+-(void)setUp {
     self.transportType = QredoClientOptionsTransportTypeWebSockets;
     [super setUp];
 }
 
-- (void)testPersistanceVaultIdMultiple {
+-(void)testPersistanceVaultIdMultiple {
     self.continueAfterFailure = NO;
     
-    for (int i = 0; i < 5; i++)
-    {
-        QLog(@"Run number: %@", @(i));
+    for (int i = 0; i < 5; i++){
+        QLog(@"Run number: %@",@(i));
         
         [super testPersistanceVaultId];
     }
 }
 
-- (void)testPersistanceVaultId {
+-(void)testPersistanceVaultId {
     [super testPersistanceVaultId];
 }
 
-- (void)testPutItem {
+-(void)testPutItem {
     [super testPutItem];
 }
 
-- (void)testPutItemMultiple {
+-(void)testPutItemMultiple {
     [super testPutItemMultiple];
 }
 
-- (void)testGettingItems {
+-(void)testGettingItems {
     [super testGettingItems];
 }
 
-- (void)testEnumeration {
+-(void)testEnumeration {
     [super testEnumeration];
 }
 
-- (void)testEnumerationReturnsCreatedItem {
+-(void)testEnumerationReturnsCreatedItem {
     [super testEnumerationReturnsCreatedItem];
 }
 
-- (void)testEnumerationAbortsOnStop {
+-(void)testEnumerationAbortsOnStop {
     [super testEnumerationAbortsOnStop];
 }
 
-- (void)testListener {
+-(void)testListener {
     [super testListener];
 }
 
-- (void)testMultipleListeners {
+-(void)testMultipleListeners {
     [super testMultipleListeners];
 }
 
-- (void)testRemovingListenerDurringNotification {
+-(void)testRemovingListenerDurringNotification {
     [super testRemovingListenerDurringNotification];
 }
 
-- (void)testMultipleRemovingListenerDurringNotification {
+-(void)testMultipleRemovingListenerDurringNotification {
     [super testMultipleRemovingListenerDurringNotification];
 }
 
-- (void)testRemovingNotObservingListener {
+-(void)testRemovingNotObservingListener {
     [super testRemovingNotObservingListener];
 }
 
-- (void)testVaultItemMetadataAndMutableMetadata {
+-(void)testVaultItemMetadataAndMutableMetadata {
     [super testVaultItemMetadataAndMutableMetadata];
 }
 
-- (void)testGettingItemsFromCache {
+-(void)testGettingItemsFromCache {
     [super testGettingItemsFromCache];
 }
 

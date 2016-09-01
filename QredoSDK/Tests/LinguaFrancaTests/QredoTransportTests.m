@@ -5,111 +5,106 @@
 #import "QredoTransport.h"
 #import "QredoHttpTransport.h"
 
-@interface QredoTransportTests : XCTestCase
+@interface QredoTransportTests :XCTestCase
 
 @end
 
 @implementation QredoTransportTests
 
-- (void)setUp {
+-(void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+-(void)tearDown {
+    //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
-
-- (void)testTransportForServiceURL_HTTPLowercase
-{
+-(void)testTransportForServiceURL_HTTPLowercase {
     NSURL *serviceURL = [NSURL URLWithString:@"http://test.host.qredo.com:8765/path/to/somewhere"];
     
     QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
+    
+    XCTAssertNotNil(transport,@"Transport should not be nil.");
     XCTAssertTrue([transport isKindOfClass:[QredoHttpTransport class]]);
 }
 
-- (void)testTransportForServiceURL_HTTPUppercase
-{
+-(void)testTransportForServiceURL_HTTPUppercase {
     NSURL *serviceURL = [NSURL URLWithString:@"HTTP://test.host.qredo.com:8765/path/to/somewhere"];
     
     QredoTransport *transport = [QredoTransport transportForServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
+    
+    XCTAssertNotNil(transport,@"Transport should not be nil.");
     XCTAssertTrue([transport isKindOfClass:[QredoHttpTransport class]]);
 }
 
-
-- (void)testTransportForServiceURL_UnsupportedFTP
-{
+-(void)testTransportForServiceURL_UnsupportedFTP {
     NSURL *serviceURL = [NSURL URLWithString:@"ftp://test.host.qredo.com:8765/path/to/somewhere"];
     
-    XCTAssertThrowsSpecificNamed([QredoTransport transportForServiceURL:serviceURL], NSException, NSInvalidArgumentException, @"Passed in unsupported URL scheme but NSInvalidArgumentException not thrown.");
+    XCTAssertThrowsSpecificNamed([QredoTransport transportForServiceURL:serviceURL],NSException,NSInvalidArgumentException,@"Passed in unsupported URL scheme but NSInvalidArgumentException not thrown.");
 }
 
-- (void)testInit_CannotBeCalledDirectly
-{
-    XCTAssertThrowsSpecificNamed([[QredoTransport alloc] init], NSException, NSInternalInconsistencyException, @"Called 'init' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
+-(void)testInit_CannotBeCalledDirectly {
+    XCTAssertThrowsSpecificNamed([[QredoTransport alloc] init],NSException,NSInternalInconsistencyException,@"Called 'init' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
 }
 
-- (void)testInitWithServiceURL
-{
+-(void)testInitWithServiceURL {
     NSURL *serviceURL = [NSURL URLWithString:@"http://test.host.qredo.com:8765/path/to/somewhere"];
-
+    
     QredoTransport *transport = [[QredoTransport alloc] initWithServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
+    
+    XCTAssertNotNil(transport,@"Transport should not be nil.");
 }
 
-- (void)testCanHandleServiceURL_HTTP
-{
+-(void)testCanHandleServiceURL_HTTP {
     NSURL *serviceURL = [NSURL URLWithString:@"http://test.host.qredo.com:8765/path/to/somewhere"];
-
+    
     BOOL canHandle = [QredoTransport canHandleServiceURL:serviceURL];
-    XCTAssertTrue(canHandle, @"Transport should be able to handle provided service URL");
+    
+    XCTAssertTrue(canHandle,@"Transport should be able to handle provided service URL");
 }
 
-
-
-- (void)testCanHandleServiceURL_Unsupported
-{
+-(void)testCanHandleServiceURL_Unsupported {
     NSURL *serviceURL = [NSURL URLWithString:@"mailto://test.host.qredo.com:8765/path/to/somewhere"];
     
     BOOL canHandle = [QredoTransport canHandleServiceURL:serviceURL];
-    XCTAssertFalse(canHandle, @"Transport should not be able to handle provided service URL");
+    
+    XCTAssertFalse(canHandle,@"Transport should not be able to handle provided service URL");
 }
 
-- (void)testSupportsMultiResponse_MustOverride
-{
+-(void)testSupportsMultiResponse_MustOverride {
     NSURL *serviceURL = [NSURL URLWithString:@"http://test.host.qredo.com:8765/path/to/somewhere"];
     
     QredoTransport *transport = [[QredoTransport alloc] initWithServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
     
-    XCTAssertThrowsSpecificNamed([transport supportsMultiResponse], NSException, NSInternalInconsistencyException, @"Called 'supportsMultiResponse' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
+    XCTAssertNotNil(transport,@"Transport should not be nil.");
+    
+    XCTAssertThrowsSpecificNamed([transport supportsMultiResponse],NSException,NSInternalInconsistencyException,@"Called 'supportsMultiResponse' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
 }
 
-- (void)testSend_MustOverride
-{
+-(void)testSend_MustOverride {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     
     QredoTransport *transport = [[QredoTransport alloc] initWithServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
     
-    // Use a non-nil payload
+    XCTAssertNotNil(transport,@"Transport should not be nil.");
+    
+    //Use a non-nil payload
     NSData *payload = [[NSData alloc] init];
     id userData = nil;
     
-    XCTAssertThrowsSpecificNamed([transport send:payload userData:userData], NSException, NSInternalInconsistencyException, @"Called 'send' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
+    XCTAssertThrowsSpecificNamed([transport send:payload userData:userData],NSException,NSInternalInconsistencyException,@"Called 'send' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
 }
 
-- (void)testClose_MustOverride
-{
+-(void)testClose_MustOverride {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     
     QredoTransport *transport = [[QredoTransport alloc] initWithServiceURL:serviceURL];
-    XCTAssertNotNil(transport, @"Transport should not be nil.");
     
-    XCTAssertThrowsSpecificNamed([transport close], NSException, NSInternalInconsistencyException, @"Called 'close' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
+    XCTAssertNotNil(transport,@"Transport should not be nil.");
+    
+    XCTAssertThrowsSpecificNamed([transport close],NSException,NSInternalInconsistencyException,@"Called 'close' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
 }
+
 @end

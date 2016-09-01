@@ -1,12 +1,12 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
-@interface QredoEllipticCurvePoint : NSObject
+@interface QredoEllipticCurvePoint :NSObject
 
-@property (nonatomic, strong, readonly) NSData *data;
+@property (nonatomic,strong,readonly) NSData *data;
 
-+ (instancetype)pointWithData:(NSData*)pointData;
-- (instancetype)initWithPointData:(NSData*)pointData;
-- (QredoEllipticCurvePoint*)multiplyWithPoint:(QredoEllipticCurvePoint*)point;
++(instancetype)pointWithData:(NSData *)pointData;
+-(instancetype)initWithPointData:(NSData *)pointData;
+-(QredoEllipticCurvePoint *)multiplyWithPoint:(QredoEllipticCurvePoint *)point;
 
 @end

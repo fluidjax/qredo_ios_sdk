@@ -13,7 +13,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 //=================================================================================================================
 
 
-@interface QredoObserverProxy : NSObject
+@interface QredoObserverProxy :NSObject
 @property (weak) id observer;
 @end
 
@@ -45,17 +45,17 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 
 @implementation QredoObserverProxy
 
-- (instancetype)initWithObserver:(id)observer
-{
+-(instancetype)initWithObserver:(id)observer {
     self = [self init];
-    if (self) {
+    
+    if (self){
         _observer = observer;
     }
+    
     return self;
 }
 
-+ (instancetype)observerProxyWithObserver:(id)observer
-{
++(instancetype)observerProxyWithObserver:(id)observer {
     return [[self alloc] initWithObserver:observer];
 }
 
@@ -71,111 +71,102 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
 
 #pragma mark Inits
 
-- (instancetype)init
-{
+-(instancetype)init {
     return [self initWithAssociationKey:nil];
 }
 
-- (instancetype)initWithAssociationKey:(NSString *)associationKey
-{
+-(instancetype)initWithAssociationKey:(NSString *)associationKey {
     self = [super init];
-    if (self) {
+    
+    if (self){
         _associationKey = associationKey ? associationKey : kDefaultAssociationKey;
-        _observerNotificationQueue = dispatch_queue_create("com.qredo.QredoObserverList.observerNotificationQueue", DISPATCH_QUEUE_CONCURRENT);
+        _observerNotificationQueue = dispatch_queue_create("com.qredo.QredoObserverList.observerNotificationQueue",DISPATCH_QUEUE_CONCURRENT);
         _observerProxies = [NSMutableArray array];
     }
+    
     return self;
 }
 
-
 #pragma mark Add, remove and notify observers
 
-- (void)addObserver:(id)observer{
-    NSAssert(observer, @"An observer must be supplied to [QredoVault addQredoVaultObserver:]");
+-(void)addObserver:(id)observer {
+    NSAssert(observer,@"An observer must be supplied to [QredoVault addQredoVaultObserver:]");
     
     @synchronized(self) {
         QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
-        if (!observerProxy) {
+        
+        if (!observerProxy){
             observerProxy = [QredoObserverProxy observerProxyWithObserver:observer];
             [self setProxy:observerProxy forObserver:observer];
         }
         
-        NSAssert1(![_observerProxies containsObject:observerProxy],@"The %@ is already added to the QredoObserverList", observer);
+        NSAssert1(![_observerProxies containsObject:observerProxy],@"The %@ is already added to the QredoObserverList",observer);
         [_observerProxies addObject:observerProxy];
-        
     }
 }
 
-- (void)removeObserver:(id)observer{
-    NSAssert(observer, @"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
+-(void)removeObserver:(id)observer {
+    NSAssert(observer,@"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
     QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
     @synchronized(self) {
-        if (observerProxy) {
+        if (observerProxy){
             [_observerProxies removeObject:observerProxy];
         }
     }
 }
 
-- (void)notifyObservers:(void(^)(id observer))notificationBlock{
+-(void)notifyObservers:(void (^)(id observer))notificationBlock {
     @synchronized(self) {
-        for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
-            // perhaps some check here, if all observers are properly set up
-            if (!observerProxy.observer) {
+        for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator){
+            //perhaps some check here, if all observers are properly set up
+            if (!observerProxy.observer){
                 [_observerProxies removeObject:observerProxy];
                 continue;
             }
-            dispatch_async(_observerNotificationQueue, ^{
+            
+            dispatch_async(_observerNotificationQueue,^{
                 notificationBlock(observerProxy.observer);
             });
         }
     }
 }
 
-
-- (void)removeAllObservers{
+-(void)removeAllObservers {
     @synchronized(self) {
-        for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator) {
+        for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator){
             [_observerProxies removeObject:observerProxy];
         }
     }
 }
 
-
-- (BOOL)contains:(id)observer{
+-(BOOL)contains:(id)observer {
     if ([self proxyForObserver:observer])return YES;
+    
     return NO;
 }
 
-
-
 #pragma mark Misc utils
 
-- (NSUInteger)count
-{
+-(NSUInteger)count {
     return [_observerProxies count];
 }
 
-
 #pragma mark Utils for observer and proxy association
 
-- (QredoObserverProxy *)proxyForObserver:(id)observer
-{
+-(QredoObserverProxy *)proxyForObserver:(id)observer {
     const char *associationKey = [self.associationKey cStringUsingEncoding:NSUTF8StringEncoding];
+    
     return objc_getAssociatedObject(observer,
                                     associationKey);
 }
 
-- (void)setProxy:(QredoObserverProxy *)observerProxy forObserver:(id)observer
-{
+-(void)setProxy:(QredoObserverProxy *)observerProxy forObserver:(id)observer {
     const char *associationKey = [self.associationKey cStringUsingEncoding:NSUTF8StringEncoding];
+    
     objc_setAssociatedObject(observer,
                              associationKey,
                              observerProxy,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-
 @end
-
-
-

@@ -1,10 +1,10 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
-// Domain used in NSError
+//Domain used in NSError
 extern NSString *const QredoCryptoErrorDomain;
 
-typedef NS_ENUM(NSInteger, QredoCryptoErrorCode) {
+typedef NS_ENUM (NSInteger,QredoCryptoErrorCode) {
     QredoCryptoErrorCodeUnknown = 1000,
     QredoCryptoErrorCodeNilArgument,
     QredoCryptoErrorCodePublicKeyIncorrectFormat,
@@ -16,9 +16,9 @@ typedef NS_ENUM(NSInteger, QredoCryptoErrorCode) {
     QredoCryptoErrorCodeOpenSslFailedToGetPublicKey,
 };
 
-@interface QredoCryptoError : NSObject
+@interface QredoCryptoError :NSObject
 
-+ (void)populateError:(NSError **)error errorCode:(NSInteger)errorCode description:(NSString *)description;
-+ (void)throwArgExceptionIf:(BOOL)condition reason:(NSString *)reason;
++(void)populateError:(NSError **)error errorCode:(NSInteger)errorCode description:(NSString *)description;
++(void)throwArgExceptionIf:(BOOL)condition reason:(NSString *)reason;
 
 @end

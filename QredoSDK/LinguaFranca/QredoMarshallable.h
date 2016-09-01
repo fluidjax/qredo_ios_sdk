@@ -3,7 +3,7 @@
 
 @protocol QredoMarshallable <NSObject>
 
-+ (QredoMarshaller)marshaller;
-+ (QredoUnmarshaller)unmarshaller;
++(QredoMarshaller)marshaller;
++(QredoUnmarshaller)unmarshaller;
 
 @end

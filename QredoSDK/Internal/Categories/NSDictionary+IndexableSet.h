@@ -3,13 +3,13 @@
 
 @interface NSDictionary (IndexableSet)
 
-- (NSSet*) indexableSet;
+-(NSSet *)indexableSet;
 
 @end
 
 
 @interface NSSet (IndexableSet)
 
-- (NSDictionary*)dictionaryFromIndexableSet;
+-(NSDictionary *)dictionaryFromIndexableSet;
 
 @end

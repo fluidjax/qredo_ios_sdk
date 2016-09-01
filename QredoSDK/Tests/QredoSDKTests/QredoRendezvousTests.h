@@ -6,16 +6,16 @@
 #import "QredoPrivate.h"
 
 
-@interface QredoRendezvousTests : QredoXCTestCase
+@interface QredoRendezvousTests :QredoXCTestCase
 
 
-- (void)authoriseClient;
-- (void)testCreateRendezvousAndGetResponses;
-- (void)testCreateAndFetchAnonymousRendezvous;
-- (void)testCreateDuplicateAndFetchAnonymousRendezvous;
-- (void)testCreateAndRespondAnonymousRendezvous;
-- (void)testActivateExpiredRendezvous;
-- (void)testActivateExpiredRendezvousAndFetchFromNewRef;
+-(void)authoriseClient;
+-(void)testCreateRendezvousAndGetResponses;
+-(void)testCreateAndFetchAnonymousRendezvous;
+-(void)testCreateDuplicateAndFetchAnonymousRendezvous;
+-(void)testCreateAndRespondAnonymousRendezvous;
+-(void)testActivateExpiredRendezvous;
+-(void)testActivateExpiredRendezvousAndFetchFromNewRef;
 
 
 @end

@@ -1,11 +1,11 @@
 /* HEADER GOES HERE */
 #import "QredoRendezvousHelper_Private.h"
 
-@interface QredoAbstractRendezvousAnonymousHelper : QredoAbstractRendezvousHelper
+@interface QredoAbstractRendezvousAnonymousHelper :QredoAbstractRendezvousHelper
 @end
 
-@interface QredoRendezvousAnonymousCreateHelper : QredoAbstractRendezvousAnonymousHelper<QredoRendezvousCreatePrivateHelper>
+@interface QredoRendezvousAnonymousCreateHelper :QredoAbstractRendezvousAnonymousHelper<QredoRendezvousCreatePrivateHelper>
 @end
 
-@interface QredoRendezvousAnonymousRespondHelper : QredoAbstractRendezvousAnonymousHelper<QredoRendezvousRespondPrivateHelper>
+@interface QredoRendezvousAnonymousRespondHelper :QredoAbstractRendezvousAnonymousHelper<QredoRendezvousRespondPrivateHelper>
 @end

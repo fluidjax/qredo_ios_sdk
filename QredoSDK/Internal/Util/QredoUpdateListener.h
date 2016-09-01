@@ -6,53 +6,53 @@
 @protocol QredoUpdateListenerDataSource <NSObject>
 
 @required
-- (BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener;
+-(BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener;
 
-// In an implementation of this method get results from the server and for each result call `[QredoUpdateListener processSingleItem:]`
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener
-              pollWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+//In an implementation of this method get results from the server and for each result call `[QredoUpdateListener processSingleItem:]`
+-(void)   qredoUpdateListener:(QredoUpdateListener *)updateListener
+    pollWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
 @optional
 
-// if `DoesSupportMultiResponseQuery` returns YES, then these methods shall be implemented
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener subscribeWithCompletionHandler:(void(^)(NSError *))completionHandler;
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void(^)(NSError *))completionHandler;
+//if `DoesSupportMultiResponseQuery` returns YES, then these methods shall be implemented
+-(void)qredoUpdateListener:(QredoUpdateListener *)updateListener subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler;
+-(void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler;
 
 @end
 
 
 @protocol QredoUpdateListenerDelegate <NSObject>
 
-// Implementation of this method should usually deliver result to the delegate.
-// The type is the same as `item` in `[QredoUpdateListener processSingleItem:]`
-- (void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item;
+//Implementation of this method should usually deliver result to the delegate.
+//The type is the same as `item` in `[QredoUpdateListener processSingleItem:]`
+-(void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item;
 
 @end
 
-@interface QredoUpdateListener : NSObject
+@interface QredoUpdateListener :NSObject
 
-@property (nonatomic, weak) id<QredoUpdateListenerDataSource> dataSource;
-@property (nonatomic, weak) id<QredoUpdateListenerDelegate> delegate;
+@property (nonatomic,weak) id<QredoUpdateListenerDataSource> dataSource;
+@property (nonatomic,weak) id<QredoUpdateListenerDelegate> delegate;
 
-// if transport doesn't support multiresponse
+//if transport doesn't support multiresponse
 @property (nonatomic) NSTimeInterval pollInterval;
 
-// if transport supports multiresponse and there is multiresponse query, then we stil need to poll every now and then
-// to make sure that nothing has been missed from the subscribe results
+//if transport supports multiresponse and there is multiresponse query, then we stil need to poll every now and then
+//to make sure that nothing has been missed from the subscribe results
 @property (nonatomic) NSTimeInterval pollIntervalDuringSubscribe;
 
 @property (nonatomic) NSTimeInterval renewSubscriptionInterval;
 
 @property (nonatomic) BOOL enumerateAfterSubscription;
 
-@property (nonatomic, readonly) BOOL isListening;
+@property (nonatomic,readonly) BOOL isListening;
 
-- (void)startListening;
-- (void)stopListening;
+-(void)startListening;
+-(void)stopListening;
 
-// Processing an items includes deduplicaiton of items if it is necessary
-- (BOOL)processSingleItem:(id)item sequenceValue:(id)sequenceValue;
+//Processing an items includes deduplicaiton of items if it is necessary
+-(BOOL)processSingleItem:(id)item sequenceValue:(id)sequenceValue;
 
-- (void)didTerminateSubscriptionWithError:(NSError *)error;
+-(void)didTerminateSubscriptionWithError:(NSError *)error;
 
 @end

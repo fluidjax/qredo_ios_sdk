@@ -3,7 +3,7 @@
 
 @class QredoVaultItemDescriptor;
 
-@interface QredoIndexVaultItemDescriptor : _QredoIndexVaultItemDescriptor {}
+@interface QredoIndexVaultItemDescriptor :_QredoIndexVaultItemDescriptor {}
 
 +(instancetype)createWithDescriptor:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;
 +(instancetype)searchForDescriptor:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext;

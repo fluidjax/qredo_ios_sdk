@@ -4,7 +4,7 @@
 
 @interface QredoOpenSSLCertificateUtils (Private)
 
-+ (STACK_OF(X509) *)createStackFromPemCertificates:(NSArray *)pemCertificates error:(NSError **)error;
-+ (STACK_OF(X509_CRL) *)createStackFromPemOrDerCrls:(NSArray *)derCrls error:(NSError **)error;
++(STACK_OF(X509)*)createStackFromPemCertificates:(NSArray *)pemCertificates error:(NSError **)error;
++(STACK_OF(X509_CRL)*)createStackFromPemOrDerCrls:(NSArray *)derCrls error:(NSError **)error;
 
 @end

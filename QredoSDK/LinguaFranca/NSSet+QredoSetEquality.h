@@ -3,6 +3,6 @@
 
 @interface NSSet (QredoSetEquality)
 
-- (NSComparisonResult)compare:(NSSet *)other;
+-(NSComparisonResult)compare:(NSSet *)other;
 
 @end

@@ -4,29 +4,29 @@
 @interface QredoQUID ()
 
 /* Create a new autoreleased NSUUID with RFC 4122 version 4 random bytes */
-+ (instancetype)QUID;
++(instancetype)QUID;
 
-+ (instancetype)QUIDByHashingData:(NSData*)data;
++(instancetype)QUIDByHashingData:(NSData *)data;
 
 /* Create a new NSUUID with RFC 4122 version 4 random bytes */
-- (instancetype)init;
+-(instancetype)init;
 
 /* Create an QUID from a string of 64 characters. Returns nil for invalid strings. */
-- (instancetype)initWithQUIDString:(NSString *)string;
+-(instancetype)initWithQUIDString:(NSString *)string;
 
 /* Create an QredoQUID with the given bytes */
-- (instancetype)initWithQUIDBytes:(const unsigned char*)bytes;
+-(instancetype)initWithQUIDBytes:(const unsigned char *)bytes;
 
 /* Create an QredoQUID with the given data */
-- (instancetype)initWithQUIDData:(NSData *)data;
+-(instancetype)initWithQUIDData:(NSData *)data;
 
 /* Copies QUID bytes to the buffer passed as the argument. The buffer should be at least 32 bytes long */
-- (void)getQUIDBytes:(unsigned char *)quid;
+-(void)getQUIDBytes:(unsigned char *)quid;
 
 /* returns pointer to internal buffer. The pointer should not be freed or modified by external code */
-- (const unsigned char*)bytes;
+-(const unsigned char *)bytes;
 
 /* returns 32. Used to avoid hardcoding this value in the rest of the code */
-- (int)bytesCount;
+-(int)bytesCount;
 
 @end

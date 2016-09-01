@@ -1,6 +1,6 @@
 /* HEADER GOES HERE */
-//  Created by Christopher Morris on 19/04/2016.
-//  Copyright © 2016 Qredo. All rights reserved.
+//Created by Christopher Morris on 19/04/2016.
+//Copyright © 2016 Qredo. All rights reserved.
 //
 
 
@@ -14,9 +14,9 @@
 
 
 
-@interface SecureWebDateServerTimeStamp : NSObject
-@property(assign) NSTimeInterval timeToRetrieve;
-@property(assign) NSTimeInterval correctTimeInterval;
+@interface SecureWebDateServerTimeStamp :NSObject
+@property (assign) NSTimeInterval timeToRetrieve;
+@property (assign) NSTimeInterval correctTimeInterval;
 
 @end
 
@@ -29,29 +29,30 @@
 static const int HISTORY_SIZE = 5;
 static const int MAX_TIME_TO_RETRIEVE = 5;
 
--(instancetype)initWithURLString:(NSString*)urlString{
+-(instancetype)initWithURLString:(NSString *)urlString {
     self = [super init];
-    if (self) {
+    
+    if (self){
         self.urlString = urlString;
         self.serverHistory = [[NSMutableArray alloc] init];
     }
+    
     return self;
 }
 
-
--(void)incomingDate:(NSDate*)serverDate timeToRetrieve:(NSTimeInterval)timeToRetrieve{
-    if (timeToRetrieve>MAX_TIME_TO_RETRIEVE){
+-(void)incomingDate:(NSDate *)serverDate timeToRetrieve:(NSTimeInterval)timeToRetrieve {
+    if (timeToRetrieve > MAX_TIME_TO_RETRIEVE){
         [self scheduleNextRetrieve];
         return;
-    };
+    }
     
-    NSTimeInterval serverSinceTime = [serverDate timeIntervalSince1970]+0.5;
+    NSTimeInterval serverSinceTime = [serverDate timeIntervalSince1970] + 0.5;
     NSTimeInterval localSinceTime = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval timeInterval = localSinceTime - serverSinceTime;
     
-    if (fabs(timeInterval)> 60*65){
-                NSLog(@"The time is more than 65 minutes off");
-                return;
+    if (fabs(timeInterval) > 60 * 65){
+        NSLog(@"The time is more than 65 minutes off");
+        return;
     }
     
     self.averageDifference = (double)timeInterval;
@@ -59,36 +60,33 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     
     
     
-   // NSLog(@"Time Guess %@",[self guessTime]);
+    //NSLog(@"Time Guess %@",[self guessTime]);
     
     
     [self scheduleNextRetrieve];
-    
 }
 
-
--(void)scheduleNextRetrieve{
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC), self.queue, ^{
+-(void)scheduleNextRetrieve {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,10 * NSEC_PER_SEC),self.queue,^{
         [self retrieveDate];
     });
 }
 
--(void)addNewValue:(NSTimeInterval)timeInterval retrieveTime:(NSTimeInterval)retrieveTime{
-    
+-(void)addNewValue:(NSTimeInterval)timeInterval retrieveTime:(NSTimeInterval)retrieveTime {
     SecureWebDateServerTimeStamp *swdsts = [[SecureWebDateServerTimeStamp alloc] init];
+    
     swdsts.timeToRetrieve = retrieveTime;
     swdsts.correctTimeInterval = timeInterval;
     
     
     [self.serverHistory addObject:swdsts];
     
-    if ([self.serverHistory count]>HISTORY_SIZE){
+    if ([self.serverHistory count] > HISTORY_SIZE){
         [self.serverHistory removeObjectAtIndex:0];
     }
 }
 
-
--(NSDate*)guessTime{
+-(NSDate *)guessTime {
     //get the
     NSTimeInterval lowestRetrieveTime = DBL_MAX;
     SecureWebDateServerTimeStamp *bestGuess;
@@ -96,7 +94,7 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     for (SecureWebDateServerTimeStamp *timestamp in self.serverHistory){
         NSTimeInterval retrieveTime = timestamp.timeToRetrieve;
         
-        if (retrieveTime<lowestRetrieveTime){
+        if (retrieveTime < lowestRetrieveTime){
             bestGuess = timestamp;
             lowestRetrieveTime = retrieveTime;
         }
@@ -112,41 +110,38 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     return nil;
 }
 
-
--(void)retrieveDate{
+-(void)retrieveDate {
     NSURL *URL = [[NSURL alloc] initWithString:self.urlString];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-   // NSLog(@"%@ - Start ",[NSDate date]);
+    
+    //NSLog(@"%@ - Start ",[NSDate date]);
     [request setHTTPMethod:@"HEAD"];
     request.timeoutInterval = 10;
     
     __block NSDate *startDate = [NSDate date];
     __block NSURLSession *session = [NSURLSession sharedSession];
     __block NSURLSessionDataTask *task = [session dataTaskWithRequest:request
-                                            completionHandler:
-                                  ^(NSData *data, NSURLResponse *response, NSError *error) {
-                                      
-                                      NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
-                                      
-                                      if (error){
-                                          NSLog(@"Error: %@", error.localizedDescription);
-                                          [self scheduleNextRetrieve];
-                                      }else if([httpResponse respondsToSelector:@selector(allHeaderFields)]){
-                                          NSDictionary *headerFields = [httpResponse allHeaderFields];
-                                          NSString *lastModification = [headerFields objectForKey:@"Date"];
-                                          NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                                          [formatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss zzz"];
-                                          NSDate *serverDate = [formatter dateFromString:lastModification];
-                                          NSTimeInterval timeToRetrieve = -[startDate timeIntervalSinceNow];
-                                          //NSLog(@"%@ - Server",serverDate);
-                                          //NSLog(@"%@ - End   ",[NSDate date]);
-                                          [self incomingDate:serverDate timeToRetrieve:timeToRetrieve];
-                                      }
-                                  }];
+                                                    completionHandler:
+                                          ^(NSData *data,NSURLResponse *response,NSError *error) {
+                                              NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                              
+                                              if (error){
+                                                  NSLog(@"Error: %@",error.localizedDescription);
+                                                  [self scheduleNextRetrieve];
+                                              } else if ([httpResponse respondsToSelector:@selector(allHeaderFields)]){
+                                                  NSDictionary *headerFields = [httpResponse allHeaderFields];
+                                                  NSString *lastModification = [headerFields objectForKey:@"Date"];
+                                                  NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                                                  [formatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss zzz"];
+                                                  NSDate *serverDate = [formatter dateFromString:lastModification];
+                                                  NSTimeInterval timeToRetrieve = -[startDate timeIntervalSinceNow];
+                                                  //NSLog(@"%@ - Server",serverDate);
+                                                  //NSLog(@"%@ - End   ",[NSDate date]);
+                                                  [self incomingDate:serverDate
+                                                     timeToRetrieve :timeToRetrieve];
+                                              }
+                                          }];
     [task resume];
 }
-
-
-
 
 @end

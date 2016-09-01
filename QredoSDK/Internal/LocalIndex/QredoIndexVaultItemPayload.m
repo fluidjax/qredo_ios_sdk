@@ -3,12 +3,12 @@
 
 @interface QredoIndexVaultItemPayload ()
 
-// Private interface goes here.
+//Private interface goes here.
 
 @end
 
 @implementation QredoIndexVaultItemPayload
 
-// Custom logic goes here.
+//Custom logic goes here.
 
 @end

@@ -2,10 +2,10 @@
 #import <Foundation/Foundation.h>
 #import "QredoPublicKey.h"
 
-@interface QredoDhPublicKey : QredoPublicKey
+@interface QredoDhPublicKey :QredoPublicKey
 
-@property (nonatomic, copy, readonly) NSData *data;
+@property (nonatomic,copy,readonly) NSData *data;
 
-- (instancetype)initWithData:(NSData*)data;
+-(instancetype)initWithData:(NSData *)data;
 
 @end

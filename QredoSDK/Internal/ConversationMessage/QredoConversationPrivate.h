@@ -15,45 +15,45 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 
 @interface QredoConversation (Private)
 
-@property (nonatomic, readonly) QredoClient *client;
+@property (nonatomic,readonly) QredoClient *client;
 
--(QredoVault*)store;
+-(QredoVault *)store;
 -(instancetype)initWithClient:(QredoClient *)client;
-- (instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFConversationDescriptor*)descriptor;
+-(instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFConversationDescriptor *)descriptor;
 
-- (instancetype)initWithClient:(QredoClient *)client
-            authenticationType:(QLFRendezvousAuthType *)authenticationType
-                 rendezvousTag:(NSString *)rendezvousTag
-               converationType:(NSString *)conversationType;
+-(instancetype)initWithClient:(QredoClient *)client
+           authenticationType:(QLFRendezvousAuthType *)authenticationType
+                rendezvousTag:(NSString *)rendezvousTag
+              converationType:(NSString *)conversationType;
 
-// Generate the keys, conversation ID, queue IDs and will save in the vault
-- (void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey*)privateKey
-                                 publicKey:(QredoDhPublicKey*)publicKey
-                               myPublicKey:(QredoDhPublicKey*)myPublicKey
-                           rendezvousOwner:(BOOL)rendezvousOwner
-                         completionHandler:(void(^)(NSError *error))completionHandler;
+//Generate the keys, conversation ID, queue IDs and will save in the vault
+-(void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey *)privateKey
+                                publicKey:(QredoDhPublicKey *)publicKey
+                              myPublicKey:(QredoDhPublicKey *)myPublicKey
+                          rendezvousOwner:(BOOL)rendezvousOwner
+                        completionHandler:(void (^)(NSError *error))completionHandler;
 
-- (void)respondToRendezvousWithTag:(NSString *)rendezvousTag
-                   trustedRootPems:(NSArray *)trustedRootPems
-                           crlPems:(NSArray *)crlPems
-                    appCredentials:(QredoAppCredentials*)appCredentials
-                 completionHandler:(void(^)(NSError *error))completionHandler;
+-(void)respondToRendezvousWithTag:(NSString *)rendezvousTag
+                  trustedRootPems:(NSArray *)trustedRootPems
+                          crlPems:(NSArray *)crlPems
+                   appCredentials:(QredoAppCredentials *)appCredentials
+                completionHandler:(void (^)(NSError *error))completionHandler;
 
-- (void)enumerateMessagesUsingBlock:(void(^)(QredoConversationMessage *message, BOOL *stop))block
-                           incoming:(BOOL)incoming
-             excludeControlMessages:(BOOL)excludeControlMessages
-                              since:(QredoConversationHighWatermark*)sinceWatermark
-                  completionHandler:(void(^)(NSError *error))completionHandler
-               highWatermarkHandler:(void(^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler;
+-(void)enumerateMessagesUsingBlock:(void (^)(QredoConversationMessage *message,BOOL *stop))block
+                          incoming:(BOOL)incoming
+            excludeControlMessages:(BOOL)excludeControlMessages
+                             since:(QredoConversationHighWatermark *)sinceWatermark
+                 completionHandler:(void (^)(NSError *error))completionHandler
+              highWatermarkHandler:(void (^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler;
 
 
-- (void)loadHighestHWMWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+-(void)loadHighestHWMWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
 @end
 
 @interface QredoConversationHighWatermark (Private)
 
-- (instancetype)initWithSequenceValue:(NSData*)sequenceValue;
+-(instancetype)initWithSequenceValue:(NSData *)sequenceValue;
 
 @end
 

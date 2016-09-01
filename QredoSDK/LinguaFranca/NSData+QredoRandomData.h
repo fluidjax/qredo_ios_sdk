@@ -3,6 +3,6 @@
 
 @interface NSData (QredoRandomData)
 
-+ (NSData *)dataWithRandomBytesOfLength:(NSUInteger)length;
++(NSData *)dataWithRandomBytesOfLength:(NSUInteger)length;
 
 @end

@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 
 
-@class QredoConversationProtocol, QredoConversation, QredoConversationMessage;
+@class QredoConversationProtocol,QredoConversation,QredoConversationMessage;
 
 
 
@@ -13,8 +13,8 @@
 
 @protocol QredoConversationProtocolEvents <NSObject>
 
-- (void)didReceiveConversationMessage:(QredoConversationMessage *)message;
-- (void)otherPartyHasLeftConversation;
+-(void)didReceiveConversationMessage:(QredoConversationMessage *)message;
+-(void)otherPartyHasLeftConversation;
 
 @end
 
@@ -25,33 +25,33 @@
 //==============================================================================================================
 
 
-@interface QredoConversationProtocolState : NSObject<QredoConversationProtocolEvents>
+@interface QredoConversationProtocolState :NSObject<QredoConversationProtocolEvents>
 
-@property (weak, nonatomic, readonly) QredoConversationProtocol *conversationProtocol;
+@property (weak,nonatomic,readonly) QredoConversationProtocol *conversationProtocol;
 
 /**
  * Must be overidden in subclasses which declare properties. This method is called by
  * switch state before swiching to this state. Subclass implementations should reset the
  * properties of the state that need to be reset before the state becomes active.
  */
-- (void)prepareForReuse;
+-(void)prepareForReuse;
 
 
 #pragma mark State life cycle
 
-- (void)didEnter;
-- (void)willExit;
+-(void)didEnter;
+-(void)willExit;
 
 
 #pragma mark Events (conversation message handling)
 
-- (void)didReceiveConversationMessage:(QredoConversationMessage *)message;
-- (void)otherPartyHasLeftConversation;
+-(void)didReceiveConversationMessage:(QredoConversationMessage *)message;
+-(void)otherPartyHasLeftConversation;
 
 #pragma mark Utility methods
 
-- (void)setTimeout:(NSTimeInterval)timeout;
-- (void)didTimeout;
+-(void)setTimeout:(NSTimeInterval)timeout;
+-(void)didTimeout;
 
 @end
 
@@ -59,16 +59,16 @@
 //--------------------------------------------------------------------------------------------------------------
 #pragma mark -
 
-@interface QredoConversationProtocolCancelableState : QredoConversationProtocolState
+@interface QredoConversationProtocolCancelableState :QredoConversationProtocolState
 
-@property (nonatomic, copy) NSString *cancelMessageType;
+@property (nonatomic,copy) NSString *cancelMessageType;
 
-- (void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message;
-- (void)conversationCanceledWithMessage:(QredoConversationMessage *)message;
+-(void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message;
+-(void)conversationCanceledWithMessage:(QredoConversationMessage *)message;
 
 #pragma mark Utilities
 
-- (void)publishCancelMessageWithCompletionHandler:(void(^)(NSError *error))completionHandler;
+-(void)publishCancelMessageWithCompletionHandler:(void (^)(NSError *error))completionHandler;
 
 @end
 
@@ -79,25 +79,23 @@
 //==============================================================================================================
 
 
-@interface QredoConversationProtocol : NSObject
+@interface QredoConversationProtocol :NSObject
 
-@property (nonatomic, readonly) QredoConversationProtocolState *currentState;
-@property (nonatomic, readonly) QredoConversation *conversation;
+@property (nonatomic,readonly) QredoConversationProtocolState *currentState;
+@property (nonatomic,readonly) QredoConversation *conversation;
 
-- (instancetype)initWithConversation:(QredoConversation *)conversation;
+-(instancetype)initWithConversation:(QredoConversation *)conversation;
 
-- (void)startObservingConversation;
-- (void)stopObservingConversation;
+-(void)startObservingConversation;
+-(void)stopObservingConversation;
 
 
 #pragma mark Event handling
 
-- (void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock;
+-(void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock;
 
 @end
 
 
-@interface QredoConversationProtocol(Events)<QredoConversationProtocolEvents>
+@interface QredoConversationProtocol (Events)<QredoConversationProtocolEvents>
 @end
-
-

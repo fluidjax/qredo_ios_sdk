@@ -16,8 +16,8 @@
 
 @protocol ConversationProtocolTestEvents <NSObject>
 
-- (void)goToMainTimeoutState;
-- (void)goToDidNotTimeoutState;
+-(void)goToMainTimeoutState;
+-(void)goToDidNotTimeoutState;
 
 @end
 
@@ -28,34 +28,34 @@
 //===============================================================================================================
 
 
-@interface ProtocolUnderTestState : QredoConversationProtocolCancelableState<ConversationProtocolTestEvents>
-@property (nonatomic, readonly) ProtocolUnderTest *protocolUnderTest;
-@property (nonatomic, copy) void(^didEnterBlock)();
+@interface ProtocolUnderTestState :QredoConversationProtocolCancelableState<ConversationProtocolTestEvents>
+@property (nonatomic,readonly) ProtocolUnderTest *protocolUnderTest;
+@property (nonatomic,copy) void (^didEnterBlock)();
 @end
 
 
 //---------------------------------------------------------------------------------------------------------------
 
-@interface ProtocolUnderTest_MainTimeoutState : ProtocolUnderTestState
+@interface ProtocolUnderTest_MainTimeoutState :ProtocolUnderTestState
 @end
 
-typedef ProtocolUnderTest_MainTimeoutState MainTimeoutState;
+typedef ProtocolUnderTest_MainTimeoutState   MainTimeoutState;
 
 
 //---------------------------------------------------------------------------------------------------------------
 
-@interface ProtocolUnderTest_DidTimeoutState : ProtocolUnderTestState
+@interface ProtocolUnderTest_DidTimeoutState :ProtocolUnderTestState
 @end
 
-typedef ProtocolUnderTest_DidTimeoutState DidTimeoutState;
+typedef ProtocolUnderTest_DidTimeoutState   DidTimeoutState;
 
 
 //---------------------------------------------------------------------------------------------------------------
 
-@interface ProtocolUnderTest_DidNotTimeoutState : ProtocolUnderTestState
+@interface ProtocolUnderTest_DidNotTimeoutState :ProtocolUnderTestState
 @end
 
-typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
+typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
 
 
 
@@ -64,7 +64,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 //===============================================================================================================
 
 
-@interface ProtocolUnderTest : QredoConversationProtocol
+@interface ProtocolUnderTest :QredoConversationProtocol
 
 @property (nonatomic) MainTimeoutState *mainTimeoutState;
 @property (nonatomic) DidTimeoutState *didTimeoutState;
@@ -72,7 +72,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 
 @end
 
-@interface ProtocolUnderTest(Events)<ConversationProtocolTestEvents>
+@interface ProtocolUnderTest (Events)<ConversationProtocolTestEvents>
 @end
 
 
@@ -84,25 +84,22 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 
 @implementation ProtocolUnderTestState
 
-- (void)goToMainTimeoutState
-{
+-(void)goToMainTimeoutState {
     [self.protocolUnderTest switchToState:self.protocolUnderTest.mainTimeoutState withConfigBlock:^{}];
 }
 
-- (void)goToDidNotTimeoutState
-{
+-(void)goToDidNotTimeoutState {
     [self.protocolUnderTest switchToState:self.protocolUnderTest.didNotTimeoutState withConfigBlock:^{}];
 }
 
-- (ProtocolUnderTest *)protocolUnderTest
-{
+-(ProtocolUnderTest *)protocolUnderTest {
     return (ProtocolUnderTest *)self.conversationProtocol;
 }
 
-- (void)didEnter
-{
+-(void)didEnter {
     [super didEnter];
-    if (self.didEnterBlock) {
+    
+    if (self.didEnterBlock){
         self.didEnterBlock();
     }
 }
@@ -115,17 +112,17 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 
 @implementation ProtocolUnderTest_MainTimeoutState
 
-- (instancetype)init
-{
+-(instancetype)init {
     self = [super init];
-    if (self) {
+    
+    if (self){
         [self setTimeout:5];
     }
+    
     return self;
 }
 
-- (void)didTimeout
-{
+-(void)didTimeout {
     [self.protocolUnderTest switchToState:self.protocolUnderTest.didTimeoutState withConfigBlock:^{}];
 }
 
@@ -152,14 +149,15 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 
 @implementation ProtocolUnderTest
 
-- (instancetype)initWithConversation:(QredoConversation *)conversation
-{
+-(instancetype)initWithConversation:(QredoConversation *)conversation {
     self = [super initWithConversation:conversation];
-    if (self) {
+    
+    if (self){
         self.mainTimeoutState = [MainTimeoutState new];
         self.didTimeoutState = [DidTimeoutState new];
         self.didNotTimeoutState = [DidNotTimeoutState new];
     }
+    
     return self;
 }
 
@@ -172,7 +170,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 #pragma GCC diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wprotocol"
 
-@implementation ProtocolUnderTest(Events)
+@implementation ProtocolUnderTest (Events)
 @end
 
 #pragma clang diagnostic pop
@@ -185,127 +183,129 @@ typedef ProtocolUnderTest_DidNotTimeoutState DidNotTimeoutState;
 //===============================================================================================================
 
 
-@interface ConversationProtocolTest : QredoXCTestCase
+@interface ConversationProtocolTest :QredoXCTestCase
 @property (nonatomic) ProtocolUnderTest *protocol;
 @end
 
 @implementation ConversationProtocolTest
 
-- (void)setUp {
+-(void)setUp {
     [super setUp];
     self.protocol = [[ProtocolUnderTest alloc] initWithConversation:nil];
 }
 
-- (void)tearDown {
+-(void)tearDown {
     self.protocol = nil;
     [super tearDown];
 }
 
-
 #pragma mark Tests
 
-- (void)testTimeout
-{
+-(void)testTimeout {
     __block XCTestExpectation *didTimeoutStateEnteredExpectation = [self expectationWithDescription:@"Did timeout state entered."];
-    [self.protocol.didTimeoutState setDidEnterBlock:^{
-        [didTimeoutStateEnteredExpectation fulfill];
-    }];
+    
+    [self.protocol.didTimeoutState
+     setDidEnterBlock:^{
+         [didTimeoutStateEnteredExpectation fulfill];
+     }];
     
     [self.protocol.mainTimeoutState setTimeout:2];
     [self.protocol switchToState:self.protocol.mainTimeoutState withConfigBlock:^{}];
     
-    [self waitForExpectationsWithTimeout:4 handler:^(NSError *error) {
-        didTimeoutStateEnteredExpectation = nil;
-    }];
+    [self waitForExpectationsWithTimeout:4
+                                 handler:^(NSError *error) {
+                                     didTimeoutStateEnteredExpectation = nil;
+                                 }];
     
-    XCTAssertEqual(self.protocol.currentState, self.protocol.didTimeoutState);
+    XCTAssertEqual(self.protocol.currentState,self.protocol.didTimeoutState);
 }
 
-- (void)testTimeoutWhereStateDoesNotTimeout
-{
+-(void)testTimeoutWhereStateDoesNotTimeout {
     __block XCTestExpectation *didNotTimeoutStateEnteredExpectation = [self expectationWithDescription:@"Did not timeout state entered"];
-    [self.protocol.didNotTimeoutState setDidEnterBlock:^{
-        [didNotTimeoutStateEnteredExpectation fulfill];
-    }];
+    
+    [self.protocol.didNotTimeoutState
+     setDidEnterBlock:^{
+         [didNotTimeoutStateEnteredExpectation fulfill];
+     }];
     
     [self.protocol.mainTimeoutState setTimeout:4];
     [self.protocol switchToState:self.protocol.mainTimeoutState withConfigBlock:^{}];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(2 * NSEC_PER_SEC)),dispatch_get_main_queue(),^{
         [self.protocol goToDidNotTimeoutState];
     });
     
     __block XCTestExpectation *haveWaitedUntilTimeoutHasFiredExpectation = [self expectationWithDescription:@"Have waited until timout has fired"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(8 * NSEC_PER_SEC)),dispatch_get_main_queue(),^{
         [haveWaitedUntilTimeoutHasFiredExpectation fulfill];
     });
     
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
-        didNotTimeoutStateEnteredExpectation = nil;
-        haveWaitedUntilTimeoutHasFiredExpectation = nil;
-    }];
+    [self waitForExpectationsWithTimeout:10
+                                 handler:^(NSError *error) {
+                                     didNotTimeoutStateEnteredExpectation = nil;
+                                     haveWaitedUntilTimeoutHasFiredExpectation = nil;
+                                 }];
     
-    XCTAssertEqual(self.protocol.currentState, self.protocol.didNotTimeoutState);
+    XCTAssertEqual(self.protocol.currentState,self.protocol.didNotTimeoutState);
 }
 
-
-- (void)testTimoutWhenReturningToTheStateWithTimeout
-{
+-(void)testTimoutWhenReturningToTheStateWithTimeout {
     __block NSError *timeoutError = nil;
     
     __block XCTestExpectation *didNotTimeoutStateEnteredExpectation = [self expectationWithDescription:@"Did not timeout state entered"];
-    [self.protocol.didNotTimeoutState setDidEnterBlock:^{
-        [didNotTimeoutStateEnteredExpectation fulfill];
-    }];
+    
+    [self.protocol.didNotTimeoutState
+     setDidEnterBlock:^{
+         [didNotTimeoutStateEnteredExpectation fulfill];
+     }];
     
     [self.protocol.mainTimeoutState setTimeout:4];
     [self.protocol switchToState:self.protocol.mainTimeoutState withConfigBlock:^{}];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(2 * NSEC_PER_SEC)),dispatch_get_main_queue(),^{
         [self.protocol goToDidNotTimeoutState];
     });
     
-    [self waitForExpectationsWithTimeout:3 handler:^(NSError *error) {
-        didNotTimeoutStateEnteredExpectation = nil;
-        timeoutError = error;
-    }];
+    [self waitForExpectationsWithTimeout:3
+                                 handler:^(NSError *error) {
+                                     didNotTimeoutStateEnteredExpectation = nil;
+                                     timeoutError = error;
+                                 }];
     
-    XCTAssertEqual(self.protocol.currentState, self.protocol.didNotTimeoutState);
+    XCTAssertEqual(self.protocol.currentState,self.protocol.didNotTimeoutState);
     
-    if (timeoutError) {
+    if (timeoutError){
         return;
     }
-    
     
     [self.protocol goToMainTimeoutState];
     
     __block XCTestExpectation *haveWaitedUntilInitialTimeoutHasFiredExpectation = [self expectationWithDescription:@"Have waited until the initial timout has fired"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(3 * NSEC_PER_SEC)),dispatch_get_main_queue(),^{
         [haveWaitedUntilInitialTimeoutHasFiredExpectation fulfill];
     });
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
-        haveWaitedUntilInitialTimeoutHasFiredExpectation = nil;
-        timeoutError = error;
-    }];
-
-    XCTAssertEqual(self.protocol.currentState, self.protocol.mainTimeoutState);
+    [self waitForExpectationsWithTimeout:5
+                                 handler:^(NSError *error) {
+                                     haveWaitedUntilInitialTimeoutHasFiredExpectation = nil;
+                                     timeoutError = error;
+                                 }];
     
-    if (timeoutError) {
+    XCTAssertEqual(self.protocol.currentState,self.protocol.mainTimeoutState);
+    
+    if (timeoutError){
         return;
     }
     
-    
     __block XCTestExpectation *haveWaitedUntilSecondTimeoutHasFiredExpectation = [self expectationWithDescription:@"Have waited until the second timout has fired"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(2 * NSEC_PER_SEC)),dispatch_get_main_queue(),^{
         [haveWaitedUntilSecondTimeoutHasFiredExpectation fulfill];
     });
-    [self waitForExpectationsWithTimeout:5 handler:^(NSError *error) {
-        haveWaitedUntilSecondTimeoutHasFiredExpectation = nil;
-    }];
+    [self waitForExpectationsWithTimeout:5
+                                 handler:^(NSError *error) {
+                                     haveWaitedUntilSecondTimeoutHasFiredExpectation = nil;
+                                 }];
     
-    XCTAssertEqual(self.protocol.currentState, self.protocol.didTimeoutState);
+    XCTAssertEqual(self.protocol.currentState,self.protocol.didTimeoutState);
 }
 
 @end
-
-

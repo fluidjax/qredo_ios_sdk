@@ -4,13 +4,13 @@
 
 @interface NSInputStream (QredoReaderExtensions)
 
-- (NSData *)readUntilByte:(uint8_t)delimiter;
-- (NSData *)readExactLength:(NSUInteger)length;
+-(NSData *)readUntilByte:(uint8_t)delimiter;
+-(NSData *)readExactLength:(NSUInteger)length;
 
 @end
 
 @interface NSOutputStream (QredoWriterExtensions)
 
-- (void)writeByte:(uint8_t)byte;
+-(void)writeByte:(uint8_t)byte;
 
 @end

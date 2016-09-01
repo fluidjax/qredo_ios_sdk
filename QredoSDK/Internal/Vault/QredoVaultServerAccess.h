@@ -3,36 +3,36 @@
 #import "QredoVault.h"
 #import "QredoClient.h"
 
-@class QredoVaultKeys, QredoClient, QredoVaultCrypto, QredoVaultSequenceCache;
+@class QredoVaultKeys,QredoClient,QredoVaultCrypto,QredoVaultSequenceCache;
 
-@interface QredoVaultServerAccess : NSObject
+@interface QredoVaultServerAccess :NSObject
 
-- (instancetype)initWithClient:(QredoClient *)client
-                   vaultCrypto:(QredoVaultCrypto *)vaultCrypto
-                    sequenceId:(QredoQUID *)sequenceId
-                     vaultKeys:(QredoVaultKeys *)vaultKeys
-            vaultSequenceCache:(QredoVaultSequenceCache *)vaultSequenceCache
-              enumerationQueue:(dispatch_queue_t)enumerationQueue;
-
-
-- (void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-            completionHandler:(void(^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
-
-- (void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
-                    completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
-
-- (void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
-                       itemId:(QredoQUID*)itemId dataType:(NSString *)dataType
-                      created:(NSDate*)created
-                summaryValues:(NSDictionary *)summaryValues
-            completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, QLFEncryptedVaultItem *encryptedVaultItem, NSError *error))completionHandler;
+-(instancetype)initWithClient:(QredoClient *)client
+                  vaultCrypto:(QredoVaultCrypto *)vaultCrypto
+                   sequenceId:(QredoQUID *)sequenceId
+                    vaultKeys:(QredoVaultKeys *)vaultKeys
+           vaultSequenceCache:(QredoVaultSequenceCache *)vaultSequenceCache
+             enumerationQueue:(dispatch_queue_t)enumerationQueue;
 
 
-- (void)enumerateVaultItemsUsingBlock:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                    completionHandler:(void(^)(NSError *error))completionHandler
-                     watermarkHandler:(void(^)(QredoVaultHighWatermark *watermark))watermarkHandler
-                                since:(QredoVaultHighWatermark*)sinceWatermark
-                    consolidatingResults:(BOOL)shouldConsolidateResults;
+-(void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+           completionHandler:(void (^)(QredoVaultItem *vaultItem,NSError *error))completionHandler;
+
+-(void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
+                   completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,NSError *error))completionHandler;
+
+-(void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
+                      itemId:(QredoQUID *)itemId dataType:(NSString *)dataType
+                     created:(NSDate *)created
+               summaryValues:(NSDictionary *)summaryValues
+           completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,QLFEncryptedVaultItem *encryptedVaultItem,NSError *error))completionHandler;
+
+
+-(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
+                   completionHandler:(void (^)(NSError *error))completionHandler
+                    watermarkHandler:(void (^)(QredoVaultHighWatermark *watermark))watermarkHandler
+                               since:(QredoVaultHighWatermark *)sinceWatermark
+                consolidatingResults:(BOOL)shouldConsolidateResults;
 
 
 @end

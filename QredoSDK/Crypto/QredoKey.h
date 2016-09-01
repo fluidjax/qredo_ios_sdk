@@ -1,9 +1,9 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
-@interface QredoKey : NSObject
+@interface QredoKey :NSObject
 
 
-- (NSData*)convertKeyToNSData;
+-(NSData *)convertKeyToNSData;
 
 @end

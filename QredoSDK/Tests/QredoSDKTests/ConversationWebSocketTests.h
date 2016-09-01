@@ -1,9 +1,9 @@
 /* HEADER GOES HERE */
 #import "ConversationTests.h"
 
-@interface ConversationWebSocketTests : ConversationTests
+@interface ConversationWebSocketTests :ConversationTests
 
-- (void)testConversationCreation;
-- (void)testRespondingToConversation;
-- (void)testConversation;
+-(void)testConversationCreation;
+-(void)testRespondingToConversation;
+-(void)testConversation;
 @end

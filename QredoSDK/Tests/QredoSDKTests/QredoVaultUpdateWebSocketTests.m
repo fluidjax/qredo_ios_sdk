@@ -1,26 +1,26 @@
 /* HEADER GOES HERE */
 #import "QredoVaultUpdateTests.h"
 
-@interface QredoVaultUpdateWebSocketTests : QredoVaultUpdateTests
+@interface QredoVaultUpdateWebSocketTests :QredoVaultUpdateTests
 
 @end
 
 @implementation QredoVaultUpdateWebSocketTests
 
-- (void)setUp {
+-(void)setUp {
     self.transportType = QredoClientOptionsTransportTypeWebSockets;
     [super setUp];
 }
 
-- (void)testGettingItems {
+-(void)testGettingItems {
     [super testGettingItems];
 }
 
-- (void)testPutItems {
+-(void)testPutItems {
     [super testPutItems];
 }
 
-- (void)testDeleteItems {
+-(void)testDeleteItems {
     [super testDeleteItems];
 }
 

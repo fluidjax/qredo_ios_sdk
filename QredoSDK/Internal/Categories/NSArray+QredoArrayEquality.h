@@ -3,6 +3,6 @@
 
 @interface NSArray (QredoArrayEquality)
 
-- (NSComparisonResult)compare:(NSArray *)object;
+-(NSComparisonResult)compare:(NSArray *)object;
 
 @end

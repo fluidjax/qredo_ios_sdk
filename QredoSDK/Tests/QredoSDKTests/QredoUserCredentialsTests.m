@@ -4,30 +4,27 @@
 #import "NSData+ParseHex.h"
 #import "QredoXCTestCase.h"
 
-@interface QredoUserCredentialsTests : QredoXCTestCase
+@interface QredoUserCredentialsTests :QredoXCTestCase
 
 @end
 
 @implementation QredoUserCredentialsTests
 
-- (void)setUp {
+-(void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
-
-
--(void)testGetMasterUnlockKey{
-    
+-(void)testGetMasterUnlockKey {
     NSString *TEST_USER_SECRET      = @"This is a secret";
     NSString *APPLICATION_ID         = @"test";
     NSString *TEST_USER_ID          = @"TEST-USER-ID";
-
+    
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:APPLICATION_ID
-                                                                                          userId:TEST_USER_ID
-                                                                                      userSecure:TEST_USER_SECRET];
-
+                                                                                 userId:TEST_USER_ID
+                                                                             userSecure:TEST_USER_SECRET];
+    
     
     NSData *TEST_UNLOCK_KEY = [NSData dataWithHexString:@"d54dce9e8746cb954b529134db880355882c4cc8791550673611d857c5c98184"];
     
@@ -38,27 +35,23 @@
                                "86159a7c547ecb42e43d74657b39c56c7457d90c901b9397ead6b4c04dca2500fb9ebb8aa78fcdd54e17b207c062fa2da"
                                "b4ec0fc04cf7a2f6d1b7d266f6d434a1cf27f41f7238711136d0d5d6ba67c7158e0a7a83a9b556a85"];
     
-
+    
     NSData *userUnlockKey = [userCredentials userUnlockKey];
     NSData *masterKey = [userCredentials masterKey:userUnlockKey];
     
-    XCTAssertTrue([userUnlockKey isEqualToData:TEST_UNLOCK_KEY], @"User Unlock Key not correctly derived");
-    XCTAssertTrue([masterKey isEqualToData:expectedMaster], @"Master Key not correctly derived");
-    
-    
+    XCTAssertTrue([userUnlockKey isEqualToData:TEST_UNLOCK_KEY],@"User Unlock Key not correctly derived");
+    XCTAssertTrue([masterKey isEqualToData:expectedMaster],@"Master Key not correctly derived");
 }
 
-
--(void)testDataToHexString{
+-(void)testDataToHexString {
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] init];
     NSData *dataInput = [NSData dataWithHexString:@"cafebabe"];
-    NSString *hexOutput =[userCredentials dataToHexString:dataInput];
+    NSString *hexOutput = [userCredentials dataToHexString:dataInput];
+    
     XCTAssertTrue([hexOutput isEqualToString:@"CAFEBABE"]);
 }
 
-
-
--(void)testGetMasterFromUserUnlock{
+-(void)testGetMasterFromUserUnlock {
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] init];
     
     
@@ -72,16 +65,13 @@
                                "b4ec0fc04cf7a2f6d1b7d266f6d434a1cf27f41f7238711136d0d5d6ba67c7158e0a7a83a9b556a85"];
     
     NSData *masterKey = [userCredentials masterKey:userUnlockKey];
-    XCTAssertTrue([masterKey isEqualToData:expectedMaster], @"Master Key not correctly derived using HKDF from unlockKey");
     
+    XCTAssertTrue([masterKey isEqualToData:expectedMaster],@"Master Key not correctly derived using HKDF from unlockKey");
 }
 
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+-(void)tearDown {
+    //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
-
-
 
 @end

@@ -1,24 +1,24 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
-// Domain used in NSError
+//Domain used in NSError
 extern NSString *const QredoErrorDomain;
 
 
-typedef NS_ENUM (NSInteger, QredoErrorCode) {
+typedef NS_ENUM (NSInteger,QredoErrorCode) {
     QredoErrorCodeUnknown = 1000,
     QredoErrorCodeRemoteOperationFailure,
     QredoErrorCodeAppNotAuthorized,
     QredoErrorCodeMalformedOrTamperedData,
-        
-    // Vault errors
+    
+    //Vault errors
     QredoErrorCodeVaultUnknown = 2000,
     QredoErrorCodeVaultItemNotFound,
     QredoErrorCodeVaultItemHasBeenDeleted,
     QredoErrorCodeVaultInsufficientParameters,
     
     
-    // Rendezvous errors
+    //Rendezvous errors
     QredoErrorCodeRendezvousNotFound = 3001,
     QredoErrorCodeRendezvousInvalidData,
     QredoErrorCodeRendezvousAlreadyExists,
@@ -27,7 +27,7 @@ typedef NS_ENUM (NSInteger, QredoErrorCode) {
     QredoErrorCodeRendezvousAccessControlKeyMissing,
     QredoErrorCodeRendezvousAccessControlSignatureGenerationFailed,
     
-    // Conversation errors
+    //Conversation errors
     QredoErrorCodeConversationUnknown = 4000,
     QredoErrorCodeConversationNotFound,
     QredoErrorCodeConversationInvalidData,
@@ -35,7 +35,7 @@ typedef NS_ENUM (NSInteger, QredoErrorCode) {
     QredoErrorCodeConversationDeleted,
     
     
-    // Conversation protocol errors
+    //Conversation protocol errors
     QredoErrorCodeConversationProtocolUnknown = 5000,
     QredoErrorCodeConversationProtocolWrongState,
     QredoErrorCodeConversationProtocolCancelledByOtherSide,
@@ -43,7 +43,7 @@ typedef NS_ENUM (NSInteger, QredoErrorCode) {
     QredoErrorCodeConversationProtocolReceivedMalformedData,
     QredoErrorCodeConversationProtocolTimeout,
     
-    // Keychain errors
+    //Keychain errors
     QredoErrorCodeKeychainCouldNotBeFound = 6000,
     QredoErrorCodeKeychainCouldNotBeRetrieved,
     QredoErrorCodeKeychainCouldNotBeSaved,
@@ -54,6 +54,3 @@ typedef NS_ENUM (NSInteger, QredoErrorCode) {
     QredoErrorCodeIndexErrorUnknown = 7000,
     QredoErrorCodeIndexItemNotFound,
 };
-
-
-

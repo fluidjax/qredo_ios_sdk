@@ -1,11 +1,12 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
-@interface QredoClientId : NSObject
+@interface QredoClientId :NSObject
 
-+ (instancetype)randomClientId;
-+ (instancetype)clientIdFromData:(NSData *)data;
-- (NSData *)getData;
-- (NSString *)getSafeString;
++(instancetype)randomClientId;
++(instancetype)clientIdFromData:(NSData *)data;
+-(NSData *)getData;
+
+-(NSString *)getSafeString;
 
 @end

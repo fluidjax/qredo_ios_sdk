@@ -8,10 +8,10 @@
 /**
  Represents a Conversation message. Contains the message itself, together with metadata
  
- @see Sending a Conversation Message: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/sending_a_conversation_message.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/sending_a_conversation_message.html)  
+ @see Sending a Conversation Message: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/sending_a_conversation_message.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/sending_a_conversation_message.html)
  Listening for Conversation Messages: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
-
-*/
+ 
+ */
 
 @interface QredoConversationMessage :NSObject
 
@@ -32,7 +32,7 @@
 /** The current position within the `QredoConversation` */
 @property (readonly) QredoConversationHighWatermark *highWatermark;
 
-/** The message data 
+/** The message data
  @see Sending a Conversation Message: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/sending_a_conversation_message.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/sending_a_conversation_message.html)
  */
 @property (readonly) NSData *value;
@@ -40,17 +40,17 @@
 
 #pragma mark - Methods
 
-/** Called to initialise the message with the value and metadata 
+/** Called to initialise the message with the value and metadata
  
  @see Sending a Conversation Message: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/sending_a_conversation_message.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/sending_a_conversation_message.html)
  
  @param value The message value as a `NSData` object
  @param summaryValues A dictionary of key/value pairs. These can be anything you like, but must be objects of the class `NSDate`, `NSNumber` or `NSString`
-
+ 
  */
 
 
--(instancetype)initWithValue:(NSData*)value
-               summaryValues:(NSDictionary*)summaryValues;
+-(instancetype)initWithValue:(NSData *)value
+               summaryValues:(NSDictionary *)summaryValues;
 
 @end

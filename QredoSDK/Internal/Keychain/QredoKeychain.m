@@ -10,9 +10,9 @@
 @interface QredoKeychain ()
 {
     BOOL _isInitialized;
-
+    
     NSData *_masterKey;
-
+    
     CryptoImplV1 *_crypto;
 }
 
@@ -20,53 +20,46 @@
 
 @implementation QredoKeychain
 
-- (void)initialize {
+-(void)initialize {
     _crypto = [CryptoImplV1 new];
 }
 
-- (instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo {
+-(instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo {
     self = [super init];
-    if (self) {
+    
+    if (self){
         [self initialize];
         _isInitialized = NO;
         _operatorInfo = operatorInfo;
     }
+    
     return self;
 }
 
-- (instancetype)initWithData:(NSData *)serializedData
-{
+-(instancetype)initWithData:(NSData *)serializedData {
     self = [super init];
-
     [self initialize];
-
     _isInitialized = YES;
-
     _masterKey = [serializedData copy];
-
     [self deriveKeys];
-
     return self;
 }
 
-- (NSData *)data
-{
-    if (!_isInitialized) return nil;
-
+-(NSData *)data {
+    if (!_isInitialized)return nil;
+    
     return _masterKey;
 }
 
-
-- (void)generateNewKeys:(QredoUserCredentials*)userCredentials
-{
+-(void)generateNewKeys:(QredoUserCredentials *)userCredentials {
     _isInitialized = YES;
     _masterKey = [userCredentials masterKey];
     [self deriveKeys];
 }
 
-- (void)deriveKeys
-{
+-(void)deriveKeys {
     NSData *vaultMasterKey = [QredoVaultCrypto vaultMasterKeyWithUserMasterKey:_masterKey];
+    
     self.systemVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto systemVaultKeyWithVaultMasterKey:vaultMasterKey]];
     self.defaultVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto userVaultKeyWithVaultMasterKey:vaultMasterKey]];
 }

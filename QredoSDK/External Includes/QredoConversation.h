@@ -11,13 +11,13 @@
  This will be red, amber or green and is set by calling [otherPartyHasMyFingerPrint](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)otherPartyHasMyFingerPrint:) or [iHaveRemoteFingerPrint](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)iHaveRemoteFingerPrint:)
  
  */
-typedef NS_ENUM(NSUInteger, QredoAuthenticationStatus) {
+typedef NS_ENUM (NSUInteger,QredoAuthenticationStatus) {
     /** Neither party has confirmed their Conversationpublic key fingerprint */
-    QREDO_RED=0,
+    QREDO_RED = 0,
     /** Only one party has confirmed their Conversation public key fingerprint */
-    QREDO_AMBER=1,
+    QREDO_AMBER = 1,
     /** Both parties have confirmed their Conversation public key fingerprints. The Conversation is fully authenticated */
-    QREDO_GREEN=2,
+    QREDO_GREEN = 2,
 };
 
 
@@ -34,7 +34,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  return YES if this watermark represents a higher location than the one specified.
  */
 
--(BOOL)isLaterThan:(QredoConversationHighWatermark*)other;
+-(BOOL)isLaterThan:(QredoConversationHighWatermark *)other;
 @end
 
 
@@ -59,7 +59,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 /**
  Pass this to [fetchConversationWithRef](QredoClient.html#/c:objc(cs)QredoClient(im)fetchConversationWithRef:completionHandler:) to retrieve the `QredoConversation`
-*/
+ */
 @property (readonly) QredoConversationRef *conversationRef;
 
 /** This value is not used */
@@ -83,8 +83,8 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 /** The protocol that must implemented by the object that listens for new messages received within a `QredoConversation`
  
  @see Listening for Conversation Messages: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listening_for_messages.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listening_for_messages.html)
-
-*/
+ 
+ */
 
 @protocol QredoConversationObserver <NSObject>
 
@@ -120,14 +120,14 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  Represents a secure channel of communication between two app users
  
  Objects of this class are never created directly, but returned by the Qredo SDK as a result of:
-
+ 
  - responding to a Rendezvous by calling [respondWithTag](QredoClient.html#/c:objc(cs)QredoClient(im)respondWithTag:completionHandler:)
  - enumerating the list of Conversations that the current user is a party to by calling [enumerateConversationsWithBlock](QredoClient.html#/c:objc(cs)QredoClient(im)enumerateConversationsWithBlock:completionHandler:)
  
- @note When a Conversation is established between two parties, as a result of one user responding to a Rendezvous, a Diffie-Hellman key exchange takes place between the creator and the responder. These keys are randomly generated and used to derive a further set of keys that are used to encrypt messages in such a way that only the two parties in the Conversation are able to read the messages. 
-  All of this is handled behind the scenes by the Qredo SDK, but you can use the fingerprints of the public keys to authenticate the Conversation and ensure that there has not been a 'man-in-the-middle' attack. See the [Authenticating a Conversation](#/Authenticating%20a%20Conversation) methods later in this section.
+ @note When a Conversation is established between two parties, as a result of one user responding to a Rendezvous, a Diffie-Hellman key exchange takes place between the creator and the responder. These keys are randomly generated and used to derive a further set of keys that are used to encrypt messages in such a way that only the two parties in the Conversation are able to read the messages.
+ All of this is handled behind the scenes by the Qredo SDK, but you can use the fingerprints of the public keys to authenticate the Conversation and ensure that there has not been a 'man-in-the-middle' attack. See the [Authenticating a Conversation](#/Authenticating%20a%20Conversation) methods later in this section.
  
-*/
+ */
 
 @interface QredoConversation :NSObject
 
@@ -137,7 +137,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  The current highwatermark for this Conversation. This is used when enumerating `QredoConversationMessages`.
  */
 
-@property (readonly) QredoConversationHighWatermark* highWatermark;
+@property (readonly) QredoConversationHighWatermark *highWatermark;
 
 #pragma mark - Methods
 
@@ -161,7 +161,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  Sets up or updates the summaryValues stored in the `QredoConversationMetadata` for this Conversation.
  
  @param summaryValues A dictionary of key/value pairs. This will replace any existing summaryValues.
-
+ 
  @param completionHandler When this method completes error will be non nil if an error occurs.
  
  @note When the update is successful, the `QredoConversationRef` will be updated so you will need to update any stored references to this value.
@@ -171,7 +171,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  */
 
 
--(void)updateConversationWithSummaryValues:(NSDictionary*)summaryValues completionHandler:(void (^)(NSError *error))completionHandler;
+-(void)updateConversationWithSummaryValues:(NSDictionary *)summaryValues completionHandler:(void (^)(NSError *error))completionHandler;
 
 
 
@@ -185,16 +185,16 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  @param completionHandler Returns the new `QredoConversationHighWatermark` within this Conversation. error will be non nil if an error occurs.
  
  @see Sending a Conversation Message: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/sending_a_conversation_message.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/sending_a_conversation_message.html)
-
+ 
  */
 
 -(void)publishMessage:(QredoConversationMessage *)message
-    completionHandler:(void (^)(QredoConversationHighWatermark *messageHighWatermark, NSError *error))completionHandler;
+    completionHandler:(void (^)(QredoConversationHighWatermark *messageHighWatermark,NSError *error))completionHandler;
 
 #pragma mark - Listening for messages
 
 
-/** 
+/**
  
  Listen for `QredoConversationMessage` received within a Conversation
  
@@ -205,7 +205,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  
  @param observer The object that implements the QredoConversationObserver protocol.
  
-*/
+ */
 
 -(void)addConversationObserver:(id<QredoConversationObserver>)observer;
 
@@ -216,7 +216,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  
  @note Observers are automatically deleted when you close the connection to the `QredoClient`.
  
-*/
+ */
 -(void)removeConversationObserver:(id<QredoConversationObserver>)observer;
 
 
@@ -249,8 +249,8 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  @param sinceWatermark the point at which to start the search. Use `QredoConversationHighWatermarkOrigin` to start from the beginning of the Conversation
  @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
  */
--(void)enumerateReceivedMessagesUsingBlock:(void (^)(QredoConversationMessage *message, BOOL *stop))block
-                                     since:(QredoConversationHighWatermark*)sinceWatermark
+-(void)enumerateReceivedMessagesUsingBlock:(void (^)(QredoConversationMessage *message,BOOL *stop))block
+                                     since:(QredoConversationHighWatermark *)sinceWatermark
                          completionHandler:(void (^)(NSError *error))completionHandler;
 
 
@@ -259,15 +259,15 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
  Goes through the messages sent in a conversation and calls the specified code block for each one.
  
  @see Listing Conversation Messages: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listing_conversation_messages.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/conversations/listing_conversation_messages.html)
-
+ 
  @param block Called for each `QredoConversationMessage`. Set `stop` to YES to terminate the enumeration
  @param sinceWatermark the point at which to start the search. Use `QredoConversationHighWatermarkOrigin` to start from the beginning of the Conversation
  @param completionHandler will be called if an error occurs, such as when there is a problem connecting to the server. error will be no nil.
  */
 
 
--(void)enumerateSentMessagesUsingBlock:(void (^)(QredoConversationMessage *message, BOOL *stop))block
-                                 since:(QredoConversationHighWatermark*)sinceWatermark
+-(void)enumerateSentMessagesUsingBlock:(void (^)(QredoConversationMessage *message,BOOL *stop))block
+                                 since:(QredoConversationHighWatermark *)sinceWatermark
                      completionHandler:(void (^)(NSError *error))completionHandler;
 
 
@@ -281,7 +281,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 /** Call this if the other party to the Conversation confirms that you have their fingerprint */
 -(void)iHaveRemoteFingerPrint:(void (^)(NSError *error))completionHandler;
 
-/** Retrieve the Conversation [authentication status](../Enums/QredoAuthenticationStatus.html). 
+/** Retrieve the Conversation [authentication status](../Enums/QredoAuthenticationStatus.html).
  This will be red if neither party has confirmed their fingerprint, amber if only one party has and green if both parties have confirmed their fingerprint and the conversation is fully authenticated
  
  @return The Conversation authentication status: red, amber or green */
@@ -289,10 +289,10 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 
 /** Show my public key fingerprint as a hex string */
--(NSString*)showMyFingerPrint;
+-(NSString *)showMyFingerPrint;
 
 /** Show the other party's public key fingerprint as a hex string */
--(NSString*)showRemoteFingerPrint;
+-(NSString *)showRemoteFingerPrint;
 
 
 

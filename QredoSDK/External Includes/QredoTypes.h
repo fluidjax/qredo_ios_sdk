@@ -13,4 +13,3 @@
 @property (readonly) NSData *data;
 
 @end
-

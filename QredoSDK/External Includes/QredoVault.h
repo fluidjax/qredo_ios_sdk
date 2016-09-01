@@ -16,7 +16,7 @@
 @end
 
 /** Points to the start of the Vault */
-extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
+extern QredoVaultHighWatermark * const QredoVaultHighWatermarkOrigin;
 
 
 /** The protocol that must implemented by the object that listens for new items added to the Vault
@@ -48,14 +48,14 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 @end
 
 
-/** Identifies a specific version of a vault item. 
+/** Identifies a specific version of a vault item.
  
  Developers do not create this objects directly. Stored in the [QredoVaultItemMetadata](QredoVaultItemMetadata.html)
  Used to retrieve a vault item with [getItemWithDescriptor](QredoVault.html#/c:objc(cs)QredoVault(im)getItemWithDescriptor:completionHandler:),
  [getItemMetadataWithDescriptor](QredoVault.html#/c:objc(cs)QredoVault(im)getItemMetadataWithDescriptor:completionHandler:),
  [getLatestItemWithDescriptor](QredoVault.html#/c:objc(cs)QredoVault(im)getLatestItemWithDescriptor:completionHandler:) and
  [getLatestItemMetadataWithDescriptor](QredoVault.html#/c:objc(cs)QredoVault(im)getLatestItemMetadataWithDescriptor:completionHandler:)
-
+ 
  */
 
 @interface QredoVaultItemDescriptor :NSObject
@@ -79,8 +79,8 @@ extern QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin;
 
 
 /** Information about a vault item. These properties are read only.
-Constructed when a `QredoVaultItem` is created and returned from `enumerateVaultItemsUsingBlock` */
-@interface QredoVaultItemMetadata :NSObject<NSCopying, NSMutableCopying>
+ Constructed when a `QredoVaultItem` is created and returned from `enumerateVaultItemsUsingBlock` */
+@interface QredoVaultItemMetadata :NSObject<NSCopying,NSMutableCopying>
 
 #pragma mark - Properties
 
@@ -88,16 +88,16 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
 @property (readonly) QredoVaultItemDescriptor *descriptor;
 
 /** The date and time that the item was created, in UTC format  */
-@property (readonly, copy) NSDate* created;
+@property (readonly,copy) NSDate *created;
 
-/** The metadata dictionary stored as a dictionary of key/ value pairs 
+/** The metadata dictionary stored as a dictionary of key/ value pairs
  @note The summaryValues can contain anything you like, but must be of one of `NSNumber`, `NSDate` or `NSString`
  */
- @property (readonly, copy) NSDictionary *summaryValues;
+@property (readonly,copy) NSDictionary *summaryValues;
 
 #pragma mark - Methods
 
-/** Construct the metadata with the specified summary values 
+/** Construct the metadata with the specified summary values
  @param summaryValues a dictionary of key/value pairs
  @return the newly created metadata
  
@@ -106,24 +106,24 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  */
 +(instancetype)vaultItemMetadataWithSummaryValues:(NSDictionary *)summaryValues;
 
-/** Converts an index coredata summaryValue object retrieved by an index search predicate into a `QredoVaultItemMetadata` 
+/** Converts an index coredata summaryValue object retrieved by an index search predicate into a `QredoVaultItemMetadata`
  @note You only need to call this function if you are accessing the `NSManagedObjectContext` directly.
-
+ 
  @see The CustomerLookup example app
  */
-+(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues*)summaryValue;
++(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues *)summaryValue;
 
 
 /** Returns the metadata dictionary object referred to by the specified key
  @param key The key to lookup
  @return The object stored under this key. nil if the key cannot be found
  */
--(id)objectForMetadataKey:(NSString*)key;
+-(id)objectForMetadataKey:(NSString *)key;
 
 
 
 /** Call this to determine if this metadata refers to a deleted item
-
+ 
  @note When you request that an item is deleted, Qredo will actually create a new item with the same `QredoVaultItemDescriptor`, but marked as deleted. This allows you to update any of your own data structures that may refer to this item.
  
  There are two cases where you may need to call this method: when you are sent a deleted item in the Vault item listener
@@ -131,7 +131,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  or when you are enumerated through all vault items on the server using [enumerateVaultItemsUsingBlock](QredoVault.html#/c:objc(cs)QredoVault(im)enumerateVaultItemsUsingBlock:completionHandler:)
  
  @return YES if this is a deleted item
-
+ 
  */
 
 
@@ -141,18 +141,18 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
 
 
 
-/** Mutable metadata. 
+/** Mutable metadata.
  
  Used to construct the updated metadata to pass to [updateItem](#/c:objc(cs)QredoVault(im)updateItem:completionHandler:)
-*/
- 
+ */
+
 @interface QredoMutableVaultItemMetadata :QredoVaultItemMetadata
 
 /** The `QredoVaultItemDescriptor` used to retrieve an item from the Vault with `getItemWithDescriptor` and `getItemMetadataWithDescriptor`  */
 @property QredoVaultItemDescriptor *descriptor;
 /** Editable version of the metadata dictionary  */
 @property (copy) NSDictionary *summaryValues;
-/** Set the value of the object with the specified key in the metadata dictionary  
+/** Set the value of the object with the specified key in the metadata dictionary
  @param value The new value of the object
  @param key   The key representing the object to update */
 -(void)setSummaryValue:(id)value forKey:(NSString *)key;
@@ -178,7 +178,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
 
 #pragma mark - Methods
 
-/** Create and return a vault item with the specified data 
+/** Create and return a vault item with the specified data
  
  @param value The data to set for the vault item
  @return The newly created vault item
@@ -210,7 +210,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
 -(instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value;
 
 
-/** Search the metadata dictionary and return the object stored with the specified key 
+/** Search the metadata dictionary and return the object stored with the specified key
  @param the key to search for
  @return the object stored with this key. Returns nil if no objects can be found with the specified key.
  */
@@ -230,19 +230,19 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
 
 #pragma mark - Retrieving Vault items
 
-/** Retrieves the item with the given descriptor from the Vault 
-
+/** Retrieves the item with the given descriptor from the Vault
+ 
  @param itemDescriptor The descriptor for the item to retrieve. This can be found in the `QredoVaultItemMetadata`
  @param completionHandler Returns the vaultItem or an error if it cannot be found or some other error occurs.
  
  @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @note Retrieves the specific version of the vault item referred to by the descriptor. If the item has been updated or deleted, then this will not be the latest version of the vault item. The [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property can be used to compare versions.
-
  
-*/
+ 
+ */
 
--(void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
+-(void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItem *vaultItem,NSError *error))completionHandler;
 
 
 
@@ -258,7 +258,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  
  */
 
--(void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
+-(void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,NSError *error))completionHandler;
 
 
 /** Retrieves the latest version of the vault item with the given descriptor
@@ -273,7 +273,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  */
 
 
--(void)getLatestItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItem *vaultItem, NSError *error))completionHandler;
+-(void)getLatestItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItem *vaultItem,NSError *error))completionHandler;
 
 
 /** Retrieves the metadata for the latest version of the vault item with the given descriptor
@@ -286,7 +286,7 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  @note Call this method if you have a reference to a vault item, but are not sure if it is the latest one and want to get the metadata before deciding whether to retrieve the vailt item value. The item may have been updated or deleted by the same user from another device, for example. You can use the [created](QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created) property to compare versions.
  */
 
--(void)getLatestItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor  completionHandler:(void(^)(QredoVaultItemMetadata *vaultItemMetadata, NSError *error))completionHandler;
+-(void)getLatestItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,NSError *error))completionHandler;
 
 
 
@@ -330,28 +330,28 @@ Constructed when a `QredoVaultItem` is created and returned from `enumerateVault
  @note If the vault item is successfully added, the `QredoVaultItemMetadata` will contain the `QredoVaultItemDescriptor` used to retrieve the item later
  
  @see Adding an item to the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/adding_an_item_to_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/adding_an_item_to_the_vault.html)
-
  
-*/
+ 
+ */
 
--(void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+-(void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler;
 
 
 #pragma mark - Finding items in the Vault
 
 /**
-
-Goes through the items in this Vault and calls the specified code block on each one
  
-@see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
+ Goes through the items in this Vault and calls the specified code block on each one
  
-@param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
-@param completionHandler will be called when the enumeration is complete or if an error occurs
+ @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
-@note  Returns the latest versions of all items in the vault. Deleted items are not returned.
+ @param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
+ @param completionHandler will be called when the enumeration is complete or if an error occurs
+ 
+ @note  Returns the latest versions of all items in the vault. Deleted items are not returned.
  */
 
--(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+-(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
                    completionHandler:(void (^)(NSError *error))completionHandler;
 
 
@@ -366,12 +366,12 @@ Goes through the items in this Vault and calls the specified code block on each 
  @param completionHandler will be called when the enumeration is complete or if an error occurs
  
  @note  Returns the latest versions of all items in the vault. Deleted items are not returned.
-
+ 
  
  */
 
--(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                               since:(QredoVaultHighWatermark*)sinceWatermark
+-(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
+                               since:(QredoVaultHighWatermark *)sinceWatermark
                    completionHandler:(void (^)(NSError *error))completionHandler;
 
 
@@ -386,7 +386,7 @@ Goes through the items in this Vault and calls the specified code block on each 
  @param completionHandler will be called when the enumeration is complete or if an error occurs
  
  */
--(void)enumerateVaultItemsAllVersionsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
+-(void)enumerateVaultItemsAllVersionsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
                               completionHandler:(void (^)(NSError *error))completionHandler;
 
 
@@ -401,23 +401,23 @@ Goes through the items in this Vault and calls the specified code block on each 
  @param completionHandler will be called when the enumeration is complete or if an error occurs
  
  */
--(void)enumerateVaultItemsAllVersionsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stop))block
-                                          since:(QredoVaultHighWatermark*)sinceWatermark
+-(void)enumerateVaultItemsAllVersionsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
+                                          since:(QredoVaultHighWatermark *)sinceWatermark
                               completionHandler:(void (^)(NSError *error))completionHandler;
 
 
 
 
 
-/** The current highwatermark for this Vault. 
+/** The current highwatermark for this Vault.
  
  This is the location from which updates will arrive in the [didReceiveVaultItemMetadata](../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:) method  */
 -(QredoVaultHighWatermark *)highWatermark;
 
-/** Resets the highwatermark for this Vault to the beginning. 
+/** Resets the highwatermark for this Vault to the beginning.
  If a `QredoVaultObserver` has been added, the [didReceiveVaultItemMetadata](../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:) will be invoked with all items in the Vault
  */
- -(void)resetWatermark;
+-(void)resetWatermark;
 
 
 
@@ -434,12 +434,12 @@ Goes through the items in this Vault and calls the specified code block on each 
  
  
  */
--(void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor, NSError *error))completionHandler;
+-(void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor,NSError *error))completionHandler;
 
 
 #pragma mark - Updating Vault items
 
-/** Updates the vault item with new metadata and value 
+/** Updates the vault item with new metadata and value
  
  @param metadata The metadata for the vault item to update. To update the vault item's metadata, pass a `QredoMutableVaultItemMetadata` containing the updated data
  @param value The new value of the vault item
@@ -448,8 +448,8 @@ Goes through the items in this Vault and calls the specified code block on each 
  @note To store a reference to the updated vault item, use `newItemMetadata.descriptor`
  @see Updating a vault item: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/updating_a_vaultitem.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/updating_a_vaultitem.html)
  */
--(void)updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
-completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *error))completionHandler;
+-(void)    updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
+    completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler;
 
 
 @end
@@ -458,15 +458,15 @@ completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata, NSError *er
 @interface QredoVault (LocalIndex)
 
 
-typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetadata);
+typedef void (^IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetadata);
 
-/** 
+/**
  Find a vault item in the local index using a predicate to specify a search query. Call the specified code block for each matching item.
  
-@param predicate The search query. See the notes above.
-@param block The code block to execute for each item that matches the search. Set `stop` to YES to terminate the search
-@param completionHandler Called when the search is complete or an error occurs
-
+ @param predicate The search query. See the notes above.
+ @param block The code block to execute for each item that matches the search. Set `stop` to YES to terminate the search
+ @param completionHandler Called when the search is complete or an error occurs
+ 
  The following code will search for all items that contains objects with the key 'name' the value of which is equal to 'John':
  
  `[NSPredicate predicateWithFormat:@"key=='name' && value.string=='John'"];`
@@ -481,23 +481,23 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetadata);
  value.number    (NSNumber)
  
  value.data      (NSData)
-
+ 
  */
 
 -(void)enumerateIndexUsingPredicate:(NSPredicate *)predicate
-                          withBlock:(void (^)(QredoVaultItemMetadata *vaultMetadata, BOOL *stop))block
+                          withBlock:(void (^)(QredoVaultItemMetadata *vaultMetadata,BOOL *stop))block
                   completionHandler:(void (^)(NSError *error))completionHandler;
 
 
 /** Return the number of Metadata entries in the local Metadata index  */
 -(int)indexSize;
 
-/** Retrieves an NSManagedObjectContext (on main Thread) for the Coredata stack holding the index 
+/** Retrieves an NSManagedObjectContext (on main Thread) for the Coredata stack holding the index
  Only to be used if you are accessing the `NSManagedObjectContext` directly as shown in the CustomerLookup example
  */
--(NSManagedObjectContext*)indexManagedObjectContext;
+-(NSManagedObjectContext *)indexManagedObjectContext;
 
-/** Caching of Vault Item Metadata is enabled by default, turning it off will turn off all caching & indexing 
+/** Caching of Vault Item Metadata is enabled by default, turning it off will turn off all caching & indexing
  
  @note It is recommended that metadata caching is only turned off when free space on the device is running very low. Disabling the cache will decrease performance since nothing will be cached locally on the devices and searches will always have to go straight to the server
  
@@ -505,13 +505,13 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetadata);
  */
 -(void)metadataCacheEnabled:(BOOL)metadataCacheEnabled;
 
-/** Caching of VaultItem values is enabled by default, turning it off will force the value to be retrieved from the serve. Metadata caching is unaffected  
+/** Caching of VaultItem values is enabled by default, turning it off will force the value to be retrieved from the serve. Metadata caching is unaffected
  
  @note We recommend value caching is only turned off when free space on the device is running low, but it should be disabled before turning off the metadata cache. It is not possible to control which vault items are cached on the device, only the cache size.
  
  @param metadataCacheEnabled Set to YES to enable the cache
-
-  */
+ 
+ */
 -(void)valueCacheEnabled:(BOOL)valueCacheEnabled;
 
 /** Returns the size in bytes of the cache/index coredata database
@@ -519,7 +519,7 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetadata);
 
 -(long long)cacheFileSize;
 
-/**  Deletes all records in both the cache and the index. 
+/**  Deletes all records in both the cache and the index.
  @note Only call this when running low on device space. All data will have to be read from the server */
 -(void)purgeCache;
 
@@ -528,5 +528,3 @@ typedef void (^ IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetadata);
 
 
 @end
-
-

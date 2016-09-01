@@ -4,12 +4,11 @@
 
 @implementation NSData (QredoRandomData)
 
-+ (NSData *)dataWithRandomBytesOfLength:(NSUInteger)length
-{
++(NSData *)dataWithRandomBytesOfLength:(NSUInteger)length {
     uint8_t *randomBytes = malloc(length);
-
-    SecRandomCopyBytes(kSecRandomDefault, length, randomBytes);
-
+    
+    SecRandomCopyBytes(kSecRandomDefault,length,randomBytes);
+    
     NSData *randomData = [NSData dataWithBytesNoCopy:randomBytes
                                               length:length
                                         freeWhenDone:YES];

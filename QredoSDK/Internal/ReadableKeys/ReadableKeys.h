@@ -1,9 +1,9 @@
 /* HEADER GOES HERE */
-//  Created by Christopher Morris on 03/05/2016.
-//  Based on RFC1751 -  D. McDonald Dec 94
+//Created by Christopher Morris on 03/05/2016.
+//Based on RFC1751 -  D. McDonald Dec 94
 #import <Foundation/Foundation.h>
 
-@interface ReadableKeys : NSObject
+@interface ReadableKeys :NSObject
 
 +(NSString *)rfc1751Key2Eng:(NSData *)key;
 +(NSData *)rfc1751Eng2Key:(NSString *)english;

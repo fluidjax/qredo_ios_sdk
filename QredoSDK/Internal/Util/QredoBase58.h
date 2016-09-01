@@ -4,12 +4,12 @@
 
 extern NSString *QredoBase58ErrorDomain;
 
-typedef NS_ENUM(NSUInteger, QredoBase58Error) {
+typedef NS_ENUM (NSUInteger,QredoBase58Error) {
     QredoBase58ErrorUnknown = 0,
     QredoBase58ErrorUnrecognizedSymbol,
 };
 
-@interface QredoBase58 : NSObject
-+ (NSString *)encodeData:(NSData *)data;
-+ (NSData *)decodeData:(NSString *)string error:(NSError **)error;
+@interface QredoBase58 :NSObject
++(NSString *)encodeData:(NSData *)data;
++(NSData *)decodeData:(NSString *)string error:(NSError **)error;
 @end

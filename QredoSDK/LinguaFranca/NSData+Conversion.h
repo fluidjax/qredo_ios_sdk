@@ -4,5 +4,5 @@
 @interface NSData (Conversion)
 
 #pragma mark - String Conversion
-- (NSString *)hexadecimalString;
+-(NSString *)hexadecimalString;
 @end

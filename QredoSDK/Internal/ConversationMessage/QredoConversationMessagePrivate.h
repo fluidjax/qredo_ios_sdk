@@ -2,7 +2,7 @@
 #import "QredoConversationMessage.h"
 #import "QredoClient.h"
 
-typedef NS_ENUM(NSInteger, QredoConversationControlMessageType) {
+typedef NS_ENUM (NSInteger,QredoConversationControlMessageType) {
     QredoConversationControlMessageTypeNotControlMessage = -2,
     QredoConversationControlMessageTypeUnknown = -1,
     QredoConversationControlMessageTypeJoined  = 0,
@@ -22,20 +22,20 @@ extern NSString *const kQredoConversationMessageTypeControl;
 
 
 
-- (instancetype)initWithMessageLF:(QLFConversationMessage*)messageLF incoming:(BOOL)incoming;
-// making read/write for private use
+-(instancetype)initWithMessageLF:(QLFConversationMessage *)messageLF incoming:(BOOL)incoming;
+//making read/write for private use
 
--(instancetype)initWithValue:(NSData*)value
-                    dataType:(NSString*)dataType
-               summaryValues:(NSDictionary*)summaryValues;
+-(instancetype)initWithValue:(NSData *)value
+                    dataType:(NSString *)dataType
+               summaryValues:(NSDictionary *)summaryValues;
 
 
 @property QredoConversationHighWatermark *highWatermark;
 
 
-- (BOOL)isControlMessage;
-- (QredoConversationControlMessageType)controlMessageType;
+-(BOOL)isControlMessage;
+-(QredoConversationControlMessageType)controlMessageType;
 
-- (QLFConversationMessage*)messageLF;
+-(QLFConversationMessage *)messageLF;
 
 @end

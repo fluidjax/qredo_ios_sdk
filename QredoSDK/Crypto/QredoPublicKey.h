@@ -1,6 +1,6 @@
 /* HEADER GOES HERE */
 #import "QredoKey.h"
 
-@interface QredoPublicKey : QredoKey
+@interface QredoPublicKey :QredoKey
 
 @end

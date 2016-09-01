@@ -14,7 +14,7 @@
 
 
 
-@interface TestConversationMessageListener : NSObject <QredoConversationObserver>
+@interface TestConversationMessageListener :NSObject <QredoConversationObserver>
 @property NSString *expectedMessageValue;
 @property BOOL failed;
 @property BOOL listening;
@@ -23,10 +23,9 @@
 @end
 
 
-@interface TestVaultListener : NSObject<QredoVaultObserver>
+@interface TestVaultListener :NSObject<QredoVaultObserver>
 @property XCTestExpectation *didReceiveVaultItemMetadataExpectation;
 @property XCTestExpectation *didFailWithErrorExpectation;
 @property NSMutableArray *receivedItems;
 @property NSError *error;
 @end
-

@@ -2,6 +2,6 @@
 #import <Foundation/Foundation.h>
 #import "QredoTransport.h"
 
-@interface QredoWebSocketTransport : QredoTransport
+@interface QredoWebSocketTransport :QredoTransport
 
 @end

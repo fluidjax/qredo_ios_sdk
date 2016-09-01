@@ -7,27 +7,25 @@
 #import "QredoQUIDPrivate.h"
 #import "NSData+ParseHex.h"
 
-@interface QredoWireFormatTests : QredoXCTestCase
+@interface QredoWireFormatTests :QredoXCTestCase
 
 @end
 
 @implementation QredoWireFormatTests
 
-- (void)setUp
-{
+-(void)setUp {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
-- (void)tearDown
-{
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+-(void)tearDown {
+    //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
-- (void)testBoolean {
-    
+-(void)testBoolean {
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -50,12 +48,11 @@
     
     XCTAssertTrue([boolean1 boolValue]);
     XCTAssertFalse([boolean2 boolValue]);
-    
 }
 
-- (void)testByte {
-    
+-(void)testByte {
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -84,14 +81,12 @@
     XCTAssertTrue([byte2 isEqualToNumber:@1]);
     XCTAssertTrue([byte3 isEqualToNumber:@2]);
     XCTAssertTrue([byte4 isEqualToNumber:@3]);
-    
 }
 
-- (void)testByteSequence {
-    
-    uint8_t testBytes1[6]  = {1, 2, 3, 4, 5, 6};
-    uint8_t testBytes2[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    uint8_t testBytes3[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+-(void)testByteSequence {
+    uint8_t testBytes1[6]  = { 1,2,3,4,5,6 };
+    uint8_t testBytes2[10] = { 1,2,3,4,5,6,7,8,9,10 };
+    uint8_t testBytes3[12] = { 1,2,3,4,5,6,7,8,9,10,11,12 };
     
     NSData *testData1 = [NSData dataWithBytes:testBytes1 length:sizeof(testBytes1)];
     NSData *testData2 = [NSData dataWithBytes:testBytes2 length:sizeof(testBytes2)];
@@ -102,6 +97,7 @@
     __block NSData *actualData3;
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -127,11 +123,9 @@
     XCTAssertTrue([actualData1 isEqualToData:testData1]);
     XCTAssertTrue([actualData2 isEqualToData:testData2]);
     XCTAssertTrue([actualData3 isEqualToData:testData3]);
-    
 }
 
-- (void)testDate {
-    
+-(void)testDate {
     QredoDate *testDate1 = [QredoDate dateWithYear:1983 month:4  day:12];
     QredoDate *testDate2 = [QredoDate dateWithYear:1982 month:1  day:1];
     QredoDate *testDate3 = [QredoDate dateWithYear:2006 month:2  day:15];
@@ -139,6 +133,7 @@
     QredoDate *testDate5 = [QredoDate dateWithYear:2013 month:12 day:23];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -189,15 +184,14 @@
     XCTAssertTrue([actualDate5 year]  == 2013);
     XCTAssertTrue([actualDate5 month] == 12);
     XCTAssertTrue([actualDate5 day]   == 23);
-    
 }
 
-- (void)testDateFromNSDate {
-    
+-(void)testDateFromNSDate {
     NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:-559310400];
     QredoDate *testDate = [QredoDate dateWithDate:date];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -220,12 +214,11 @@
     XCTAssertTrue(actualDate.year  == 1983);
     XCTAssertTrue(actualDate.month == 4);
     XCTAssertTrue(actualDate.day   == 12);
-    
 }
 
-- (void)testDateFromNSDateComponents {
-    
+-(void)testDateFromNSDateComponents {
     NSDateComponents *dateComponents = [NSDateComponents new];
+    
     [dateComponents setYear:1983];
     [dateComponents setMonth:4];
     [dateComponents setDay:12];
@@ -254,17 +247,16 @@
     XCTAssertTrue(actualDate.year  == 1983);
     XCTAssertTrue(actualDate.month == 4);
     XCTAssertTrue(actualDate.day   == 12);
-    
 }
 
-- (void)testGenericDateTime {
-    
+-(void)testGenericDateTime {
     QredoDate *date = [QredoDate dateWithYear:1983 month:4 day:12];
     QredoTime *time = [QredoTime timeWithMillisSinceMidnight:1000];
     QredoDateTime *testGenericDateTime1 = [QredoDateTime dateTimeWithDate:date time:time isUTC:true];
     QredoDateTime *testGenericDateTime2 = [QredoDateTime dateTimeWithDate:date time:time isUTC:false];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -293,18 +285,16 @@
     XCTAssertTrue([[actualGenericDateTime1 date] month] == 4);
     XCTAssertTrue([[actualGenericDateTime1 date] day]   == 12);
     XCTAssertTrue([[actualGenericDateTime1 time] millisSinceMidnight] == 1000);
-
+    
     XCTAssertTrue([actualGenericDateTime2 isMemberOfClass:[QredoLocalDateTime class]]);
     XCTAssertTrue([[actualGenericDateTime2 date] year]  == 1983);
     XCTAssertTrue([[actualGenericDateTime2 date] month] == 4);
     XCTAssertTrue([[actualGenericDateTime2 date] day]   == 12);
     XCTAssertTrue([[actualGenericDateTime2 time] millisSinceMidnight] == 1000);
-    
 }
 
-- (void)testInt32 {
-    
-    NSNumber *testInt1 = [NSNumber numberWithLongLong:-1000000000000LL]; // Should underflow.
+-(void)testInt32 {
+    NSNumber *testInt1 = [NSNumber numberWithLongLong:-1000000000000LL]; //Should underflow.
     NSNumber *testInt2 = [NSNumber numberWithLong:-1000000000L];
     NSNumber *testInt3 = [NSNumber numberWithLong:-1000000L];
     NSNumber *testInt4 = [NSNumber numberWithLong:-1000L];
@@ -312,9 +302,10 @@
     NSNumber *testInt6 = [NSNumber numberWithLong:1000L];
     NSNumber *testInt7 = [NSNumber numberWithLong:1000000L];
     NSNumber *testInt8 = [NSNumber numberWithLong:1000000000L];
-    NSNumber *testInt9 = [NSNumber numberWithLongLong:1000000000000LL];  // Should overflow.
+    NSNumber *testInt9 = [NSNumber numberWithLongLong:1000000000000LL];  //Should overflow.
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -358,11 +349,9 @@
     XCTAssertTrue([actualInt7 isEqualToNumber:testInt7]);
     XCTAssertTrue([actualInt8 isEqualToNumber:testInt8]);
     XCTAssertFalse([actualInt9 isEqualToNumber:testInt9]);
-    
 }
 
-- (void)testInt64 {
-
+-(void)testInt64 {
     NSNumber *testInt1 = [NSNumber numberWithLongLong:-9223372036854775807LL];
     NSNumber *testInt2 = [NSNumber numberWithLongLong:-1000000LL];
     NSNumber *testInt3 = [NSNumber numberWithLongLong:0LL];
@@ -370,6 +359,7 @@
     NSNumber *testInt5 = [NSNumber numberWithLongLong:9223372036854775807LL];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -401,11 +391,9 @@
     XCTAssertTrue([actualInt3 isEqualToNumber:testInt3]);
     XCTAssertTrue([actualInt4 isEqualToNumber:testInt4]);
     XCTAssertTrue([actualInt5 isEqualToNumber:testInt5]);
-    
 }
 
-- (void)testLocalDateTime {
-    
+-(void)testLocalDateTime {
     QredoDate *date1 = [QredoDate dateWithYear:1983 month:4 day:12];
     QredoTime *time1 = [QredoTime timeWithMillisSinceMidnight:1000];
     QredoDate *date2 = [QredoDate dateWithYear:1982 month:1 day:1];
@@ -414,6 +402,7 @@
     QredoLocalDateTime *testLocalDateTime2 = (QredoLocalDateTime *)[QredoDateTime dateTimeWithDate:date2 time:time2 isUTC:false];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -464,16 +453,15 @@
     XCTAssertTrue([[actualGenericDateTime4 date] month] == 1);
     XCTAssertTrue([[actualGenericDateTime4 date] day]   == 1);
     XCTAssertTrue([[actualGenericDateTime4 time] millisSinceMidnight] == 4000);
-    
 }
 
-- (void)testString {
-    
+-(void)testString {
     NSString *testString1 = @"Hello, world!";
     NSString *testString2 = @"";
     NSString *testString3 = @"Thîš īś ä tëßt.";
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -503,16 +491,15 @@
     XCTAssertTrue([actualString1 isEqualToString:testString1]);
     XCTAssertTrue([actualString2 isEqualToString:testString2]);
     XCTAssertTrue([actualString3 isEqualToString:testString3]);
-    
 }
 
-- (void)testSymbol {
-    
+-(void)testSymbol {
     NSString *testSymbol1 = @"HelloWorld";
     NSString *testSymbol2 = @"";
     NSString *testSymbol3 = @"ThisIsAlsoATest";
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -542,16 +529,15 @@
     XCTAssertTrue([actualSymbol1 isEqualToString:testSymbol1]);
     XCTAssertTrue([actualSymbol2 isEqualToString:testSymbol2]);
     XCTAssertTrue([actualSymbol3 isEqualToString:testSymbol3]);
-    
 }
 
-- (void)testTime {
-    
+-(void)testTime {
     QredoTime *testTime1 = [QredoTime timeWithMillisSinceMidnight:1000];
     QredoTime *testTime2 = [QredoTime timeWithMillisSinceMidnight:2000];
     QredoTime *testTime3 = [QredoTime timeWithMillisSinceMidnight:3000];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -581,15 +567,14 @@
     XCTAssertTrue(actualTime1.millisSinceMidnight == testTime1.millisSinceMidnight);
     XCTAssertTrue(actualTime2.millisSinceMidnight == testTime2.millisSinceMidnight);
     XCTAssertTrue(actualTime3.millisSinceMidnight == testTime3.millisSinceMidnight);
-    
 }
 
-- (void)testTimeFromNSDate {
-    
+-(void)testTimeFromNSDate {
     NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:-559310400];
     QredoTime *testTime = [QredoTime timeWithDate:date];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -613,12 +598,11 @@
     XCTAssertTrue(actualTime.minute == 0);
     XCTAssertTrue(actualTime.second == 0);
     XCTAssertTrue(actualTime.milli  == 0);
-    
 }
 
-- (void)testTimeFromNSDateComponents {
-    
+-(void)testTimeFromNSDateComponents {
     NSDateComponents *dateComponents = [NSDateComponents new];
+    
     [dateComponents setHour:12];
     [dateComponents setMinute:34];
     [dateComponents setSecond:56];
@@ -650,13 +634,13 @@
     XCTAssertTrue(actualTime.milli  == 0);
 }
 
-- (void)testQUID {
-    
+-(void)testQUID {
     QredoQUID *testQUID1 = [QredoQUID QUID];
     QredoQUID *testQUID2 = [QredoQUID QUID];
     QredoQUID *testQUID3 = [QredoQUID QUID];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -686,11 +670,9 @@
     XCTAssertTrue([actualQUID1 isEqual:testQUID1]);
     XCTAssertTrue([actualQUID2 isEqual:testQUID2]);
     XCTAssertTrue([actualQUID3 isEqual:testQUID3]);
-    
 }
 
-- (void)testUTCDateTime {
-    
+-(void)testUTCDateTime {
     QredoDate *date1 = [QredoDate dateWithYear:1983 month:4 day:12];
     QredoTime *time1 = [QredoTime timeWithMillisSinceMidnight:1000];
     QredoDate *date2 = [QredoDate dateWithYear:1982 month:1 day:1];
@@ -699,6 +681,7 @@
     QredoUTCDateTime *testUTCDateTime2 = (QredoUTCDateTime *)[QredoDateTime dateTimeWithDate:date2 time:time2 isUTC:true];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -749,17 +732,16 @@
     XCTAssertTrue([[actualGenericDateTime4 date] month] == 1);
     XCTAssertTrue([[actualGenericDateTime4 date] day]   == 1);
     XCTAssertTrue([[actualGenericDateTime4 time] millisSinceMidnight] == 4000);
-    
 }
 
-- (void)testMessageHeader {
-    
+-(void)testMessageHeader {
     QredoVersion *protocolVersion = [QredoVersion versionWithMajor:@1 minor:@2 patch:@3];
     QredoVersion *releaseVersion  = [QredoVersion versionWithMajor:@4 minor:@5 patch:@6];
     QredoMessageHeader *messageHeader = [QredoMessageHeader messageHeaderWithProtocolVersion:protocolVersion
                                                                               releaseVersion:releaseVersion];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -784,16 +766,15 @@
     XCTAssertTrue([[[actualMessageHeader releaseVersion] major] isEqualToNumber:[releaseVersion major]]);
     XCTAssertTrue([[[actualMessageHeader releaseVersion] minor] isEqualToNumber:[releaseVersion minor]]);
     XCTAssertTrue([[[actualMessageHeader releaseVersion] patch] isEqualToNumber:[releaseVersion patch]]);
-    
 }
 
-- (void)testVersion {
-    
+-(void)testVersion {
     QredoVersion *testVersion1 = [QredoVersion versionWithMajor:@1 minor:@2 patch:@3];
     QredoVersion *testVersion2 = [QredoVersion versionWithMajor:@65535 minor:@65535 patch:@65535];
     QredoVersion *testVersion3 = [QredoVersion versionWithMajor:@0 minor:@0 patch:@0];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -827,23 +808,22 @@
     XCTAssertTrue([[actualVersion3 major] isEqualToNumber:[testVersion3 major]]);
     XCTAssertTrue([[actualVersion3 minor] isEqualToNumber:[testVersion3 minor]]);
     XCTAssertTrue([[actualVersion3 patch] isEqualToNumber:[testVersion3 patch]]);
-    
 }
 
-- (void)testInterchangeHeader {
-    
+-(void)testInterchangeHeader {
     NSData *testReturnChannelID = [NSData dataWithRandomBytesOfLength:16];
     NSData *testCorrelationID = [NSData dataWithRandomBytesOfLength:16];
     NSString *testServiceName = @"ServiceName";
-    NSString *testOperationName =@"OperationName";
+    NSString *testOperationName = @"OperationName";
     
     QredoInterchangeHeader *testInterchangeHeader =
-        [QredoInterchangeHeader interchangeHeaderWithReturnChannelID:testReturnChannelID
-                                                       correlationID:testCorrelationID
-                                                         serviceName:testServiceName
-                                                       operationName:testOperationName];
+    [QredoInterchangeHeader interchangeHeaderWithReturnChannelID:testReturnChannelID
+                                                   correlationID:testCorrelationID
+                                                     serviceName:testServiceName
+                                                   operationName:testOperationName];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -863,15 +843,14 @@
     [in close];
     
     XCTAssertTrue([[actualInterchangeHeader returnChannelID] isEqualToData:testReturnChannelID]);
-    XCTAssertTrue([[actualInterchangeHeader correlationID]   isEqualToData:testCorrelationID]);
-    XCTAssertTrue([[actualInterchangeHeader serviceName]     isEqualToString:testServiceName]);
-    XCTAssertTrue([[actualInterchangeHeader operationName]   isEqualToString:testOperationName]);
-    
+    XCTAssertTrue([[actualInterchangeHeader correlationID] isEqualToData:testCorrelationID]);
+    XCTAssertTrue([[actualInterchangeHeader serviceName] isEqualToString:testServiceName]);
+    XCTAssertTrue([[actualInterchangeHeader operationName] isEqualToString:testOperationName]);
 }
 
-- (void)testInvocationHeader {
-    
+-(void)testInvocationHeader {
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -892,11 +871,9 @@
     [reader readEnd];
     XCTAssertFalse([in hasBytesAvailable]);
     [in close];
-    
 }
 
-- (void)testSequence {
-    
+-(void)testSequence {
     NSString *testString1 = @"Test String 1";
     NSString *testString2 = @"Test String 2";
     NSString *testString3 = @"Test String 3";
@@ -904,6 +881,7 @@
     NSString *testString5 = @"Test String 5";
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeSequenceStart];
@@ -935,11 +913,9 @@
     XCTAssertTrue([actualString3 isEqualToString:testString3]);
     XCTAssertTrue([actualString4 isEqualToString:testString4]);
     XCTAssertTrue([actualString5 isEqualToString:testString5]);
-    
 }
 
-- (void)testSet {
-    
+-(void)testSet {
     NSString *testString1 = @"Test String 1";
     NSString *testString2 = @"Test String 2";
     NSString *testString3 = @"Test String 3";
@@ -947,6 +923,7 @@
     NSString *testString5 = @"Test String 5";
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeSetStart];
@@ -978,11 +955,9 @@
     XCTAssertTrue([actualString3 isEqualToString:testString3]);
     XCTAssertTrue([actualString4 isEqualToString:testString4]);
     XCTAssertTrue([actualString5 isEqualToString:testString5]);
-    
 }
 
-- (void)testConstructorFields {
-    
+-(void)testConstructorFields {
     NSString *testConstructorName = @"TestConstructor";
     NSString *testFieldName1      = @"TestField1";
     NSString *testFieldValue1     = @"TestFieldValue1";
@@ -990,6 +965,7 @@
     NSNumber *testFieldValue2     = @123;
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeConstructorStartWithObjectName:testConstructorName];
@@ -1023,15 +999,14 @@
     XCTAssertTrue([actualFieldValue1 isEqualToString:testFieldValue1]);
     XCTAssertTrue([actualFieldName2 isEqualToString:testFieldName2]);
     XCTAssertTrue([actualFieldValue2 isEqualToNumber:testFieldValue2]);
-    
 }
 
-- (void)testErrorInfoItems {
-    
+-(void)testErrorInfoItems {
     QredoDebugInfo *testDebugInfo1 = [QredoDebugInfo debugInfoWithKey:@"Key1" value:@"Value1"];
     QredoDebugInfo *testDebugInfo2 = [QredoDebugInfo debugInfoWithKey:@"Key2" value:@"Value2"];
     QredoDebugInfo *testDebugInfo3 = [QredoDebugInfo debugInfoWithKey:@"Key3" value:@"Value3"];
     NSMutableArray *testDebugInfoItems = [NSMutableArray new];
+    
     [testDebugInfoItems addObject:testDebugInfo1];
     [testDebugInfoItems addObject:testDebugInfo2];
     [testDebugInfoItems addObject:testDebugInfo3];
@@ -1116,15 +1091,14 @@
     XCTAssertTrue([[actualDebugInfo2 value] isEqualToString:@"Value2"]);
     XCTAssertTrue([[actualDebugInfo3 key] isEqualToString:@"Key3"]);
     XCTAssertTrue([[actualDebugInfo3 value] isEqualToString:@"Value3"]);
-    
 }
 
-- (void)testResults {
-    
+-(void)testResults {
     QredoResultHeader *testResult1 = [QredoResultHeader resultHeaderWithStatus:[NSNumber numberWithChar:QredoMarkerOperationSuccess]];
     QredoResultHeader *testResult2 = [QredoResultHeader resultHeaderWithStatus:[NSNumber numberWithChar:QredoMarkerOperationFailure]];
     
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
     [out open];
     QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
     [writer writeStart];
@@ -1157,26 +1131,25 @@
     XCTAssertTrue([actualNumber1 isEqualToNumber:@123]);
     XCTAssertTrue([actualResult2 isFailure]);
     XCTAssertTrue([actualNumber2 isEqualToNumber:@456]);
-    
 }
 
 //- (NSData *)withConnectedStreamsFromWriter:(void (^)(QredoWireFormatWriter *writer))writeBlock
-//                                    reader:(void (^)(QredoWireFormatReader *reader))readBlock {
-//    
-//    NSOutputStream *out = [NSOutputStream outputStreamToMemory];
-//    [out open];
-//    QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
-//    writeBlock(writer);
-//    NSData *data = [out propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-//    [out close];
-//    
-//    NSInputStream *in = [NSInputStream inputStreamWithData:data];
-//    [in open];
-//    QredoWireFormatReader *reader = [QredoWireFormatReader wireFormatReaderWithInputStream:in];
-//    readBlock(reader);
-//    XCTAssertFalse([in hasBytesAvailable]);
-//    [in close];
-//    
+//reader:(void (^)(QredoWireFormatReader *reader))readBlock {
+//
+//NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+//[out open];
+//QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
+//writeBlock(writer);
+//NSData *data = [out propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+//[out close];
+//
+//NSInputStream *in = [NSInputStream inputStreamWithData:data];
+//[in open];
+//QredoWireFormatReader *reader = [QredoWireFormatReader wireFormatReaderWithInputStream:in];
+//readBlock(reader);
+//XCTAssertFalse([in hasBytesAvailable]);
+//[in close];
+//
 //}
 
 @end

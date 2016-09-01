@@ -33,7 +33,7 @@ target 'QredoXDK' do
     pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :inhibit_warnings => true
-    pod 'ios-ntp', :git => 'https://github.com/qredo/SSL-NTP-Time-Sync'    
+    pod 'ios-ntp'
 end
 
 
@@ -41,7 +41,7 @@ target 'QredoXDK_Universal' do
     pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :inhibit_warnings => true
-    pod 'ios-ntp', :git => 'https://github.com/qredo/SSL-NTP-Time-Sync'    
+    pod 'ios-ntp'
 end
 
 

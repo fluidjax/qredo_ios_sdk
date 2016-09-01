@@ -27,13 +27,12 @@
 /*
  Generated TAG lengths - use to define the key length when creating a rendezvous
  */
-typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
-    
+typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
     /**  6 bits tags that are represented by a 12 character hex string */
-    QREDO_MEDIUM_SECURITY=6,
-   
+    QREDO_MEDIUM_SECURITY = 6,
+    
     /**  32 bit tags that are represented by a 64 character hex string */
-    QREDO_HIGH_SECURITY=32
+    QREDO_HIGH_SECURITY = 32
 };
 
 
@@ -71,11 +70,11 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  */
 
-+(void)initializeWithAppId:(NSString*)appId
-                 appSecret:(NSString*)appSecret
-                    userId:(NSString*)userId
-                userSecret:(NSString*)userSecret
-         completionHandler:(void (^)(QredoClient *client, NSError *error))completionHandler;
++(void)initializeWithAppId:(NSString *)appId
+                 appSecret:(NSString *)appSecret
+                    userId:(NSString *)userId
+                userSecret:(NSString *)userSecret
+         completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
 
 
 /**
@@ -115,12 +114,12 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  */
 
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
-                      completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+                          completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
 
 
 
 /** Creates an anonymous rendezvous and generates a random tag with the specified security level. The duration and response count will be set to the values specified
-
+ 
  @note We recommend using a security level of QREDO_MEDIUM_SECURITY only for testing during development
  
  @see Creating a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/creating_a_rendezvous.html),
@@ -129,9 +128,9 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  @param tagSecurityLevel Use [QredoSecurityLevel](../Enums/QredoSecurityLevel.html) (QREDO_HIGH_SECURITY or QREDO_MEDIUM_SECURITY), to define the Security Level of the generated tag
  @param duration the duration in seconds after which the Rendezvous will expire. Expired Rendezvous can no longer be responded to, but messages can still be sent within existing Conversations created from it. Expired Rendezvous can be reactivated by calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
- @param unlimitedResponses Set to YES if there can be an unlimited numbers of response to the Rendezvous. If the parameter is NO, then there can only be one response after which the Rendezvous will expire. Calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:) 
-     will set the response count to unlimited.
- @param summaryValues a dictionary of key/value pairs. 
+ @param unlimitedResponses Set to YES if there can be an unlimited numbers of response to the Rendezvous. If the parameter is NO, then there can only be one response after which the Rendezvous will expire. Calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
+ will set the response count to unlimited.
+ @param summaryValues a dictionary of key/value pairs.
  @param completionhandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
  
  
@@ -140,8 +139,8 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                                    duration:(long)duration
                          unlimitedResponses:(BOOL)unlimitedResponses
-                                summaryValues:(NSDictionary*)summaryValues
-                          completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+                              summaryValues:(NSDictionary *)summaryValues
+                          completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
 
 
 #pragma mark - Retrieving a Rendezvous
@@ -157,7 +156,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  */
 
--(void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata, BOOL *stop))block
+-(void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata,BOOL *stop))block
                   completionHandler:(void (^)(NSError *error))completionHandler;
 
 
@@ -175,7 +174,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  */
 
 -(void)fetchRendezvousWithTag:(NSString *)tag
-            completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+            completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
 
 
 
@@ -191,7 +190,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  */
 -(void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
-               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+            completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
 
 
 /** Returns the QredoRendezvous with the specified `QredoRendezvousMetadata`
@@ -206,7 +205,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  */
 
 -(void)fetchRendezvousWithMetadata:(QredoRendezvousMetadata *)metadata
-                 completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+                 completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
 
 
 #pragma mark - Responding to a Rendezvous
@@ -222,7 +221,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  */
 
 -(void)respondWithTag:(NSString *)tag
-    completionHandler:(void (^)(QredoConversation *conversation, NSError *error))completionHandler;
+    completionHandler:(void (^)(QredoConversation *conversation,NSError *error))completionHandler;
 
 
 #pragma mark - Activating and Deactivating a Rendezvous
@@ -243,7 +242,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  
  */
 -(void)activateRendezvousWithRef:(QredoRendezvousRef *)ref duration:(long)duration
-               completionHandler:(void (^)(QredoRendezvous *rendezvous, NSError *error))completionHandler;
+               completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
 
 /** Deactivates a Rendezvous.
  
@@ -278,7 +277,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  @param completionHandler error will be non nil if an error occurs, such as no network connection.
  
  */
--(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata, BOOL *stop))block
+-(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata,BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler;
 
 
@@ -290,7 +289,7 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
  */
 
 -(void)fetchConversationWithRef:(QredoConversationRef *)conversationRef
-              completionHandler:(void (^)(QredoConversation* conversation, NSError *error))completionHandler;
+              completionHandler:(void (^)(QredoConversation *conversation,NSError *error))completionHandler;
 
 
 /** This function is not currently implemented
@@ -342,7 +341,6 @@ typedef NS_ENUM(NSUInteger, QredoSecurityLevel) {
 /**
  @return the current Qredo network correctly DateTime - sync'd with NTP & TLS
  */
-+(NSDate*)dateTime;
++(NSDate *)dateTime;
 
 @end
-

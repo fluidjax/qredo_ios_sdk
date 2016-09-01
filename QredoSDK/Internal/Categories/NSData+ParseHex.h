@@ -3,6 +3,6 @@
 
 @interface NSData (ParseHex)
 
-+ (instancetype)dataWithHexString:(NSString *)hexString;
++(instancetype)dataWithHexString:(NSString *)hexString;
 
 @end

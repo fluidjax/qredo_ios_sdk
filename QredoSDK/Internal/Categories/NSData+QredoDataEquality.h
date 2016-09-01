@@ -3,6 +3,6 @@
 
 @interface NSData (QredoDataEquality)
 
-- (NSComparisonResult)compare:(NSData *)other;
+-(NSComparisonResult)compare:(NSData *)other;
 
 @end
