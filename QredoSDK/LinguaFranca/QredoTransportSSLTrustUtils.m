@@ -4,6 +4,7 @@
 
 
 #import "QredoTransportSSLTrustUtils.h"
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 
 static NSString *const kAnchorAlreadyAdded = @"AnchorAlreadyAdded";
