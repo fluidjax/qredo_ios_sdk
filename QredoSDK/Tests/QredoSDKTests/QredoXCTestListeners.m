@@ -1,11 +1,4 @@
-//
-//  QredoXCTestListeners.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 10/05/2016.
-//
-//
-
+/* HEADER GOES HERE */
 #import "QredoXCTestListeners.h"
 #import "Qredo.h"
 #import "QredoPrivate.h"

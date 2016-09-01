@@ -1,7 +1,4 @@
-//
-//  SecureWebDateServer.m
-//  IOSTLSDate
-//
+/* HEADER GOES HERE */
 //  Created by Christopher Morris on 19/04/2016.
 //  Copyright © 2016 Qredo. All rights reserved.
 //

@@ -1,11 +1,4 @@
-//
-//  QredoLocalIndexCacheInvalidation.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 13/01/2016.
-//
-//
-
+/* HEADER GOES HERE */
 #import "QredoLocalIndexCacheInvalidation.h"
 #import "QredoVaultPrivate.h"
 #import "QredoLocalIndexDataStore.h"

@@ -1,8 +1,4 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
-
+/* HEADER GOES HERE */
 #import "MasterConfig.h"
 
 #ifndef QredoSDK_QredoTestConfiguration_h

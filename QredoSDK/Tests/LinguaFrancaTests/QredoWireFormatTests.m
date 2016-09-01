@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "QredoXCTestCase.h"
 #import "NSData+QredoRandomData.h"

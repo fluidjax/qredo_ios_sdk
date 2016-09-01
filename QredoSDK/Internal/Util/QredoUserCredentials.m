@@ -1,11 +1,4 @@
-//
-//  QredoUserCredentials.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 10/11/2015.
-//
-//
-
+/* HEADER GOES HERE */
 #import "QredoUserCredentials.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoCrypto.h"

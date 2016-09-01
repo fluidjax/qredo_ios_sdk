@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
 #import <CommonCrypto/CommonCrypto.h>

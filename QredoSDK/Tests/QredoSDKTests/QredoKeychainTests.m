@@ -1,4 +1,4 @@
-
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "QredoVaultTests.h"
 #import "Qredo.h"

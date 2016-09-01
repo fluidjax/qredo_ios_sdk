@@ -1,7 +1,4 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import "QredoTestUtils.h"
 
 // Note: do not reduce this as some tests may rely on this value to complete processing before timeout

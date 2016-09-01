@@ -1,11 +1,4 @@
-//
-//  QredoUtilsTests.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 10/05/2016.
-//
-//
-
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "QredoXCTestCase.h"
 

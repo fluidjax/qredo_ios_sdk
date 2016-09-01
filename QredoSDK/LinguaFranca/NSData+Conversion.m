@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "NSData+Conversion.h"
 
 @implementation NSData (Conversion)

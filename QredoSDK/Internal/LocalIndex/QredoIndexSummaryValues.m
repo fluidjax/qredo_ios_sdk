@@ -1,7 +1,4 @@
-/*
- *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import "QredoIndexSummaryValues.h"
 #import "QredoIndexVariableValue.h"
 #import "QredoQUID.h"

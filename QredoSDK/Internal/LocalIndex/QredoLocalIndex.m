@@ -1,10 +1,7 @@
-//
-//  QredoLocalIndex.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 02/12/2015.
+/* HEADER GOES HERE */
+
 //  Manages the Coredata local Metadata index. There are no direct API public methods
-//
+
 @import CoreData;
 @import UIKit;
 

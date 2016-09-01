@@ -1,14 +1,7 @@
-//
-//  ReadableKeys.m
-//  KeyWordConverter
-//
+/* HEADER GOES HERE */
+
 //  Created by Christopher Morris on 03/05/2016.
 //  Based on RFC1751 -  D. McDonald Dec 94
-
-
-
-
-
 #import "ReadableKeys.h"
 #include <stdio.h>
 #include <stdlib.h>

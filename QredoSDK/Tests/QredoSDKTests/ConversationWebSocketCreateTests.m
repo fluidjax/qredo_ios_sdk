@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "ConversationWebSocketCreateTests.h"
 #import "QredoTestUtils.h"
 #import "QredoPrivate.h"

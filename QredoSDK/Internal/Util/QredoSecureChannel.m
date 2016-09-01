@@ -1,11 +1,4 @@
-//
-//  QredoSecureChannel.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 12/05/2016.
-//
-//
-
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoUtils.h"
 #import "sodium.h"

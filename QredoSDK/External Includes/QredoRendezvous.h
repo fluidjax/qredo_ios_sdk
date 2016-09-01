@@ -138,7 +138,7 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 /** Resets the highwatermark so that the next enumeration starts from the first Conversation created from this Rendezvous */
 -(void)resetHighWatermark;
 
-
+/* HEADER GOES HERE */
 #pragma mark - Listening for responses
 
 /**

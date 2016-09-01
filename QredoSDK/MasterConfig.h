@@ -1,10 +1,4 @@
-//
-//  MasterConfig
-//  QredoSDK
-//
-//  Created by Christopher Morris on 25/05/2016.
-//
-//
+/* HEADER GOES HERE */
 
 #ifndef config_h
 #define config_h

@@ -1,11 +1,4 @@
-//
-//  QredoIndexVaultTests.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 02/12/2015.
-//
-//
-
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "QredoXCTestCase.h"
 #import "QredoVault.h"

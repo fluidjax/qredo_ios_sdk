@@ -1,10 +1,4 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
-
-
-
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
 #define QredoLog(_level, _message)   [QredoLogger logMessage:(_message) currentLevel:[QredoLogger logLevel] level:(_level) file:__FILE__ function: __PRETTY_FUNCTION__ line: __LINE__]

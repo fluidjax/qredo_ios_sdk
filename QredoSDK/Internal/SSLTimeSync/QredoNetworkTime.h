@@ -1,10 +1,4 @@
-//
-//  QredoNetworkTime.h
-//
-//  Created by Christopher Morris on 19/04/2016.
-//  Copyright © 2016 Qredo. All rights reserved.
-//
-
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
 @interface QredoNetworkTime : NSObject

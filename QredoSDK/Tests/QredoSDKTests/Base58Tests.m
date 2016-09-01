@@ -1,8 +1,4 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
-
+/* HEADER GOES HERE */
 #import "QredoBase58.h"
 #import "QredoLoggerPrivate.h"
 #import <UIKit/UIKit.h>

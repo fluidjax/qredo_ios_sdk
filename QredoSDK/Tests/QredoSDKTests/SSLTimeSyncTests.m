@@ -1,11 +1,4 @@
-//
-//  SSLTimeSyncTests.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 20/04/2016.
-//
-//
-
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "QredoNetworkTime.h"
 

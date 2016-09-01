@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "QredoSExpression.h"
 
 #pragma mark - Qredo S-expression reader implementation

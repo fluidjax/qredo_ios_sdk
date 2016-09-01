@@ -1,7 +1,4 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoCrypto.h"

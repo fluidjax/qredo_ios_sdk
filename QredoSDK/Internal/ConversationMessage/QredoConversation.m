@@ -61,6 +61,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 //static const double kQredoConversationUpdateInterval = 1.0; // seconds - polling period for items (non-multi-response transports)
 //static const double kQredoConversationRenewSubscriptionInterval = 300.0; // 5 mins in seconds - auto-renew subscription period (multi-response transports)
 
+/* HEADER GOES HERE */
 @implementation QredoConversationRef
 
 -(NSString *)description{

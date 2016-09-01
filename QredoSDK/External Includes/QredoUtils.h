@@ -1,11 +1,4 @@
-//
-//  QredoUtils.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 10/05/2016.
-//
-//
-
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
 /** A collection of utility functions for converting between keys, hex data strings and readable words. 

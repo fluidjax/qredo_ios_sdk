@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "QredoED25519SigningKey.h"

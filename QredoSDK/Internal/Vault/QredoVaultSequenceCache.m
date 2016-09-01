@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "QredoVaultSequenceCache.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoQUIDPrivate.h"

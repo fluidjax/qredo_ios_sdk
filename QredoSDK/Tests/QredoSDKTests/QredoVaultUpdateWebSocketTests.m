@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "QredoVaultUpdateTests.h"
 
 @interface QredoVaultUpdateWebSocketTests : QredoVaultUpdateTests

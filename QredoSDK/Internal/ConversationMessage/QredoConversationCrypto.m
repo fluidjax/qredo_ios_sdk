@@ -1,14 +1,9 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import "QredoConversationCrypto.h"
 #import "QredoClient.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoErrorCodes.h"
 #import "QredoQUIDPrivate.h"
-
-//#import <CommonCrypto/CommonCrypto.h>
 
 #define SALT_REQUESTER_INBOUND_ENCKEY [@"iJ8LLVtLlt2tzlXz" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_REQUESTER_INBOUND_AUTHKEY [@"7KySh0dMToM9IyzR" dataUsingEncoding:NSUTF8StringEncoding]

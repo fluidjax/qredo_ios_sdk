@@ -1,11 +1,4 @@
-//
-//  ConversationWebSocketTest.h
-//  QredoSDK
-//
-//  Created by Adam Horacek on 2015-11-11.
-//
-//
-
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 

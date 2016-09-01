@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 #import "QredoXCTestCase.h"

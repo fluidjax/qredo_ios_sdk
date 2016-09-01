@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "NSArray+QredoArrayEquality.h"
 
 static int signum(long n);

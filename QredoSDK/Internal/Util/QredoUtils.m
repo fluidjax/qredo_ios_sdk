@@ -1,11 +1,4 @@
-//
-//  QredoUtils.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 10/05/2016.
-//
-//
-
+/* HEADER GOES HERE */
 #import "QredoUtils.h"
 #import "ReadableKeys.h"
 #import "sodium.h"

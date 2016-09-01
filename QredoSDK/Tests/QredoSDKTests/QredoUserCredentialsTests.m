@@ -1,11 +1,4 @@
-//
-//  QredoUserCredentials.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 13/11/2015.
-//
-//
-
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "QredoUserCredentials.h"
 #import "NSData+ParseHex.h"

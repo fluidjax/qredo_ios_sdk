@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "QredoVaultCrypto.h"
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"

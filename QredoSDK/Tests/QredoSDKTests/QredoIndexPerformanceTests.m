@@ -1,11 +1,4 @@
-//
-//  QredoIndexPerformanceTests.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 09/12/2015.
-//
-//
-
+/* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "QredoXCTestCase.h"
 #import "QredoLocalIndex.h"

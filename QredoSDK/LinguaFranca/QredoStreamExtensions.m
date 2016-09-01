@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "QredoStreamExtensions.h"
 
 @implementation NSInputStream (QredoReaderExtensions)

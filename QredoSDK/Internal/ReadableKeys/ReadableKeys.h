@@ -1,11 +1,6 @@
-//
-//  ReadableKeys.h
-//  KeyWordConverter
-//
+/* HEADER GOES HERE */
 //  Created by Christopher Morris on 03/05/2016.
 //  Based on RFC1751 -  D. McDonald Dec 94
-
-
 #import <Foundation/Foundation.h>
 
 @interface ReadableKeys : NSObject

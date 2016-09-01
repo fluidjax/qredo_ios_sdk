@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import <stdint.h>
 #import "QredoStreamExtensions.h"
 

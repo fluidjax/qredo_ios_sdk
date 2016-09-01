@@ -1,15 +1,9 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import "QredoVault.h"
 #import "QredoQUID.h"
 #import "QredoClient.h"
 #import "QredoTypesPrivate.h"
 #import "QredoQUIDPrivate.h"
-
-
-
 
 
 // This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.

@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 import Foundation
 import XCTest
 

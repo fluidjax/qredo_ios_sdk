@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "QredoRendezvousTests.h"
 
 @interface QredoRendezvousWebSocketTests : QredoRendezvousTests

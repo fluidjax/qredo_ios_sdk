@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
 @interface NSData (Conversion)

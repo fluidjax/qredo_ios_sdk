@@ -1,10 +1,4 @@
-//
-//  QredoNetworkTime
-//
-//  Created by Christopher Morris on 19/04/2016.
-//  Copyright © 2016 Qredo. All rights reserved.
-//
-
+/* HEADER GOES HERE */
 // Uses three sources of time
 // 1 NTP
 // 2 TLS requests to google.com

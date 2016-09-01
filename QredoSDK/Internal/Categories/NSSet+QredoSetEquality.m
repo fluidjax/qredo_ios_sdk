@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import "NSSet+QredoSetEquality.h"
 
 static int signum(long n);

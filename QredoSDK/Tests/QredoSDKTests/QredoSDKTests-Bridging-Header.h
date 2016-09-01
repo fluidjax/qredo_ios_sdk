@@ -1,7 +1,4 @@
-//
-//  Use this file to import your target's public headers that you would like to expose to Swift.
-//
-
+/* HEADER GOES HERE */
 #import "Qredo.h"
 #import "NSDictionary+Contains.h"
 #import "QredoVault.h"

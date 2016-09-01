@@ -1,11 +1,4 @@
-//
-//  QredoXCTestCase.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 22/01/2016.
-//  This is the superclass of all Qredo Tests
-//
-
+/* HEADER GOES HERE */
 #import "QredoXCTestCase.h"
 #import "Qredo.h"
 #import "MasterConfig.h"

@@ -1,8 +1,6 @@
-/*
- *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
- *  A singleton that handles the Coredata LocalIndex initialization and persisentent store.
- */
+/* HEADER GOES HERE */
 
+//A singleton that handles the Coredata LocalIndex initialization and persisentent store.
 @import CoreData;
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"

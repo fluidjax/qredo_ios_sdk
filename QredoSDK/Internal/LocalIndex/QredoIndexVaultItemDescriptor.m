@@ -1,9 +1,4 @@
-/*
- *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
-
-
+/* HEADER GOES HERE */
 #import "QredoIndexVaultItemDescriptor.h"
 #import "QredoIndexSummaryValues.h"
 #import "Qredo.h"

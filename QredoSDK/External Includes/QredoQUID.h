@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
 /** Used to represent ConversationIDs and other values used by the SDK. 

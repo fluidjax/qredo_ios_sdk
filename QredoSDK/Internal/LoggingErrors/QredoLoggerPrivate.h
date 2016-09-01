@@ -1,10 +1,4 @@
-//
-//  QredoLoggerPrivate.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 21/01/2016.
-//
-//
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoLogger.h"
 
