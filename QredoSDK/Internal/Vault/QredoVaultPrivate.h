@@ -6,9 +6,6 @@
 #import "QredoQUIDPrivate.h"
 
 
-//This file contains private methods. Therefore, it should never be #import'ed in any of the public headers.
-//It shall be included only in the implementation files
-
 
 static NSString *const QredoVaultItemMetadataItemTypeTombstone = @"\u220E"; //U+220E END OF PROOF, https://github.com/Qredo/design-docs/wiki/Vault-Item-Tombstone
 
@@ -17,7 +14,6 @@ static NSString *const QredoVaultItemMetadataItemTypeTombstone = @"\u220E"; //U+
 
 @interface QredoVaultItemDescriptor ()<NSCopying>
 @property (readonly) QLFVaultSequenceValue sequenceValue;
-
 +(instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QredoQUID *)itemId;
 @end
 

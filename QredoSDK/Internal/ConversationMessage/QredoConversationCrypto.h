@@ -19,17 +19,11 @@
                                    yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(NSData *)requesterInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
-
 -(NSData *)requesterInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
-
 -(NSData *)requesterInboundQueueSeedWithMasterKey:(NSData *)masterKey;
-
 -(NSData *)responderInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
-
 -(NSData *)responderInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
-
 -(NSData *)responderInboundQueueSeedWithMasterKey:(NSData *)masterKey;
-
 -(QredoQUID *)conversationIdWithMasterKey:(NSData *)masterKey;
 
 @end

@@ -414,11 +414,8 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     if (vaultItem){
         if ([vaultItem.metadata isDeleted])vaultItem = nil;
-        
         QredoLogInfo(@"Retrieved VaultItem from Index");
-        
         if (completionHandler)completionHandler(vaultItem,nil);
-        
         return;
     } else {
         QredoLogInfo(@"Retrieved VaultItem from server");
@@ -452,7 +449,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
                                                       return;
                                                   }];
                                     }
-                                }];
+         }];
     }
 }
 

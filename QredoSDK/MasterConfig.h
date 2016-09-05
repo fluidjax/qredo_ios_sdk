@@ -4,7 +4,6 @@
 #define config_h
 
 
-
 //Use this file to specify the Server
 //Note: For Tests the  AppID,AppSecret, & UserID are all specified in the file "QredoXCTestCase.m"
 
@@ -29,4 +28,4 @@
 
 
 
-#endif /* config_h */
+#endif 

@@ -33,16 +33,13 @@
 -(instancetype)init {
     self = [super init];
     
-    if (!self)return nil;
-    
-    _dedupeStore = [[NSMutableDictionary alloc] init];
-    
-    _queue = dispatch_queue_create("com.qredo.conversation.updates",nil);
-    
-    self.pollInterval = 1.0;
-    self.pollIntervalDuringSubscribe = 10.0;
-    self.renewSubscriptionInterval = 5.0;
-    
+    if (self){
+        _dedupeStore = [[NSMutableDictionary alloc] init];
+        _queue = dispatch_queue_create("com.qredo.conversation.updates",nil);
+        self.pollInterval = 1.0;
+        self.pollIntervalDuringSubscribe = 10.0;
+        self.renewSubscriptionInterval = 5.0;
+    }
     return self;
 }
 

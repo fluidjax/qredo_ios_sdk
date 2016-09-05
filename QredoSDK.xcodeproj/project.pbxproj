@@ -1515,16 +1515,7 @@
 		66F774B31BD64CE100F01A2C /* LinguaFranca */ = {
 			isa = PBXGroup;
 			children = (
-				66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */,
-				66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */,
-				66F774B61BD64CE200F01A2C /* NSData+Conversion.h */,
-				66F774B71BD64CE200F01A2C /* NSData+Conversion.m */,
-				66F774B81BD64CE200F01A2C /* NSData+QredoDataEquality.h */,
-				66F774B91BD64CE200F01A2C /* NSData+QredoDataEquality.m */,
-				66F774BA1BD64CE200F01A2C /* NSData+QredoRandomData.h */,
-				66F774BB1BD64CE200F01A2C /* NSData+QredoRandomData.m */,
-				66F774BC1BD64CE200F01A2C /* NSSet+QredoSetEquality.h */,
-				66F774BD1BD64CE200F01A2C /* NSSet+QredoSetEquality.m */,
+				8318855C1D7DC5D0004F4E78 /* Categories */,
 				66F774BE1BD64CE200F01A2C /* QredoCertificate.h */,
 				66F774BF1BD64CE200F01A2C /* QredoCertificate.m */,
 				66F774C01BD64CE200F01A2C /* QredoClientId.h */,
@@ -1583,6 +1574,23 @@
 			);
 			name = "Qredo Util and General";
 			path = Util;
+			sourceTree = "<group>";
+		};
+		8318855C1D7DC5D0004F4E78 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */,
+				66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */,
+				66F774B61BD64CE200F01A2C /* NSData+Conversion.h */,
+				66F774B71BD64CE200F01A2C /* NSData+Conversion.m */,
+				66F774B81BD64CE200F01A2C /* NSData+QredoDataEquality.h */,
+				66F774B91BD64CE200F01A2C /* NSData+QredoDataEquality.m */,
+				66F774BA1BD64CE200F01A2C /* NSData+QredoRandomData.h */,
+				66F774BB1BD64CE200F01A2C /* NSData+QredoRandomData.m */,
+				66F774BC1BD64CE200F01A2C /* NSSet+QredoSetEquality.h */,
+				66F774BD1BD64CE200F01A2C /* NSSet+QredoSetEquality.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		8346FF981CDB773200A4CEAE /* ReadableKeys */ = {
