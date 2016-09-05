@@ -256,7 +256,7 @@ IncomingMetadataBlock incomingMetadatBlock;
          //rebuild the vault references after deleting the old version
          QredoLogDebug(@"Purge Index for vault:%@",self.qredoVault.vaultId);
          self.qredoIndexVault = [QredoIndexVault  fetchOrCreateWith:self.qredoVault
-                                           inManageObjectContext   :self.managedObjectContext];
+                                              inManageObjectContext:self.managedObjectContext];
          self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc]  initWithLocalIndex:self
                                                                                   maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
          [self.qredoVault resetWatermark];

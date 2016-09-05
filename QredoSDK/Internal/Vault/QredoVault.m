@@ -413,7 +413,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     QredoVaultItem *vaultItem = [self.localIndex getVaultItemFromIndexWithDescriptor:itemDescriptor];
     
     if (vaultItem){
-        if ([vaultItem.metadata isDeleted]) vaultItem = nil;
+        if ([vaultItem.metadata isDeleted])vaultItem = nil;
         
         QredoLogInfo(@"Retrieved VaultItem from Index");
         
@@ -545,7 +545,8 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 
 -(void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler {
     BOOL isNewItemFromDateCreated = vaultItem.metadata.summaryValues[QredoVaultItemMetadataItemDateCreated] == nil;
-    BOOL isNewItemFromDescriptor = vaultItem.metadata.descriptor == nil;
+    
+    //BOOL isNewItemFromDescriptor = vaultItem.metadata.descriptor == nil;
     
     //NSAssert(isNewItemFromDateCreated == isNewItemFromDescriptor, @"Can not determine whether the item is newely created or not.");
     

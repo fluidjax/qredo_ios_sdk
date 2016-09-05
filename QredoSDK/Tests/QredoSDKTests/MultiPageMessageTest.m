@@ -75,9 +75,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     __block XCTestExpectation *retrievePosts1 = [self expectationWithDescription:@"retrievePosts"];
     __block int messageCount1 = 0;
     [testConversation enumerateSentMessagesUsingBlock:^(QredoConversationMessage *message,BOOL *stop) {
-        NSString *messageText = [[NSString alloc]                   initWithData:message.value
-                                                                        encoding:NSUTF8StringEncoding];
-        QLog(@"%@",messageText);
+        QLog(@"%@", [[NSString alloc] initWithData:message.value encoding:NSUTF8StringEncoding]);
         messageCount1++;
     }
                                                 since:nil

@@ -514,14 +514,12 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
      3.) Create policy, trust and evaluate
      */
     
-    BOOL certificateValid = YES;
     SecKeyRef validatedCertificatePublicKeyRef = nil;
     
     NSArray *certificateRefs = [self getCertificateRefsFromPemCertificates:pemCertificateChain];
     
     if (!certificateRefs){
         QredoLogError(@"Creation of certificates failed.");
-        certificateValid = NO;
     } else {
         validatedCertificatePublicKeyRef = [self validateCertificateChain:certificateRefs
                                                       rootCertificateRefs:rootCertificateRefs];
@@ -537,6 +535,8 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     
     CFDictionaryRef identityDictionary = nil;
     NSDictionary *returningIdentityDictionary = nil;
+    
+    if (!password)return nil; //add to remove analysis warning
     
     NSDictionary *options = @{ (__bridge id)kSecImportExportPassphrase:password };
     

@@ -525,7 +525,7 @@ char *e;
         p += extract(b,i,2);
     }
     
-    if ( (p & 3) != extract(b,64,2) ) return -2;
+    if ( (p & 3) != extract(b,64,2) )return -2;
     
     memcpy(out,b,8);
     

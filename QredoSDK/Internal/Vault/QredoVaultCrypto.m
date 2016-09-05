@@ -46,7 +46,7 @@
 +(instancetype)vaultCryptoWithBulkKey:(NSData *)bulkKey
                     authenticationKey:(NSData *)authenticationKey {
     return [[self alloc] initWithBulkKey:bulkKey
-                      authenticationKey :authenticationKey];
+                       authenticationKey:authenticationKey];
 }
 
 -(instancetype)initWithBulkKey:(NSData *)bulkKey

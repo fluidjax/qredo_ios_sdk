@@ -235,19 +235,20 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
     
     certificate = X509_STORE_CTX_get_current_cert(ctx);
     err =       X509_STORE_CTX_get_error(ctx);
-    depth =     X509_STORE_CTX_get_error_depth(ctx);
+    //depth =     X509_STORE_CTX_get_error_depth(ctx);
     
     NSString *certificateSubject = @"<No certificate>";
     NSString *errorDetails = @""; //Empty so nothing displayed if no error
     
     if (certificate){
         char *subjectString = X509_NAME_oneline(X509_get_subject_name(certificate),NULL,0);
-        certificateSubject = [NSString stringWithCString:subjectString encoding:NSASCIIStringEncoding];
+        //certificateSubject = [NSString stringWithCString:subjectString encoding:NSASCIIStringEncoding];
         OPENSSL_free(subjectString);
     }
     
     if (!ok){
         errorDetails = [NSString stringWithFormat:@"Error num = %d (%s).",err,X509_verify_cert_error_string(err)];
+        NSLog(@"Error : %@",errorDetails);
     }
     
 #endif //ifdef QREDO_LOG_INFO
@@ -325,7 +326,7 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
         }
     }
     
-    if (publicKeyValid){
+    if (publicKeyValid && !errorOccurred){
         return publicKey;
     } else {
         [QredoCryptoError populateError:error

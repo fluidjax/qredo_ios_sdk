@@ -331,7 +331,7 @@
                          handler(externalItem,&stop);
                      }
                      
-                     [newWatermarkDictionary setObject:@(externalItem.descriptor.sequenceValue)  //TODO: not working for int64
+                     [newWatermarkDictionary setObject:@(externalItem.descriptor.sequenceValue)       //TODO: not working for int64
                                                 forKey:externalItem.descriptor.sequenceId];
                      
                      if (stop){
@@ -404,7 +404,7 @@
                  BOOL stop = NO;
                  block(metadata,&stop);
                  
-                 if (stop)break;
+                 if (stop) break;
              }
          }
          

@@ -25,6 +25,7 @@ Pre-requisites
 
 
 Schemes
+-------
     LinguaFrancaTest    - Testing code
     QredoCryptoTests    - Testing code
     QredoSDKTests       - Testing code
@@ -71,7 +72,8 @@ Project Structure
 The Main Project Target is QredoXDK
 -----------------------------------
     There should be no warnings/errors for the Qredo code
-    There are 28 warnings from libsodium which look something like this (these can be safely ignored)
+    There are 28 warnings from libsodium which look something like this (these can be safely ignored, there appears to be no way to add an option to force the ignore of these warnings,
+        it appears to be an error in the libsodium podspec)
         Warning: Multiple build commands for output file ..../Build/Products/Debug-iphonesimulator/libsodium/api.h
 
     To build the framework

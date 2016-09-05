@@ -369,9 +369,9 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                               }];
                           }
                               ifRendezvousAlreadyExists:^{
-                                  if (completionHandler) completionHandler([NSError  errorWithDomain:QredoErrorDomain
-                                                                                                code:QredoErrorCodeRendezvousAlreadyExists
-                                                                                            userInfo:@{ NSLocalizedDescriptionKey:@"Rendezvous with the specified tag already exists" }]);
+                                  if (completionHandler) completionHandler([NSError errorWithDomain:QredoErrorDomain
+                                                                                               code:QredoErrorCodeRendezvousAlreadyExists
+                                                                                           userInfo:@{ NSLocalizedDescriptionKey:@"Rendezvous with the specified tag already exists" }]);
                               }];
                       }];
 }
@@ -1009,7 +1009,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     [self notifyObservers:^(id < QredoRendezvousObserver > observer) {
         if ([observer respondsToSelector:@selector(qredoRendezvous:didReceiveReponse:)]){
             [observer   qredoRendezvous:self
-                     didReceiveReponse :conversation];
+                      didReceiveReponse:conversation];
         }
     }];
 }

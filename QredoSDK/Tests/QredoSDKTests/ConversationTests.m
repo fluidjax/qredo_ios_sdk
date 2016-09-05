@@ -605,7 +605,6 @@ NSString *secondMessageText;
     return messageCount;
 }
 
-#warning This fails too much now
 -(void)testConversation {
     //static NSString *randomTag;
     NSString *randomTag = nil;

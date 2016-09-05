@@ -306,9 +306,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                                                  summaryValues:nil];
         
         [self       publishMessage:joinedControlMessage
-               completionHandler  :^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
-                   if (completionHandler) completionHandler(error);
-               }];
+                 completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
+                     if (completionHandler) completionHandler(error);
+                 }];
     }];
 }
 
@@ -894,7 +894,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
             [summaryValues  setObject:newItemDescriptor.sequenceId
                                forKey:kQredoConversationSequenceId];
             [summaryValues  setObject:@(newItemDescriptor.sequenceValue)
-                               forKey:kQredoConversationSequenceValue];                                                      //TODO: will not work with int64
+                               forKey:kQredoConversationSequenceValue];                                                                                                                                                                                              //TODO: will not work with int64
             
             QredoConversationMessage *modifiedMessage = [[QredoConversationMessage alloc]  initWithValue:message.value
                                                                                                 dataType:message.dataType
@@ -1259,7 +1259,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
             }
         } else {
             [observer   qredoConversation:self
-                   didReceiveNewMessage  :message];
+                     didReceiveNewMessage:message];
         }
     }];
 }

@@ -322,15 +322,6 @@ NSNumber *testNumber;
 }
 
 -(void)testEmptyPredicate {
-    NSInteger before = [qredoLocalIndex count];
-    NSString *randomTag = [self randomStringWithLength:32];
-    
-    QredoVaultItemMetadata *item1 = [self createTestItemInVault:vault key1Value:randomTag];
-    QredoVaultItemMetadata *item2 = [self createTestItemInVault:vault key1Value:randomTag];
-    QredoVaultItemMetadata *item3 = [self createTestItemInVault:vault key1Value:@"value2"];
-    
-    NSInteger after = [qredoLocalIndex count];
-    NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@",randomTag];
     __block int count = 0;
     
     [qredoLocalIndex enumerateSearch:nil

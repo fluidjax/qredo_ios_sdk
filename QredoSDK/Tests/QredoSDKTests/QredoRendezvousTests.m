@@ -611,7 +611,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 
 -(void)testCreateRendezvousAndGetResponses {
     self.continueAfterFailure = NO;
-    NSString *randomTag = [[QredoQUID QUID] QUIDString];
     
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;

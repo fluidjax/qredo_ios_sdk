@@ -62,7 +62,7 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
     QLFConversationMessageMetadata *messageMetadata =
     [QLFConversationMessageMetadata conversationMessageMetadataWithID:[QredoQUID QUID]
                                                              parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
-                                                             sequence:nil //TODO
+                                                             sequence:nil                                                                                                                                                             //TODO
                                                              sentByMe:true
                                                               created:createdDate
                                                              dataType:self.dataType
