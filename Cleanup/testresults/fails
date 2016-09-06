@@ -1,2 +1,0 @@
-ls -t output* | xargs grep -H  '\*\* RUN-TESTS'
-

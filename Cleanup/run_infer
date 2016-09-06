@@ -1,2 +1,0 @@
-infer -- xcodebuild -workspace "QredoSDK.xcworkspace" -scheme "QredoXDK" ONLY_ACTIVE_ARCH=NO -configuration Debug -sdk iphoneos
-

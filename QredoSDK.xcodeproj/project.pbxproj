@@ -912,7 +912,7 @@
 		83E6CFED1C1AE80000A501D8 /* QredoClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoClientTests.m; sourceTree = "<group>"; };
 		83E710B21BF251280048BFEE /* QredoUserCredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoUserCredentials.h; sourceTree = "<group>"; };
 		83E710B31BF251280048BFEE /* QredoUserCredentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUserCredentials.m; sourceTree = "<group>"; };
-		83E8A37A1D7833B000900150 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = notes.txt; path = QredoSDK/notes.txt; sourceTree = "<group>"; };
+		83E8A37A1D7833B000900150 /* INSTALL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = INSTALL; sourceTree = "<group>"; };
 		83EC3B041CC7A0A200A55271 /* QredoNetworkTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoNetworkTime.h; sourceTree = "<group>"; };
 		83EC3B051CC7A0A200A55271 /* QredoNetworkTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoNetworkTime.m; sourceTree = "<group>"; };
 		83EC3B061CC7A0A200A55271 /* SSLTimeSyncWorker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSLTimeSyncWorker.h; sourceTree = "<group>"; };
@@ -1009,7 +1009,7 @@
 		0A16F88619C3566B00639779 = {
 			isa = PBXGroup;
 			children = (
-				83E8A37A1D7833B000900150 /* notes.txt */,
+				83E8A37A1D7833B000900150 /* INSTALL */,
 				0A16F8BB19C3567E00639779 /* Qredo */,
 				0A16F8C119C358B400639779 /* Products */,
 				175760C0586442332A2DE17D /* Frameworks */,
@@ -1855,7 +1855,6 @@
 				665148E71BF6037E003491CA /* Frameworks */,
 				665148E81BF6037E003491CA /* Headers */,
 				665148E91BF6037E003491CA /* Resources */,
-				833B3E141C523D5500C10A81 /* ShellScript */,
 				D8102137EB5BD4385FCA910E /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
@@ -2364,19 +2363,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
-		};
-		833B3E141C523D5500C10A81 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = $SRCROOT/scripts/set_build_number.sh;
 		};
 		90EF94B7E9D6EF8618A833B4 /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
