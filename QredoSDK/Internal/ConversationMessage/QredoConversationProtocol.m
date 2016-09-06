@@ -130,7 +130,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     self = [super init];
     
     if (self){
-        self.cancelMessageType = kDefaultCancelMessageType;
+        _cancelMessageType = kDefaultCancelMessageType;
     }
     
     return self;

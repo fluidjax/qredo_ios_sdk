@@ -57,8 +57,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     _tag = [tag copy];
     _authenticationType = authenticationType;
-    self.rendezvousRef = rendezvousRef;
-    self.summaryValues = summaryValues;
+    _rendezvousRef = rendezvousRef;
+    _summaryValues = summaryValues;
     
     return self;
 }

@@ -932,7 +932,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 -(NSString *)deviceName {
     NSString *name = [[UIDevice currentDevice] name];
-    
     return (!name) ? @"iOS device" : name;
 }
 

@@ -38,13 +38,13 @@ IncomingMetadataBlock incomingMetadatBlock;
     self = [super init];
     
     if (self){
-        self.qredoVault = vault;
+        _qredoVault = vault;
         [self initializeCoreData];
         [self addAppObservers];
-        self.enableValueCache = YES;
-        self.enableMetadataCache = YES;
-        self.qredoIndexVault = [QredoIndexVault fetchOrCreateWith:vault inManageObjectContext:self.managedObjectContext];
-        self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithLocalIndex:self maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
+        _enableValueCache = YES;
+        _enableMetadataCache = YES;
+        _qredoIndexVault = [QredoIndexVault fetchOrCreateWith:vault inManageObjectContext:self.managedObjectContext];
+        _cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc] initWithLocalIndex:self maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
     }
     
     return self;

@@ -1,7 +1,5 @@
 /* HEADER GOES HERE */
 
-#ifndef QredoSDK_rsapss_h
-#define QredoSDK_rsapss_h
 
 //PSS encoding for RSA signatures
 
@@ -32,4 +30,3 @@ int rsa_pss_sha256_encode(const void *input_hash_data,size_t input_hash_data_len
 int rsa_pss_sha256_verify(const void *input_hash_data,size_t input_hash_data_len,
                           const void *encoded_message,size_t encoded_message_size,size_t salt_length_bytes,size_t key_size_bits);
 
-#endif //ifndef QredoSDK_rsapss_h

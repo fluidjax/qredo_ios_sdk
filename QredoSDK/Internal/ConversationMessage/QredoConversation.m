@@ -98,7 +98,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 -(instancetype)initWithSequenceValue:(NSData *)sequenceValue {
     self = [super init];
-    self.sequenceValue = sequenceValue;
+    _sequenceValue = sequenceValue;
     return self;
 }
 

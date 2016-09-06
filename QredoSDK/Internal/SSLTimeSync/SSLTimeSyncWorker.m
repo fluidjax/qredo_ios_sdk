@@ -33,8 +33,8 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     self = [super init];
     
     if (self){
-        self.urlString = urlString;
-        self.serverHistory = [[NSMutableArray alloc] init];
+        _urlString = urlString;
+        _serverHistory = [[NSMutableArray alloc] init];
     }
     
     return self;

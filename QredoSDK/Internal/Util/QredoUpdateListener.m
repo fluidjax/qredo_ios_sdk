@@ -36,9 +36,9 @@
     if (self){
         _dedupeStore = [[NSMutableDictionary alloc] init];
         _queue = dispatch_queue_create("com.qredo.conversation.updates",nil);
-        self.pollInterval = 1.0;
-        self.pollIntervalDuringSubscribe = 10.0;
-        self.renewSubscriptionInterval = 5.0;
+        _pollInterval = 1.0;
+        _pollIntervalDuringSubscribe = 10.0;
+        _renewSubscriptionInterval = 5.0;
     }
     return self;
 }
@@ -49,7 +49,8 @@
     //If we support multi-response, then use it, otherwise poll
     
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self]){
-        if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")])[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resubscribeWithCompletionHandler:) name:@"resubscribe" object:nil];
+        if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")])
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resubscribeWithCompletionHandler:) name:@"resubscribe" object:nil];
         
         [self startSubscribing];
     } else {

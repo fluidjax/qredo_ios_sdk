@@ -6,7 +6,7 @@ import XCTest
 // WARNING: This test will be failing until https://github.com/Qredo/services/issues/261 is fixed
 
 class TwoClientsHelper {
-    var firstClient : QredoClient!
+    var firstClient: QredoClient!
     var secondClient : QredoClient!
 
     func authorize(test : XCTestCase, options : QredoClientOptions!) {

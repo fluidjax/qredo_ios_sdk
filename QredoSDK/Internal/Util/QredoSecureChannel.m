@@ -21,8 +21,8 @@
     self = [super init];
     
     if (self){
-        self.localPublicKeyData = nil;
-        self.localPrivateKeyData = nil;
+        _localPublicKeyData = nil;
+        _localPrivateKeyData = nil;
     }
     
     return self;

@@ -1,16 +1,9 @@
 /* HEADER GOES HERE */
 
-#ifndef config_h
-#define config_h
 
 
 //Use this file to specify the Server
 //Note: For Tests the  AppID,AppSecret, & UserID are all specified in the file "QredoXCTestCase.m"
-
-#ifdef QREDO_SERVER_URL
-#undef QREDO_SERVER_URL
-#endif
-
 
 //#define QREDO_SERVER_URL @"api.oderq.com" //dev staging
 #define QREDO_SERVER_URL @"api.qredo.com" //production
@@ -26,6 +19,3 @@
 #define     PRODUCTION_TEST_APPSECRET   @"074af11737f877505167177726501aa0"
 #define     PRODUCTION_TEST_USERID      @"testUserId"
 
-
-
-#endif 

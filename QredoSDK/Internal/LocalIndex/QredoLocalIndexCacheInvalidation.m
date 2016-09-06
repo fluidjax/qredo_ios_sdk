@@ -35,9 +35,9 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     self = [super init];
     
     if (self){
-        self.localIndex = localIndex;
-        self.qredoIndexVault = localIndex.qredoIndexVault;
-        self.maxCacheSize = maxCacheSize;
+        _localIndex = localIndex;
+        _qredoIndexVault = localIndex.qredoIndexVault;
+        _maxCacheSize = maxCacheSize;
     }
     
     return self;

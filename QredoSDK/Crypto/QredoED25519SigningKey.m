@@ -15,9 +15,9 @@
     self = [self init];
     
     if (self){
-        self.seed = seed;
-        self.data = data;
-        self.verifyKey = verifyKey;
+        _seed = seed;
+        _data = data;
+        _verifyKey = verifyKey;
     }
     
     return self;

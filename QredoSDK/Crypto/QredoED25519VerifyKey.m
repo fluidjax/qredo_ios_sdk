@@ -12,7 +12,7 @@
     self = [self init];
     
     if (self){
-        self.data = data;
+        _data = data;
     }
     
     return self;

@@ -26,11 +26,11 @@
     QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
     QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
     
-    self.vaultKey = vaultKey;
-    self.ownershipKeyPair = ownershipKeyPair;
-    self.encryptionKey = encryptionAndAuthKeys.encryptionKey;
-    self.authenticationKey = encryptionAndAuthKeys.authenticationKey;
-    self.vaultId = vaultID;
+    _vaultKey = vaultKey;
+    _ownershipKeyPair = ownershipKeyPair;
+    _encryptionKey = encryptionAndAuthKeys.encryptionKey;
+    _authenticationKey = encryptionAndAuthKeys.authenticationKey;
+    _vaultId = vaultID;
     
     return self;
 }

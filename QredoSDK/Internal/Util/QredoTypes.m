@@ -19,11 +19,10 @@
                                       unmarshaller:[QLFVaultItemRef unmarshaller]
                                        parseHeader:YES];
         
-        self.vaultItemDescriptor
-        = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vaultItemRef.sequenceId
+        _vaultItemDescriptor  = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vaultItemRef.sequenceId
                                                                itemId:vaultItemRef.itemId];
         
-        self.data = data;
+        _data = data;
         
         return self;
     } @catch (NSException *exception){
@@ -42,9 +41,9 @@
                                                                sequenceValue:vaultItemDescriptor.sequenceValue
                                                                       itemId:vaultItemDescriptor.itemId];
     
-    self.vaultItemDescriptor = vaultItemDescriptor;
+    _vaultItemDescriptor = vaultItemDescriptor;
     
-    self.data = [QredoPrimitiveMarshallers marshalObject:vaultItemRef includeHeader:YES];
+    _data = [QredoPrimitiveMarshallers marshalObject:vaultItemRef includeHeader:YES];
     
     return self;
 }

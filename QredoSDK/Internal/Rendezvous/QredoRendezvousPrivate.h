@@ -1,6 +1,4 @@
 /* HEADER GOES HERE */
-#ifndef QredoSDK_QredoRendezvousPrivate_h
-#define QredoSDK_QredoRendezvousPrivate_h
 
 #import "QredoRendezvous.h"
 #import "QredoClient.h"
@@ -81,4 +79,3 @@
 
 @end
 
-#endif //ifndef QredoSDK_QredoRendezvousPrivate_h
