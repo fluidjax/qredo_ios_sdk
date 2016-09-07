@@ -41,3 +41,6 @@ DerivedData
 **.DS_Store
 Podfile.lock
 docs/objc
+/QredoSDK.xcworkspace
+/version
+/version.json
