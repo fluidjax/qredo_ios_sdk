@@ -6,8 +6,10 @@ INSTALL
 
     PreRequisites
         OSX         (tested with 10.11.6)
-        Cocoapods   (tested with 1.0.0)
         XCode       (tested with 7.3.1)
+        Cocoapods   (tested with 1.0.0)
+                    sudo gem install activesupport -v 4.2.6
+                    sudo gem install cocoapods
 
 
     1) run "pod install" from base directory, example output:-
@@ -22,7 +24,7 @@ INSTALL
             Installing jetfire (0.1.5)
             Installing libsodium (1.0.3)
 
-        First time this takes several minutes to build. (it probably hasn't crashed its OpenSSL building from source)
+        The first time this takes several (5-10) minutes to build.  (it probably hasn't crashed its OpenSSL building from source)
 
     2) Open QredoSDK.xcworkspace
 
@@ -34,7 +36,9 @@ INSTALL
         QredoXDK            - Main SDK code
         QredoXDK_Universal  - Gnerates framework files from QredoXDK
 
-    3) To Generate the QredoXDK framework, set the scheme to QredoXDK_Universal and build.
+    3) Fix Team/Provisioning Profile for your own account
+    4) To Generate the QredoXDK framework, set the scheme to "QredoXDK_Universal" and build. (takes a fe)
+    4) The framwork file is copied into the project's 'base directory, and is named "QredoXDK.framework"
 
 
 
