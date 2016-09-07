@@ -1,8 +1,0 @@
-GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/CocoaAsyncSocket" "${PODS_ROOT}/Headers/Public/OpenSSL" "${PODS_ROOT}/Headers/Public/ios-ntp" "${PODS_ROOT}/Headers/Public/jetfire" "${PODS_ROOT}/Headers/Public/libsodium"
-LIBRARY_SEARCH_PATHS = $(inherited) "$PODS_CONFIGURATION_BUILD_DIR/CocoaAsyncSocket" "$PODS_CONFIGURATION_BUILD_DIR/ios-ntp" "$PODS_CONFIGURATION_BUILD_DIR/jetfire" "$PODS_CONFIGURATION_BUILD_DIR/libsodium" $(inherited) "${PODS_ROOT}/OpenSSL/lib"
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/CocoaAsyncSocket" -isystem "${PODS_ROOT}/Headers/Public/OpenSSL" -isystem "${PODS_ROOT}/Headers/Public/ios-ntp" -isystem "${PODS_ROOT}/Headers/Public/jetfire" -isystem "${PODS_ROOT}/Headers/Public/libsodium"
-OTHER_LDFLAGS = $(inherited) -ObjC -l"CocoaAsyncSocket" -l"crypto" -l"ios-ntp" -l"jetfire" -l"libsodium" -l"ssl" -framework "CFNetwork" -framework "Security"
-PODS_BUILD_DIR = $BUILD_DIR
-PODS_CONFIGURATION_BUILD_DIR = $PODS_BUILD_DIR/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
-PODS_ROOT = ${SRCROOT}/Pods
