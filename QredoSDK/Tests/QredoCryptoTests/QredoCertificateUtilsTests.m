@@ -21,12 +21,14 @@
     [QredoCrypto deleteAllKeysInAppleKeychain];
 }
 
+
 -(void)tearDown {
     //Must remove any keys after completing
     [QredoCrypto deleteAllKeysInAppleKeychain];
     
     [super tearDown];
 }
+
 
 -(void)testCreateCertificateWithDerData {
     NSData *derFormattedCertData = [NSData dataWithBytes:TestCertDHTestingLocalhostClientDerArray
@@ -37,6 +39,7 @@
     XCTAssertNotNil((__bridge id)certificateRef,@"Nil certificate ref returned");
 }
 
+
 -(void)testCreateCertificateWithDerData_Nil {
     NSData *certData = nil;
     
@@ -46,6 +49,7 @@
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
 
+
 -(void)testCreateCertificateWithDerData_EmptyData_Invalid {
     NSData *derFormattedCertData = [[NSData alloc] init];
     
@@ -54,6 +58,7 @@
     XCTAssertNil((__bridge id)certificateRef,@"Non-nil certificate ref returned for empty data");
 }
 
+
 -(void)testCreateCertificateWithDerData_RandomData_Invalid {
     NSData *derFormattedCertData = [NSData dataWithRandomBytesOfLength:1000];
     
@@ -61,6 +66,7 @@
     
     XCTAssertNil((__bridge id)certificateRef,@"Non-nil certificate ref returned for empty data");
 }
+
 
 -(void)testConvertCertificateRefsToPemCertificate_SingleCertificateRef {
     NSString *pemCertificates = TestCertJavaSdkClient4096Pem;
@@ -78,6 +84,7 @@
     XCTAssertTrue([generatedPemCertificates isEqualToString:pemCertificates]);
 }
 
+
 -(void)testConvertCertificateRefsToPemCertificate_Invalid_NilArray {
     NSArray *certificateRefs = nil;
     
@@ -86,6 +93,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
+
 
 -(void)testConvertCertificateRefsToPemCertificate_Invalid_EmptyArray {
     int expectedCertificateRefCount = 0;
@@ -97,6 +105,7 @@
     NSString *generatedPemCertificates = [QredoCertificateUtils convertCertificateRefsToPemCertificate:certificateRefs];
     XCTAssertNotNil(generatedPemCertificates);
 }
+
 
 -(void)testConvertCertificateRefsToPemCertificate_MultipleCertificateRefs {
     //Java SDK Root Certificate
@@ -119,6 +128,7 @@
     //Note: Generated string may not be the same if the line breaks/wrapping is different, in this case, wrapping should match
     XCTAssertTrue([generatedPemCertificates isEqualToString:pemCertificates]);
 }
+
 
 -(void)testConvertCertificateRefsToPemCertificate_MultipleCertificateRefs_UnmatchedExtraNewline {
     //Java SDK Root Certificate
@@ -146,6 +156,7 @@
     XCTAssertFalse([generatedPemCertificates isEqualToString:pemCertificates]);
 }
 
+
 -(NSString *)stripPem:(NSString *)pem {
     NSRange r1 = [pem rangeOfString:@"-----BEGIN CERTIFICATE-----"];
     NSRange r2 = [pem rangeOfString:@"-----END CERTIFICATE-----"];
@@ -157,6 +168,7 @@
     
     return strippedPem;
 }
+
 
 -(void)testConvertCertificateRefToPemCertificate {
     //Import some PKCS#12 data and then get the public certificate ref from the identity.
@@ -200,6 +212,7 @@
     XCTAssertTrue([pemCertificate isEqualToString:[self stripPem:[TestCertificates fetchPemForResource:@"clientCert2.2048.IntCA1cert" error:&error]]]);
 }
 
+
 -(void)testConvertKeyIdentifierToPemKey_GeneratedKey {
     //Generate some keys and get the public key in PEM format
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
@@ -219,6 +232,7 @@
     XCTAssertTrue([pemEncodedPublicKey hasPrefix:@"-----BEGIN PUBLIC KEY-----\n"]);
     XCTAssertTrue([pemEncodedPublicKey hasSuffix:@"\n-----END PUBLIC KEY-----\n"]);
 }
+
 
 -(void)testConvertKeyIdentifierToPemKey_ImportedKey {
     //Import a known public key in DER format (already in PKCS#1, as we will output)
@@ -243,6 +257,7 @@
     XCTAssertTrue([pemEncodedPublicKey isEqualToString:expectedPemEncodedPublicKey]);
 }
 
+
 -(void)testConvertKeyIdentifierToPemKey_Invalid_NilIdentifier {
     NSString *publicKeyIdentifier = nil;
     
@@ -251,6 +266,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
+
 
 -(void)testConvertKeyIdentifierToPemKey_Invalid_EmptyIdentifier {
     NSString *publicKeyIdentifier = @"";
@@ -266,6 +282,7 @@
     }
 }
 
+
 -(void)testConvertKeyIdentifierToPemKey_Invalid_UnknownIdentifier {
     NSString *publicKeyIdentifier = @"This is an unknown identifier";
     NSString *pemEncodedPublicKey;
@@ -278,6 +295,7 @@
         XCTAssertNil(pemEncodedPublicKey);
     }
 }
+
 
 -(void)testConvertPemWrappedStringToDer {
     NSString *pemWrappedString = TestKeyJavaSdkClient4096PemX509;
@@ -295,6 +313,7 @@
     XCTAssertTrue([convertedDerData isEqualToData:expectedDerData]);
 }
 
+
 -(void)testConvertPemWrappedStringToDer_StartMarkerWrong {
     //The StartMarker will not be found
     NSString *pemWrappedString = TestKeyJavaSdkClient4096PemX509;
@@ -307,6 +326,7 @@
     
     XCTAssertNil(convertedDerData);
 }
+
 
 -(void)testConvertPemWrappedStringToDer_EndMarkerWrong {
     //The EndMarker will not be found
@@ -321,6 +341,7 @@
     XCTAssertNil(convertedDerData);
 }
 
+
 -(void)testConvertPemWrappedStringToDer_StartEndMarkersSwapped {
     //The StartMarker and EndMarker are present, but in incorrect order
     NSString *pemWrappedString = TestKeyJavaSdkClient4096PemX509;
@@ -333,6 +354,7 @@
     
     XCTAssertNil(convertedDerData);
 }
+
 
 -(void)testConvertPemWrappedStringToDer_StartMarkerNil {
     //The StartMarker is nil
@@ -348,6 +370,7 @@
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
 
+
 -(void)testConvertPemWrappedStringToDer_EndMarkerNil {
     //The EndMarker is nil
     NSString *pemWrappedString = TestKeyJavaSdkClient4096PemX509;
@@ -362,6 +385,7 @@
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
 
+
 -(void)testConvertPemWrappedStringToDer_SearchStringNil {
     //The StartMarker is nil
     NSString *pemWrappedString = nil;
@@ -375,6 +399,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
+
 
 -(void)testGetPkcs1PublicKeyDataFromUnknownPublicKeyData_Pkcs1Input {
     //X.509 format DER data in, PKCS#1 format data out
@@ -393,6 +418,7 @@
     XCTAssertTrue([convertedPkcs1Data isEqualToData:expectedPkcs1Data]);
 }
 
+
 -(void)testGetPkcs1PublicKeyDataFromUnknownPublicKeyData_X509Input {
     //PKCS#1 format DER data in, same PKCS#1 format data out
     NSData *publicKeyData = [NSData dataWithBytes:TestPubKeyJavaSdkClient4096Pkcs1DerArray
@@ -410,6 +436,7 @@
     XCTAssertTrue([convertedPkcs1Data isEqualToData:expectedPkcs1Data]);
 }
 
+
 -(void)testGetPkcs1PublicKeyDataFromUnknownPublicKeyData_InvalidNilInput {
     NSData *publicKeyData = nil;
     
@@ -418,6 +445,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
+
 
 -(void)testGetPkcs1PublicKeyDataFromUnknownPublicKeyData_InvalidInput {
     //Random data in, nil data out
@@ -428,6 +456,7 @@
     NSData *convertedPkcs1Data = [QredoCertificateUtils getPkcs1PublicKeyDataFromUnknownPublicKeyData:publicKeyData];
     XCTAssertNil(convertedPkcs1Data);
 }
+
 
 -(void)testCheckIfPublicKeyDataIsPkcs1_Pkcs1Data {
     //PKCS#1 format data in
@@ -442,6 +471,7 @@
     XCTAssertEqual(publicKeyDataIsPkcs1,expectedCheckResult);
 }
 
+
 -(void)testCheckIfPublicKeyDataIsPkcs1_X509Data {
     //X.509 format data in
     NSData *publicKeyData = [NSData dataWithBytes:TestPubKeyJavaSdkClient4096X509DerArray
@@ -455,6 +485,7 @@
     XCTAssertEqual(publicKeyDataIsPkcs1,expectedCheckResult);
 }
 
+
 -(void)testCheckIfPublicKeyDataIsPkcs1_RandomData {
     //Random data in
     NSData *publicKeyData = [NSData dataWithRandomBytesOfLength:2048];
@@ -467,6 +498,7 @@
     XCTAssertEqual(publicKeyDataIsPkcs1,expectedCheckResult);
 }
 
+
 -(void)testCheckIfPublicKeyDataIsPkcs1_NilData {
     //Nil data in
     NSData *publicKeyData = nil;
@@ -477,6 +509,7 @@
     
     XCTAssertEqual(publicKeyDataIsPkcs1,expectedCheckResult);
 }
+
 
 -(void)testConvertX509PublicKeyToPkcs1PublicKey_X509Input {
     //X.509 format DER data in, PKCS#1 format data out
@@ -495,6 +528,7 @@
     XCTAssertTrue([convertedPkcs1Data isEqualToData:expectedPkcs1Data]);
 }
 
+
 -(void)testConvertX509PublicKeyToPkcs1PublicKey_Pkcs1Input {
     //PKCS#1 format data in, nil data out
     NSData *publicKeyData = [NSData dataWithBytes:TestPubKeyJavaSdkClient4096Pkcs1DerArray
@@ -506,6 +540,7 @@
     XCTAssertNil(convertedPkcs1Data);
 }
 
+
 -(void)testConvertX509PublicKeyToPkcs1PublicKey_InvalidNilInput {
     NSData *publicKeyData = nil;
     
@@ -514,6 +549,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
+
 
 -(void)testConvertX509PublicKeyToPkcs1PublicKey_InvalidInput {
     //Random data in, nil data out
@@ -524,6 +560,7 @@
     NSData *convertedPkcs1Data = [QredoCertificateUtils convertX509PublicKeyToPkcs1PublicKey:publicKeyData];
     XCTAssertNil(convertedPkcs1Data);
 }
+
 
 -(void)testConvertPemPublicKeyToDer {
     NSString *pemPublicKey = TestKeyJavaSdkClient4096PemX509;
@@ -537,6 +574,7 @@
     XCTAssertTrue([convertedDerData isEqualToData:expectedDerData]);
 }
 
+
 -(void)testConvertPemPublicKeyToDer_Invalid_NotPemKeyString {
     //Pass in PEM certificate, not PEM public key
     NSString *pemPublicKey = TestCertJavaSdkClient4096Pem;
@@ -545,6 +583,7 @@
     
     XCTAssertNil(convertedDerData);
 }
+
 
 -(void)testConvertPemPublicKeyToDer_Invalid_NilPemString {
     NSString *pemPublicKey = nil;
@@ -555,6 +594,7 @@
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
 
+
 -(void)testConvertPemPublicKeyToDer_Invalid_EmptyPemString {
     NSString *pemPublicKey = @"";
     
@@ -562,6 +602,7 @@
     
     XCTAssertNil(convertedDerData);
 }
+
 
 -(void)testConvertPemCertificateToDer {
     //DH localhost root CA
@@ -628,6 +669,7 @@
     XCTAssertNotNil(derFormattedData,@"Returned data should not be nil.");
     XCTAssertTrue([derFormattedData isEqualToData:expectedDerFormattedData],@"Converted data is incorrect.");
 }
+
 
 -(void)testConvertPemCertificateToDer_RsaCert {
     //RSA Security Inc CA cert from Firefox
@@ -698,11 +740,13 @@
     XCTAssertTrue([derFormattedData isEqualToData:expectedDerFormattedData],@"Converted data is incorrect.");
 }
 
+
 -(void)testConvertPemCertificateToDer_NilCertificate {
     NSString *certificateChainPemString = nil;
     
     XCTAssertThrowsSpecificNamed([QredoCertificateUtils convertPemCertificateToDer:certificateChainPemString],NSException,NSInvalidArgumentException,@"Passed nil certificate string and expected exception not thrown.");
 }
+
 
 -(void)testConvertPemCertificateToDer_EmptyCert {
     NSString *certificateChainPemString = @"";
@@ -711,6 +755,7 @@
     
     XCTAssertNil(derFormattedData,@"Returned data should be nil.");
 }
+
 
 -(void)testConvertPemCertificateToDer_IncorrectHeader {
     //DH localhost root CA with space missing in header
@@ -740,6 +785,7 @@
     XCTAssertNil(derFormattedData,@"Returned data should be nil.");
 }
 
+
 -(void)testConvertPemCertificateToDer_IncorrectFooter {
     //DH localhost root CA with space missing in footer
     NSString *certificateChainPemString = @"-----BEGIN CERTIFICATE-----\n"
@@ -768,6 +814,7 @@
     XCTAssertNil(derFormattedData,@"Returned data should be nil.");
 }
 
+
 -(void)testGetFirstPemCertificateFromString_2CertsWithNewLinesBetween {
     //DH localhost root CA
     //DH localhost generated cert with own root CA
@@ -779,6 +826,7 @@
     XCTAssertTrue([firstCertificate isEqualToString:TestCertDHTestingLocalhostRootPem]);
 }
 
+
 -(void)testGetFirstPemCertificateFromString_Invalid_NoPemCertPresent {
     NSString *certificateChainPemString = [NSString stringWithFormat:@"This is not a PEM certificate"];
     
@@ -786,6 +834,7 @@
     
     XCTAssertNil(firstCertificate,@"Returned data should be nil.");
 }
+
 
 -(void)testSplitPemCertificateChain_2CertsWithNewLinesBetween {
     //DH localhost root CA
@@ -799,6 +848,7 @@
     XCTAssertNotNil(certificates,@"Returned data should not be nil.");
     XCTAssertEqual(certificates.count,expectedNumberOfCertificates,@"Wrong number of certificates returned.");
 }
+
 
 -(void)testSplitPemCertificateChain_4CertsWithoutNewLinesBetween {
     //DH localhost root CA
@@ -814,6 +864,7 @@
     XCTAssertNotNil(certificates,@"Returned data should not be nil.");
     XCTAssertEqual(certificates.count,expectedNumberOfCertificates,@"Wrong number of certificates returned.");
 }
+
 
 -(void)testSplitPemCertificateChain_2CertsSecondCorruptedFooter_Invalid {
     //DH localhost root CA
@@ -845,6 +896,7 @@
     XCTAssertNil(certificates,@"Returned data should be nil.");
 }
 
+
 -(void)testGetCertificateRefsFromPemCertificates_OneCert {
     //DH localhost root CA
     NSString *certificatesPemString = TestCertDHTestingLocalhostRootPem;
@@ -855,6 +907,7 @@
     XCTAssertNotNil(certificateRefs,@"Returned data should not be nil.");
     XCTAssertEqual(certificateRefs.count,expectedNumberOfCertificateRefs,@"Wrong number of certificate refs returned.");
 }
+
 
 -(void)testGetCertificateRefsFromPemCertificates_TwoCerts {
     //DH localhost root CA
@@ -870,11 +923,13 @@
     XCTAssertEqual(certificateRefs.count,expectedNumberOfCertificateRefs,@"Wrong number of certificate refs returned.");
 }
 
+
 -(void)testGetCertificateRefsFromPemCertificates_NilCerts {
     NSString *certificatesPemString = nil;
     
     XCTAssertThrowsSpecificNamed([QredoCertificateUtils getCertificateRefsFromPemCertificates:certificatesPemString],NSException,NSInvalidArgumentException,@"Passed nil certificates string and expected exception not thrown.");
 }
+
 
 -(void)testGetCertificateRefsFromPemCertificates_EmptyCertString {
     NSString *certificatesPemString = @"";
@@ -883,6 +938,7 @@
     
     XCTAssertNil(certificateRefs,@"Returned data should be nil.");
 }
+
 
 -(void)testValidateCertificateChain_ValidChainWithRoot_qredoTestCA {
     /*
@@ -928,6 +984,7 @@
     XCTAssertNotNil((__bridge id)validatedKeyRef);
 }
 
+
 -(void)testValidateCertificateChain_ValidChainWithWrongRoot {
     /*
      Test steps:
@@ -960,6 +1017,7 @@
     XCTAssertNil((__bridge id)validatedKeyRef);
 }
 
+
 -(void)testValidateCertificateChain_EmptyChain {
     /*
      Test steps:
@@ -987,6 +1045,7 @@
                                                             rootCertificateRefs:rootCertificateRefs];
     XCTAssertNil((__bridge id)validatedKeyRef);
 }
+
 
 -(void)testValidateCertificateChain_EmptyRoot {
     /*
@@ -1018,6 +1077,7 @@
     XCTAssertNil((__bridge id)validatedKeyRef);
 }
 
+
 -(void)testValidateCertificateChain_NilRoot {
     /*
      Test steps:
@@ -1046,6 +1106,7 @@
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
 
+
 -(void)testValidateCertificateChain_NilChain {
     /*
      Test steps:
@@ -1072,6 +1133,7 @@
                                  @"Passed nil certificate data and expected exception not thrown.");
 }
 
+
 -(void)testValidatePemCertificateChain_RsaAsCertAndRoot_Valid {
     //RSA Security Inc CA from Firefox
     NSString *certificateChainPemString = RsaSecurityIncRootCertPem;
@@ -1088,6 +1150,7 @@
     SecKeyRef validatedKeyRef = [QredoCertificateUtils validatePemCertificateChain:certificateChainPemString rootCertificateRefs:rootCertificates];
     XCTAssertNotNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned valid SecKeyRef.");
 }
+
 
 -(void)testValidatePemCertificateChain_CertWithRoot_Valid {
     //DH localhost generated cert with own root CA
@@ -1209,6 +1272,7 @@
     XCTAssertNotNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned valid SecKeyRef.");
 }
 
+
 -(void)testValidatePemCertificateChain_JavaSdkChain4096_Valid {
     NSError *error = nil;
     
@@ -1239,6 +1303,7 @@
     SecKeyRef validatedKeyRef = [QredoCertificateUtils validatePemCertificateChain:certificateChainPemString rootCertificateRefs:rootCertificates];
     XCTAssertNotNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned valid SecKeyRef.");
 }
+
 
 -(void)testValidatePemCertificateChain_JavaSdkChain2048_Valid {
     NSError *error = nil;
@@ -1271,6 +1336,7 @@
     XCTAssertNotNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned valid SecKeyRef.");
 }
 
+
 -(void)testValidatePemCertificateChain_JavaSdkChain2048_MissingIntermediate_Invalid {
     //Java-SDK 2048 bit client cert without intermediate certificate (broken chain)
     NSString *certificateChainPemString = TestCertJavaSdkClient2048Pem;
@@ -1288,6 +1354,7 @@
     XCTAssertNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned nil SecKeyRef.");
 }
 
+
 -(void)testValidatePemCertificateChain_JavaSdkChain2048_IncorrectRoot_Invalid {
     //Java-SDK cert chain with 2048 bit client cert
     NSString *certificateChainPemString = [NSString stringWithFormat:@"%@%@",TestCertJavaSdkClient2048Pem,TestCertJavaSdkIntermediatePem];
@@ -1304,6 +1371,7 @@
     SecKeyRef validatedKeyRef = [QredoCertificateUtils validatePemCertificateChain:certificateChainPemString rootCertificateRefs:rootCertificates];
     XCTAssertNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned nil SecKeyRef.");
 }
+
 
 -(void)testValidatePemCertificateChain_JavaSdkChain2048_IntermediateAsRoot_Valid {
     //Java-SDK cert chain with 2048 bit client cert
@@ -1324,6 +1392,7 @@
     XCTAssertNotNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned nil SecKeyRef.");
 }
 
+
 //TODO: DH - Add test for invalid certificate length (e.g. 1024 bit key) when we can detect/check key length
 //TODO: DH - Add test for invalid certificate crypto type (e.g. DSA) when we can crypto type in certs
 
@@ -1343,6 +1412,7 @@
     XCTAssertNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned nil SecKeyRef.");
 }
 
+
 -(void)testValidatePemCertificateChain_CertWithRoot_IncorrectRoot_Invalid {
     //DH localhost generated cert with own root CA
     NSString *certificateChainPemString = TestCertDHTestingLocalhostClientPem;
@@ -1360,6 +1430,7 @@
     XCTAssertNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned nil SecKeyRef.");
 }
 
+
 -(void)testValidatePemCertificateChain_SingleCertWithRoot_MissingRoot_Invalid {
     //DH localhost generated cert with own root CA
     NSString *certificateChainPemString = TestCertDHTestingLocalhostClientPem;
@@ -1371,6 +1442,7 @@
     
     XCTAssertNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned nil SecKeyRef.");
 }
+
 
 -(void)testValidatePemCertificateChain_RootAndCertSwitched_Invalid {
     //DH localhost root CA
@@ -1389,6 +1461,7 @@
     XCTAssertNil((__bridge id)validatedKeyRef,@"Incorrect certificate validation result. Should have returned nil SecKeyRef.");
 }
 
+
 -(void)testValidatePemCertificateChain_NilCertChain {
     NSString *certificateChainPemString = nil;
     
@@ -1404,6 +1477,7 @@
     XCTAssertThrowsSpecificNamed([QredoCertificateUtils validatePemCertificateChain:certificateChainPemString rootCertificateRefs:rootCertificates],NSException,NSInvalidArgumentException,@"Passed nil certificate chain and expected exception not thrown.");
 }
 
+
 -(void)testValidatePemCertificateChain_NilRootCerts {
     //DH localhost generated cert with own root CA
     NSString *certificateChainPemString = TestCertDHTestingLocalhostClientPem;
@@ -1412,6 +1486,7 @@
     
     XCTAssertThrowsSpecificNamed([QredoCertificateUtils validatePemCertificateChain:certificateChainPemString rootCertificateRefs:rootCertificates],NSException,NSInvalidArgumentException,@"Passed nil certificate chain and expected exception not thrown.");
 }
+
 
 -(void)testCreateAndValidateIdentityFromPkcs12Data_DHTestCert {
     //https://gist.github.com/mtigas/952344
@@ -1564,6 +1639,7 @@
     XCTAssertNotNil((__bridge id)identityRef,@"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
 }
 
+
 -(void)testCreateAndValidateIdentityFromPkcs12Data_qredoTestCA_4096 {
     NSError *error = nil;
     
@@ -1598,6 +1674,7 @@
     XCTAssertNotNil((__bridge id)identityRef,@"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
 }
 
+
 -(void)testCreateAndValidateIdentityFromPkcs12Data_Inavlid_qredoTestCA_WrongRoot {
     NSError *error = nil;
     
@@ -1618,6 +1695,7 @@
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data password:pkcs12Password rootCertificateRefs:rootCertificates];
     XCTAssertTrue(identityDictionary.count == 0,@"Incorrect identity validation result. Should have returned nil NSDictionary.");
 }
+
 
 -(void)testCreateAndValidateIdentityFromPkcs12Data_JavaSDK2048ClientWithIntermediate {
     NSError *error = nil;
@@ -1650,6 +1728,7 @@
     XCTAssertNotNil((__bridge id)identityRef,@"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
 }
 
+
 -(void)testCreateAndValidateIdentityFromPkcs12Data_JavaSDK2048ClientWithIntermediate_IncorrectRoot {
     //Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
     NSData *pkcs12Data = [NSData dataWithBytes:TestCertJavaSdkClient2048WithIntermediatePkcs12Array
@@ -1668,6 +1747,7 @@
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data password:pkcs12Password rootCertificateRefs:rootCertificates];
     XCTAssertTrue(identityDictionary.count == 0,@"Incorrect identity validation result. Should have returned nil NSDictionary.");
 }
+
 
 -(void)testCreateAndValidateIdentityFromPkcs12Data_JavaSDK2048ClientWithIntermediate_InvalidPassword {
     //Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
@@ -1688,6 +1768,7 @@
     XCTAssertNil(identityDictionary,@"Incorrect identity validation result. Should have returned nil NSDictionary.");
 }
 
+
 -(void)testCreateAndValidateIdentityFromPkcs12Data_InvalidData {
     //DH localhost root CA DER data (not PKCS#12 formatted)
     NSData *pkcs12Data = [NSData dataWithBytes:TestCertDHTestingLocalhostClientDerArray length:sizeof(TestCertDHTestingLocalhostClientDerArray) / sizeof(uint8_t)];
@@ -1705,6 +1786,7 @@
     NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data password:pkcs12Password rootCertificateRefs:rootCertificates];
     XCTAssertNil(identityDictionary,@"Incorrect identity validation result. Should have returned nil NSDictionary.");
 }
+
 
 -(void)testPKCS12ImportThenSigning_JavaSDK2048ClientWithIntermediate {
     //Import some PKCS#12 data and then use the private key to sign some data.  Then use the public key to verify the signature.
@@ -1751,6 +1833,7 @@
     BOOL verified = [QredoCrypto rsaPssVerifySignature:signature forMessage:message saltLength:saltLen keyRef:publicKeyRef];
     XCTAssertTrue(verified);
 }
+
 
 -(void)testPKCS12ImportThenSigning_qredoTestCA {
     //Import some PKCS#12 data and then use the private key to sign some data.  Then use the public key to verify the signature.
@@ -1800,5 +1883,6 @@
     BOOL verified = [QredoCrypto rsaPssVerifySignature:signature forMessage:message saltLength:saltLen keyRef:publicKeyRef];
     XCTAssertTrue(verified);
 }
+
 
 @end

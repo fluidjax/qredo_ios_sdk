@@ -36,6 +36,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return self;
 }
 
+
 +(instancetype)sharedInstance {
     static CryptoImplV1 *instance = nil;
     static dispatch_once_t onceToken;
@@ -46,6 +47,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return instance;
 }
 
+
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data {
     //Generate a random IV of the correct length for AES
@@ -53,6 +55,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     
     return [self encryptWithKey:secretKey data:data iv:iv];
 }
+
 
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv {
     if (!secretKey){
@@ -79,6 +82,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     
     return ivAndEncryptedData;
 }
+
 
 //This method will decrypt the data using AES and an IV which should be present at start of encrypted data
 -(NSData *)decryptWithKey:(NSData *)secretKey data:(NSData *)data {
@@ -116,10 +120,12 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return decryptedData;
 }
 
+
 -(NSData *)getAuthCodeWithKey:(NSData *)authKey data:(NSData *)data {
     //Any validation checks are performed by variant with length argument
     return [self getAuthCodeWithKey:authKey data:data length:data.length];
 }
+
 
 -(NSData *)getAuthCodeWithKey:(NSData *)authKey data:(NSData *)data length:(NSUInteger)length {
     //Perfectly valid to have empty key and empty data, but must not be nil and length must must be valid
@@ -147,6 +153,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return authCode;
 }
 
+
 -(NSData *)getAuthCodeZero {
     static NSData *zeroData = nil;
     static dispatch_once_t onceToken;
@@ -156,6 +163,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     });
     return zeroData;
 }
+
 
 -(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data {
     //This method expects the MAC to be appended onto the end of the data. Therefore
@@ -186,6 +194,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return macCorrect;
 }
 
+
 -(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data mac:(NSData *)mac {
     //Perfectly valid to have empty key and empty data, but must not be nil. MAC must be present + valid
     
@@ -209,15 +218,18 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return macCorrect;
 }
 
+
 -(NSData *)getRandomKey {
     NSData *randomKey = [QredoCrypto secureRandomWithSize:BULK_KEY_SIZE_IN_BYTES];
     
     return randomKey;
 }
 
+
 -(NSData *)generateRandomNonce:(NSUInteger)size {
     return [QredoCrypto secureRandomWithSize:size];
 }
+
 
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password {
     NSData *passwordData = [password dataUsingEncoding:PASSWORD_ENCODING_FOR_PBKDF2];
@@ -230,6 +242,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     
     return key;
 }
+
 
 -(NSData *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
@@ -260,6 +273,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return dh.data;
 }
 
+
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt myPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
     NSData *ikm = [self getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
     
@@ -268,6 +282,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     
     return diffieHellmanSecretData;
 }
+
 
 -(QredoKeyPair *)generateDHKeyPair {
     //Generate a new key pair from curve 25519.
@@ -286,11 +301,13 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return keyPair;
 }
 
+
 -(QredoED25519SigningKey *)qredoED25519SigningKey {
     NSData *seed = [self generateRandomNonce:ED25519_SEED_LENGTH];
     
     return [self qredoED25519SigningKeyWithSeed:seed];
 }
+
 
 -(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed {
     NSAssert([seed length] == ED25519_SEED_LENGTH,@"Malformed seed");
@@ -309,6 +326,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:skData verifyKey:vk];
 }
 
+
 -(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error {
     if ([data length] != ED25519_VERIFY_KEY_LENGTH){
         if (error){
@@ -321,6 +339,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return [[QredoED25519VerifyKey alloc] initWithKeyData:data];
 }
 
+
 -(NSData *)qredoED25519EmptySignature {
     static NSData *signatureData = nil;
     static dispatch_once_t onceToken;
@@ -330,6 +349,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     });
     return signatureData;
 }
+
 
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error {
     NSAssert(sk,@"Signing key is required for signing");
@@ -363,6 +383,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     NSData *signature = [signatureMessage subdataWithRange:NSMakeRange(0,signatureLength)];
     return signature;
 }
+
 
 -(BOOL)qredoED25519VerifySignature:(NSData *)signature
                          ofMessage:(NSData *)message
@@ -403,6 +424,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     
     return cryptoResult == 0;
 }
+
 
 @end
 

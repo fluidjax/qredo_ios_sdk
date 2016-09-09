@@ -17,6 +17,7 @@
     return [[QLFCachedVaultItem alloc] initWithEncryptedItem:encryptedItem authCode:authCode];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFCachedVaultItem *e = (QLFCachedVaultItem *)element;
@@ -33,6 +34,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'CachedVaultItem'
@@ -47,6 +49,7 @@
     };
 }
 
+
 -(instancetype)initWithEncryptedItem:(NSData *)encryptedItem authCode:(QLFAuthCode *)authCode {
     self = [super init];
     
@@ -58,15 +61,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFCachedVaultItem *)other {
     QREDO_COMPARE_OBJECT(encryptedItem);
     QREDO_COMPARE_OBJECT(authCode);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToCachedVaultItem:other];
 }
+
 
 -(BOOL)isEqualToCachedVaultItem:(QLFCachedVaultItem *)other {
     if (other == self)return YES;
@@ -80,6 +86,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -87,6 +94,7 @@
     hash = hash * 31u + [_authCode hash];
     return hash;
 }
+
 
 @end
 
@@ -98,6 +106,7 @@
     return [[QLFConversationAckResult alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFConversationAckResult *e = (QLFConversationAckResult *)element;
@@ -106,6 +115,7 @@
         [writer writeEnd];
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -116,6 +126,7 @@
     };
 }
 
+
 -(instancetype)init {
     self = [super init];
     
@@ -125,13 +136,16 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFConversationAckResult *)other {
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToConversationAckResult:other];
 }
+
 
 -(BOOL)isEqualToConversationAckResult:(QLFConversationAckResult *)other {
     if (other == self)return YES;
@@ -141,11 +155,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -156,6 +172,7 @@
 +(QLFConversationPublishResult *)conversationPublishResultWithSequenceValue:(QLFConversationSequenceValue *)sequenceValue {
     return [[QLFConversationPublishResult alloc] initWithSequenceValue:sequenceValue];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -169,6 +186,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'ConversationPublishResult'
@@ -180,6 +198,7 @@
     };
 }
 
+
 -(instancetype)initWithSequenceValue:(QLFConversationSequenceValue *)sequenceValue {
     self = [super init];
     
@@ -190,14 +209,17 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFConversationPublishResult *)other {
     QREDO_COMPARE_OBJECT(sequenceValue);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToConversationPublishResult:other];
 }
+
 
 -(BOOL)isEqualToConversationPublishResult:(QLFConversationPublishResult *)other {
     if (other == self)return YES;
@@ -209,12 +231,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_sequenceValue hash];
     return hash;
 }
+
 
 @end
 
@@ -226,9 +250,11 @@
     return [[QLFQRV alloc] init];
 }
 
+
 +(QLFCtrl *)qRT {
     return [[QLFQRT alloc] init];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -241,6 +267,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -262,6 +289,7 @@
     };
 }
 
+
 -(void)ifQRV:(void (^)())ifQRVBlock ifQRT:(void (^)())ifQRTBlock {
     if ([self isKindOfClass:[QLFQRV class]]){
         ifQRVBlock();
@@ -270,21 +298,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFCtrl *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToCtrl:(QLFCtrl *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -296,6 +329,7 @@
     return [[QLFQRV alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFQRV *e = (QLFQRV *)element;
@@ -305,11 +339,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFCtrl qRV];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -320,6 +356,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFQRV *)other {
     if ([other isKindOfClass:[QLFCtrl class]] && ![other isKindOfClass:[QLFQRV class]]){
         //N.B. impose an ordering among subtypes of Ctrl
@@ -329,9 +366,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToQRV:other];
 }
+
 
 -(BOOL)isEqualToQRV:(QLFQRV *)other {
     if (other == self)return YES;
@@ -341,11 +380,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -357,6 +398,7 @@
     return [[QLFQRT alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFQRT *e = (QLFQRT *)element;
@@ -366,11 +408,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFCtrl qRT];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -381,6 +425,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFQRT *)other {
     if ([other isKindOfClass:[QLFCtrl class]] && ![other isKindOfClass:[QLFQRT class]]){
         //N.B. impose an ordering among subtypes of Ctrl
@@ -390,9 +435,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToQRT:other];
 }
+
 
 -(BOOL)isEqualToQRT:(QLFQRT *)other {
     if (other == self)return YES;
@@ -402,11 +449,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -417,6 +466,7 @@
 +(QLFEncryptedConversationItem *)encryptedConversationItemWithEncryptedMessage:(NSData *)encryptedMessage authCode:(QLFAuthCode *)authCode {
     return [[QLFEncryptedConversationItem alloc] initWithEncryptedMessage:encryptedMessage authCode:authCode];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -434,6 +484,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'EncryptedConversationItem'
@@ -448,6 +499,7 @@
     };
 }
 
+
 -(instancetype)initWithEncryptedMessage:(NSData *)encryptedMessage authCode:(QLFAuthCode *)authCode {
     self = [super init];
     
@@ -459,15 +511,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFEncryptedConversationItem *)other {
     QREDO_COMPARE_OBJECT(encryptedMessage);
     QREDO_COMPARE_OBJECT(authCode);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToEncryptedConversationItem:other];
 }
+
 
 -(BOOL)isEqualToEncryptedConversationItem:(QLFEncryptedConversationItem *)other {
     if (other == self)return YES;
@@ -481,6 +536,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -488,6 +544,7 @@
     hash = hash * 31u + [_authCode hash];
     return hash;
 }
+
 
 @end
 
@@ -498,6 +555,7 @@
 +(QLFConversationItemWithSequenceValue *)conversationItemWithSequenceValueWithItem:(QLFEncryptedConversationItem *)item sequenceValue:(QLFConversationSequenceValue *)sequenceValue {
     return [[QLFConversationItemWithSequenceValue alloc] initWithItem:item sequenceValue:sequenceValue];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -515,6 +573,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'ConversationItemWithSequenceValue'
@@ -529,6 +588,7 @@
     };
 }
 
+
 -(instancetype)initWithItem:(QLFEncryptedConversationItem *)item sequenceValue:(QLFConversationSequenceValue *)sequenceValue {
     self = [super init];
     
@@ -540,15 +600,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFConversationItemWithSequenceValue *)other {
     QREDO_COMPARE_OBJECT(item);
     QREDO_COMPARE_OBJECT(sequenceValue);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToConversationItemWithSequenceValue:other];
 }
+
 
 -(BOOL)isEqualToConversationItemWithSequenceValue:(QLFConversationItemWithSequenceValue *)other {
     if (other == self)return YES;
@@ -562,6 +625,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -569,6 +633,7 @@
     hash = hash * 31u + [_sequenceValue hash];
     return hash;
 }
+
 
 @end
 
@@ -579,6 +644,7 @@
 +(QLFConversationQueryItemsResult *)conversationQueryItemsResultWithItems:(NSArray *)items maxSequenceValue:(QLFConversationSequenceValue *)maxSequenceValue current:(BOOL)current {
     return [[QLFConversationQueryItemsResult alloc] initWithItems:items maxSequenceValue:maxSequenceValue current:current];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -600,6 +666,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'ConversationQueryItemsResult'
@@ -617,6 +684,7 @@
     };
 }
 
+
 -(instancetype)initWithItems:(NSArray *)items maxSequenceValue:(QLFConversationSequenceValue *)maxSequenceValue current:(BOOL)current {
     self = [super init];
     
@@ -629,6 +697,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFConversationQueryItemsResult *)other {
     QREDO_COMPARE_OBJECT(items);
     QREDO_COMPARE_OBJECT(maxSequenceValue);
@@ -636,9 +705,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToConversationQueryItemsResult:other];
 }
+
 
 -(BOOL)isEqualToConversationQueryItemsResult:(QLFConversationQueryItemsResult *)other {
     if (other == self)return YES;
@@ -654,6 +725,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -662,6 +734,7 @@
     hash = hash * 31u + (NSUInteger)_current;
     return hash;
 }
+
 
 @end
 
@@ -672,6 +745,7 @@
 +(QLFEncryptedRecoveryInfoType *)encryptedRecoveryInfoTypeWithCredentialType:(int32_t)credentialType encryptedMasterKey:(NSData *)encryptedMasterKey {
     return [[QLFEncryptedRecoveryInfoType alloc] initWithCredentialType:credentialType encryptedMasterKey:encryptedMasterKey];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -689,6 +763,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'EncryptedRecoveryInfoType'
@@ -703,6 +778,7 @@
     };
 }
 
+
 -(instancetype)initWithCredentialType:(int32_t)credentialType encryptedMasterKey:(NSData *)encryptedMasterKey {
     self = [super init];
     
@@ -714,15 +790,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFEncryptedRecoveryInfoType *)other {
     QREDO_COMPARE_SCALAR(credentialType);
     QREDO_COMPARE_OBJECT(encryptedMasterKey);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToEncryptedRecoveryInfoType:other];
 }
+
 
 -(BOOL)isEqualToEncryptedRecoveryInfoType:(QLFEncryptedRecoveryInfoType *)other {
     if (other == self)return YES;
@@ -736,6 +815,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -743,6 +823,7 @@
     hash = hash * 31u + [_encryptedMasterKey hash];
     return hash;
 }
+
 
 @end
 
@@ -753,6 +834,7 @@
 +(QLFEncryptedKeychain *)encryptedKeychainWithCredentialType:(int32_t)credentialType encryptedKeyChain:(NSData *)encryptedKeyChain encryptedRecoveryInfo:(QLFEncryptedRecoveryInfoType *)encryptedRecoveryInfo {
     return [[QLFEncryptedKeychain alloc] initWithCredentialType:credentialType encryptedKeyChain:encryptedKeyChain encryptedRecoveryInfo:encryptedRecoveryInfo];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -774,6 +856,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'EncryptedKeychain'
@@ -791,6 +874,7 @@
     };
 }
 
+
 -(instancetype)initWithCredentialType:(int32_t)credentialType encryptedKeyChain:(NSData *)encryptedKeyChain encryptedRecoveryInfo:(QLFEncryptedRecoveryInfoType *)encryptedRecoveryInfo {
     self = [super init];
     
@@ -803,6 +887,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFEncryptedKeychain *)other {
     QREDO_COMPARE_SCALAR(credentialType);
     QREDO_COMPARE_OBJECT(encryptedKeyChain);
@@ -810,9 +895,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToEncryptedKeychain:other];
 }
+
 
 -(BOOL)isEqualToEncryptedKeychain:(QLFEncryptedKeychain *)other {
     if (other == self)return YES;
@@ -828,6 +915,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -836,6 +924,7 @@
     hash = hash * 31u + [_encryptedRecoveryInfo hash];
     return hash;
 }
+
 
 @end
 
@@ -846,6 +935,7 @@
 +(QLFKeyLF *)keyLFWithBytes:(NSData *)bytes {
     return [[QLFKeyLF alloc] initWithBytes:bytes];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -859,6 +949,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'KeyLF'
@@ -870,6 +961,7 @@
     };
 }
 
+
 -(instancetype)initWithBytes:(NSData *)bytes {
     self = [super init];
     
@@ -880,14 +972,17 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFKeyLF *)other {
     QREDO_COMPARE_OBJECT(bytes);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToKeyLF:other];
 }
+
 
 -(BOOL)isEqualToKeyLF:(QLFKeyLF *)other {
     if (other == self)return YES;
@@ -899,12 +994,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_bytes hash];
     return hash;
 }
+
 
 @end
 
@@ -915,6 +1012,7 @@
 +(QLFKeyPairLF *)keyPairLFWithPubKey:(QLFKeyLF *)pubKey privKey:(QLFKeyLF *)privKey {
     return [[QLFKeyPairLF alloc] initWithPubKey:pubKey privKey:privKey];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -932,6 +1030,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'KeyPairLF'
@@ -946,6 +1045,7 @@
     };
 }
 
+
 -(instancetype)initWithPubKey:(QLFKeyLF *)pubKey privKey:(QLFKeyLF *)privKey {
     self = [super init];
     
@@ -957,15 +1057,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFKeyPairLF *)other {
     QREDO_COMPARE_OBJECT(pubKey);
     QREDO_COMPARE_OBJECT(privKey);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToKeyPairLF:other];
 }
+
 
 -(BOOL)isEqualToKeyPairLF:(QLFKeyPairLF *)other {
     if (other == self)return YES;
@@ -979,6 +1082,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -986,6 +1090,7 @@
     hash = hash * 31u + [_privKey hash];
     return hash;
 }
+
 
 @end
 
@@ -997,17 +1102,21 @@
     return [[QLFOperationCreate alloc] init];
 }
 
+
 +(QLFOperationType *)operationGet {
     return [[QLFOperationGet alloc] init];
 }
+
 
 +(QLFOperationType *)operationList {
     return [[QLFOperationList alloc] init];
 }
 
+
 +(QLFOperationType *)operationDelete {
     return [[QLFOperationDelete alloc] init];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1024,6 +1133,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -1057,6 +1167,7 @@
     };
 }
 
+
 -(void)ifOperationCreate:(void (^)())ifOperationCreateBlock ifOperationGet:(void (^)())ifOperationGetBlock ifOperationList:(void (^)())ifOperationListBlock ifOperationDelete:(void (^)())ifOperationDeleteBlock {
     if ([self isKindOfClass:[QLFOperationCreate class]]){
         ifOperationCreateBlock();
@@ -1069,21 +1180,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFOperationType *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToOperationType:(QLFOperationType *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -1095,6 +1211,7 @@
     return [[QLFOperationCreate alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFOperationCreate *e = (QLFOperationCreate *)element;
@@ -1104,11 +1221,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFOperationType operationCreate];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -1119,6 +1238,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFOperationCreate *)other {
     if ([other isKindOfClass:[QLFOperationType class]] && ![other isKindOfClass:[QLFOperationCreate class]]){
         //N.B. impose an ordering among subtypes of OperationType
@@ -1128,9 +1248,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToOperationCreate:other];
 }
+
 
 -(BOOL)isEqualToOperationCreate:(QLFOperationCreate *)other {
     if (other == self)return YES;
@@ -1140,11 +1262,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -1156,6 +1280,7 @@
     return [[QLFOperationGet alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFOperationGet *e = (QLFOperationGet *)element;
@@ -1165,11 +1290,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFOperationType operationGet];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -1180,6 +1307,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFOperationGet *)other {
     if ([other isKindOfClass:[QLFOperationType class]] && ![other isKindOfClass:[QLFOperationGet class]]){
         //N.B. impose an ordering among subtypes of OperationType
@@ -1189,9 +1317,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToOperationGet:other];
 }
+
 
 -(BOOL)isEqualToOperationGet:(QLFOperationGet *)other {
     if (other == self)return YES;
@@ -1201,11 +1331,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -1217,6 +1349,7 @@
     return [[QLFOperationList alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFOperationList *e = (QLFOperationList *)element;
@@ -1226,11 +1359,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFOperationType operationList];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -1241,6 +1376,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFOperationList *)other {
     if ([other isKindOfClass:[QLFOperationType class]] && ![other isKindOfClass:[QLFOperationList class]]){
         //N.B. impose an ordering among subtypes of OperationType
@@ -1250,9 +1386,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToOperationList:other];
 }
+
 
 -(BOOL)isEqualToOperationList:(QLFOperationList *)other {
     if (other == self)return YES;
@@ -1262,11 +1400,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -1278,6 +1418,7 @@
     return [[QLFOperationDelete alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFOperationDelete *e = (QLFOperationDelete *)element;
@@ -1287,11 +1428,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFOperationType operationDelete];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -1302,6 +1445,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFOperationDelete *)other {
     if ([other isKindOfClass:[QLFOperationType class]] && ![other isKindOfClass:[QLFOperationDelete class]]){
         //N.B. impose an ordering among subtypes of OperationType
@@ -1311,9 +1455,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToOperationDelete:other];
 }
+
 
 -(BOOL)isEqualToOperationDelete:(QLFOperationDelete *)other {
     if (other == self)return YES;
@@ -1323,11 +1469,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -1338,6 +1486,7 @@
 +(QLFRecoveryInfoType *)recoveryInfoTypeWithCredentialType:(int32_t)credentialType masterKey:(QLFEncryptionKey256 *)masterKey {
     return [[QLFRecoveryInfoType alloc] initWithCredentialType:credentialType masterKey:masterKey];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1355,6 +1504,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RecoveryInfoType'
@@ -1369,6 +1519,7 @@
     };
 }
 
+
 -(instancetype)initWithCredentialType:(int32_t)credentialType masterKey:(QLFEncryptionKey256 *)masterKey {
     self = [super init];
     
@@ -1380,15 +1531,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRecoveryInfoType *)other {
     QREDO_COMPARE_SCALAR(credentialType);
     QREDO_COMPARE_OBJECT(masterKey);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRecoveryInfoType:other];
 }
+
 
 -(BOOL)isEqualToRecoveryInfoType:(QLFRecoveryInfoType *)other {
     if (other == self)return YES;
@@ -1402,6 +1556,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -1409,6 +1564,7 @@
     hash = hash * 31u + [_masterKey hash];
     return hash;
 }
+
 
 @end
 
@@ -1420,21 +1576,26 @@
     return [[QLFRendezvousAuthX509_PEM alloc] initWithSignature:signature];
 }
 
+
 +(QLFRendezvousAuthSignature *)rendezvousAuthX509_PEM_SELFSIGNEDWithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthX509_PEM_SELFSIGNED alloc] initWithSignature:signature];
 }
+
 
 +(QLFRendezvousAuthSignature *)rendezvousAuthED25519WithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthED25519 alloc] initWithSignature:signature];
 }
 
+
 +(QLFRendezvousAuthSignature *)rendezvousAuthRSA2048_PEMWithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthRSA2048_PEM alloc] initWithSignature:signature];
 }
 
+
 +(QLFRendezvousAuthSignature *)rendezvousAuthRSA4096_PEMWithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthRSA4096_PEM alloc] initWithSignature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1453,6 +1614,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -1492,6 +1654,7 @@
     };
 }
 
+
 -(void)ifRendezvousAuthX509_PEM:(void (^)(NSData *))ifRendezvousAuthX509_PEMBlock ifRendezvousAuthX509_PEM_SELFSIGNED:(void (^)(NSData *))ifRendezvousAuthX509_PEM_SELFSIGNEDBlock ifRendezvousAuthED25519:(void (^)(NSData *))ifRendezvousAuthED25519Block ifRendezvousAuthRSA2048_PEM:(void (^)(NSData *))ifRendezvousAuthRSA2048_PEMBlock ifRendezvousAuthRSA4096_PEM:(void (^)(NSData *))ifRendezvousAuthRSA4096_PEMBlock {
     if ([self isKindOfClass:[QLFRendezvousAuthX509_PEM class]]){
         ifRendezvousAuthX509_PEMBlock([((QLFRendezvousAuthX509_PEM *)self) signature]);
@@ -1506,21 +1669,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAuthSignature *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToRendezvousAuthSignature:(QLFRendezvousAuthSignature *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -1531,6 +1699,7 @@
 +(QLFRendezvousAuthSignature *)rendezvousAuthX509_PEMWithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthX509_PEM alloc] initWithSignature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1544,6 +1713,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'signature'
@@ -1553,6 +1723,7 @@
         return [QLFRendezvousAuthSignature rendezvousAuthX509_PEMWithSignature:signature];
     };
 }
+
 
 -(instancetype)initWithSignature:(NSData *)signature {
     self = [super init];
@@ -1564,6 +1735,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAuthX509_PEM *)other {
     if ([other isKindOfClass:[QLFRendezvousAuthSignature class]] && ![other isKindOfClass:[QLFRendezvousAuthX509_PEM class]]){
         //N.B. impose an ordering among subtypes of RendezvousAuthSignature
@@ -1574,9 +1746,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousAuthX509_PEM:other];
 }
+
 
 -(BOOL)isEqualToRendezvousAuthX509_PEM:(QLFRendezvousAuthX509_PEM *)other {
     if (other == self)return YES;
@@ -1588,12 +1762,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_signature hash];
     return hash;
 }
+
 
 @end
 
@@ -1604,6 +1780,7 @@
 +(QLFRendezvousAuthSignature *)rendezvousAuthX509_PEM_SELFSIGNEDWithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthX509_PEM_SELFSIGNED alloc] initWithSignature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1617,6 +1794,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'signature'
@@ -1626,6 +1804,7 @@
         return [QLFRendezvousAuthSignature rendezvousAuthX509_PEM_SELFSIGNEDWithSignature:signature];
     };
 }
+
 
 -(instancetype)initWithSignature:(NSData *)signature {
     self = [super init];
@@ -1637,6 +1816,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAuthX509_PEM_SELFSIGNED *)other {
     if ([other isKindOfClass:[QLFRendezvousAuthSignature class]] && ![other isKindOfClass:[QLFRendezvousAuthX509_PEM_SELFSIGNED class]]){
         //N.B. impose an ordering among subtypes of RendezvousAuthSignature
@@ -1647,9 +1827,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousAuthX509_PEM_SELFSIGNED:other];
 }
+
 
 -(BOOL)isEqualToRendezvousAuthX509_PEM_SELFSIGNED:(QLFRendezvousAuthX509_PEM_SELFSIGNED *)other {
     if (other == self)return YES;
@@ -1661,12 +1843,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_signature hash];
     return hash;
 }
+
 
 @end
 
@@ -1677,6 +1861,7 @@
 +(QLFRendezvousAuthSignature *)rendezvousAuthED25519WithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthED25519 alloc] initWithSignature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1690,6 +1875,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'signature'
@@ -1699,6 +1885,7 @@
         return [QLFRendezvousAuthSignature rendezvousAuthED25519WithSignature:signature];
     };
 }
+
 
 -(instancetype)initWithSignature:(NSData *)signature {
     self = [super init];
@@ -1710,6 +1897,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAuthED25519 *)other {
     if ([other isKindOfClass:[QLFRendezvousAuthSignature class]] && ![other isKindOfClass:[QLFRendezvousAuthED25519 class]]){
         //N.B. impose an ordering among subtypes of RendezvousAuthSignature
@@ -1720,9 +1908,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousAuthED25519:other];
 }
+
 
 -(BOOL)isEqualToRendezvousAuthED25519:(QLFRendezvousAuthED25519 *)other {
     if (other == self)return YES;
@@ -1734,12 +1924,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_signature hash];
     return hash;
 }
+
 
 @end
 
@@ -1750,6 +1942,7 @@
 +(QLFRendezvousAuthSignature *)rendezvousAuthRSA2048_PEMWithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthRSA2048_PEM alloc] initWithSignature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1763,6 +1956,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'signature'
@@ -1772,6 +1966,7 @@
         return [QLFRendezvousAuthSignature rendezvousAuthRSA2048_PEMWithSignature:signature];
     };
 }
+
 
 -(instancetype)initWithSignature:(NSData *)signature {
     self = [super init];
@@ -1783,6 +1978,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAuthRSA2048_PEM *)other {
     if ([other isKindOfClass:[QLFRendezvousAuthSignature class]] && ![other isKindOfClass:[QLFRendezvousAuthRSA2048_PEM class]]){
         //N.B. impose an ordering among subtypes of RendezvousAuthSignature
@@ -1793,9 +1989,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousAuthRSA2048_PEM:other];
 }
+
 
 -(BOOL)isEqualToRendezvousAuthRSA2048_PEM:(QLFRendezvousAuthRSA2048_PEM *)other {
     if (other == self)return YES;
@@ -1807,12 +2005,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_signature hash];
     return hash;
 }
+
 
 @end
 
@@ -1823,6 +2023,7 @@
 +(QLFRendezvousAuthSignature *)rendezvousAuthRSA4096_PEMWithSignature:(NSData *)signature {
     return [[QLFRendezvousAuthRSA4096_PEM alloc] initWithSignature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1836,6 +2037,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'signature'
@@ -1845,6 +2047,7 @@
         return [QLFRendezvousAuthSignature rendezvousAuthRSA4096_PEMWithSignature:signature];
     };
 }
+
 
 -(instancetype)initWithSignature:(NSData *)signature {
     self = [super init];
@@ -1856,6 +2059,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAuthRSA4096_PEM *)other {
     if ([other isKindOfClass:[QLFRendezvousAuthSignature class]] && ![other isKindOfClass:[QLFRendezvousAuthRSA4096_PEM class]]){
         //N.B. impose an ordering among subtypes of RendezvousAuthSignature
@@ -1866,9 +2070,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousAuthRSA4096_PEM:other];
 }
+
 
 -(BOOL)isEqualToRendezvousAuthRSA4096_PEM:(QLFRendezvousAuthRSA4096_PEM *)other {
     if (other == self)return YES;
@@ -1880,12 +2086,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_signature hash];
     return hash;
 }
+
 
 @end
 
@@ -1897,9 +2105,11 @@
     return [[QLFRendezvousAnonymous alloc] init];
 }
 
+
 +(QLFRendezvousAuthType *)rendezvousTrustedWithSignature:(QLFRendezvousAuthSignature *)signature {
     return [[QLFRendezvousTrusted alloc] initWithSignature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -1912,6 +2122,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -1933,6 +2144,7 @@
     };
 }
 
+
 -(void)ifRendezvousAnonymous:(void (^)())ifRendezvousAnonymousBlock ifRendezvousTrusted:(void (^)(QLFRendezvousAuthSignature *))ifRendezvousTrustedBlock {
     if ([self isKindOfClass:[QLFRendezvousAnonymous class]]){
         ifRendezvousAnonymousBlock();
@@ -1941,21 +2153,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAuthType *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToRendezvousAuthType:(QLFRendezvousAuthType *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -1967,6 +2184,7 @@
     return [[QLFRendezvousAnonymous alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousAnonymous *e = (QLFRendezvousAnonymous *)element;
@@ -1976,11 +2194,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFRendezvousAuthType rendezvousAnonymous];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -1991,6 +2211,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAnonymous *)other {
     if ([other isKindOfClass:[QLFRendezvousAuthType class]] && ![other isKindOfClass:[QLFRendezvousAnonymous class]]){
         //N.B. impose an ordering among subtypes of RendezvousAuthType
@@ -2000,9 +2221,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousAnonymous:other];
 }
+
 
 -(BOOL)isEqualToRendezvousAnonymous:(QLFRendezvousAnonymous *)other {
     if (other == self)return YES;
@@ -2012,11 +2235,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -2027,6 +2252,7 @@
 +(QLFRendezvousAuthType *)rendezvousTrustedWithSignature:(QLFRendezvousAuthSignature *)signature {
     return [[QLFRendezvousTrusted alloc] initWithSignature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -2040,6 +2266,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'signature'
@@ -2049,6 +2276,7 @@
         return [QLFRendezvousAuthType rendezvousTrustedWithSignature:signature];
     };
 }
+
 
 -(instancetype)initWithSignature:(QLFRendezvousAuthSignature *)signature {
     self = [super init];
@@ -2060,6 +2288,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousTrusted *)other {
     if ([other isKindOfClass:[QLFRendezvousAuthType class]] && ![other isKindOfClass:[QLFRendezvousTrusted class]]){
         //N.B. impose an ordering among subtypes of RendezvousAuthType
@@ -2070,9 +2299,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousTrusted:other];
 }
+
 
 -(BOOL)isEqualToRendezvousTrusted:(QLFRendezvousTrusted *)other {
     if (other == self)return YES;
@@ -2084,12 +2315,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_signature hash];
     return hash;
 }
+
 
 @end
 
@@ -2100,6 +2333,7 @@
 +(QLFEncryptedResponderInfo *)encryptedResponderInfoWithValue:(NSData *)value authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType {
     return [[QLFEncryptedResponderInfo alloc] initWithValue:value authenticationCode:authenticationCode authenticationType:authenticationType];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -2121,6 +2355,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'EncryptedResponderInfo'
@@ -2138,6 +2373,7 @@
     };
 }
 
+
 -(instancetype)initWithValue:(NSData *)value authenticationCode:(QLFAuthenticationCode *)authenticationCode authenticationType:(QLFRendezvousAuthType *)authenticationType {
     self = [super init];
     
@@ -2150,6 +2386,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFEncryptedResponderInfo *)other {
     QREDO_COMPARE_OBJECT(value);
     QREDO_COMPARE_OBJECT(authenticationCode);
@@ -2157,9 +2394,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToEncryptedResponderInfo:other];
 }
+
 
 -(BOOL)isEqualToEncryptedResponderInfo:(QLFEncryptedResponderInfo *)other {
     if (other == self)return YES;
@@ -2175,6 +2414,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -2183,6 +2423,7 @@
     hash = hash * 31u + [_authenticationType hash];
     return hash;
 }
+
 
 @end
 
@@ -2194,6 +2435,7 @@
     return [[QLFRendezvousDeactivated alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousDeactivated *e = (QLFRendezvousDeactivated *)element;
@@ -2202,6 +2444,7 @@
         [writer writeEnd];
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -2212,6 +2455,7 @@
     };
 }
 
+
 -(instancetype)init {
     self = [super init];
     
@@ -2221,13 +2465,16 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousDeactivated *)other {
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousDeactivated:other];
 }
+
 
 -(BOOL)isEqualToRendezvousDeactivated:(QLFRendezvousDeactivated *)other {
     if (other == self)return YES;
@@ -2237,11 +2484,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -2253,9 +2502,11 @@
     return [[QLFRendezvousSingleResponse alloc] init];
 }
 
+
 +(QLFRendezvousResponseCountLimit *)rendezvousUnlimitedResponses {
     return [[QLFRendezvousUnlimitedResponses alloc] init];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -2268,6 +2519,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -2289,6 +2541,7 @@
     };
 }
 
+
 -(void)ifRendezvousSingleResponse:(void (^)())ifRendezvousSingleResponseBlock ifRendezvousUnlimitedResponses:(void (^)())ifRendezvousUnlimitedResponsesBlock {
     if ([self isKindOfClass:[QLFRendezvousSingleResponse class]]){
         ifRendezvousSingleResponseBlock();
@@ -2297,21 +2550,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseCountLimit *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToRendezvousResponseCountLimit:(QLFRendezvousResponseCountLimit *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -2323,6 +2581,7 @@
     return [[QLFRendezvousSingleResponse alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousSingleResponse *e = (QLFRendezvousSingleResponse *)element;
@@ -2332,11 +2591,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFRendezvousResponseCountLimit rendezvousSingleResponse];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -2347,6 +2608,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousSingleResponse *)other {
     if ([other isKindOfClass:[QLFRendezvousResponseCountLimit class]] && ![other isKindOfClass:[QLFRendezvousSingleResponse class]]){
         //N.B. impose an ordering among subtypes of RendezvousResponseCountLimit
@@ -2356,9 +2618,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousSingleResponse:other];
 }
+
 
 -(BOOL)isEqualToRendezvousSingleResponse:(QLFRendezvousSingleResponse *)other {
     if (other == self)return YES;
@@ -2368,11 +2632,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -2384,6 +2650,7 @@
     return [[QLFRendezvousUnlimitedResponses alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousUnlimitedResponses *e = (QLFRendezvousUnlimitedResponses *)element;
@@ -2393,11 +2660,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFRendezvousResponseCountLimit rendezvousUnlimitedResponses];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -2408,6 +2677,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousUnlimitedResponses *)other {
     if ([other isKindOfClass:[QLFRendezvousResponseCountLimit class]] && ![other isKindOfClass:[QLFRendezvousUnlimitedResponses class]]){
         //N.B. impose an ordering among subtypes of RendezvousResponseCountLimit
@@ -2417,9 +2687,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousUnlimitedResponses:other];
 }
+
 
 -(BOOL)isEqualToRendezvousUnlimitedResponses:(QLFRendezvousUnlimitedResponses *)other {
     if (other == self)return YES;
@@ -2429,11 +2701,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -2444,6 +2718,7 @@
 +(QLFRendezvousCreationInfo *)rendezvousCreationInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag durationSeconds:(QLFRendezvousDurationSeconds *)durationSeconds responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo {
     return [[QLFRendezvousCreationInfo alloc] initWithHashedTag:hashedTag durationSeconds:durationSeconds responseCountLimit:responseCountLimit ownershipPublicKey:ownershipPublicKey encryptedResponderInfo:encryptedResponderInfo];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -2473,6 +2748,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RendezvousCreationInfo'
@@ -2496,6 +2772,7 @@
     };
 }
 
+
 -(instancetype)initWithHashedTag:(QLFRendezvousHashedTag *)hashedTag durationSeconds:(QLFRendezvousDurationSeconds *)durationSeconds responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit ownershipPublicKey:(QLFRendezvousOwnershipPublicKey *)ownershipPublicKey encryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo {
     self = [super init];
     
@@ -2510,6 +2787,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousCreationInfo *)other {
     QREDO_COMPARE_OBJECT(hashedTag);
     QREDO_COMPARE_OBJECT(durationSeconds);
@@ -2519,9 +2797,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousCreationInfo:other];
 }
+
 
 -(BOOL)isEqualToRendezvousCreationInfo:(QLFRendezvousCreationInfo *)other {
     if (other == self)return YES;
@@ -2541,6 +2821,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -2552,6 +2833,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFRendezvousResponseRejectionReason
@@ -2562,13 +2844,16 @@
     return [[QLFRendezvousResponseMaxResponseCountReached alloc] init];
 }
 
+
 +(QLFRendezvousResponseRejectionReason *)rendezvousResponseDurationElapsed {
     return [[QLFRendezvousResponseDurationElapsed alloc] init];
 }
 
+
 +(QLFRendezvousResponseRejectionReason *)rendezvousResponseInvalid {
     return [[QLFRendezvousResponseInvalid alloc] init];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -2583,6 +2868,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -2610,6 +2896,7 @@
     };
 }
 
+
 -(void)ifRendezvousResponseMaxResponseCountReached:(void (^)())ifRendezvousResponseMaxResponseCountReachedBlock ifRendezvousResponseDurationElapsed:(void (^)())ifRendezvousResponseDurationElapsedBlock ifRendezvousResponseInvalid:(void (^)())ifRendezvousResponseInvalidBlock {
     if ([self isKindOfClass:[QLFRendezvousResponseMaxResponseCountReached class]]){
         ifRendezvousResponseMaxResponseCountReachedBlock();
@@ -2620,21 +2907,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseRejectionReason *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToRendezvousResponseRejectionReason:(QLFRendezvousResponseRejectionReason *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -2646,6 +2938,7 @@
     return [[QLFRendezvousResponseMaxResponseCountReached alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousResponseMaxResponseCountReached *e = (QLFRendezvousResponseMaxResponseCountReached *)element;
@@ -2655,11 +2948,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFRendezvousResponseRejectionReason rendezvousResponseMaxResponseCountReached];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -2670,6 +2965,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseMaxResponseCountReached *)other {
     if ([other isKindOfClass:[QLFRendezvousResponseRejectionReason class]] && ![other isKindOfClass:[QLFRendezvousResponseMaxResponseCountReached class]]){
         //N.B. impose an ordering among subtypes of RendezvousResponseRejectionReason
@@ -2679,9 +2975,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponseMaxResponseCountReached:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponseMaxResponseCountReached:(QLFRendezvousResponseMaxResponseCountReached *)other {
     if (other == self)return YES;
@@ -2691,11 +2989,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -2707,6 +3007,7 @@
     return [[QLFRendezvousResponseDurationElapsed alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousResponseDurationElapsed *e = (QLFRendezvousResponseDurationElapsed *)element;
@@ -2716,11 +3017,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFRendezvousResponseRejectionReason rendezvousResponseDurationElapsed];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -2731,6 +3034,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseDurationElapsed *)other {
     if ([other isKindOfClass:[QLFRendezvousResponseRejectionReason class]] && ![other isKindOfClass:[QLFRendezvousResponseDurationElapsed class]]){
         //N.B. impose an ordering among subtypes of RendezvousResponseRejectionReason
@@ -2740,9 +3044,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponseDurationElapsed:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponseDurationElapsed:(QLFRendezvousResponseDurationElapsed *)other {
     if (other == self)return YES;
@@ -2752,11 +3058,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -2768,6 +3076,7 @@
     return [[QLFRendezvousResponseInvalid alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousResponseInvalid *e = (QLFRendezvousResponseInvalid *)element;
@@ -2777,11 +3086,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFRendezvousResponseRejectionReason rendezvousResponseInvalid];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -2792,6 +3103,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseInvalid *)other {
     if ([other isKindOfClass:[QLFRendezvousResponseRejectionReason class]] && ![other isKindOfClass:[QLFRendezvousResponseInvalid class]]){
         //N.B. impose an ordering among subtypes of RendezvousResponseRejectionReason
@@ -2801,9 +3113,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponseInvalid:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponseInvalid:(QLFRendezvousResponseInvalid *)other {
     if (other == self)return YES;
@@ -2813,11 +3127,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -2829,13 +3145,16 @@
     return [[QLFRendezvousResponseRegistered alloc] initWithInfo:info];
 }
 
+
 +(QLFRendezvousRespondResult *)rendezvousResponseUnknownTag {
     return [[QLFRendezvousResponseUnknownTag alloc] init];
 }
 
+
 +(QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason {
     return [[QLFRendezvousResponseRejected alloc] initWithReason:reason];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -2850,6 +3169,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -2877,6 +3197,7 @@
     };
 }
 
+
 -(void)ifRendezvousResponseRegistered:(void (^)(QLFEncryptedResponderInfo *))ifRendezvousResponseRegisteredBlock ifRendezvousResponseUnknownTag:(void (^)())ifRendezvousResponseUnknownTagBlock ifRendezvousResponseRejected:(void (^)(QLFRendezvousResponseRejectionReason *))ifRendezvousResponseRejectedBlock {
     if ([self isKindOfClass:[QLFRendezvousResponseRegistered class]]){
         ifRendezvousResponseRegisteredBlock([((QLFRendezvousResponseRegistered *)self) info]);
@@ -2887,21 +3208,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousRespondResult *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToRendezvousRespondResult:(QLFRendezvousRespondResult *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -2912,6 +3238,7 @@
 +(QLFRendezvousRespondResult *)rendezvousResponseRegisteredWithInfo:(QLFEncryptedResponderInfo *)info {
     return [[QLFRendezvousResponseRegistered alloc] initWithInfo:info];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -2925,6 +3252,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'info'
@@ -2934,6 +3262,7 @@
         return [QLFRendezvousRespondResult rendezvousResponseRegisteredWithInfo:info];
     };
 }
+
 
 -(instancetype)initWithInfo:(QLFEncryptedResponderInfo *)info {
     self = [super init];
@@ -2945,6 +3274,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseRegistered *)other {
     if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseRegistered class]]){
         //N.B. impose an ordering among subtypes of RendezvousRespondResult
@@ -2955,9 +3285,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponseRegistered:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponseRegistered:(QLFRendezvousResponseRegistered *)other {
     if (other == self)return YES;
@@ -2969,12 +3301,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_info hash];
     return hash;
 }
+
 
 @end
 
@@ -2986,6 +3320,7 @@
     return [[QLFRendezvousResponseUnknownTag alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousResponseUnknownTag *e = (QLFRendezvousResponseUnknownTag *)element;
@@ -2995,11 +3330,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFRendezvousRespondResult rendezvousResponseUnknownTag];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -3010,6 +3347,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseUnknownTag *)other {
     if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseUnknownTag class]]){
         //N.B. impose an ordering among subtypes of RendezvousRespondResult
@@ -3019,9 +3357,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponseUnknownTag:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponseUnknownTag:(QLFRendezvousResponseUnknownTag *)other {
     if (other == self)return YES;
@@ -3031,11 +3371,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -3046,6 +3388,7 @@
 +(QLFRendezvousRespondResult *)rendezvousResponseRejectedWithReason:(QLFRendezvousResponseRejectionReason *)reason {
     return [[QLFRendezvousResponseRejected alloc] initWithReason:reason];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3059,6 +3402,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'reason'
@@ -3068,6 +3412,7 @@
         return [QLFRendezvousRespondResult rendezvousResponseRejectedWithReason:reason];
     };
 }
+
 
 -(instancetype)initWithReason:(QLFRendezvousResponseRejectionReason *)reason {
     self = [super init];
@@ -3079,6 +3424,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseRejected *)other {
     if ([other isKindOfClass:[QLFRendezvousRespondResult class]] && ![other isKindOfClass:[QLFRendezvousResponseRejected class]]){
         //N.B. impose an ordering among subtypes of RendezvousRespondResult
@@ -3089,9 +3435,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponseRejected:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponseRejected:(QLFRendezvousResponseRejected *)other {
     if (other == self)return YES;
@@ -3103,12 +3451,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_reason hash];
     return hash;
 }
+
 
 @end
 
@@ -3119,6 +3469,7 @@
 +(QLFRendezvousResponse *)rendezvousResponseWithHashedTag:(QLFRendezvousHashedTag *)hashedTag responderPublicKey:(QLFResponderPublicKey *)responderPublicKey responderAuthenticationCode:(QLFAuthenticationCode *)responderAuthenticationCode {
     return [[QLFRendezvousResponse alloc] initWithHashedTag:hashedTag responderPublicKey:responderPublicKey responderAuthenticationCode:responderAuthenticationCode];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3140,6 +3491,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RendezvousResponse'
@@ -3157,6 +3509,7 @@
     };
 }
 
+
 -(instancetype)initWithHashedTag:(QLFRendezvousHashedTag *)hashedTag responderPublicKey:(QLFResponderPublicKey *)responderPublicKey responderAuthenticationCode:(QLFAuthenticationCode *)responderAuthenticationCode {
     self = [super init];
     
@@ -3169,6 +3522,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponse *)other {
     QREDO_COMPARE_OBJECT(hashedTag);
     QREDO_COMPARE_OBJECT(responderPublicKey);
@@ -3176,9 +3530,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponse:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponse:(QLFRendezvousResponse *)other {
     if (other == self)return YES;
@@ -3194,6 +3550,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -3202,6 +3559,7 @@
     hash = hash * 31u + [_responderAuthenticationCode hash];
     return hash;
 }
+
 
 @end
 
@@ -3212,6 +3570,7 @@
 +(QLFRendezvousResponseWithSequenceValue *)rendezvousResponseWithSequenceValueWithResponse:(QLFRendezvousResponse *)response sequenceValue:(QLFRendezvousSequenceValue)sequenceValue {
     return [[QLFRendezvousResponseWithSequenceValue alloc] initWithResponse:response sequenceValue:sequenceValue];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3229,6 +3588,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RendezvousResponseWithSequenceValue'
@@ -3243,6 +3603,7 @@
     };
 }
 
+
 -(instancetype)initWithResponse:(QLFRendezvousResponse *)response sequenceValue:(QLFRendezvousSequenceValue)sequenceValue {
     self = [super init];
     
@@ -3254,15 +3615,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponseWithSequenceValue *)other {
     QREDO_COMPARE_OBJECT(response);
     QREDO_COMPARE_SCALAR(sequenceValue);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponseWithSequenceValue:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponseWithSequenceValue:(QLFRendezvousResponseWithSequenceValue *)other {
     if (other == self)return YES;
@@ -3276,6 +3640,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -3283,6 +3648,7 @@
     hash = hash * 31u + (NSUInteger)_sequenceValue;
     return hash;
 }
+
 
 @end
 
@@ -3293,6 +3659,7 @@
 +(QLFRendezvousResponsesResult *)rendezvousResponsesResultWithResponses:(NSArray *)responses sequenceValue:(QLFRendezvousSequenceValue)sequenceValue {
     return [[QLFRendezvousResponsesResult alloc] initWithResponses:responses sequenceValue:sequenceValue];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3310,6 +3677,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RendezvousResponsesResult'
@@ -3324,6 +3692,7 @@
     };
 }
 
+
 -(instancetype)initWithResponses:(NSArray *)responses sequenceValue:(QLFRendezvousSequenceValue)sequenceValue {
     self = [super init];
     
@@ -3335,15 +3704,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponsesResult *)other {
     QREDO_COMPARE_OBJECT(responses);
     QREDO_COMPARE_SCALAR(sequenceValue);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponsesResult:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponsesResult:(QLFRendezvousResponsesResult *)other {
     if (other == self)return YES;
@@ -3357,6 +3729,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -3364,6 +3737,7 @@
     hash = hash * 31u + (NSUInteger)_sequenceValue;
     return hash;
 }
+
 
 @end
 
@@ -3374,6 +3748,7 @@
 +(QLFServiceAccess *)serviceAccessWithToken:(QLFAnonymousToken1024 *)token signature:(QLFAnonymousToken1024 *)signature keyId:(int32_t)keyId {
     return [[QLFServiceAccess alloc] initWithToken:token signature:signature keyId:keyId];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3395,6 +3770,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'ServiceAccess'
@@ -3412,6 +3788,7 @@
     };
 }
 
+
 -(instancetype)initWithToken:(QLFAnonymousToken1024 *)token signature:(QLFAnonymousToken1024 *)signature keyId:(int32_t)keyId {
     self = [super init];
     
@@ -3424,6 +3801,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFServiceAccess *)other {
     QREDO_COMPARE_OBJECT(token);
     QREDO_COMPARE_OBJECT(signature);
@@ -3431,9 +3809,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToServiceAccess:other];
 }
+
 
 -(BOOL)isEqualToServiceAccess:(QLFServiceAccess *)other {
     if (other == self)return YES;
@@ -3449,6 +3829,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -3457,6 +3838,7 @@
     hash = hash * 31u + (NSUInteger)_keyId;
     return hash;
 }
+
 
 @end
 
@@ -3467,6 +3849,7 @@
 +(QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus {
     return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey authStatus:authStatus];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3508,6 +3891,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'ConversationDescriptor'
@@ -3540,6 +3924,7 @@
     };
 }
 
+
 -(instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus {
     self = [super init];
     
@@ -3557,6 +3942,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFConversationDescriptor *)other {
     QREDO_COMPARE_OBJECT(rendezvousTag);
     QREDO_COMPARE_SCALAR(rendezvousOwner);
@@ -3569,9 +3955,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToConversationDescriptor:other];
 }
+
 
 -(BOOL)isEqualToConversationDescriptor:(QLFConversationDescriptor *)other {
     if (other == self)return YES;
@@ -3597,6 +3985,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -3611,6 +4000,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFOwnershipSignature
@@ -3620,6 +4010,7 @@
 +(QLFOwnershipSignature *)ownershipSignatureWithOp:(QLFOperationType *)op nonce:(QLFNonce *)nonce timestamp:(QLFTimestamp)timestamp signature:(NSData *)signature {
     return [[QLFOwnershipSignature alloc] initWithOp:op nonce:nonce timestamp:timestamp signature:signature];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3645,6 +4036,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'OwnershipSignature'
@@ -3665,6 +4057,7 @@
     };
 }
 
+
 -(instancetype)initWithOp:(QLFOperationType *)op nonce:(QLFNonce *)nonce timestamp:(QLFTimestamp)timestamp signature:(NSData *)signature {
     self = [super init];
     
@@ -3678,6 +4071,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFOwnershipSignature *)other {
     QREDO_COMPARE_OBJECT(op);
     QREDO_COMPARE_OBJECT(nonce);
@@ -3686,9 +4080,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToOwnershipSignature:other];
 }
+
 
 -(BOOL)isEqualToOwnershipSignature:(QLFOwnershipSignature *)other {
     if (other == self)return YES;
@@ -3706,6 +4102,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -3716,6 +4113,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFRendezvousResponderInfo
@@ -3725,6 +4123,7 @@
 +(QLFRendezvousResponderInfo *)rendezvousResponderInfoWithRequesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey conversationType:(NSString *)conversationType transCap:(NSSet *)transCap {
     return [[QLFRendezvousResponderInfo alloc] initWithRequesterPublicKey:requesterPublicKey conversationType:conversationType transCap:transCap];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3746,6 +4145,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RendezvousResponderInfo'
@@ -3763,6 +4163,7 @@
     };
 }
 
+
 -(instancetype)initWithRequesterPublicKey:(QLFRequesterPublicKey *)requesterPublicKey conversationType:(NSString *)conversationType transCap:(NSSet *)transCap {
     self = [super init];
     
@@ -3775,6 +4176,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousResponderInfo *)other {
     QREDO_COMPARE_OBJECT(requesterPublicKey);
     QREDO_COMPARE_OBJECT(conversationType);
@@ -3782,9 +4184,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousResponderInfo:other];
 }
+
 
 -(BOOL)isEqualToRendezvousResponderInfo:(QLFRendezvousResponderInfo *)other {
     if (other == self)return YES;
@@ -3800,6 +4204,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -3808,6 +4213,7 @@
     hash = hash * 31u + [_transCap hash];
     return hash;
 }
+
 
 @end
 
@@ -3818,6 +4224,7 @@
 +(QLFRendezvousActivated *)rendezvousActivatedWithExpiresAt:(NSSet *)expiresAt {
     return [[QLFRendezvousActivated alloc] initWithExpiresAt:expiresAt];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3831,6 +4238,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RendezvousActivated'
@@ -3842,6 +4250,7 @@
     };
 }
 
+
 -(instancetype)initWithExpiresAt:(NSSet *)expiresAt {
     self = [super init];
     
@@ -3852,14 +4261,17 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousActivated *)other {
     QREDO_COMPARE_OBJECT(expiresAt);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousActivated:other];
 }
+
 
 -(BOOL)isEqualToRendezvousActivated:(QLFRendezvousActivated *)other {
     if (other == self)return YES;
@@ -3871,12 +4283,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_expiresAt hash];
     return hash;
 }
+
 
 @end
 
@@ -3888,9 +4302,11 @@
     return [[QLFRendezvousCreated alloc] initWithExpiresAt:expiresAt];
 }
 
+
 +(QLFRendezvousCreateResult *)rendezvousAlreadyExists {
     return [[QLFRendezvousAlreadyExists alloc] init];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3903,6 +4319,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -3924,6 +4341,7 @@
     };
 }
 
+
 -(void)ifRendezvousCreated:(void (^)(NSSet *))ifRendezvousCreatedBlock ifRendezvousAlreadyExists:(void (^)())ifRendezvousAlreadyExistsBlock {
     if ([self isKindOfClass:[QLFRendezvousCreated class]]){
         ifRendezvousCreatedBlock([((QLFRendezvousCreated *)self) expiresAt]);
@@ -3932,21 +4350,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousCreateResult *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToRendezvousCreateResult:(QLFRendezvousCreateResult *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -3957,6 +4380,7 @@
 +(QLFRendezvousCreateResult *)rendezvousCreatedWithExpiresAt:(NSSet *)expiresAt {
     return [[QLFRendezvousCreated alloc] initWithExpiresAt:expiresAt];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -3970,6 +4394,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'expiresAt'
@@ -3979,6 +4404,7 @@
         return [QLFRendezvousCreateResult rendezvousCreatedWithExpiresAt:expiresAt];
     };
 }
+
 
 -(instancetype)initWithExpiresAt:(NSSet *)expiresAt {
     self = [super init];
@@ -3990,6 +4416,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousCreated *)other {
     if ([other isKindOfClass:[QLFRendezvousCreateResult class]] && ![other isKindOfClass:[QLFRendezvousCreated class]]){
         //N.B. impose an ordering among subtypes of RendezvousCreateResult
@@ -4000,9 +4427,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousCreated:other];
 }
+
 
 -(BOOL)isEqualToRendezvousCreated:(QLFRendezvousCreated *)other {
     if (other == self)return YES;
@@ -4014,12 +4443,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_expiresAt hash];
     return hash;
 }
+
 
 @end
 
@@ -4031,6 +4462,7 @@
     return [[QLFRendezvousAlreadyExists alloc] init];
 }
 
+
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         QLFRendezvousAlreadyExists *e = (QLFRendezvousAlreadyExists *)element;
@@ -4040,11 +4472,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [QLFRendezvousCreateResult rendezvousAlreadyExists];
     };
 }
+
 
 -(instancetype)init {
     self = [super init];
@@ -4055,6 +4489,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousAlreadyExists *)other {
     if ([other isKindOfClass:[QLFRendezvousCreateResult class]] && ![other isKindOfClass:[QLFRendezvousAlreadyExists class]]){
         //N.B. impose an ordering among subtypes of RendezvousCreateResult
@@ -4064,9 +4499,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousAlreadyExists:other];
 }
+
 
 -(BOOL)isEqualToRendezvousAlreadyExists:(QLFRendezvousAlreadyExists *)other {
     if (other == self)return YES;
@@ -4076,11 +4513,13 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     return hash;
 }
+
 
 @end
 
@@ -4091,6 +4530,7 @@
 +(QLFRendezvousDescriptor *)rendezvousDescriptorWithTag:(NSString *)tag hashedTag:(QLFRendezvousHashedTag *)hashedTag conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType durationSeconds:(NSSet *)durationSeconds expiresAt:(NSSet *)expiresAt responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit requesterKeyPair:(QLFKeyPairLF *)requesterKeyPair ownershipKeyPair:(QLFKeyPairLF *)ownershipKeyPair {
     return [[QLFRendezvousDescriptor alloc] initWithTag:tag hashedTag:hashedTag conversationType:conversationType authenticationType:authenticationType durationSeconds:durationSeconds expiresAt:expiresAt responseCountLimit:responseCountLimit requesterKeyPair:requesterKeyPair ownershipKeyPair:ownershipKeyPair];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4136,6 +4576,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RendezvousDescriptor'
@@ -4171,6 +4612,7 @@
     };
 }
 
+
 -(instancetype)initWithTag:(NSString *)tag hashedTag:(QLFRendezvousHashedTag *)hashedTag conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType durationSeconds:(NSSet *)durationSeconds expiresAt:(NSSet *)expiresAt responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit requesterKeyPair:(QLFKeyPairLF *)requesterKeyPair ownershipKeyPair:(QLFKeyPairLF *)ownershipKeyPair {
     self = [super init];
     
@@ -4189,6 +4631,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousDescriptor *)other {
     QREDO_COMPARE_OBJECT(tag);
     QREDO_COMPARE_OBJECT(hashedTag);
@@ -4202,9 +4645,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousDescriptor:other];
 }
+
 
 -(BOOL)isEqualToRendezvousDescriptor:(QLFRendezvousDescriptor *)other {
     if (other == self)return YES;
@@ -4232,6 +4677,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -4247,6 +4693,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFRendezvousInfo
@@ -4256,6 +4703,7 @@
 +(QLFRendezvousInfo *)rendezvousInfoWithNumOfResponses:(QLFRendezvousNumOfResponses)numOfResponses responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit expiresAt:(NSSet *)expiresAt deactivatedAt:(NSSet *)deactivatedAt {
     return [[QLFRendezvousInfo alloc] initWithNumOfResponses:numOfResponses responseCountLimit:responseCountLimit expiresAt:expiresAt deactivatedAt:deactivatedAt];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4281,6 +4729,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'RendezvousInfo'
@@ -4301,6 +4750,7 @@
     };
 }
 
+
 -(instancetype)initWithNumOfResponses:(QLFRendezvousNumOfResponses)numOfResponses responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit expiresAt:(NSSet *)expiresAt deactivatedAt:(NSSet *)deactivatedAt {
     self = [super init];
     
@@ -4314,6 +4764,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFRendezvousInfo *)other {
     QREDO_COMPARE_SCALAR(numOfResponses);
     QREDO_COMPARE_OBJECT(responseCountLimit);
@@ -4322,9 +4773,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToRendezvousInfo:other];
 }
+
 
 -(BOOL)isEqualToRendezvousInfo:(QLFRendezvousInfo *)other {
     if (other == self)return YES;
@@ -4342,6 +4795,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -4351,6 +4805,7 @@
     hash = hash * 31u + [_deactivatedAt hash];
     return hash;
 }
+
 
 @end
 
@@ -4362,25 +4817,31 @@
     return [[QLFSBool alloc] initWithV:v];
 }
 
+
 +(QLFSV *)sInt64WithV:(int64_t)v {
     return [[QLFSInt64 alloc] initWithV:v];
 }
+
 
 +(QLFSV *)sDTWithV:(QredoUTCDateTime *)v {
     return [[QLFSDT alloc] initWithV:v];
 }
 
+
 +(QLFSV *)sQUIDWithV:(QredoQUID *)v {
     return [[QLFSQUID alloc] initWithV:v];
 }
+
 
 +(QLFSV *)sStringWithV:(NSString *)v {
     return [[QLFSString alloc] initWithV:v];
 }
 
+
 +(QLFSV *)sBytesWithV:(NSData *)v {
     return [[QLFSBytes alloc] initWithV:v];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4401,6 +4862,7 @@
         }
     };
 }
+
 
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -4446,6 +4908,7 @@
     };
 }
 
+
 -(void)ifSBool:(void (^)(BOOL))ifSBoolBlock ifSInt64:(void (^)(int64_t))ifSInt64Block ifSDT:(void (^)(QredoUTCDateTime *))ifSDTBlock ifSQUID:(void (^)(QredoQUID *))ifSQUIDBlock ifSString:(void (^)(NSString *))ifSStringBlock ifSBytes:(void (^)(NSData *))ifSBytesBlock {
     if ([self isKindOfClass:[QLFSBool class]]){
         ifSBoolBlock([((QLFSBool *)self) v]);
@@ -4462,21 +4925,26 @@
     }
 }
 
+
 -(NSComparisonResult)compare:(QLFSV *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
 }
+
 
 -(BOOL)isEqualTo:(id)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(BOOL)isEqualToSV:(QLFSV *)other {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
 }
 
+
 -(NSUInteger)hash {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
 }
+
 
 @end
 
@@ -4487,6 +4955,7 @@
 +(QLFSV *)sBoolWithV:(BOOL)v {
     return [[QLFSBool alloc] initWithV:v];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4500,6 +4969,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'v'
@@ -4509,6 +4979,7 @@
         return [QLFSV sBoolWithV:v];
     };
 }
+
 
 -(instancetype)initWithV:(BOOL)v {
     self = [super init];
@@ -4520,6 +4991,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFSBool *)other {
     if ([other isKindOfClass:[QLFSV class]] && ![other isKindOfClass:[QLFSBool class]]){
         //N.B. impose an ordering among subtypes of SV
@@ -4530,9 +5002,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToSBool:other];
 }
+
 
 -(BOOL)isEqualToSBool:(QLFSBool *)other {
     if (other == self)return YES;
@@ -4544,12 +5018,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + (NSUInteger)_v;
     return hash;
 }
+
 
 @end
 
@@ -4560,6 +5036,7 @@
 +(QLFSV *)sInt64WithV:(int64_t)v {
     return [[QLFSInt64 alloc] initWithV:v];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4573,6 +5050,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'v'
@@ -4582,6 +5060,7 @@
         return [QLFSV sInt64WithV:v];
     };
 }
+
 
 -(instancetype)initWithV:(int64_t)v {
     self = [super init];
@@ -4593,6 +5072,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFSInt64 *)other {
     if ([other isKindOfClass:[QLFSV class]] && ![other isKindOfClass:[QLFSInt64 class]]){
         //N.B. impose an ordering among subtypes of SV
@@ -4603,9 +5083,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToSInt64:other];
 }
+
 
 -(BOOL)isEqualToSInt64:(QLFSInt64 *)other {
     if (other == self)return YES;
@@ -4617,12 +5099,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + (NSUInteger)_v;
     return hash;
 }
+
 
 @end
 
@@ -4633,6 +5117,7 @@
 +(QLFSV *)sDTWithV:(QredoUTCDateTime *)v {
     return [[QLFSDT alloc] initWithV:v];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4646,6 +5131,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'v'
@@ -4655,6 +5141,7 @@
         return [QLFSV sDTWithV:v];
     };
 }
+
 
 -(instancetype)initWithV:(QredoUTCDateTime *)v {
     self = [super init];
@@ -4666,6 +5153,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFSDT *)other {
     if ([other isKindOfClass:[QLFSV class]] && ![other isKindOfClass:[QLFSDT class]]){
         //N.B. impose an ordering among subtypes of SV
@@ -4676,9 +5164,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToSDT:other];
 }
+
 
 -(BOOL)isEqualToSDT:(QLFSDT *)other {
     if (other == self)return YES;
@@ -4690,12 +5180,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_v hash];
     return hash;
 }
+
 
 @end
 
@@ -4706,6 +5198,7 @@
 +(QLFSV *)sQUIDWithV:(QredoQUID *)v {
     return [[QLFSQUID alloc] initWithV:v];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4719,6 +5212,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'v'
@@ -4728,6 +5222,7 @@
         return [QLFSV sQUIDWithV:v];
     };
 }
+
 
 -(instancetype)initWithV:(QredoQUID *)v {
     self = [super init];
@@ -4739,6 +5234,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFSQUID *)other {
     if ([other isKindOfClass:[QLFSV class]] && ![other isKindOfClass:[QLFSQUID class]]){
         //N.B. impose an ordering among subtypes of SV
@@ -4749,9 +5245,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToSQUID:other];
 }
+
 
 -(BOOL)isEqualToSQUID:(QLFSQUID *)other {
     if (other == self)return YES;
@@ -4763,12 +5261,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_v hash];
     return hash;
 }
+
 
 @end
 
@@ -4779,6 +5279,7 @@
 +(QLFSV *)sStringWithV:(NSString *)v {
     return [[QLFSString alloc] initWithV:v];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4792,6 +5293,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'v'
@@ -4801,6 +5303,7 @@
         return [QLFSV sStringWithV:v];
     };
 }
+
 
 -(instancetype)initWithV:(NSString *)v {
     self = [super init];
@@ -4812,6 +5315,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFSString *)other {
     if ([other isKindOfClass:[QLFSV class]] && ![other isKindOfClass:[QLFSString class]]){
         //N.B. impose an ordering among subtypes of SV
@@ -4822,9 +5326,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToSString:other];
 }
+
 
 -(BOOL)isEqualToSString:(QLFSString *)other {
     if (other == self)return YES;
@@ -4836,12 +5342,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_v hash];
     return hash;
 }
+
 
 @end
 
@@ -4852,6 +5360,7 @@
 +(QLFSV *)sBytesWithV:(NSData *)v {
     return [[QLFSBytes alloc] initWithV:v];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4865,6 +5374,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readFieldStart]; //TODO assert that field name is 'v'
@@ -4874,6 +5384,7 @@
         return [QLFSV sBytesWithV:v];
     };
 }
+
 
 -(instancetype)initWithV:(NSData *)v {
     self = [super init];
@@ -4885,6 +5396,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFSBytes *)other {
     if ([other isKindOfClass:[QLFSV class]] && ![other isKindOfClass:[QLFSBytes class]]){
         //N.B. impose an ordering among subtypes of SV
@@ -4895,9 +5407,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToSBytes:other];
 }
+
 
 -(BOOL)isEqualToSBytes:(QLFSBytes *)other {
     if (other == self)return YES;
@@ -4909,12 +5423,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
     hash = hash * 31u + [_v hash];
     return hash;
 }
+
 
 @end
 
@@ -4925,6 +5441,7 @@
 +(QLFIndexable *)indexableWithKey:(NSString *)key value:(QLFSV *)value {
     return [[QLFIndexable alloc] initWithKey:key value:value];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -4942,6 +5459,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'Indexable'
@@ -4956,6 +5474,7 @@
     };
 }
 
+
 -(instancetype)initWithKey:(NSString *)key value:(QLFSV *)value {
     self = [super init];
     
@@ -4967,15 +5486,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFIndexable *)other {
     QREDO_COMPARE_OBJECT(key);
     QREDO_COMPARE_OBJECT(value);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToIndexable:other];
 }
+
 
 -(BOOL)isEqualToIndexable:(QLFIndexable *)other {
     if (other == self)return YES;
@@ -4989,6 +5511,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -4996,6 +5519,7 @@
     hash = hash * 31u + [_value hash];
     return hash;
 }
+
 
 @end
 
@@ -5006,6 +5530,7 @@
 +(QLFConversationMessageMetadata *)conversationMessageMetadataWithID:(QLFConversationMessageId *)id parentId:(NSSet *)parentId sequence:(QLFConversationSequenceValue *)sequence sentByMe:(BOOL)sentByMe created:(QredoUTCDateTime *)created dataType:(NSString *)dataType values:(NSSet *)values {
     return [[QLFConversationMessageMetadata alloc] initWithID:id parentId:parentId sequence:sequence sentByMe:sentByMe created:created dataType:dataType values:values];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5043,6 +5568,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'ConversationMessageMetadata'
@@ -5072,6 +5598,7 @@
     };
 }
 
+
 -(instancetype)initWithID:(QLFConversationMessageId *)id parentId:(NSSet *)parentId sequence:(QLFConversationSequenceValue *)sequence sentByMe:(BOOL)sentByMe created:(QredoUTCDateTime *)created dataType:(NSString *)dataType values:(NSSet *)values {
     self = [super init];
     
@@ -5088,6 +5615,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFConversationMessageMetadata *)other {
     QREDO_COMPARE_OBJECT(id);
     QREDO_COMPARE_OBJECT(parentId);
@@ -5099,9 +5627,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToConversationMessageMetadata:other];
 }
+
 
 -(BOOL)isEqualToConversationMessageMetadata:(QLFConversationMessageMetadata *)other {
     if (other == self)return YES;
@@ -5125,6 +5655,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5138,6 +5669,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFConversationMessage
@@ -5147,6 +5679,7 @@
 +(QLFConversationMessage *)conversationMessageWithMetadata:(QLFConversationMessageMetadata *)metadata body:(NSData *)body {
     return [[QLFConversationMessage alloc] initWithMetadata:metadata body:body];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5164,6 +5697,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'ConversationMessage'
@@ -5178,6 +5712,7 @@
     };
 }
 
+
 -(instancetype)initWithMetadata:(QLFConversationMessageMetadata *)metadata body:(NSData *)body {
     self = [super init];
     
@@ -5189,15 +5724,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFConversationMessage *)other {
     QREDO_COMPARE_OBJECT(metadata);
     QREDO_COMPARE_OBJECT(body);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToConversationMessage:other];
 }
+
 
 -(BOOL)isEqualToConversationMessage:(QLFConversationMessage *)other {
     if (other == self)return YES;
@@ -5211,6 +5749,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5218,6 +5757,7 @@
     hash = hash * 31u + [_body hash];
     return hash;
 }
+
 
 @end
 
@@ -5228,6 +5768,7 @@
 +(QLFServiceAccessInfo *)serviceAccessInfoWithServiceAccess:(QLFServiceAccess *)serviceAccess expirySeconds:(int32_t)expirySeconds renegotiationSeconds:(int32_t)renegotiationSeconds issuanceDateTimeUTC:(QredoUTCDateTime *)issuanceDateTimeUTC {
     return [[QLFServiceAccessInfo alloc] initWithServiceAccess:serviceAccess expirySeconds:expirySeconds renegotiationSeconds:renegotiationSeconds issuanceDateTimeUTC:issuanceDateTimeUTC];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5253,6 +5794,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'ServiceAccessInfo'
@@ -5273,6 +5815,7 @@
     };
 }
 
+
 -(instancetype)initWithServiceAccess:(QLFServiceAccess *)serviceAccess expirySeconds:(int32_t)expirySeconds renegotiationSeconds:(int32_t)renegotiationSeconds issuanceDateTimeUTC:(QredoUTCDateTime *)issuanceDateTimeUTC {
     self = [super init];
     
@@ -5286,6 +5829,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFServiceAccessInfo *)other {
     QREDO_COMPARE_OBJECT(serviceAccess);
     QREDO_COMPARE_SCALAR(expirySeconds);
@@ -5294,9 +5838,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToServiceAccessInfo:other];
 }
+
 
 -(BOOL)isEqualToServiceAccessInfo:(QLFServiceAccessInfo *)other {
     if (other == self)return YES;
@@ -5314,6 +5860,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5324,6 +5871,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFOperatorInfo
@@ -5333,6 +5881,7 @@
 +(QLFOperatorInfo *)operatorInfoWithName:(NSString *)name serviceUri:(NSString *)serviceUri accountID:(NSString *)accountID currentServiceAccess:(NSSet *)currentServiceAccess nextServiceAccess:(NSSet *)nextServiceAccess {
     return [[QLFOperatorInfo alloc] initWithName:name serviceUri:serviceUri accountID:accountID currentServiceAccess:currentServiceAccess nextServiceAccess:nextServiceAccess];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5362,6 +5911,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'OperatorInfo'
@@ -5385,6 +5935,7 @@
     };
 }
 
+
 -(instancetype)initWithName:(NSString *)name serviceUri:(NSString *)serviceUri accountID:(NSString *)accountID currentServiceAccess:(NSSet *)currentServiceAccess nextServiceAccess:(NSSet *)nextServiceAccess {
     self = [super init];
     
@@ -5399,6 +5950,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFOperatorInfo *)other {
     QREDO_COMPARE_OBJECT(name);
     QREDO_COMPARE_OBJECT(serviceUri);
@@ -5408,9 +5960,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToOperatorInfo:other];
 }
+
 
 -(BOOL)isEqualToOperatorInfo:(QLFOperatorInfo *)other {
     if (other == self)return YES;
@@ -5430,6 +5984,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5441,6 +5996,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFVaultItemMetadata
@@ -5450,6 +6006,7 @@
 +(QLFVaultItemMetadata *)vaultItemMetadataWithDataType:(NSString *)dataType created:(QredoUTCDateTime *)created values:(NSSet *)values {
     return [[QLFVaultItemMetadata alloc] initWithDataType:dataType created:created values:values];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5471,6 +6028,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'VaultItemMetadata'
@@ -5488,6 +6046,7 @@
     };
 }
 
+
 -(instancetype)initWithDataType:(NSString *)dataType created:(QredoUTCDateTime *)created values:(NSSet *)values {
     self = [super init];
     
@@ -5500,6 +6059,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFVaultItemMetadata *)other {
     QREDO_COMPARE_OBJECT(dataType);
     QREDO_COMPARE_OBJECT(created);
@@ -5507,9 +6067,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToVaultItemMetadata:other];
 }
+
 
 -(BOOL)isEqualToVaultItemMetadata:(QLFVaultItemMetadata *)other {
     if (other == self)return YES;
@@ -5525,6 +6087,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5533,6 +6096,7 @@
     hash = hash * 31u + [_values hash];
     return hash;
 }
+
 
 @end
 
@@ -5543,6 +6107,7 @@
 +(QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QLFEncryptionKey256 *)encryptionKey authenticationKey:(QLFAuthenticationKey256 *)authenticationKey {
     return [[QLFVaultKeyPair alloc] initWithEncryptionKey:encryptionKey authenticationKey:authenticationKey];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5560,6 +6125,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'VaultKeyPair'
@@ -5574,6 +6140,7 @@
     };
 }
 
+
 -(instancetype)initWithEncryptionKey:(QLFEncryptionKey256 *)encryptionKey authenticationKey:(QLFAuthenticationKey256 *)authenticationKey {
     self = [super init];
     
@@ -5585,15 +6152,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFVaultKeyPair *)other {
     QREDO_COMPARE_OBJECT(encryptionKey);
     QREDO_COMPARE_OBJECT(authenticationKey);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToVaultKeyPair:other];
 }
+
 
 -(BOOL)isEqualToVaultKeyPair:(QLFVaultKeyPair *)other {
     if (other == self)return YES;
@@ -5607,6 +6177,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5614,6 +6185,7 @@
     hash = hash * 31u + [_authenticationKey hash];
     return hash;
 }
+
 
 @end
 
@@ -5624,6 +6196,7 @@
 +(QLFAccessLevelVaultKeys *)accessLevelVaultKeysWithMaxAccessLevel:(int32_t)maxAccessLevel vaultKeys:(NSArray *)vaultKeys {
     return [[QLFAccessLevelVaultKeys alloc] initWithMaxAccessLevel:maxAccessLevel vaultKeys:vaultKeys];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5641,6 +6214,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'AccessLevelVaultKeys'
@@ -5655,6 +6229,7 @@
     };
 }
 
+
 -(instancetype)initWithMaxAccessLevel:(int32_t)maxAccessLevel vaultKeys:(NSArray *)vaultKeys {
     self = [super init];
     
@@ -5666,15 +6241,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFAccessLevelVaultKeys *)other {
     QREDO_COMPARE_SCALAR(maxAccessLevel);
     QREDO_COMPARE_OBJECT(vaultKeys);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToAccessLevelVaultKeys:other];
 }
+
 
 -(BOOL)isEqualToAccessLevelVaultKeys:(QLFAccessLevelVaultKeys *)other {
     if (other == self)return YES;
@@ -5688,6 +6266,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5695,6 +6274,7 @@
     hash = hash * 31u + [_vaultKeys hash];
     return hash;
 }
+
 
 @end
 
@@ -5705,6 +6285,7 @@
 +(QLFVaultKeyStore *)vaultKeyStoreWithAccessLevel:(int32_t)accessLevel credentialType:(int32_t)credentialType encryptedVaultKeys:(NSData *)encryptedVaultKeys {
     return [[QLFVaultKeyStore alloc] initWithAccessLevel:accessLevel credentialType:credentialType encryptedVaultKeys:encryptedVaultKeys];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5726,6 +6307,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'VaultKeyStore'
@@ -5743,6 +6325,7 @@
     };
 }
 
+
 -(instancetype)initWithAccessLevel:(int32_t)accessLevel credentialType:(int32_t)credentialType encryptedVaultKeys:(NSData *)encryptedVaultKeys {
     self = [super init];
     
@@ -5755,6 +6338,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFVaultKeyStore *)other {
     QREDO_COMPARE_SCALAR(accessLevel);
     QREDO_COMPARE_SCALAR(credentialType);
@@ -5762,9 +6346,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToVaultKeyStore:other];
 }
+
 
 -(BOOL)isEqualToVaultKeyStore:(QLFVaultKeyStore *)other {
     if (other == self)return YES;
@@ -5780,6 +6366,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5788,6 +6375,7 @@
     hash = hash * 31u + [_encryptedVaultKeys hash];
     return hash;
 }
+
 
 @end
 
@@ -5798,6 +6386,7 @@
 +(QLFVaultInfoType *)vaultInfoTypeWithVaultID:(QLFVaultId *)vaultID ownershipPrivateKey:(QLFVaultOwnershipPrivateKey *)ownershipPrivateKey keyStore:(NSSet *)keyStore {
     return [[QLFVaultInfoType alloc] initWithVaultID:vaultID ownershipPrivateKey:ownershipPrivateKey keyStore:keyStore];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5819,6 +6408,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'VaultInfoType'
@@ -5836,6 +6426,7 @@
     };
 }
 
+
 -(instancetype)initWithVaultID:(QLFVaultId *)vaultID ownershipPrivateKey:(QLFVaultOwnershipPrivateKey *)ownershipPrivateKey keyStore:(NSSet *)keyStore {
     self = [super init];
     
@@ -5848,6 +6439,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFVaultInfoType *)other {
     QREDO_COMPARE_OBJECT(vaultID);
     QREDO_COMPARE_OBJECT(ownershipPrivateKey);
@@ -5855,9 +6447,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToVaultInfoType:other];
 }
+
 
 -(BOOL)isEqualToVaultInfoType:(QLFVaultInfoType *)other {
     if (other == self)return YES;
@@ -5873,6 +6467,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5881,6 +6476,7 @@
     hash = hash * 31u + [_keyStore hash];
     return hash;
 }
+
 
 @end
 
@@ -5891,6 +6487,7 @@
 +(QLFKeychain *)keychainWithCredentialType:(int32_t)credentialType operatorInfo:(QLFOperatorInfo *)operatorInfo vaultInfo:(QLFVaultInfoType *)vaultInfo encryptedRecoveryInfo:(QLFEncryptedRecoveryInfoType *)encryptedRecoveryInfo {
     return [[QLFKeychain alloc] initWithCredentialType:credentialType operatorInfo:operatorInfo vaultInfo:vaultInfo encryptedRecoveryInfo:encryptedRecoveryInfo];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -5916,6 +6513,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'Keychain'
@@ -5936,6 +6534,7 @@
     };
 }
 
+
 -(instancetype)initWithCredentialType:(int32_t)credentialType operatorInfo:(QLFOperatorInfo *)operatorInfo vaultInfo:(QLFVaultInfoType *)vaultInfo encryptedRecoveryInfo:(QLFEncryptedRecoveryInfoType *)encryptedRecoveryInfo {
     self = [super init];
     
@@ -5949,6 +6548,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFKeychain *)other {
     QREDO_COMPARE_SCALAR(credentialType);
     QREDO_COMPARE_OBJECT(operatorInfo);
@@ -5957,9 +6557,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToKeychain:other];
 }
+
 
 -(BOOL)isEqualToKeychain:(QLFKeychain *)other {
     if (other == self)return YES;
@@ -5977,6 +6579,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -5987,6 +6590,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFVaultItemRef
@@ -5996,6 +6600,7 @@
 +(QLFVaultItemRef *)vaultItemRefWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QLFVaultItemId *)itemId {
     return [[QLFVaultItemRef alloc] initWithVaultId:vaultId sequenceId:sequenceId sequenceValue:sequenceValue itemId:itemId];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -6021,6 +6626,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'VaultItemRef'
@@ -6041,6 +6647,7 @@
     };
 }
 
+
 -(instancetype)initWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue itemId:(QLFVaultItemId *)itemId {
     self = [super init];
     
@@ -6054,6 +6661,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFVaultItemRef *)other {
     QREDO_COMPARE_OBJECT(vaultId);
     QREDO_COMPARE_OBJECT(sequenceId);
@@ -6062,9 +6670,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToVaultItemRef:other];
 }
+
 
 -(BOOL)isEqualToVaultItemRef:(QLFVaultItemRef *)other {
     if (other == self)return YES;
@@ -6082,6 +6692,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -6092,6 +6703,7 @@
     return hash;
 }
 
+
 @end
 
 @implementation QLFEncryptedVaultItemHeader
@@ -6101,6 +6713,7 @@
 +(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeaderWithRef:(QLFVaultItemRef *)ref encryptedMetadata:(NSData *)encryptedMetadata authCode:(QLFAuthCode *)authCode {
     return [[QLFEncryptedVaultItemHeader alloc] initWithRef:ref encryptedMetadata:encryptedMetadata authCode:authCode];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -6122,6 +6735,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'EncryptedVaultItemHeader'
@@ -6139,6 +6753,7 @@
     };
 }
 
+
 -(instancetype)initWithRef:(QLFVaultItemRef *)ref encryptedMetadata:(NSData *)encryptedMetadata authCode:(QLFAuthCode *)authCode {
     self = [super init];
     
@@ -6151,6 +6766,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFEncryptedVaultItemHeader *)other {
     QREDO_COMPARE_OBJECT(ref);
     QREDO_COMPARE_OBJECT(encryptedMetadata);
@@ -6158,9 +6774,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToEncryptedVaultItemHeader:other];
 }
+
 
 -(BOOL)isEqualToEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)other {
     if (other == self)return YES;
@@ -6176,6 +6794,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -6184,6 +6803,7 @@
     hash = hash * 31u + [_authCode hash];
     return hash;
 }
+
 
 @end
 
@@ -6194,6 +6814,7 @@
 +(QLFEncryptedVaultItem *)encryptedVaultItemWithHeader:(QLFEncryptedVaultItemHeader *)header encryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode {
     return [[QLFEncryptedVaultItem alloc] initWithHeader:header encryptedBody:encryptedBody authCode:authCode];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -6215,6 +6836,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'EncryptedVaultItem'
@@ -6232,6 +6854,7 @@
     };
 }
 
+
 -(instancetype)initWithHeader:(QLFEncryptedVaultItemHeader *)header encryptedBody:(NSData *)encryptedBody authCode:(QLFAuthCode *)authCode {
     self = [super init];
     
@@ -6244,6 +6867,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFEncryptedVaultItem *)other {
     QREDO_COMPARE_OBJECT(header);
     QREDO_COMPARE_OBJECT(encryptedBody);
@@ -6251,9 +6875,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToEncryptedVaultItem:other];
 }
+
 
 -(BOOL)isEqualToEncryptedVaultItem:(QLFEncryptedVaultItem *)other {
     if (other == self)return YES;
@@ -6269,6 +6895,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -6277,6 +6904,7 @@
     hash = hash * 31u + [_authCode hash];
     return hash;
 }
+
 
 @end
 
@@ -6287,6 +6915,7 @@
 +(QLFVaultItem *)vaultItemWithRef:(QLFVaultItemRef *)ref metadata:(QLFVaultItemMetadata *)metadata body:(NSData *)body {
     return [[QLFVaultItem alloc] initWithRef:ref metadata:metadata body:body];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -6308,6 +6937,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'VaultItem'
@@ -6325,6 +6955,7 @@
     };
 }
 
+
 -(instancetype)initWithRef:(QLFVaultItemRef *)ref metadata:(QLFVaultItemMetadata *)metadata body:(NSData *)body {
     self = [super init];
     
@@ -6337,6 +6968,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFVaultItem *)other {
     QREDO_COMPARE_OBJECT(ref);
     QREDO_COMPARE_OBJECT(metadata);
@@ -6344,9 +6976,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToVaultItem:other];
 }
+
 
 -(BOOL)isEqualToVaultItem:(QLFVaultItem *)other {
     if (other == self)return YES;
@@ -6362,6 +6996,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -6370,6 +7005,7 @@
     hash = hash * 31u + [_body hash];
     return hash;
 }
+
 
 @end
 
@@ -6380,6 +7016,7 @@
 +(QLFVaultItemQueryResults *)vaultItemQueryResultsWithResults:(NSArray *)results current:(BOOL)current sequenceIds:(NSSet *)sequenceIds {
     return [[QLFVaultItemQueryResults alloc] initWithResults:results current:current sequenceIds:sequenceIds];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -6401,6 +7038,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'VaultItemQueryResults'
@@ -6418,6 +7056,7 @@
     };
 }
 
+
 -(instancetype)initWithResults:(NSArray *)results current:(BOOL)current sequenceIds:(NSSet *)sequenceIds {
     self = [super init];
     
@@ -6430,6 +7069,7 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFVaultItemQueryResults *)other {
     QREDO_COMPARE_OBJECT(results);
     QREDO_COMPARE_SCALAR(current);
@@ -6437,9 +7077,11 @@
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToVaultItemQueryResults:other];
 }
+
 
 -(BOOL)isEqualToVaultItemQueryResults:(QLFVaultItemQueryResults *)other {
     if (other == self)return YES;
@@ -6455,6 +7097,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -6463,6 +7106,7 @@
     hash = hash * 31u + [_sequenceIds hash];
     return hash;
 }
+
 
 @end
 
@@ -6473,6 +7117,7 @@
 +(QLFVaultSequenceState *)vaultSequenceStateWithSequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue {
     return [[QLFVaultSequenceState alloc] initWithSequenceId:sequenceId sequenceValue:sequenceValue];
 }
+
 
 +(QredoMarshaller)marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -6490,6 +7135,7 @@
     };
 }
 
+
 +(QredoUnmarshaller)unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         [reader readConstructorStart];//TODO assert that constructor name is 'VaultSequenceState'
@@ -6504,6 +7150,7 @@
     };
 }
 
+
 -(instancetype)initWithSequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(QLFVaultSequenceValue)sequenceValue {
     self = [super init];
     
@@ -6515,15 +7162,18 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QLFVaultSequenceState *)other {
     QREDO_COMPARE_OBJECT(sequenceId);
     QREDO_COMPARE_SCALAR(sequenceValue);
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqualTo:(id)other {
     return [self isEqualToVaultSequenceState:other];
 }
+
 
 -(BOOL)isEqualToVaultSequenceState:(QLFVaultSequenceState *)other {
     if (other == self)return YES;
@@ -6537,6 +7187,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = 0;
     
@@ -6544,6 +7195,7 @@
     hash = hash * 31u + (NSUInteger)_sequenceValue;
     return hash;
 }
+
 
 @end
 
@@ -6557,6 +7209,7 @@
     return [[self alloc] initWithServiceInvoker:serviceInvoker];
 }
 
+
 -(instancetype)initWithServiceInvoker:(QredoServiceInvoker *)serviceInvoker {
     self = [super init];
     
@@ -6566,6 +7219,7 @@
     
     return self;
 }
+
 
 -(void)publishWithQueueId:(QLFConversationQueueId *)queueId item:(QLFEncryptedConversationItem *)item signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFConversationPublishResult *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Conversations"
@@ -6584,6 +7238,7 @@
                }
               multiResponse:NO];
 }
+
 
 -(void)queryItemsWithQueueId:(QLFConversationQueueId *)queueId after:(NSSet *)after fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFConversationQueryItemsResult *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Conversations"
@@ -6604,6 +7259,7 @@
               multiResponse:NO];
 }
 
+
 -(void)acknowledgeReceiptWithQueueId:(QLFConversationQueueId *)queueId upTo:(QLFConversationSequenceValue *)upTo signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFConversationAckResult *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Conversations"
                   operation:@"acknowledgeReceipt"
@@ -6622,6 +7278,7 @@
               multiResponse:NO];
 }
 
+
 -(void)subscribeWithQueueId:(QLFConversationQueueId *)queueId signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFConversationItemWithSequenceValue *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Conversations"
                   operation:@"subscribe"
@@ -6639,6 +7296,7 @@
               multiResponse:YES];
 }
 
+
 @end
 
 @implementation QLFPing
@@ -6651,6 +7309,7 @@
     return [[self alloc] initWithServiceInvoker:serviceInvoker];
 }
 
+
 -(instancetype)initWithServiceInvoker:(QredoServiceInvoker *)serviceInvoker {
     self = [super init];
     
@@ -6660,6 +7319,7 @@
     
     return self;
 }
+
 
 -(void)pingWithCompletionHandler:(void (^)(BOOL result,NSError *error))completionHandler {
     [_invoker invokeService:@"Ping"
@@ -6676,6 +7336,7 @@
               multiResponse:NO];
 }
 
+
 @end
 
 @implementation QLFRendezvous
@@ -6688,6 +7349,7 @@
     return [[self alloc] initWithServiceInvoker:serviceInvoker];
 }
 
+
 -(instancetype)initWithServiceInvoker:(QredoServiceInvoker *)serviceInvoker {
     self = [super init];
     
@@ -6697,6 +7359,7 @@
     
     return self;
 }
+
 
 -(void)createWithCreationInfo:(QLFRendezvousCreationInfo *)creationInfo completionHandler:(void (^)(QLFRendezvousCreateResult *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Rendezvous"
@@ -6713,6 +7376,7 @@
                }
               multiResponse:NO];
 }
+
 
 -(void)activateWithHashedTag:(QLFRendezvousHashedTag *)hashedTag durationSeconds:(QLFRendezvousDurationSeconds *)durationSeconds signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFRendezvousActivated *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Rendezvous"
@@ -6732,6 +7396,7 @@
               multiResponse:NO];
 }
 
+
 -(void)getInfoWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFRendezvousInfo *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Rendezvous"
                   operation:@"getInfo"
@@ -6749,6 +7414,7 @@
               multiResponse:NO];
 }
 
+
 -(void)respondWithResponse:(QLFRendezvousResponse *)response completionHandler:(void (^)(QLFRendezvousRespondResult *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Rendezvous"
                   operation:@"respond"
@@ -6764,6 +7430,7 @@
                }
               multiResponse:NO];
 }
+
 
 -(void)getResponsesWithHashedTag:(QLFRendezvousHashedTag *)hashedTag after:(QLFRendezvousSequenceValue)after signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFRendezvousResponsesResult *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Rendezvous"
@@ -6783,6 +7450,7 @@
               multiResponse:NO];
 }
 
+
 -(void)subscribeToResponsesWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFRendezvousResponseWithSequenceValue *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Rendezvous"
                   operation:@"subscribeToResponses"
@@ -6799,6 +7467,7 @@
                }
               multiResponse:YES];
 }
+
 
 -(void)deactivateWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFRendezvousDeactivated *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Rendezvous"
@@ -6817,6 +7486,7 @@
               multiResponse:NO];
 }
 
+
 @end
 
 @implementation QLFVault
@@ -6829,6 +7499,7 @@
     return [[self alloc] initWithServiceInvoker:serviceInvoker];
 }
 
+
 -(instancetype)initWithServiceInvoker:(QredoServiceInvoker *)serviceInvoker {
     self = [super init];
     
@@ -6838,6 +7509,7 @@
     
     return self;
 }
+
 
 -(void)putItemWithItem:(QLFEncryptedVaultItem *)item signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(BOOL result,NSError *error))completionHandler {
     [_invoker invokeService:@"Vault"
@@ -6855,6 +7527,7 @@
                }
               multiResponse:NO];
 }
+
 
 -(void)getItemWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(NSSet *)sequenceValue itemId:(QLFVaultItemId *)itemId signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(NSSet *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Vault"
@@ -6876,6 +7549,7 @@
               multiResponse:NO];
 }
 
+
 -(void)getItemHeaderWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(NSSet *)sequenceValue itemId:(QLFVaultItemId *)itemId signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(NSSet *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Vault"
                   operation:@"getItemHeader"
@@ -6896,6 +7570,7 @@
               multiResponse:NO];
 }
 
+
 -(void)queryItemHeadersWithVaultId:(QLFVaultId *)vaultId sequenceStates:(NSSet *)sequenceStates signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFVaultItemQueryResults *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Vault"
                   operation:@"queryItemHeaders"
@@ -6914,6 +7589,7 @@
               multiResponse:NO];
 }
 
+
 -(void)subscribeToItemHeadersWithVaultId:(QLFVaultId *)vaultId signature:(QLFOwnershipSignature *)signature completionHandler:(void (^)(QLFEncryptedVaultItemHeader *result,NSError *error))completionHandler {
     [_invoker invokeService:@"Vault"
                   operation:@"subscribeToItemHeaders"
@@ -6930,6 +7606,7 @@
                }
               multiResponse:YES];
 }
+
 
 @end
 

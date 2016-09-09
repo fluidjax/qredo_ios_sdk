@@ -38,12 +38,14 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
     return tlsDate;
 }
 
+
 +(NSDate *)dateTEST {
     //this returns the guessed date + 33 seconds for testing
     QredoNetworkTime *server = [QredoNetworkTime start];
     
     return [server dateGuessForFirstServeTEST];
 }
+
 
 -(NSDate *)dateGuessForFirstServeTEST {
     SSLTimeSyncWorker *swds =  [self.serversList firstObject];
@@ -56,9 +58,11 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
     return calculatedDate;
 }
 
+
 -(NSDate *)ntpDate {
     return [self.netClock networkTime];
 }
+
 
 +(NSDate *)dateTime {
     @synchronized(self) {
@@ -93,6 +97,7 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
     }
 }
 
+
 -(BOOL)sanityCheck:(NSDate *)dateOne with:(NSDate *)dateTwo {
     NSTimeInterval d1 = [dateOne timeIntervalSince1970];
     NSTimeInterval d2 = [dateTwo timeIntervalSince1970];
@@ -103,17 +108,20 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
     return true;
 }
 
+
 -(NSDate *)dateGuessForFirstServer {
     SSLTimeSyncWorker *swds =  [self.serversList firstObject];
     
     return [swds guessTime];
 }
 
+
 -(void)report {
     for (SSLTimeSyncWorker *swds in self.serversList){
         NSLog(@"Server:%@    url:%@",[swds guessTime],swds.urlString);
     }
 }
+
 
 -(double)getDifference {
     double total = 0;
@@ -133,6 +141,7 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
     return 0;
 }
 
+
 -(void)loadServerList {
     @synchronized(self) {
         self.serversList = [[NSMutableArray alloc] init];
@@ -144,6 +153,7 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
     }
 }
 
+
 -(void)addServer:(NSString *)urlString {
     SSLTimeSyncWorker *server = [[SSLTimeSyncWorker alloc] initWithURLString:urlString];
     
@@ -153,9 +163,11 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
     });
 }
 
+
 -(void)reportFromDelegate {
     //this is called when the NetworkClock has a time to report (I didnt invent the method name, but can't change it otherwise we cant uses PODs)
     NSLog(@"LocalTime:%@    NetworkTime:%@     Offset:%f",[QredoNetworkTime dateTime],self.netClock.networkTime,self.netClock.networkOffset);
 }
+
 
 @end

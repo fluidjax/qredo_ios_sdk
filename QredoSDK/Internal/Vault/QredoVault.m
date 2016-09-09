@@ -22,35 +22,24 @@
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
-
 static NSString *const QredoVaultItemMetadataItemDateCreated = @"_created";
 static NSString *const QredoVaultItemMetadataItemDateModified = @"_modified";
 static NSString *const QredoVaultItemMetadataItemVersion = @"_v";
-
-
 static NSString *const QredoVaultItemMetadataItemTypeRendezvous = @"com.qredo.rendezvous";
 static NSString *const QredoVaultItemMetadataItemTypeConversation = @"com.qredo.conversation";
-
 static const double kQredoVaultUpdateInterval = 1.0; //seconds
 
 
 @interface QredoVault () <QredoUpdateListenerDataSource,QredoUpdateListenerDelegate>{
     QredoVaultKeys *_vaultKeys;
     QredoQUID *_sequenceId;
-    
     QredoVaultHighWatermark *_highwatermark;
-    
     QredoObserverList *_observers;
-    
     QredoVaultCrypto *_vaultCrypto;
     QredoVaultSequenceCache *_vaultSequenceCache;
-    
     QredoVaultServerAccess *_vaultServerAccess;
-    
     dispatch_queue_t _queue;
-    
     QredoUpdateListener *_updateListener;
-    
     QredoLocalIndex *_localIndex;
     QredoUserCredentials *_userCredentials;
 }
@@ -64,39 +53,45 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 @implementation QredoVault (Private)
 
 
-
-
 -(QredoUserCredentials *)userCredentials {
     return _userCredentials;
 }
+
 
 -(void)setUserCredentials:(QredoUserCredentials *)userCredentials {
     _userCredentials = userCredentials;
 }
 
+
 -(void)addMetadataIndexObserver {
     [self.localIndex enableSync];
 }
+
 
 -(void)addMetadataIndexObserver:(IncomingMetadataBlock)block {
     [self.localIndex enableSyncWithBlock:block];
 }
 
+
 -(void)removeMetadataIndexObserver {
     [self.localIndex removeIndexObserver];
 }
+
 
 -(QredoLocalIndex *)localIndex {
     return _localIndex;
 }
 
+
 -(QredoVaultKeys *)vaultKeys {
     return _vaultKeys;
 }
 
+
 -(QredoQUID *)sequenceId {
     return _sequenceId;
 }
+
 
 -(instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing {
     if (!client || !vaultKeys)return nil;
@@ -143,6 +138,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     return self;
 }
 
+
 -(QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type {
     NSString *constructedName = [NSString stringWithFormat:@"%@.%@@%@",[self.vaultId QUIDString],name,type];
     NSData *hash = [QredoCrypto sha256:[constructedName dataUsingEncoding:NSUTF8StringEncoding]];
@@ -150,9 +146,11 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     return [[QredoQUID alloc] initWithQUIDData:hash];
 }
 
+
 -(QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type {
     return [self itemIdWithName:[quid QUIDString] type:type];
 }
+
 
 -(void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
                       itemId:(QredoQUID *)itemId
@@ -177,6 +175,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
          if (completionHandler) completionHandler(newMetadata,error);
      }];
 }
+
 
 -(void)strictlyPutNewItem:(QredoVaultItem *)vaultItem
         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler {
@@ -216,6 +215,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
               }];
 }
 
+
 -(void)strictlyUpdateItem:(QredoVaultItem *)vaultItem
         completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler {
     QredoVaultItemMetadata *metadata = vaultItem.metadata;
@@ -251,12 +251,14 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
               }];
 }
 
+
 #pragma mark Cache
 
 -(void)clearAllData {
     [self clearState];
     [_vaultSequenceCache clear];
 }
+
 
 -(void)cacheInIndexVaultItemMetadata:(QredoVaultItemMetadata *)metadata
                    completionHandler:(void (^)(NSError *error))completionHandler {
@@ -266,6 +268,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     if (completionHandler)completionHandler(nil);
 }
+
 
 -(void)cacheInIndexVaultItem:(QredoVaultItem *)vaultItem
                     metadata:(QredoVaultItemMetadata *)metadata
@@ -289,6 +292,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     if (completionHandler)completionHandler(nil);
 }
 
+
 -(void)removeBodyFromCacheWithVaultItemDescriptor:(QredoVaultItemDescriptor *)descriptor
                                 completionHandler:(void (^)(NSError *error))completionHandler {
     NSError *error = nil;
@@ -299,6 +303,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     if (completionHandler)completionHandler(error);
 }
 
+
 -(void)removeAllObservers {
     QredoObserverList *observers = _observers;
     
@@ -306,6 +311,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     if (_updateListener.isListening)[_updateListener stopListening];
 }
+
 
 @end
 
@@ -316,6 +322,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 -(QredoQUID *)vaultId {
     return _vaultKeys.vaultId;
 }
+
 
 -(void)getLatestItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
                  completionHandler:(void (^)(QredoVaultItem *vaultItem,NSError *error))completionHandler {
@@ -357,6 +364,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
                                 }
                             }];
 }
+
 
 -(void)getLatestItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
                          completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,NSError *error))completionHandler {
@@ -404,6 +412,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
                                     }];
 }
 
+
 -(void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
            completionHandler:(void (^)(QredoVaultItem *vaultItem,NSError *error))completionHandler {
     //If Item specified is in the cache returns it.
@@ -414,8 +423,11 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     if (vaultItem){
         if ([vaultItem.metadata isDeleted])vaultItem = nil;
+        
         QredoLogInfo(@"Retrieved VaultItem from Index");
+        
         if (completionHandler)completionHandler(vaultItem,nil);
+        
         return;
     } else {
         QredoLogInfo(@"Retrieved VaultItem from server");
@@ -449,9 +461,10 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
                                                       return;
                                                   }];
                                     }
-         }];
+                                }];
     }
 }
+
 
 -(void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
                    completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,NSError *error))completionHandler {
@@ -491,6 +504,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     }
 }
 
+
 -(void)addVaultObserver:(id<QredoVaultObserver>)observer {
     QredoLogDebug(@"Add vault Observer %@",observer);
     
@@ -506,6 +520,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     }
 }
 
+
 -(void)removeVaultObserver:(id<QredoVaultObserver>)observer {
     QredoLogDebug(@"Remove vault Observer %@",observer);
     QredoObserverList *observers = _observers;
@@ -518,15 +533,18 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     }
 }
 
+
 -(void)notifyObservers:(void (^)(id<QredoVaultObserver> observer))notificationBlock {
     [_observers notifyObservers:notificationBlock];
 }
+
 
 -(void)resetWatermark {
     QredoLogInfo(@"Reset Watermark");
     _highwatermark = nil;
     [self saveState];
 }
+
 
 -(void)    updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
     completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler {
@@ -539,6 +557,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     [self strictlyUpdateItem:cleanedVaultItem completionHandler:completionHandler];
 }
+
 
 -(void)putItem:(QredoVaultItem *)vaultItem completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler {
     BOOL isNewItemFromDateCreated = vaultItem.metadata.summaryValues[QredoVaultItemMetadataItemDateCreated] == nil;
@@ -554,12 +573,14 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     }
 }
 
+
 //Enumerate the vault items from the server without Consolidation - ie. All Verisions - deleted & historic
 
 -(void)enumerateVaultItemsAllVersionsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
                               completionHandler:(void (^)(NSError *error))completionHandler {
     [self enumerateVaultItemsAllVersionsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
 }
+
 
 -(void)enumerateVaultItemsAllVersionsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
                                           since:(QredoVaultHighWatermark *)sinceWatermark
@@ -569,10 +590,12 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     });
 }
 
+
 -(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
                    completionHandler:(void (^)(NSError *error))completionHandler {
     [self enumerateVaultItemsUsingBlock:block since:QredoVaultHighWatermarkOrigin completionHandler:completionHandler];
 }
+
 
 -(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
                                since:(QredoVaultHighWatermark *)sinceWatermark
@@ -581,6 +604,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
         [_vaultServerAccess enumerateVaultItemsUsingBlock:block completionHandler:completionHandler watermarkHandler:nil since:sinceWatermark consolidatingResults:YES];
     });
 }
+
 
 -(void)deleteItem:(QredoVaultItemMetadata *)metadata completionHandler:(void (^)(QredoVaultItemDescriptor *newItemDescriptor,NSError *error))completionHandler {
     QredoQUID *itemId = metadata.descriptor.itemId;
@@ -617,17 +641,21 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
               }];
 }
 
+
 -(QredoVaultHighWatermark *)highWatermark {
     return _highwatermark;
 }
+
 
 -(NSString *)sequenceIdKeyForDefaults {
     return [QredoVaultOptionSequenceId stringByAppendingString:[_vaultKeys.vaultId QUIDString]];
 }
 
+
 -(NSString *)hwmKeyForDefaults {
     return [QredoVaultOptionHighWatermark stringByAppendingString:[_vaultKeys.vaultId QUIDString]];
 }
+
 
 -(void)clearState {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -636,6 +664,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     [defaults removeObjectForKey:self.hwmKeyForDefaults];
     [defaults synchronize];
 }
+
 
 -(void)saveState {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -650,6 +679,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     [defaults synchronize];
 }
+
 
 -(void)loadState {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -669,6 +699,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     }
 }
 
+
 #pragma mark -
 #pragma QredoLocalIndex methods
 
@@ -677,33 +708,41 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     [self.localIndex enumerateSearch:predicate withBlock:block completionHandler:completionHandler];
 }
 
+
 -(int)indexSize {
     return [self.localIndex count];
 }
+
 
 -(long long)cacheFileSize {
     return [self.localIndex persistentStoreFileSize];
 }
 
+
 -(void)setMaxCacheSize:(long long)maxSize {
     [self.localIndex setMaxCacheSize:maxSize];
 }
+
 
 -(void)metadataCacheEnabled:(BOOL)metadataCacheEnabled {
     [self.localIndex setEnableMetadataCache:metadataCacheEnabled];
 }
 
+
 -(void)valueCacheEnabled:(BOOL)valueCacheEnabled {
     [self.localIndex setEnableValueCache:valueCacheEnabled];
 }
+
 
 -(void)purgeCache {
     [self.localIndex purgeCoreData];
 }
 
+
 -(NSManagedObjectContext *)indexManagedObjectContext {
     return [_localIndex.qredoLocalIndexDataStore managedObjectContext];
 }
+
 
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source
@@ -711,6 +750,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 -(BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener {
     return NO;
 }
+
 
 #pragma mark Qredo Update Listener - Delegate
 
@@ -729,10 +769,12 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
                                  consolidatingResults:NO];
 }
 
+
 -(void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler {
     //TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
     QredoLogDebug(@"QredoVault: unsubscribeWithCompletionHandler"); //<- not called
 }
+
 
 -(void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item {
     QredoVaultItemMetadata *vaultItemMetadata = (QredoVaultItemMetadata *)item;
@@ -744,5 +786,6 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
         }
     }];
 }
+
 
 @end

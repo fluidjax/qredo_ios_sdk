@@ -35,6 +35,7 @@ static const NSUInteger maxNumberOfConnections = 10;
     return canHandle;
 }
 
+
 -(instancetype)initWithServiceURL:(NSURL *)serviceURL {
     if (!serviceURL){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -70,20 +71,24 @@ static const NSUInteger maxNumberOfConnections = 10;
     return self;
 }
 
+
 -(void)dealloc {
     if (!_transportClosed){
         [self close];
     }
 }
 
+
 -(void)setTransportClosed:(BOOL)transportClosed {
     _transportClosed = transportClosed;
 }
+
 
 -(BOOL)supportsMultiResponse {
     //HTTP transport does not support multi-response
     return NO;
 }
+
 
 -(void)send:(NSData *)payload userData:(id)userData {
     if (![self areHandlersConfigured]){
@@ -113,10 +118,12 @@ static const NSUInteger maxNumberOfConnections = 10;
     //});
 }
 
+
 -(void)close {
     //Nothing to do for HTTP as no long-running connections/threads used.
     self.transportClosed = YES;
 }
+
 
 -(void)sendPayloadInternal:(NSData *)payload userData:(id)userData {
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:self.serviceURL];
@@ -156,6 +163,7 @@ static const NSUInteger maxNumberOfConnections = 10;
     [uploadTask resume];
 }
 
+
 #pragma mark - NSURLSessionDelegate
 
 -(void)      URLSession:(NSURLSession *)session
@@ -179,5 +187,6 @@ static const NSUInteger maxNumberOfConnections = 10;
     
     if (completionHandler)completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge,nil);
 }
+
 
 @end

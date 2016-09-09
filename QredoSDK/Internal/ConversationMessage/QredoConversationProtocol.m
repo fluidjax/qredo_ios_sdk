@@ -71,8 +71,10 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     }
 }
 
+
 -(void)prepareForReuse {
 }
+
 
 #pragma mark State life cycle
 
@@ -90,23 +92,28 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     }
 }
 
+
 -(void)willExit {
     _timeoutIdentifier = nil;
 }
+
 
 #pragma mark Events (conversation message handling)
 
 -(void)didReceiveConversationMessage:(QredoConversationMessage *)message {
 }
 
+
 -(void)otherPartyHasLeftConversation {
 }
+
 
 -(void)didReceiveTimeoutCallbackWithIdentifier:(QredoQUID *)identifier {
     if ([_timeoutIdentifier isEqual:identifier]){
         [self didTimeout];
     }
 }
+
 
 #pragma mark Utility methods
 
@@ -115,8 +122,10 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     _timeoutInterval = timeout;
 }
 
+
 -(void)didTimeout {
 }
+
 
 @end
 
@@ -136,6 +145,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     return self;
 }
 
+
 -(void)didReceiveConversationMessage:(QredoConversationMessage *)message {
     if ([message.dataType isEqualToString:self.cancelMessageType]){
         [self conversationCanceledWithMessage:message];
@@ -144,15 +154,19 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     }
 }
 
+
 -(void)otherPartyHasLeftConversation {
     [self conversationCanceledWithMessage:nil];
 }
 
+
 -(void)didReceiveNonCancelConversationMessage:(QredoConversationMessage *)message {
 }
 
+
 -(void)conversationCanceledWithMessage:(QredoConversationMessage *)message {
 }
+
 
 #pragma mark Utilities
 
@@ -194,6 +208,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     return self;
 }
 
+
 -(void)startObservingConversation {
     if (_isObservingConversation){
         NSAssert1(TRUE,@"Attempting to start observing a conversation in %@ while the conversation is already observed.",NSStringFromClass([self class]));
@@ -204,6 +219,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     _isObservingConversation = YES;
 }
 
+
 -(void)stopObservingConversation {
     if (!_isObservingConversation){
         NSAssert1(TRUE,@"Attempting to stop observing a conversation in %@ while the conversation is not being observed.",NSStringFromClass([self class]));
@@ -213,6 +229,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     [self.conversation removeConversationObserver:self];
     _isObservingConversation = NO;
 }
+
 
 #pragma mark Event handling
 
@@ -225,6 +242,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     
     return signature;
 }
+
 
 -(void)forwardInvocation:(NSInvocation *)anInvocation {
     [anInvocation retainArguments];
@@ -244,6 +262,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     });
 }
 
+
 -(void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock {
     NSAssert(state != nil,@"State is not initialized");
     
@@ -254,6 +273,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     [_currentState didEnter];
 }
 
+
 #pragma mark QredoConversationObserver implementation
 
 -(void)qredoConversation:(QredoConversation *)conversation
@@ -261,9 +281,11 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
     [self didReceiveConversationMessage:message];
 }
 
+
 -(void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation {
     [self otherPartyHasLeftConversation];
 }
+
 
 @end
 

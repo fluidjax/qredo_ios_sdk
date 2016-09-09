@@ -23,8 +23,10 @@
     return self;
 }
 
+
 -(NSData *)convertKeyToNSData {
     return _data;
 }
+
 
 @end

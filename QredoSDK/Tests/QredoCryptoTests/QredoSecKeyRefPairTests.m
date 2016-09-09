@@ -20,12 +20,14 @@
     [QredoCrypto deleteAllKeysInAppleKeychain];
 }
 
+
 -(void)tearDown {
     [super tearDown];
     
     //Must remove any existing keys after finishing
     [QredoCrypto deleteAllKeysInAppleKeychain];
 }
+
 
 -(void)testInitFromKeyGen {
     //Note: SecKeyGeneratePair returns SecKeyRefs which needs to be released afterwards. QredoSecKeyRefPair does this in dealloc.
@@ -86,6 +88,7 @@
     returnedPlainTextData = nil;
 }
 
+
 -(void)testInitFromImport {
     //Note: SecItemAdd returns SecKeyRef, but no mention on needing to be released afterwards. QredoSecKeyRefPair does this in dealloc.  This test attempts to confirm release does not cause any unexpected behaviour.
     
@@ -136,5 +139,6 @@
     
     returnedPlainTextData = nil;
 }
+
 
 @end

@@ -1,8 +1,8 @@
 //
-//  ViewController.m
-//  TestHost
+//ViewController.m
+//TestHost
 //
-//  Created by Christopher Morris on 22/02/2016.
+//Created by Christopher Morris on 22/02/2016.
 //
 //
 
@@ -14,14 +14,16 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
+-(void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    //Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void)didReceiveMemoryWarning {
+
+-(void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    //Dispose of any resources that can be recreated.
 }
+
 
 @end

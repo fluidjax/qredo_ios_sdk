@@ -55,6 +55,7 @@
     return self;
 }
 
+
 -(void)getItemWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
            completionHandler:(void (^)(QredoVaultItem *vaultItem,NSError *error))completionHandler {
     QLFVaultSequenceId *sequenceId    = itemDescriptor.sequenceId;
@@ -99,6 +100,7 @@
          }
      }];
 }
+
 
 -(void)getItemMetadataWithDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
                    completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,NSError *error))completionHandler {
@@ -146,6 +148,7 @@
          }
      }];
 }
+
 
 -(void)putUpdateOrDeleteItem:(QredoVaultItem *)vaultItem
                       itemId:(QredoQUID *)itemId dataType:(NSString *)dataType
@@ -215,6 +218,7 @@
      }];
 }
 
+
 -(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
                    completionHandler:(void (^)(NSError *error))completionHandler
                     watermarkHandler:(void (^)(QredoVaultHighWatermark *watermark))watermarkHandler
@@ -250,6 +254,7 @@
                                        since:sinceWatermark
                         consolidatingResults:shouldConsolidateResults];
 }
+
 
 //this is private method that also returns highWatermark. Used in the polling data
 -(void)enumerateVaultItemsPagedUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
@@ -331,7 +336,7 @@
                          handler(externalItem,&stop);
                      }
                      
-                     [newWatermarkDictionary setObject:@(externalItem.descriptor.sequenceValue)       //TODO: not working for int64
+                     [newWatermarkDictionary setObject:@(externalItem.descriptor.sequenceValue)  //TODO: not working for int64
                                                 forKey:externalItem.descriptor.sequenceId];
                      
                      if (stop){
@@ -445,5 +450,6 @@
          }
      }];
 }
+
 
 @end

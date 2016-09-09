@@ -29,10 +29,12 @@
     self.pingErrorResponseCount = 0;
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
+
 
 -(void)incrementPingSuccessResponseCount {
     dispatch_semaphore_wait(self.pingSemaphore,DISPATCH_TIME_FOREVER);
@@ -40,11 +42,13 @@
     dispatch_semaphore_signal(self.pingSemaphore);
 }
 
+
 -(void)incrementPingErrorResponseCount {
     dispatch_semaphore_wait(self.pingSemaphore,DISPATCH_TIME_FOREVER);
     self.pingErrorResponseCount++;
     dispatch_semaphore_signal(self.pingSemaphore);
 }
+
 
 -(QredoServiceInvoker *)commonTestInit:(NSURL *)serviceURL {
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:k_TEST_APPID appSecret:[NSData dataWithHexString:k_TEST_APPSECRET]];
@@ -61,6 +65,7 @@
     return serviceInvoker;
 }
 
+
 -(QredoServiceInvoker *)commonTestInitThenTerminate:(NSURL *)serviceURL {
     QredoServiceInvoker *serviceInvoker = [self commonTestInit:serviceURL];
     
@@ -72,6 +77,7 @@
     
     return serviceInvoker;
 }
+
 
 -(void)testInit_HTTPUrl {
     //Test using the HTTP URL
@@ -87,6 +93,7 @@
     
     serviceInvoker = nil;
 }
+
 
 -(void)testInit_NilUrl {
     NSURL *serviceURL = nil;
@@ -105,6 +112,7 @@
     appCredentials = nil;
 }
 
+
 -(void)testTerminate_HTTPUrl {
     //Test using the HTTP URL
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
@@ -115,6 +123,7 @@
     XCTAssertNotNil(serviceInvoker);
     XCTAssertTrue(serviceInvoker.isTerminated);
 }
+
 
 -(void)commonInvokeService_Ping:(QredoServiceInvoker *)serviceInvoker readerCompletedExpectation:(XCTestExpectation *)readerCompletedExpectation {
     XCTAssertNotNil(serviceInvoker);
@@ -139,6 +148,7 @@
                      }];
 }
 
+
 -(void)testInvokeService_Ping_HTTPUrl {
     //Test using the HTTP URL
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
@@ -158,6 +168,7 @@
                                      readerCompletedExpectation = nil;
                                  }];
 }
+
 
 -(void)commonInvokeService_ConcurrentOperationsWithServiceURL:(NSURL *)serviceURL iterations:(NSUInteger)iterations intervalPerIteration:(NSTimeInterval)intervalPerIteration {
     XCTAssertNotNil(serviceURL);
@@ -201,6 +212,7 @@
     XCTAssertFalse(self.pingErrorResponseCount);
 }
 
+
 -(void)testInvokeService_ConcurrentOperations_HTTPUrl {
     //Note: 7500 iterations takes long time, but had previously caused hangs before transport concurrency issues resolved
     const int requiredIterations = 50;
@@ -213,6 +225,7 @@
                                                       iterations:requiredIterations
                                             intervalPerIteration:interval];
 }
+
 
 //TODO: DH - Invoke non-existant service
 //TODO: DH - Invoke non-existant operation

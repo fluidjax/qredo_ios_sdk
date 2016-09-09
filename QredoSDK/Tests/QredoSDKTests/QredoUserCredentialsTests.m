@@ -15,6 +15,7 @@
     //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
+
 -(void)testGetMasterUnlockKey {
     NSString *TEST_USER_SECRET      = @"This is a secret";
     NSString *APPLICATION_ID         = @"test";
@@ -43,6 +44,7 @@
     XCTAssertTrue([masterKey isEqualToData:expectedMaster],@"Master Key not correctly derived");
 }
 
+
 -(void)testDataToHexString {
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] init];
     NSData *dataInput = [NSData dataWithHexString:@"cafebabe"];
@@ -50,6 +52,7 @@
     
     XCTAssertTrue([hexOutput isEqualToString:@"CAFEBABE"]);
 }
+
 
 -(void)testGetMasterFromUserUnlock {
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] init];
@@ -69,9 +72,11 @@
     XCTAssertTrue([masterKey isEqualToData:expectedMaster],@"Master Key not correctly derived using HKDF from unlockKey");
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
+
 
 @end

@@ -19,6 +19,7 @@ NSString *const QredoCryptoErrorDomain = @"QredoCryptoError";
     }
 }
 
+
 #endif
 
 +(void)throwArgExceptionIf:(BOOL)condition reason:(NSString *)reason {
@@ -28,5 +29,6 @@ NSString *const QredoCryptoErrorDomain = @"QredoCryptoError";
                                      userInfo:nil];
     }
 }
+
 
 @end

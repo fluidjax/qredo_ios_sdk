@@ -35,6 +35,7 @@
     return self;
 }
 
+
 -(void)dealloc {
     if (_publicKeyRef){
         CFRelease(_publicKeyRef);
@@ -46,5 +47,6 @@
         _publicKeyRef = nil;
     }
 }
+
 
 @end

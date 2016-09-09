@@ -22,12 +22,14 @@
     [QredoCrypto deleteAllKeysInAppleKeychain];
 }
 
+
 -(void)tearDown {
     //Must remove any keys after completing
     [QredoCrypto deleteAllKeysInAppleKeychain];
     
     [super tearDown];
 }
+
 
 -(void)testDecryptData128BitKey {
     uint8_t keyDataArray[] = {
@@ -56,6 +58,7 @@
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
+
 
 -(void)testDecryptData256BitKey {
     uint8_t keyDataArray[] = {
@@ -86,6 +89,7 @@
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
 
+
 -(void)testDecryptData256BitKey_IvZeroes {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -115,6 +119,7 @@
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
 
+
 -(void)testDecryptData256BitKey_NilIv {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -142,6 +147,7 @@
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
 
+
 -(void)testDecryptData_InvalidIvLengthTooShort {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -164,6 +170,7 @@
     
     XCTAssertThrowsSpecificNamed([QredoCrypto decryptData:encryptedData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
+
 
 -(void)testDecryptData_InvalidIvLengthTooLong {
     uint8_t keyDataArray[] = {
@@ -188,6 +195,7 @@
     XCTAssertThrowsSpecificNamed([QredoCrypto decryptData:encryptedData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
+
 -(void)testEncryptDataInvalidShortKey {
     //15 byte (120 bit) key - invalid for AES (128/192/256 bit keys only)
     uint8_t keyDataArray[] = {
@@ -205,6 +213,7 @@
     
     XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid key length but NSInvalidArgumentException not thrown.");
 }
+
 
 -(void)testEncryptData128BitKey {
     uint8_t keyDataArray[] = {
@@ -233,6 +242,7 @@
     XCTAssertNotNil(encryptedData,@"Encrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
 }
+
 
 -(void)testEncryptData256BitKey {
     uint8_t keyDataArray[] = {
@@ -263,6 +273,7 @@
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
 }
 
+
 -(void)testEncryptData256BitKey_IvZeroes {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -292,6 +303,7 @@
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
 }
 
+
 -(void)testEncryptData256BitKey_NilIv {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -319,6 +331,7 @@
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
 }
 
+
 -(void)testEncryptData_InvalidIvLengthTooShort {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -338,6 +351,7 @@
     XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
+
 -(void)testEncryptData_InvalidIvLengthTooLong {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -356,6 +370,7 @@
     
     XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
+
 
 -(void)testHkdfExtractSha256WithSalt {
     uint8_t ikmDataArray[] = {
@@ -380,6 +395,7 @@
     XCTAssertNotNil(prk,@"PRK should not be nil.");
     XCTAssertTrue([expectedPrkData isEqualToData:prk],@"PRK data incorrect.");
 }
+
 
 -(void)testHkdfExpandSha256WithKey {
     uint8_t keyDataArray[] = {
@@ -406,6 +422,7 @@
     XCTAssertNotNil(okm,@"OKM should not be nil.");
     XCTAssertTrue([expectedOkmData isEqualToData:okm],@"OKM data incorrect.");
 }
+
 
 -(void)testHkdfSha256WithSalt {
     uint8_t ikmDataArray[] = {
@@ -436,6 +453,7 @@
     XCTAssertTrue([expectedOkmData isEqualToData:okm],@"OKM data incorrect.");
 }
 
+
 -(void)testPbkdf2Sha256WithSalt_RFC6070Example {
     BOOL bypassSaltLengthCheck = NO; //Used for testing salts < 8 bytes, which unfortunately all but 1 of RFC6070's test vectors are
     NSString *saltString = @"saltSALTsaltSALTsaltSALTsaltSALTsalt";
@@ -459,6 +477,7 @@
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:derivedKey],@"Derived key incorrect.");
 }
 
+
 //This test takes about 10 seconds to run due (high number of iterations)
 -(void)testPbkdf2Sha256WithSalt_RFC6070Example2 {
     BOOL bypassSaltLengthCheck = YES; //Used for testing salts < 8 bytes, which unfortunately all but 1 of RFC6070's test vectors are
@@ -481,6 +500,7 @@
     XCTAssertNotNil(derivedKey,@"Derived key should not be nil.");
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:derivedKey],@"Derived key incorrect.");
 }
+
 
 -(void)testGenerateHmacSha256ForDataWithCorrectLength {
     uint8_t keyDataArray[] = {
@@ -508,6 +528,7 @@
     XCTAssertNotNil(mac,@"MAC should not be nil.");
     XCTAssertTrue([expectedMacData isEqualToData:mac],@"MAC data incorrect.");
 }
+
 
 -(void)testGenerateHmacSha256ForDataWithShorterLength {
     uint8_t keyDataArray[] = {
@@ -540,6 +561,7 @@
     XCTAssertTrue([expectedMacData isEqualToData:mac],@"MAC data incorrect.");
 }
 
+
 -(void)testSha256 {
     uint8_t dataArray[] = {
         0x68,0x65,0x6c,0x6c,0x6f,0x77,0x6f,0x72,0x6c,0x64,0x31,0x32,0x33,0x34,0x35,0x36,
@@ -565,6 +587,7 @@
     XCTAssertTrue([expectedHashData isEqualToData:hash],@"Hash data incorrect.");
 }
 
+
 -(void)testSha256SZeroLength {
     //Zero length input
     uint8_t dataArray[] = {
@@ -583,6 +606,7 @@
     XCTAssertTrue([expectedHashData isEqualToData:hash],@"Hash data incorrect.");
 }
 
+
 -(void)testSecureRandom {
     NSData *randomBytes1 = [QredoCrypto secureRandomWithSize:32];
     NSData *randomBytes2 = [QredoCrypto secureRandomWithSize:32];
@@ -599,6 +623,7 @@
     XCTAssertEqual([randomBytes6 length],131072);
     XCTAssertFalse([randomBytes1 isEqualToData:randomBytes2]);
 }
+
 
 -(void)testEqualsConstantTime_SameData {
     uint8_t leftDataArray[] = {
@@ -620,6 +645,7 @@
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
 
+
 -(void)testEqualsConstantTime_DifferentLengths {
     uint8_t leftDataArray[] = {
         0xE3,0xB0,0xC4,0x42,0x98,0xFC,0x1C,0x14,0x9A,0xFB,0xF4,0xC8,0x99,0x6F,0xB9,0x24,
@@ -640,6 +666,7 @@
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
 
+
 -(void)testEqualsConstantTime_EmptyData {
     uint8_t leftDataArray[] = {
     };
@@ -655,6 +682,7 @@
     
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
+
 
 -(void)testEqualsConstantTime_CheckComparisonTimesCorrect {
     uint8_t leftDataArray[] = {
@@ -680,6 +708,7 @@
     }];
 }
 
+
 -(void)testEqualsConstantTime_CheckComparisonTimesWithFirstByteWrong {
     uint8_t leftDataArray[] = {
         0xE3,0xB0,0xC4,0x42,0x98,0xFC,0x1C,0x14,0x9A,0xFB,0xF4,0xC8,0x99,0x6F,0xB9,0x24,
@@ -704,6 +733,7 @@
     }];
 }
 
+
 -(void)testIsEqualToData_CheckComparisonTimesCorrect {
     uint8_t leftDataArray[] = {
         0xE3,0xB0,0xC4,0x42,0x98,0xFC,0x1C,0x14,0x9A,0xFB,0xF4,0xC8,0x99,0x6F,0xB9,0x24,
@@ -726,6 +756,7 @@
         }
     }];
 }
+
 
 -(void)testIsEqualToData_CheckComparisonTimesWithFirstByteWrong {
     uint8_t leftDataArray[] = {
@@ -750,6 +781,7 @@
     }];
 }
 
+
 -(void)testRsaKeyGen_Persist_1024 {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKey";
@@ -768,6 +800,7 @@
     [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier];
     [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier];
 }
+
 
 -(void)testRsaKeyGen_Persist_2048 {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
@@ -788,6 +821,7 @@
     [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier];
 }
 
+
 -(void)testRsaKeyGen_Persist_4096 {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKey";
@@ -806,6 +840,7 @@
     [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier];
     [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier];
 }
+
 
 -(void)testRsaKeyGen_NotPersisted {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
@@ -839,6 +874,7 @@
         XCTAssertNil(privateKeyData,@"Private key data should be nil.");
     }
 }
+
 
 -(void)testRsaKeyGenEncryptOaepAndDecrypt {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
@@ -875,6 +911,7 @@
     XCTAssertTrue(decryptedData.length == expectedDecryptedDataLength,@"Decrypted data length is incorrect.");
     XCTAssertTrue([decryptedData isEqualToData:plainTextData],@"Decrypted data is incorrect.");
 }
+
 
 -(void)testRsaKeyGenEncryptOaepAndDecrypt_JustZero {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
@@ -913,6 +950,7 @@
     XCTAssertTrue([decryptedData isEqualToData:plainTextData],@"Decrypted data is incorrect.");
 }
 
+
 -(void)testRsaKeyGenEncryptPkcs1AndDecrypt {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKey";
@@ -948,6 +986,7 @@
     XCTAssertTrue(decryptedData.length == expectedDecryptedDataLength,@"Decrypted data length is incorrect.");
     XCTAssertTrue([decryptedData isEqualToData:plainTextData],@"Decrypted data is incorrect.");
 }
+
 
 -(void)testRsaKeyGenEncryptPkcs1AndDecrypt_JustZero {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
@@ -986,6 +1025,7 @@
     XCTAssertTrue([decryptedData isEqualToData:plainTextData],@"Decrypted data is incorrect.");
 }
 
+
 -(void)testRsaKeyGenEncryptNoPaddingAndDecrypt {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKey";
@@ -1020,6 +1060,7 @@
     XCTAssertTrue(decryptedData.length == expectedDecryptedDataLength,@"Decrypted data length is incorrect.");
     XCTAssertTrue([decryptedData isEqualToData:plainTextData],@"Decrypted data is incorrect.");
 }
+
 
 -(void)testRsaKeyGenEncryptNoPaddingAndDecrypt_StartsWithZero {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
@@ -1058,6 +1099,7 @@
     XCTAssertTrue([decryptedData isEqualToData:expectedDecryptedData],@"Decrypted data is incorrect.");
 }
 
+
 -(void)testRsaKeyGenEncryptNoPaddingAndDecrypt_AllZeroes {
     //When not using any padding scheme, RSA encrypt/decrypt will lose any leading zeroes (0x00) from original plaintext
     
@@ -1094,6 +1136,7 @@
     XCTAssertTrue(decryptedData.length == expectedDecryptedDataLength,@"Decrypted data length is incorrect.");
     XCTAssertTrue(decryptedData.length == expectedDecryptedDataLength,@"Decrypted data length is incorrect.");
 }
+
 
 -(void)testRsaKeyGenEncryptNoPaddingAndDecrypt_Multiple {
     //This test was originally written to investigate intermittent failures,
@@ -1155,6 +1198,7 @@
     }
 }
 
+
 -(void)testRsaKeyGenEncryptNoPadding_IncorrectLength {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKey";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKey";
@@ -1180,6 +1224,7 @@
     
     XCTAssertThrowsSpecificNamed([QredoCrypto rsaEncryptPlainTextData:plainTextData padding:padding keyRef:publicKeyRef],NSException,NSInvalidArgumentException,@"Invalid data length but NSInvalidArgumentException not thrown.");
 }
+
 
 -(void)testRsaDecryptCipherTextData_BouncyCastleEncrypted {
     /*
@@ -1215,6 +1260,7 @@
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     XCTAssertTrue([decryptedData isEqualToData:expectedPlaintextData],@"Decrypted data is incorrect.");
 }
+
 
 //- (void)testRsaDecrypt_OaepData1
 //{
@@ -1411,6 +1457,7 @@
     }
 }
 
+
 -(void)testDeleteAllKeysInAppleKeychain_NoKeysPresent {
     //No keys present (so nothing to delete) should not return error
     BOOL expectedSuccess = YES;
@@ -1418,6 +1465,7 @@
     
     XCTAssertTrue(success == expectedSuccess,@"Delete keys should not have failed.");
 }
+
 
 -(void)testDeleteKeyInAppleKeychainWithIdentifier {
     //Generate 2 sets of keys, check both exist, delete first, check other still exists
@@ -1471,6 +1519,7 @@
     XCTAssertNotNil(keyData,@"Private key data 2 should not be nil.");
 }
 
+
 -(void)testDeleteKeyInAppleKeychainWithIdentifier_NoKeysPresent {
     //No keys present (so nothing to delete) should return error when deleting a specific key
     NSString *keyIdentifier = @"com.qredo.TestMissingKey1";
@@ -1479,6 +1528,7 @@
     
     XCTAssertTrue(success == expectedSuccess,@"Delete keys should have failed (requested key not present).");
 }
+
 
 -(void)testGetKeyDataForIdentifier_Public {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyExport1";
@@ -1493,6 +1543,7 @@
     [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier];
 }
 
+
 -(void)testGetKeyDataForIdentifier_Private {
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyExport1";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyExport1";
@@ -1505,6 +1556,7 @@
     
     [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier];
 }
+
 
 -(void)testGetKeyDataForIdentifier_ManyGenerates {
     NSString *prefix = @"keyIdentifier";
@@ -1531,6 +1583,7 @@
         }
     }
 }
+
 
 -(void)testGetKeyDataForIdentifier_ConcurrentUse {
     //This test will attempt to call [QredoCrypto getKeyDataForIdentifier:] simultaneously from multiple threads.
@@ -1588,6 +1641,7 @@
                                  }];
 }
 
+
 -(NSData *)stripPublicKeyHeader:(NSData *)d_key {
     //Skip ASN.1 public key header
     if (d_key == nil)return(nil);
@@ -1623,6 +1677,7 @@
     //Now make a new NSData from this buffer
     return([NSData dataWithBytes:&c_key[idx] length:len - idx]);
 }
+
 
 -(void)testImportPublicKey {
     //NOTE: This test will fail if the key has already been imported (even with different identifier)
@@ -1772,6 +1827,7 @@
     [QredoCrypto getKeyDataForIdentifier:keyIdentifier];
 }
 
+
 -(void)testImportPublicKey_IncorrectKeyLength_TooLarge {
     //This test demonstrates that the SecItemAdd does not validate the keysize argument.
     
@@ -1793,6 +1849,7 @@
                                  @"Should have failed key import.");
 }
 
+
 -(void)testImportPublicKey_IncorrectKeyLength_TooSmall {
     //This test demonstrates that the SecItemAdd does not validate the keysize argument.
     
@@ -1813,6 +1870,7 @@
                                  @"QredoCryptoImportPublicKeyInvalidFormat",
                                  @"Should have failed key import.");
 }
+
 
 -(void)testImportPublicKeyAndEncrypt {
     //NOTE: This test will fail if the key has already been imported (even with different identifier)
@@ -1856,6 +1914,7 @@
     XCTAssertNotNil(encryptedData,@"Encrypted data should not be nil.");
 }
 
+
 -(void)testImportPrivateKey_ManualKeyDataFromBouncyCastle {
     //NOTE: This test will fail if the key has already been imported (even with different identifier)
     NSString *keyIdentifier = @"com.qredo.TestPrivateKeyImport1";
@@ -1873,6 +1932,7 @@
     
     XCTAssertTrue((__bridge id)importKeyRef,@"Key import failed.");
 }
+
 
 -(void)testGetPrivateKeyRefFromIdentityRef {
     //Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
@@ -1905,6 +1965,7 @@
     XCTAssertNotNil((__bridge id)privateKeyRef,@"Should not have got a nil private key ref");
 }
 
+
 -(void)testGetPublicKeyRefFromIdentityRef {
     //Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
     
@@ -1932,5 +1993,6 @@
     SecKeyRef publicKeyRef = [QredoCrypto getPublicKeyRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)publicKeyRef,@"Should not have got a nil public key ref");
 }
+
 
 @end

@@ -88,13 +88,16 @@ typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
     [self.protocolUnderTest switchToState:self.protocolUnderTest.mainTimeoutState withConfigBlock:^{}];
 }
 
+
 -(void)goToDidNotTimeoutState {
     [self.protocolUnderTest switchToState:self.protocolUnderTest.didNotTimeoutState withConfigBlock:^{}];
 }
 
+
 -(ProtocolUnderTest *)protocolUnderTest {
     return (ProtocolUnderTest *)self.conversationProtocol;
 }
+
 
 -(void)didEnter {
     [super didEnter];
@@ -103,6 +106,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
         self.didEnterBlock();
     }
 }
+
 
 @end
 
@@ -122,9 +126,11 @@ typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
     return self;
 }
 
+
 -(void)didTimeout {
     [self.protocolUnderTest switchToState:self.protocolUnderTest.didTimeoutState withConfigBlock:^{}];
 }
+
 
 @end
 
@@ -161,6 +167,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
     return self;
 }
 
+
 @end
 
 
@@ -194,10 +201,12 @@ typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
     self.protocol = [[ProtocolUnderTest alloc] initWithConversation:nil];
 }
 
+
 -(void)tearDown {
     self.protocol = nil;
     [super tearDown];
 }
+
 
 #pragma mark Tests
 
@@ -219,6 +228,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
     
     XCTAssertEqual(self.protocol.currentState,self.protocol.didTimeoutState);
 }
+
 
 -(void)testTimeoutWhereStateDoesNotTimeout {
     __block XCTestExpectation *didNotTimeoutStateEnteredExpectation = [self expectationWithDescription:@"Did not timeout state entered"];
@@ -248,6 +258,7 @@ typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
     
     XCTAssertEqual(self.protocol.currentState,self.protocol.didNotTimeoutState);
 }
+
 
 -(void)testTimoutWhenReturningToTheStateWithTimeout {
     __block NSError *timeoutError = nil;
@@ -307,5 +318,6 @@ typedef ProtocolUnderTest_DidNotTimeoutState   DidNotTimeoutState;
     
     XCTAssertEqual(self.protocol.currentState,self.protocol.didTimeoutState);
 }
+
 
 @end

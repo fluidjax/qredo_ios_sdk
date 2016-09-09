@@ -16,6 +16,7 @@
     return nil;
 }
 
+
 -(instancetype)initWithData:(NSData *)data {
     if (!data){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -31,5 +32,6 @@
     
     return self;
 }
+
 
 @end

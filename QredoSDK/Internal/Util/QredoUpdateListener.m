@@ -40,8 +40,10 @@
         _pollIntervalDuringSubscribe = 10.0;
         _renewSubscriptionInterval = 5.0;
     }
+    
     return self;
 }
+
 
 -(void)startListening {
     NSAssert(_delegate,@"Conversation delegate should be set before starting listening for the updates");
@@ -49,8 +51,7 @@
     //If we support multi-response, then use it, otherwise poll
     
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self]){
-        if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")])
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resubscribeWithCompletionHandler:) name:@"resubscribe" object:nil];
+        if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")])[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resubscribeWithCompletionHandler:) name:@"resubscribe" object:nil];
         
         [self startSubscribing];
     } else {
@@ -60,6 +61,7 @@
     
     _isListening = YES;
 }
+
 
 -(void)stopListening {
     _isListening = NO;
@@ -71,6 +73,7 @@
         [self stopPolling];
     }
 }
+
 
 //This method enables subscription (push) for conversation items, and creates new messages from them. Will regularly re-send subsription request as subscriptions can fail silently
 -(void)startSubscribing {
@@ -145,9 +148,11 @@
     }];
 }
 
+
 -(void)didTerminateSubscriptionWithError:(NSError *)error {
     _subscribedToMessages = NO;
 }
+
 
 -(void)subscribeWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     if (_subscribedToMessages){
@@ -181,6 +186,7 @@
          }
      }];
 }
+
 
 -(void)resubscribeWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     //if (_subscribedToMessages) return ;
@@ -225,6 +231,7 @@
     }
 }
 
+
 -(void)unsubscribeWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     [self.dataSource
      qredoUpdateListener:self
@@ -234,6 +241,7 @@
          if (completionHandler) completionHandler(error);
      }];
 }
+
 
 //This method disables subscription (push) for responses to rendezvous
 -(void)stopSubscribing {
@@ -248,6 +256,7 @@
     [self unsubscribeWithCompletionHandler:nil];
 }
 
+
 -(BOOL)processSingleItem:(id)item sequenceValue:(id)sequenceValue {
     if (_dedupeNecessary){
         if ([self isDuplicateOrOldItem:item sequenceValue:sequenceValue]){
@@ -258,6 +267,7 @@
     [self.delegate qredoUpdateListener:self processSingleItem:item];
     return YES;
 }
+
 
 //This method polls for (new) items in conversation, and creates message from them.
 -(void)startPolling {
@@ -279,11 +289,13 @@
      }];
 }
 
+
 -(void)stopPolling {
     @synchronized(self) {
         _isPollingActive = NO;
     }
 }
+
 
 -(BOOL)isDuplicateOrOldItem:(id)item sequenceValue:(id)sequenceValue {
     BOOL itemIsDuplicate = NO;
@@ -310,5 +322,6 @@
     }
     return itemIsDuplicate;
 }
+
 
 @end

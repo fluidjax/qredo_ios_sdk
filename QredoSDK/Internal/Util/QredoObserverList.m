@@ -55,9 +55,11 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     return self;
 }
 
+
 +(instancetype)observerProxyWithObserver:(id)observer {
     return [[self alloc] initWithObserver:observer];
 }
+
 
 @end
 
@@ -75,6 +77,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     return [self initWithAssociationKey:nil];
 }
 
+
 -(instancetype)initWithAssociationKey:(NSString *)associationKey {
     self = [super init];
     
@@ -86,6 +89,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     
     return self;
 }
+
 
 #pragma mark Add, remove and notify observers
 
@@ -105,6 +109,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     }
 }
 
+
 -(void)removeObserver:(id)observer {
     NSAssert(observer,@"An observer must be supplied to [QredoVault removeQredoVaultObaserver:]");
     QredoObserverProxy *observerProxy = [self proxyForObserver:observer];
@@ -114,6 +119,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
         }
     }
 }
+
 
 -(void)notifyObservers:(void (^)(id observer))notificationBlock {
     @synchronized(self) {
@@ -131,6 +137,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     }
 }
 
+
 -(void)removeAllObservers {
     @synchronized(self) {
         for (QredoObserverProxy *observerProxy in _observerProxies.reverseObjectEnumerator){
@@ -139,17 +146,20 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
     }
 }
 
+
 -(BOOL)contains:(id)observer {
     if ([self proxyForObserver:observer])return YES;
     
     return NO;
 }
 
+
 #pragma mark Misc utils
 
 -(NSUInteger)count {
     return [_observerProxies count];
 }
+
 
 #pragma mark Utils for observer and proxy association
 
@@ -160,6 +170,7 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
                                     associationKey);
 }
 
+
 -(void)setProxy:(QredoObserverProxy *)observerProxy forObserver:(id)observer {
     const char *associationKey = [self.associationKey cStringUsingEncoding:NSUTF8StringEncoding];
     
@@ -168,5 +179,6 @@ static NSString *const kDefaultAssociationKey  = @"QredoObserverList_ObserverPro
                              observerProxy,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
 
 @end

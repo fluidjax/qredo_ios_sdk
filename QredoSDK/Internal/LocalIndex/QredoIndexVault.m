@@ -26,6 +26,7 @@
     return qredoIndexVault;
 }
 
+
 #pragma mark
 #pragma private methods
 
@@ -41,6 +42,7 @@
     return [results lastObject];
 }
 
+
 +(QredoIndexVault *)create:(QredoVault *)qredoVault inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
     QredoIndexVault *newIndexVault =  [[self class] insertInManagedObjectContext:managedObjectContext];
     
@@ -48,5 +50,6 @@
     newIndexVault.highWaterMark = nil;
     return newIndexVault;
 }
+
 
 @end

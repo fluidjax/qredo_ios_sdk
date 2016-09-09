@@ -23,6 +23,7 @@
     return [buffer copy];
 }
 
+
 -(NSData *)readExactLength:(NSUInteger)length {
     //Allocate a C-style buffer.
     uint8_t *bytes = calloc(length,sizeof(uint8_t));
@@ -42,6 +43,7 @@
     return data;
 }
 
+
 @end
 
 @implementation NSOutputStream (QredoWriterExtensions)
@@ -58,5 +60,6 @@
                                      userInfo:nil];
     }
 }
+
 
 @end

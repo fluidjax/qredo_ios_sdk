@@ -43,6 +43,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return [NSString stringWithFormat:@"%@",self.vaultItemDescriptor];
 }
 
+
 @end
 
 @implementation QredoRendezvousMetadata
@@ -62,6 +63,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     return self;
 }
+
 
 @end
 
@@ -83,6 +85,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return self;
 }
 
+
 -(instancetype)initWithConversationType:(NSString *)conversationType
                         durationSeconds:(long)durationSeconds
                isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount
@@ -99,6 +102,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _expiresAt = expiresAt;
     return self;
 }
+
 
 @end
 
@@ -155,11 +159,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     }
 }
 
+
 -(void)saveHWM {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     [defaults setObject:@(self.highWatermark) forKey:self.tag];
 }
+
 
 -(instancetype)initWithClient:(QredoClient *)client {
     self = [super init];
@@ -182,6 +188,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return self;
 }
 
+
 -(instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFRendezvousDescriptor *)descriptor {
     self = [self initWithClient:client];
     _descriptor = descriptor;
@@ -195,6 +202,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     [self loadHWM];
     return self;
 }
+
 
 -(instancetype)initWithVaultItem:(QredoClient *)client fromVaultItem:(QredoVaultItem *)vaultItem {
     QLFRendezvousDescriptor *descriptor  = [QredoPrimitiveMarshallers unmarshalObject:vaultItem.value
@@ -236,6 +244,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     [self loadHWM];
     return self;
 }
+
 
 //TODO: DH - provide alternative method signature for non-X.509 authenticated rendezvous without trustedRootPems?
 -(void)createRendezvousWithTag:(NSString *)tag
@@ -354,27 +363,28 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                           }
                           
                           [result   ifRendezvousCreated:^(NSSet *expiresAt) {
-                              _descriptor = [QLFRendezvousDescriptor          rendezvousDescriptorWithTag:_tag
-                                                                                                hashedTag:_hashedTag
-                                                                                         conversationType:configuration.conversationType
-                                                                                       authenticationType:authType
-                                                                                          durationSeconds:maybeDurationSeconds
-                                                                                                expiresAt:expiresAt
-                                                                                       responseCountLimit:responseCount
-                                                                                         requesterKeyPair:requesterKeyPair
-                                                                                         ownershipKeyPair:ownershipKeyPair];
+                              _descriptor = [QLFRendezvousDescriptor            rendezvousDescriptorWithTag:_tag
+                                                                                                  hashedTag:_hashedTag
+                                                                                           conversationType:configuration.conversationType
+                                                                                         authenticationType:authType
+                                                                                            durationSeconds:maybeDurationSeconds
+                                                                                                  expiresAt:expiresAt
+                                                                                         responseCountLimit:responseCount
+                                                                                           requesterKeyPair:requesterKeyPair
+                                                                                           ownershipKeyPair:ownershipKeyPair];
                               self.configuration.expiresAt = [[expiresAt anyObject] asDate];
                               [self storeWithCompletionHandler:^(NSError *error) {
                                   if (completionHandler) completionHandler(error);
                               }];
                           }
                               ifRendezvousAlreadyExists:^{
-                                  if (completionHandler) completionHandler([NSError errorWithDomain:QredoErrorDomain
-                                                                                               code:QredoErrorCodeRendezvousAlreadyExists
-                                                                                           userInfo:@{ NSLocalizedDescriptionKey:@"Rendezvous with the specified tag already exists" }]);
+                                  if (completionHandler) completionHandler([NSError  errorWithDomain:QredoErrorDomain
+                                                                                                code:QredoErrorCodeRendezvousAlreadyExists
+                                                                                            userInfo:@{ NSLocalizedDescriptionKey:@"Rendezvous with the specified tag already exists" }]);
                               }];
                       }];
 }
+
 
 -(void)storeWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:_descriptor
@@ -414,6 +424,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
          if (completionHandler) completionHandler(error);
      }];
 }
+
 
 -(void)activateRendezvous:(long)duration completionHandler:(void (^)(NSError *error))completionHandler {
     NSError *error = nil;
@@ -466,6 +477,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                            }];
                      }];
 }
+
 
 -(void)updateRendezvousWithDuration:(long)duration expiresAt:(NSSet *)expiresAt completionHandler:(void (^)(NSError *error))completionHandler {
     NSSet *durationSeconds = [self maybe:duration];
@@ -540,6 +552,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
      }];
 }
 
+
 -(void)deactivateRendezvous:(void (^)(NSError *error))completionHandler {
     NSError *error = nil;
     
@@ -571,6 +584,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
      ];
 }
 
+
 @end
 
 @implementation QredoRendezvous
@@ -582,39 +596,48 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return [QredoUtils dataToHexString:key];
 }
 
+
 +(NSString *)tagToReadable:(NSString *)tag {
     NSData *dataTag = [NSData dataWithHexString:tag];
     
     return [QredoUtils key2Eng:dataTag];
 }
 
+
 -(NSString *)conversationType {
     return self.configuration.conversationType;
 }
+
 
 -(long)duration {
     return self.configuration.durationSeconds;
 }
 
+
 -(BOOL)unlimitedResponses {
     return self.configuration.isUnlimitedResponseCount;
 }
+
 
 -(NSDate *)expiresAt {
     return self.configuration.expiresAt;
 }
 
+
 -(NSString *)tag {
     return _tag;
 }
+
 
 -(NSString *)readableTag {
     return [QredoRendezvous tagToReadable:[self tag]];
 }
 
+
 -(void)setTag:(NSString *)tag {
     _tag = tag;
 }
+
 
 -(NSSet *)maybe:(long)val {
     if (val == 0)return [NSSet new];
@@ -622,13 +645,16 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return [NSSet setWithObject:[NSNumber numberWithLong:val]];
 }
 
+
 -(void)resetHighWatermark {
     _highWatermark = QredoRendezvousHighWatermarkOrigin;
 }
 
+
 -(void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     //TODO: implement later
 }
+
 
 -(void)addRendezvousObserver:(id<QredoRendezvousObserver>)observer {
     [_observers addObserver:observer];
@@ -638,6 +664,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     }
 }
 
+
 -(void)removeRendezvousObserver:(id<QredoRendezvousObserver>)observer {
     [_observers removeObserver:observer];
     
@@ -646,9 +673,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     }
 }
 
+
 -(void)notifyObservers:(void (^)(id<QredoRendezvousObserver> observer))notificationBlock {
     [_observers notifyObservers:notificationBlock];
 }
+
 
 -(BOOL)processResponse:(QLFRendezvousResponse *)response
          sequenceValue:(QLFRendezvousSequenceValue)sequenceValue
@@ -656,6 +685,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
           errorHandler:(void (^)(NSError *))errorHandler {
     return YES;
 }
+
 
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *metadata,BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler {
@@ -697,6 +727,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                              }];
 }
 
+
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversation *conversation,BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler
                                  since:(QredoRendezvousHighWatermark)sinceWatermark
@@ -712,6 +743,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                 since:sinceWatermark
                  highWatermarkHandler:highWatermarkHandler];
 }
+
 
 -(void)enumerateResponsesWithBlock:(void (^)(QLFRendezvousResponsesResult *rendezvousResponse,QredoConversation *conversation,BOOL *stop))block
                  completionHandler:(void (^)(NSError *error))completionHandler
@@ -756,6 +788,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                              completionHandler:completionHandler];
      }];
 }
+
 
 -(void)processRendezvousResponseResult:(QLFRendezvousResponsesResult *)result
                          responseIndex:(NSUInteger)responseIndex
@@ -821,6 +854,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
      }];
 }
 
+
 -(void)createConversationAndStoreKeysForResponse:(QLFRendezvousResponse *)response
                                completionHandler:(void (^)(QredoConversation *conversation,NSError *error))completionHandler {
     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
@@ -844,6 +878,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                        if (completionHandler) completionHandler(conversation,nil);
                                    }];
 }
+
 
 -(void)updateRendezvousWithSummaryValues:(NSDictionary *)summaryValues completionHandler:(void (^)(NSError *error))completionHandler {
     //this updates the vault item version of the rendezvous with new summaryValues
@@ -919,11 +954,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
      }];
 }
 
+
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source
 -(BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener {
     return _client.serviceInvoker.supportsMultiResponse;
 }
+
 
 -(void)qredoUpdateListener:(QredoUpdateListener *)updateListener pollWithCompletionHandler:(void (^)(NSError *))completionHandler {
     [self enumerateResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse,QredoConversation *conversation,BOOL *stop) {
@@ -937,6 +974,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                      [self saveHWM];
                  }];
 }
+
 
 -(void)qredoUpdateListener:(QredoUpdateListener *)updateListener subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler {
     NSAssert([_observers count] > 0,@"There shoud be 1 or more rendezvous observers before starting listening for the updates");
@@ -990,6 +1028,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                  }];
 }
 
+
 -(void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler {
     //TODO: ownership
     //[_rendezvous unsubscribeWithCorrelationId:_subscriptionCorrelationId completionHandler:^(NSError *error) {
@@ -1001,6 +1040,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     //updateListener = nil;
 }
 
+
 #pragma mark Qredo Update Listener - Delegate
 
 -(void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item {
@@ -1009,9 +1049,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     [self notifyObservers:^(id < QredoRendezvousObserver > observer) {
         if ([observer respondsToSelector:@selector(qredoRendezvous:didReceiveReponse:)]){
             [observer   qredoRendezvous:self
-                      didReceiveReponse:conversation];
+                     didReceiveReponse :conversation];
         }
     }];
 }
+
 
 @end

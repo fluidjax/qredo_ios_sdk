@@ -16,6 +16,7 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     return watermark;
 }
 
+
 -(NSSet *)vaultSequenceState {
     NSMutableSet *sequenceStates = [NSMutableSet set];
     
@@ -32,8 +33,10 @@ QredoVaultHighWatermark *const QredoVaultHighWatermarkOrigin = nil;
     return [sequenceStates copy]; //immutable copy
 }
 
+
 -(NSString *)description {
     return self.sequenceState.description;
 }
+
 
 @end

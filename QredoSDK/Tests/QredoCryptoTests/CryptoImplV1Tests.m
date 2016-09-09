@@ -28,6 +28,7 @@
     XCTAssertTrue([key isEqualToData:expectedResult],@"not expected result");
 }
 
+
 -(void)testEncryptWithKey {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f
@@ -50,6 +51,7 @@
     NSData *actualEncryptedData = [encryptedDataWithIv subdataWithRange:NSMakeRange(kCCBlockSizeAES128,encryptedDataWithIv.length - kCCBlockSizeAES128)];
     XCTAssertTrue([expectedEncryptedData isEqualToData:actualEncryptedData],@"Encrypted data (with IV removed) incorrect.");
 }
+
 
 -(void)testDecryptWithKey {
     uint8_t keyDataArray[] = {
@@ -75,6 +77,7 @@
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
+
 
 -(void)testEncryptDecryptRoundTripOf1600Bytes {
     uint8_t keyDataArray[] = {
@@ -199,6 +202,7 @@
     XCTAssertTrue([plaintextData isEqualToData:decryptedData],@"Original plaintext and final plain text do not match.");
 }
 
+
 -(void)testGetAuthCodeWithKey_EmptyKeyEmptyData {
     uint8_t keyDataArray[] = {
     };
@@ -221,6 +225,7 @@
     XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
 }
 
+
 -(void)testGetAuthCodeWithKey_WikipediaExampleData {
     NSString *keyString = @"key";
     NSData *keyData = [keyString dataUsingEncoding:NSASCIIStringEncoding];
@@ -240,6 +245,7 @@
     XCTAssertNotNil(authCode,@"Auth code should not be nil.");
     XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
 }
+
 
 -(void)testGetAuthCodeWithKeyAndLength_WikipediaExampleDataShorterData {
     NSString *keyString = @"key";
@@ -263,6 +269,7 @@
     XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
 }
 
+
 -(void)testVerifyAuthCodeWithKey_Valid {
     NSString *keyString = @"key";
     NSData *keyData = [keyString dataUsingEncoding:NSASCIIStringEncoding];
@@ -283,6 +290,7 @@
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
+
 
 -(void)testVerifyAuthCodeWithKey_Invalid_KeyDifferent {
     NSString *keyString = @"key2";
@@ -305,6 +313,7 @@
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
 
+
 -(void)testVerifyAuthCodeWithKey_Invalid_InputDifferent {
     NSString *keyString = @"key";
     NSData *keyData = [keyString dataUsingEncoding:NSASCIIStringEncoding];
@@ -325,6 +334,7 @@
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
+
 
 -(void)testVerifyAuthCodeWithKeyAppendedMac_Valid {
     NSString *keyString = @"key";
@@ -350,6 +360,7 @@
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
 
+
 -(void)testVerifyAuthCodeWithKeyAppendedMac_Invalid {
     NSString *keyString = @"key";
     NSData *keyData = [keyString dataUsingEncoding:NSASCIIStringEncoding];
@@ -374,6 +385,7 @@
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
 
+
 -(void)testGetRandomKey {
     //Can't really test randomness here, but can check the length is correct,
     //and that we don't get the same key twice.
@@ -388,6 +400,7 @@
     XCTAssertTrue(randomKey2.length == kCCKeySizeAES256,@"Random key 2 is incorrect length.");
     XCTAssertFalse([randomKey1 isEqualToData:randomKey2],@"Random keys are the same. Both should be random.");
 }
+
 
 -(void)testGetPasswordBasedKeyWithSalt {
     NSString *saltString = @"saltSALTsaltSALTsaltSALTsaltSALTsalt";
@@ -405,6 +418,7 @@
     XCTAssertNotNil(key,@"Key should not be nil.");
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:key],@"Key incorrect.");
 }
+
 
 -(void)testGenerateDHKeyPair {
     CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
@@ -428,5 +442,6 @@
     XCTAssertFalse([keyPair1DhPublicKey.data isEqualToData:keyPair1DhPrivateKey.data],@"Public and private key data are the same, this is incorrect.");
     XCTAssertFalse([keyPair2DhPublicKey.data isEqualToData:keyPair2DhPrivateKey.data],@"Public and private key data are the same, this is incorrect.");
 }
+
 
 @end

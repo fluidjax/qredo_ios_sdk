@@ -78,6 +78,7 @@
     return outputData;
 }
 
+
 +(NSData *)encryptData:(NSData *)data withAesKey:(NSData *)key iv:(NSData *)iv {
     const void *ivBytes = nil;
     
@@ -141,6 +142,7 @@
     return outputData;
 }
 
+
 +(NSData *)hkdfExtractSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
     //Salt is optional
     
@@ -162,6 +164,7 @@
     
     return prk;
 }
+
 
 +(NSData *)hkdfExpandSha256WithKey:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength {
     int iterations = (int)ceil((double)outputLength / (double)CC_SHA256_DIGEST_LENGTH);
@@ -189,10 +192,12 @@
     return [[NSData dataWithData:results] subdataWithRange:NSMakeRange(0,outputLength)];
 }
 
+
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info {
     //default to CC_SHA256_DIGEST_LENGTH
     return [self hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:CC_SHA256_DIGEST_LENGTH];
 }
+
 
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
     NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:salt initialKeyMaterial:ikm];
@@ -200,6 +205,7 @@
     
     return okm;
 }
+
 
 +(NSData *)pbkdf2Sha256WithSalt:(NSData *)salt bypassSaltLengthCheck:(BOOL)bypassSaltLengthCheck passwordData:(NSData *)passwordData requiredKeyLengthBytes:(NSUInteger)requiredKeyLengthBytes iterations:(NSUInteger)iterations {
     //Salt should be at least 8 bytes
@@ -264,6 +270,7 @@
     return derivedKey;
 }
 
+
 +(NSData *)generateHmacSha256ForData:(NSData *)data length:(NSUInteger)length key:(NSData *)key {
     if (!data){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -293,6 +300,7 @@
     return mac;
 }
 
+
 +(NSData *)sha256:(NSData *)data {
     if (!data){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -306,6 +314,7 @@
     
     return hash;
 }
+
 
 +(NSData *)sha256Tom:(NSData *)data {
     if (!data){
@@ -321,6 +330,7 @@
     return hash;
 }
 
+
 +(NSData *)secureRandomWithSize:(NSUInteger)size {
     size_t randomSize  = size;
     uint8_t *randomBytes = alloca(randomSize);
@@ -334,6 +344,7 @@
     
     return [NSData dataWithBytes:randomBytes length:randomSize];
 }
+
 
 +(BOOL)equalsConstantTime:(NSData *)left right:(NSData *)right {
     //This is intended to take a constant amount of time to verify.
@@ -358,6 +369,7 @@
     
     return difference == 0;
 }
+
 
 +(SecKeyRef)importPkcs1KeyData:(NSData *)keyData keyLengthBits:(NSUInteger)keyLengthBits keyIdentifier:(NSString *)keyIdentifier isPrivate:(BOOL)isPrivate {
     //Note, this method will happily import public key data marked as private, but our getRsaSecKeyReferenceForIdentifier method will return null SecKeyRef (and no error).
@@ -430,6 +442,7 @@
         return (SecKeyRef)secKeyRef;
     }
 }
+
 
 +(QredoSecKeyRefPair *)generateRsaKeyPairOfLength:(NSInteger)lengthBits publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys {
     /*
@@ -519,6 +532,7 @@
     return keyRefPair;
 }
 
+
 //TODO: DH - create unit test for this? (check also if any other SecKeyRef methods added are tested)
 +(SecCertificateRef)getCertificateRefFromIdentityRef:(SecIdentityRef)identityRef {
     if (!identityRef){
@@ -539,6 +553,7 @@
     return certificateRef;
 }
 
+
 +(SecKeyRef)getPrivateKeyRefFromIdentityRef:(SecIdentityRef)identityRef {
     if (!identityRef){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -557,6 +572,7 @@
     
     return privateKeyRef;
 }
+
 
 +(SecKeyRef)getPublicKeyRefFromIdentityRef:(SecIdentityRef)identityRef {
     if (!identityRef){
@@ -621,6 +637,7 @@
     return publicKeyRef;
 }
 
+
 //TODO: DH - Add unit tests for getPublicKeyRefFromEvaluatedTrustRef
 +(SecKeyRef)getPublicKeyRefFromEvaluatedTrustRef:(SecTrustRef)trustRef {
     if (!trustRef){
@@ -637,6 +654,7 @@
     
     return publicKeyRef;
 }
+
 
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier {
     if (!keyIdentifier){
@@ -679,6 +697,7 @@
     return secKeyRef;
 }
 
+
 +(NSData *)getKeyDataForIdentifier:(NSString *)keyIdentifier {
     if (!keyIdentifier){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -716,6 +735,7 @@
     keyData = (__bridge_transfer NSData *)keyDataRef;
     return keyData;
 }
+
 
 +(NSData *)rsaEncryptPlainTextData:(NSData *)plainTextData padding:(QredoPadding)padding keyRef:(SecKeyRef)keyRef {
     if (!plainTextData){
@@ -763,6 +783,7 @@
     return outputData;
 }
 
+
 SecPadding secPaddingFromQredoPadding(QredoPadding padding) {
     SecPadding secPaddingType;
     
@@ -787,6 +808,7 @@ SecPadding secPaddingFromQredoPadding(QredoPadding padding) {
     }
     return secPaddingType;
 }
+
 
 +(NSData *)rsaDecryptCipherTextData:(NSData *)cipherTextData padding:(QredoPadding)padding keyRef:(SecKeyRef)keyRef {
     /*
@@ -856,6 +878,7 @@ SecPadding secPaddingFromQredoPadding(QredoPadding padding) {
     return outputData;
 }
 
+
 SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t keyLength,NSData *plainTextData) {
     SecPadding secPaddingType;
     
@@ -906,6 +929,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
     }
     return secPaddingType;
 }
+
 
 +(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef {
     if (!message){
@@ -964,6 +988,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
     
     return outputData;
 }
+
 
 +(BOOL)rsaPssVerifySignature:(NSData *)signature forMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef {
     if (!signature){
@@ -1033,6 +1058,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
     return pss_result == QREDO_RSA_PSS_VERIFIED;
 }
 
+
 +(BOOL)deleteAllKeysInAppleKeychain {
     BOOL success = YES;
     
@@ -1052,6 +1078,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
     
     return success;
 }
+
 
 +(BOOL)deleteKeyInAppleKeychainWithIdentifier:(NSString *)keyIdentifier {
     if (!keyIdentifier){
@@ -1083,6 +1110,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
     
     return success;
 }
+
 
 OSStatus fixedSecItemCopyMatching(CFDictionaryRef query,CFTypeRef *result) {
     /*
@@ -1124,5 +1152,6 @@ OSStatus fixedSecItemCopyMatching(CFDictionaryRef query,CFTypeRef *result) {
     
     return status;
 }
+
 
 @end

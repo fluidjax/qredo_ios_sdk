@@ -14,10 +14,12 @@
     //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
+
 
 -(void)testReadWriteEmptyList {
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
@@ -37,6 +39,7 @@
     XCTAssertTrue([reader isExhausted],@"Expected reader stream to be exhausted.");
     [in close];
 }
+
 
 -(void)testReadWriteListOfSingleAtom {
     uint8_t testAtom[6] = { 1,2,3,4,5,6 };
@@ -62,6 +65,7 @@
     XCTAssertTrue([reader isExhausted],@"Expected reader stream to be exhausted.");
     [in close];
 }
+
 
 -(void)testReadWriteMultipleAtomList {
     uint8_t testAtom1[6]  = { 1,2,3,4,5,6 };
@@ -97,6 +101,7 @@
     XCTAssertTrue([reader isExhausted],@"Expected reader stream to be exhausted.");
     [in close];
 }
+
 
 -(void)testReadWriteComplexStructure {
     uint8_t testAtom1[6]  = { 1,2,3,4,5,6 };
@@ -136,6 +141,7 @@
     XCTAssertTrue([atom3 isEqualToData:testData3],@"Expected read data to match written data.");
     [in close];
 }
+
 
 -(void)testReadAhead {
     uint8_t testAtom1[6]  = { 1,2,3,4,5,6 };
@@ -193,5 +199,6 @@
     XCTAssertEqual(lookAheadAtom3,QredoTokenAtom);
     XCTAssertEqual(lookAheadEOF,QredoTokenEnd);
 }
+
 
 @end

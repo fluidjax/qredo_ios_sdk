@@ -18,10 +18,12 @@
     //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
+
 
 -(void)testBoolean {
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
@@ -49,6 +51,7 @@
     XCTAssertTrue([boolean1 boolValue]);
     XCTAssertFalse([boolean2 boolValue]);
 }
+
 
 -(void)testByte {
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
@@ -82,6 +85,7 @@
     XCTAssertTrue([byte3 isEqualToNumber:@2]);
     XCTAssertTrue([byte4 isEqualToNumber:@3]);
 }
+
 
 -(void)testByteSequence {
     uint8_t testBytes1[6]  = { 1,2,3,4,5,6 };
@@ -124,6 +128,7 @@
     XCTAssertTrue([actualData2 isEqualToData:testData2]);
     XCTAssertTrue([actualData3 isEqualToData:testData3]);
 }
+
 
 -(void)testDate {
     QredoDate *testDate1 = [QredoDate dateWithYear:1983 month:4  day:12];
@@ -186,6 +191,7 @@
     XCTAssertTrue([actualDate5 day]   == 23);
 }
 
+
 -(void)testDateFromNSDate {
     NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:-559310400];
     QredoDate *testDate = [QredoDate dateWithDate:date];
@@ -215,6 +221,7 @@
     XCTAssertTrue(actualDate.month == 4);
     XCTAssertTrue(actualDate.day   == 12);
 }
+
 
 -(void)testDateFromNSDateComponents {
     NSDateComponents *dateComponents = [NSDateComponents new];
@@ -248,6 +255,7 @@
     XCTAssertTrue(actualDate.month == 4);
     XCTAssertTrue(actualDate.day   == 12);
 }
+
 
 -(void)testGenericDateTime {
     QredoDate *date = [QredoDate dateWithYear:1983 month:4 day:12];
@@ -292,6 +300,7 @@
     XCTAssertTrue([[actualGenericDateTime2 date] day]   == 12);
     XCTAssertTrue([[actualGenericDateTime2 time] millisSinceMidnight] == 1000);
 }
+
 
 -(void)testInt32 {
     NSNumber *testInt1 = [NSNumber numberWithLongLong:-1000000000000LL]; //Should underflow.
@@ -351,6 +360,7 @@
     XCTAssertFalse([actualInt9 isEqualToNumber:testInt9]);
 }
 
+
 -(void)testInt64 {
     NSNumber *testInt1 = [NSNumber numberWithLongLong:-9223372036854775807LL];
     NSNumber *testInt2 = [NSNumber numberWithLongLong:-1000000LL];
@@ -392,6 +402,7 @@
     XCTAssertTrue([actualInt4 isEqualToNumber:testInt4]);
     XCTAssertTrue([actualInt5 isEqualToNumber:testInt5]);
 }
+
 
 -(void)testLocalDateTime {
     QredoDate *date1 = [QredoDate dateWithYear:1983 month:4 day:12];
@@ -455,6 +466,7 @@
     XCTAssertTrue([[actualGenericDateTime4 time] millisSinceMidnight] == 4000);
 }
 
+
 -(void)testString {
     NSString *testString1 = @"Hello, world!";
     NSString *testString2 = @"";
@@ -492,6 +504,7 @@
     XCTAssertTrue([actualString2 isEqualToString:testString2]);
     XCTAssertTrue([actualString3 isEqualToString:testString3]);
 }
+
 
 -(void)testSymbol {
     NSString *testSymbol1 = @"HelloWorld";
@@ -531,6 +544,7 @@
     XCTAssertTrue([actualSymbol3 isEqualToString:testSymbol3]);
 }
 
+
 -(void)testTime {
     QredoTime *testTime1 = [QredoTime timeWithMillisSinceMidnight:1000];
     QredoTime *testTime2 = [QredoTime timeWithMillisSinceMidnight:2000];
@@ -569,6 +583,7 @@
     XCTAssertTrue(actualTime3.millisSinceMidnight == testTime3.millisSinceMidnight);
 }
 
+
 -(void)testTimeFromNSDate {
     NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:-559310400];
     QredoTime *testTime = [QredoTime timeWithDate:date];
@@ -599,6 +614,7 @@
     XCTAssertTrue(actualTime.second == 0);
     XCTAssertTrue(actualTime.milli  == 0);
 }
+
 
 -(void)testTimeFromNSDateComponents {
     NSDateComponents *dateComponents = [NSDateComponents new];
@@ -633,6 +649,7 @@
     XCTAssertTrue(actualTime.second == 56);
     XCTAssertTrue(actualTime.milli  == 0);
 }
+
 
 -(void)testQUID {
     QredoQUID *testQUID1 = [QredoQUID QUID];
@@ -671,6 +688,7 @@
     XCTAssertTrue([actualQUID2 isEqual:testQUID2]);
     XCTAssertTrue([actualQUID3 isEqual:testQUID3]);
 }
+
 
 -(void)testUTCDateTime {
     QredoDate *date1 = [QredoDate dateWithYear:1983 month:4 day:12];
@@ -734,6 +752,7 @@
     XCTAssertTrue([[actualGenericDateTime4 time] millisSinceMidnight] == 4000);
 }
 
+
 -(void)testMessageHeader {
     QredoVersion *protocolVersion = [QredoVersion versionWithMajor:@1 minor:@2 patch:@3];
     QredoVersion *releaseVersion  = [QredoVersion versionWithMajor:@4 minor:@5 patch:@6];
@@ -767,6 +786,7 @@
     XCTAssertTrue([[[actualMessageHeader releaseVersion] minor] isEqualToNumber:[releaseVersion minor]]);
     XCTAssertTrue([[[actualMessageHeader releaseVersion] patch] isEqualToNumber:[releaseVersion patch]]);
 }
+
 
 -(void)testVersion {
     QredoVersion *testVersion1 = [QredoVersion versionWithMajor:@1 minor:@2 patch:@3];
@@ -810,6 +830,7 @@
     XCTAssertTrue([[actualVersion3 patch] isEqualToNumber:[testVersion3 patch]]);
 }
 
+
 -(void)testInterchangeHeader {
     NSData *testReturnChannelID = [NSData dataWithRandomBytesOfLength:16];
     NSData *testCorrelationID = [NSData dataWithRandomBytesOfLength:16];
@@ -848,6 +869,7 @@
     XCTAssertTrue([[actualInterchangeHeader operationName] isEqualToString:testOperationName]);
 }
 
+
 -(void)testInvocationHeader {
     NSOutputStream *out = [NSOutputStream outputStreamToMemory];
     
@@ -872,6 +894,7 @@
     XCTAssertFalse([in hasBytesAvailable]);
     [in close];
 }
+
 
 -(void)testSequence {
     NSString *testString1 = @"Test String 1";
@@ -915,6 +938,7 @@
     XCTAssertTrue([actualString5 isEqualToString:testString5]);
 }
 
+
 -(void)testSet {
     NSString *testString1 = @"Test String 1";
     NSString *testString2 = @"Test String 2";
@@ -956,6 +980,7 @@
     XCTAssertTrue([actualString4 isEqualToString:testString4]);
     XCTAssertTrue([actualString5 isEqualToString:testString5]);
 }
+
 
 -(void)testConstructorFields {
     NSString *testConstructorName = @"TestConstructor";
@@ -1000,6 +1025,7 @@
     XCTAssertTrue([actualFieldName2 isEqualToString:testFieldName2]);
     XCTAssertTrue([actualFieldValue2 isEqualToNumber:testFieldValue2]);
 }
+
 
 -(void)testErrorInfoItems {
     QredoDebugInfo *testDebugInfo1 = [QredoDebugInfo debugInfoWithKey:@"Key1" value:@"Value1"];
@@ -1093,6 +1119,7 @@
     XCTAssertTrue([[actualDebugInfo3 value] isEqualToString:@"Value3"]);
 }
 
+
 -(void)testResults {
     QredoResultHeader *testResult1 = [QredoResultHeader resultHeaderWithStatus:[NSNumber numberWithChar:QredoMarkerOperationSuccess]];
     QredoResultHeader *testResult2 = [QredoResultHeader resultHeaderWithStatus:[NSNumber numberWithChar:QredoMarkerOperationFailure]];
@@ -1132,6 +1159,7 @@
     XCTAssertTrue([actualResult2 isFailure]);
     XCTAssertTrue([actualNumber2 isEqualToNumber:@456]);
 }
+
 
 //- (NSData *)withConnectedStreamsFromWriter:(void (^)(QredoWireFormatWriter *writer))writeBlock
 //reader:(void (^)(QredoWireFormatReader *reader))readBlock {

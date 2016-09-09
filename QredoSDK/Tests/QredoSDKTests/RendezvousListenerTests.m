@@ -56,6 +56,7 @@
                                  }];
 }
 
+
 -(void)tearDown {
     [super tearDown];
     
@@ -63,6 +64,7 @@
         [client closeSession];
     }
 }
+
 
 -(void)testRendezvousResponder {
     NSString *randomTag = [[QredoQUID QUID] QUIDString];
@@ -151,9 +153,11 @@
     [anotherClient closeSession];
 }
 
+
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     creatorConversation = conversation;
     [didReceiveResponseExpectation fulfill];
 }
+
 
 @end

@@ -55,16 +55,19 @@
     return description;
 }
 
+
 +(NSError *)errorWithErrorCode:(QredoTransportError)code {
     NSString *description = [self descriptionForErrorCode:code];
     
     return [self errorWithErrorCode:code description:description];
 }
 
+
 +(NSError *)errorWithErrorCode:(QredoTransportError)code description:(NSString *)description {
     NSError *error = [NSError errorWithDomain:QredoTransportErrorDomain code:code userInfo:@{ NSLocalizedDescriptionKey:description }];
     
     return error;
 }
+
 
 @end

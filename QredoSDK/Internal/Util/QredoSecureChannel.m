@@ -28,6 +28,7 @@
     return self;
 }
 
+
 -(NSString *)publicKey {
     if (self.localPublicKeyData)return [QredoUtils dataToHexString:[self.localPublicKeyData copy]];
     
@@ -38,16 +39,19 @@
     return [QredoUtils dataToHexString:[self.localPublicKeyData copy]];
 }
 
+
 -(NSString *)remotePublicKey {
     //return the remote public key
     return [QredoUtils dataToHexString:self.remotePublicKeyData];
 }
+
 
 -(void)setRemotePublicKey:(NSString *)key {
     //set the remote public key
     self.remotePublicKeyData = [QredoUtils hexStringToData:key];
     self.encryptionKey = nil;
 }
+
 
 -(void)buildEncryptionKey {
     //build the AES symmetric encryption key from local Private & remote Public
@@ -61,6 +65,7 @@
     self.encryptionKey = [sKey copy];
 }
 
+
 -(NSString *)encryptString:(NSString *)message {
     //wrapper to encrypt a string
     
@@ -69,6 +74,7 @@
     
     return [QredoUtils dataToHexString:result];
 }
+
 
 -(NSData *)encrypt:(NSData *)message {
     //build the AES encryption key if not already built
@@ -93,6 +99,7 @@
     return nil;
 }
 
+
 -(NSString *)decryptString:(NSString *)cipherText {
     //Wrapper for the NSData decryption
     //Converts NSData into Hex strings
@@ -102,6 +109,7 @@
     
     return [[NSString alloc] initWithData:result encoding:NSASCIIStringEncoding];
 }
+
 
 -(NSData *)decrypt:(NSData *)cipherData {
     //build the AES  key if not already built
@@ -119,5 +127,6 @@
     
     return nil;
 }
+
 
 @end

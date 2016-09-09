@@ -62,6 +62,7 @@ static int wsrch __ARGS((char *w,int low,int high));
     return [res copy];
 }
 
+
 +(NSString *)key2Eng:(NSData *)key {
     int keyLen = (int)[key length];
     
@@ -108,6 +109,7 @@ static int wsrch __ARGS((char *w,int low,int high));
     
     return [res copy];
 }
+
 
 NSMutableData *etobSimple(out,e)
 char *out;
@@ -189,6 +191,7 @@ char *e;
     return retData;
 }
 
+
 +(NSString *)rfc1751Key2Eng:(NSData *)key {
     NSMutableString *resString = [[NSMutableString alloc] init];
     
@@ -213,6 +216,7 @@ char *e;
     
     return resString;
 }
+
 
 //code below taken from RFC1751
 

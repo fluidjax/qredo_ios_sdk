@@ -59,6 +59,7 @@ static const NSUInteger kRandomTagLength = 32;
     return self;
 }
 
+
 -(instancetype)initWithFullTag:(NSString *)fullTag
                         crypto:(id<CryptoImpl>)crypto
                trustedRootPems:(NSArray *)trustedRootPems
@@ -72,21 +73,26 @@ static const NSUInteger kRandomTagLength = 32;
                            error:error];
 }
 
+
 -(QredoRendezvousAuthenticationType)type {
     return QredoRendezvousAuthenticationTypeAnonymous;
 }
+
 
 -(NSString *)tag {
     return self.fullTag;
 }
 
+
 -(QLFRendezvousAuthSignature *)emptySignature {
     return nil;
 }
 
+
 -(QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error {
     return nil;
 }
+
 
 -(NSString *)getRandomTag {
     NSData *randomTagData = [NSData dataWithRandomBytesOfLength:kRandomTagLength];
@@ -95,6 +101,7 @@ static const NSUInteger kRandomTagLength = 32;
     
     return tag;
 }
+
 
 @end
 
@@ -140,24 +147,30 @@ static const NSUInteger kRandomTagLength = 32;
     return self;
 }
 
+
 -(QredoRendezvousAuthenticationType)type {
     return QredoRendezvousAuthenticationTypeAnonymous;
 }
+
 
 -(NSString *)tag {
     return self.fullTag;
 }
 
+
 -(QLFRendezvousAuthSignature *)emptySignature {
     return nil;
 }
+
 
 -(QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error {
     return nil;
 }
 
+
 -(BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error {
     return YES;
 }
+
 
 @end

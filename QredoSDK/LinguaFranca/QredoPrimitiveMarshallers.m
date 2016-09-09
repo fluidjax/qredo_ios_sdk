@@ -12,11 +12,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)booleanUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readBoolean];
     };
 }
+
 
 +(QredoMarshaller)byteSequenceMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -24,11 +26,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)byteSequenceUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readByteSequence];
     };
 }
+
 
 +(QredoMarshaller)int32Marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -36,11 +40,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)int32Unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readInt32];
     };
 }
+
 
 +(QredoMarshaller)int64Marshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -48,11 +54,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)int64Unmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readInt64];
     };
 }
+
 
 +(QredoMarshaller)stringMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -60,11 +68,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)stringUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readString];
     };
 }
+
 
 +(QredoMarshaller)quidMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -72,11 +82,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)quidUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readQUID];
     };
 }
+
 
 +(QredoMarshaller)dateMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -84,11 +96,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)dateUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readDate];
     };
 }
+
 
 +(QredoMarshaller)timeMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -96,11 +110,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)timeUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readTime];
     };
 }
+
 
 +(QredoMarshaller)genericDateTimeMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -108,11 +124,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)genericDateTimeUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readGenericDateTime];
     };
 }
+
 
 +(QredoMarshaller)localDateTimeMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -120,11 +138,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)localDateTimeUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readLocalDateTime];
     };
 }
+
 
 +(QredoMarshaller)utcDateTimeMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -132,11 +152,13 @@
     };
 }
 
+
 +(QredoUnmarshaller)utcDateTimeUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
         return [reader readUTCDateTime];
     };
 }
+
 
 +(QredoMarshaller)sequenceMarshallerWithElementMarshaller:(QredoMarshaller)elementMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
@@ -148,6 +170,7 @@
         [writer writeEnd];
     };
 }
+
 
 +(QredoUnmarshaller)sequenceUnmarshallerWithElementUnmarshaller:(QredoUnmarshaller)elementUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -161,6 +184,7 @@
     };
 }
 
+
 +(QredoMarshaller)setMarshallerWithElementMarshaller:(QredoMarshaller)elementMarshaller {
     return ^(id element,QredoWireFormatWriter *writer) {
         NSArray *sequence = [[(NSSet *) element allObjects] sortedArrayUsingSelector:@selector(compare:)];
@@ -171,6 +195,7 @@
         [writer writeEnd];
     };
 }
+
 
 +(QredoUnmarshaller)setUnmarshallerWithElementUnmarshaller:(QredoUnmarshaller)elementUnmarshaller {
     return ^id (QredoWireFormatReader *reader) {
@@ -184,9 +209,11 @@
     };
 }
 
+
 +(NSData *)marshalObject:(id<QredoMarshallable>)object {
     return [self marshalObject:object includeHeader:YES];
 }
+
 
 +(NSData *)marshalObject:(id<QredoMarshallable>)object includeHeader:(BOOL)includeHeader;
 {
@@ -196,6 +223,7 @@
 +(NSData *)marshalObject:(id)object marshaller:(QredoMarshaller)marshaller {
     return [self marshalObject:object marshaller:marshaller includeHeader:YES];
 }
+
 
 +(NSData *)marshalObject:(id)object marshaller:(QredoMarshaller)marshaller includeHeader:(BOOL)includeHeader {
     NSOutputStream *outputStream = [NSOutputStream outputStreamToMemory];
@@ -224,9 +252,11 @@
     return [outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
 }
 
+
 +(id)unmarshalObject:(NSData *)data unmarshaller:(QredoUnmarshaller)unmarshaller {
     return [self unmarshalObject:data unmarshaller:unmarshaller parseHeader:YES];
 }
+
 
 +(id)unmarshalObject:(NSData *)data unmarshaller:(QredoUnmarshaller)unmarshaller parseHeader:(BOOL)parseHeader {
     NSInputStream *inputStream = [NSInputStream inputStreamWithData:data];
@@ -250,5 +280,6 @@
     }
     return object;
 }
+
 
 @end

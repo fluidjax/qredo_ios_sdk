@@ -26,6 +26,7 @@
     return self;
 }
 
+
 -(instancetype)initWithPrefix:(NSString *)prefix authenticationTag:(NSString *)authenticationTag error:(NSError **)error {
     self = [super init];
     
@@ -38,9 +39,11 @@
     return self;
 }
 
+
 +(BOOL)isAuthenticatedTag:(NSString *)tag {
     return [tag containsString:@"@"];
 }
+
 
 -(BOOL)processFullTag:(NSString *)fullTag error:(NSError **)error {
     if (!fullTag){
@@ -84,6 +87,7 @@
     return YES;
 }
 
+
 +(NSString *)getFullTagFromPrefix:(NSString *)prefix authenticationTag:(NSString *)authenticationTag {
     //Ignore nil arguments, and replace with empty strings (avoids 'nil' appearing in the final string)
     NSString *prefixValue = @"";
@@ -103,6 +107,7 @@
     return fullTag;
 }
 
+
 NSError *createError(QredoAuthenticatedRendezvousTagError errorCode,NSString *description) {
     NSError *error = [NSError errorWithDomain:QredoAuthenticatedRendezvousTagErrorDomain
                                          code:errorCode
@@ -110,5 +115,6 @@ NSError *createError(QredoAuthenticatedRendezvousTagError errorCode,NSString *de
     
     return error;
 }
+
 
 @end

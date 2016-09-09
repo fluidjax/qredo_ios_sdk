@@ -12,15 +12,18 @@
     [super setUp];
 }
 
+
 //TODO: DH - restore modified tests
 -(void)testCreateRendezvous_NoSigningHandler {
     //[super testCreateRendezvous_NoSigningHandler];
     //XCTFail(@"Restore modified tests");
 }
 
+
 -(void)testCreateRendezvousAndGetResponses {
     [super testCreateRendezvousAndGetResponses];
 }
+
 
 //TODO: DH - restore modified tests
 -(void)testCreateRendezvous_NilSigningHandler {
@@ -28,9 +31,11 @@
     //XCTFail(@"Restore modified tests");
 }
 
+
 -(void)testCreateAndRespondAnonymousRendezvous {
     [super testCreateAndRespondAnonymousRendezvous];
 }
+
 
 //This test has frequently helped in triggering intermittent bugs
 //This is currently failing
@@ -44,13 +49,16 @@
     }
 }
 
+
 -(void)testCreateAndFetchAnonymousRendezvous {
     [super testCreateAndFetchAnonymousRendezvous];
 }
 
+
 -(void)testCreateDuplicateAndFetchAnonymousRendezvous {
     [super testCreateDuplicateAndFetchAnonymousRendezvous];
 }
+
 
 //- (void)testCreateAndRespondAuthenticatedRendezvousED25519_InternalKeys_WithPrefix
 //{

@@ -45,6 +45,7 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     return transport;
 }
 
+
 +(BOOL)canHandleServiceURL:(NSURL *)serviceURL {
     //Check all subclasses we know about to see whether they're supported
     BOOL canHandle = [QredoHttpTransport canHandleServiceURL:serviceURL];
@@ -52,11 +53,13 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     return canHandle;
 }
 
+
 -(instancetype)init {
     //We do not want to be initialised via the NSObect init method as we require arguments (no public setter properties)
     NSAssert(NO,@"Use -initWithServiceURL:");
     return nil;
 }
+
 
 -(instancetype)initWithServiceURL:(NSURL *)serviceURL {
     if (!serviceURL){
@@ -78,11 +81,13 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     return self;
 }
 
+
 -(BOOL)supportsMultiResponse {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass",NSStringFromSelector(_cmd)]
                                  userInfo:nil];
 }
+
 
 -(void)send:(NSData *)payload userData:(id)userData {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
@@ -90,21 +95,25 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
                                  userInfo:nil];
 }
 
+
 -(void)close {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass",NSStringFromSelector(_cmd)]
                                  userInfo:nil];
 }
 
+
 -(void)configureReceivedResponseBlock:(ReceivedResponseBlock)block {
     //TODO: DH - any need to prevent blocks being changed execution?
     self.receivedResponseBlock = block;
 }
 
+
 -(void)configureReceivedErrorBlock:(ReceivedErrorBlock)block {
     //TODO: DH - any need to prevent blocks being changed execution?
     self.receivedErrorBlock = block;
 }
+
 
 -(BOOL)areHandlersConfigured {
     if (self.responseDelegate){
@@ -115,6 +124,7 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     
     return NO;
 }
+
 
 -(void)notifyListenerOfResponseData:(NSData *)data userData:(id)userData {
     if (self.transportClosed){
@@ -144,9 +154,11 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     });
 }
 
+
 -(int)port {
     return 0;
 }
+
 
 -(void)notifyListenerOfError:(NSError *)error userData:(id)userData {
     //Note: this method may be called after transport is closed, to notify send/receive attempted after transport is closed.
@@ -167,14 +179,17 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
     });
 }
 
+
 -(void)notifyListenerOfErrorCode:(QredoTransportError)code userData:(id)userData {
     NSError *error = [QredoTransportErrorUtils errorWithErrorCode:code];
     
     [self notifyListenerOfError:error userData:userData];
 }
 
+
 -(NSString *)getHexClientID {
     return [QredoLogger hexRepresentationOfNSData:[self.clientId getData]];
 }
+
 
 @end

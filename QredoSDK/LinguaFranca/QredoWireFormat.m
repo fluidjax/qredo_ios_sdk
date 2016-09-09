@@ -12,53 +12,66 @@
     return [[QredoMarkedAtom alloc] initWithAtom:atom];
 }
 
+
 +(instancetype)markedAtomWithBoolean:(NSNumber *)boolean {
     return [[QredoMarkedAtom alloc] initWithBoolean:boolean];
 }
+
 
 +(instancetype)markedAtomWithByteSequence:(NSData *)data {
     return [[QredoMarkedAtom alloc] initWithByteSequence:data];
 }
 
+
 +(instancetype)markedAtomWithDate:(QredoDate *)date {
     return [[QredoMarkedAtom alloc] initWithDate:date];
 }
+
 
 +(instancetype)markedAtomWithGenericDateTime:(QredoDateTime *)dateTime {
     return [[QredoMarkedAtom alloc] initWithGenericDateTime:dateTime];
 }
 
+
 +(instancetype)markedAtomWithInt32:(NSNumber *)int32 {
     return [[QredoMarkedAtom alloc] initWithInt32:int32];
 }
+
 
 +(instancetype)markedAtomWithInt64:(NSNumber *)int64 {
     return [[QredoMarkedAtom alloc] initWithInt64:int64];
 }
 
+
 +(instancetype)markedAtomWithLocalDateTime:(QredoLocalDateTime *)localDateTime {
     return [[QredoMarkedAtom alloc] initWithLocalDateTime:localDateTime];
 }
+
 
 +(instancetype)markedAtomWithString:(NSString *)string {
     return [[QredoMarkedAtom alloc] initWithString:string];
 }
 
+
 +(instancetype)markedAtomWithSymbol:(NSString *)symbol {
     return [[QredoMarkedAtom alloc] initWithSymbol:symbol];
 }
+
 
 +(instancetype)markedAtomWithTime:(QredoTime *)time {
     return [[QredoMarkedAtom alloc] initWithTime:time];
 }
 
+
 +(instancetype)markedAtomWithQUID:(QredoQUID *)quid {
     return [[QredoMarkedAtom alloc] initWithQUID:quid];
 }
 
+
 +(instancetype)markedAtomWithUTCDateTime:(QredoUTCDateTime *)utcDateTime {
     return [[QredoMarkedAtom alloc] initWithUTCDateTime:utcDateTime];
 }
+
 
 -(instancetype)initWithAtom:(QredoAtom *)atom {
     self = [super init];
@@ -68,6 +81,7 @@
     return self;
 }
 
+
 -(instancetype)initWithBoolean:(NSNumber *)boolean {
     self = [super init];
     _marker = [boolean boolValue] ? QredoMarkerBooleanTrue : QredoMarkerBooleanFalse;
@@ -75,12 +89,14 @@
     return self;
 }
 
+
 -(instancetype)initWithByteSequence:(NSData *)data {
     self = [super init];
     _marker = QredoMarkerByteSequence;
     _data   = data;
     return self;
 }
+
 
 -(instancetype)initWithDate:(QredoDate *)date {
     self = [super init];
@@ -95,6 +111,7 @@
     _data = [NSData dataWithData:dateBytes];
     return self;
 }
+
 
 -(instancetype)initWithGenericDateTime:(QredoDateTime *)dateTime {
     self = [super init];
@@ -126,6 +143,7 @@
     return self;
 }
 
+
 -(instancetype)initWithInt32:(NSNumber *)int32 {
     self = [super init];
     _marker = QredoMarkerInt;
@@ -133,6 +151,7 @@
     _data   = [NSData dataWithBytes:&data length:sizeof(data)];
     return self;
 }
+
 
 -(instancetype)initWithInt64:(NSNumber *)int64 {
     self = [super init];
@@ -142,9 +161,11 @@
     return self;
 }
 
+
 -(instancetype)initWithLocalDateTime:(QredoLocalDateTime *)localDateTime {
     return [self initWithGenericDateTime:localDateTime];
 }
+
 
 -(instancetype)initWithString:(NSString *)string {
     self = [super init];
@@ -152,6 +173,7 @@
     _data   = [string dataUsingEncoding:NSUTF8StringEncoding];
     return self;
 }
+
 
 -(instancetype)initWithSymbol:(NSString *)symbol {
     self = [super init];
@@ -176,6 +198,7 @@
     return self;
 }
 
+
 -(instancetype)initWithTime:(QredoTime *)time {
     self = [super init];
     _marker = QredoMarkerTime;
@@ -183,6 +206,7 @@
     _data   = [NSData dataWithBytes:&data length:sizeof(data)];
     return self;
 }
+
 
 -(instancetype)initWithQUID:(QredoQUID *)quid {
     self = [super init];
@@ -193,9 +217,11 @@
     return self;
 }
 
+
 -(instancetype)initWithUTCDateTime:(QredoUTCDateTime *)utcDateTime {
     return [self initWithGenericDateTime:utcDateTime];
 }
+
 
 -(NSNumber *)asBoolean {
     switch (_marker){
@@ -212,10 +238,12 @@
     }
 }
 
+
 -(NSData *)asByteSequence {
     [self expectMarker:QredoMarkerByteSequence];
     return _data;
 }
+
 
 -(NSData *)asData {
     NSMutableData *data = [NSMutableData dataWithBytes:&_marker length:1];
@@ -226,6 +254,7 @@
     
     return [data copy];
 }
+
 
 -(QredoDate *)asDate {
     [self expectMarker:QredoMarkerDate];
@@ -240,6 +269,7 @@
                              month:month
                                day:day];
 }
+
 
 -(QredoDateTime *)asGenericDateTime {
     [self expectMarker:QredoMarkerDateTime];
@@ -275,6 +305,7 @@
     }
 }
 
+
 -(NSNumber *)asInt32 {
     int32_t int32;
     
@@ -284,6 +315,7 @@
     int32 = CFSwapInt32BigToHost(int32);
     return @(int32);
 }
+
 
 -(NSNumber *)asInt64 {
     int64_t int64;
@@ -295,12 +327,14 @@
     return @(int64);
 }
 
+
 -(QredoLocalDateTime *)asLocalDateTime {
     [self expectMarker:QredoMarkerDateTime];
     [self expectLength:9];
     [self expectDateTimeMarker:QredoMarkerLocalTimezone];
     return (QredoLocalDateTime *)[self asGenericDateTime];
 }
+
 
 -(NSString *)asString {
     [self expectMarker:QredoMarkerString];
@@ -309,12 +343,14 @@
     return [NSString stringWithUTF8String:[stringBytes bytes]];
 }
 
+
 -(NSString *)asSymbol {
     [self expectMarker:QredoMarkerSymbol];
     NSMutableData *symbolBytes = [NSMutableData dataWithData:_data];
     [symbolBytes appendBytes:"" length:1];
     return [NSString stringWithUTF8String:[symbolBytes bytes]];
 }
+
 
 -(QredoTime *)asTime {
     uint32_t time;
@@ -326,11 +362,13 @@
     return [QredoTime timeWithMillisSinceMidnight:time];
 }
 
+
 -(QredoQUID *)asQUID {
     [self expectMarker:QredoMarkerQUID];
     [self expectLength:32];
     return [[QredoQUID alloc] initWithQUIDBytes:[_data bytes]];
 }
+
 
 -(QredoUTCDateTime *)asUTCDateTime {
     [self expectMarker:QredoMarkerDateTime];
@@ -338,6 +376,7 @@
     [self expectDateTimeMarker:QredoMarkerUTCTimezone];
     return (QredoUTCDateTime *)[self asGenericDateTime];
 }
+
 
 -(void)expectDateTimeMarker:(QredoMarker)expectedMarker {
     uint8_t actualMarker = ((uint8_t *)[_data bytes])[8];
@@ -349,6 +388,7 @@
     }
 }
 
+
 -(void)expectMarker:(QredoMarker)expectedMarker {
     if (_marker != expectedMarker){
         @throw [NSException exceptionWithName:@"QredoUnexpectedMarkerException"
@@ -356,6 +396,7 @@
                                      userInfo:nil];
     }
 }
+
 
 -(void)expectLength:(int)expectedLength {
     if ([_data length] != expectedLength){
@@ -365,6 +406,7 @@
     }
 }
 
+
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
     
@@ -372,6 +414,7 @@
     
     return [self isEqualToAtom:other];
 }
+
 
 -(BOOL)isEqualToAtom:(QredoMarkedAtom *)atom {
     if (self == atom)return YES;
@@ -385,12 +428,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = (NSUInteger)self.marker;
     
     hash = hash * 31u + [self.data hash];
     return hash;
 }
+
 
 @end
 
@@ -400,6 +445,7 @@
     return [[self alloc] initWithMajor:major minor:minor patch:patch];
 }
 
+
 -(instancetype)initWithMajor:(NSNumber *)major minor:(NSNumber *)minor patch:(NSNumber *)patch {
     self = [super init];
     _major = major;
@@ -408,6 +454,7 @@
     return self;
 }
 
+
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
     
@@ -415,6 +462,7 @@
     
     return [self isEqualToVersion:other];
 }
+
 
 -(BOOL)isEqualToVersion:(QredoVersion *)version {
     if (self == version)return YES;
@@ -430,6 +478,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = [self.major hash];
     
@@ -437,6 +486,7 @@
     hash = hash * 31u + [self.patch hash];
     return hash;
 }
+
 
 @end
 
@@ -446,12 +496,14 @@
     return [[self alloc] initWithProtocolVersion:protocolVersion releaseVersion:releaseVersion];
 }
 
+
 -(instancetype)initWithProtocolVersion:(QredoVersion *)protocolVersion releaseVersion:(QredoVersion *)releaseVersion {
     self = [super init];
     _protocolVersion = protocolVersion;
     _releaseVersion  = releaseVersion;
     return self;
 }
+
 
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
@@ -460,6 +512,7 @@
     
     return [self isEqualToHeader:other];
 }
+
 
 -(BOOL)isEqualToHeader:(QredoMessageHeader *)header {
     if (self == header)return YES;
@@ -473,12 +526,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = [self.protocolVersion hash];
     
     hash = hash * 31u + [self.releaseVersion hash];
     return hash;
 }
+
 
 @end
 
@@ -494,6 +549,7 @@
                                    operationName:operationName];
 }
 
+
 -(instancetype)initWithReturnChannelID:(NSData *)returnChannelID
                          correlationID:(NSData *)correlationID
                            serviceName:(NSString *)serviceName
@@ -506,6 +562,7 @@
     return self;
 }
 
+
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
     
@@ -513,6 +570,7 @@
     
     return [self isEqualToHeader:other];
 }
+
 
 -(BOOL)isEqualToHeader:(QredoInterchangeHeader *)header {
     if (self == header)return YES;
@@ -530,6 +588,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = [self.returnChannelID hash];
     
@@ -538,6 +597,7 @@
     hash = hash * 31u + [self.operationName hash];
     return hash;
 }
+
 
 @end
 
@@ -550,10 +610,12 @@
     return [[self alloc] initWithAppId:emptyAppId appSecret:emptyAppSecret];
 }
 
+
 +(QredoAppCredentials *)appCredentialsWithAppId:(NSString *)appId
                                       appSecret:(NSData *)appSecret {
     return [[self alloc] initWithAppId:appId appSecret:appSecret];
 }
+
 
 -(QredoAppCredentials *)initWithAppId:(NSString *)appId
                             appSecret:(NSData *)appSecret {
@@ -563,6 +625,7 @@
     return self;
 }
 
+
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
     
@@ -570,6 +633,7 @@
     
     return [self isEqualToAppCredentials:other];
 }
+
 
 -(BOOL)isEqualToAppCredentials:(QredoAppCredentials *)appCredentials {
     if (self == appCredentials)return YES;
@@ -583,12 +647,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = [self.appId hash];
     
     hash = hash * 31u + [self.appSecret hash];
     return hash;
 }
+
 
 @end
 
@@ -599,19 +665,23 @@
     return [[self alloc] initWithStatus:status];
 }
 
+
 -(instancetype)initWithStatus:(NSNumber *)status {
     self = [super init];
     _status = status;
     return self;
 }
 
+
 -(BOOL)isFailure {
     return [_status isEqualToNumber:@(QredoMarkerOperationFailure)];
 }
 
+
 -(BOOL)isSuccess {
     return [_status isEqualToNumber:@(QredoMarkerOperationSuccess)];
 }
+
 
 @end
 
@@ -621,12 +691,14 @@
     return [[self alloc] initWithKey:key value:value];
 }
 
+
 -(QredoDebugInfo *)initWithKey:(NSString *)key value:(NSString *)value {
     self = [super init];
     _key = key;
     _value = value;
     return self;
 }
+
 
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
@@ -635,6 +707,7 @@
     
     return [self isEqualToInfo:other];
 }
+
 
 -(BOOL)isEqualToInfo:(QredoDebugInfo *)info {
     if (self == info)return YES;
@@ -648,12 +721,14 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = [self.key hash];
     
     hash = hash * 31u + [self.value hash];
     return hash;
 }
+
 
 @end
 
@@ -665,6 +740,7 @@
     return [[self alloc] initWithCode:code debugMessage:debugMessage debugInfo:debugInfo];
 }
 
+
 -(instancetype)initWithCode:(NSInteger)code
                debugMessage:(NSString *)debugMessage
                   debugInfo:(NSArray *)debugInfo {
@@ -675,6 +751,7 @@
     return self;
 }
 
+
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
     
@@ -682,6 +759,7 @@
     
     return [self isEqualToInfo:other];
 }
+
 
 -(BOOL)isEqualToInfo:(QredoErrorInfo *)info {
     if (self == info)return YES;
@@ -697,6 +775,7 @@
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = self.code;
     
@@ -704,6 +783,7 @@
     hash = hash * 31u + [self.debugInfo hash];
     return hash;
 }
+
 
 @end
 
@@ -716,15 +796,18 @@
     return [[QredoWireFormatReader alloc] initWithInputStream:inputStream];
 }
 
+
 -(instancetype)initWithInputStream:(NSInputStream *)inputStream {
     self = [super init];
     _reader = [QredoSExpressionReader sexpressionReaderForInputStream:inputStream];
     return self;
 }
 
+
 -(NSNumber *)readBoolean {
     return [[self readMarkedAtom] asBoolean];
 }
+
 
 -(NSNumber *)readByte {
     uint8_t *bytes = (uint8_t *)[[_reader readAtom] bytes];
@@ -732,49 +815,61 @@
     return @(bytes[0]);
 }
 
+
 -(NSData *)readByteSequence {
     return [[self readMarkedAtom] asByteSequence];
 }
+
 
 -(QredoDate *)readDate {
     return [[self readMarkedAtom] asDate];
 }
 
+
 -(QredoDateTime *)readGenericDateTime {
     return [[self readMarkedAtom] asGenericDateTime];
 }
+
 
 -(NSNumber *)readInt32 {
     return [[self readMarkedAtom] asInt32];
 }
 
+
 -(NSNumber *)readInt64 {
     return [[self readMarkedAtom] asInt64];
 }
+
 
 -(QredoLocalDateTime *)readLocalDateTime {
     return [[self readMarkedAtom] asLocalDateTime];
 }
 
+
 -(NSString *)readString {
     return [[self readMarkedAtom] asString];
 }
+
 
 -(NSString *)readSymbol {
     return [[self readMarkedAtom] asSymbol];
 }
 
+
 -(QredoTime *)readTime {
     return [[self readMarkedAtom] asTime];
 }
+
 
 -(QredoQUID *)readQUID {
     return [[self readMarkedAtom] asQUID];
 }
 
+
 -(QredoUTCDateTime *)readUTCDateTime {
     return [[self readMarkedAtom] asUTCDateTime];
 }
+
 
 -(QredoMessageHeader *)readMessageHeader {
     [self readStart];
@@ -783,6 +878,7 @@
     return [QredoMessageHeader messageHeaderWithProtocolVersion:protocolVersion
                                                  releaseVersion:releaseVersion];
 }
+
 
 -(QredoVersion *)readVersion {
     NSData *versionBytes = [self readByteSequence];
@@ -802,6 +898,7 @@
     return [QredoVersion versionWithMajor:major minor:minor patch:patch];
 }
 
+
 -(QredoInterchangeHeader *)readInterchangeHeader {
     [self expectMarkedListWithMarker:QredoMarkerInterchange];
     
@@ -816,12 +913,14 @@
                                                           operationName:operationName];
 }
 
+
 -(QredoAppCredentials *)readInvocationHeader {
     [self expectMarkedListWithMarker:QredoMarkerOperationInvocation];
     NSString *appId   = [self readString];
     NSData *appSecret = [self readByteSequence];
     return [QredoAppCredentials appCredentialsWithAppId:appId appSecret:appSecret];
 }
+
 
 -(NSArray *)readErrorInfoItems {
     NSMutableArray *errorInfoItems = [NSMutableArray new];
@@ -833,6 +932,7 @@
     [self readEnd];
     return [errorInfoItems copy];
 }
+
 
 -(QredoErrorInfo *)readErrorInfoItem {
     [self readStart];
@@ -848,6 +948,7 @@
                                    debugInfo:[debugInfoItems copy]];
 }
 
+
 -(QredoDebugInfo *)readDebugInfoItem {
     [self readStart];
     NSString *key = [self readString];
@@ -857,50 +958,61 @@
                                       value:value];
 }
 
+
 -(QredoResultHeader *)readResultStart {
     [self readStart];
     NSNumber *status = [self readByte];
     return [QredoResultHeader resultHeaderWithStatus:status];
 }
 
+
 -(void)readSequenceStart {
     [self expectMarkedListWithMarker:QredoMarkerSequence];
 }
 
+
 -(void)readSetStart {
     [self expectMarkedListWithMarker:QredoMarkerSet];
 }
+
 
 -(NSString *)readConstructorStart {
     [self expectMarkedListWithMarker:QredoMarkerConstructor];
     return [self readSymbol];
 }
 
+
 -(NSString *)readFieldStart {
     [self readStart];
     return [self readSymbol];
 }
 
+
 -(BOOL)atEnd {
     return ([_reader lookAhead] == QredoTokenRParen);
 }
+
 
 -(void)readStart {
     [_reader readLeftParen];
 }
 
+
 -(void)readEnd {
     [_reader readRightParen];
 }
+
 
 -(QredoMarkedAtom *)readMarkedAtom {
     return [QredoMarkedAtom markedAtomWithAtom:[_reader readAtom]];
 }
 
+
 -(void)expectMarkedListWithMarker:(QredoMarker)expectedMarker {
     [self readStart];
     [self expectMarker:expectedMarker];
 }
+
 
 -(void)expectMarker:(QredoMarker)expectedMarker {
     NSNumber *actualMarker = [self readByte];
@@ -911,6 +1023,7 @@
                                      userInfo:nil];
     }
 }
+
 
 @end
 
@@ -925,15 +1038,18 @@
     return [[self alloc] initWithOutputStream:outputStream];
 }
 
+
 -(instancetype)initWithOutputStream:(NSOutputStream *)outputStream {
     self = [super init];
     _writer = [QredoSExpressionWriter sexpressionWriterForOutputStream:outputStream];
     return self;
 }
 
+
 -(void)writeBoolean:(NSNumber *)boolean {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithBoolean:boolean] asData]];
 }
+
 
 -(void)writeByte:(NSNumber *)byte {
     uint8_t rawByte = [byte unsignedCharValue];
@@ -941,55 +1057,68 @@
     [_writer writeAtom:[NSData dataWithBytes:&rawByte length:sizeof(rawByte)]];
 }
 
+
 -(void)writeByteSequence:(NSData *)data {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithByteSequence:data] asData]];
 }
+
 
 -(void)writeDate:(QredoDate *)date {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithDate:date] asData]];
 }
 
+
 -(void)writeGenericDateTime:(QredoDateTime *)dateTime {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithGenericDateTime:dateTime] asData]];
 }
+
 
 -(void)writeInt32:(NSNumber *)int32 {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithInt32:int32] asData]];
 }
 
+
 -(void)writeInt64:(NSNumber *)int64 {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithInt64:int64] asData]];
 }
+
 
 -(void)writeLocalDateTime:(QredoLocalDateTime *)localDateTime {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithLocalDateTime:localDateTime] asData]];
 }
 
+
 -(void)writeString:(NSString *)string {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithString:string] asData]];
 }
+
 
 -(void)writeSymbol:(NSString *)symbol {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithSymbol:symbol] asData]];
 }
 
+
 -(void)writeTime:(QredoTime *)time {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithTime:time] asData]];
 }
+
 
 -(void)writeQUID:(QredoQUID *)quid {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithQUID:quid] asData]];
 }
 
+
 -(void)writeUTCDateTime:(QredoUTCDateTime *)utcDateTime {
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithUTCDateTime:utcDateTime] asData]];
 }
+
 
 -(void)writeMessageHeader:(QredoMessageHeader *)messageHeader {
     [_writer writeLeftParen];
     [self writeVersion:[messageHeader protocolVersion]];
     [self writeVersion:[messageHeader releaseVersion]];
 }
+
 
 -(void)writeVersion:(QredoVersion *)version {
     NSMutableData *data = [NSMutableData new];
@@ -1004,6 +1133,7 @@
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithByteSequence:data] asData]];
 }
 
+
 -(void)writeInterchangeHeader:(QredoInterchangeHeader *)interchangeHeader {
     [self writeMarkedListWithMarker:QredoMarkerInterchange];
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithByteSequence:[interchangeHeader returnChannelID]] asData]];
@@ -1012,11 +1142,13 @@
     [_writer writeAtom:[[QredoMarkedAtom markedAtomWithSymbol:[interchangeHeader operationName]] asData]];
 }
 
+
 -(void)writeInvocationHeader:(QredoAppCredentials *)appCredentials {
     [self writeMarkedListWithMarker:QredoMarkerOperationInvocation];
     [self writeString:appCredentials.appId];
     [self writeByteSequence:appCredentials.appSecret];
 }
+
 
 -(void)writeErrorInfoItems:(NSArray *)errorInfoItems {
     [self writeSequenceStart];
@@ -1028,10 +1160,12 @@
     [self writeEnd];
 }
 
+
 -(void)writeResultStart:(QredoResultHeader *)resultHeader {
     [self writeStart];
     [self writeByte:[resultHeader status]];
 }
+
 
 -(void)writeErrorInfoItem:(QredoErrorInfo *)errorInfoItem {
     [self writeStart];
@@ -1045,6 +1179,7 @@
     [self writeEnd];
 }
 
+
 -(void)writeDebugInfoItem:(QredoDebugInfo *)debugInfoItem {
     [self writeStart];
     [self writeString:[debugInfoItem key]];
@@ -1052,35 +1187,43 @@
     [self writeEnd];
 }
 
+
 -(void)writeSequenceStart {
     [self writeMarkedListWithMarker:QredoMarkerSequence];
 }
 
+
 -(void)writeSetStart {
     [self writeMarkedListWithMarker:QredoMarkerSet];
 }
+
 
 -(void)writeConstructorStartWithObjectName:(NSString *)objectName {
     [self writeMarkedListWithMarker:QredoMarkerConstructor];
     [self writeSymbol:objectName];
 }
 
+
 -(void)writeFieldStartWithFieldName:(NSString *)fieldName {
     [self writeStart];
     [self writeSymbol:fieldName];
 }
 
+
 -(void)writeStart {
     [_writer writeLeftParen];
 }
+
 
 -(void)writeEnd {
     [_writer writeRightParen];
 }
 
+
 -(void)writeMarkedListWithMarker:(uint8_t)marker {
     [_writer writeLeftParen];
     [self writeByte:@(marker)];
 }
+
 
 @end

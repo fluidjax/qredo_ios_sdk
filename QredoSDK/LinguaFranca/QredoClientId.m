@@ -18,6 +18,7 @@ const int ReturnChannelIdSize = 16;
     return clientId;
 }
 
+
 +(NSData *)secureRandomWithSize:(NSUInteger)size {
     size_t randomSize  = size;
     uint8_t *randomBytes = alloca(randomSize);
@@ -31,6 +32,7 @@ const int ReturnChannelIdSize = 16;
     
     return [NSData dataWithBytes:randomBytes length:randomSize];
 }
+
 
 +(instancetype)clientIdFromData:(NSData *)data {
     if (!data){
@@ -53,12 +55,14 @@ const int ReturnChannelIdSize = 16;
     return clientID;
 }
 
+
 +(NSString *)dropPaddingFromBase64String:(NSString *)base64String {
     //Android code returned substring from index 0 to index 22
     NSString *noPadding = [base64String substringToIndex:22];
     
     return noPadding;
 }
+
 
 +(NSString *)addBase64PaddingToString:(NSString *)string {
     //Android code added == to end
@@ -67,6 +71,7 @@ const int ReturnChannelIdSize = 16;
     return padded;
 }
 
+
 +(NSString *)getTopicSafeStringFromBase64:(NSString *)base64String {
     NSString *topicSafe = [base64String stringByReplacingOccurrencesOfString:@"+" withString:@"-"];
     
@@ -74,12 +79,14 @@ const int ReturnChannelIdSize = 16;
     return topicSafe;
 }
 
+
 +(NSString *)getBase64FromTopicSafeString:(NSString *)topicSafe {
     NSString *base64 = [topicSafe stringByReplacingOccurrencesOfString:@"_" withString:@"/"];
     
     base64 = [base64 stringByReplacingOccurrencesOfString:@"-" withString:@"+"];
     return base64;
 }
+
 
 -(instancetype)initWithClientIdSafeString:(NSString *)clientId {
     self = [super init];
@@ -91,6 +98,7 @@ const int ReturnChannelIdSize = 16;
     return self;
 }
 
+
 -(NSData *)getData {
     NSString *base64String = [QredoClientId getBase64FromTopicSafeString:self.clientIdSafeString];
     NSString *base64StringPadded = [QredoClientId addBase64PaddingToString:base64String];
@@ -101,8 +109,10 @@ const int ReturnChannelIdSize = 16;
     return decodedData;
 }
 
+
 -(NSString *)getSafeString {
     return self.clientIdSafeString;
 }
+
 
 @end

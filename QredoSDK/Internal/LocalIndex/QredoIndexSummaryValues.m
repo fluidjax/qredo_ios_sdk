@@ -22,6 +22,7 @@
     return qredoIndexSummaryValues;
 }
 
+
 -(void)assignValue:(NSObject *)value {
     QredoIndexVariableValue *qredoVariableValue = [QredoIndexVariableValue insertInManagedObjectContext:self.managedObjectContext];
     
@@ -43,6 +44,7 @@
         @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type in summaryValues value" userInfo:nil];
     }
 }
+
 
 -(NSObject *)retrieveValue {
     switch (self.valueTypeValue){
@@ -70,5 +72,6 @@
             @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type retrieving value from index" userInfo:nil];
     }
 }
+
 
 @end

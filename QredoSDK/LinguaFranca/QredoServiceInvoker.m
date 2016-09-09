@@ -44,6 +44,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     return [[self alloc] initWithServiceURL:serviceURL appCredentials:appCredentials];
 }
 
+
 -(instancetype)initWithServiceURL:(NSURL *)serviceURL appCredentials:(QredoAppCredentials *)appCredentials {
     self = [super init];
     
@@ -66,10 +67,12 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     return self;
 }
 
+
 -(void)dealloc {
     //Ensure the we, and the transport close cleanly if terminate wasn't called
     [self terminate];
 }
+
 
 -(void)terminate {
     if (!_terminated){
@@ -80,6 +83,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     }
 }
 
+
 -(void)invokeService:(NSString *)serviceName
            operation:(NSString *)operationName
        requestWriter:(void (^)(QredoWireFormatWriter *writer))requestWriter
@@ -87,6 +91,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
         errorHandler:(void (^)(NSError *error))errorHandler {
     [self invokeService:serviceName operation:operationName requestWriter:requestWriter responseReader:responseReader errorHandler:errorHandler multiResponse:NO];
 }
+
 
 -(void)invokeService:(NSString *)serviceName
            operation:(NSString *)operationName
@@ -174,6 +179,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     }
 }
 
+
 +(NSData *)secureRandomWithSize:(NSUInteger)size {
     size_t randomSize  = size;
     uint8_t *randomBytes = alloca(randomSize);
@@ -188,13 +194,16 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     return [NSData dataWithBytes:randomBytes length:randomSize];
 }
 
+
 -(BOOL)isTerminated {
     return self.transport.transportClosed;
 }
 
+
 -(BOOL)supportsMultiResponse {
     return self.transport.supportsMultiResponse;
 }
+
 
 #pragma mark - Internal methods
 
@@ -211,6 +220,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     }
 }
 
+
 #pragma mark - Concurrency helpers for NSMutableDictionary
 
 -(void)removeCallbacksValueForCorrelationID:(NSData *)correlationID {
@@ -220,12 +230,14 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     });
 }
 
+
 -(void)setCallbacksValue:(QredoServiceInvokerCallbacks *)callbacksValue forCorrelationID:(NSData *)correlationID {
     //Sets the key/value in NSMutableDictionary with an async barrier - to stop read calls from proceeding until we've completed
     dispatch_barrier_async(self.callbacksDictionaryQueue,^{
         [callbacks setObject:callbacksValue forKey:correlationID];
     });
 }
+
 
 -(QredoServiceInvokerCallbacks *)callbacksValueForCorrelationID:(NSData *)correlationID {
     __block QredoServiceInvokerCallbacks *callbacksValue = nil;
@@ -237,6 +249,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     
     return callbacksValue;
 }
+
 
 -(NSArray *)removeAndReturnAllMultiresponseServiceInvokerCallbacks {
     NSMutableArray *multiresponseCallbacks = [NSMutableArray array];
@@ -256,6 +269,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     
     return multiresponseCallbacks;
 }
+
 
 #pragma mark - QredoTransportDelegate methods
 

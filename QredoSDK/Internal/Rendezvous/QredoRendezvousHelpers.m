@@ -25,6 +25,7 @@
     return nil;
 }
 
+
 +(id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)fullTag
                                                                   crypto:(id<CryptoImpl>)crypto
@@ -43,6 +44,7 @@
     return nil;
 }
 
+
 +(NSInteger)saltLengthForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType {
     switch (authenticationType){
         case QredoRendezvousAuthenticationTypeAnonymous:
@@ -53,5 +55,6 @@
             return 0;
     }
 }
+
 
 @end

@@ -31,6 +31,7 @@
     }
 }
 
+
 -(QredoVaultItem *)buildQredoVaultItem {
     QredoIndexVaultItemMetadata *currentLatest = self.latest;
     QredoVaultItemMetadata *metadata = [currentLatest buildQredoVaultItemMetadata];
@@ -39,6 +40,7 @@
     vaultItem.metadata.origin = QredoVaultItemOriginCache;
     return vaultItem;
 }
+
 
 +(QredoIndexVaultItem *)searchForIndexByItemIdWithDescriptor:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
@@ -50,6 +52,7 @@
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     return [results lastObject];
 }
+
 
 -(void)addNewVersion:(QredoVaultItemMetadata *)metadata {
     QredoIndexVaultItemMetadata *currentLatest = self.latest;
@@ -64,6 +67,7 @@
     if (existingCreateDate)self.latest.created = existingCreateDate;
 }
 
+
 +(QredoIndexVaultItem *)create:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
     QredoIndexVaultItem *newVaultItem =  [[self class] insertInManagedObjectContext:managedObjectContext];
     
@@ -71,5 +75,6 @@
     [newVaultItem addNewVersion:metadata];
     return newVaultItem;
 }
+
 
 @end

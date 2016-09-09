@@ -16,13 +16,16 @@
     [super setUp];
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
+
 -(void)showVersions {
 }
+
 
 -(void)testLogging {
     [self testSuccessConnectToClient];
@@ -34,6 +37,7 @@
     QredoLogVerbose(@"Ignore this intentional verbose: %@",^{ return @"generated error message from block"; } ());
     [QredoLogger setLogLevel:QredoLogLevelNone];
 }
+
 
 -(void)testDefaultClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
@@ -63,11 +67,13 @@
     [client closeSession];
 }
 
+
 -(void)testConnectAndCloseMultiple {
     for (int i = 0; i < 10; i++){
         [self testConnectAndClose];
     }
 }
+
 
 -(void)testConnectAndClose {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
@@ -100,6 +106,7 @@
     [client closeSession];
 }
 
+
 -(void)testSuccessConnectToClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
@@ -123,6 +130,7 @@
                                  }];
 }
 
+
 -(void)testFailingConnectToClient {
     [QredoLogger setLogLevel:QredoLogLevelNone];
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
@@ -143,5 +151,6 @@
                                      clientExpectation = nil;
                                  }];
 }
+
 
 @end

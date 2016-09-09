@@ -23,6 +23,7 @@
     _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
 }
 
+
 -(void)testGenerateTestVectors {
     NSData *myPrivateKeyData
     = [NSData dataWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
@@ -46,6 +47,7 @@
     [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
     [_conversationCrypto conversationIdWithMasterKey:masterKey];
 }
+
 
 -(void)testVectors {
     NSData *myPrivateKeyData
@@ -139,6 +141,7 @@
     = [[QredoQUID alloc] initWithQUIDString:@"fb4ef86f357624ca56fe8b11d5386e0e118e12e05220f0d5cc71296552f0bf7b"];
     XCTAssertEqualObjects(conversationId,conversationIdExpected);
 }
+
 
 -(void)testEncryptDecrypt {
     QredoQUID *messageID
@@ -259,6 +262,7 @@
     XCTAssertNil(decryptedMessage);
 }
 
+
 -(void)testDecrypt {
     NSData *requesterInboundEncryptionKey
     = [NSData dataWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
@@ -298,5 +302,6 @@
     NSData *messageBodyExpected = [messageBodyString dataUsingEncoding:NSUTF8StringEncoding];
     XCTAssertEqualObjects(message.body,messageBodyExpected);
 }
+
 
 @end

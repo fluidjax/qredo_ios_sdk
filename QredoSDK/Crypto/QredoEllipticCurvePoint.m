@@ -16,6 +16,7 @@
     return [[self alloc] initWithPointData:pointData];
 }
 
+
 -(instancetype)initWithPointData:(NSData *)pointData {
     if (!pointData){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -32,6 +33,7 @@
     return self;
 }
 
+
 -(QredoEllipticCurvePoint *)multiplyWithPoint:(QredoEllipticCurvePoint *)point {
     NSMutableData *result = [[NSMutableData alloc] initWithLength:SCALAR_MULT_RESULT_LENGTH];
     
@@ -41,5 +43,6 @@
     
     return newPoint;
 }
+
 
 @end

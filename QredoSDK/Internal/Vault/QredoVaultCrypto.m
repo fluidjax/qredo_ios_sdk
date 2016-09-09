@@ -35,6 +35,7 @@
     return self;
 }
 
+
 @end
 
 @implementation QredoVaultCrypto
@@ -46,8 +47,9 @@
 +(instancetype)vaultCryptoWithBulkKey:(NSData *)bulkKey
                     authenticationKey:(NSData *)authenticationKey {
     return [[self alloc] initWithBulkKey:bulkKey
-                       authenticationKey:authenticationKey];
+                      authenticationKey :authenticationKey];
 }
+
 
 -(instancetype)initWithBulkKey:(NSData *)bulkKey
              authenticationKey:(NSData *)authenticationKey {
@@ -57,6 +59,7 @@
     return self;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //QredoVaultCrypto Interface
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,13 +68,16 @@
     return [self vaultKeyWithVaultMasterKey:vaultMasterKey info:QREDO_VAULT_SYSTEM_INFO];
 }
 
+
 +(NSData *)userVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey {
     return [self vaultKeyWithVaultMasterKey:vaultMasterKey info:QREDO_VAULT_USER_INFO];
 }
 
+
 +(NSData *)vaultMasterKeyWithUserMasterKey:(NSData *)userMasterKey {
     return [QredoCrypto hkdfSha256WithSalt:QREDO_VAULT_MASTER_SALT initialKeyMaterial:userMasterKey info:nil];
 }
+
 
 +(NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey infoData:(NSData *)infoData {
     return [QredoCrypto hkdfSha256WithSalt:QREDO_VAULT_SUBTYPE_SALT
@@ -79,13 +85,16 @@
                                       info:infoData];
 }
 
+
 +(NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey info:(NSString *)info {
     return [self vaultKeyWithVaultMasterKey:vaultMasterKey infoData:[info dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
+
 +(QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey {
     return [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:vaultKey];
 }
+
 
 +(QLFVaultKeyPair *)vaultKeyPairWithVaultKey:(NSData *)vaultKey {
     NSData *encryptionKey = [QredoCrypto hkdfSha256WithSalt:QREDO_VAULT_LEAF_SALT
@@ -99,11 +108,13 @@
     return [QLFVaultKeyPair vaultKeyPairWithEncryptionKey:encryptionKey authenticationKey:authentication];
 }
 
+
 -(NSData *)encryptMetadata:(QLFVaultItemMetadata *)metadata {
     NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
     
     return [self encryptIncludingMessageHeaderWithData:serializedMetadata];
 }
+
 
 -(NSData *)encryptIncludingMessageHeaderWithData:(NSData *)data {
     if (!data)data = [NSData data];
@@ -118,6 +129,7 @@
     return encryptedMetadataWithMessageHeader;
 }
 
+
 -(NSData *)authenticationCodeWithData:(NSData *)data vaultItemRef:(QLFVaultItemRef *)vaultItemRef {
     NSData *serializedItemRef = [QredoPrimitiveMarshallers marshalObject:vaultItemRef includeHeader:NO];
     NSMutableData *authCodeData = [NSMutableData dataWithData:data];
@@ -126,6 +138,7 @@
     
     return [[CryptoImplV1 sharedInstance] getAuthCodeWithKey:_authenticationKey data:authCodeData];
 }
+
 
 -(QLFEncryptedVaultItemHeader *)encryptVaultItemHeaderWithItemRef:(QLFVaultItemRef *)vaultItemRef
                                                          metadata:(QLFVaultItemMetadata *)metadata {
@@ -137,6 +150,7 @@
                                                                authCode:authCode];
 }
 
+
 -(QLFEncryptedVaultItem *)encryptVaultItemWithBody:(NSData *)body
                           encryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader {
     NSData *encryptedBody = [self encryptIncludingMessageHeaderWithData:body];
@@ -146,6 +160,7 @@
                                                  encryptedBody:encryptedBody
                                                       authCode:authCode];
 }
+
 
 -(QLFVaultItem *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
                                      error:(NSError **)error {
@@ -176,6 +191,7 @@
     return [QLFVaultItem vaultItemWithRef:encryptedVaultItem.header.ref metadata:vaultItemMetaDataLF body:value];
 }
 
+
 -(QLFVaultItemMetadata *)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
                                                    error:(NSError **)error {
     NSData *authenticationCode = [self authenticationCodeWithData:encryptedVaultItemHeader.encryptedMetadata
@@ -204,11 +220,13 @@
                                           parseHeader:NO];
 }
 
+
 -(NSData *)encryptVaultItemValue:(NSData *)data {
     if (!data)data = [NSData data];
     
     return [[CryptoImplV1 sharedInstance] encryptWithKey:_bulkKey data:data];
 }
+
 
 -(void)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
                           origin:(QredoVaultItemOrigin)origin
@@ -257,6 +275,7 @@
     }
 }
 
+
 -(void)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
                                 origin:(QredoVaultItemOrigin)origin
                      completionHandler:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,NSError *error))completionHandler {
@@ -300,5 +319,6 @@
         if (completionHandler)completionHandler(metadata,nil);
     }
 }
+
 
 @end

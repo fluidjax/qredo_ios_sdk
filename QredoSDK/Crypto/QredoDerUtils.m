@@ -11,6 +11,7 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
     return [NSData dataWithBytes:rsaIdentifierArray length:sizeof(rsaIdentifierArray) / sizeof(uint8_t)];
 }
 
+
 +(BOOL)findOffsetOfDataWithExpectedTag:(uint8_t)expectedTag atOffset:(int)offset withinData:(NSData *)data offsetOfData:(int *)offsetOfData lengthOfData:(int *)lengthOfData {
     BOOL dataIsValid = YES;
     
@@ -70,6 +71,7 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
     
     return dataIsValid;
 }
+
 
 +(BOOL)getLengthOfData:(NSData *)data atOffset:(int)offset lengthByteCount:(int *)lengthByteCount length:(int *)length {
     *lengthByteCount = 0;
@@ -132,6 +134,7 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
     return YES;
 }
 
+
 /// <summary>
 /// Gets the length bytes to BER-TLV encode a particular length of data.
 /// </summary>
@@ -179,6 +182,7 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
     return lengthBytes;
 }
 
+
 +(QredoAsn1ObjectIdentifier)getIdentifierFromData:(NSData *)objectIdentifierData {
     QredoAsn1ObjectIdentifier identifier = QredoAsn1ObjectIdentifierUnknown;
     
@@ -190,6 +194,7 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
     
     return identifier;
 }
+
 
 +(NSData *)wrapData:(NSData *)data withTagData:(NSData *)tagData {
     //Providing nil data isn't an error (may want to wrap empty data)
@@ -220,15 +225,18 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
     return wrappedData;
 }
 
+
 +(NSData *)wrapData:(NSData *)data withTag:(uint8_t)tag {
     //Providing nil data isn't an error (may want to wrap empty data)
     
     return [self wrapData:data withTagData:[NSData dataWithBytes:&tag length:sizeof(tag)]];
 }
 
+
 +(NSData *)wrapByte:(uint8_t)byte withTag:(uint8_t)tag {
     return [self wrapData:[NSData dataWithBytes:&byte length:1] withTagData:[NSData dataWithBytes:&tag length:sizeof(tag)]];
 }
+
 
 +(NSData *)getObjectIdentifierDataForIdentifier:(QredoAsn1ObjectIdentifier)identifier {
     NSData *objectIdentifier = nil;
@@ -245,5 +253,6 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
     
     return objectIdentifier;
 }
+
 
 @end

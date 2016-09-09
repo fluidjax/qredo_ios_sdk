@@ -16,6 +16,7 @@ XCTestExpectation *timeoutExpectation;
     }
 }
 
+
 @end
 
 
@@ -37,6 +38,7 @@ XCTestExpectation *timeoutExpectation;
     }
 }
 
+
 @end
 
 
@@ -52,6 +54,7 @@ XCTestExpectation *timeoutExpectation;
     }
 }
 
+
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
     if (!self.receivedItems){
         self.receivedItems = [NSMutableArray array];
@@ -63,5 +66,6 @@ XCTestExpectation *timeoutExpectation;
         [self.didReceiveVaultItemMetadataExpectation fulfill];
     }
 }
+
 
 @end

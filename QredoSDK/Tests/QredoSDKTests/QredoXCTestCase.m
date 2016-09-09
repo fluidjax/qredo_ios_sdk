@@ -33,6 +33,7 @@ static const int testTimeOut = 30;
     }
 }
 
+
 -(void)tearDown {
     //client
     [testClient1 closeSession];
@@ -55,6 +56,7 @@ static const int testTimeOut = 30;
     [super tearDown];
 }
 
+
 -(void)setLogLevel {
     /*  Available debug levels
      [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -68,13 +70,16 @@ static const int testTimeOut = 30;
     [QredoLogger setLogLevel:QredoLogLevelError];
 }
 
+
 -(void)loggingOff {
     [QredoLogger setLogLevel:QredoLogLevelNone];
 }
 
+
 -(void)loggingOn {
     [self setLogLevel];
 }
+
 
 -(void)resetKeychain {
     [self deleteAllKeysForSecClass:kSecClassGenericPassword];
@@ -84,6 +89,7 @@ static const int testTimeOut = 30;
     [self deleteAllKeysForSecClass:kSecClassIdentity];
 }
 
+
 -(void)deleteAllKeysForSecClass:(CFTypeRef)secClass {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     
@@ -91,6 +97,7 @@ static const int testTimeOut = 30;
     OSStatus result = SecItemDelete((__bridge CFDictionaryRef)dict);
     NSAssert(result == noErr || result == errSecItemNotFound,@"Error deleting keychain data (%ld)",(long)result);
 }
+
 
 -(NSData *)randomDataWithLength:(int)length {
     NSMutableData *mutableData = [NSMutableData dataWithCapacity:length];
@@ -103,9 +110,11 @@ static const int testTimeOut = 30;
     return mutableData;
 }
 
+
 -(NSString *)randomPassword {
     return [self randomStringWithLength:32];
 }
+
 
 -(NSString *)randomStringWithLength:(int)len {
     NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -118,6 +127,7 @@ static const int testTimeOut = 30;
     return randomString;
 }
 
+
 ///////////////////////////////////////////////////////////////////////
 //Wrapper Methods
 
@@ -127,15 +137,18 @@ static const int testTimeOut = 30;
     [self createClient2];
 }
 
+
 -(void)createClient1 {
     testClient1Password = [self randomPassword];
     testClient1 = [self createClient:testClient1Password];
 }
 
+
 -(void)createClient2 {
     testClient2Password = [self randomPassword];
     testClient2 = [self createClient:testClient2Password];
 }
+
 
 ///////////////////////////////////////////////////////////////////////
 //Core Methods
@@ -168,6 +181,7 @@ static const int testTimeOut = 30;
     return client;
 }
 
+
 -(QredoClientOptions *)clientOptions:(BOOL)resetData {
     //QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
@@ -175,6 +189,7 @@ static const int testTimeOut = 30;
     clientOptions.transportType = self.transportType;
     return clientOptions;
 }
+
 
 -(void)createRendezvous {
     __block QredoRendezvous *newRendezvous = nil;
@@ -200,6 +215,7 @@ static const int testTimeOut = 30;
     rendezvous1 = newRendezvous;
 }
 
+
 -(QredoConversation *)simpleRespondToRendezvous:(NSString *)tag {
     //simply respond to the rendezvous on client 1 with client 2
     
@@ -222,6 +238,7 @@ static const int testTimeOut = 30;
     XCTAssertNotNil(newConversation);
     return newConversation;
 }
+
 
 -(void)respondToRendezvous {
     //Repspond to rendezvous on Client2 and wait for the listener on Client1 to get notified of the new Conversation
@@ -260,13 +277,16 @@ static const int testTimeOut = 30;
     XCTAssertNotNil(conversation2);
 }
 
+
 -(void)sendConversationMessageFrom1to2 {
     [self sendMessageFrom:conversation1 to:conversation2];
 }
 
+
 -(void)sendConversationMessageFrom2to1 {
     [self sendMessageFrom:conversation2 to:conversation1];
 }
+
 
 -(void)sendMessageFrom:(QredoConversation *)fromConversation to:(QredoConversation *)toConversation {
     //send a message from ClientA to ClientB
@@ -296,6 +316,7 @@ static const int testTimeOut = 30;
                                  }];
 }
 
+
 -(int)countConversationsOnRendezvous:(QredoRendezvous *)rendezvous {
     __block XCTestExpectation *countConvExpectation = [self expectationWithDescription:@"count conversation"];
     __block int count = 0;
@@ -316,6 +337,7 @@ static const int testTimeOut = 30;
     
     return count;
 }
+
 
 -(int)countConversationsOnClient:(QredoClient *)client {
     __block XCTestExpectation *countConvExpectation = [self expectationWithDescription:@"count conversation"];
@@ -338,6 +360,7 @@ static const int testTimeOut = 30;
     
     return count;
 }
+
 
 /* Vault */
 -(QredoVaultItemMetadata *)createVaultItem {
@@ -381,6 +404,7 @@ static const int testTimeOut = 30;
     
     return item1Metadata;
 }
+
 
 -(QredoVaultItemMetadata *)updateVaultItem:(QredoVaultItem *)originalItem {
     QredoVault *vault = testClient1.defaultVault;
@@ -427,6 +451,7 @@ static const int testTimeOut = 30;
     return updatedItemMetadata;
 }
 
+
 -(QredoVaultItemDescriptor *)deleteVaultItem:(QredoVaultItemMetadata *)originalMetadata {
     QredoVault *vault = testClient1.defaultVault;
     
@@ -452,9 +477,11 @@ static const int testTimeOut = 30;
     return deleteItemDescriptor;
 }
 
+
 -(int)countEnumAllVaultItemsOnServer {
     return [self countEnumAllVaultItemsOnServerFromWatermark:QredoVaultHighWatermarkOrigin];
 }
+
 
 -(int)countEnumAllVaultItemsOnServerFromWatermark:(QredoVaultHighWatermark *)highWatermark {
     QredoVault *vault = testClient1.defaultVault;
@@ -480,6 +507,7 @@ static const int testTimeOut = 30;
     return count;
 }
 
+
 -(QredoVaultItem *)getVaultItem:(QredoVaultItemDescriptor *)descriptor {
     QredoVault *vault = testClient1.defaultVault;
     __block QredoVaultItem *returnVaultItem = nil;
@@ -502,16 +530,19 @@ static const int testTimeOut = 30;
     return returnVaultItem;
 }
 
+
 /* Index */
 -(int)countMetadataItemsInIndex {
     return 0;
 }
+
 
 -(void)buildStack1 {
     [self createClients];
     [self createRendezvous];
     [self respondToRendezvous];
 }
+
 
 -(void)buildStack2 {
     [self createClients];
@@ -520,5 +551,6 @@ static const int testTimeOut = 30;
     [self sendConversationMessageFrom1to2];
     [self sendConversationMessageFrom2to1];
 }
+
 
 @end

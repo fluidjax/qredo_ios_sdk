@@ -13,9 +13,11 @@
     return [[QredoNetworkTime dateTime] timeIntervalSince1970] * 1000LL;
 }
 
+
 +(QLFNonce *)nonce {
     return [NSData dataWithRandomBytesOfLength:16];
 }
+
 
 +(instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                               operationType:(QLFOperationType *)operationType
@@ -29,6 +31,7 @@
                                         error:error];
 }
 
+
 +(instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                               operationType:(QLFOperationType *)operationType
                                        data:(id<QredoMarshallable>)data
@@ -40,6 +43,7 @@
                                     timestamp:[self timestamp]
                                         error:error];
 }
+
 
 +(instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                               operationType:(QLFOperationType *)operationType
@@ -59,6 +63,7 @@
                                     timestamp:timestamp
                                         error:error];
 }
+
 
 +(instancetype)ownershipSignatureWithSigner:(id<QredoSigner>)signer
                               operationType:(QLFOperationType *)operationType
@@ -92,6 +97,7 @@
     return [self ownershipSignatureWithOp:operationType nonce:nonce timestamp:timestamp signature:signature];
 }
 
+
 +(instancetype)ownershipSignatureForGetVaultItemWithSigner:(id<QredoSigner>)signer
                                        vaultItemDescriptor:(QredoVaultItemDescriptor *)itemDescriptor
                                    vaultItemSequenceValues:(NSSet *)sequenceValues
@@ -115,6 +121,7 @@
                                         error:error];
 }
 
+
 +(instancetype)ownershipSignatureForListVaultItemsWithSigner:(id<QredoSigner>)signer
                                               sequenceStates:(NSSet *)sequenceStates
                                                        error:(NSError **)error {
@@ -129,6 +136,7 @@
                                marshalledData:payloadData
                                         error:error];
 }
+
 
 +(NSData *)signatureWithSigner:(id<QredoSigner>)signer
        marshalledOperationType:(NSData *)marshalledOperationType
@@ -151,5 +159,6 @@
     
     return signature;
 }
+
 
 @end

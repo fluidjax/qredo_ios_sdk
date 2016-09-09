@@ -45,6 +45,7 @@ XCTestExpectation *timeoutExpectation;
     }
 }
 
+
 @end
 
 
@@ -73,6 +74,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
         method_exchangeImplementations(originalMethod,swizzledMethod);
     }
 }
+
 
 @interface QredoRendezvousTests () {
     QredoClient *client;
@@ -110,6 +112,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [self authoriseClient2];
 }
 
+
 -(void)tearDown {
     [super tearDown];
     
@@ -124,6 +127,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     //Should remove any existing keys after finishing
     [QredoCrypto deleteAllKeysInAppleKeychain];
 }
+
 
 -(void)testRendezvousSummaryValues {
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
@@ -219,6 +223,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     XCTAssert([[rendezvousMetadata2.summaryValues objectForKey:@"modifiedKey"] isEqualToString:@"modifiedValue"],@"Modify rendezvous summaryValues didnt work");
 }
 
+
 -(void)testReadableTags {
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -247,6 +252,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     XCTAssertTrue([backToTag isEqualToString:tag],@"Tags should be the same");
 }
 
+
 -(void)testGenerateMasterKeyWithTag {
     QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
     
@@ -255,6 +261,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      appId:@"123456789012345678901234567890"];
     }];
 }
+
 
 -(void)testGenerateMasterKeyWithTagAndAppId {
     QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
@@ -265,6 +272,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     XCTAssertTrue([testVal isEqualToData:res],@"Master Key derived from Tag is incorrect");
 }
+
 
 -(QredoSecKeyRefPair *)setupKeypairForPublicKeyData:(NSData *)publicKeyData privateKeyData:(NSData *)privateKeyData keySizeBits:(NSInteger)keySizeBits {
     //Import a known Public Key and Private Key into Keychain
@@ -294,6 +302,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     return keyRefPair;
 }
 
+
 -(void)setupRootCertificates {
     NSError *error = nil;
     
@@ -306,6 +315,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     self.trustedRootPems = [NSArray arrayWithObjects:rootCert,nil];
     XCTAssertNotNil(self.trustedRootPems);
 }
+
 
 -(void)setupCrls {
     NSError *error = nil;
@@ -321,6 +331,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     self.crlPems = [NSArray arrayWithObjects:rootCrl,intermediateCrl,nil];
 }
+
 
 -(void)setupTestPublicCertificateAndPrivateKey4096Bit {
     //iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to
@@ -385,6 +396,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     XCTAssertNotNil(self.publicKeyCertificateChainPem);
 }
 
+
 -(NSString *)randomStringWithLength:(int)len {
     NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity:len];
@@ -395,6 +407,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     return randomString;
 }
+
 
 -(void)authoriseClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
@@ -418,6 +431,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)authoriseClient2 {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
@@ -439,6 +453,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      clientExpectation = nil;
                                  }];
 }
+
 
 -(void)verifyRendezvous:(QredoRendezvous *)rendezvous randomTag:(NSString *)randomTag {
     XCTAssertEqual(rendezvous.duration,kRendezvousTestDurationSeconds);
@@ -517,6 +532,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [rendezvous removeRendezvousObserver:listener];
 }
 
+
 -(void)testQuickCreateRandomRandezvous {
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -535,6 +551,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      createExpectation = nil;
                                  }];
 }
+
 
 -(void)testQuickCreateRendezvousExpiresAt {
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
@@ -565,6 +582,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testQuickCreateRendezvousLongType {
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -591,6 +609,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testQuickCreateRendezvousShortType {
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -608,6 +627,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      createExpectation = nil;
                                  }];
 }
+
 
 -(void)testCreateRendezvousAndGetResponses {
     self.continueAfterFailure = NO;
@@ -645,6 +665,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      enumerationExpectation = nil;
                                  }];
 }
+
 
 -(void)testCreateAndFetchAnonymousRendezvous {
     __block NSString *randomTag = nil;
@@ -765,6 +786,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
 }
 
+
 -(void)testCreateDuplicateAndFetchAnonymousRendezvous {
     __block NSString *randomTag = nil;
     
@@ -881,6 +903,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [self verifyRendezvous:rendezvousFromFetch randomTag:randomTag];
 }
 
+
 -(void)testCreateAndRespondAnonymousRendezvous {
     __block NSString *randomTag = nil;
     
@@ -964,6 +987,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [anotherClient closeSession];
     //[NSThread sleepForTimeInterval:1];
 }
+
 
 -(void)testPublicKeyPersistence {
     self.continueAfterFailure = YES;
@@ -1252,6 +1276,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     XCTAssertNotNil(conv4);
 }
 
+
 -(void)testFingerPrintsAndTrafficLights {
     __block NSString *randomTag = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
@@ -1401,6 +1426,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [client2 closeSession];
 }
 
+
 -(void)testCreateAndRespondAnonymousRendezvousPreCreate {
     __block NSString *randomTag = nil;
     
@@ -1458,6 +1484,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [client2 closeSession];
 }
 
+
 -(QredoRendezvousRef *)createRendezvousWithDuration:(int)testDuration {
     __block NSString *randomTag = nil;
     
@@ -1490,6 +1517,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     self.randomlyCreatedTag = randomTag;
     return rendezvousRef;
 }
+
 
 -(void)testActivateExpiredRendezvous {
     int testDuration = 1;
@@ -1541,6 +1569,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      createActivateExpectation = nil;
                                  }];
 }
+
 
 -(void)testActivateExpiredRendezvousAndFetchFromNewRef {
     QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:1];
@@ -1599,6 +1628,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testActivateUnexpiredRendezvous {
     QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:20000];
     
@@ -1633,6 +1663,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testActivateUnknownRendezvous {
     //create an invalid rendezvousRef
     QredoRendezvousRef *rendezvousRef = [self createUnknownRendezvousRef];
@@ -1658,6 +1689,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      createActivateExpectation = nil;
                                  }];
 }
+
 
 -(void)testActivateNilRendezvous {
     [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -1686,6 +1718,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testActivateUnexpiredRendezvousNilCompletionHandler {
     QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:20000];
     
@@ -1707,6 +1740,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      createActivateExpectation = nil;
                                  }];
 }
+
 
 -(void)testActivateInvalidDuration {
     [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -1734,6 +1768,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testDeactivateRendezvous {
     QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:20000];
     
@@ -1758,6 +1793,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      deactivateExpectation = nil;
                                  }];
 }
+
 
 -(void)testDeactivateExpiredRendezvous {
     [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -1797,6 +1833,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testDeactivateAndRespondToRendezvous {
     QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:300];
     
@@ -1829,6 +1866,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testDeactivateRendezvousNilCompletionHandler {
     QredoRendezvousRef *rendezvousRef = [self createRendezvousWithDuration:20000];
     
@@ -1849,6 +1887,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      deactivateExpectation = nil;
                                  }];
 }
+
 
 -(void)testDeactivateNilRendezvous {
     [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -1874,6 +1913,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                  }];
 }
 
+
 -(void)testDeactivateUnknownRendezvous {
     QredoRendezvousRef *newRef = [self createUnknownRendezvousRef];
     
@@ -1898,6 +1938,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                                      deactivateExpectation = nil;
                                  }];
 }
+
 
 -(QredoRendezvousRef *)createUnknownRendezvousRef {
     QredoVault *vault = [client systemVault];
@@ -1928,5 +1969,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     return rendezvousRef;
 }
+
 
 @end

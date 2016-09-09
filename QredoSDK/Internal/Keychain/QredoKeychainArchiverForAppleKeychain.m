@@ -104,6 +104,7 @@ static NSString *kCurrentService = @"CurrentService";
     return YES;
 }
 
+
 -(QredoKeychain *)loadQredoKeychainWithIdentifier:(NSString *)identifier error:(NSError **)error {
     NSMutableDictionary *queryDictionary = [[NSMutableDictionary alloc] init];
     
@@ -182,6 +183,7 @@ static NSString *kCurrentService = @"CurrentService";
     return qredoKeychain;
 }
 
+
 -(BOOL)hasQredoKeychainWithIdentifier:(NSString *)identifier error:(NSError **)error {
     OSStatus querySanityCheck = [self hasQredoKeychainWithIdentifier:identifier];
     
@@ -207,6 +209,7 @@ static NSString *kCurrentService = @"CurrentService";
     return NO;
 }
 
+
 -(OSStatus)hasQredoKeychainWithIdentifier:(NSString *)identifier {
     NSMutableDictionary *queryDictionary = [[NSMutableDictionary alloc] init];
     
@@ -219,6 +222,7 @@ static NSString *kCurrentService = @"CurrentService";
     return fixedSecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary),(CFTypeRef *)&result);
 }
 
+
 -(OSStatus)deleteQredoKeychainWithIdentifier:(NSString *)identifier error:(NSError **)error {
     NSMutableDictionary *addDictionary = [[NSMutableDictionary alloc] init];
     
@@ -228,5 +232,6 @@ static NSString *kCurrentService = @"CurrentService";
     
     return SecItemDelete((__bridge CFDictionaryRef)(addDictionary));
 }
+
 
 @end

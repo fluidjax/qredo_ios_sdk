@@ -43,10 +43,12 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     return self;
 }
 
+
 -(void)subtractSizeFromTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
     [self subtractValueSizeFromTotals:qredoIndexVaultItem];
     [self subtractMetadataSizeFromTotals:qredoIndexVaultItem];
 }
+
 
 -(void)addSizeToTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
     [self addValueSizeToTotals:qredoIndexVaultItem];
@@ -55,11 +57,13 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     [self invalidate];
 }
 
+
 -(void)updateAccessDate:(QredoIndexVaultItemMetadata *)indexVaultItemMetadata {
     NSDate *now = [QredoNetworkTime dateTime];
     
     indexVaultItemMetadata.lastAccessed = now;
 }
+
 
 -(long)summaryValueByteCountSizeEstimator:(NSDictionary *)summaryValue {
     //calculate the storage needed for the summaryValue dictionary
@@ -75,6 +79,7 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     return totalByteCount;
 }
 
+
 -(long long)totalCacheSizeEstimate {
     //calculate how much data we are storing in the cache
     //we cant use the size of the file on the disk, as sqllite reclaims disk spcae in its own time (vacuum)
@@ -84,6 +89,7 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     
     return totalCacheSize;
 }
+
 
 #pragma mark
 #pragma mark Private Methods
@@ -96,12 +102,14 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     [self.qredoIndexVault setValueTotalSizeValue:originalTotalValueSize + vaultSizeIncrease];
 }
 
+
 -(void)addMetadataSizeToTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
     long long originalTotalMetadataSize = self.qredoIndexVault.metadataTotalSizeValue;
     long long metadataSizeIncrease = qredoIndexVaultItem.metadataSizeValue;
     
     [self.qredoIndexVault setMetadataTotalSizeValue:originalTotalMetadataSize + metadataSizeIncrease];
 }
+
 
 -(long)sizeOfSummaryValue:(id)value {
     if ([value isKindOfClass:[NSString class]]){
@@ -117,6 +125,7 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     @throw [NSException exceptionWithName:@"Invalid Type" reason:@"Unknown type in summaryValues value" userInfo:nil];
 }
 
+
 -(void)invalidate {
     //Check if cache is too big, if so remove Vault Item values (not metadata) until there are either no more items to remove
     //or the cache size is under the maximum allowed size
@@ -126,6 +135,7 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
         haveMoreItemsToDelete = [self deleteOldestItem];
     [self checkForOverSizeCache];
 }
+
 
 -(void)checkForOverSizeCache {
     /* Display a warning if the cache size is too big, and cant be made smaller becasue there are no Vault Item Values left to remove
@@ -141,6 +151,7 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     }
 }
 
+
 -(BOOL)overCacheSize {
     //Make an estimate to see if we are using more cache space than the specified maximum cache size
     if ([self totalCacheSizeEstimate] > self.maxCacheSize){
@@ -150,6 +161,7 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     
     return NO;
 }
+
 
 -(BOOL)deleteOldestItem {
     /** Get a list of QredoIndexVaultItems which has a payload  in lastAccessed order
@@ -193,6 +205,7 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     return haveMoreItemsToDelete;
 }
 
+
 -(void)subtractValueSizeFromTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
     long long originalTotalValueSize = self.qredoIndexVault.valueTotalSizeValue;
     long long vaultSizeIncrease = qredoIndexVaultItem.valueSizeValue;
@@ -200,11 +213,13 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
     [self.qredoIndexVault setValueTotalSizeValue:originalTotalValueSize - vaultSizeIncrease];
 }
 
+
 -(void)subtractMetadataSizeFromTotals:(QredoIndexVaultItem *)qredoIndexVaultItem {
     long long originalTotalMetadataSize = self.qredoIndexVault.metadataTotalSizeValue;
     long long metadataSizeIncrease = qredoIndexVaultItem.metadataSizeValue;
     
     [self.qredoIndexVault setMetadataTotalSizeValue:originalTotalMetadataSize - metadataSizeIncrease];
 }
+
 
 @end

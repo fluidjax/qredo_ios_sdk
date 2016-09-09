@@ -23,6 +23,7 @@
     return [result copy];
 }
 
+
 -(NSDictionary *)stringToQuidDictionary {
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
     NSArray *keys = [self allKeys];
@@ -35,5 +36,6 @@
     
     return [result copy];
 }
+
 
 @end

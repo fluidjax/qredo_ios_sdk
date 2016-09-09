@@ -24,6 +24,7 @@
     _crypto = [CryptoImplV1 new];
 }
 
+
 -(instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo {
     self = [super init];
     
@@ -36,6 +37,7 @@
     return self;
 }
 
+
 -(instancetype)initWithData:(NSData *)serializedData {
     self = [super init];
     [self initialize];
@@ -45,11 +47,13 @@
     return self;
 }
 
+
 -(NSData *)data {
     if (!_isInitialized)return nil;
     
     return _masterKey;
 }
+
 
 -(void)generateNewKeys:(QredoUserCredentials *)userCredentials {
     _isInitialized = YES;
@@ -57,11 +61,13 @@
     [self deriveKeys];
 }
 
+
 -(void)deriveKeys {
     NSData *vaultMasterKey = [QredoVaultCrypto vaultMasterKeyWithUserMasterKey:_masterKey];
     
     self.systemVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto systemVaultKeyWithVaultMasterKey:vaultMasterKey]];
     self.defaultVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto userVaultKeyWithVaultMasterKey:vaultMasterKey]];
 }
+
 
 @end

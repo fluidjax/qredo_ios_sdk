@@ -115,6 +115,7 @@
     QLog(@" encryptedVaultItem = %@",[QredoPrimitiveMarshallers marshalObject:encryptedVaultItem includeHeader:NO]);
 }
 
+
 -(void)testGenerateVaultTestVectors {
     //NSData *userMasterKey = [NSData dataWithRandomBytesOfLength:32];
     NSData *userMasterKey
@@ -130,6 +131,7 @@
     
     XCTAssertNotNil(userMasterKey);
 }
+
 
 -(void)testVaultKeysTestVectors {
     NSData *userMasterKey
@@ -172,6 +174,7 @@
     XCTAssertEqualObjects(encryptionAndAuthKeys.encryptionKey,encryptionKeyExpected);
     XCTAssertEqualObjects(encryptionAndAuthKeys.authenticationKey,authenticationKeyExpected);
 }
+
 
 -(void)testHeaderDecryption {
     NSData *encryptionKeyExpected
@@ -274,6 +277,7 @@
     XCTAssertNotNil(error);
 }
 
+
 -(void)testItemDecryption {
     NSData *encryptionKeyExpected
     = [NSData dataWithHexString:@"cb5e8fc6 0596ebf3 99d01185 45e99425 8567cdbd 82fa8f09 7a5260d1 945ba30c"];
@@ -327,5 +331,6 @@
     XCTAssertNil(vaultItemWithWrongAuthCode);
     XCTAssertNotNil(error);
 }
+
 
 @end

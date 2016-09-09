@@ -210,9 +210,11 @@ static char ownershipSignature_listOp_signatureBytes[] = {
     return ownershipSignature_timestamp;
 }
 
+
 +(QLFNonce *)nonce {
     return dataWithBytes(ownershipSignature_nonceBytes);
 }
+
 
 @end
 
@@ -255,11 +257,13 @@ static char ownershipSignature_listOp_signatureBytes[] = {
     self.error = nil;
 }
 
+
 -(void)tearDown {
     self.ownershipSignatureUnderTest = nil;
     self.error = nil;
     [super tearDown];
 }
+
 
 //-------------------------------------------------------------------------------------------------------------
 #pragma mark - Tests
@@ -298,6 +302,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
      }];
 }
 
+
 -(void)testGetOperation {
     QLFOperationType *operationType = [QLFOperationType operationGet];
     QredoVaultItemDescriptor *vaultItemDescriptor
@@ -317,6 +322,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
      }];
 }
 
+
 -(void)testListOperation {
     QLFOperationType *operationType = [QLFOperationType operationList];
     NSSet *sequenceStates
@@ -335,10 +341,12 @@ static char ownershipSignature_listOp_signatureBytes[] = {
      }];
 }
 
+
 -(void)testDeleteOperation {
     //QLFOperationType *operationType = [QLFOperationType operationDelete];
     //NSData *expectedSignature = dataWithBytes(ownershipSignature_deleteOp_signatureBytes);
 }
+
 
 //-------------------------------------------------------------------------------------------------------------
 #pragma mark - Utils
@@ -360,5 +368,6 @@ static char ownershipSignature_listOp_signatureBytes[] = {
     
     XCTAssertEqualObjects(expectedSiganture,self.ownershipSignatureUnderTest.signature);
 }
+
 
 @end

@@ -32,13 +32,16 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
     return self;
 }
 
+
 -(instancetype)copyWithZone:(NSZone *)zone {
     return self; //for immutable objects
 }
 
+
 -(instancetype)initWithValue:(NSData *)value summaryValues:(NSDictionary *)summaryValues {
     return [self initWithValue:value dataType:@"" summaryValues:summaryValues];
 }
+
 
 -(instancetype)initWithValue:(NSData *)value dataType:(NSString *)dataType summaryValues:(NSDictionary *)summaryValues {
     self = [super init];
@@ -52,6 +55,7 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
     return self;
 }
 
+
 -(QLFConversationMessage *)messageLF {
     NSSet *summaryValuesSet = [self.summaryValues indexableSet];
     
@@ -62,7 +66,7 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
     QLFConversationMessageMetadata *messageMetadata =
     [QLFConversationMessageMetadata conversationMessageMetadataWithID:[QredoQUID QUID]
                                                              parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
-                                                             sequence:nil                                                                                                                                                             //TODO
+                                                             sequence:nil                                                                                                                                                 //TODO
                                                              sentByMe:true
                                                               created:createdDate
                                                              dataType:self.dataType
@@ -73,9 +77,11 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
     return message;
 }
 
+
 -(BOOL)isControlMessage {
     return [self.dataType isEqualToString:kQredoConversationMessageTypeControl];
 }
+
 
 -(QredoConversationControlMessageType)controlMessageType {
     if (![self isControlMessage])return QredoConversationControlMessageTypeNotControlMessage;
@@ -92,5 +98,6 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
     
     return QredoConversationControlMessageTypeUnknown;
 }
+
 
 @end

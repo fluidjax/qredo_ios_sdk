@@ -22,6 +22,7 @@
     rendezvousCrypto = [QredoRendezvousCrypto instance];
 }
 
+
 -(void)common_TestDerrivedKeysNotNilWithTag:(NSString *)tag {
     NSData *masterKey = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
     
@@ -37,13 +38,16 @@
     XCTAssertNotNil(encKey,@"Authentication key should not be nil");
 }
 
+
 -(void)testDerrivedKeysNotNil_AnonymousRendezvous {
     [self common_TestDerrivedKeysNotNilWithTag:@"any anonymous tag"];
 }
 
+
 -(void)testDerrivedKeysNotNil_TrustedRendezvous {
     [self common_TestDerrivedKeysNotNilWithTag:@"any trusted tag@public key data"];
 }
+
 
 -(void)common_TestVectorsWithTag:(NSString *)tag {
     NSData *masterKey = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
@@ -76,6 +80,7 @@
                                     authenticationKey:authKey
                                encryptedResponderData:encryptedResponderInfo];
 }
+
 
 //- (void)testGenerateTestVectors
 //{

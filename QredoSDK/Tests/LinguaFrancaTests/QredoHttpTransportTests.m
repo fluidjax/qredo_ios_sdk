@@ -19,22 +19,27 @@
     //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
+
 //Needed for QredoTransportDelegate
 -(void)didReceiveResponseData:(NSData *)data userData:(id)userData {
 }
+
 
 //Needed for QredoTransportDelegate
 -(void)didReceiveError:(NSError *)error userData:(id)userData {
 }
 
+
 -(void)testInit_CannotBeCalledDirectly {
     XCTAssertThrowsSpecificNamed([[QredoHttpTransport alloc] init],NSException,NSInternalInconsistencyException,@"Called 'init' on QredoHttpTransport class but NSInternalInconsistencyException not thrown.");
 }
+
 
 -(void)testInitWithServiceURL {
     NSURL *serviceURL = [NSURL URLWithString:@"http://test.host.qredo.com:8765/path/to/somewhere"];
@@ -46,6 +51,7 @@
     [transport close];
 }
 
+
 -(void)testSupportsMultiResponse {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL ];
@@ -56,6 +62,7 @@
     
     [transport close];
 }
+
 
 -(void)testSend_Delegate {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
@@ -75,6 +82,7 @@
     [transport close];
 }
 
+
 -(void)testSend_Block {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     
@@ -93,6 +101,7 @@
     
     [transport close];
 }
+
 
 -(void)testSend_Block_UserDataReturned {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
@@ -127,6 +136,7 @@
     [transport close];
 }
 
+
 -(void)testSend_NoBlockNoDelegate {
     NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
     
@@ -140,5 +150,6 @@
     
     XCTAssertThrowsSpecificNamed([transport send:payload userData:userData],NSException,NSInternalInconsistencyException,@"Tried to send data without a delegate or response blocks configured, but expected exception not thrown.");
 }
+
 
 @end

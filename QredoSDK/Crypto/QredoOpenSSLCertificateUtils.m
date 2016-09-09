@@ -26,6 +26,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
     }
 }
 
+
 #pragma mark - External methods
 
 //TODO: DH - Any need to check CRL for self-signed? If private key compromised, then why trust it to sign the CRL?
@@ -43,6 +44,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
                              pemCrls:nil
                                error:error];
 }
+
 
 +(BOOL)validateCertificate:(NSString *)pemCertificate
       skipRevocationChecks:(BOOL)skipRevocationChecks
@@ -63,6 +65,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
                              pemCrls:pemCrls
                                error:error];
 }
+
 
 #pragma mark - Internal methods
 
@@ -228,6 +231,7 @@ static const NSUInteger kMaxX509RsaKeyLengthBits = 4096;
     return certificateValid;
 }
 
+
 int verify_callback(int ok,X509_STORE_CTX *ctx) {
 #ifdef QREDO_LOG_INFO
     X509 *certificate;
@@ -256,6 +260,7 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
     //Do not alter the verification result
     return ok;
 }
+
 
 +(X509 *)x509FromPemCertificate:(NSString *)pemCertificate error:(NSError **)error {
     //TODO: DH - Validate inputs
@@ -287,6 +292,7 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
     
     return certificate;
 }
+
 
 +(EVP_PKEY *)getValidatedPublicKeyFromX509Certificate:(X509 *)certificate error:(NSError **)error {
     BOOL errorOccurred = NO;
@@ -336,6 +342,7 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
         return NULL;
     }
 }
+
 
 +(STACK_OF(X509)*)createStackFromPemCertificates:(NSArray *)pemCertificates error:(NSError **)error {
     [QredoCryptoError throwArgExceptionIf:!pemCertificates reason:@"Certificates argument is nil"];
@@ -387,6 +394,7 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
     
     return certificatesStack;
 }
+
 
 //TODO: DH - any way of commoning up some of these methods, as apart from the type (X509_CRL/X509), code is simiar
 +(STACK_OF(X509_CRL)*)createStackFromPemOrDerCrls:(NSArray *)derCrls error:(NSError **)error {
@@ -468,6 +476,7 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
     return crlsStack;
 }
 
+
 +(SecKeyRef)getPublicKeyRefFromPemCertificate:(NSString *)pemCertificate
                           publicKeyIdentifier:(NSString *)publicKeyIdentifier
                                         error:(NSError **)error {
@@ -542,5 +551,6 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
     
     return publicKeyRef;
 }
+
 
 @end

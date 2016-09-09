@@ -8,13 +8,16 @@
     return [[self alloc] initWithYear:year month:month day:day];
 }
 
+
 +(instancetype)dateWithDate:(NSDate *)date {
     return [[self alloc] initWithDate:date];
 }
 
+
 +(instancetype)dateWithDateComponents:(NSDateComponents *)dateComponents {
     return [[self alloc] initWithDateComponents:dateComponents];
 }
+
 
 -(instancetype)initWithYear:(NSUInteger)year month:(NSUInteger)month day:(NSUInteger)day {
     self = [super init];
@@ -23,6 +26,7 @@
     _day   = day;
     return self;
 }
+
 
 -(instancetype)initWithDate:(NSDate *)date {
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
@@ -34,6 +38,7 @@
     return [self initWithDateComponents:dateComponents];
 }
 
+
 -(instancetype)initWithDateComponents:(NSDateComponents *)dateComponents {
     self = [super init];
     _year  = [dateComponents year];
@@ -42,12 +47,14 @@
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QredoDate *)other {
     QREDO_COMPARE_SCALAR(year);
     QREDO_COMPARE_SCALAR(month);
     QREDO_COMPARE_SCALAR(day);
     return NSOrderedSame;
 }
+
 
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
@@ -56,6 +63,7 @@
     
     return [self isEqualToDate:other];
 }
+
 
 -(BOOL)isEqualToDate:(QredoDate *)date {
     if (self == date)return YES;
@@ -67,6 +75,7 @@
     return NO;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = (self.year & 4095) << 10;
     
@@ -74,6 +83,7 @@
     hash += self.day & 31;
     return hash;
 }
+
 
 @end
 
@@ -87,17 +97,21 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return [[self alloc] initWithHour:hour minute:minute second:second];
 }
 
+
 +(instancetype)timeWithMillisSinceMidnight:(NSUInteger)millisSinceMidnight {
     return [[self alloc] initWithMillisSinceMidnight:millisSinceMidnight];
 }
+
 
 +(instancetype)timeWithDate:(NSDate *)date {
     return [[self alloc] initWithDate:date];
 }
 
+
 +(instancetype)timeWithDateComponents:(NSDateComponents *)dateComponents {
     return [[self alloc] initWithDateComponents:dateComponents];
 }
+
 
 -(instancetype)initWithMillisSinceMidnight:(NSUInteger)millisSinceMidnight {
     self = [super init];
@@ -120,6 +134,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return self;
 }
 
+
 -(instancetype)initWithHour:(NSUInteger)hour minute:(NSUInteger)minute second:(NSUInteger)second {
     NSDateComponents *dateComponents = [NSDateComponents new];
     
@@ -128,6 +143,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     [dateComponents setSecond:second];
     return [self initWithDateComponents:dateComponents];
 }
+
 
 -(instancetype)initWithDate:(NSDate *)date {
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
@@ -139,6 +155,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
                                                     fromDate:date];
     return [self initWithDateComponents:dateComponents];
 }
+
 
 -(instancetype)initWithDateComponents:(NSDateComponents *)dateComponents {
     self = [super init];
@@ -158,6 +175,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return self;
 }
 
+
 -(NSComparisonResult)compare:(QredoTime *)other {
     QREDO_COMPARE_SCALAR(hour);
     QREDO_COMPARE_SCALAR(minute);
@@ -166,6 +184,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
     
@@ -173,6 +192,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     
     return [self isEqualToTime:other];
 }
+
 
 -(BOOL)isEqualToTime:(QredoTime *)time {
     if (self == time)return YES;
@@ -188,6 +208,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return NO;
 }
 
+
 -(NSUInteger)hash {
     //TODO: review. this impl is probably wrong. inital version was using [NSNumber hash], however, that might not be good either
     NSUInteger hash = self.millisSinceMidnight;
@@ -198,6 +219,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     hash = hash * 31u + self.milli;
     return hash;
 }
+
 
 @end
 
@@ -211,6 +233,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     }
 }
 
+
 +(instancetype)dateTimeWithDate:(NSDate *)date isUTC:(bool)isUTC {
     if (isUTC){
         return [[QredoUTCDateTime alloc] initWithDate:date];
@@ -218,6 +241,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
         return [[QredoLocalDateTime alloc] initWithDate:date];
     }
 }
+
 
 +(instancetype)dateTimeWithDateComponents:(NSDateComponents *)dateComponents {
     bool isUTC = [[dateComponents timeZone] isEqualToTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
@@ -229,12 +253,14 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     }
 }
 
+
 -(instancetype)initWithDate:(QredoDate *)date time:(QredoTime *)time {
     self = [super init];
     _date = date;
     _time = time;
     return self;
 }
+
 
 -(instancetype)initWithDate:(NSDate *)date {
     self = [super init];
@@ -243,12 +269,14 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return self;
 }
 
+
 -(instancetype)initWithDateComponents:(NSDateComponents *)dateComponents {
     self = [super init];
     _date = [QredoDate dateWithDateComponents:dateComponents];
     _time = [QredoTime timeWithDateComponents:dateComponents];
     return self;
 }
+
 
 -(NSDate *)asDateInTimezone:(NSTimeZone *)timeZone {
     NSDateComponents *dateComponents = [NSDateComponents new];
@@ -265,6 +293,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return [calendar dateFromComponents:dateComponents];
 }
 
+
 -(NSComparisonResult)compare:(QredoDateTime *)object {
     QREDO_COMPARE_SCALAR2(_date.year,object.date.year);
     QREDO_COMPARE_SCALAR2(_date.month,object.date.month);
@@ -278,6 +307,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return NSOrderedSame;
 }
 
+
 -(BOOL)isEqual:(id)other {
     if (other == self)return YES;
     
@@ -285,6 +315,7 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     
     return [self isEqualToTime:other];
 }
+
 
 -(BOOL)isEqualToTime:(QredoDateTime *)time {
     if (self == time)return YES;
@@ -298,12 +329,14 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     return YES;
 }
 
+
 -(NSUInteger)hash {
     NSUInteger hash = [self.date hash];
     
     hash = hash * 31u + [self.time hash];
     return hash;
 }
+
 
 @end
 
@@ -316,5 +349,6 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
 -(NSDate *)asDate {
     return [super asDateInTimezone:[NSTimeZone timeZoneWithName:@"UTC"]];
 }
+
 
 @end

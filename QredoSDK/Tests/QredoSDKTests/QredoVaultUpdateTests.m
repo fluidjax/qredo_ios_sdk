@@ -24,6 +24,7 @@
     [self authoriseClient];
 }
 
+
 -(void)tearDown {
     [super tearDown];
     
@@ -31,6 +32,7 @@
         [client closeSession];
     }
 }
+
 
 -(void)authoriseClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
@@ -73,6 +75,7 @@
                                      systemItemsExpectation = nil;
                                  }];
 }
+
 
 -(void)testGettingItems {
     __block XCTestExpectation *testExpectation = nil;
@@ -175,6 +178,7 @@
                                      testExpectation = nil;
                                  }];
 }
+
 
 -(void)testPutItems {
     __block XCTestExpectation *testExpectation = nil;
@@ -313,6 +317,7 @@
                                  }];
 }
 
+
 -(void)testDeleteItems {
     __block XCTestExpectation *testExpectation = nil;
     
@@ -445,5 +450,6 @@
                                      testExpectation = nil;
                                  }];
 }
+
 
 @end

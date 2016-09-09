@@ -35,6 +35,7 @@
     XCTAssertNotNil(qredoPrivateKey);
 }
 
+
 -(void)tearDown {
     if (privateKeyName)[QredoCrypto deleteKeyInAppleKeychainWithIdentifier:privateKeyName];
     
@@ -42,6 +43,7 @@
     
     [super tearDown];
 }
+
 
 -(void)generateRandomKeys {
     QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:2048
@@ -53,6 +55,7 @@
     XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef,"RSA key generation failed (nil public key ref returned).");
     XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef,"RSA key generation failed (nil private key ref returned).");
 }
+
 
 -(void)importKnownKeys {
     [super setUp];
@@ -85,6 +88,7 @@
     XCTAssertTrue((__bridge id)importPrivKeyRef,@"Private key import failed.");
 }
 
+
 -(void)testPSSCImplementation {
     NSString *inputData = @"Hello, world";
     NSData *hash = [QredoCrypto sha256:[inputData dataUsingEncoding:NSUTF8StringEncoding]];
@@ -115,6 +119,7 @@
     XCTAssert(result != QREDO_RSA_PSS_VERIFIED,@"Failed to verify PSS encoded signature. Result %d",result);
 }
 
+
 -(void)testPSSSignAndVerifyMessage {
     const int messageLength = 64;
     const int saltLen = 32;
@@ -133,6 +138,7 @@
     if (!verified)failed++;
 }
 
+
 -(void)testPSSSignAndVerifyMessageMultiple {
     int iterations = 300; //1000 iterations takes about 14 seconds to run
     
@@ -146,5 +152,6 @@
     
     XCTAssertEqual(failed,0);
 }
+
 
 @end

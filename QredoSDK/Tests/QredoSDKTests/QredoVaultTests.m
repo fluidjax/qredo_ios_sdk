@@ -27,6 +27,7 @@
     }
 }
 
+
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
     if (!self.receivedItems){
         self.receivedItems = [NSMutableArray array];
@@ -38,6 +39,7 @@
         [self.didReceiveVaultItemMetadataExpectation fulfill];
     }
 }
+
 
 @end
 
@@ -63,19 +65,23 @@
     return self;
 }
 
+
 -(void)dealloc {
     _deallocEntered = YES;
     [self.vault removeVaultObserver:self];
 }
 
+
 -(void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error {
 }
+
 
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
     if (_deallocEntered){
         NSAssert(FALSE,@"QredoVaultListenerWithEmptyImplementation notified after dealloc has been called.");
     }
 }
+
 
 @end
 
@@ -100,6 +106,7 @@
     [self authoriseClient];
 }
 
+
 -(void)tearDown {
     [super tearDown];
     
@@ -107,6 +114,7 @@
         [client closeSession];
     }
 }
+
 
 -(void)authoriseClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
@@ -132,6 +140,7 @@
                                      clientExpectation = nil;
                                  }];
 }
+
 
 -(void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
@@ -167,6 +176,7 @@
     
     XCTAssertEqualObjects([[client defaultVault] vaultId],firstQUID);
 }
+
 
 -(void)testEnumerateContainsDeletedItems {
     [self resetKeychain];
@@ -358,6 +368,7 @@
     
     [client closeSession];
 }
+
 
 -(void)testEnumerateUpdated {
     [self resetKeychain];
@@ -569,6 +580,7 @@
     [client closeSession];
 }
 
+
 -(void)testPutDelete {
     [self resetKeychain];
     XCTAssertNotNil(client);
@@ -716,6 +728,7 @@
     
     XCTAssertTrue(itemFound2,"Item just deleted but should still be present in an enumeration from the server");
 }
+
 
 -(void)testGetLatestMetaDataItemFromIndex {
     [self resetKeychain];
@@ -865,6 +878,7 @@
     [client closeSession];
 }
 
+
 -(void)testGetLatestMetaDataItemFromIndexAfterDelete {
     [self resetKeychain];
     XCTAssertNotNil(client);
@@ -1006,6 +1020,7 @@
     XCTAssertNil(test4vaultItemMetadata,@"Should be nil");
     [client closeSession];
 }
+
 
 -(void)testGetLatestItemFromIndexAfterDelete {
     [self resetKeychain];
@@ -1152,6 +1167,7 @@
     [client closeSession];
 }
 
+
 -(void)testGetLatestVaultItemFromIndex {
     [self resetKeychain];
     XCTAssertNotNil(client);
@@ -1297,6 +1313,7 @@
     XCTAssertTrue([item2Metadata.descriptor isEqual:test4vaultItem.metadata.descriptor],@"Retrieved item should be second");
 }
 
+
 //-(void)testGetLatestFromIndex{
 ////put some data
 //
@@ -1439,6 +1456,7 @@
                                  }];
 }
 
+
 -(void)testGetSetShortcuts {
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
@@ -1474,11 +1492,13 @@
                                  }];
 }
 
+
 -(void)testMultiplePutItem {
     for (int i = 0; i < 5; i++){
         [self testPutItem];
     }
 }
+
 
 -(void)testPutItemMultiple {
     XCTAssertNotNil(client);
@@ -1509,6 +1529,7 @@
                                      }];
     }
 }
+
 
 -(void)testMenualGet {
     XCTAssertNotNil(client);
@@ -1581,6 +1602,7 @@
                                      testExpectation = nil;
                                  }];
 }
+
 
 -(void)testGettingItems {
     XCTAssertNotNil(client);
@@ -1704,6 +1726,7 @@
                                      testExpectation = nil;
                                  }];
 }
+
 
 -(void)testGettingItemsFromCache {
     XCTAssertNotNil(client);
@@ -1899,6 +1922,7 @@
     [client closeSession];
 }
 
+
 -(void)testEnumeration {
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
@@ -1922,6 +1946,7 @@
                                  }];
     XCTAssertNil(error);
 }
+
 
 -(void)testEnumerationReturnsCreatedItem {
     XCTAssertNotNil(client);
@@ -2017,6 +2042,7 @@
     }
 }
 
+
 -(void)testEnumerationAbortsOnStop {
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
@@ -2102,6 +2128,7 @@
     XCTAssertTrue(count == 1,"Enumerated more than 1 item, despite setting 'stop' after first item.");
 }
 
+
 -(void)testListener {
     XCTAssertNotNil(client);
     QredoVault *vault = [client defaultVault];
@@ -2140,6 +2167,7 @@
     //[vault removeVaultObserver:listener];
     [client closeSession];
 }
+
 
 -(void)testMultipleListeners {
     XCTAssertNotNil(client);
@@ -2194,6 +2222,7 @@
     [client closeSession];
 }
 
+
 -(void)testRemovingListenerDurringNotification {
     XCTAssertNotNil(client);
     
@@ -2236,11 +2265,13 @@
     keepNotifying = NO;
 }
 
+
 -(void)testMultipleRemovingListenerDurringNotification {
     for (int i = 0; i < 5; i++){
         [self testRemovingListenerDurringNotification];
     }
 }
+
 
 -(void)removeLastListenerOrFinishWith:(NSMutableArray *)listeners allListnersRemovedExpectation:(XCTestExpectation *)allListnersRemovedExpectation {
     QredoVaultListenerWithEmptyImplementation *listener = [listeners lastObject];
@@ -2254,6 +2285,7 @@
         [allListnersRemovedExpectation fulfill];
     }
 }
+
 
 -(void)testRemovingNotObservingListener {
     XCTAssertNotNil(client);
@@ -2269,6 +2301,7 @@
     XCTAssertNoThrow([vault removeVaultObserver:listener2]);
     XCTAssertNoThrow([vault removeVaultObserver:listener1]);
 }
+
 
 -(void)testVaultItemMetadataAndMutableMetadata {
     QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[QredoQUID QUID] itemId:[QredoQUID QUID]];
@@ -2317,5 +2350,6 @@
     
     XCTAssertEqualObjects(mutableMetadata.summaryValues,mutableMetadataSummaryValues);
 }
+
 
 @end

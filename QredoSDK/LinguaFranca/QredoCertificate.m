@@ -19,6 +19,7 @@
     return self;
 }
 
+
 -(instancetype)initWithSecCertificateRef:(SecCertificateRef)certificate {
     self = [super init];
     
@@ -37,9 +38,11 @@
     return self;
 }
 
+
 +(instancetype)certificateWithSecCertificateRef:(SecCertificateRef)certificate {
     return [[self alloc] initWithSecCertificateRef:certificate];
 }
+
 
 -(void)dealloc {
     if (_certificate){
@@ -47,8 +50,10 @@
     }
 }
 
+
 -(SecCertificateRef)certificate {
     return _certificate;
 }
+
 
 @end

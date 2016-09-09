@@ -75,7 +75,8 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     __block XCTestExpectation *retrievePosts1 = [self expectationWithDescription:@"retrievePosts"];
     __block int messageCount1 = 0;
     [testConversation enumerateSentMessagesUsingBlock:^(QredoConversationMessage *message,BOOL *stop) {
-        QLog(@"%@", [[NSString alloc] initWithData:message.value encoding:NSUTF8StringEncoding]);
+        QLog(@"%@",[[NSString alloc]                   initWithData:message.value
+                                                           encoding:NSUTF8StringEncoding]);
         messageCount1++;
     }
                                                 since:nil
@@ -91,6 +92,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     
     XCTAssertTrue(messageCount1 == PAGING_SIZE + PAGING_SIZE_MODIFIER,"Failure to retieve messages using Non Paged method - enumerateSentMessagesUsingBlock");
 }
+
 
 -(void)testPagedRendezvous {
     for (int i = 0; i < PAGING_SIZE + PAGING_SIZE_MODIFIER; i++){
@@ -120,6 +122,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     
     XCTAssertTrue(count2 == PAGING_SIZE + PAGING_SIZE_MODIFIER,"Failure to retrieve correct number of rendezvous using Non Paged Method - enumerateRendezvousWithBlock");
 }
+
 
 -(void)testPagedConversations {
     XCTAssertNotNil(client1);
@@ -155,6 +158,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
                                  }];
     XCTAssertTrue(count2 == PAGING_SIZE + PAGING_SIZE_MODIFIER,@"Failed to enumerate all the new messages");
 }
+
 
 -(void)testPagedVaultItems {
     QredoVault *vault = [client1 defaultVault];
@@ -212,6 +216,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     XCTAssertTrue(count1 == PAGING_SIZE + PAGING_SIZE_MODIFIER,@"Failed to enumerate ALL the vault items");
 }
 
+
 #pragma mark
 #pragma mark Utility Methods
 
@@ -256,21 +261,25 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
                                  }];
 }
 
+
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     //incomingConversation = conversation;
     //[incomingConversationExpectation fulfill];
 }
+
 
 -(void)setUp {
     [super setUp];
     [self authoriseClient];
 }
 
+
 -(void)tearDown {
     [client1 closeSession];
     [client2 closeSession];
     [super tearDown];
 }
+
 
 -(QredoConversation *)createConversationOnClient:(QredoClient *)qredoClient withTag:(NSString *)tagName {
     //respond to rendezvous by tag
@@ -291,6 +300,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     XCTAssertNotNil(newConversation);
     return newConversation;
 }
+
 
 -(QredoConversationHighWatermark *)createMessageOnConversation:(QredoConversation *)conversation {
     XCTAssertNotNil(conversation);
@@ -321,6 +331,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     return newMessageHighWatermark;
 }
 
+
 -(QredoRendezvous *)createRendezvousOnClient:(QredoClient *)qredoClient withTag:(NSString *)tagName {
     //create rendezvous
     
@@ -345,5 +356,6 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
                                  }];
     return newRendezvous;
 }
+
 
 @end

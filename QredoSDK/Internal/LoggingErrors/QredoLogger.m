@@ -18,29 +18,6 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
 
     if (level==QredoLogLevelNone)return;
     if (currentLevel<level)return;  //no logging at this currentLogginLevel
-    
-//#ifdef COLOUROFF
-//    setenv("XcodeColors", "NO", 0);
-//#else
-//    setenv("XcodeColors", "YES", 0);
-//#endif
-//  
-//    char *xcode_colors = getenv("XcodeColors");
-//    
-//    BOOL inColour = NO;
-//    
-//    
-//    
-//    if (xcode_colors && (strcmp(xcode_colors, "YES") == 0))    {
-//        // XcodeColors is installed and enabled!
-//        inColour = YES;
-//        
-//    }
-    
-    
-    
-    
-    //NSString *filename = [[[NSString alloc] initWithUTF8String:file] lastPathComponent];
     NSString *function = [[NSString alloc] initWithUTF8String:functionChar];
     NSString *locationMessage = [NSString stringWithFormat:@"%@:%i ",function,(int)line];
     NSString *className = [QredoLogger extractClassName:function];
@@ -96,17 +73,21 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     inColour = colour;
 }
 
+
 +(void)setLogLevel:(QredoLogLevel)logLevel {
     currentLoggingLevel = logLevel;
 }
+
 
 +(QredoLogLevel)logLevel {
     return currentLoggingLevel;
 }
 
+
 +(void)setLogHandler:(void (^)(NSString * (^message)(void),QredoLogLevel currentLevel,QredoLogLevel level,const char *file,const char *function,NSUInteger line))logHandler {
     LogHandler = logHandler;
 }
+
 
 +(void)logMessage:(NSString * (^)(void))message
      currentLevel:(QredoLogLevel)currentLevel
@@ -119,6 +100,7 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     }
 }
 
+
 #pragma mark - Class/Object restriction
 
 
@@ -130,19 +112,23 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     return NO;
 }
 
+
 +(void)addLoggingForObject:(NSObject *)ob {
     NSString *classType = NSStringFromClass([ob class]);
     
     [classRestrictionArray addObject:classType];
 }
 
+
 +(void)addLoggingForClassName:(NSString *)className {
     [classRestrictionArray addObject:className];
 }
 
+
 +(void)resetLoggingObjects {
     classRestrictionArray = [[NSMutableArray alloc] init];
 }
+
 
 +(NSString *)extractClassName:(NSString *)prettyFunction {
     NSRange firstSquareBracket  = [prettyFunction rangeOfString:@"["];
@@ -168,6 +154,7 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     return baseClassName;
 }
 
+
 #pragma mark - Helper Logging Methods
 
 
@@ -189,6 +176,7 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     return convertedData;
 }
 
+
 +(NSString *)hexRepresentationOfNSData:(NSData *)data {
     //LogTrace();
     NSString *hexString;
@@ -202,6 +190,7 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     
     return hexString;
 }
+
 
 +(NSString *)printBytesAsHex:(const unsigned char *)bytes numberOfBytes:(const unsigned int)numberOfBytes {
     NSMutableString *hexString;
@@ -219,6 +208,7 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     
     return hexString;
 }
+
 
 +(NSString *)stringFromOSStatus:(OSStatus)osStatus {
     NSString *messageString = nil;
@@ -294,6 +284,7 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     
     return messageString;
 }
+
 
 //TODO: Remove before release
 +(void)notImplementedYet:(SEL)selector {

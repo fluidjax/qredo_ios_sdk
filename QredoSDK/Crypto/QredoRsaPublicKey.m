@@ -20,6 +20,7 @@
     return nil;
 }
 
+
 -(instancetype)initWithModulus:(NSData *)modulus publicExponent:(NSData *)publicExponent {
     if (!modulus){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -43,6 +44,7 @@
     return self;
 }
 
+
 -(instancetype)initWithPkcs1KeyData:(NSData *)keyData {
     if (!keyData){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -61,6 +63,7 @@
     
     return self;
 }
+
 
 -(instancetype)initWithX509KeyData:(NSData *)keyData {
     if (!keyData){
@@ -81,10 +84,12 @@
     return self;
 }
 
+
 -(NSData *)convertKeyToNSData {
     //Override the QredoKey stuf - default format will be X.509, as it's interchangeable with BouncyCastle
     return [self convertToX509Format];
 }
+
 
 -(BOOL)populatePublicKeyComponentsFromPublicKeyX509Data:(NSData *)publicKeyData {
     /*
@@ -231,6 +236,7 @@
     return dataIsValid;
 }
 
+
 -(BOOL)populatePublicKeyComponentsFromPublicKeyPkcs1Data:(NSData *)publicKeyData {
     /*
      
@@ -301,6 +307,7 @@
     return dataIsValid;
 }
 
+
 -(NSData *)convertToPkcs1Format {
     /*
      
@@ -331,6 +338,7 @@
     NSData *wrappedData = [QredoDerUtils wrapData:dataToWrap withTag:ASN1_SEQUENCE_TAG];
     return wrappedData;
 }
+
 
 -(NSData *)convertToX509Format {
     /*
@@ -398,5 +406,6 @@
     NSData *wrappedData = [QredoDerUtils wrapData:algorithmIdentifierSequence withTag:ASN1_SEQUENCE_TAG];
     return wrappedData;
 }
+
 
 @end

@@ -19,10 +19,12 @@
     self.cryptoImpl = [[CryptoImplV1 alloc] init];
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
+
 
 -(void)testCreateAndRespondHelpers {
     NSError *error = nil;
@@ -77,6 +79,7 @@
     XCTAssertTrue(result); //Anonymous rendezvous always say signature is valid
     XCTAssertNil(error);
 }
+
 
 -(void)testCreateHelper_Valid_EmptyTag {
     NSError *error = nil;
@@ -138,6 +141,7 @@
     XCTAssertFalse([originalTagData1 isEqualToData:originalTagData2]);
 }
 
+
 -(void)testCreateHelper_Invalid_TagContainsAtSymbol {
     [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
@@ -162,6 +166,7 @@
     XCTAssertEqual(error.code,QredoRendezvousHelperErrorMalformedTag);
 }
 
+
 -(void)testCreateHelper_Invalid_MissingCrypto {
     [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
@@ -178,6 +183,7 @@
                                                                    signingHandler:signingHandler
                                                                             error:&error]);
 }
+
 
 -(void)testCreateHelper_Invalid_NilTag {
     [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -202,6 +208,7 @@
     XCTAssertEqualObjects(error.domain,QredoRendezvousHelperErrorDomain);
     XCTAssertEqual(error.code,QredoRendezvousHelperErrorMissingTag);
 }
+
 
 -(void)testCreateHelper_Invalid_NonNilSigningHandler {
     [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -231,6 +238,7 @@
     XCTAssertEqual(error.code,QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided);
 }
 
+
 -(void)testRespondHelper_Invalid_EmptyTag {
     [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
@@ -251,6 +259,7 @@
     XCTAssertEqualObjects(error.domain,QredoRendezvousHelperErrorDomain);
     XCTAssertEqual(error.code,QredoRendezvousHelperErrorMissingTag);
 }
+
 
 -(void)testRespondHelper_Invalid_TagContainsAtSymbol {
     [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -273,6 +282,7 @@
     XCTAssertEqual(error.code,QredoRendezvousHelperErrorMalformedTag);
 }
 
+
 -(void)testRespondHelper_Invalid_MissingCrypto {
     [QredoLogger setLogLevel:QredoLogLevelNone];
     NSError *error = nil;
@@ -286,6 +296,7 @@
                                                                           crlPems:nil //Nil is fine for Anonymous rendezvous
                                                                             error:&error]);
 }
+
 
 -(void)testRespondHelper_Invalid_NilTag {
     [QredoLogger setLogLevel:QredoLogLevelNone];
@@ -307,5 +318,6 @@
     XCTAssertEqualObjects(error.domain,QredoRendezvousHelperErrorDomain);
     XCTAssertEqual(error.code,QredoRendezvousHelperErrorMissingTag);
 }
+
 
 @end

@@ -36,6 +36,7 @@ static SecTrustRef setAnchorForTrust(SecTrustRef trust,SecCertificateRef trusted
     return trust;
 }
 
+
 static BOOL checkTrust(SecTrustRef trust) {
     if (!trust){
         return NO;

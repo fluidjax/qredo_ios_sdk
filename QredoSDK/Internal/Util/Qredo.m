@@ -59,6 +59,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return self;
 }
 
+
 -(instancetype)initWithDefaultTrustedRoots {
     self = [super init];
     
@@ -69,9 +70,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return self;
 }
 
+
 -(QredoCertificate *)certificate {
     return _certificate;
 }
+
 
 @end
 
@@ -107,13 +110,16 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return [QredoNetworkTime dateTime];
 }
 
+
 -(QredoAppCredentials *)appCredentials {
     return _appCredentials;
 }
 
+
 -(QredoUserCredentials *)userCredentials {
     return _userCredentials;
 }
+
 
 -(NSString *)versionString {
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
@@ -121,11 +127,13 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }
 
+
 -(NSString *)buildString {
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     
     return [bundle objectForInfoDictionaryKey:@"CFBundleVersion"];
 }
+
 
 -(QredoVault *)systemVault {
     //For rev1 we have only one vault
@@ -133,13 +141,16 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return _systemVault;
 }
 
+
 -(QredoKeychain *)keychain {
     return _keychain;
 }
 
+
 -(QredoServiceInvoker *)serviceInvoker {
     return _serviceInvoker;
 }
+
 
 +(void)initializeWithAppId:(NSString *)appId
                  appSecret:(NSString *)appSecret
@@ -153,6 +164,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                       options:nil
             completionHandler:completionHandler];
 }
+
 
 +(NSURL *)chooseServiceURL:(QredoClientOptions *)options {
     long transportType = options.transportType ? options.transportType : QredoClientOptionsTransportTypeHTTP;
@@ -173,6 +185,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     }
     return serviceURL;
 }
+
 
 +(void)initializeWithAppId:(NSString *)appId
                  appSecret:(NSString *)appSecret
@@ -264,6 +277,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     completeAuthorization(error);
 }
 
+
 -(instancetype)initWithServiceURL:(NSURL *)serviceURL
                    appCredentials:(QredoAppCredentials *)appCredentials
                   userCredentials:(QredoUserCredentials *)userCredentials {
@@ -284,19 +298,23 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return self;
 }
 
+
 -(void)dealloc {
     //Ensure that we close our session, even if caller forgot
     [self closeSession];
 }
 
+
 -(BOOL)isClosed {
     return _serviceInvoker.isTerminated;
 }
+
 
 -(BOOL)isAuthenticated {
     //rev 1 doesn't have authentication
     return YES;
 }
+
 
 -(void)closeSession {
     //Need to terminate transport, which ends associated threads and subscriptions etc.
@@ -308,6 +326,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     //TODO: DH - somehow indicate that the client has been closed and therefore cannot be used again.
 }
 
+
 -(QredoVault *)defaultVault {
     if (!_defaultVault){
         //should not happen, but just in case
@@ -316,6 +335,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     return _defaultVault;
 }
+
 
 #pragma mark -
 #pragma mark Rendezvous
@@ -332,6 +352,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return appID;
 }
 
+
 +(NSString *)randomStringWithLength:(int)len {
     NSString *letters = @"abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity:len];
@@ -343,11 +364,13 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return randomString;
 }
 
+
 -(NSData *)createTagWithSecurityLevel:(QredoSecurityLevel)securityLevel {
     NSData *key = [QredoUtils randomKey:securityLevel];
     
     return key;
 }
+
 
 -(void)createAnonymousRendezvousWithCompletionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
     [self createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
@@ -356,6 +379,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                  summaryValues:nil
                              completionHandler:completionHandler];
 }
+
 
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                           completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
@@ -366,6 +390,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                              completionHandler:completionHandler];
 }
 
+
 -(void)createAnonymousRendezvousWithTag:(QredoSecurityLevel)tagSecurityLevel
                                duration:(long)duration
                       completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
@@ -375,6 +400,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                  summaryValues:nil
                              completionHandler:completionHandler];
 }
+
 
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                                duration:(long)duration
@@ -401,6 +427,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                 }
      ];
 }
+
 
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                                    duration:(long)duration
@@ -439,6 +466,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
      ];
 }
 
+
 //TODO: DH - Create unit tests for createAnonymousRendezvousWithTag
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                           configuration:(QredoRendezvousConfiguration *)configuration
@@ -459,6 +487,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                 }
      ];
 }
+
 
 //TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (internal keys)
 //TODO: DH - create unit tests which provide incorrect authentication types
@@ -505,6 +534,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                 }
      ];
 }
+
 
 //TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (external keys)
 //TODO: DH - create unit test with nil signing handler and confirm detected deeper down stack
@@ -558,6 +588,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                 completionHandler:completionHandler];
 }
 
+
 -(void)createRendezvousWithTag:(NSString *)tag
             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                  configuration:(QredoRendezvousConfiguration *)configuration
@@ -596,6 +627,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoLogVerbose(@"End createRendezvousWithTag %@",tag);
 }
 
+
 -(QredoRendezvous *)rendezvousFromVaultItem:(QredoVaultItem *)vaultItem error:(NSError **)error {
     @try {
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithVaultItem:self fromVaultItem:vaultItem];
@@ -614,6 +646,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
         return nil;
     }
 }
+
 
 -(QredoConversation *)conversationFromVaultItem:(QredoVaultItem *)vaultItem error:(NSError **)error {
     @try {
@@ -640,6 +673,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
         return nil;
     }
 }
+
 
 -(void)fetchRendezvousWithTag:(NSString *)tag completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
     __block QredoRendezvousMetadata *matchedRendezvousMetadata;
@@ -673,6 +707,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                      }];
 }
 
+
 -(void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata,BOOL *stop))block
                   completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *vault = [self systemVault];
@@ -705,6 +740,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                        }];
 }
 
+
 -(void)fetchRendezvousWithRef:(QredoRendezvousRef *)ref
             completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
     //an unknown ref will throw an exception, but catch a nil ref here
@@ -723,10 +759,12 @@ NSString *systemVaultKeychainArchiveIdentifier;
     [self fetchRendezvousWithVaultItemDescriptor:ref.vaultItemDescriptor completionHandler:completionHandler];
 }
 
+
 -(void)fetchRendezvousWithMetadata:(QredoRendezvousMetadata *)metadata
                  completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
     [self fetchRendezvousWithRef:metadata.rendezvousRef completionHandler:completionHandler];
 }
+
 
 //private method
 -(void)fetchRendezvousWithVaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor
@@ -752,10 +790,12 @@ NSString *systemVaultKeychainArchiveIdentifier;
                }];
 }
 
+
 -(void)respondWithTag:(NSString *)tag
     completionHandler:(void (^)(QredoConversation *conversation,NSError *error))completionHandler {
     [self respondWithTag:tag trustedRootPems:nil crlPems:nil completionHandler:completionHandler];
 }
+
 
 -(void)respondWithTag:(NSString *)tag
       trustedRootPems:(NSArray *)trustedRootPems
@@ -778,6 +818,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                }];
     });
 }
+
 
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *conversationMetadata,BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler {
@@ -813,6 +854,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                        }];
 }
 
+
 -(void)fetchConversationWithRef:(QredoConversationRef *)conversationRef
               completionHandler:(void (^)(QredoConversation *conversation,NSError *error))completionHandler {
     QredoVault *vault = [self systemVault];
@@ -836,6 +878,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                }];
 }
 
+
 -(void)deleteConversationWithRef:(QredoConversationRef *)conversationRef
                completionHandler:(void (^)(NSError *error))completionHandler {
     [self fetchConversationWithRef:conversationRef
@@ -850,6 +893,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
          [conversation deleteConversationWithCompletionHandler:completionHandler];
      }];
 }
+
 
 -(void)activateRendezvousWithRef:(QredoRendezvousRef *)ref
                         duration:(long)duration
@@ -900,6 +944,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
      ];
 }
 
+
 -(void)deactivateRendezvousWithRef:(QredoRendezvousRef *)ref
                  completionHandler:(void (^)(NSError *))completionHandler {
     if (completionHandler == nil){
@@ -927,13 +972,16 @@ NSString *systemVaultKeychainArchiveIdentifier;
                }];
 }
 
+
 #pragma mark -
 #pragma mark Private Methods
 
 -(NSString *)deviceName {
     NSString *name = [[UIDevice currentDevice] name];
+    
     return (!name) ? @"iOS device" : name;
 }
+
 
 -(void)addDeviceToVaultWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *systemVault = [self systemVault];
@@ -953,12 +1001,14 @@ NSString *systemVaultKeychainArchiveIdentifier;
      }];
 }
 
+
 -(BOOL)saveStateWithError:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
     return [self saveSystemVaultKeychain:_keychain
         withKeychainWithKeychainArchiver:keychainArchiver
                                    error:error];
 }
+
 
 -(BOOL)loadStateWithError:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
@@ -974,6 +1024,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return NO;
 }
 
+
 -(BOOL)deleteCurrentDataWithError:(NSError **)error {
     if (!_systemVault || !_defaultVault){
         return YES;
@@ -985,6 +1036,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return [self deleteDefaultVaultKeychainWithError:error];
 }
 
+
 -(void)createSystemVaultWithUserCredentials:(QredoUserCredentials *)userCredentials completionHandler:(void (^)(NSError *error))completionHandler {
     _userCredentials = userCredentials;
     [self deleteCurrentDataWithError:nil];
@@ -994,6 +1046,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     [self addDeviceToVaultWithCompletionHandler:completionHandler];
 }
+
 
 -(void)initializeVaults {
     _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys withLocalIndex:NO];
@@ -1005,9 +1058,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
     }
 }
 
+
 -(id<QredoKeychainArchiver>)qredoKeychainArchiver {
     return [QredoKeychainArchivers defaultQredoKeychainArchiver];
 }
+
 
 -(void)createDefaultKeychain:(QredoUserCredentials *)userCredentials {
     QLFOperatorInfo *operatorInfo
@@ -1023,6 +1078,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     _keychain = keychain;
 }
+
 
 //+(void)changeUserCredentialsAppId:(NSString*)appId
 //userId:(NSString*)userId
@@ -1058,6 +1114,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return [keychainArchiver loadQredoKeychainWithIdentifier:systemVaultKeychainArchiveIdentifier error:error];
 }
 
+
 -(BOOL)      saveSystemVaultKeychain:(QredoKeychain *)keychain
     withKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
                                error:(NSError **)error {
@@ -1066,10 +1123,12 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                          error:error];
 }
 
+
 -(BOOL)hasSystemVaultKeychainWithKeychainArchiver:(id<QredoKeychainArchiver>)keychainArchiver
                                             error:(NSError **)error {
     return [keychainArchiver hasQredoKeychainWithIdentifier:systemVaultKeychainArchiveIdentifier error:error];
 }
+
 
 -(BOOL)setKeychain:(QredoKeychain *)keychain
              error:(NSError **)error {
@@ -1090,14 +1149,17 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return result;
 }
 
+
 -(BOOL)deleteDefaultVaultKeychainWithError:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
     return [self saveSystemVaultKeychain:nil withKeychainWithKeychainArchiver:keychainArchiver error:error];
 }
 
+
 -(BOOL)hasDefaultVaultKeychainWithError:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
     return [self hasSystemVaultKeychainWithKeychainArchiver:keychainArchiver error:error];
 }
+
 
 @end

@@ -11,6 +11,7 @@
     return [[QredoVaultItemDescriptor alloc] initWithSequenceId:sequenceId itemId:itemId];
 }
 
+
 -(instancetype)initWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId {
     self = [super init];
     
@@ -21,6 +22,7 @@
     
     return self;
 }
+
 
 -(BOOL)isEqual:(id)object {
     if (object == self)return YES;
@@ -33,9 +35,11 @@
     } else return [super isEqual:object];
 }
 
+
 -(NSUInteger)hash {
     return [_itemId hash] ^ [_sequenceId hash] ^ (NSUInteger)_sequenceValue;
 }
+
 
 //For private use only.
 +(instancetype)vaultItemDescriptorWithSequenceId:(QredoQUID *)sequenceId
@@ -43,6 +47,7 @@
                                           itemId:(QredoQUID *)itemId {
     return [[self alloc] initWithSequenceId:sequenceId sequenceValue:sequenceValue itemId:itemId];
 }
+
 
 //For private use only.
 -(instancetype)initWithSequenceId:(QredoQUID *)sequenceId
@@ -57,9 +62,11 @@
     return self;
 }
 
+
 -(id)copyWithZone:(NSZone *)zone {
     return self;
 }
+
 
 -(NSString *)description {
     NSString *desc = [NSString stringWithFormat:@"ItemId:   %@ \n"
@@ -68,5 +75,6 @@
     
     return desc;
 }
+
 
 @end

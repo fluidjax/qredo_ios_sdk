@@ -41,6 +41,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return _instance;
 }
 
+
 -(id)init {
     self = [super init];
     
@@ -50,6 +51,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     
     return self;
 }
+
 
 -(QLFAuthenticationCode *)authenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
                                         authenticationKey:(NSData *)authenticationKey
@@ -61,6 +63,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return [_crypto getAuthCodeWithKey:authenticationKey data:payload];
 }
 
+
 -(QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
                                                  authenticationKey:(NSData *)authenticationKey
                                                 responderPublicKey:(NSData *)responderPublicKey {
@@ -71,6 +74,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return [_crypto getAuthCodeWithKey:authenticationKey data:payload];
 }
 
+
 -(SecKeyRef)accessControlPublicKeyWithTag:(NSString *)tag {
     NSString *publicKeyId = [tag stringByAppendingString:@".public"];
     
@@ -78,6 +82,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     
     return keyReference;
 }
+
 
 +(NSData *)transformPublicKeyToData:(SecKeyRef)key {
     NSString *const keychainTag = @"X509_KEY";
@@ -110,6 +115,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return publicKeyData;
 }
 
+
 +(NSData *)transformPrivateKeyToData:(SecKeyRef)key {
     NSString *const keychainTag = @"TESTPRIVATEKEY";
     NSData *privateKeyData;
@@ -141,6 +147,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return privateKeyData;
 }
 
+
 -(SecKeyRef)accessControlPrivateKeyWithTag:(NSString *)tag {
     NSString *privateKeyId = [tag stringByAppendingString:@".private"];
     
@@ -148,6 +155,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     
     return keyReference;
 }
+
 
 -(QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString *)keyId {
     NSString *publicKeyId = [keyId stringByAppendingString:@".public"];
@@ -181,6 +189,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                      privKey:privateKeyLF];
 }
 
+
 -(QLFKeyPairLF *)newRequesterKeyPair {
     QredoKeyPair *keyPair = [_crypto generateDHKeyPair];
     
@@ -191,6 +200,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                      privKey:privateKeyLF];
 }
 
+
 -(QredoQUID *)hashWithKeyPair:(QredoKeyPair *)keyPair salt:(NSData *)salt {
     NSData *quidData = [_crypto getDiffieHellmanSecretWithSalt:salt
                                                   myPrivateKey:keyPair.privateKey
@@ -199,13 +209,16 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return [[QredoQUID alloc] initWithQUIDData:quidData];
 }
 
+
 -(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair {
     return [self hashWithKeyPair:keyPair salt:SALT_CONVERSATION_ID];
 }
 
+
 -(NSData *)signChallenge:(NSData *)challenge hashtag:(QLFRendezvousHashedTag *)hashtag nonce:(QLFNonce *)nonce privateKey:(QredoPrivateKey *)privateKey {
     return nil;
 }
+
 
 -(BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
                     authenticationKey:(NSData *)authenticationKey
@@ -250,6 +263,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return isValidAuthCode && isValidSignature;
 }
 
+
 -(id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                 fullTag:(NSString *)tag
                                                         trustedRootPems:(NSArray *)trustedRootPems
@@ -264,6 +278,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                                           signingHandler:signingHandler
                                                                    error:error];
 }
+
 
 -(id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthType:(QLFRendezvousAuthType *)authType
                                                        fullTag:(NSString *)tag
@@ -285,6 +300,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return rendezvousHelper;
 }
 
+
 -(NSData *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId {
     NSAssert(appId,@"AppID should not be nil");
     NSString *compositeTag = [NSString stringWithFormat:@"%@%@",appId,tag];
@@ -304,6 +320,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                   iterations:10000];
 }
 
+
 -(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey {
     NSAssert(masterKey,@"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
@@ -315,6 +332,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return [[QredoQUID alloc] initWithQUIDData:hashedTagData];
 }
 
+
 -(NSData *)encryptionKeyWithMasterKey:(NSData *)masterKey {
     NSAssert(masterKey,@"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
@@ -322,12 +340,14 @@ static const int QredoRendezvousMasterKeyLength = 32;
     return [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_ENC_SALT initialKeyMaterial:masterKey info:nil];
 }
 
+
 -(NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey {
     NSAssert(masterKey,@"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
     
     return [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_AUTH_SALT initialKeyMaterial:masterKey info:nil];
 }
+
 
 -(QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
                                               encryptionKey:(NSData *)encryptionKey
@@ -377,12 +397,14 @@ static const int QredoRendezvousMasterKeyLength = 32;
     }
 }
 
+
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                   encryptionKey:(NSData *)encryptionKey {
     NSData *iv = [QredoCrypto secureRandomWithSize:16];
     
     return [self encryptResponderInfo:responderInfo encryptionKey:encryptionKey iv:iv];
 }
+
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                   encryptionKey:(NSData *)encryptionKey
@@ -396,5 +418,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                          marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
                                       includeHeader:YES];
 }
+
 
 @end

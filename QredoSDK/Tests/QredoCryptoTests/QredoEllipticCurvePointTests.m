@@ -14,10 +14,12 @@
     //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
+
 
 -(void)testInit {
     NSData *data = [[NSData alloc] init];
@@ -28,11 +30,13 @@
     XCTAssertTrue([data isEqualToData:point.data],@"Point data differs.");
 }
 
+
 -(void)testInit_NilPointData {
     NSData *data = nil;
     
     XCTAssertThrowsSpecificNamed([[QredoEllipticCurvePoint alloc] initWithPointData:data],NSException,NSInvalidArgumentException,@"Nil data but NSInvalidArgumentException not thrown.");
 }
+
 
 -(void)testPointWithData {
     NSData *data = [[NSData alloc] init];
@@ -43,11 +47,13 @@
     XCTAssertTrue([data isEqualToData:point.data],@"Point data differs.");
 }
 
+
 -(void)testPointWithData_NilPointData {
     NSData *data = nil;
     
     XCTAssertThrowsSpecificNamed([QredoEllipticCurvePoint pointWithData:data],NSException,NSInvalidArgumentException,@"Nil data but NSInvalidArgumentException not thrown.");
 }
+
 
 -(void)testMult {
     //uint8_t bobPrivateKeyDataArray[] = {
@@ -88,5 +94,6 @@
     XCTAssertNotNil(multResult,@"Mult result should not be nil.");
     XCTAssertTrue([aliceMultBoxData isEqualToData:multResult.data],@"Mult result data differs from expected result.");
 }
+
 
 @end

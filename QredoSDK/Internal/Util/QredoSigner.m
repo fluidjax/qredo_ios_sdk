@@ -24,9 +24,11 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return self;
 }
 
+
 -(NSData *)signData:(NSData *)data error:(NSError **)error {
     return [[CryptoImplV1 sharedInstance] qredoED25519SignMessage:data withKey:_signingKey error:error];
 }
+
 
 @end
 
@@ -46,6 +48,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
     return self;
 }
 
+
 -(NSData *)signData:(NSData *)data error:(NSError **)error {
     @try {
         return [QredoCrypto rsaPssSignMessage:data saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:_keyRef];
@@ -59,5 +62,6 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
         return nil;
     }
 }
+
 
 @end

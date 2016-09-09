@@ -28,6 +28,7 @@ static int signum(long n);
     return NSOrderedSame;
 }
 
+
 @end
 
 static int signum(long n) {

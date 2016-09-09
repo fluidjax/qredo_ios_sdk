@@ -40,6 +40,7 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     return self;
 }
 
+
 -(void)incomingDate:(NSDate *)serverDate timeToRetrieve:(NSTimeInterval)timeToRetrieve {
     if (timeToRetrieve > MAX_TIME_TO_RETRIEVE){
         [self scheduleNextRetrieve];
@@ -66,11 +67,13 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     [self scheduleNextRetrieve];
 }
 
+
 -(void)scheduleNextRetrieve {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,10 * NSEC_PER_SEC),self.queue,^{
         [self retrieveDate];
     });
 }
+
 
 -(void)addNewValue:(NSTimeInterval)timeInterval retrieveTime:(NSTimeInterval)retrieveTime {
     SecureWebDateServerTimeStamp *swdsts = [[SecureWebDateServerTimeStamp alloc] init];
@@ -85,6 +88,7 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
         [self.serverHistory removeObjectAtIndex:0];
     }
 }
+
 
 -(NSDate *)guessTime {
     //get the
@@ -109,6 +113,7 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
     
     return nil;
 }
+
 
 -(void)retrieveDate {
     NSURL *URL = [[NSURL alloc] initWithString:self.urlString];
@@ -138,10 +143,11 @@ static const int MAX_TIME_TO_RETRIEVE = 5;
                                                   //NSLog(@"%@ - Server",serverDate);
                                                   //NSLog(@"%@ - End   ",[NSDate date]);
                                                   [self incomingDate:serverDate
-                                                      timeToRetrieve:timeToRetrieve];
+                                                     timeToRetrieve :timeToRetrieve];
                                               }
                                           }];
     [task resume];
 }
+
 
 @end

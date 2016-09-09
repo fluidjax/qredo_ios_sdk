@@ -14,10 +14,12 @@
     //Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
+
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
+
 
 -(void)testRandomClientId {
     QredoClientId *clientId1 = [QredoClientId randomClientId];
@@ -40,6 +42,7 @@
     XCTAssertFalse([clientId1Data isEqualToData:clientId2Data],@"Client ID data should be different");
 }
 
+
 -(void)testClientIdFromData {
     NSData *clientIdData = [@"1234567890123456" dataUsingEncoding:NSUTF8StringEncoding];
     
@@ -52,17 +55,20 @@
     XCTAssertTrue([actualClientIdData isEqualToData:clientIdData],@"Client ID data does not match that used to create the object");
 }
 
+
 -(void)testClientIdFromData_TooShortData {
     NSData *clientIdData = [@"123456789012345" dataUsingEncoding:NSUTF8StringEncoding];
     
     XCTAssertThrowsSpecificNamed([QredoClientId clientIdFromData:clientIdData],NSException,NSInvalidArgumentException,@"Passed invalid length data to clientIdFromData and  NSInvalidArgumentException not thrown.");
 }
 
+
 -(void)testClientIdFromData_TooLongData {
     NSData *clientIdData = [@"12345678901234567" dataUsingEncoding:NSUTF8StringEncoding];
     
     XCTAssertThrowsSpecificNamed([QredoClientId clientIdFromData:clientIdData],NSException,NSInvalidArgumentException,@"Passed invalid length data to clientIdFromData and  NSInvalidArgumentException not thrown.");
 }
+
 
 -(void)testGetData_RoundTrip {
     NSData *clientIdData = [@"1234567890123456" dataUsingEncoding:NSUTF8StringEncoding];
@@ -73,6 +79,7 @@
     
     XCTAssertTrue([actualClientIdData isEqualToData:clientIdData],@"Client ID data does not match that used to create the object");
 }
+
 
 -(void)testGetString {
     /*
@@ -97,6 +104,7 @@
     XCTAssertFalse([actualClientIdString containsString:@"+"],@"Safe string should not contain +");
     XCTAssertFalse([actualClientIdString containsString:@"/"],@"Safe string should not contain /");
 }
+
 
 -(void)testGetString_CheckTopicSafeChangesPlus {
     /*
@@ -123,6 +131,7 @@
     XCTAssertTrue([actualClientIdString containsString:@"-"],@"Safe string should have replaced + with -");
 }
 
+
 -(void)testGetString_CheckTopicSafeChangesSlash {
     /*
      
@@ -147,5 +156,6 @@
     XCTAssertFalse([actualClientIdString containsString:@"/"],@"Safe string should not contain /");
     XCTAssertTrue([actualClientIdString containsString:@"_"],@"Safe string should have replaced / with _");
 }
+
 
 @end

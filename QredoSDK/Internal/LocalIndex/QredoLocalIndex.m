@@ -50,20 +50,24 @@ IncomingMetadataBlock incomingMetadatBlock;
     return self;
 }
 
+
 -(void)setMaxCacheSize:(long long)cacheSize {
     [self.cacheInvalidator setMaxCacheSize:cacheSize];
     QredoLogDebug(@"Cache max size set to %lld",cacheSize);
 }
 
+
 -(long long)maxCacheSize {
     return self.maxCacheSize;
 }
+
 
 -(void)putMetadata:(QredoVaultItemMetadata *)newMetadata {
     if (self.enableMetadataCache == NO)return;
     
     [self putItemWithMetadata:newMetadata vaultItem:nil hasVaultItemValue:NO];
 }
+
 
 -(void)putVaultItem:(QredoVaultItem *)vaultItem metadata:(QredoVaultItemMetadata *)metadata {
     if (self.enableMetadataCache == NO)return;  //no caching at all
@@ -75,6 +79,7 @@ IncomingMetadataBlock incomingMetadatBlock;
         [self putItemWithMetadata:metadata vaultItem:vaultItem hasVaultItemValue:YES];
     }
 }
+
 
 -(QredoVaultItem *)getLatestVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     if (self.enableValueCache == NO)return nil;
@@ -116,6 +121,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     return retrievedVaultItem;
 }
 
+
 -(QredoVaultItemMetadata *)getLatestMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     if (self.enableMetadataCache == NO)return nil;
     
@@ -143,6 +149,7 @@ IncomingMetadataBlock incomingMetadatBlock;
      }];
     return retrievedMetadata;
 }
+
 
 -(QredoVaultItem *)getVaultItemFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     if (self.enableValueCache == NO)return nil;
@@ -188,6 +195,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     return retrievedVaultItem;
 }
 
+
 -(QredoVaultItemMetadata *)getMetadataFromIndexWithDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     if (self.enableMetadataCache == NO)return nil;
     
@@ -220,6 +228,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     return retrievedMetadata;
 }
 
+
 -(int)count {
     __block NSInteger count = 0;
     
@@ -236,6 +245,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     return (int)count;
 }
 
+
 -(void)purgeCoreData {
     [self.managedObjectContext
      performBlockAndWait:^{
@@ -249,6 +259,7 @@ IncomingMetadataBlock incomingMetadatBlock;
      }];
 }
 
+
 -(void)purge {
     [self purgeCoreData];
     [self.managedObjectContext
@@ -256,13 +267,14 @@ IncomingMetadataBlock incomingMetadatBlock;
          //rebuild the vault references after deleting the old version
          QredoLogDebug(@"Purge Index for vault:%@",self.qredoVault.vaultId);
          self.qredoIndexVault = [QredoIndexVault  fetchOrCreateWith:self.qredoVault
-                                              inManageObjectContext:self.managedObjectContext];
+                                           inManageObjectContext   :self.managedObjectContext];
          self.cacheInvalidator = [[QredoLocalIndexCacheInvalidation alloc]  initWithLocalIndex:self
                                                                                   maxCacheSize:QREDO_DEFAULT_INDEX_CACHE_SIZE];
          [self.qredoVault resetWatermark];
          [self saveAndWait];
      }];
 }
+
 
 -(void)purgeAll {
     [self.managedObjectContext
@@ -284,22 +296,27 @@ IncomingMetadataBlock incomingMetadatBlock;
      }];
 }
 
+
 -(void)enableSync {
     [self.qredoVault addVaultObserver:self];
 }
+
 
 -(void)enableSyncWithBlock:(IncomingMetadataBlock)block {
     incomingMetadatBlock = block;
     [self.qredoVault addVaultObserver:self];
 }
 
+
 -(void)removeIndexObserver {
     [self.qredoVault removeVaultObserver:self];
 }
 
+
 -(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     return [self deleteItem:vaultItemDescriptor error:nil];
 }
+
 
 -(BOOL)deleteItem:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError {
     __block BOOL hasDeletedObject = NO;
@@ -351,6 +368,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     return hasDeletedObject;
 }
 
+
 -(BOOL)deleteItemValue:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError {
     __block BOOL hasDeletedObject = NO;
     __block NSError *blockError = nil;
@@ -396,6 +414,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     return hasDeletedObject;
 }
 
+
 -(BOOL)hasValue:(QredoVaultItemDescriptor *)vaultItemDescriptor {
     QredoIndexVaultItemMetadata *qredoIndexVaultItemMetadata = [self getIndexVaultItemMetadataWith:vaultItemDescriptor error:nil];
     
@@ -403,6 +422,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     
     return NO;
 }
+
 
 -(QredoIndexVaultItemMetadata *)getIndexVaultItemMetadataWith:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError {
     __block BOOL hasDeletedObject = NO;
@@ -439,11 +459,13 @@ IncomingMetadataBlock incomingMetadatBlock;
     return returnValue;
 }
 
+
 -(void)dump:(NSString *)message {
     for (QredoIndexVaultItem *vaultItem in self.qredoIndexVault.vaultItems){
         NSLog(@"%@ Coredata Item:%@    Sequence:%lld",message,vaultItem.latest.descriptor.itemId,vaultItem.latest.descriptor.sequenceValueValue);
     }
 }
+
 
 #pragma mark -
 #pragma mark Private Methods
@@ -455,6 +477,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     [self.qredoVault removeVaultObserver:self];
 }
+
 
 -(void)addAppObservers {
     //Ensure coredata is saved on app resign/termination
@@ -468,12 +491,14 @@ IncomingMetadataBlock incomingMetadatBlock;
                                                object:nil];
 }
 
+
 -(void)initializeCoreData {
     QredoLogDebug(@"Initialize Coredata datastore");
     self.qredoLocalIndexDataStore = [[QredoLocalIndexDataStore alloc] initWithVault:self.qredoVault];
     self.managedObjectContext = self.qredoLocalIndexDataStore.managedObjectContext;
     return;
 }
+
 
 -(QredoIndexVaultItem *)addNewVaultItem:(QredoVaultItemMetadata *)newMetadata {
     //There is nothing in coredata so add this new item
@@ -484,6 +509,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     newIndexVaultItem.vault = self.qredoIndexVault;
     return newIndexVaultItem;
 }
+
 
 -(QredoIndexVaultItem *)getIndexVaultItemFor:(QredoVaultItemMetadata *)newMetadata {
     //primarily for testing
@@ -497,6 +523,7 @@ IncomingMetadataBlock incomingMetadatBlock;
      }];
     return indexedItem;
 }
+
 
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata vaultItem:(QredoVaultItem *)vaultItem hasVaultItemValue:(BOOL)hasVaultItemValue {
     [self.managedObjectContext
@@ -580,6 +607,7 @@ IncomingMetadataBlock incomingMetadatBlock;
      }];
 }
 
+
 -(void)enumerateSearch:(NSPredicate *)predicate withBlock:(void (^)(QredoVaultItemMetadata *vaultMetaData,BOOL *stop))block
      completionHandler:(void (^)(NSError *error))completionHandler {
     if (predicate == nil){
@@ -608,19 +636,23 @@ IncomingMetadataBlock incomingMetadatBlock;
      }];
 }
 
+
 -(void)save {
     QredoLogDebug(@"Index save to disk");
     [self.qredoLocalIndexDataStore saveContext:NO];
 }
+
 
 -(void)saveAndWait {
     QredoLogDebug(@"Index save to disk and wait");
     [self.qredoLocalIndexDataStore saveContext:YES];
 }
 
+
 -(long)persistentStoreFileSize {
     return [self.qredoLocalIndexDataStore persistentStoreFileSize];
 }
+
 
 -(void)enumerateQuery:(NSFetchRequest *)fetchRequest block:(void (^)(QredoVaultItemMetadata *,BOOL *))block completionHandler:(void (^)(NSError *))completionHandler {
     if (!fetchRequest){
@@ -666,6 +698,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     QredoLogInfo(@"Enumerate index complete");
 }
 
+
 #pragma mark -
 #pragma mark QredoVaultObserver Methods
 
@@ -678,9 +711,11 @@ IncomingMetadataBlock incomingMetadatBlock;
     if (incomingMetadatBlock)incomingMetadatBlock(itemMetadata);
 }
 
+
 -(void)qredoVault:(QredoVault *)client didFailWithError:(NSError *)error {
     //The index doesn't really care if the vault operation failed or not
 }
+
 
 #pragma mark -
 #pragma mark App Notifications
@@ -689,6 +724,7 @@ IncomingMetadataBlock incomingMetadatBlock;
     [self saveAndWait];
 }
 
+
 -(void)appWillTerminate:(NSNotification *)note {
     //ensure a more graceful termination of the App
     [self saveAndWait];
@@ -696,5 +732,6 @@ IncomingMetadataBlock incomingMetadatBlock;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
 }
+
 
 @end

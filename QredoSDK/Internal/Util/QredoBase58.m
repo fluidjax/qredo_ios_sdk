@@ -44,6 +44,7 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes,NSUInteger numbe
     });
 }
 
+
 +(NSString *)encodeData:(NSData *)data {
     if ([data length] < 1){
         return @"";
@@ -90,6 +91,7 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes,NSUInteger numbe
     NSData *resultData = [temp subdataWithRange:NSMakeRange(j,tempLength - j)];
     return [[NSString alloc] initWithData:resultData encoding:NSASCIIStringEncoding];
 }
+
 
 +(NSData *)decodeData:(NSString *)string error:(NSError **)error {
     if ([string length] < 1){
@@ -157,6 +159,7 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes,NSUInteger numbe
     return [NSData dataWithBytes:&tempBytes[resultStartIndex] length:tempLength - resultStartIndex];
 }
 
+
 @end
 
 
@@ -174,6 +177,7 @@ unsigned char qredoBase58Divmod58(unsigned char *numberBytes,NSUInteger numberLe
     return (unsigned char)remainder;
 }
 
+
 unsigned char qredoBase58Divmod256(unsigned char *number58Bytes,NSUInteger number58Length,NSUInteger startAt) {
     NSUInteger remainder = 0;
     
@@ -186,6 +190,7 @@ unsigned char qredoBase58Divmod256(unsigned char *number58Bytes,NSUInteger numbe
     
     return (unsigned char)remainder;
 }
+
 
 void updateErrorWithQredoBase58Error(NSError **error,QredoBase58Error errorCode,NSDictionary *userInfo) {
     if (error){

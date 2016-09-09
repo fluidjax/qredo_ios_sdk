@@ -22,12 +22,14 @@
     [QredoCrypto deleteAllKeysInAppleKeychain];
 }
 
+
 -(void)tearDown {
     //Should remove any existing keys after finishing
     [QredoCrypto deleteAllKeysInAppleKeychain];
     
     [super tearDown];
 }
+
 
 #pragma mark - Stack creation
 
@@ -47,6 +49,7 @@
     XCTAssertEqual(numberOfCertificates,expectedNumberOfCertificates);
 }
 
+
 -(void)testCreateStackFromPemCertificates_NilCert {
     NSArray *pemCertificates = nil;
     
@@ -58,6 +61,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate array and exception wasn't thrown.");
 }
+
 
 -(void)testCreateStackFromPemCertificates_NoCert {
     NSArray *pemCertificates = [NSArray array];
@@ -74,6 +78,7 @@
     int numberOfCertificates = sk_X509_num(certificateStack);
     XCTAssertEqual(numberOfCertificates,expectedNumberOfCertificates);
 }
+
 
 -(void)testCreateStackFromPemCertificates_MultipleCert {
     NSArray *pemCertificates = [NSArray arrayWithObjects:TestCertJavaSdkClient2048Pem,
@@ -94,6 +99,7 @@
     XCTAssertEqual(numberOfCertificates,expectedNumberOfCertificates);
 }
 
+
 -(void)testCreateStackFromPemCertificates_TestCertDHTestingLocalhostRootPem {
     NSArray *pemCertificates = [NSArray arrayWithObjects:TestCertDHTestingLocalhostRootPem,nil];
     
@@ -109,6 +115,7 @@
     int numberOfCertificates = sk_X509_num(certificateStack);
     XCTAssertEqual(numberOfCertificates,expectedNumberOfCertificates);
 }
+
 
 -(void)testCreateStackFromPemCertificates_TestCertDHTestingLocalhostClientPem {
     NSArray *pemCertificates = [NSArray arrayWithObjects:TestCertDHTestingLocalhostClientPem,nil];
@@ -126,6 +133,7 @@
     XCTAssertEqual(numberOfCertificates,expectedNumberOfCertificates);
 }
 
+
 -(void)testCreateStackFromPemCertificates_RsaSecurityIncRootCertPem {
     NSArray *pemCertificates = [NSArray arrayWithObjects:RsaSecurityIncRootCertPem,nil];
     
@@ -141,6 +149,7 @@
     int numberOfCertificates = sk_X509_num(certificateStack);
     XCTAssertEqual(numberOfCertificates,expectedNumberOfCertificates);
 }
+
 
 -(void)testCreateStackFromPemCertificates_SingleDSACert {
     NSArray *pemCertificates = [NSArray arrayWithObjects:TestCertJavaSdkClient2048DsaPem,nil];
@@ -158,6 +167,7 @@
     XCTAssertEqual(numberOfCertificates,expectedNumberOfCertificates);
 }
 
+
 #pragma mark - Certificate Validation
 
 -(void)testValidateSelfSignedCertificate_ValidSelfSigned {
@@ -172,6 +182,7 @@
     XCTAssertNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateSelfSignedCertificate_ValidSelfSigned_qredoTestCA {
     NSError *error = nil;
@@ -188,6 +199,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateSelfSignedCertificate_Invalid_EndCertificate {
     NSError *error = nil;
     NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
@@ -202,6 +214,7 @@
     XCTAssertNotNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateSelfSignedCertificate_Invalid_IntermediateCertificate {
     NSError *error = nil;
@@ -218,6 +231,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateSelfSignedCertificate_Invalid_EmptyCertificate {
     NSString *pemCertificate = @"";
     
@@ -233,6 +247,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateSelfSignedCertificate_Invalid_NilCertificate {
     NSString *pemCertificate = nil;
     
@@ -244,6 +259,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate and exception wasn't thrown.");
 }
+
 
 -(void)testValidateCertificate_ValidChainWithRoot {
     NSError *error = nil;
@@ -264,6 +280,7 @@
     XCTAssertNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_ValidChainWithRootAndCrls_qredoTestCA {
     NSError *error = nil;
@@ -305,6 +322,7 @@
     XCTAssertNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Valid_RevokedCertButPreRevokedCrl_qredoTestCA {
     NSError *error = nil;
@@ -348,6 +366,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Valid_ValidChainWithMultipleRootsIncCorrectRoot {
     NSError *error = nil;
     NSString *pemCertificate = [TestCertificates fetchPemForResource:@"clientCert3.4096.IntCA1cert" error:&error];
@@ -371,6 +390,7 @@
     XCTAssertNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Valid_ValidChainWithMultipleRootsIncCorrectRoot_qredoTestCA {
     NSError *error = nil;
@@ -407,6 +427,7 @@
     XCTAssertNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Invalid_RevokedClientCertificate_qredoTestCA {
     NSError *error = nil;
@@ -452,6 +473,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_MissingRootCrl_qredoTestCA {
     NSError *error = nil;
     
@@ -491,6 +513,7 @@
     XCTAssertNotNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Invalid_MissingIntermediateCrl_qredoTestCA {
     NSError *error = nil;
@@ -532,6 +555,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_MissingAllCrls_qredoTestCA {
     NSError *error = nil;
     
@@ -567,6 +591,7 @@
     XCTAssertNotNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Invalid_RevokedIntermediateCertificate_qredoTestCA {
     NSError *error = nil;
@@ -610,6 +635,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_NoChainNoRoot {
     NSError *error = nil;
     
@@ -632,6 +658,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_NilCertificate {
     NSString *pemCertificate = nil;
     NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem,nil];
@@ -649,6 +676,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate and exception wasn't thrown.");
 }
+
 
 -(void)testValidateCertificate_Invalid_NilChain {
     NSString *pemCertificate = TestCertJavaSdkClient4096Pem;
@@ -668,6 +696,7 @@
                                  @"Passed nil certificate chain and exception wasn't thrown.");
 }
 
+
 -(void)testValidateCertificate_Invalid_NilRoot {
     NSString *pemCertificate = TestCertJavaSdkClient4096Pem;
     NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem,nil];
@@ -685,6 +714,7 @@
                                  NSInvalidArgumentException,
                                  @"Passed nil certificate root and exception wasn't thrown.");
 }
+
 
 -(void)testValidateCertificate_ValidRsaAsCertAndRoot {
     NSString *pemCertificate = RsaSecurityIncRootCertPem;
@@ -704,6 +734,7 @@
     XCTAssertNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Valid_DHCertWithRoot {
     //http://security.stackexchange.com/a/82868/94521
@@ -757,6 +788,7 @@
     XCTAssertNotNil((__bridge id)validationResult);
 }
 
+
 -(void)testValidateCertificate_Valid_JavaSdkChain4096 {
     NSError *error = nil;
     
@@ -776,6 +808,7 @@
     XCTAssertNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Valid_JavaSdkChain2048 {
     NSError *error = nil;
@@ -798,6 +831,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_JavaSdkChain4096_MissingIntermediate {
     NSError *error = nil;
     
@@ -819,6 +853,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_JavaSdkChain2048_WrongIntermediate {
     NSError *error = nil;
     
@@ -838,6 +873,7 @@
     XCTAssertNotNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Invalid_JavaSdkChain2048_IncorrectRoot {
     NSError *error = nil;
@@ -859,6 +895,7 @@
     XCTAssertNotNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Invalid_TooShortKey_qredoTestCA {
     NSError *error = nil;
@@ -902,6 +939,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_TooLongKey_qredoTestCA {
     NSError *error = nil;
     
@@ -943,6 +981,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_CertIsRoot_NoRootsProvided {
     NSError *error = nil;
     
@@ -963,6 +1002,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_CertIsRoot_IncorrectRootProvided {
     NSString *pemCertificate = TestCertDHTestingLocalhostRootPem;
     NSArray *pemIntermediateCertificates = [NSArray array];
@@ -982,6 +1022,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_RootAndCertSwitched {
     NSString *pemCertificate = TestCertJavaSdkRootPem;
     NSArray *pemIntermediateCertificates = [NSArray arrayWithObjects:TestCertJavaSdkIntermediatePem,nil];
@@ -1000,6 +1041,7 @@
     XCTAssertNotNil(error);
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
+
 
 -(void)testValidateCertificate_Invalid_DsaCert {
     //OpenSSL has now been built without DSA support, so rather than explicitly detecting an unsupported (non-RSA)
@@ -1023,6 +1065,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 -(void)testValidateCertificate_Invalid_TooShortCertificateKey {
     NSError *error = nil;
     
@@ -1043,6 +1086,7 @@
     XCTAssertEqual(validationResult,expectedValidationResult);
 }
 
+
 #pragma mark - Certificate to SecKeyRef conversion
 
 -(void)testGetPublicKeyRefFromPemCertificate_Valid_qredoTestCA {
@@ -1061,6 +1105,7 @@
     XCTAssertTrue((__bridge id)publicKeyRef,@"Public Key processing failed.");
     XCTAssertNil(error);
 }
+
 
 #pragma mark -
 

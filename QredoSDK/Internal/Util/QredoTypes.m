@@ -20,7 +20,7 @@
                                        parseHeader:YES];
         
         _vaultItemDescriptor  = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:vaultItemRef.sequenceId
-                                                               itemId:vaultItemRef.itemId];
+                                                                                     itemId:vaultItemRef.itemId];
         
         _data = data;
         
@@ -29,6 +29,7 @@
         return nil;
     }
 }
+
 
 -(instancetype)initWithVaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor vault:(QredoVault *)vault {
     NSAssert(vaultItemDescriptor,@"Vault item descriptor can't be nil");
@@ -47,5 +48,6 @@
     
     return self;
 }
+
 
 @end

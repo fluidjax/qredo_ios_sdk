@@ -12,6 +12,7 @@
     return [[self alloc] initWithInputStream:inputStream];
 }
 
+
 -(instancetype)initWithInputStream:(NSInputStream *)inputStream {
     self = [super init];
     _lookAhead   = 0;
@@ -19,9 +20,11 @@
     return self;
 }
 
+
 -(bool)isExhausted {
     return ![_inputStream hasBytesAvailable];
 }
+
 
 -(QredoToken)lookAhead {
     if (![_inputStream hasBytesAvailable]){
@@ -40,6 +43,7 @@
         }
     }
 }
+
 
 -(QredoAtom *)readAtom {
     if (_lookAhead != 0){
@@ -83,6 +87,7 @@
     return data;
 }
 
+
 -(void)readLeftParen {
     switch (_lookAhead){
         case '(':
@@ -100,6 +105,7 @@
     }
     _lastToken = QredoTokenLParen;
 }
+
 
 -(void)readRightParen {
     switch (_lookAhead){
@@ -119,6 +125,7 @@
     _lastToken = QredoTokenRParen;
 }
 
+
 -(void)expectByte:(uint8_t)expectedByte {
     uint8_t inputByte;
     NSInteger bytesRead = [_inputStream read:&inputByte maxLength:1];
@@ -137,6 +144,7 @@
     }
 }
 
+
 @end
 
 #pragma mark - Qredo S-expression writer implementation
@@ -147,11 +155,13 @@
     return [[self alloc] initWithOutputStream:outputStream];
 }
 
+
 -(instancetype)initWithOutputStream:(NSOutputStream *)outputStream {
     self = [super init];
     _outputStream = outputStream;
     return self;
 }
+
 
 -(void)writeAtom:(NSData *)atom {
     //This nasty code turns a data length into a non-null-terminated ASCII string.
@@ -164,12 +174,15 @@
     [_outputStream write:(uint8_t *)[atom bytes] maxLength:[atom length]];
 }
 
+
 -(void)writeLeftParen {
     [_outputStream writeByte:'('];
 }
 
+
 -(void)writeRightParen {
     [_outputStream writeByte:')'];
 }
+
 
 @end

@@ -27,21 +27,26 @@
     return qredoIndexMetadata;
 }
 
+
 -(BOOL)hasSameSequenceIdAs:(QredoVaultItemMetadata *)metadata {
     return ([metadata.descriptor.sequenceId.data isEqualToData:self.descriptor.sequenceId]);
 }
+
 
 -(BOOL)hasSameSequenceNumberAs:(QredoVaultItemMetadata *)metadata {
     return (self.descriptor.sequenceValueValue == metadata.descriptor.sequenceValue);
 }
 
+
 -(BOOL)hasSmallerSequenceNumberThan:(QredoVaultItemMetadata *)metadata {
     return (self.descriptor.sequenceValueValue < metadata.descriptor.sequenceValue);
 }
 
+
 -(BOOL)hasCreatedTimeStampBefore:(QredoVaultItemMetadata *)metadata {
     return ([self.created timeIntervalSinceReferenceDate] < [metadata.created timeIntervalSinceReferenceDate]);
 }
+
 
 -(void)createSummaryValues:(NSDictionary *)summaryValues inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
     for (NSObject *key in [summaryValues allKeys]){
@@ -51,6 +56,7 @@
         qredoIndexSummaryValues.vaultMetadata = self;
     }
 }
+
 
 +(instancetype)createOrUpdateWith:(QredoVaultItemMetadata *)metadata inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
     QredoIndexVaultItemMetadata *indexedVaultItemMetadata;
@@ -69,6 +75,7 @@
     return indexedVaultItemMetadata;
 }
 
+
 -(QredoVaultItemMetadata *)buildQredoVaultItemMetadata {
     //constructs a new QredoItemMetadata from a cached QredoIndexItemMetadata, and all its sub objects
     QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:[self.descriptor buildQredoVaultItemDescriptor]
@@ -81,6 +88,7 @@
     return metadata;
 }
 
+
 -(NSDictionary *)buildSummaryDictionary {
     //loop through all the SummaryValues nsmanagedobjects and create a dictionary
     NSMutableDictionary *returnDictionary = [[NSMutableDictionary alloc] init];
@@ -92,5 +100,6 @@
     [returnDictionary setObject:self.created forKey:@"_created"];
     return returnDictionary;
 }
+
 
 @end

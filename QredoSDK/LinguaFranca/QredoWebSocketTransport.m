@@ -38,6 +38,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
     return canHandle;
 }
 
+
 -(instancetype)initWithServiceURL:(NSURL *)serviceURL {
     self = [super initWithServiceURL:serviceURL];
     
@@ -48,11 +49,13 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
     return self;
 }
 
+
 -(void)close {
     self.transportClosed = YES;
     self.shouldRestartWebSocket = NO;
     [self closeWebSocket];
 }
+
 
 #pragma mark
 
@@ -65,12 +68,14 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
     [_webSocket connect];
 }
 
+
 -(void)closeWebSocket {
     if (_webSocketOpen && _webSocket){
         [_webSocket disconnect];
         _webSocket.delegate = nil;
     }
 }
+
 
 -(void)restartWebSocketWithExponentialDelay {
     if (_isResartingWebSocket){
@@ -100,11 +105,13 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
     _reconectionDelay *= 2.0;
 }
 
+
 #pragma mark
 
 -(BOOL)supportsMultiResponse {
     return YES;
 }
+
 
 -(void)send:(NSData *)payload userData:(id)userData {
     if (!_webSocket){
@@ -137,11 +144,13 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
     [_webSocket writeData:payload];
 }
 
+
 -(void)setTransportClosed:(BOOL)transportClosed {
     if (_transportClosed == transportClosed)return;
     
     _transportClosed = transportClosed;
 }
+
 
 #pragma mark JFRWebSocketDelegate
 
@@ -149,10 +158,12 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
     [self notifyListenerOfResponseData:data userData:nil];
 }
 
+
 -(void)websocketDidConnect:(JFRWebSocket *)socket {
     self.reconectionDelay = 1.0;
     _webSocketOpen = YES;
 }
+
 
 -(void)websocketDidDisconnect:(JFRWebSocket *)socket error:(NSError *)error {
     _webSocketOpen = NO;
@@ -163,5 +174,6 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
         [self restartWebSocketWithExponentialDelay];
     }
 }
+
 
 @end

@@ -34,6 +34,7 @@
     return self;
 }
 
+
 -(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey {
     NSData *serializedMessage =
     [QredoPrimitiveMarshallers marshalObject:message
@@ -51,6 +52,7 @@
     return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:serialiedEncryptedMessage
                                                                               authCode:auth];
 }
+
 
 -(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError **)error {
     //verify auth code
@@ -93,39 +95,48 @@
     }
 }
 
+
 -(NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
                                    yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
     return [_crypto getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
 }
 
+
 -(NSData *)requesterInboundEncryptionKeyWithMasterKey:(NSData *)masterKey {
     return [QredoCrypto hkdfSha256WithSalt:SALT_REQUESTER_INBOUND_ENCKEY initialKeyMaterial:masterKey info:nil];
 }
+
 
 -(NSData *)requesterInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey {
     return [QredoCrypto hkdfSha256WithSalt:SALT_REQUESTER_INBOUND_AUTHKEY initialKeyMaterial:masterKey info:nil];
 }
 
+
 -(NSData *)requesterInboundQueueSeedWithMasterKey:(NSData *)masterKey {
     return [QredoCrypto hkdfSha256WithSalt:SALT_REQUESTER_INBOUND_QUEUE initialKeyMaterial:masterKey info:nil];
 }
+
 
 -(NSData *)responderInboundEncryptionKeyWithMasterKey:(NSData *)masterKey {
     return [QredoCrypto hkdfSha256WithSalt:SALT_RESPONDER_INBOUND_ENCKEY initialKeyMaterial:masterKey info:nil];
 }
 
+
 -(NSData *)responderInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey {
     return [QredoCrypto hkdfSha256WithSalt:SALT_RESPONDER_INBOUND_AUTHKEY initialKeyMaterial:masterKey info:nil];
 }
 
+
 -(NSData *)responderInboundQueueSeedWithMasterKey:(NSData *)masterKey {
     return [QredoCrypto hkdfSha256WithSalt:SALT_RESPONDER_INBOUND_QUEUE initialKeyMaterial:masterKey info:nil];
 }
+
 
 -(QredoQUID *)conversationIdWithMasterKey:(NSData *)masterKey {
     NSData *conversationIdData = [QredoCrypto hkdfSha256WithSalt:SALT_CONVERSATION_ID initialKeyMaterial:masterKey info:nil];
     
     return [[QredoQUID alloc] initWithQUIDData:conversationIdData];
 }
+
 
 @end

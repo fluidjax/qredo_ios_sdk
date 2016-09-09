@@ -67,6 +67,7 @@ static float delayInterval = 0.4;
     }
 }
 
+
 -(void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message {
     //Can't use XCTAsset, because this class is not QredoXCTestCase
     
@@ -97,6 +98,7 @@ static float delayInterval = 0.4;
     }
 }
 
+
 @end
 
 @interface ConversationTests () <QredoRendezvousObserver>{
@@ -117,6 +119,7 @@ static float delayInterval = 0.4;
     [self authoriseAnotherClient];
 }
 
+
 -(void)tearDown {
     [super tearDown];
     
@@ -124,6 +127,7 @@ static float delayInterval = 0.4;
     
     if (anotherClient)[anotherClient closeSession];
 }
+
 
 -(void)testEnumerateConversaionsOnClient {
     [self buildStack2];
@@ -140,6 +144,7 @@ static float delayInterval = 0.4;
     
     XCTAssert([self countConversationsOnClient:testClient1] == 1);
 }
+
 
 -(void)testEnumerateConversaionsOnRendezvous {
     [self buildStack2];
@@ -195,6 +200,7 @@ static float delayInterval = 0.4;
     NSLog(@"here");
 }
 
+
 -(void)authoriseClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
@@ -223,6 +229,7 @@ static float delayInterval = 0.4;
     //NSLog(@"Client1 default Vault %@",client.defaultVault.vaultId);
 }
 
+
 -(void)authoriseAnotherClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
@@ -250,10 +257,12 @@ static float delayInterval = 0.4;
     //NSLog(@"Another Client default Vault %@",anotherClient.defaultVault.vaultId);
 }
 
+
 -(void)closeClientSessions {
     [client closeSession];
     [anotherClient closeSession];
 }
+
 
 -(void)testConversationCreation {
     __block QredoRendezvous *rendezvous = nil;
@@ -279,6 +288,7 @@ static float delayInterval = 0.4;
                                      createExpectation = nil;
                                  }];
 }
+
 
 -(void)testRespondingToConversation {
     __block QredoRendezvous *rendezvous = nil;
@@ -347,6 +357,7 @@ static float delayInterval = 0.4;
     [client closeSession];
 }
 
+
 -(QredoRendezvous *)isolateCreateRendezvous {
     __block QredoRendezvous *rendezvous = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
@@ -375,6 +386,7 @@ static float delayInterval = 0.4;
     QredoLogDebug(@"Starting listening for rendezvous");
     return rendezvous;
 }
+
 
 -(QredoConversation *)isolateRespondToRendezvous:(NSString *)randomTag rendezvous:(QredoRendezvous *)rendezvous {
     //Responding to the rendezvous
@@ -406,6 +418,7 @@ static float delayInterval = 0.4;
                                  }];
     return responderConversation;
 }
+
 
 NSString *firstMessageText;
 NSString *secondMessageText;
@@ -446,6 +459,7 @@ NSString *secondMessageText;
     return hwm;
 }
 
+
 -(QredoConversationHighWatermark *)isolatePublishMessage2:(ConversationMessageListener *)listener responderConversation:(QredoConversation *)responderConversation {
     QredoConversationMessage *secondMessage = [[QredoConversationMessage alloc] initWithValue:[secondMessageText dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
     
@@ -482,6 +496,7 @@ NSString *secondMessageText;
     return hwm;
 }
 
+
 -(void)testOtherPartyHasLeft {
     [self buildStack1];
     
@@ -515,6 +530,7 @@ NSString *secondMessageText;
                                      XCTAssertNil(error);
                                  }];
 }
+
 
 -(void)testConversationWatermark {
     //static NSString *randomTag;
@@ -586,6 +602,7 @@ NSString *secondMessageText;
     [client closeSession];
 }
 
+
 -(int)countMessagesOnConversation:(QredoConversation *)conversation since:(QredoConversationHighWatermark *)hwm {
     __block int messageCount = 0;
     __block XCTestExpectation *scanMsgExpectation = [self expectationWithDescription:@"scanMsgExpectation"];
@@ -604,6 +621,7 @@ NSString *secondMessageText;
                                  }];
     return messageCount;
 }
+
 
 -(void)testConversation {
     //static NSString *randomTag;
@@ -661,6 +679,7 @@ NSString *secondMessageText;
     listener = nil;
 }
 
+
 //Rendezvous Delegate
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     @synchronized(self) {
@@ -676,6 +695,7 @@ NSString *secondMessageText;
         QLog(@"CALLS TO FULFILL RVU: %d",rvuFulfilledTimes.intValue);
     }
 }
+
 
 -(void)testConversationListenerReturnsSummaryValues {
     //this is to test if after an update using
@@ -765,6 +785,7 @@ NSString *secondMessageText;
     //rendezvousConversationIncoming = nil;
     //}];
 }
+
 
 -(void)testUpdatedConversationSummaryValues {
     [self buildStack1];
@@ -869,6 +890,7 @@ NSString *secondMessageText;
     
     XCTAssert(count == 1,@"More than one conversation item retrieved");
 }
+
 
 //- (void)testMetadataOfEphemeralConversation {
 //

@@ -21,6 +21,7 @@
     return self;
 }
 
+
 +(instancetype)instance {
     static QredoVaultSequenceCache *_instance = nil;
     
@@ -33,6 +34,7 @@
     return _instance;
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //QredoVaultSequenceCache Interface
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,6 +44,7 @@
     [_itemSequenceValues removeAllObjects];
 }
 
+
 -(QLFVaultSequenceValue)nextSequenceValue {
     @synchronized(self) {
         _sequenceValue = _sequenceValue + 1;
@@ -50,11 +53,13 @@
     }
 }
 
+
 -(void)saveSequenceValue:(QLFVaultSequenceValue)sequenceValue {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     
     [userDefaults setObject:@(_sequenceValue) forKey:@"QLFVaultSequenceValue"];
 }
+
 
 -(QLFVaultSequenceId *)sequenceIdForItem:(QLFVaultItemId *)itemId {
     NSString *quidString = _itemSequenceIds[[itemId QUIDString]];
@@ -64,9 +69,11 @@
     return [[QredoQUID alloc] initWithQUIDString:quidString];
 }
 
+
 -(QLFVaultSequenceValue)sequenceValueForItem:(QLFVaultItemId *)itemId {
     return [_itemSequenceValues[[itemId QUIDString]] longLongValue];
 }
+
 
 -(void)setItemSequence:(QLFVaultItemId *)itemId
             sequenceId:(QLFVaultSequenceId *)sequenceId
@@ -76,6 +83,7 @@
     [self saveItemSequenceIds];
     [self saveItemSequenceValues];
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //Storage Helpers
@@ -93,6 +101,7 @@
     }
 }
 
+
 -(NSMutableDictionary *)loadItemSequenceIds {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     
@@ -104,6 +113,7 @@
         return [maybeItemSequenceIds mutableCopy];
     }
 }
+
 
 -(NSMutableDictionary *)loadItemSequenceValues {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -117,11 +127,13 @@
     }
 }
 
+
 -(void)saveItemSequenceIds {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     
     [userDefaults setObject:_itemSequenceIds forKey:@"QredoVaultItemSequenceIds"];
 }
+
 
 -(void)saveItemSequenceValues {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -129,8 +141,10 @@
     [userDefaults setObject:_itemSequenceValues forKey:@"QredoVaultItemSequenceValues"];
 }
 
+
 -(QLFVaultSequenceValue)sequenceValue {
     return _sequenceValue;
 }
+
 
 @end

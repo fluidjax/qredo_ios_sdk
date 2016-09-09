@@ -25,6 +25,7 @@
     return qredoIndexVaultDescriptor;
 }
 
+
 +(instancetype)searchForDescriptor:(QredoVaultItemDescriptor *)descriptor inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"itemId==%@ && sequenceId==%@",descriptor.itemId,descriptor.sequenceId];
@@ -36,6 +37,7 @@
     return [results lastObject];
 }
 
+
 -(QredoVaultItemDescriptor *)buildQredoVaultItemDescriptor {
     QredoVaultItemDescriptor *qredoVaultItemDescriptor
     = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[[QredoQUID alloc]initWithQUIDData:self.sequenceId]
@@ -44,5 +46,6 @@
     
     return qredoVaultItemDescriptor;
 }
+
 
 @end

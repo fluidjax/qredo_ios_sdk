@@ -18,6 +18,7 @@ static inline NSData *createRandomData() {
     return [NSData dataWithBytesNoCopy:dataBytes length:dataLength];
 }
 
+
 static inline NSString *createRandomEncodedValue() {
     static const char kAlphabet[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     
@@ -34,6 +35,7 @@ static inline NSString *createRandomEncodedValue() {
     
     return encodedValue;
 }
+
 
 @interface Base58Tests :QredoXCTestCase
 
@@ -54,6 +56,7 @@ static inline NSString *createRandomEncodedValue() {
     XCTAssertEqualObjects(result,@"9");
 }
 
+
 -(void)test_0020_SimpleDecoding {
     NSError *error = nil;
     
@@ -70,6 +73,7 @@ static inline NSString *createRandomEncodedValue() {
     XCTAssertEqual(data8Bytes[0],8);
 }
 
+
 -(void)test_0025_DecodingWithBadChars {
     NSError *error = nil;
     
@@ -82,12 +86,14 @@ static inline NSString *createRandomEncodedValue() {
     XCTAssertEqual(error.code,QredoBase58ErrorUnrecognizedSymbol);
 }
 
+
 -(void)test_0026_DecodingWithBadCharsNoErrorPointer {
     NSString *stringWithBadChars = @"9-+";
     NSData *decodedData = [QredoBase58 decodeData:stringWithBadChars error:nil];
     
     XCTAssertNil(decodedData);
 }
+
 
 -(void)test_0030_EncodingAndDecoding {
     NSError *error = nil;
@@ -103,6 +109,7 @@ static inline NSString *createRandomEncodedValue() {
     XCTAssertNil(error);
     XCTAssertEqualObjects(decodedData,dataToEncode);
 }
+
 
 -(void)test_0040_EncodingAndDecodingWithZerosPadding {
     NSError *error = nil;
@@ -122,6 +129,7 @@ static inline NSString *createRandomEncodedValue() {
     XCTAssertNil(error);
     XCTAssertEqualObjects(decodedData,dataToEncode);
 }
+
 
 -(void)test_0050_EncodingAndDecodingRandomEquality {
     NSError *error = nil;
@@ -146,6 +154,7 @@ static inline NSString *createRandomEncodedValue() {
     }
 }
 
+
 -(void)test_0060_DecodingAndEncodingRandomEquality {
     NSError *error = nil;
     
@@ -169,6 +178,7 @@ static inline NSString *createRandomEncodedValue() {
     }
 }
 
+
 -(void)test_0070_EncodingRandomInequality {
     NSUInteger kIterations = 10000;
     
@@ -190,6 +200,7 @@ static inline NSString *createRandomEncodedValue() {
         }
     }
 }
+
 
 -(void)test_0080_DecodingRandomInequality {
     NSError *error = nil;
@@ -222,6 +233,7 @@ static inline NSString *createRandomEncodedValue() {
     }
 }
 
+
 -(void)test_0090_EncodingExpansionTest {
     NSUInteger kIterations = 10000;
     
@@ -249,5 +261,6 @@ static inline NSString *createRandomEncodedValue() {
         XCTAssertTrue(encodedString.length >= expectedMinLengthOfEncodedString);
     }
 }
+
 
 @end

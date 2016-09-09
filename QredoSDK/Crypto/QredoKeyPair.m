@@ -17,6 +17,7 @@
     return nil;
 }
 
+
 -(instancetype)initWithPublicKey:(QredoPublicKey *)publicKey privateKey:(QredoPrivateKey *)privateKey {
     if (!publicKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -39,5 +40,6 @@
     
     return self;
 }
+
 
 @end

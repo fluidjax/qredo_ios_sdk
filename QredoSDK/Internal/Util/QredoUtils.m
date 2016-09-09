@@ -11,17 +11,21 @@
     return [ReadableKeys rfc1751Key2Eng:key];
 }
 
+
 +(NSData *)rfc1751Eng2Key:(NSString *)english {
     return [ReadableKeys rfc1751Eng2Key:english];
 }
+
 
 +(NSData *)eng2Key:(NSString *)english {
     return [ReadableKeys eng2Key:english];
 }
 
+
 +(NSString *)key2Eng:(NSData *)key {
     return [ReadableKeys key2Eng:key];
 }
+
 
 +(NSData *)randomKey:(NSUInteger)size {
     size_t randomSize  = size;
@@ -38,6 +42,7 @@
     return ret;
 }
 
+
 +(NSString *)dataToHexString:(NSData *)data {
     if (!data)return nil;
     
@@ -51,6 +56,7 @@
     
     return [sbuf copy];
 }
+
 
 +(NSData *)hexStringToData:(NSString *)hexString {
     //Taken from http://stackoverflow.com/questions/7317860/converting-hex-nsstring-to-nsdata
@@ -76,6 +82,7 @@
     return [NSData dataWithData:commandToSend];
 }
 
+
 +(NSData *)randomBytesOfLength:(NSUInteger)size {
     NSMutableData *mutableData = [NSMutableData dataWithCapacity:size];
     
@@ -86,5 +93,6 @@
     
     return mutableData;
 }
+
 
 @end

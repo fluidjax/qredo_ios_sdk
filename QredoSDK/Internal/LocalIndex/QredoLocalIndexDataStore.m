@@ -28,6 +28,7 @@ static NSMutableDictionary *dataStoreDictionary;
     dataStoreDictionary = [[NSMutableDictionary alloc] init];
 }
 
+
 -(instancetype)initWithVault:(QredoVault *)vault {
     //we cache the Datastores so if a new client requests an already loaded data store, it returns the existing one - otherwise we have two clients access the sqllite separately
     QredoUserCredentials *userCredentials = vault.userCredentials;
@@ -47,6 +48,7 @@ static NSMutableDictionary *dataStoreDictionary;
     
     return self;
 }
+
 
 -(void)saveContext:(BOOL)wait {
     NSManagedObjectContext *moc = [self managedObjectContext];
@@ -76,6 +78,7 @@ static NSMutableDictionary *dataStoreDictionary;
     }
 }
 
+
 -(long)persistentStoreFileSize {
     long fileSize = 0;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -84,6 +87,7 @@ static NSMutableDictionary *dataStoreDictionary;
     fileSize = (long)[[fileManager attributesOfItemAtPath:path error:nil] fileSize];
     return fileSize;
 }
+
 
 +(NSURL *)storeURL:(QredoUserCredentials *)userCredentials {
     if (_storeUrl)return _storeUrl;
@@ -115,6 +119,7 @@ static NSMutableDictionary *dataStoreDictionary;
     return storeURL;
 }
 
+
 +(void)renameStoreFrom:(QredoUserCredentials *)fromUserCredentials to:(QredoUserCredentials *)toUserCredentials {
     NSURL *fromURL = [QredoLocalIndexDataStore storeURL:fromUserCredentials];
     NSURL *toURL = [QredoLocalIndexDataStore storeURL:toUserCredentials];
@@ -134,6 +139,7 @@ static NSMutableDictionary *dataStoreDictionary;
     }
 }
 
+
 +(void)deleteStore:(QredoUserCredentials *)userCredentials {
     NSError *error = nil;
     
@@ -143,6 +149,7 @@ static NSMutableDictionary *dataStoreDictionary;
         QredoLogError(@"Error deleting old index %@",error);
     }
 }
+
 
 -(void)buildStack:(QredoVault *)vault {
     //Model
@@ -191,5 +198,6 @@ static NSMutableDictionary *dataStoreDictionary;
     NSLog(@"Model URL: %@",modelURL);
 #endif
 }
+
 
 @end

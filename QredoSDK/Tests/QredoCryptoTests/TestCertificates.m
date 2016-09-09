@@ -1436,6 +1436,7 @@ unsigned char TestPubKeyJavaSdkClient4096Pkcs1DerArray[526] = {
     return path;
 }
 
+
 +(NSString *)fetchStringResource:(NSString *)resource ofType:(NSString *)type error:(NSError **)error {
     NSString *path = [self pathForResource:resource ofType:type];
     NSString *string = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:error];
@@ -1443,12 +1444,14 @@ unsigned char TestPubKeyJavaSdkClient4096Pkcs1DerArray[526] = {
     return string;
 }
 
+
 +(NSData *)fetchDataResource:(NSString *)resource ofType:(NSString *)type error:(NSError **)error {
     NSString *path = [self pathForResource:resource ofType:type];
     NSData *data = [NSData dataWithContentsOfFile:path options:0 error:error];
     
     return data;
 }
+
 
 +(NSString *)fetchPemCertificateFromResource:(NSString *)pemResource error:(NSError **)error {
     NSString *pemCertificate = nil;
@@ -1462,12 +1465,15 @@ unsigned char TestPubKeyJavaSdkClient4096Pkcs1DerArray[526] = {
     return pemCertificate;
 }
 
+
 +(NSString *)fetchPemForResource:(NSString *)pemResource error:(NSError **)error {
     return [self fetchStringResource:pemResource ofType:@"pem" error:error];
 }
 
+
 +(NSData *)fetchPfxForResource:(NSString *)pfxResource error:(NSError **)error {
     return [self fetchDataResource:pfxResource ofType:@"pfx" error:error];
 }
+
 
 @end

@@ -14,9 +14,11 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     return [[QredoQUID alloc] initWithQUIDData:[QredoQUID sha256:data]];
 }
 
+
 +(instancetype)QUID {
     return [[self alloc] init];
 }
+
 
 +(NSData *)sha256:(NSData *)data {
     if (!data){
@@ -32,6 +34,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     return hash;
 }
 
+
 -(instancetype)init {
     if ((self = [super init])){
         [[NSUUID UUID] getUUIDBytes:_quid];
@@ -40,6 +43,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     
     return self;
 }
+
 
 -(instancetype)initWithQUIDBytes:(const unsigned char *)bytes {
     if ((self = [super init])){
@@ -50,10 +54,12 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     return self;
 }
 
+
 -(instancetype)initWithQUIDData:(NSData *)data {
     NSAssert(data != nil,@"Data can not be nil");
     return [self initWithQUIDBytes:[data bytes]];
 }
+
 
 -(instancetype)initWithQUIDString:(NSString *)string {
     if (string.length != 64){
@@ -82,21 +88,26 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     return self;
 }
 
+
 -(void)getQUIDBytes:(unsigned char *)quid {
     memcpy(quid,_quid,sizeof(_quid));
 }
+
 
 -(int)bytesCount {
     return 32;
 }
 
+
 -(const unsigned char *)bytes {
     return _quid;
 }
 
+
 -(NSData *)data {
     return [NSData dataWithBytesNoCopy:_quid length:32 freeWhenDone:NO];
 }
+
 
 -(NSString *)QUIDString {
     char quid_string[65] = { 0 };
@@ -108,6 +119,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     return [NSString stringWithUTF8String:quid_string];
 }
 
+
 -(NSComparisonResult)compare:(QredoQUID *)object {
     uint8_t selfBytes[32];
     uint8_t theirBytes[32];
@@ -117,6 +129,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     int cmp = memcmp(selfBytes,theirBytes,sizeof(selfBytes));
     return (NSComparisonResult)((cmp > 0) - (cmp < 0));
 }
+
 
 #pragma mark - NSObject
 
@@ -132,6 +145,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     }
 }
 
+
 -(NSUInteger)hash {
     NSData *data = [[NSData alloc] initWithBytes:_quid length:sizeof(_quid)];
     NSUInteger hash = [data hash];
@@ -139,9 +153,11 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     return hash;
 }
 
+
 -(NSString *)description {
     return [NSString stringWithFormat:@"<%@>",[self QUIDString]];
 }
+
 
 #pragma mark - NSCopying
 
@@ -149,11 +165,13 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     return self;
 }
 
+
 #pragma mark - NSSecureCoding
 
 +(BOOL)supportsSecureCoding {
     return YES;
 }
+
 
 #pragma mark - NSCoding
 
@@ -172,6 +190,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
     }
 }
 
+
 -(void)encodeWithCoder:(NSCoder *)coder {
     if ([coder allowsKeyedCoding]){
         [coder encodeBytes:_quid length:sizeof(_quid) forKey:kQUIDEncodeKey];
@@ -179,5 +198,6 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-[QredoQUID encodeWithCoder]: QUIDs cannot be encoded by non-keyed coders" userInfo:nil];
     }
 }
+
 
 @end
