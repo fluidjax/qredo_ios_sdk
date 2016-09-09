@@ -414,6 +414,7 @@
 		83B6432F1C970E50003461F7 /* QredoQUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B6432E1C970E50003461F7 /* QredoQUID.h */; };
 		83B643301C970EA9003461F7 /* QredoQUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B6432E1C970E50003461F7 /* QredoQUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83B643311C970EB7003461F7 /* QredoQUID.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B6432E1C970E50003461F7 /* QredoQUID.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		83BE70001D82BC4B003B2C7E /* IMPORTANT in Resources */ = {isa = PBXBuildFile; fileRef = 83BE6FFF1D82BC4B003B2C7E /* IMPORTANT */; };
 		83C1F2311C7490550043015E /* QredoKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A1035291A389DFD002479D9 /* QredoKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83CF37BF1D7973290042EFC1 /* NSDictionary+Contains.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CF37BD1D7973290042EFC1 /* NSDictionary+Contains.m */; };
 		83CF37C01D7973290042EFC1 /* NSDictionary+Contains.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CF37BD1D7973290042EFC1 /* NSDictionary+Contains.m */; };
@@ -902,6 +903,7 @@
 		83B023451CE236ED00431532 /* QredoUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUtilsTests.m; sourceTree = "<group>"; };
 		83B6432C1C970E24003461F7 /* QredoLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoLogger.h; sourceTree = "<group>"; };
 		83B6432E1C970E50003461F7 /* QredoQUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoQUID.h; sourceTree = "<group>"; };
+		83BE6FFF1D82BC4B003B2C7E /* IMPORTANT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IMPORTANT; sourceTree = "<group>"; };
 		83C614E41C514A96002CCC5C /* QredoLoggerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoLoggerPrivate.h; sourceTree = "<group>"; };
 		83CF37BD1D7973290042EFC1 /* NSDictionary+Contains.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Contains.m"; sourceTree = "<group>"; };
 		83CF37BE1D7973290042EFC1 /* NSDictionary+Contains.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Contains.h"; sourceTree = "<group>"; };
@@ -1009,6 +1011,7 @@
 		0A16F88619C3566B00639779 = {
 			isa = PBXGroup;
 			children = (
+				83BE6FFF1D82BC4B003B2C7E /* IMPORTANT */,
 				83E8A37A1D7833B000900150 /* INSTALL */,
 				0A16F8BB19C3567E00639779 /* Qredo */,
 				0A16F8C119C358B400639779 /* Products */,
@@ -2133,6 +2136,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83BE70001D82BC4B003B2C7E /* IMPORTANT in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

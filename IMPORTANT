@@ -1,0 +1,17 @@
+TODO Before release!
+
+1) Insert licence file and file headers (search/replace "/* HEADER GOES HERE */")
+2) Create a new repo without any history
+    Dont include
+        Pods/
+        Podfile.lock
+        .git
+        IMPORTANT     - ie.This File
+
+
+3) Remove test credentials from MasterConfig.h (item 2 should have fixed any history)
+
+
+
+
+
