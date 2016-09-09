@@ -52,7 +52,7 @@ static int wsrch __ARGS((char *w,int low,int high));
     NSMutableData *res =  etobSimple(output,cpy);
     free(cpy);
     
-    if (!res)return nil;
+    if (!res) return nil;
     
     if (keyEndsWithZero){
         //strip last char
@@ -66,7 +66,7 @@ static int wsrch __ARGS((char *w,int low,int high));
 +(NSString *)key2Eng:(NSData *)key {
     int keyLen = (int)[key length];
     
-    if (keyLen < 1)return nil;
+    if (keyLen < 1) return nil;
     
     NSMutableData *dat = [[NSMutableData alloc] initWithCapacity:keyLen * 5];
     UInt8 j = 0x0000;
@@ -121,7 +121,7 @@ char *e;
     char b[inLen];
     char input[inLen + 2];
     
-    if (e == NULL)return nil;
+    if (e == NULL) return nil;
     
     strncpy(input,e,sizeof(input));
     memset(b,0,sizeof(b));
@@ -148,7 +148,7 @@ char *e;
         
         standard(word);
         
-        if ( (v = wsrch(word,low,high)) < 0)return 0;
+        if ( (v = wsrch(word,low,high)) < 0) return 0;
         
         insert(b,v,p,11);
     }
@@ -496,14 +496,14 @@ char *e;
     char b[9];
     char input[36];
     
-    if (e == NULL)return -1;
+    if (e == NULL) return -1;
     
     strncpy(input,e,sizeof(input));
     memset(b,0,sizeof(b));
     memset(out,0,8);
     
     for (i = 0,p = 0; i < 6; i++,p += 11){
-        if ((word = strtok(i == 0 ? input : NULL," ")) == NULL)return -1;
+        if ((word = strtok(i == 0 ? input : NULL," ")) == NULL) return -1;
         
         l = (int)strlen(word);
         
@@ -519,7 +519,7 @@ char *e;
         
         standard(word);
         
-        if ( (v = wsrch(word,low,high)) < 0)return 0;
+        if ( (v = wsrch(word,low,high)) < 0) return 0;
         
         insert(b,v,p,11);
     }
@@ -529,7 +529,7 @@ char *e;
         p += extract(b,i,2);
     }
     
-    if ( (p & 3) != extract(b,64,2) )return -2;
+    if ( (p & 3) != extract(b,64,2) ) return -2;
     
     memcpy(out,b,8);
     
@@ -583,19 +583,19 @@ int low,high;
     for (;; ){
         i = (low + high) / 2;
         
-        if ((j = strncmp(w,Wp[i],4)) == 0)return i;       /* Found it */
+        if ((j = strncmp(w,Wp[i],4)) == 0) return i;      /* Found it */
         
         if (high == low + 1){
             /* Avoid effects of integer truncation in /2 */
-            if (strncmp(w,Wp[high],4) == 0)return high;
+            if (strncmp(w,Wp[high],4) == 0) return high;
             else return -1;
         }
         
-        if (low >= high)return -1;
+        if (low >= high) return -1;
         
         /* I don't *think* this can happen...*/
-        if (j < 0)high = i; /* Search lower half */
-        else low = i;       /* Search upper half */
+        if (j < 0) high = i;  /* Search lower half */
+        else low = i;         /* Search upper half */
     }
 }
 static void insert(s,x,start,length)
@@ -633,15 +633,15 @@ static void standard(word)
 register char *word;
 {
     while (*word){
-        if (!isascii(*word))break;
+        if (!isascii(*word)) break;
         
-        if (islower(*word))*word = toupper(*word);
+        if (islower(*word)) *word = toupper(*word);
         
-        if (*word == '1')*word = 'L';
+        if (*word == '1') *word = 'L';
         
-        if (*word == '0')*word = 'O';
+        if (*word == '0') *word = 'O';
         
-        if (*word == '5')*word = 'S';
+        if (*word == '5') *word = 'S';
         
         word++;
     }
@@ -708,7 +708,7 @@ char *keyout,*eng;
         } else state++;
     }
     
-    if ( (rc = etob(keyout,eng)) != 1)return rc;
+    if ( (rc = etob(keyout,eng)) != 1) return rc;
     
     rc = etob(keyout + 8,eng2);
     

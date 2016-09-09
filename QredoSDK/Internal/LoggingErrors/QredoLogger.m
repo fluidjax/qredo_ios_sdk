@@ -106,7 +106,7 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
 
 +(BOOL)isClassOfInterest:(NSString *)className {
     for (NSString *searchClass in classRestrictionArray){
-        if ([searchClass isEqualToString:className])return YES;
+        if ([searchClass isEqualToString:className]) return YES;
     }
     
     return NO;
@@ -133,11 +133,11 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
 +(NSString *)extractClassName:(NSString *)prettyFunction {
     NSRange firstSquareBracket  = [prettyFunction rangeOfString:@"["];
     
-    if (firstSquareBracket.location == NSNotFound)return nil;
+    if (firstSquareBracket.location == NSNotFound) return nil;
     
     NSRange firstSpace  = [prettyFunction rangeOfString:@" "];
     
-    if (firstSpace.location == NSNotFound)return nil;
+    if (firstSpace.location == NSNotFound) return nil;
     
     NSRange classPos = NSMakeRange(firstSquareBracket.location + 1,firstSpace.location - firstSquareBracket.location - 1);
     NSString *className = [prettyFunction substringWithRange:classPos];
@@ -147,7 +147,7 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     
     NSRange firstParen  = [className rangeOfString:@"("];
     
-    if (firstParen.location == NSNotFound)return className;
+    if (firstParen.location == NSNotFound) return className;
     
     NSString *baseClassName = [className substringToIndex:firstParen.location];
     
@@ -294,4 +294,6 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
                                    reason:message
                                  userInfo:nil];
 }
+
+
 @end
