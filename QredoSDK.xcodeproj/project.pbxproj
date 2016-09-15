@@ -852,6 +852,7 @@
 		833B3E1A1C5287DF00C10A81 /* QredoXCTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoXCTestCase.h; sourceTree = "<group>"; };
 		833B3E1B1C5287DF00C10A81 /* QredoXCTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoXCTestCase.m; sourceTree = "<group>"; };
 		833FB2BE1C10A8CE0092E05A /* QredoLocalIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoLocalIndex.h; path = LocalIndex/QredoLocalIndex.h; sourceTree = "<group>"; };
+		8345DA6A1D8AD496001D6F35 /* TestHost.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestHost.entitlements; sourceTree = "<group>"; };
 		8346FF991CDB775500A4CEAE /* ReadableKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadableKeys.h; sourceTree = "<group>"; };
 		8346FF9A1CDB775500A4CEAE /* ReadableKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadableKeys.m; sourceTree = "<group>"; };
 		834FB42D1D75E354002B57BA /* QredoXDK-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QredoXDK-Info.plist"; sourceTree = "<group>"; };
@@ -1011,6 +1012,7 @@
 		0A16F88619C3566B00639779 = {
 			isa = PBXGroup;
 			children = (
+				8345DA6A1D8AD496001D6F35 /* TestHost.entitlements */,
 				83BE6FFF1D82BC4B003B2C7E /* IMPORTANT */,
 				83E8A37A1D7833B000900150 /* INSTALL */,
 				0A16F8BB19C3567E00639779 /* Qredo */,
@@ -1981,6 +1983,7 @@
 					66605C8F1BD6402E00EC8D6C = {
 						CreatedOnToolsVersion = 7.0.1;
 						DevelopmentTeam = 9W2U485A5G;
+						TestTargetID = 837120951C7B16FE00648E47;
 					};
 					66F7752B1BD6538D00F01A2C = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -1988,6 +1991,15 @@
 					};
 					837120951C7B16FE00648E47 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = 9W2U485A5G;
+						SystemCapabilities = {
+							com.apple.DataProtection = {
+								enabled = 0;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -3047,8 +3059,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z234F47NRS;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -3100,8 +3113,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z234F47NRS;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -3270,6 +3284,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "QredoSDKTests/QredoSDKTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost.app/TestHost";
 			};
 			name = Debug;
 		};
@@ -3318,6 +3333,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "QredoSDKTests/QredoSDKTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost.app/TestHost";
 			};
 			name = Release;
 		};
@@ -3423,9 +3439,11 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = TestHost.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9W2U485A5G;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3473,9 +3491,11 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = TestHost.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9W2U485A5G;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (

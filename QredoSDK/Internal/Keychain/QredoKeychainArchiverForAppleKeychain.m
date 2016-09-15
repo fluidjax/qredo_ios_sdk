@@ -84,6 +84,8 @@ static NSString *kCurrentService = @"CurrentService";
     [addDictionary setObject:identifier forKey:(__bridge id < NSCopying >)kSecAttrAccount];
     [addDictionary setObject:keychainData forKey:(__bridge id < NSCopying >)(kSecValueData)];
     
+    
+
     OSStatus sanityCheck = SecItemAdd((__bridge CFDictionaryRef)(addDictionary),NULL);
     
     if (sanityCheck != noErr){
