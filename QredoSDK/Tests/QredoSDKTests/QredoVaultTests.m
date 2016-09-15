@@ -122,6 +122,7 @@
     
     savedPassword = [self randomPassword];
     
+    
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
                               userId:k_TEST_USERID

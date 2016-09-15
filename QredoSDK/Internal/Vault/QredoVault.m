@@ -42,6 +42,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     QredoUpdateListener *_updateListener;
     QredoLocalIndex *_localIndex;
     QredoUserCredentials *_userCredentials;
+    QredoVaultType _vaultType;
 }
 
 -(void)saveState;
@@ -52,6 +53,11 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 
 @implementation QredoVault (Private)
 
+
+
+-(BOOL)isSystemVault{
+    return _vaultType==QredoSystemVault;
+}
 
 -(QredoUserCredentials *)userCredentials {
     return _userCredentials;
@@ -93,13 +99,16 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 }
 
 
--(instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing {
+-(instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing vaultType:(QredoVaultType)vaultType{
     if (!client || !vaultKeys)return nil;
     
     self = [super init];
     
+    
+    
     if (!self)return nil;
     
+    _vaultType = vaultType;
     _vaultKeys = vaultKeys;
     _userCredentials = client.userCredentials;
     _highwatermark = QredoVaultHighWatermarkOrigin;
@@ -546,7 +555,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 }
 
 
--(void)    updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
+-(void)updateItem:(QredoVaultItemMetadata *)metadata value:(NSData *)value
     completionHandler:(void (^)(QredoVaultItemMetadata *newItemMetadata,NSError *error))completionHandler {
     //this builds a new vault item metadata removes the SequenceValue (Num & Value) from the descriptor
     //QredoQUID *itemID = metadata.descriptor.itemId;
@@ -698,6 +707,8 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
         _highwatermark = nil;
     }
 }
+
+
 
 
 #pragma mark -

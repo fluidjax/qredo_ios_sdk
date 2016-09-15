@@ -705,6 +705,11 @@ IncomingMetadataBlock incomingMetadatBlock;
 -(void)qredoVault:(QredoVault *)client didReceiveVaultItemMetadata:(QredoVaultItemMetadata *)itemMetadata {
     if (!itemMetadata || !client)return;
     
+    
+    if ([self.qredoVault isSystemVault]){
+        NSLog(@"Incoming vault item on system vault");
+    }
+    
     QredoLogDebug(@"Cache/Index received incoming Vault item");
     [self putMetadata:itemMetadata];
     

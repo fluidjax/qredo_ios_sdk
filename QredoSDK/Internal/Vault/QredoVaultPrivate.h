@@ -66,7 +66,7 @@ typedef NS_ENUM (NSInteger,QredoVaultItemOrigin) {
 -(QredoQUID *)sequenceId;
 -(QredoVaultKeys *)vaultKeys;
 
--(instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing;
+-(instancetype)initWithClient:(QredoClient *)client vaultKeys:(QredoVaultKeys *)vaultKeys withLocalIndex:(BOOL)localIndexing vaultType:(QredoVaultType)vaultType;
 
 -(QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type;
 -(QredoQUID *)itemIdWithQUID:(QredoQUID *)quid type:(NSString *)type;
@@ -90,5 +90,5 @@ typedef NS_ENUM (NSInteger,QredoVaultItemOrigin) {
 -(void)addMetadataIndexObserver:(IncomingMetadataBlock)block;
 -(void)removeMetadataIndexObserver;
 -(void)removeAllObservers;
-
+-(BOOL)isSystemVault;
 @end

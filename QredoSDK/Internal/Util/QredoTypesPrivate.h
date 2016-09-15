@@ -10,6 +10,11 @@ typedef NS_ENUM (NSUInteger,QredoRendezvousAuthenticationType) {
     QredoRendezvousAuthenticationTypeAnonymous = 0,                 //The tag is just a string, has no cryptographic identity
 };
 
+typedef NS_ENUM (NSUInteger,QredoVaultType) {
+    QredoDefaultVault,
+    QredoSystemVault
+};
+
 typedef NSData * (^signDataBlock)(NSData *data,QredoRendezvousAuthenticationType authenticationType);
 
 @property QredoVaultItemDescriptor *vaultItemDescriptor;

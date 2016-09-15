@@ -3,6 +3,7 @@
 #import "Qredo.h"
 #import "QredoPrivate.h"
 #import "QredoVault.h"
+#import "QredoTypesPrivate.h"
 #import "QredoVaultPrivate.h"
 #import "QredoRendezvousPrivate.h"
 #import "QredoConversationPrivate.h"
@@ -1049,12 +1050,16 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(void)initializeVaults {
-    _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys withLocalIndex:NO];
+    _systemVault = [[QredoVault alloc] initWithClient:self      vaultKeys:_keychain.systemVaultKeys withLocalIndex:YES  vaultType:QredoSystemVault];
+    //add an observer to this system vault
+    [_systemVault addMetadataIndexObserver];
+    
+    
     
     if (self.clientOptions.disableMetadataIndex == YES){
-        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:NO];
+        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:NO  vaultType:QredoDefaultVault];
     } else {
-        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:YES];
+        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:YES vaultType:QredoDefaultVault];
     }
 }
 
@@ -1079,33 +1084,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     _keychain = keychain;
 }
 
-
-//+(void)changeUserCredentialsAppId:(NSString*)appId
-//userId:(NSString*)userId
-//fromUserSecure:(NSString*)fromUserSecure
-//toUserSecure:(NSString*)toUserSecure
-//error:(NSError **)error{
-//
-//
-//QredoUserCredentials *sourceCredentials        = [[QredoUserCredentials alloc] initWithAppId:appId
-//userId:userId
-//userSecure:fromUserSecure];
-//QredoUserCredentials *destinationCredentials   = [[QredoUserCredentials alloc] initWithAppId:appId
-//userId:userId
-//userSecure:toUserSecure];
-//
-//id<QredoKeychainArchiver>keychainArchiver = [QredoKeychainArchivers defaultQredoKeychainArchiver];
-//
-////get exsiting keychain
-//QredoKeychain * keyChain = [keychainArchiver loadQredoKeychainWithIdentifier:[sourceCredentials createSystemVaultIdentifier] error:error];
-//if (*error)return;
-//
-//[QredoLocalIndexDataStore renameStoreFrom:sourceCredentials to:destinationCredentials];
-//
-////save to  new iD
-//[keychainArchiver saveQredoKeychain:keyChain  withIdentifier:[destinationCredentials createSystemVaultIdentifier] error:error];
-//
-//}
 
 
 
