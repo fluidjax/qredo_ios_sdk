@@ -1051,14 +1051,13 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 -(void)initializeVaults {
     _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys withLocalIndex:YES  vaultType:QredoSystemVault];
-    //add an observer to this system vault
+    //always add an observer for the system vault
     [_systemVault addMetadataIndexObserver];
     
-    if (self.clientOptions.disableMetadataIndex == YES){
-        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:NO  vaultType:QredoDefaultVault];
-    } else {
-        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:YES vaultType:QredoDefaultVault];
-    }
+    
+    
+    BOOL withIndex = !self.clientOptions.disableMetadataIndex;
+    _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:withIndex  vaultType:QredoDefaultVault];
 }
 
 
