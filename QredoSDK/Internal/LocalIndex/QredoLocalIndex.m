@@ -425,7 +425,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 -(QredoIndexVaultItemMetadata *)getIndexVaultItemMetadataWith:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError {
-    __block BOOL hasDeletedObject = NO;
     __block NSError *blockError = nil;
     __block QredoIndexVaultItemMetadata *returnValue = nil;
     
@@ -526,7 +525,7 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 -(void)putItemWithMetadata:(QredoVaultItemMetadata *)newMetadata vaultItem:(QredoVaultItem *)vaultItem hasVaultItemValue:(BOOL)hasVaultItemValue {
-    [self.managedObjectContext
+    [self.managedObjectContext 
      performBlockAndWait:^{
          QredoIndexVaultItem *indexedItem = [QredoIndexVaultItem  searchForIndexByItemIdWithDescriptor:newMetadata.descriptor
                                                                                  inManageObjectContext:self.managedObjectContext];

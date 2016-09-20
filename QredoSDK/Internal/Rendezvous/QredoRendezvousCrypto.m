@@ -304,15 +304,8 @@ static const int QredoRendezvousMasterKeyLength = 32;
 -(NSData *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId {
     NSAssert(appId,@"AppID should not be nil");
     NSString *compositeTag = [NSString stringWithFormat:@"%@%@",appId,tag];
-    
     NSData *tagData = [compositeTag dataUsingEncoding:NSUTF8StringEncoding];
-    
-    if ([QredoAuthenticatedRendezvousTag isAuthenticatedTag:tag]){
-        return [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
-                            initialKeyMaterial:tagData
-                                          info:nil];
-    }
-    
+
     return [QredoCrypto pbkdf2Sha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
                        bypassSaltLengthCheck:NO
                                 passwordData:tagData

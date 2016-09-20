@@ -206,7 +206,7 @@ static float delayInterval = 0.4;
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -235,7 +235,7 @@ static float delayInterval = 0.4;
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {

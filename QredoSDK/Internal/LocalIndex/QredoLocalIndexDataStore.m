@@ -54,6 +54,7 @@ static NSMutableDictionary *dataStoreDictionary;
 }
 
 
+
 -(void)saveContext:(BOOL)wait {
     NSManagedObjectContext *moc = [self managedObjectContext];
     NSManagedObjectContext *privateContext = [self privateContext];
@@ -191,7 +192,7 @@ static NSMutableDictionary *dataStoreDictionary;
     NSAssert(psc,@"MetadataIndex: Failed to initialize NSPersistentStoreCoordinator: %@\n%@",[error localizedDescription],[error userInfo]);
     
     NSManagedObjectContext *moc = nil;
-    moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [moc setParentContext:privateMoc];
     
     [self setPrivateContext:privateMoc];
@@ -203,6 +204,7 @@ static NSMutableDictionary *dataStoreDictionary;
     NSLog(@"Model URL: %@",modelURL);
 #endif
 }
+
 
 
 @end

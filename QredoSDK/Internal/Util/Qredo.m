@@ -1050,11 +1050,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(void)initializeVaults {
-    _systemVault = [[QredoVault alloc] initWithClient:self      vaultKeys:_keychain.systemVaultKeys withLocalIndex:YES  vaultType:QredoSystemVault];
+    _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys withLocalIndex:YES  vaultType:QredoSystemVault];
     //add an observer to this system vault
     [_systemVault addMetadataIndexObserver];
-    
-    
     
     if (self.clientOptions.disableMetadataIndex == YES){
         _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:NO  vaultType:QredoDefaultVault];
