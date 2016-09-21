@@ -4,7 +4,7 @@
 <dict>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)test</string>
+		<string>$(AppIdentifierPrefix)testhost.qredo.com</string>
 	</array>
 </dict>
 </plist>
