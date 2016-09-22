@@ -1072,7 +1072,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                               completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
                                                   if (newItemMetadata){
                                                       self.metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
-                                                                                                                                          vault:self.client.systemVault];
+                                                                                                                    vault:self.client.systemVault];
                                                       self.metadata.summaryValues = newValues;
                                                   }
                                                   
