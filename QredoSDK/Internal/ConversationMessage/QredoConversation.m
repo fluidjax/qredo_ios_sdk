@@ -1032,13 +1032,15 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         newValues = [[NSMutableDictionary alloc] init];
     }
     
+    
     NSDictionary *vaultSummaryValues = @{
                                          kQredoConversationVaultItemLabelAmOwner:[NSNumber numberWithBool:_metadata.amRendezvousOwner],
                                          kQredoConversationVaultItemLabelId:_metadata.conversationId,
                                          kQredoConversationVaultItemLabelTag:_metadata.rendezvousTag,
                                          kQredoConversationVaultItemLabelType:_metadata.type,
                                          kQredoConversationVaultItemLabelAuthStatus:[NSNumber numberWithInteger:_metadata.authStatus],
-                                         @"_v":[NSNumber numberWithLongLong:_metadata.conversationRef.vaultItemDescriptor.sequenceValue]
+                                         @"_vSeqValue":[NSNumber numberWithLongLong:_metadata.conversationRef.vaultItemDescriptor.sequenceValue],
+                                         @"_vSeqId":[_metadata.conversationRef.vaultItemDescriptor.sequenceId QUIDString]
                                          };
     
     [newValues addEntriesFromDictionary:vaultSummaryValues];

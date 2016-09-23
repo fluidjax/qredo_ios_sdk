@@ -712,8 +712,14 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata,BOOL *stop))block
                   completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *vault = [self systemVault];
-    
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
+
+    //CSM changed to use the INDEX!
+     NSPredicate *predicate = [NSPredicate predicateWithFormat:@" 1 == 1 "];
+    [vault enumerateIndexUsingPredicate:predicate withBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+    //[vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
+        
+        
+        
         if ([vaultItemMetadata.dataType
              isEqualToString:kQredoRendezvousVaultItemType]){
             NSString *tag = [vaultItemMetadata.summaryValues

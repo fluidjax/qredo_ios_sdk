@@ -71,6 +71,9 @@
                <Test
                   Identifier = "QredoVaultUpdateMQTTTests">
                </Test>
+               <Test
+                  Identifier = "SystemVaultTests">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

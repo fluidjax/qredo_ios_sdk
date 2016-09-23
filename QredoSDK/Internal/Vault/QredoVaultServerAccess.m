@@ -18,6 +18,10 @@
 #import "QredoErrorCodes.h"
 #import "QredoLoggerPrivate.h"
 
+NSString *const QredoVaultItemMetadataItemVersionValue = @"_vSeqValue";
+NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
+
+
 @interface QredoVaultServerAccess ()
 {
     QredoClient *_client;
@@ -363,14 +367,16 @@
              });
              
              QredoVaultItemDescriptor *(^backpointerOfMetadata)(QredoVaultItemMetadata *metadata) = ^QredoVaultItemDescriptor *(QredoVaultItemMetadata *metadata) {
-                 NSNumber *previousSequenceValue = metadata.summaryValues[@"_v"];
+                 NSNumber *previousSequenceValue = metadata.summaryValues[QredoVaultItemMetadataItemVersionValue];
+                 QredoQUID *previousSequenceId =metadata.summaryValues[QredoVaultItemMetadataItemVersionId];
+                 
                  
                  if (!previousSequenceValue){
                      return nil;
                  }
                  
                  QredoVaultItemDescriptor *descriptor = metadata.descriptor;
-                 return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:descriptor.sequenceId
+                 return [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:previousSequenceId
                                                                       sequenceValue:[previousSequenceValue longValue]
                                                                              itemId:descriptor.itemId];
              };

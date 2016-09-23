@@ -24,7 +24,9 @@ NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
 NSString *const QredoVaultOptionHighWatermark = @"com.qredo.vault.hwm";
 static NSString *const QredoVaultItemMetadataItemDateCreated = @"_created";
 static NSString *const QredoVaultItemMetadataItemDateModified = @"_modified";
-static NSString *const QredoVaultItemMetadataItemVersion = @"_v";
+static NSString *const QredoVaultItemMetadataItemVersionValue = @"_vSeqValue";
+static NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
+
 static NSString *const QredoVaultItemMetadataItemTypeRendezvous = @"com.qredo.rendezvous";
 static NSString *const QredoVaultItemMetadataItemTypeConversation = @"com.qredo.conversation";
 static const double kQredoVaultUpdateInterval = 1.0; //seconds
@@ -237,7 +239,9 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     //TO DO- keep the date in the summary values for now since it's used elsewhere
     newSummaryValues[QredoVaultItemMetadataItemDateModified] = created;
-    newSummaryValues[QredoVaultItemMetadataItemVersion] = @(metadata.descriptor.sequenceValue);
+    newSummaryValues[QredoVaultItemMetadataItemVersionValue] = @(metadata.descriptor.sequenceValue);
+    newSummaryValues[QredoVaultItemMetadataItemVersionId] = metadata.descriptor.sequenceId;
+    
     
     [self putUpdateOrDeleteItem:vaultItem
                          itemId:itemId
@@ -606,6 +610,9 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 }
 
 
+
+
+
 -(void)enumerateVaultItemsUsingBlock:(void (^)(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop))block
                                since:(QredoVaultHighWatermark *)sinceWatermark
                    completionHandler:(void (^)(NSError *error))completionHandler {
@@ -624,7 +631,8 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     //TO DO modified not used any more so shouldn't be in summary values ?
     NSDate *created = [QredoNetworkTime dateTime];
     newSummaryValues[QredoVaultItemMetadataItemDateModified] = created;
-    newSummaryValues[QredoVaultItemMetadataItemVersion] = @(metadata.descriptor.sequenceValue); //TODO: not working for int64
+    newSummaryValues[QredoVaultItemMetadataItemVersionValue] = @(metadata.descriptor.sequenceValue);
+    newSummaryValues[QredoVaultItemMetadataItemVersionId] = metadata.descriptor.sequenceId;
     [self putUpdateOrDeleteItem:[QredoVaultItem vaultItemWithMetadata:metadata
                                                                 value:[NSData data]]
                          itemId:itemId
