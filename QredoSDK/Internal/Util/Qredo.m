@@ -832,8 +832,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoVault *vault = [self systemVault];
     
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
-        if ([vaultItemMetadata.dataType
-             isEqualToString:kQredoConversationVaultItemType]){
+        if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]){
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
             //TODO: DH - populate metadata.rendezvousMetadata
             metadata.conversationId = [vaultItemMetadata.summaryValues

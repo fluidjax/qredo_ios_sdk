@@ -9,6 +9,8 @@
 /** Used internally */
 -(instancetype)initWithData:(NSData *)data;
 
+
+
 /** Developers should not rely on the contents of this property */
 @property (readonly) NSData *data;
 
