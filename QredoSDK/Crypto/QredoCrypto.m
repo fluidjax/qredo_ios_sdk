@@ -52,10 +52,8 @@
     GUARD(key,
           @"Key argument is nil");
     
-    GUARDF((key.length == kCCKeySizeAES128) ||
-           (key.length == kCCKeySizeAES192) ||
-           (key.length == kCCKeySizeAES256),
-           @"Key must be %ld bytes.", key.length);
+    GUARDF(key.length == kCCKeySizeAES128,
+           @"Key must be %d bytes.", kCCKeySizeAES128);
     
     GUARDF((iv && iv.length == kCCBlockSizeAES128),
            @"IV must be %d bytes.", kCCBlockSizeAES128);
