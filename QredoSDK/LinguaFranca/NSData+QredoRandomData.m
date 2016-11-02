@@ -7,7 +7,10 @@
 +(NSData *)dataWithRandomBytesOfLength:(NSUInteger)length {
     uint8_t *randomBytes = malloc(length);
     
-    SecRandomCopyBytes(kSecRandomDefault,length,randomBytes);
+    int err = SecRandomCopyBytes(kSecRandomDefault,length,randomBytes);
+    if (err){
+        NSAssert(true, @"Critical error creating random number");
+    }
     
     NSData *randomData = [NSData dataWithBytesNoCopy:randomBytes
                                               length:length

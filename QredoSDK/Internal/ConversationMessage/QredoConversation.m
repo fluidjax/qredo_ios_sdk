@@ -308,17 +308,19 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
             return;
         }
         
-        NSData *qrvValue = [QredoPrimitiveMarshallers       marshalObject:[QLFCtrl qRV]
-                                                               marshaller:[QLFCtrl marshaller]];
         
-        QredoConversationMessage *joinedControlMessage = [[QredoConversationMessage alloc]       initWithValue:qrvValue
-                                                                                                      dataType:kQredoConversationMessageTypeControl
-                                                                                                 summaryValues:nil];
-        
-        [self       publishMessage:joinedControlMessage
-               completionHandler  :^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
-                   if (completionHandler) completionHandler(error);
-               }];
+//Control messages removed
+//        NSData *qrvValue = [QredoPrimitiveMarshallers       marshalObject:[QLFCtrl qRV]
+//                                                               marshaller:[QLFCtrl marshaller]];
+//        
+//        QredoConversationMessage *joinedControlMessage = [[QredoConversationMessage alloc]       initWithValue:qrvValue
+//                                                                                                      dataType:kQredoConversationMessageTypeControl
+//                                                                                                 summaryValues:nil];
+//        
+//        [self       publishMessage:joinedControlMessage
+//               completionHandler  :^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
+//                   if (completionHandler) completionHandler(error);
+//               }];
     }];
 }
 
@@ -970,19 +972,21 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 -(void)deleteConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRT]
                                                      marshaller:[QLFCtrl marshaller]];
+
     
-    QredoConversationMessage *leftControlMessage = [[QredoConversationMessage alloc] initWithValue:qrtValue
-                                                                                          dataType:kQredoConversationMessageTypeControl
-                                                                                     summaryValues:nil];
+//Control messages removed
+//    QredoConversationMessage *leftControlMessage = [[QredoConversationMessage alloc] initWithValue:qrtValue
+//                                                                                          dataType:kQredoConversationMessageTypeControl
+//                                                                                     summaryValues:nil];
+//    
+//    [self  publishMessage:leftControlMessage
+//        completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
+//            if (error){
+//                if (completionHandler) completionHandler(error);
+//                
+//                return;
+//            }
     
-    [self  publishMessage:leftControlMessage
-        completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
-            if (error){
-                if (completionHandler) completionHandler(error);
-                
-                return;
-            }
-            
             _deleted = YES;
             
             QredoVault *vault = [_client systemVault];
@@ -1002,7 +1006,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                             if (completionHandler) completionHandler(error);
                                         }];
                                 }];
-        }];
+//        }];
 }
 
 
