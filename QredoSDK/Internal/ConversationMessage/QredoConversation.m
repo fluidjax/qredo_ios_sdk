@@ -304,9 +304,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     [self storeWithCompletionHandler:^(NSError *error) {
         if (error){
             if (completionHandler) completionHandler(error);
-            
             return;
         }
+        if (completionHandler) completionHandler(error);
         
         
 //Control messages removed
