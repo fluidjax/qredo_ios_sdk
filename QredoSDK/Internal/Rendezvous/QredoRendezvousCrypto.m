@@ -314,7 +314,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
     }
     
     return [QredoCrypto pbkdf2Sha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
-                       bypassSaltLengthCheck:NO
                                 passwordData:tagData
                       requiredKeyLengthBytes:32
                                   iterations:10000];

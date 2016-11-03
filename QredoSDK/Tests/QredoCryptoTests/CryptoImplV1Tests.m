@@ -21,7 +21,7 @@
     NSData *salt      = [@"saltSALTsaltSALTsaltSALTsaltSALTsalt" dataUsingEncoding:NSASCIIStringEncoding];
     int rounds = 4096;
     int keyLen = 40;
-    NSData *key = [QredoCrypto pbkdf2Sha256WithSalt:salt bypassSaltLengthCheck:NO passwordData:password requiredKeyLengthBytes:keyLen iterations:rounds];
+    NSData *key = [QredoCrypto pbkdf2Sha256WithSalt:salt passwordData:password requiredKeyLengthBytes:keyLen iterations:rounds];
     
     NSData *expectedResult = [NSData dataWithHexString:@"348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9"];
     

@@ -21,146 +21,76 @@
 #define RSA_OAEP_MIN_PADDING_LENGTH  42
 #define RSA_PKCS1_MIN_PADDING_LENGTH 11
 
+#define GUARD(condition, msg) \
+    if (!(condition)) { \
+        @throw [NSException exceptionWithName:NSInvalidArgumentException \
+                            reason:[NSString stringWithFormat:(msg)] \
+                            userInfo:nil]; \
+    }
+
+#define GUARDF(condition, fmt, ...) \
+    if (!(condition)) { \
+        @throw [NSException exceptionWithName:NSInvalidArgumentException \
+                            reason:[NSString stringWithFormat:(fmt), __VA_ARGS__] \
+                            userInfo:nil]; \
+    }
+
 +(NSData *)decryptData:(NSData *)data withAesKey:(NSData *)key iv:(NSData *)iv {
-    const void *ivBytes = nil;
-    
-    if (!key){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if ((key.length !=  kCCKeySizeAES128) &&
-        (key.length !=  kCCKeySizeAES192) &&
-        (key.length !=  kCCKeySizeAES256)){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key provided (%lu bytes, %lu bits) is not a valid length for AES",(unsigned long)key.length,(unsigned long)key.length * 8]
-                                     userInfo:nil];
-    }
-    
-    //IV is optional (will default to zeroes if not present), but if present, should be correct length for AES
-    if (iv){
-        if (iv.length !=  kCCBlockSizeAES128){
-            @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                           reason:[NSString stringWithFormat:@"IV provided (%lu bytes, %lu bits) is not a valid length for AES. AES required %d bytes.",(unsigned long)key.length,(unsigned long)key.length * 8,kCCBlockSizeAES128]
-                                         userInfo:nil];
-        }
-        
-        ivBytes = iv.bytes;
-    }
-    
-    //Note: In CommonCrypto you don't appear to explicitly specify AES128 or AES256, it's inferred by the key length provided.
-    
-    //For a decrypt, the data will not exceed the input data length (may be shorter if padding is used)
-    NSMutableData *buffer = [NSMutableData dataWithLength:(data.length)];
-    size_t outputDataLength;
-    
-    CCCryptorStatus result = CCCrypt(kCCDecrypt, //operation
-                                     kCCAlgorithmAES, //algorithm
-                                     kCCOptionPKCS7Padding, //options
-                                     key.bytes, //key
-                                     key.length, //keyLength
-                                     ivBytes, //iv
-                                     data.bytes, //dataIn
-                                     data.length, //dataInLength
-                                     buffer.mutableBytes, //dataOut
-                                     buffer.length, //dataOutAvailable
-                                     &outputDataLength); //dataOutMoved
-    
-    NSData *outputData = nil;
-    
-    if (result == kCCSuccess){
-        //If padded, the output buffer may be larger than the decrypted data, so only return the correct portion
-        NSRange outputRange = NSMakeRange(0,outputDataLength);
-        outputData = [buffer subdataWithRange:outputRange];
-    }
-    
-    return outputData;
+    return [self aes:data withOperation:kCCDecrypt key:key iv:iv];
 }
 
 
 +(NSData *)encryptData:(NSData *)data withAesKey:(NSData *)key iv:(NSData *)iv {
-    const void *ivBytes = nil;
+    return [self aes:data withOperation:kCCEncrypt key:key iv:iv];
+}
+
++(NSData *)aes:(NSData *)input withOperation:(CCOperation)operation key:(NSData *)key iv:(NSData *)iv {
     
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
+    GUARD(input,
+          @"Input argument is nil.");
+    
+    GUARD(key,
+          @"Key argument is nil");
+    
+    GUARDF(key.length == kCCKeySizeAES128,
+           @"Key must be %d bytes.", kCCKeySizeAES128);
+    
+    GUARDF((iv && iv.length == kCCBlockSizeAES128),
+           @"IV must be %d bytes.", kCCBlockSizeAES128);
+    
+    NSMutableData *output = [NSMutableData dataWithLength:(input.length + kCCBlockSizeAES128)];
+    size_t outputLength;
+    CCCryptorStatus result = CCCrypt(operation,
+                                     kCCAlgorithmAES,
+                                     kCCOptionPKCS7Padding,
+                                     key.bytes,
+                                     key.length,
+                                     iv.bytes,
+                                     input.bytes,
+                                     input.length,
+                                     output.mutableBytes,
+                                     output.length,
+                                     &outputLength);
+    
+    if (result == kCCSuccess) {
+        return [output subdataWithRange:NSMakeRange(0, outputLength)];
+    } else {
+        return nil;
     }
     
-    if (!key){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if ((key.length !=  kCCKeySizeAES128) &&
-        (key.length !=  kCCKeySizeAES192) &&
-        (key.length !=  kCCKeySizeAES256)){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key provided (%lu bytes, %lu bits) is not a valid length for AES",(unsigned long)key.length,(unsigned long)key.length * 8]
-                                     userInfo:nil];
-    }
-    
-    //IV is optional (will default to zeroes if not present), but if present, should be correct length for AES
-    if (iv){
-        if (iv.length !=  kCCBlockSizeAES128){
-            @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                           reason:[NSString stringWithFormat:@"IV provided (%lu bytes, %lu bits) is not a valid length for AES. AES required %d bytes.",(unsigned long)iv.length,(unsigned long)iv.length * 8,kCCBlockSizeAES128]
-                                         userInfo:nil];
-        }
-        
-        ivBytes = iv.bytes;
-    }
-    
-    //Note: In CommonCrypto you don't appear to explicitly specify AES128 or AES256, it's inferred by the key length provided.
-    
-    //For an encrypt with padding, the data will always exceed the input data length, by up to the block size
-    NSMutableData *buffer = [NSMutableData dataWithLength:(data.length + kCCBlockSizeAES128)];
-    size_t outputDataLength;
-    
-    CCCryptorStatus result = CCCrypt(kCCEncrypt, //operation
-                                     kCCAlgorithmAES, //algorithm
-                                     kCCOptionPKCS7Padding, //options
-                                     key.bytes, //key
-                                     key.length, //keyLength
-                                     ivBytes, //iv
-                                     data.bytes, //dataIn
-                                     data.length, //dataInLength
-                                     buffer.mutableBytes, //dataOut
-                                     buffer.length, //dataOutAvailable
-                                     &outputDataLength); //dataOutMoved
-    
-    NSData *outputData = nil;
-    
-    if (result == kCCSuccess){
-        //The encrypted data may be shorter than the output buffer, so only return the correct portion
-        NSRange outputRange = NSMakeRange(0,outputDataLength);
-        outputData = [buffer subdataWithRange:outputRange];
-    }
-    
-    return outputData;
 }
 
 
 +(NSData *)hkdfExtractSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
-    //Salt is optional
+
+    GUARD(ikm, @"IKM must be specified.")
     
-    //IKM is mandatory, but no sign of a minimum length
-    if (!ikm){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Initial Key Material (IKM) argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    //HKDF-Extract gets a pseudo random key (PRK) from the initial key material (IKM)
-    //PRK = HMAC-Hash(salt, IKM)
-    
-    //The PRK size is the same size as the underlying hash function output
+    // HKDF-Extract gets a pseudo random key (PRK) from the initial key material (IKM)
+    // PRK = HMAC-Hash(salt, IKM)
     NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     
-    //HKDF-Extract
-    CCHmac(kCCHmacAlgSHA256,salt.bytes,salt.length,ikm.bytes,ikm.length,prk.mutableBytes);
+    // HKDF-Extract
+    CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
     
     return prk;
 }
@@ -194,7 +124,6 @@
 
 
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info {
-    //default to CC_SHA256_DIGEST_LENGTH
     return [self hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:CC_SHA256_DIGEST_LENGTH];
 }
 
@@ -202,102 +131,71 @@
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
     NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:salt initialKeyMaterial:ikm];
     NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:prk info:info outputLength:outputLength];
-    
     return okm;
 }
 
-
-+(NSData *)pbkdf2Sha256WithSalt:(NSData *)salt bypassSaltLengthCheck:(BOOL)bypassSaltLengthCheck passwordData:(NSData *)passwordData requiredKeyLengthBytes:(NSUInteger)requiredKeyLengthBytes iterations:(NSUInteger)iterations {
-    //Salt should be at least 8 bytes
-    if (!salt){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Salt argument is nil"]
-                                     userInfo:nil];
-    }
++(NSData *)pbkdf2Sha256WithSalt:(NSData *)salt passwordData:(NSData *)passwordData requiredKeyLengthBytes:(NSUInteger)requiredKeyLengthBytes iterations:(NSUInteger)iterations {
     
-    if (bypassSaltLengthCheck){
-        QredoLogError(@"Caller opted to bypass RFC recommended minimum salt length check.  Should only be used for testing.  Provided salt length is %lu.  Minimum recommended salt length is %d.",(unsigned long)salt.length,PBKDF2_MIN_SALT_LENGTH);
-    } else if (salt.length < PBKDF2_MIN_SALT_LENGTH){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Salt length (%lu) is less than minimum RFC recommended value (%d)",(unsigned long)salt.length,PBKDF2_MIN_SALT_LENGTH]
-                                     userInfo:nil];
-    }
+    GUARD(salt,
+          @"Salt argument must be specified.");
     
-    if (!passwordData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Password data argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARDF(salt.length >= PBKDF2_MIN_SALT_LENGTH,
+           @"Salt length must be at least minimum RFC-recommended value (%d bytes).",
+           PBKDF2_MIN_SALT_LENGTH);
     
-    //Iterations argument to CCKeyDerivationPBKDF is a uint, so prevent values more than UINT_MAX
-    if (iterations > UINT_MAX){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Iterations value (%lu) exceeds max allowed value (%u)",(unsigned long)iterations,UINT_MAX]
-                                     userInfo:nil];
-    }
+    GUARD(passwordData,
+          @"Password argument must be specified.");
     
-    //Iterations should also be more than 0
-    if (iterations == 0){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Iterations value cannot be zero"]
-                                     userInfo:nil];
-    }
+    GUARDF(iterations < UINT_MAX,
+           @"Iterations value must be lower than max allowed value (%lu).", iterations);
     
-    //Derived key length must be a positive integer
-    if (requiredKeyLengthBytes <= 0){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Required key length must be a positive integer"]
-                                     userInfo:nil];
-    }
+    GUARD(iterations > 0,
+          @"Iterations value cannot be zero.");
+    
+    GUARD(requiredKeyLengthBytes > 0,
+          @"Required key length must be a positive integer.");
     
     NSMutableData *derivedKey = [NSMutableData dataWithLength:requiredKeyLengthBytes];
     
-    int result = CCKeyDerivationPBKDF(kCCPBKDF2, //algorithm
-                                      passwordData.bytes, //password
-                                      passwordData.length, //passwordLen
-                                      salt.bytes, //salt
-                                      salt.length, //saltLen
-                                      kCCPRFHmacAlgSHA256, //prf - pseudo random function
-                                      (uint)iterations, //rounds
-                                      derivedKey.mutableBytes, //derivedKey
-                                      derivedKey.length); //derivedKeyLen
+    int result = CCKeyDerivationPBKDF(kCCPBKDF2,
+                                      passwordData.bytes,
+                                      passwordData.length,
+                                      salt.bytes,
+                                      salt.length,
+                                      kCCPRFHmacAlgSHA256,
+                                      (uint)iterations,
+                                      derivedKey.mutableBytes,
+                                      derivedKey.length);
     
-    if (result != kCCSuccess){
-        //Derivation failed, ensure no valid data is returned
-        derivedKey = nil;
+    if (result == kCCSuccess){
+        return derivedKey;
+    } else {
+        return nil;
     }
     
-    return derivedKey;
 }
 
 
 +(NSData *)generateHmacSha256ForData:(NSData *)data length:(NSUInteger)length key:(NSData *)key {
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
     
-    if (length > data.length){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Length argument (%lu) exceeds data length (%lu)",(unsigned long)length,(unsigned long)data.length]
-                                     userInfo:nil];
-    }
+    GUARD(data,
+          @"Data argument must be specified.");
     
-    if (!key){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARDF(length <= data.length,
+           @"Length argument (%lu) exceeds data length (%lu)",
+           (unsigned long)length, (unsigned long)data.length);
+    
+    GUARD(key,
+          @"Key argument must be specified.");
     
     //Key can be 0 length (it will be zero padded to hash length)
     
     //The MAC size is the same size as the underlying hash function output
     NSMutableData *mac = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    
     CCHmac(kCCHmacAlgSHA256,key.bytes,key.length,data.bytes,length,mac.mutableBytes);
     
     return mac;
+    
 }
 
 
@@ -453,41 +351,23 @@
     
     QredoSecKeyRefPair *keyRefPair = nil;
     
-    if (lengthBits <= 0){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Required key length must be a positive integer"]
-                                     userInfo:nil];
-    }
+    GUARD(lengthBits > 0,
+          @"Required key length must be a positive integer.");
     
-    if (!publicKeyIdentifier){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public key identifier argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(publicKeyIdentifier,
+          @"Public key identifier argument is nil");
     
-    if ([publicKeyIdentifier isEqualToString:@""]){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public key identifier must not be empty string"]
-                                     userInfo:nil];
-    }
+    GUARD(![publicKeyIdentifier isEqualToString:@""],
+          @"Public key identifier must not be empty string.");
     
-    if (!privateKeyIdentifier){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Private key identifier argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(privateKeyIdentifier,
+          @"Private key identifier argument is nil.");
     
-    if ([privateKeyIdentifier isEqualToString:@""]){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Private key identifier must not be empty string"]
-                                     userInfo:nil];
-    }
+    GUARD(![privateKeyIdentifier isEqualToString:@""],
+        @"Private key identifier must not be empty string.");
     
-    if ([publicKeyIdentifier isEqualToString:privateKeyIdentifier]){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public and Private key identifiers must be different"]
-                                     userInfo:nil];
-    }
+    GUARD(![publicKeyIdentifier isEqualToString:privateKeyIdentifier],
+          @"Public and Private key identifiers must be different.");
     
     OSStatus status = noErr;
     
@@ -535,11 +415,9 @@
 
 //TODO: DH - create unit test for this? (check also if any other SecKeyRef methods added are tested)
 +(SecCertificateRef)getCertificateRefFromIdentityRef:(SecIdentityRef)identityRef {
-    if (!identityRef){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Identity ref argument is nil"]
-                                     userInfo:nil];
-    }
+    
+    GUARD(identityRef,
+          @"Identity ref argument is nil");
     
     SecCertificateRef certificateRef = nil;
     
@@ -555,11 +433,9 @@
 
 
 +(SecKeyRef)getPrivateKeyRefFromIdentityRef:(SecIdentityRef)identityRef {
-    if (!identityRef){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Identity ref argument is nil"]
-                                     userInfo:nil];
-    }
+    
+    GUARD(identityRef,
+          @"Identity ref argument is nil");
     
     SecKeyRef privateKeyRef = nil;
     
@@ -575,11 +451,9 @@
 
 
 +(SecKeyRef)getPublicKeyRefFromIdentityRef:(SecIdentityRef)identityRef {
-    if (!identityRef){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Identity ref argument is nil"]
-                                     userInfo:nil];
-    }
+
+    GUARD(identityRef,
+          @"Identity ref argument is nil");
     
     /*
      Unfortunately, iOS does not provide a way to get the public key directly from a SecCertificateRef.
@@ -640,11 +514,9 @@
 
 //TODO: DH - Add unit tests for getPublicKeyRefFromEvaluatedTrustRef
 +(SecKeyRef)getPublicKeyRefFromEvaluatedTrustRef:(SecTrustRef)trustRef {
-    if (!trustRef){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Trust ref argument is nil"]
-                                     userInfo:nil];
-    }
+
+    GUARD(trustRef,
+          @"Trust ref argument is nil");
     
     SecKeyRef publicKeyRef = SecTrustCopyPublicKey(trustRef);
     
@@ -657,11 +529,9 @@
 
 
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier {
-    if (!keyIdentifier){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key identifier argument is nil"]
-                                     userInfo:nil];
-    }
+    
+    GUARD(keyIdentifier,
+          @"Key identifier argument is nil");
     
     NSMutableDictionary *queryKey = [[NSMutableDictionary alloc] init];
     
@@ -699,11 +569,9 @@
 
 
 +(NSData *)getKeyDataForIdentifier:(NSString *)keyIdentifier {
-    if (!keyIdentifier){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key identifier argument is nil"]
-                                     userInfo:nil];
-    }
+    
+    GUARD(keyIdentifier,
+          @"Key identifier argument is nil");
     
     CFTypeRef keyDataRef;
     NSData *keyData = nil;
@@ -738,28 +606,19 @@
 
 
 +(NSData *)rsaEncryptPlainTextData:(NSData *)plainTextData padding:(QredoPadding)padding keyRef:(SecKeyRef)keyRef {
-    if (!plainTextData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Plain text data argument is nil"]
-                                     userInfo:nil];
-    }
     
-    if (!keyRef){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key ref argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(plainTextData,
+          @"Plain text data argument is nil.");
+    
+    GUARD(keyRef,
+          @"Key ref argument is nil");
     
     //Length of data to encrypt varies depending on the padding option and key length
     size_t keyLength = SecKeyGetBlockSize(keyRef);
     
-    if (keyLength == 0){
-        //If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
-        QredoLogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"Invalid SecKeyRef. Key block size is 0 bytes."
-                                     userInfo:nil];
-    }
+    //If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
+    GUARD(keyLength != 0,
+          @"Invalid SecKeyRef. Key block size is 0 bytes.");
     
     SecPadding secPaddingType = secPaddingFromQredoPaddingForPlainData(padding,keyLength,plainTextData);
     
@@ -824,32 +683,21 @@ SecPadding secPaddingFromQredoPadding(QredoPadding padding) {
      
      */
     
-    if (!cipherTextData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Cipher text data argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(cipherTextData,
+          @"Cipher text data argument is nil");
     
-    if (!keyRef){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key ref argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(keyRef,
+          @"Key ref argument is nil");
     
     //Length of data to decrypt must equal key length
     size_t keyLength = SecKeyGetBlockSize(keyRef);
     
-    if (keyLength == 0){
-        //If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
-        QredoLogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"Invalid SecKeyRef. Key block size is 0 bytes."
-                                     userInfo:nil];
-    } else if (cipherTextData.length != keyLength){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Invalid data length (%lu). Input data must equal key length (%lu).",(unsigned long)cipherTextData.length,(unsigned long)keyLength]
-                                     userInfo:nil];
-    }
+    GUARD(keyLength != 0,
+          @"Invalid SecKeyRef. Key block size is 0 bytes.");
+    
+    GUARDF(cipherTextData.length == keyLength,
+           @"Invalid data length (%lu). Input data must equal key length (%lu).",
+           (unsigned long)cipherTextData.length, (unsigned long)keyLength);
     
     SecPadding secPaddingType;
     secPaddingType = secPaddingFromQredoPadding(padding);
@@ -886,11 +734,9 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
         case QredoPaddingNone:
             
             //When no padding is selected, the plain text length must be same as key length
-            if (plainTextData.length != keyLength){
-                @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                               reason:[NSString stringWithFormat:@"Invalid data length (%lu) when no padding is requested. Input data must equal key length (%lu).",(unsigned long)plainTextData.length,(unsigned long)keyLength]
-                                             userInfo:nil];
-            }
+            GUARDF(plainTextData.length == keyLength,
+                   @"Invalid data length (%lu) when no padding is requested. Input data must equal key length (%lu).",
+                   (unsigned long)plainTextData.length,(unsigned long)keyLength);
             
             secPaddingType = kSecPaddingNone;
             break;
@@ -900,11 +746,10 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
             //OAEP adds at least 2+(2*hash_size) bytes of padding, and total length cannot exceed key length.
             //Default OAEP MGF1 digest algorithm is SHA1 (20 byte output), so min 42 bytes padding. However
             //if a different algorithm is specified, then min padding will change.
-            if (plainTextData.length + RSA_OAEP_MIN_PADDING_LENGTH > keyLength){
-                @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                               reason:[NSString stringWithFormat:@"Invalid data length (%lu) for provided key length (%lu) and OAEP padding. Default OAEP uses SHA1 so adds minimum 42 bytes padding. Maximum data to encrypt is (key_size - min_padding_size).",(unsigned long)plainTextData.length,(unsigned long)keyLength]
-                                             userInfo:nil];
-            }
+            GUARDF(plainTextData.length + RSA_OAEP_MIN_PADDING_LENGTH <= keyLength,
+                   @"Invalid data length (%lu) for provided key length (%lu) and OAEP padding. Default OAEP uses SHA1 so adds minimum 42 bytes "
+                   @"padding. Maximum data to encrypt is (key_size - min_padding_size).",
+                   (unsigned long)plainTextData.length, (unsigned long)keyLength);
             
             secPaddingType = kSecPaddingOAEP;
             break;
@@ -912,11 +757,10 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
         case QredoPaddingPkcs1:
             
             //PKCS#1 v1.5 adds at least 11 bytes of padding, and total length cannot exceed key length.
-            if (plainTextData.length + RSA_PKCS1_MIN_PADDING_LENGTH > keyLength){
-                @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                               reason:[NSString stringWithFormat:@"Invalid data length (%lu) for provided key length (%lu) and PKCS#1 v1.5 padding. PKCS#1 v1.5 adds minimum 11 bytes padding. Maximum data to encrypt is (key_size - min_padding_size).",(unsigned long)plainTextData.length,(unsigned long)keyLength]
-                                             userInfo:nil];
-            }
+            GUARDF(plainTextData.length + RSA_PKCS1_MIN_PADDING_LENGTH <= keyLength,
+                   @"Invalid data length (%lu) for provided key length (%lu) and PKCS#1 v1.5 padding. PKCS#1 v1.5 adds minimum 11 bytes padding. "
+                   @"Maximum data to encrypt is (key_size - min_padding_size).",
+                   (unsigned long)plainTextData.length, (unsigned long)keyLength);
             
             secPaddingType = kSecPaddingPKCS1;
             break;
@@ -932,29 +776,20 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
 
 
 +(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef {
-    if (!message){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"Message argument is nil"
-                                     userInfo:nil];
-    }
     
-    if (!keyRef){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"Key ref argument is nil"
-                                     userInfo:nil];
-    }
+    GUARD(message,
+          @"Message argument is nil");
+    
+    GUARD(keyRef,
+          @"Key ref argument is nil");
     
     NSData *hash = [self sha256:message];
     
     size_t keyLength = SecKeyGetBlockSize(keyRef);
     
-    if (keyLength == 0){
-        //If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
-        QredoLogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"Invalid SecKeyRef. Key block size is 0 bytes."
-                                     userInfo:nil];
-    }
+    
+    GUARD(keyLength != 0,
+          @"Invalid SecKeyRef. Key block size is 0 bytes.");
     
     //Get a buffer of correct size for the specified key
     size_t pssDataLength = keyLength;
@@ -966,11 +801,9 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
     int pss_result = rsa_pss_sha256_encode(hash.bytes,hash.length,saltLength,keyLength * 8 - 1,
                                            pssData.mutableBytes,pssData.length);
     
-    if (pss_result < 0){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Failed to encode with PSS. Error code: %d",pss_result]
-                                     userInfo:nil];
-    }
+    GUARDF(pss_result >= 0,
+           @"Failed to encode with PSS. Error code: %d",
+           pss_result);
     
     size_t outputDataLength = outputData.length;
     OSStatus result = SecKeyRawSign(keyRef,
@@ -991,38 +824,26 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
 
 
 +(BOOL)rsaPssVerifySignature:(NSData *)signature forMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef {
-    if (!signature){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Signature argument is nil"]
-                                     userInfo:nil];
-    }
     
-    if (!message){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Message argument is nil"]
-                                     userInfo:nil];
-    }
     
-    if (!keyRef){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key ref argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(signature,
+          @"Signature argument is nil.");
+    
+    GUARD(message,
+          @"Message argument is nil.");
+    
+    GUARD(keyRef,
+          @"Key ref argument is nil.");
     
     //Length of data to decrypt must equal key length
     size_t keyLength = SecKeyGetBlockSize(keyRef);
     
-    if (keyLength == 0){
-        //If the SecKeyRef is invalid (e.g. has been released), then SecKeyGetBlockSize appears to return 0 length
-        QredoLogError(@"SecKeyGetBlockSize returned 0 length. Is SecKeyRef valid? (e.g. has it been released?)");
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"Invalid SecKeyRef. Key block size is 0 bytes."
-                                     userInfo:nil];
-    } else if (signature.length != keyLength){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Invalid data length (%lu). Signature must equal key length (%lu).",(unsigned long)signature.length,(unsigned long)keyLength]
-                                     userInfo:nil];
-    }
+    GUARD(keyLength != 0,
+          @"Invalid SecKeyRef. Key block size is 0 bytes.");
+    
+    GUARDF(signature.length == keyLength,
+           @"Invalid data length (%lu). Signature must equal key length (%lu).",
+           (unsigned long)signature.length, (unsigned long)keyLength);
     
     //Get a buffer of correct size for the specified key
     size_t outputDataLength = keyLength;
@@ -1081,11 +902,9 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
 
 
 +(BOOL)deleteKeyInAppleKeychainWithIdentifier:(NSString *)keyIdentifier {
-    if (!keyIdentifier){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key identifier argument is nil"]
-                                     userInfo:nil];
-    }
+    
+    GUARD(keyIdentifier,
+          @"Key identifier argument is nil");
     
     BOOL success = YES;
     
