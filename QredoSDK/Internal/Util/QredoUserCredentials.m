@@ -53,7 +53,6 @@ userInfo:nil]; \
     [concatenatedBytes appendData:[self sha1WithString:self.userSecure]];
     
     NSData *key = [QredoCrypto pbkdf2Sha256WithSalt:SALT_USER_UNLOCK
-                              bypassSaltLengthCheck:NO
                                        passwordData:concatenatedBytes
                              requiredKeyLengthBytes:PBKDF2_DERIVED_KEY_LENGTH_BYTES
                                          iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];

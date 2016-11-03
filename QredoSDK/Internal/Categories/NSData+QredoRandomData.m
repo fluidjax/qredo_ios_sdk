@@ -7,7 +7,10 @@
 +(NSData *)dataWithRandomBytesOfLength:(NSUInteger)length {
     uint8_t *randomBytes = malloc(length);
     
-    SecRandomCopyBytes(kSecRandomDefault,length,randomBytes);
+    int retVal = SecRandomCopyBytes(kSecRandomDefault,length,randomBytes);
+    
+    
+    
     
     NSData *randomData = [NSData dataWithBytesNoCopy:randomBytes
                                               length:length

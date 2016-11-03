@@ -235,7 +235,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     NSData *passwordData = [password dataUsingEncoding:PASSWORD_ENCODING_FOR_PBKDF2];
     
     NSData *key = [QredoCrypto pbkdf2Sha256WithSalt:salt
-                              bypassSaltLengthCheck:NO
                                        passwordData:passwordData
                              requiredKeyLengthBytes:PBKDF2_DERIVED_KEY_LENGTH_BYTES
                                          iterations:PBKDF2_ITERATION_COUNT];

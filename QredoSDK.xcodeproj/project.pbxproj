@@ -1979,6 +1979,7 @@
 					66605C361BD55A9F00EC8D6C = {
 						CreatedOnToolsVersion = 7.0.1;
 						DevelopmentTeam = 9W2U485A5G;
+						TestTargetID = 837120951C7B16FE00648E47;
 					};
 					66605C8F1BD6402E00EC8D6C = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -1988,6 +1989,7 @@
 					66F7752B1BD6538D00F01A2C = {
 						CreatedOnToolsVersion = 7.0.1;
 						DevelopmentTeam = 9W2U485A5G;
+						TestTargetID = 837120951C7B16FE00648E47;
 					};
 					837120951C7B16FE00648E47 = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -3189,6 +3191,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost.app/TestHost";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -3231,6 +3234,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost.app/TestHost";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
@@ -3378,6 +3382,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost.app/TestHost";
 			};
 			name = Debug;
 		};
@@ -3418,6 +3423,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost.app/TestHost";
 			};
 			name = Release;
 		};

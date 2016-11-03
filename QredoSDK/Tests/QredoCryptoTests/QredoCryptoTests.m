@@ -59,7 +59,7 @@
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
 
-
+/* AES now only supports 128b keys
 -(void)testDecryptData256BitKey {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -120,6 +120,7 @@
 }
 
 
+
 -(void)testDecryptData256BitKey_NilIv {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -146,7 +147,8 @@
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
-
+*/
+ 
 
 -(void)testDecryptData_InvalidIvLengthTooShort {
     uint8_t keyDataArray[] = {
@@ -243,7 +245,7 @@
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
 }
 
-
+/* AES now only supports 128b keys
 -(void)testEncryptData256BitKey {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -331,7 +333,8 @@
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
 }
 
-
+*/
+ 
 -(void)testEncryptData_InvalidIvLengthTooShort {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -455,7 +458,6 @@
 
 
 -(void)testPbkdf2Sha256WithSalt_RFC6070Example {
-    BOOL bypassSaltLengthCheck = NO; //Used for testing salts < 8 bytes, which unfortunately all but 1 of RFC6070's test vectors are
     NSString *saltString = @"saltSALTsaltSALTsaltSALTsaltSALTsalt";
     NSData *saltData = [saltString dataUsingEncoding:NSASCIIStringEncoding];
     
@@ -471,17 +473,18 @@
     };
     NSData *expectedDerivedKeyData = [NSData dataWithBytes:expectedDerivedKeyDataArray length:sizeof(expectedDerivedKeyDataArray) / sizeof(uint8_t)];
     
-    NSData *derivedKey = [QredoCrypto pbkdf2Sha256WithSalt:saltData bypassSaltLengthCheck:bypassSaltLengthCheck passwordData:passwordData requiredKeyLengthBytes:keyLength iterations:iterations];
+    NSData *derivedKey = [QredoCrypto pbkdf2Sha256WithSalt:saltData passwordData:passwordData requiredKeyLengthBytes:keyLength iterations:iterations];
     
     XCTAssertNotNil(derivedKey,@"Derived key should not be nil.");
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:derivedKey],@"Derived key incorrect.");
 }
 
 
+/* Test removed as it is essentially a duplicate of the one above, but the salt is too short to pass the guards
 //This test takes about 10 seconds to run due (high number of iterations)
 -(void)testPbkdf2Sha256WithSalt_RFC6070Example2 {
     BOOL bypassSaltLengthCheck = YES; //Used for testing salts < 8 bytes, which unfortunately all but 1 of RFC6070's test vectors are
-    NSString *saltString = @"salt";
+    NSString *saltString = @"saltsaltsalt";
     NSData *saltData = [saltString dataUsingEncoding:NSASCIIStringEncoding];
     
     NSString *passwordString = @"password";
@@ -495,12 +498,12 @@
     };
     NSData *expectedDerivedKeyData = [NSData dataWithBytes:expectedDerivedKeyDataArray length:sizeof(expectedDerivedKeyDataArray) / sizeof(uint8_t)];
     
-    NSData *derivedKey = [QredoCrypto pbkdf2Sha256WithSalt:saltData bypassSaltLengthCheck:bypassSaltLengthCheck passwordData:passwordData requiredKeyLengthBytes:keyLength iterations:iterations];
+    NSData *derivedKey = [QredoCrypto pbkdf2Sha256WithSalt:saltData  passwordData:passwordData requiredKeyLengthBytes:keyLength iterations:iterations];
     
     XCTAssertNotNil(derivedKey,@"Derived key should not be nil.");
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:derivedKey],@"Derived key incorrect.");
 }
-
+*/
 
 -(void)testGenerateHmacSha256ForDataWithCorrectLength {
     uint8_t keyDataArray[] = {
@@ -1534,6 +1537,9 @@
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyExport1";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyExport1";
     NSInteger keySizeBits = 1024;
+    
+    
+    
     QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits publicKeyIdentifier:publicKeyIdentifier privateKeyIdentifier:privateKeyIdentifier persistInAppleKeychain:YES];
     
     XCTAssertNotNil(keyPairRef,"RSA key generation failed (nil object returned).");

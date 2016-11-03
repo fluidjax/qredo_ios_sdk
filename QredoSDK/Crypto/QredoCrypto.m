@@ -146,7 +146,7 @@
     GUARD(passwordData,
           @"Password argument must be specified.");
     
-    GUARDF(iterations > UINT_MAX,
+    GUARDF(iterations < UINT_MAX,
            @"Iterations value must be lower than max allowed value (%lu).", iterations);
     
     GUARD(iterations > 0,
@@ -181,7 +181,7 @@
     GUARD(data,
           @"Data argument must be specified.");
     
-    GUARDF(length > data.length,
+    GUARDF(length <= data.length,
            @"Length argument (%lu) exceeds data length (%lu)",
            (unsigned long)length, (unsigned long)data.length);
     
@@ -357,16 +357,16 @@
     GUARD(publicKeyIdentifier,
           @"Public key identifier argument is nil");
     
-    GUARD([publicKeyIdentifier isEqualToString:@""],
+    GUARD(![publicKeyIdentifier isEqualToString:@""],
           @"Public key identifier must not be empty string.");
     
     GUARD(privateKeyIdentifier,
           @"Private key identifier argument is nil.");
     
-    GUARD([privateKeyIdentifier isEqualToString:@""],
+    GUARD(![privateKeyIdentifier isEqualToString:@""],
         @"Private key identifier must not be empty string.");
     
-    GUARD([publicKeyIdentifier isEqualToString:privateKeyIdentifier],
+    GUARD(![publicKeyIdentifier isEqualToString:privateKeyIdentifier],
           @"Public and Private key identifiers must be different.");
     
     OSStatus status = noErr;
