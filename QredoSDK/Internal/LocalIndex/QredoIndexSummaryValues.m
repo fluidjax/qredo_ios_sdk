@@ -3,7 +3,8 @@
 #import "QredoIndexVariableValue.h"
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
-
+#import "QredoConversation.h"
+#import "QredoTypes.h"
 
 @interface QredoIndexSummaryValues ()
 @end
