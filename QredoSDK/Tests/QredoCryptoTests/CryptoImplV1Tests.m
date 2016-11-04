@@ -28,8 +28,8 @@
     XCTAssertTrue([key isEqualToData:expectedResult],@"not expected result");
 }
 
-
--(void)testEncryptWithKey {
+/* Only use 256bits key
+-(void)testEncryptWith128BitKey {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f
     };
@@ -47,7 +47,7 @@
     //Extract the IV from the start (16 bytes), and attempt to encrypt the
     //same data ourselves using that IV and confirm the cipher text is correct
     NSData *iv = [encryptedDataWithIv subdataWithRange:NSMakeRange(0,kCCBlockSizeAES128)];
-    NSData *expectedEncryptedData = [QredoCrypto encryptData:plaintextData withAesKey:keyData iv:iv];
+    NSData *expectedEncryptedData = [QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:iv];
     NSData *actualEncryptedData = [encryptedDataWithIv subdataWithRange:NSMakeRange(kCCBlockSizeAES128,encryptedDataWithIv.length - kCCBlockSizeAES128)];
     XCTAssertTrue([expectedEncryptedData isEqualToData:actualEncryptedData],@"Encrypted data (with IV removed) incorrect.");
 }
@@ -78,9 +78,11 @@
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
 
+ */
 
 -(void)testEncryptDecryptRoundTripOf1600Bytes {
     uint8_t keyDataArray[] = {
+        0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f
     };
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];

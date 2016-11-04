@@ -30,7 +30,7 @@
     [super tearDown];
 }
 
-
+/* AES now only supports 128b keys
 -(void)testDecryptData128BitKey {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f
@@ -53,13 +53,15 @@
     NSString *expectedString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *expectedData = [expectedString dataUsingEncoding:NSASCIIStringEncoding];
     
-    NSData *decryptedData = [QredoCrypto decryptData:encryptedData withAesKey:keyData iv:ivData];
+    NSData *decryptedData = [QredoCrypto decryptData:encryptedData with256bitAesKey:keyData iv:ivData];
     
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
+*/
+ 
+ 
 
-/* AES now only supports 128b keys
 -(void)testDecryptData256BitKey {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -83,7 +85,7 @@
     NSString *expectedString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *expectedData = [expectedString dataUsingEncoding:NSASCIIStringEncoding];
     
-    NSData *decryptedData = [QredoCrypto decryptData:encryptedData withAesKey:keyData iv:ivData];
+    NSData *decryptedData = [QredoCrypto decryptData:encryptedData with256bitAesKey:keyData iv:ivData];
     
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
@@ -113,7 +115,7 @@
     NSString *expectedString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *expectedData = [expectedString dataUsingEncoding:NSASCIIStringEncoding];
     
-    NSData *decryptedData = [QredoCrypto decryptData:encryptedData withAesKey:keyData iv:ivData];
+    NSData *decryptedData = [QredoCrypto decryptData:encryptedData with256bitAesKey:keyData iv:ivData];
     
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
@@ -128,8 +130,12 @@
     };
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
     
-    //Nil IV should result in IV of zeroes being used
-    NSData *ivData = nil;
+    //we need to explicitly set IV to 128's worth of zeros
+    uint8_t ivDataArray[] = {
+        0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+    };
+    NSData *ivData = [NSData dataWithBytes:ivDataArray length:sizeof(ivDataArray) / sizeof(uint8_t)];;
+
     
     uint8_t encryptedDataArray[] = {
         0x4F,0x26,0xC1,0xA6,0x8E,0x02,0x39,0x5D,0xED,0x9A,0x94,0xEF,0x8E,0x33,0xB0,0xEE,
@@ -142,12 +148,12 @@
     NSString *expectedString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *expectedData = [expectedString dataUsingEncoding:NSASCIIStringEncoding];
     
-    NSData *decryptedData = [QredoCrypto decryptData:encryptedData withAesKey:keyData iv:ivData];
+    NSData *decryptedData = [QredoCrypto decryptData:encryptedData with256bitAesKey:keyData iv:ivData];
     
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
 }
-*/
+
  
 
 -(void)testDecryptData_InvalidIvLengthTooShort {
@@ -170,7 +176,7 @@
     };
     NSData *encryptedData = [NSData dataWithBytes:encryptedDataArray length:sizeof(encryptedDataArray) / sizeof(uint8_t)];
     
-    XCTAssertThrowsSpecificNamed([QredoCrypto decryptData:encryptedData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrowsSpecificNamed([QredoCrypto decryptData:encryptedData with256bitAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
 
@@ -194,7 +200,7 @@
     };
     NSData *encryptedData = [NSData dataWithBytes:encryptedDataArray length:sizeof(encryptedDataArray) / sizeof(uint8_t)];
     
-    XCTAssertThrowsSpecificNamed([QredoCrypto decryptData:encryptedData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrowsSpecificNamed([QredoCrypto decryptData:encryptedData with256bitAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
 
@@ -213,10 +219,11 @@
     NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
     
-    XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid key length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid key length but NSInvalidArgumentException not thrown.");
 }
 
 
+/* AES now only supports 128b keys
 -(void)testEncryptData128BitKey {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f
@@ -239,13 +246,14 @@
     };
     NSData *expectedData = [NSData dataWithBytes:expectedDataArray length:sizeof(expectedDataArray) / sizeof(uint8_t)];
     
-    NSData *encryptedData = [QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData];
+    NSData *encryptedData = [QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData];
     
     XCTAssertNotNil(encryptedData,@"Encrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
 }
 
-/* AES now only supports 128b keys
+ */
+
 -(void)testEncryptData256BitKey {
     uint8_t keyDataArray[] = {
         0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f,
@@ -269,7 +277,7 @@
     };
     NSData *expectedData = [NSData dataWithBytes:expectedDataArray length:sizeof(expectedDataArray) / sizeof(uint8_t)];
     
-    NSData *encryptedData = [QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData];
+    NSData *encryptedData = [QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData];
     
     XCTAssertNotNil(encryptedData,@"Encrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
@@ -299,7 +307,7 @@
     };
     NSData *expectedData = [NSData dataWithBytes:expectedDataArray length:sizeof(expectedDataArray) / sizeof(uint8_t)];
     
-    NSData *encryptedData = [QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData];
+    NSData *encryptedData = [QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData];
     
     XCTAssertNotNil(encryptedData,@"Encrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
@@ -313,8 +321,11 @@
     };
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
     
-    //Nil IV should result in IV of zeroes being used
-    NSData *ivData = nil;
+    //we need to explicitly set IV to 128's worth of zeros
+    uint8_t ivDataArray[] = {
+        0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+    };
+    NSData *ivData = [NSData dataWithBytes:ivDataArray length:sizeof(ivDataArray) / sizeof(uint8_t)];;
     
     NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
@@ -327,13 +338,13 @@
     };
     NSData *expectedData = [NSData dataWithBytes:expectedDataArray length:sizeof(expectedDataArray) / sizeof(uint8_t)];
     
-    NSData *encryptedData = [QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData];
+    NSData *encryptedData = [QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData];
     
     XCTAssertNotNil(encryptedData,@"Encrypted data should not be nil.");
     XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
 }
 
-*/
+
  
 -(void)testEncryptData_InvalidIvLengthTooShort {
     uint8_t keyDataArray[] = {
@@ -351,7 +362,7 @@
     NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
     
-    XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
 
@@ -371,7 +382,7 @@
     NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
     
-    XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData withAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
 

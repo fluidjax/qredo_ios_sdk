@@ -35,16 +35,16 @@
                             userInfo:nil]; \
     }
 
-+(NSData *)decryptData:(NSData *)data withAesKey:(NSData *)key iv:(NSData *)iv {
-    return [self aes:data withOperation:kCCDecrypt key:key iv:iv];
++(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
+    return [self aes:data withOperation:kCCDecrypt with256bitAesKey:key iv:iv];
 }
 
 
-+(NSData *)encryptData:(NSData *)data withAesKey:(NSData *)key iv:(NSData *)iv {
-    return [self aes:data withOperation:kCCEncrypt key:key iv:iv];
++(NSData *)encryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
+    return [self aes:data withOperation:kCCEncrypt with256bitAesKey:key iv:iv];
 }
 
-+(NSData *)aes:(NSData *)input withOperation:(CCOperation)operation key:(NSData *)key iv:(NSData *)iv {
++(NSData *)aes:(NSData *)input withOperation:(CCOperation)operation with256bitAesKey:(NSData *)key iv:(NSData *)iv {
     
     GUARD(input,
           @"Input argument is nil.");
