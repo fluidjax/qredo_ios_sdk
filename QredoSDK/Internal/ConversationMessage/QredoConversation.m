@@ -970,11 +970,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(void)deleteConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler {
-    NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRT]
-                                                     marshaller:[QLFCtrl marshaller]];
-
-    
 //Control messages removed
+    
+//    NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRT]
+//                                                     marshaller:[QLFCtrl marshaller]];
 //    QredoConversationMessage *leftControlMessage = [[QredoConversationMessage alloc] initWithValue:qrtValue
 //                                                                                          dataType:kQredoConversationMessageTypeControl
 //                                                                                     summaryValues:nil];

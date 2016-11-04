@@ -425,7 +425,6 @@ IncomingMetadataBlock incomingMetadatBlock;
 
 
 -(QredoIndexVaultItemMetadata *)getIndexVaultItemMetadataWith:(QredoVaultItemDescriptor *)vaultItemDescriptor error:(NSError **)returnError {
-    __block BOOL hasDeletedObject = NO;
     __block NSError *blockError = nil;
     __block QredoIndexVaultItemMetadata *returnValue = nil;
     

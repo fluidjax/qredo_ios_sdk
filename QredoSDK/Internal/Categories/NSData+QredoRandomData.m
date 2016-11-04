@@ -7,10 +7,12 @@
 +(NSData *)dataWithRandomBytesOfLength:(NSUInteger)length {
     uint8_t *randomBytes = malloc(length);
     
-    int retVal = SecRandomCopyBytes(kSecRandomDefault,length,randomBytes);
+    int err = SecRandomCopyBytes(kSecRandomDefault,length,randomBytes);
     
+    if(err != noErr)
+        @throw [NSException exceptionWithName:@"Critical Error" reason:@".Failed to generate random number." userInfo:nil];
     
-    
+
     
     NSData *randomData = [NSData dataWithBytesNoCopy:randomBytes
                                               length:length
