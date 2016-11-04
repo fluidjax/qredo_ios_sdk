@@ -200,8 +200,8 @@ static NSMutableDictionary *dataStoreDictionary;
     
     
 #if (TARGET_OS_SIMULATOR)
-    NSLog(@"Store URL: %@",storeURL);
-    NSLog(@"Model URL: %@",modelURL);
+//    NSLog(@"Store URL: %@",storeURL);
+//    NSLog(@"Model URL: %@",modelURL);
 #endif
 }
 

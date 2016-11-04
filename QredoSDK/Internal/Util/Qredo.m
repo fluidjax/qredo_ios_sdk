@@ -321,6 +321,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
     //Need to terminate transport, which ends associated threads and subscriptions etc.
     QredoLogInfo(@"Close session");
     [self.defaultVault removeAllObservers];
+    [self.systemVault removeAllObservers];
+    
     [_serviceInvoker terminate];
     
     

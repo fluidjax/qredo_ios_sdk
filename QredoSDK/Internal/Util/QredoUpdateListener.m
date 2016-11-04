@@ -275,14 +275,10 @@
         return;
     }
     
-    [self.dataSource
-     qredoUpdateListener:self
-     pollWithCompletionHandler:^(NSError *error)
-     {
+    [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error){
          if (!_isPollingActive){
              return;
          }
-         
          dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(self.pollInterval * NSEC_PER_SEC)),_queue,^{
              [self startPolling];
          });

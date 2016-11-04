@@ -153,8 +153,6 @@ static float delayInterval = 0.4;
     XCTAssert([conversation1 authTrafficLight] == QREDO_RED);
     __block XCTestExpectation *fp = [self expectationWithDescription:@"fingerprint"];
     
-    NSLog(@"conversation1 %@",conversation1.metadata.conversationRef);
-    
     [conversation1 iHaveRemoteFingerPrint:^(NSError *error) {
         XCTAssertNil(error);
         [fp fulfill];
@@ -164,8 +162,6 @@ static float delayInterval = 0.4;
                                      fp = nil;
                                  }];
     XCTAssert([self countConversationsOnRendezvous:rendezvous1] == 1);
-    
-    NSLog(@"conversation1 %@",conversation1.metadata.conversationRef);
     
     
     __block QredoConversationMetadata *updatedMetaData;
@@ -806,8 +802,6 @@ NSString *secondMessageText;
     __block XCTestExpectation *didRespondExpectation1 = [self expectationWithDescription:@"update conversation"];
     [conversation updateConversationWithSummaryValues:testDictionary1
                                     completionHandler:^(NSError *error) {
-                                        NSLog(@"Conversation1 %@",conversation.metadata.conversationRef);
-                                        NSLog(@"Conversation1 %@",conversation.metadata.summaryValues);
                                         XCTAssertNil(summaryValues,@"Summary values should be nil");
                                         [didRespondExpectation1 fulfill];
                                     }];
@@ -823,8 +817,6 @@ NSString *secondMessageText;
     __block XCTestExpectation *didRespondExpectation2 = [self expectationWithDescription:@"update conversation"];
     [conversation updateConversationWithSummaryValues:testDictionary2
                                     completionHandler:^(NSError *error) {
-                                        NSLog(@"Conversation2 %@",conversation.metadata.conversationRef);
-                                        NSLog(@"Conversation2 %@",conversation.metadata.summaryValues);
                                         XCTAssertNil(summaryValues,@"Summary values should be nil");
                                         [didRespondExpectation2 fulfill];
                                     }];
@@ -840,8 +832,6 @@ NSString *secondMessageText;
     __block XCTestExpectation *didRespondExpectation3 = [self expectationWithDescription:@"update conversation"];
     [conversation updateConversationWithSummaryValues:testDictionary3
                                     completionHandler:^(NSError *error) {
-                                        NSLog(@"Conversation3 %@",conversation.metadata.conversationRef);
-                                        NSLog(@"Conversation3 %@",conversation.metadata.summaryValues);
                                         
                                         XCTAssertNil(summaryValues,@"Summary values should be nil");
                                         [didRespondExpectation3 fulfill];
