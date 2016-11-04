@@ -18,6 +18,11 @@ typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
     QredoClientOptionsTransportTypeWebSockets,
 };
 
+
+
+
+
+
 extern NSString *const QredoClientOptionServiceURL;
 extern NSString *const QredoRendezvousURIProtocol;
 extern NSString *const QredoVaultItemTypeKeychain;

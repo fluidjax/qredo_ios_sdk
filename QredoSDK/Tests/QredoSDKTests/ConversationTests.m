@@ -153,8 +153,6 @@ static float delayInterval = 0.4;
     XCTAssert([conversation1 authTrafficLight] == QREDO_RED);
     __block XCTestExpectation *fp = [self expectationWithDescription:@"fingerprint"];
     
-    NSLog(@"conversation1 %@",conversation1.metadata.conversationRef);
-    
     [conversation1 iHaveRemoteFingerPrint:^(NSError *error) {
         XCTAssertNil(error);
         [fp fulfill];
@@ -164,8 +162,6 @@ static float delayInterval = 0.4;
                                      fp = nil;
                                  }];
     XCTAssert([self countConversationsOnRendezvous:rendezvous1] == 1);
-    
-    NSLog(@"conversation1 %@",conversation1.metadata.conversationRef);
     
     
     __block QredoConversationMetadata *updatedMetaData;
@@ -206,7 +202,7 @@ static float delayInterval = 0.4;
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -235,7 +231,7 @@ static float delayInterval = 0.4;
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -806,8 +802,6 @@ NSString *secondMessageText;
     __block XCTestExpectation *didRespondExpectation1 = [self expectationWithDescription:@"update conversation"];
     [conversation updateConversationWithSummaryValues:testDictionary1
                                     completionHandler:^(NSError *error) {
-                                        NSLog(@"Conversation1 %@",conversation.metadata.conversationRef);
-                                        NSLog(@"Conversation1 %@",conversation.metadata.summaryValues);
                                         XCTAssertNil(summaryValues,@"Summary values should be nil");
                                         [didRespondExpectation1 fulfill];
                                     }];
@@ -823,8 +817,6 @@ NSString *secondMessageText;
     __block XCTestExpectation *didRespondExpectation2 = [self expectationWithDescription:@"update conversation"];
     [conversation updateConversationWithSummaryValues:testDictionary2
                                     completionHandler:^(NSError *error) {
-                                        NSLog(@"Conversation2 %@",conversation.metadata.conversationRef);
-                                        NSLog(@"Conversation2 %@",conversation.metadata.summaryValues);
                                         XCTAssertNil(summaryValues,@"Summary values should be nil");
                                         [didRespondExpectation2 fulfill];
                                     }];
@@ -840,8 +832,6 @@ NSString *secondMessageText;
     __block XCTestExpectation *didRespondExpectation3 = [self expectationWithDescription:@"update conversation"];
     [conversation updateConversationWithSummaryValues:testDictionary3
                                     completionHandler:^(NSError *error) {
-                                        NSLog(@"Conversation3 %@",conversation.metadata.conversationRef);
-                                        NSLog(@"Conversation3 %@",conversation.metadata.summaryValues);
                                         
                                         XCTAssertNil(summaryValues,@"Summary values should be nil");
                                         [didRespondExpectation3 fulfill];
@@ -895,121 +885,5 @@ NSString *secondMessageText;
     XCTAssert(count == 1,@"More than one conversation item retrieved");
 }
 
-
-//- (void)testMetadataOfEphemeralConversation {
-//
-//NSString *randomTag = [[QredoQUID QUID] QUIDString];
-//
-//
-//__block QredoRendezvous *rendezvous = nil;
-//
-//__block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-//
-//
-//
-//[client createAnonymousRendezvousWithTag:randomTag
-//duration:600
-//unlimitedResponses:NO
-//completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-//XCTAssertNil(error);
-//XCTAssertNotNil(_rendezvous);
-//
-//rendezvous = _rendezvous;
-//
-//[createExpectation fulfill];
-//}];
-//[self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-//createExpectation = nil;
-//}];
-//
-//
-//// Creating a new client with a new vault
-//XCTAssertFalse([anotherClient.systemVault.vaultId isEqual:client.systemVault.vaultId]);
-//
-//
-//// Responding to the rendezvous
-//__block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
-//self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
-//
-//[rendezvous addRendezvousObserver:self];
-//[NSThread sleepForTimeInterval:0.2];
-//
-//__block QredoConversation *responderConversation = nil;
-//// Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
-//[anotherClient respondWithTag:randomTag
-//completionHandler:^(QredoConversation *conversation, NSError *error) {
-//XCTAssertNil(error);
-//XCTAssertNotNil(conversation);
-//XCTAssert(conversation.metadata.isEphemeral);
-//XCTAssertFalse(conversation.metadata.isPersistent);
-//
-//responderConversation = conversation;
-//
-//[didRespondExpectation fulfill];
-//}];
-//
-//[self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-//didRespondExpectation = nil;
-//}];
-//
-//[rendezvous removeRendezvousObserver:self];
-//
-//}
-//
-//- (void)testMetadataOfPersistentConversation {
-//NSString *randomTag = [[QredoQUID QUID] QUIDString];
-//
-//__block QredoRendezvous *rendezvous = nil;
-//
-//__block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-//
-//[client createAnonymousRendezvousWithTag:randomTag
-//duration:600
-//unlimitedResponses:NO
-//completionHandler:^(QredoRendezvous *_rendezvous, NSError *error) {
-//XCTAssertNil(error);
-//XCTAssertNotNil(_rendezvous);
-//
-//rendezvous = _rendezvous;
-//
-//[createExpectation fulfill];
-//}];
-//[self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-//createExpectation = nil;
-//}];
-//
-//
-//
-//
-//// Responding to the rendezvous
-//__block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
-//self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
-//
-//[rendezvous addRendezvousObserver:self];
-//[NSThread sleepForTimeInterval:0.2];
-//
-//__block QredoConversation *responderConversation = nil;
-//// Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
-//[anotherClient respondWithTag:randomTag
-//completionHandler:^(QredoConversation *conversation, NSError *error) {
-//XCTAssertNil(error);
-//XCTAssertNotNil(conversation);
-//XCTAssertFalse(conversation.metadata.isEphemeral);
-//XCTAssert(conversation.metadata.isPersistent);
-//
-//responderConversation = conversation;
-//
-//[didRespondExpectation fulfill];
-//}];
-//
-//[self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-//didRespondExpectation = nil;
-//}];
-//
-//[rendezvous removeRendezvousObserver:self];
-//
-//
-//}
-//
 
 @end

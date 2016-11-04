@@ -22,12 +22,10 @@ static const int testTimeOut = 30;
         //STAGING
         k_TEST_APPID         = STAGING_TEST_APPID;
         k_TEST_APPSECRET     = STAGING_TEST_APPSECRET;       //dev staging
-        k_TEST_USERID        = STAGING_TEST_USERID;
     } else if ([QREDO_SERVER_URL isEqualToString:@"api.qredo.com"]){
         //PRODUCTION
         k_TEST_APPID         = PRODUCTION_TEST_APPID;
         k_TEST_APPSECRET     = PRODUCTION_TEST_APPSECRET;       //production
-        k_TEST_USERID        = PRODUCTION_TEST_USERID;
     } else {
         NSAssert(false,@"Invalid server specified in MasterConfig.h");
     }
@@ -41,6 +39,9 @@ static const int testTimeOut = 30;
     
     testClient1Password = nil;
     testClient2Password = nil;
+    
+    testClient1User = nil;
+    testClient2User = nil;
     
     
     //rendezvous
@@ -116,6 +117,14 @@ static const int testTimeOut = 30;
 }
 
 
+-(NSString *)randomUsername {
+    return [self randomStringWithLength:32];
+}
+
+
+
+
+
 -(NSString *)randomStringWithLength:(int)len {
     NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     NSMutableString *randomString = [NSMutableString stringWithCapacity:len];
@@ -140,13 +149,15 @@ static const int testTimeOut = 30;
 
 -(void)createClient1 {
     testClient1Password = [self randomPassword];
-    testClient1 = [self createClient:testClient1Password];
+    testClient1User = [self randomPassword];
+    testClient1 = [self createClient:testClient1Password user:testClient1User];
 }
 
 
 -(void)createClient2 {
     testClient2Password = [self randomPassword];
-    testClient2 = [self createClient:testClient2Password];
+    testClient2User = [self randomPassword];
+    testClient2 = [self createClient:testClient2Password user:testClient2User];
 }
 
 
@@ -154,13 +165,13 @@ static const int testTimeOut = 30;
 //Core Methods
 
 
--(QredoClient *)createClient:(NSString *)userSecret {
+-(QredoClient *)createClient:(NSString *)userSecret user:(NSString*)user{
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     __block QredoClient *client;
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:user
                           userSecret:userSecret
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -404,6 +415,9 @@ static const int testTimeOut = 30;
     
     return item1Metadata;
 }
+
+
+
 
 
 -(QredoVaultItemMetadata *)updateVaultItem:(QredoVaultItem *)originalItem {

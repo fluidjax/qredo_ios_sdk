@@ -10,13 +10,15 @@
 @interface QredoXCTestCase :XCTestCase {
     NSString *k_TEST_APPID;
     NSString *k_TEST_APPSECRET;
-    NSString *k_TEST_USERID;
     
     //client
     QredoClient *testClient1;
     NSString *testClient1Password;
+    NSString *testClient1User;
+    
     QredoClient *testClient2;
     NSString *testClient2Password;
+    NSString *testClient2User;
     
     
     //rendezvous
@@ -50,7 +52,7 @@
 -(void)createClients;
 -(void)createClient1;
 -(void)createClient2;
--(QredoClient *)createClient:(NSString *)userSecret;
+-(QredoClient *)createClient:(NSString *)userSecret user:(NSString*)user;
 
 
 /* Rendezvous */
@@ -98,6 +100,6 @@
 -(NSData *)randomDataWithLength:(int)length;
 -(NSString *)randomStringWithLength:(int)len;
 -(NSString *)randomPassword;
-
+-(NSString *)randomUsername;
 
 @end

@@ -749,7 +749,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     NSData *vaultKey = [QredoVaultCrypto vaultKeyWithVaultMasterKey:self.client.systemVault.vaultKeys.vaultKey
                                                            infoData:_inboundQueueId.data];
     QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKey:vaultKey];
-    _store = [[QredoVault alloc] initWithClient:self.client vaultKeys:keys withLocalIndex:NO];
+    _store = [[QredoVault alloc] initWithClient:self.client vaultKeys:keys withLocalIndex:NO vaultType:QredoSystemVault];
     return _store;
 }
 
@@ -1035,13 +1035,15 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         newValues = [[NSMutableDictionary alloc] init];
     }
     
+    
     NSDictionary *vaultSummaryValues = @{
                                          kQredoConversationVaultItemLabelAmOwner:[NSNumber numberWithBool:_metadata.amRendezvousOwner],
                                          kQredoConversationVaultItemLabelId:_metadata.conversationId,
                                          kQredoConversationVaultItemLabelTag:_metadata.rendezvousTag,
                                          kQredoConversationVaultItemLabelType:_metadata.type,
                                          kQredoConversationVaultItemLabelAuthStatus:[NSNumber numberWithInteger:_metadata.authStatus],
-                                         @"_v":[NSNumber numberWithLongLong:_metadata.conversationRef.vaultItemDescriptor.sequenceValue]
+                                         @"_vSeqValue":[NSNumber numberWithLongLong:_metadata.conversationRef.vaultItemDescriptor.sequenceValue],
+                                         @"_vSeqId":[_metadata.conversationRef.vaultItemDescriptor.sequenceId QUIDString]
                                          };
     
     [newValues addEntriesFromDictionary:vaultSummaryValues];
