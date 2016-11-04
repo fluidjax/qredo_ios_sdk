@@ -497,6 +497,9 @@ NSString *secondMessageText;
 }
 
 
+
+//This is part of Control messages and has been disabled
+/*
 -(void)testOtherPartyHasLeft {
     [self buildStack1];
     
@@ -530,6 +533,7 @@ NSString *secondMessageText;
                                      XCTAssertNil(error);
                                  }];
 }
+*/
 
 
 -(void)testConversationWatermark {
