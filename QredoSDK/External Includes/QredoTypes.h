@@ -7,13 +7,13 @@
 @interface QredoObjectRef :NSObject
 
 /** Used internally */
--(instancetype)initWithData:(NSData *)data;
+-(nullable instancetype)initWithData:(NSData* _Nonnull)data;
 -(nullable NSString*)serializedString;
 -(nullable instancetype)initWithSerializedString:(NSString* _Nonnull)string;
 
 
--(BOOL)isEqual:(id)object;
-- (NSData *)dataUsingEncoding:(NSStringEncoding)encoding;
+-(BOOL)isEqual:(nullable id)object;
+- (nullable NSData *)dataUsingEncoding:(NSStringEncoding)encoding;
 
 
 
