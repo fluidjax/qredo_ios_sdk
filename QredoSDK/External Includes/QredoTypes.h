@@ -7,6 +7,8 @@
 @interface QredoObjectRef :NSObject
 
 /** Used internally */
+
+/** Used internally */
 -(nullable instancetype)initWithData:(NSData* _Nonnull)data;
 -(nullable NSString*)serializedString;
 -(nullable instancetype)initWithSerializedString:(NSString* _Nonnull)string;
@@ -19,5 +21,4 @@
 
 /** Developers should not rely on the contents of this property */
 @property (readonly) NSData * _Nonnull data;
-
 @end

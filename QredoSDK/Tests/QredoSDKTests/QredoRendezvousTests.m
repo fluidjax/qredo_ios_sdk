@@ -414,7 +414,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -437,7 +437,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -464,7 +464,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -942,7 +942,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -1004,12 +1004,17 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     NSString *client1Password = [self randomPassword];
     NSString *client2Password = [self randomPassword];
     
+    NSString *client1User = [self randomUsername];
+    NSString *client2User = [self randomUsername];
+    
+    
+    
     
     __block XCTestExpectation *clientExpectation1 = [self expectationWithDescription:@"create client1"];
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:client1User
                           userSecret:client1Password
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -1035,7 +1040,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:client2User
                           userSecret:client2Password
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -1060,7 +1065,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:client1User
                           userSecret:client1Password
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -1084,7 +1089,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:client2User
                           userSecret:client2Password
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {

@@ -3,6 +3,7 @@
 #import "Qredo.h"
 #import "QredoPrivate.h"
 #import "QredoVault.h"
+#import "QredoTypesPrivate.h"
 #import "QredoVaultPrivate.h"
 #import "QredoRendezvousPrivate.h"
 #import "QredoConversationPrivate.h"
@@ -711,8 +712,14 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)enumerateRendezvousWithBlock:(void (^)(QredoRendezvousMetadata *rendezvousMetadata,BOOL *stop))block
                   completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *vault = [self systemVault];
-    
-    [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
+
+    //CSM changed to use the INDEX!
+     NSPredicate *predicate = [NSPredicate predicateWithFormat:@" 1 == 1 "];
+    [vault enumerateIndexUsingPredicate:predicate withBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+    //[vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
+        
+        
+        
         if ([vaultItemMetadata.dataType
              isEqualToString:kQredoRendezvousVaultItemType]){
             NSString *tag = [vaultItemMetadata.summaryValues
@@ -825,8 +832,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoVault *vault = [self systemVault];
     
     [vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
-        if ([vaultItemMetadata.dataType
-             isEqualToString:kQredoConversationVaultItemType]){
+        if ([vaultItemMetadata.dataType isEqualToString:kQredoConversationVaultItemType]){
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];
             //TODO: DH - populate metadata.rendezvousMetadata
             metadata.conversationId = [vaultItemMetadata.summaryValues
@@ -1049,13 +1055,14 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(void)initializeVaults {
-    _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys withLocalIndex:NO];
+    _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys withLocalIndex:YES  vaultType:QredoSystemVault];
+    //always add an observer for the system vault
+    [_systemVault addMetadataIndexObserver];
     
-    if (self.clientOptions.disableMetadataIndex == YES){
-        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:NO];
-    } else {
-        _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:YES];
-    }
+    
+    
+    BOOL withIndex = !self.clientOptions.disableMetadataIndex;
+    _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:withIndex  vaultType:QredoDefaultVault];
 }
 
 
@@ -1079,33 +1086,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     _keychain = keychain;
 }
 
-
-//+(void)changeUserCredentialsAppId:(NSString*)appId
-//userId:(NSString*)userId
-//fromUserSecure:(NSString*)fromUserSecure
-//toUserSecure:(NSString*)toUserSecure
-//error:(NSError **)error{
-//
-//
-//QredoUserCredentials *sourceCredentials        = [[QredoUserCredentials alloc] initWithAppId:appId
-//userId:userId
-//userSecure:fromUserSecure];
-//QredoUserCredentials *destinationCredentials   = [[QredoUserCredentials alloc] initWithAppId:appId
-//userId:userId
-//userSecure:toUserSecure];
-//
-//id<QredoKeychainArchiver>keychainArchiver = [QredoKeychainArchivers defaultQredoKeychainArchiver];
-//
-////get exsiting keychain
-//QredoKeychain * keyChain = [keychainArchiver loadQredoKeychainWithIdentifier:[sourceCredentials createSystemVaultIdentifier] error:error];
-//if (*error)return;
-//
-//[QredoLocalIndexDataStore renameStoreFrom:sourceCredentials to:destinationCredentials];
-//
-////save to  new iD
-//[keychainArchiver saveQredoKeychain:keyChain  withIdentifier:[destinationCredentials createSystemVaultIdentifier] error:error];
-//
-//}
 
 
 

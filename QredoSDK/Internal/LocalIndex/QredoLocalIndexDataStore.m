@@ -14,6 +14,7 @@
 @property (strong) NSManagedObjectContext *privateContext;
 @property (strong) NSManagedObjectContext *managedObjectContext;
 @property (strong) QredoUserCredentials *userCredentials;
+@property (strong) QredoVault *vault;
 @end
 
 @implementation QredoLocalIndexDataStore
@@ -31,9 +32,12 @@ static NSMutableDictionary *dataStoreDictionary;
 
 -(instancetype)initWithVault:(QredoVault *)vault {
     //we cache the Datastores so if a new client requests an already loaded data store, it returns the existing one - otherwise we have two clients access the sqllite separately
-    QredoUserCredentials *userCredentials = vault.userCredentials;
     
-    NSString *uniqueIdentifier = [userCredentials buildIndexName];
+    QredoUserCredentials *userCredentials = vault.userCredentials;
+    self.vault = vault;
+    
+    NSString *uniqueIdentifier =  [NSString stringWithFormat:@"%@-%@",[userCredentials buildIndexName],vault.vaultId];
+
     QredoLocalIndexDataStore *existingDataStore = [dataStoreDictionary objectForKey:uniqueIdentifier];
     
     if (existingDataStore)return existingDataStore;
@@ -48,6 +52,7 @@ static NSMutableDictionary *dataStoreDictionary;
     
     return self;
 }
+
 
 
 -(void)saveContext:(BOOL)wait {
@@ -82,14 +87,14 @@ static NSMutableDictionary *dataStoreDictionary;
 -(long)persistentStoreFileSize {
     long fileSize = 0;
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *path = [[QredoLocalIndexDataStore storeURL:self.userCredentials] path];
+    NSString *path = [[QredoLocalIndexDataStore storeURL:self.userCredentials vault:self.vault] path];
     
     fileSize = (long)[[fileManager attributesOfItemAtPath:path error:nil] fileSize];
     return fileSize;
 }
 
 
-+(NSURL *)storeURL:(QredoUserCredentials *)userCredentials {
++(NSURL *)storeURL:(QredoUserCredentials *)userCredentials vault:(QredoVault*)vault{
     if (_storeUrl)return _storeUrl;
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -111,7 +116,8 @@ static NSMutableDictionary *dataStoreDictionary;
     }
     
     NSString *userPart = [userCredentials buildIndexName];
-    NSString *filename = [NSString stringWithFormat:@"%@.%@.%@",bundleID,userPart,@"QredoLocalIndex.sqlite"];
+    NSString *vaultId = [vault.vaultId QUIDString];
+    NSString *filename = [NSString stringWithFormat:@"%@.%@.%@.%@",bundleID,userPart,vaultId,@"QredoLocalIndex.sqlite"];
     
     NSURL *storeURL = [qredoDirectory URLByAppendingPathComponent:filename];
     _storeUrl = _storeUrl;
@@ -120,35 +126,35 @@ static NSMutableDictionary *dataStoreDictionary;
 }
 
 
-+(void)renameStoreFrom:(QredoUserCredentials *)fromUserCredentials to:(QredoUserCredentials *)toUserCredentials {
-    NSURL *fromURL = [QredoLocalIndexDataStore storeURL:fromUserCredentials];
-    NSURL *toURL = [QredoLocalIndexDataStore storeURL:toUserCredentials];
-    
-    
-    //delete destination if it exists
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[toURL path]]){
-        [QredoLocalIndexDataStore deleteStore:toUserCredentials];
-    }
-    
-    NSError *error = nil;
-    
-    [[NSFileManager defaultManager] moveItemAtURL:fromURL toURL:toURL error:&error];
-    
-    if (error){
-        QredoLogError(@"Error renaming index during credentials change %@",error);
-    }
-}
+//+(void)renameStoreFrom:(QredoUserCredentials *)fromUserCredentials to:(QredoUserCredentials *)toUserCredentials {
+//    NSURL *fromURL = [QredoLocalIndexDataStore storeURL:fromUserCredentials];
+//    NSURL *toURL = [QredoLocalIndexDataStore storeURL:toUserCredentials];
+//    
+//    
+//    //delete destination if it exists
+//    if ([[NSFileManager defaultManager] fileExistsAtPath:[toURL path]]){
+//        [QredoLocalIndexDataStore deleteStore:toUserCredentials];
+//    }
+//    
+//    NSError *error = nil;
+//    
+//    [[NSFileManager defaultManager] moveItemAtURL:fromURL toURL:toURL error:&error];
+//    
+//    if (error){
+//        QredoLogError(@"Error renaming index during credentials change %@",error);
+//    }
+//}
 
 
-+(void)deleteStore:(QredoUserCredentials *)userCredentials {
-    NSError *error = nil;
-    
-    [[NSFileManager defaultManager] removeItemAtURL:[QredoLocalIndexDataStore storeURL:userCredentials] error:&error];
-    
-    if (error){
-        QredoLogError(@"Error deleting old index %@",error);
-    }
-}
+//+(void)deleteStore:(QredoUserCredentials *)userCredentials {
+//    NSError *error = nil;
+//    
+//    [[NSFileManager defaultManager] removeItemAtURL:[QredoLocalIndexDataStore storeURL:userCredentials] error:&error];
+//    
+//    if (error){
+//        QredoLogError(@"Error deleting old index %@",error);
+//    }
+//}
 
 
 -(void)buildStack:(QredoVault *)vault {
@@ -179,14 +185,14 @@ static NSMutableDictionary *dataStoreDictionary;
     options[NSSQLitePragmasOption] = @{ @"journal_mode":@"DELETE" };
     options[NSPersistentStoreFileProtectionKey] = NSFileProtectionComplete;
     
-    NSURL *storeURL = [QredoLocalIndexDataStore storeURL:self.userCredentials];
+    NSURL *storeURL = [QredoLocalIndexDataStore storeURL:self.userCredentials vault:vault];
     
     NSError *error = nil;
     [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error];
     NSAssert(psc,@"MetadataIndex: Failed to initialize NSPersistentStoreCoordinator: %@\n%@",[error localizedDescription],[error userInfo]);
     
     NSManagedObjectContext *moc = nil;
-    moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [moc setParentContext:privateMoc];
     
     [self setPrivateContext:privateMoc];
@@ -198,6 +204,7 @@ static NSMutableDictionary *dataStoreDictionary;
     NSLog(@"Model URL: %@",modelURL);
 #endif
 }
+
 
 
 @end

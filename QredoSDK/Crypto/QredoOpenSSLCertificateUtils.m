@@ -239,7 +239,6 @@ int verify_callback(int ok,X509_STORE_CTX *ctx) {
     
     certificate = X509_STORE_CTX_get_current_cert(ctx);
     err =       X509_STORE_CTX_get_error(ctx);
-    //depth =     X509_STORE_CTX_get_error_depth(ctx);
     
     NSString *errorDetails = @""; //Empty so nothing displayed if no error
     

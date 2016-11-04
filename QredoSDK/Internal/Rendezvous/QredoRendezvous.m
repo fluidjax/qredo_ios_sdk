@@ -690,8 +690,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *metadata,BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *systemVault = _vault;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@" 1 == 1 "];
     
-    [systemVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
+//CSM changed to use the INDEX!
+    [systemVault enumerateIndexUsingPredicate:predicate withBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
+//    [systemVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
+        
+        
         if ([vaultItemMetadata.dataType
              isEqualToString:kQredoConversationVaultItemType]){
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];

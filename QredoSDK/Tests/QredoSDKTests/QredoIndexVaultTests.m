@@ -213,6 +213,7 @@ NSNumber *testNumber;
 }
 
 
+
 -(void)testMetaDataCacheDisable {
     [vault metadataCacheEnabled:NO];
     NSInteger before = [qredoLocalIndex count];
@@ -580,7 +581,7 @@ NSNumber *testNumber;
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
@@ -608,7 +609,7 @@ NSNumber *testNumber;
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:[self randomUsername]
                           userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);

@@ -94,6 +94,8 @@
 {
     QredoClient *client;
     NSString *savedPassword;
+    NSString *savedUsername;
+    
 }
 
 @end
@@ -121,10 +123,11 @@
     
     
     savedPassword = [self randomPassword];
+    savedUsername = [self randomUsername];
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:savedUsername
                           userSecret:savedPassword
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -159,7 +162,7 @@
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
+                              userId:savedUsername
                           userSecret:savedPassword
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
