@@ -55,7 +55,7 @@
     GUARDF(key.length == kCCKeySizeAES256,
            @"Key must be %d bytes.", kCCKeySizeAES256);
     
-    GUARDF((iv && iv.length == kCCBlockSizeAES128),
+    GUARDF((iv && iv.length == kCCBlockSizeAES128), //note block size is same for all key lengths - ie.128bit
            @"IV must be %d bytes.", kCCBlockSizeAES128);
     
     NSMutableData *output = [NSMutableData dataWithLength:(input.length + kCCBlockSizeAES128)];
@@ -97,9 +97,12 @@
 
 
 +(NSData *)hkdfExpandSha256WithKey:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength {
+    //based on the required output Length calucate the number of iterations required
     int iterations = (int)ceil((double)outputLength / (double)CC_SHA256_DIGEST_LENGTH);
     NSData *mixin = [NSData data];
+    
     NSMutableData *results = [NSMutableData data];
+    
     
     for (int i = 0; i < iterations; i++){
         CCHmacContext ctx;
@@ -118,19 +121,30 @@
         [results appendData:stepResult];
         mixin = [stepResult copy];
     }
-    
+    //from the result only return the required length, discarding anything above
     return [[NSData dataWithData:results] subdataWithRange:NSMakeRange(0,outputLength)];
 }
 
 
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info {
+    //Convenience wrapper to provide 256bit output keys
     return [self hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:CC_SHA256_DIGEST_LENGTH];
 }
 
 
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
+    //Taken from https://tools.ietf.org/html/rfc5869
+    // Additional resources https://github.com/FredericJacobs/HKDFKit
+    
+    //stage 1: From input material generates a psuedo random key
+    //         This redistributes unevenly distributed entropy in the source material
     NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:salt initialKeyMaterial:ikm];
+    
+    //Stage 2: Exapnds  the key into several additional random keys, concatenates them into a longer key,
+    // returns    longerKey.sub(0,requiredKeylength)
     NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:prk info:info outputLength:outputLength];
+    
+    
     return okm;
 }
 
