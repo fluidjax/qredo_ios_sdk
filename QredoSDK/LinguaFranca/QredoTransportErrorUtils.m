@@ -36,6 +36,7 @@
             break;
             
         case QredoTransportErrorSendAfterTransportClosed:
+            NSLog(@"************************Tried to send after the transport has been closed");
             description = @"Tried to send after the transport has been closed.";
             break;
             

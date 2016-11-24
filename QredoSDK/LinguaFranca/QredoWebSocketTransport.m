@@ -120,11 +120,14 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
                                      userInfo:nil];
         return;
     }
+
+//We dont really need to notify after the transport has been closed
+//Closing transport occurs automatically when WebSocket/Http transport are dealloced or explicitly closed
     
-    if (self.transportClosed){
-        [self notifyListenerOfErrorCode:QredoTransportErrorSendAfterTransportClosed userData:userData];
-        return;
-    }
+//    if (self.transportClosed){
+//        [self notifyListenerOfErrorCode:QredoTransportErrorSendAfterTransportClosed userData:userData];
+//        return;
+//    }
     
     if (!_webSocketOpen){
         //This could happen on the first send, as the connection/subscription setup runs in the background and may not be ready yet.

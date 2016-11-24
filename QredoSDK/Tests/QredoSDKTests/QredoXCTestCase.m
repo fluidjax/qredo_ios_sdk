@@ -17,18 +17,13 @@ static const int testTimeOut = 30;
     [super setUp];
     [QredoLogger colour:NO];
     [QredoLogger setLogLevel:QREDO_DEBUG_LEVEL];
+
+    k_TEST_APPID         = SERVER_APPID;
+    k_TEST_APPSECRET    = SERVER_APPSECRET;
+
+    NSAssert(k_TEST_APPID,@"Invalid AppID in");
+    NSAssert(k_TEST_APPSECRET,@"Invalid k_TEST_APPSECRET in");
     
-    if ([QREDO_SERVER_URL isEqualToString:@"api.oderq.com"]){
-        //STAGING
-        k_TEST_APPID         = STAGING_TEST_APPID;
-        k_TEST_APPSECRET     = STAGING_TEST_APPSECRET;       //dev staging
-    } else if ([QREDO_SERVER_URL isEqualToString:@"api.qredo.com"]){
-        //PRODUCTION
-        k_TEST_APPID         = PRODUCTION_TEST_APPID;
-        k_TEST_APPSECRET     = PRODUCTION_TEST_APPSECRET;       //production
-    } else {
-        NSAssert(false,@"Invalid server specified in MasterConfig.h");
-    }
 }
 
 

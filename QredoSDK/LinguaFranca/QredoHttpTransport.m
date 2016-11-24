@@ -98,10 +98,11 @@ static const NSUInteger maxNumberOfConnections = 10;
     }
     
     if (self.transportClosed){
-        dispatch_sync(self.sendQueue,^{
-            [self notifyListenerOfErrorCode:QredoTransportErrorSendAfterTransportClosed userData:userData];
-            return;
-        });
+        //Do nothing - we dont need to know about closed tranports
+//        dispatch_sync(self.sendQueue,^{
+//            [self notifyListenerOfErrorCode:QredoTransportErrorSendAfterTransportClosed userData:userData];
+//            return;
+//        });
     } else {
         dispatch_sync(self.sendQueue,^{
             [self sendPayloadInternal:payload userData:userData];

@@ -91,4 +91,5 @@ typedef NS_ENUM (NSInteger,QredoVaultItemOrigin) {
 -(void)removeMetadataIndexObserver;
 -(void)removeAllObservers;
 -(BOOL)isSystemVault;
+-(void)purgeQueue;
 @end

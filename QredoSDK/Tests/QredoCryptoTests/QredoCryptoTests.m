@@ -61,12 +61,12 @@
                        e0e1e2e3e4e5e6e7e8e9eaebecedeeef\
                        f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"];
     int length = 82;
-    NSData *expected    = [QredoUtils hexStringToData:@"b11e398dc80327a1c8e7f78c596a4934\
-                           4f012eda2d4efad8a050cc4c19afa97c\
-                           59045a99cac7827271cb41c65e590e09\
-                           da3275600c2f09b8367793a9aca3db71\
-                           cc30c58179ec3e87c14c01d5c1f3434f\
-                           1d87"];
+    NSData *expected= [QredoUtils hexStringToData:@"b11e398dc80327a1c8e7f78c596a4934\
+                       4f012eda2d4efad8a050cc4c19afa97c\
+                       59045a99cac7827271cb41c65e590e09\
+                       da3275600c2f09b8367793a9aca3db71\
+                       cc30c58179ec3e87c14c01d5c1f3434f\
+                       1d87"];
     
     NSData *okm = [QredoCrypto hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:length];
     XCTAssertTrue([okm isEqualToData:expected],@"hkdf fails RFC Test2");

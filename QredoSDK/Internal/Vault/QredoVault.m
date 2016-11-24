@@ -149,6 +149,13 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     return self;
 }
 
+-(void)purgeQueue{
+    if (_queue){
+        dispatch_suspend(_queue);
+        _queue = nil;
+    }
+}
+
 
 -(QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type {
     NSString *constructedName = [NSString stringWithFormat:@"%@.%@@%@",[self.vaultId QUIDString],name,type];

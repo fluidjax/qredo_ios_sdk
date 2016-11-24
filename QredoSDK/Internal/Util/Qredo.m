@@ -37,6 +37,9 @@ NSString *const QredoClientOptionServiceURL                 = @"com.qredo.option
 static NSString *const QredoClientDefaultServiceURL         = @"https://" QREDO_SERVER_URL  @":443/services";
 static NSString *const QredoClientWebSocketsServiceURL      = @"wss://"   QREDO_SERVER_URL  @":443/services";
 
+static NSString *const QredoClientNONSSLServiceURL          = @"http://"  QREDO_SERVER_URL  @":8080/services";
+static NSString *const QredoClientNONSSLWebSocketsServiceURL= @"ws://"   QREDO_SERVER_URL  @":8080/services";
+
 
 NSString *const QredoRendezvousURIProtocol                  = @"qrp:";
 static NSString *const QredoKeychainOperatorName            = @"Qredo Mock Operator";
@@ -170,19 +173,29 @@ NSString *systemVaultKeychainArchiveIdentifier;
 +(NSURL *)chooseServiceURL:(QredoClientOptions *)options {
     long transportType = options.transportType ? options.transportType : QredoClientOptionsTransportTypeHTTP;
     NSString *serviceURLString = options.serverURL;
-    
     NSURL *serviceURL;
-    
     if (serviceURLString)return [NSURL URLWithString:serviceURLString];
     
-    switch (transportType){
-        case QredoClientOptionsTransportTypeHTTP:
-            serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
-            break;
-            
-        case QredoClientOptionsTransportTypeWebSockets:
-            serviceURL = [NSURL URLWithString:QredoClientWebSocketsServiceURL];
-            break;
+    
+    if ([QREDO_SERVER_URL isEqualToString:@"localhost"]){
+        switch (transportType){
+            case QredoClientOptionsTransportTypeHTTP:
+                serviceURL = [NSURL URLWithString:QredoClientNONSSLServiceURL];
+                break;
+            case QredoClientOptionsTransportTypeWebSockets:
+                serviceURL = [NSURL URLWithString:QredoClientNONSSLWebSocketsServiceURL];
+                break;
+        }
+        
+    }else{
+        switch (transportType){
+            case QredoClientOptionsTransportTypeHTTP:
+                serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
+                break;
+            case QredoClientOptionsTransportTypeWebSockets:
+                serviceURL = [NSURL URLWithString:QredoClientWebSocketsServiceURL];
+                break;
+        }
     }
     return serviceURL;
 }
@@ -320,11 +333,14 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)closeSession {
     //Need to terminate transport, which ends associated threads and subscriptions etc.
     QredoLogInfo(@"Close session");
+    [self.defaultVault purgeQueue];
+    [self.systemVault purgeQueue];
+    
     [self.defaultVault removeAllObservers];
     [self.systemVault removeAllObservers];
-    
+
     [_serviceInvoker terminate];
-    
+
     
     //TODO: DH - somehow indicate that the client has been closed and therefore cannot be used again.
 }
