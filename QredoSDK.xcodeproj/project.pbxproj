@@ -2947,7 +2947,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				QREDO_DEBUG_LEVEL = 1;
-				QREDO_SERVER_URL = api.qredo.com;
+				QREDO_SERVER_URL = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2979,7 +2979,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				QREDO_DEBUG_LEVEL = 1;
-				QREDO_SERVER_URL = api.qredo.com;
+				QREDO_SERVER_URL = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3128,7 +3128,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.QredoXDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				QREDO_SERVER_URL = api.qredo.com;
 				SDKROOT = iphoneos;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -3178,7 +3177,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.qredo.QredoXDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				QREDO_SERVER_URL = api.qredo.com;
 				SDKROOT = iphoneos;
 				STRIP_STYLE = debugging;
 				VALIDATE_PRODUCT = YES;
