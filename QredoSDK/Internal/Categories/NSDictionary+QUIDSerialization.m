@@ -12,14 +12,11 @@
     
     for (id key in keys){
         id newKey = key;
-        
         if ([key isKindOfClass:[QredoQUID class]]){
             newKey = [key QUIDString];
         }
-        
         [result setObject:[self objectForKey:key] forKey:newKey];
     }
-    
     return [result copy];
 }
 

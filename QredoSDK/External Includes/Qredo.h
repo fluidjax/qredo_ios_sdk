@@ -1,6 +1,6 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
-
+#import "NSDictionary+QUIDSerialization.h"
 #import "QredoConversation.h"
 #import "QredoConversationMessage.h"
 #import "QredoErrorCodes.h"
