@@ -18,6 +18,7 @@
 #import "QredoVaultServerAccess.h"
 #import "QredoLocalIndexDataStore.h"
 #import "QredoNetworkTime.h"
+#import "NSDictionary+QUIDSerialization.h"
 
 
 NSString *const QredoVaultOptionSequenceId = @"com.qredo.vault.sequence.id.";
@@ -688,8 +689,23 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     [defaults setObject:[_sequenceId data] forKey:self.sequenceIdKeyForDefaults];
     
+
     if (_highwatermark){
-        [defaults setObject:[_highwatermark.sequenceState quidToStringDictionary] forKey:self.hwmKeyForDefaults];
+        
+        NSDictionary *dict = _highwatermark.sequenceState;
+        
+        NSMutableDictionary *result = [NSMutableDictionary dictionary];
+        NSArray *keys = [dict allKeys];
+        
+        for (id key in keys){
+            id newKey = key;
+            if ([key isKindOfClass:[QredoQUID class]]){
+                newKey = [key QUIDString];
+            }
+            [result setObject:[dict objectForKey:key] forKey:newKey];
+        }
+        [defaults setObject:[result copy] forKey:self.hwmKeyForDefaults];
+
     } else {
         [defaults removeObjectForKey:self.hwmKeyForDefaults];
     }
@@ -708,9 +724,15 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     }
     
     NSDictionary *sequenceState = [defaults objectForKey:self.hwmKeyForDefaults];
-    
     if (sequenceState){
-        _highwatermark = [QredoVaultHighWatermark watermarkWithSequenceState:[sequenceState stringToQuidDictionary]];
+        NSMutableDictionary *result = [NSMutableDictionary dictionary];
+        NSArray *keys = [sequenceState allKeys];
+        for (id key in keys){
+            QredoQUID *newKey = [[QredoQUID alloc] initWithQUIDString:key];
+            
+            [result setObject:[sequenceState objectForKey:key] forKey:newKey];
+        }
+        _highwatermark = [QredoVaultHighWatermark watermarkWithSequenceState:result];
     } else {
         _highwatermark = nil;
     }
