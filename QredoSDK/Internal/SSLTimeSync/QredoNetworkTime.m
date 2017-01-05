@@ -155,9 +155,12 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
 
 
 -(void)addServer:(NSString *)urlString {
-    SSLTimeSyncWorker *server = [[SSLTimeSyncWorker alloc] initWithURLString:urlString];
     
-    [self.serversList addObject:server];
+    NSMutableArray *newServerList = [self.serversList mutableCopy];
+    SSLTimeSyncWorker *server = [[SSLTimeSyncWorker alloc] initWithURLString:urlString];
+    [newServerList addObject:server];
+    self.serversList = newServerList;
+    
     dispatch_async(self.queue,^{
         [server retrieveDate];
     });
