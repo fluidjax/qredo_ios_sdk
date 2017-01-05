@@ -6,7 +6,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoLoggerPrivate.h"
 #import "rsapss.h"
-#import "QredoCertificateUtils.h"
+//#import "QredoCertificateUtils.h"
 
 @implementation QredoCrypto
 
