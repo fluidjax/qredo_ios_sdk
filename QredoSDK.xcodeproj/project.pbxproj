@@ -1280,6 +1280,7 @@
 		666059C61BD5064300EC8D6C /* Crypto */ = {
 			isa = PBXGroup;
 			children = (
+				83CEFB321E1E57B500AD8468 /* KeyModels */,
 				666059701BD505FE00EC8D6C /* CryptoImpl.h */,
 				666059711BD505FE00EC8D6C /* CryptoImplV1.h */,
 				666059721BD505FE00EC8D6C /* CryptoImplV1.m */,
@@ -1294,33 +1295,9 @@
 				6660597B1BD505FE00EC8D6C /* QredoDerUtils.m */,
 				6660597C1BD505FE00EC8D6C /* QredoDhPrivateKey.h */,
 				6660597D1BD505FE00EC8D6C /* QredoDhPrivateKey.m */,
-				6660597E1BD505FE00EC8D6C /* QredoDhPublicKey.h */,
-				6660597F1BD505FE00EC8D6C /* QredoDhPublicKey.m */,
-				666059801BD505FE00EC8D6C /* QredoED25519SigningKey.h */,
-				666059811BD505FE00EC8D6C /* QredoED25519SigningKey.m */,
-				666059821BD505FE00EC8D6C /* QredoED25519VerifyKey.h */,
-				666059831BD505FE00EC8D6C /* QredoED25519VerifyKey.m */,
-				666059841BD505FE00EC8D6C /* QredoEllipticCurvePoint.h */,
-				666059851BD505FE00EC8D6C /* QredoEllipticCurvePoint.m */,
-				666059861BD505FE00EC8D6C /* QredoKey.h */,
-				666059871BD505FE00EC8D6C /* QredoKey.m */,
-				666059881BD505FE00EC8D6C /* QredoKeyPair.h */,
-				666059891BD505FE00EC8D6C /* QredoKeyPair.m */,
 				6660598A1BD505FE00EC8D6C /* QredoOpenSSLCertificateUtils_Private.h */,
 				6660598B1BD505FE00EC8D6C /* QredoOpenSSLCertificateUtils.h */,
 				6660598C1BD505FE00EC8D6C /* QredoOpenSSLCertificateUtils.m */,
-				6660598D1BD505FE00EC8D6C /* QredoPrivateKey.h */,
-				6660598E1BD505FE00EC8D6C /* QredoPrivateKey.m */,
-				6660598F1BD505FE00EC8D6C /* QredoPublicKey.h */,
-				666059901BD505FE00EC8D6C /* QredoPublicKey.m */,
-				666059911BD505FE00EC8D6C /* QredoRsaBlindSignature.c */,
-				666059921BD505FE00EC8D6C /* QredoRsaBlindSignature.h */,
-				666059931BD505FE00EC8D6C /* QredoRsaPrivateKey.h */,
-				666059941BD505FE00EC8D6C /* QredoRsaPrivateKey.m */,
-				666059951BD505FE00EC8D6C /* QredoRsaPublicKey.h */,
-				666059961BD505FE00EC8D6C /* QredoRsaPublicKey.m */,
-				666059971BD505FE00EC8D6C /* QredoSecKeyRefPair.h */,
-				666059981BD505FE00EC8D6C /* QredoSecKeyRefPair.m */,
 				666059991BD505FE00EC8D6C /* rsapss.c */,
 				6660599A1BD505FE00EC8D6C /* rsapss.h */,
 			);
@@ -1733,6 +1710,37 @@
 			);
 			name = Tests;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		83CEFB321E1E57B500AD8468 /* KeyModels */ = {
+			isa = PBXGroup;
+			children = (
+				6660597E1BD505FE00EC8D6C /* QredoDhPublicKey.h */,
+				6660597F1BD505FE00EC8D6C /* QredoDhPublicKey.m */,
+				666059801BD505FE00EC8D6C /* QredoED25519SigningKey.h */,
+				666059811BD505FE00EC8D6C /* QredoED25519SigningKey.m */,
+				666059821BD505FE00EC8D6C /* QredoED25519VerifyKey.h */,
+				666059831BD505FE00EC8D6C /* QredoED25519VerifyKey.m */,
+				666059841BD505FE00EC8D6C /* QredoEllipticCurvePoint.h */,
+				666059851BD505FE00EC8D6C /* QredoEllipticCurvePoint.m */,
+				6660598D1BD505FE00EC8D6C /* QredoPrivateKey.h */,
+				6660598E1BD505FE00EC8D6C /* QredoPrivateKey.m */,
+				6660598F1BD505FE00EC8D6C /* QredoPublicKey.h */,
+				666059901BD505FE00EC8D6C /* QredoPublicKey.m */,
+				666059911BD505FE00EC8D6C /* QredoRsaBlindSignature.c */,
+				666059921BD505FE00EC8D6C /* QredoRsaBlindSignature.h */,
+				666059861BD505FE00EC8D6C /* QredoKey.h */,
+				666059871BD505FE00EC8D6C /* QredoKey.m */,
+				666059881BD505FE00EC8D6C /* QredoKeyPair.h */,
+				666059891BD505FE00EC8D6C /* QredoKeyPair.m */,
+				666059931BD505FE00EC8D6C /* QredoRsaPrivateKey.h */,
+				666059941BD505FE00EC8D6C /* QredoRsaPrivateKey.m */,
+				666059951BD505FE00EC8D6C /* QredoRsaPublicKey.h */,
+				666059961BD505FE00EC8D6C /* QredoRsaPublicKey.m */,
+				666059971BD505FE00EC8D6C /* QredoSecKeyRefPair.h */,
+				666059981BD505FE00EC8D6C /* QredoSecKeyRefPair.m */,
+			);
+			name = KeyModels;
 			sourceTree = "<group>";
 		};
 		83EC3AFB1CC79FB700A55271 /* SSLTimeSync */ = {
