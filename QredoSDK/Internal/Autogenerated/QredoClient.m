@@ -7296,6 +7296,28 @@
               multiResponse:YES];
 }
 
+-(void)subscribeWithPushQueueId:(QLFConversationQueueId *)queueId
+                notificationId:(NSData *)notificationId
+             completionHandler:(void (^)(QLFConversationItemWithSequenceValue *result,NSError *error))completionHandler {
+    
+    [_invoker invokeService:@"Conversations"
+                  operation:@"subscribeWithPush"
+              requestWriter:^(QredoWireFormatWriter *writer) {
+                  [QredoPrimitiveMarshallers quidMarshaller](queueId,writer);
+                  [QredoPrimitiveMarshallers byteSequenceMarshaller](notificationId,writer);
+              }
+             responseReader:^(QredoWireFormatReader *reader) {
+                 QLFConversationItemWithSequenceValue *result = [QLFConversationItemWithSequenceValue unmarshaller](reader);
+                 completionHandler(result,nil);
+             }
+               errorHandler:^(NSError *error) {
+                   completionHandler(nil,error);
+               }
+              multiResponse:YES];
+}
+
+
+
 
 @end
 
