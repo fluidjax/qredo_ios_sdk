@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0810"
+   LastUpgradeVersion = "0820"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
-               BuildableName = "QredoSDKTests.xctest"
-               BlueprintName = "QredoSDKTests"
+               BlueprintIdentifier = "839BD2681E409BDE000CBE06"
+               BuildableName = "PushTests.xctest"
+               BlueprintName = "PushTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,39 +46,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
-               BuildableName = "QredoSDKTests.xctest"
-               BlueprintName = "QredoSDKTests"
+               BlueprintIdentifier = "839BD2681E409BDE000CBE06"
+               BuildableName = "PushTests.xctest"
+               BlueprintName = "PushTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "QredoRendezvousMQTTTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousRsa2048PemHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousRsa4096PemHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousRsaPemCommonHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultUpdateMQTTTests">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
-            BuildableName = "QredoSDKTests.xctest"
-            BlueprintName = "QredoSDKTests"
+            BlueprintIdentifier = "839BD2681E409BDE000CBE06"
+            BuildableName = "PushTests.xctest"
+            BlueprintName = "PushTests"
             ReferencedContainer = "container:QredoSDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -98,55 +78,13 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
-            BuildableName = "QredoSDKTests.xctest"
-            BlueprintName = "QredoSDKTests"
+            BlueprintIdentifier = "839BD2681E409BDE000CBE06"
+            BuildableName = "PushTests.xctest"
+            BlueprintName = "PushTests"
             ReferencedContainer = "container:QredoSDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "OS_ACTIVITY_MODE"
-            value = "disable"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
       <AdditionalOptions>
-         <AdditionalOption
-            key = "MallocStackLogging"
-            value = ""
-            isEnabled = "YES">
-         </AdditionalOption>
-         <AdditionalOption
-            key = "DYLD_PRINT_LIBRARIES"
-            value = ""
-            isEnabled = "YES">
-         </AdditionalOption>
-         <AdditionalOption
-            key = "DYLD_INSERT_LIBRARIES"
-            value = "/usr/lib/libgmalloc.dylib"
-            isEnabled = "YES">
-         </AdditionalOption>
-         <AdditionalOption
-            key = "DYLD_PRINT_APIS"
-            value = ""
-            isEnabled = "YES">
-         </AdditionalOption>
-         <AdditionalOption
-            key = "NSZombieEnabled"
-            value = "YES"
-            isEnabled = "YES">
-         </AdditionalOption>
-         <AdditionalOption
-            key = "MallocGuardEdges"
-            value = ""
-            isEnabled = "YES">
-         </AdditionalOption>
-         <AdditionalOption
-            key = "MallocScribble"
-            value = ""
-            isEnabled = "YES">
-         </AdditionalOption>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
@@ -155,15 +93,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
-            BuildableName = "QredoSDKTests.xctest"
-            BlueprintName = "QredoSDKTests"
-            ReferencedContainer = "container:QredoSDK.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

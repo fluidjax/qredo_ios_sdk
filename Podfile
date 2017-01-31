@@ -2,13 +2,14 @@ xcodeproj 'QredoSDK.xcodeproj/'
 
 platform :ios, '8.0'
 
-inhibit_all_warnings!
+#inhibit_all_warnings!
 
 
 target 'TestHost' do
     pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :inhibit_warnings => true
+	
 end
 
 target 'QredoSDKTests' do
