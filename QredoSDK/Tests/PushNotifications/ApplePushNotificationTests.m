@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "QredoXCTestCase.h"
+#import "AppDelegate.h"
 @import UserNotifications;
 
 @interface ApplePushNotificationTests : QredoXCTestCase
@@ -16,10 +17,13 @@
 
 @implementation ApplePushNotificationTests
     XCTestExpectation *waitForToken;
-
+    AppDelegate *hostAppdelegate;
+    NSData *apnToken;
 
 - (void)setUp {
     [super setUp];
+    apnToken = nil;
+    hostAppdelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     
 #if (TARGET_OS_SIMULATOR)
     XCTFail(@"Can't run Push tests in simulator");
@@ -44,7 +48,35 @@
 }
 
 
+
+
+
+-(void)appDelegateRequestAPNToken{
+    
+    __block XCTestExpectation *apnTokenExpectiation = [self expectationWithDescription:@"Wait for APN Token"];
+    
+    
+    [hostAppdelegate registerForAPNTokenWithCompletion:^(NSError *error,NSData *token) {
+        NSLog(@"Token registration complete %@", token);
+        apnToken = token;
+        [apnTokenExpectiation fulfill];
+    }];
+    
+    
+    
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
+        apnTokenExpectiation = nil;
+    }];
+
+    
+    
+    
+;
+}
+
+
 -(void)testGood{
+    [self appDelegateRequestAPNToken];
     XCTAssertTrue(1==1,@"good");
 }
 

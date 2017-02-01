@@ -9,10 +9,13 @@
 #import "AppDelegate.h"
 
 @interface AppDelegate ()
+@property (nonatomic,copy) void (^registerAPNcompletionBlock)(NSError *error, NSData *token);
 
 @end
 
 @implementation AppDelegate
+
+
 
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -138,6 +141,42 @@
         }
     }
 }
+
+#pragma - APN
+
+-(void)registerForAPNTokenWithCompletion:(void (^)(NSError *error, NSData *token))completionHandler{
+    
+    self.registerAPNcompletionBlock = completionHandler;
+    
+    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+    UNAuthorizationOptions options = UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge;
+    
+    
+    [center requestAuthorizationWithOptions:options
+                          completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                              if (!granted) {
+                                  NSLog(@"Something went wrong");
+                              }else{
+                                  [[UIApplication sharedApplication] registerForRemoteNotifications];
+                              }
+                              
+                          }];
+}
+
+
+
+- (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
+    NSLog(@"Remote notification registaion success");
+    self.registerAPNcompletionBlock(nil, devToken);
+
+}
+
+- (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
+    NSLog(@"Remote notification support is unavailable due to error: %@", err);
+    self.registerAPNcompletionBlock(err, nil);
+}
+
+
 
 
 @end
