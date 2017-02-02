@@ -37,6 +37,7 @@ NSString *const kQredoConversationVaultItemLabelId = @"id";
 NSString *const kQredoConversationVaultItemLabelTag = @"tag";
 NSString *const kQredoConversationVaultItemLabelHwm = @"hwm";
 NSString *const kQredoConversationVaultItemLabelType = @"type";
+NSString *const kQredoConversationQueueIDUserDefaulstKey = @"ConversationQueueIDLookup";
 
 
 //Bit 0   //Your public key has been dictated to you over the phone by the other party
@@ -175,6 +176,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     QredoObserverList *_observers;
     QredoUpdateListener *_updateListener;
+    
+    BOOL _requirePushNotifications;
+    QLFNotificationTarget *_pushDeviceToken;
+    
 }
 
 @property (nonatomic,readwrite) QredoClient *client;
@@ -220,7 +225,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _updateListener = [QredoUpdateListener new];
     _updateListener.dataSource = self;
     _updateListener.delegate = self;
-    
+    [self restorePushState];
     return self;
 }
 
@@ -247,10 +252,50 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     //this method is called when we are loading the conversation from the vault, therefore, we don't need to store it again. Only generating keys here
     [self generateKeysWithPrivateKey:_myPrivateKey publicKey:_yourPublicKey myPublicKey:_myPublicKey rendezvousOwner:_metadata.amRendezvousOwner];
     
-    
+    [self restorePushState];
     return self;
 }
 
+
+#pragma Save/Load Push Notification state of Conversation between sessions
+
+-(void)restorePushState{
+    if (!_inboundQueueId)return;
+    if (!_metadata.conversationId)return;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *queueIDConversationLookup = [defaults objectForKey:kQredoConversationQueueIDUserDefaulstKey];
+    
+    if ([queueIDConversationLookup objectForKey:_inboundQueueId]){
+        _requirePushNotifications=YES;
+    }else{
+        _requirePushNotifications=NO;
+    }
+}
+
+
+-(void)savePushState{
+    //save a lookup of Incoming QueueID against ConversationID in NSUserDEfaults (may migrate to some other data store later)
+    if (!_inboundQueueId)return;
+    if (!_metadata.conversationId)return;
+    
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *queueIDConversationLookup = [[defaults objectForKey:kQredoConversationQueueIDUserDefaulstKey] mutableCopy];
+    
+    if (_requirePushNotifications){
+        [queueIDConversationLookup setObject:_metadata.conversationId forKey:_inboundQueueId];
+    }else{
+        [queueIDConversationLookup removeObjectForKey:_inboundQueueId];
+    }
+
+    [defaults setObject:[queueIDConversationLookup copy] forKey:kQredoConversationQueueIDUserDefaulstKey];
+    [defaults synchronize];
+}
+
+
+
+#pragma
 
 -(void)loadHighestHWMWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     if (self.metadata.isPersistent){
@@ -953,6 +998,26 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 }
 
 
+
+-(void)addConversationObserver:(id<QredoConversationObserver>)observer withPushNotifications:(NSData*)deviceToken{
+    _pushDeviceToken = [QLFNotificationTarget apnsDeviceTokenWithToken:deviceToken];
+    _requirePushNotifications = YES;
+    
+    QredoLogInfo(@"Added conversation observer");
+    [_observers addObserver:observer];
+    
+    if (!_updateListener.isListening){
+        [_updateListener startListening];
+    }
+
+    
+    
+}
+
+
+
+
+
 -(void)removeConversationObserver:(id<QredoConversationObserver>)observer {
     QredoLogInfo(@"Remove conversation observer");
     [_observers removeObserver:observer];
@@ -1114,22 +1179,57 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     }
     
     //Subscription is an inbound only service
-    [_conversationService subscribeWithQueueId:_inboundQueueId
+    
+    if (_requirePushNotifications && _pushDeviceToken){
+        NSLog(@"*** susbcribe With QueueID & Push");
+        [_conversationService subscribeWithPushWithQueueId:_inboundQueueId
+                                            notificationId:_pushDeviceToken
+                                 completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
+                                     if (error){
+                                         subscriptionTerminatedHandler(error);
+                                         return;
+                                     }
+                                     if (!result){
+                                         return;
+                                     }
+                                     
+                                     QLFConversationQueryItemsResult *resultItems = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
+                                                                                                                                          maxSequenceValue:result.sequenceValue
+                                                                                                                                                   current:0];
+                                     
+                                     //Subscriptions (or pseudo subscriptions) should not exclude control messages
+                                     [self  enumerateBodyWithResult:resultItems
+                                              conversationItemIndex:0
+                                                           incoming:YES
+                                             excludeControlMessages:NO
+                                                              block:^(QredoConversationMessage *message,BOOL *stop) {
+                                                                  block(message);
+                                                              }
+                                                  completionHandler:^(NSError *error) {
+                                                      if (error){
+                                                          subscriptionTerminatedHandler(error);
+                                                      }
+                                                  }
+                                               highWatermarkHandler:highWatermarkHandler];
+                                 }];
+        
+        
+    }else{
+        NSLog(@"***** susbcribeWith QueueID & NO Push");
+                [_conversationService subscribeWithQueueId:_inboundQueueId
                                      signature:ownershipSignature
                              completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
                                  if (error){
                                      subscriptionTerminatedHandler(error);
                                      return;
                                  }
-                                 
                                  if (!result){
                                      return;
                                  }
                                  
-                                 QLFConversationQueryItemsResult *resultItems
-                                 = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
-                                                                                         maxSequenceValue:result.sequenceValue
-                                                                                                  current:0];
+                                 QLFConversationQueryItemsResult *resultItems = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
+                                                                                                                                      maxSequenceValue:result.sequenceValue
+                                                                                                                                               current:0];
                                  
                                  //Subscriptions (or pseudo subscriptions) should not exclude control messages
                                  [self  enumerateBodyWithResult:resultItems
@@ -1146,9 +1246,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                               }
                                            highWatermarkHandler:highWatermarkHandler];
                              }];
+    }
     
-    [self qredoUpdateListener:_updateListener
-    pollWithCompletionHandler:^(NSError *error) {
+    [self qredoUpdateListener:_updateListener pollWithCompletionHandler:^(NSError *error) {
         if (error){
             subscriptionTerminatedHandler(error);
             return;

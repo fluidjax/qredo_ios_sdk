@@ -171,13 +171,14 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 +(NSURL *)chooseServiceURL:(QredoClientOptions *)options {
-    long transportType = options.transportType ? options.transportType : QredoClientOptionsTransportTypeHTTP;
+//    long transportType = options.transportType ? options.transportType : QredoClientOptionsTransportTypeHTTP;
+    long transportType = options.transportType ? options.transportType : QredoClientOptionsTransportTypeWebSockets;
     NSString *serviceURLString = options.serverURL;
     NSURL *serviceURL;
     if (serviceURLString)return [NSURL URLWithString:serviceURLString];
     
     
-    if ([QREDO_SERVER_URL isEqualToString:@"localhost"]){
+    if ([USE_HTTP isEqualToString:@"YES"] ){
         switch (transportType){
             case QredoClientOptionsTransportTypeHTTP:
                 serviceURL = [NSURL URLWithString:QredoClientNONSSLServiceURL];

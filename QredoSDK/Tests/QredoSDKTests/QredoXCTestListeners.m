@@ -11,6 +11,7 @@ XCTestExpectation *timeoutExpectation;
 
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     if (self.expectation){
+        NSLog(@"2Incoming Listener response");
         self.incomingConversation = conversation;
         [self.expectation fulfill];
     }

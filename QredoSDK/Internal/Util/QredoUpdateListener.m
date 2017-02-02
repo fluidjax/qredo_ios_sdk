@@ -24,6 +24,7 @@
     
     //Indicates that the Query after Subscribe has completed, and no more entries to process
     BOOL _queryAfterSubscribeComplete;
+
 }
 
 @end
@@ -170,15 +171,11 @@
     _dedupeNecessary = YES;
     _queryAfterSubscribeComplete = YES;
     
-    [self.dataSource
-     qredoUpdateListener:self
-     subscribeWithCompletionHandler:^(NSError *error) {
+    [self.dataSource  qredoUpdateListener:self   subscribeWithCompletionHandler:^(NSError *error) {
          _queryAfterSubscribeComplete = YES;
          
          if (!error){
-             [self.dataSource
-              qredoUpdateListener:self
-              pollWithCompletionHandler:^(NSError *error) {
+             [self.dataSource qredoUpdateListener:self  pollWithCompletionHandler:^(NSError *error) {
                   if (completionHandler) completionHandler(error);
               }];
          } else {

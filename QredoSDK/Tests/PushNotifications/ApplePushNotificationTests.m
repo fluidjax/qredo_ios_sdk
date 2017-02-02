@@ -9,11 +9,72 @@
 #import <XCTest/XCTest.h>
 #import "QredoXCTestCase.h"
 #import "AppDelegate.h"
+#import <Foundation/Foundation.h>
+#import "QredoTestUtils.h"
+#import "QredoPrivate.h"
+#import "ConversationTests.h"
+#import "QredoLoggerPrivate.h"
+#import "Qredo.h"
+#import "QredoPrivate.h"
+#import "QredoNetworkTime.h"
+#import "QredoXCTestListeners.h"
+
 @import UserNotifications;
 
+static  NSString* testMessage = @"this is a test message for push";
+
 @interface ApplePushNotificationTests : QredoXCTestCase
+@property (atomic) XCTestExpectation *didReceiveResponseExpectation;
+@property (atomic) XCTestExpectation *didReceiveMessageExpectation;
+@property (atomic) XCTestExpectation *didRecieveOtherPartyHasLeft;
+@property (atomic) XCTestExpectation *didReceiveRendezvousExpectation;
+
 
 @end
+
+//Define the listener
+
+
+
+
+@interface ApplePushTestConversationListener :NSObject <QredoConversationObserver>
+@property ApplePushNotificationTests *test;
+@property NSString *expectedMessageValue;
+@property BOOL failed;
+@property BOOL listening;
+@property NSNumber *fulfilledtime;
+@end
+
+
+@implementation ApplePushTestConversationListener
+
+
+-(void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation {
+    @synchronized(_test) {
+        QLog(@"qredoConversation:didReceiveNewMessage:");
+        
+        if (_listening){
+            if (_test.didRecieveOtherPartyHasLeft){
+                QLog(@"really fullfilling");
+                [_test.didRecieveOtherPartyHasLeft fulfill];
+                _listening = NO;
+            }
+        }
+    }
+}
+
+
+-(void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message {
+    NSLog(@"**** INCOMING MESSAGE****");
+    [_test.didReceiveResponseExpectation fulfill];
+}
+
+@end
+
+//Main test class
+
+
+
 
 @implementation ApplePushNotificationTests
     XCTestExpectation *waitForToken;
@@ -82,12 +143,74 @@
 
 
 
+-(void)pause:(int)delay{
+    XCTestExpectation *expectation = [self expectationWithDescription:@"High Expectations"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [expectation fulfill];
+    });
+    
+    [self waitForExpectationsWithTimeout:delay+1 handler:^(NSError * _Nullable error) {
+        //
+    }];
+    
+}
+
+
 -(void)testSimplePush{
     NSLog(@"Completed setup");
+    
     //resgiter with APNS
+    [self appDelegateRequestAPNToken];
+
+    
     //Client 1 create Rendezvous
     //Client 2 create Respond to Rendezvous - create Conversation
     //Client 1 Receive incoming conversation
+    
+    [self buildStack1];
+    
+
+    
+    XCTAssertNotNil(conversation1);
+    XCTAssertNotNil(conversation2);
+    
+    
+    ApplePushTestConversationListener *listener = [[ApplePushTestConversationListener alloc] init];
+    listener.expectedMessageValue = testMessage;
+    listener.test = self;
+   
+    [conversation1 addConversationObserver:listener withPushNotifications:apnToken];
+
+    
+    [self pause:5];
+    
+    
+    //send a message on conversation2
+    QredoConversationMessage *messageFrom2to1 = [[QredoConversationMessage alloc] initWithValue:[testMessage dataUsingEncoding:NSUTF8StringEncoding] summaryValues:nil];
+    
+    [conversation2 publishMessage:messageFrom2to1
+                completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+                      XCTAssertNil(error);
+                    
+                    
+                }];
+    
+    self.didReceiveResponseExpectation = [self expectationWithDescription:@"published a message after listener started"];
+    
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
+        if (error){
+            NSLog(@"Error sending mesage");
+        }else{
+            self.didReceiveResponseExpectation=nil;
+        }
+    }];
+    
+    NSLog(@"Finished");
+    
+    [self pause:5];
+    
+    
+    
     //Client 1 subscribe to conversation with Push
     //Client 2 Send a message on conversation
     //Client 1 Gets push notification

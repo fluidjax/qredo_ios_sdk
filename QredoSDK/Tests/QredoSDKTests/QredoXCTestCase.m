@@ -270,6 +270,7 @@ static const int testTimeOut = 30;
               completionHandler:^(QredoConversation *conversation,NSError *error) {
                   XCTAssertNil(error);
                   conversation2 = conversation;
+                  NSLog(@"1make conv 2");
               }];
     
     [self waitForExpectationsWithTimeout:testTimeOut
@@ -281,6 +282,7 @@ static const int testTimeOut = 30;
     [rendezvous1 removeRendezvousObserver:listener];
     XCTAssertNotNil(conversation1);
     XCTAssertNotNil(conversation2);
+    NSLog(@"3Ended responsd");
 }
 
 

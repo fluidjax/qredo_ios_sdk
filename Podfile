@@ -12,23 +12,30 @@ target 'TestHost' do
 	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
 end
 
+
+target 'PushTests' do
+    pod 'jetfire'
+    pod 'OpenSSL', '~> 1.0'
+    pod 'libsodium', :inhibit_warnings => true
+	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
+end
+
+
+
 target 'QredoSDKTests' do
   pod 'libsodium', :inhibit_warnings => true
-
 end
 
 target 'LinguaFrancaTests' do
    pod 'libsodium', :inhibit_warnings => true
    pod 'jetfire'
-
 end
 
 target 'QredoCryptoTests' do
    pod 'libsodium', :inhibit_warnings => true
-    pod 'OpenSSL', '~> 1.0'
-
-
+   pod 'OpenSSL', '~> 1.0'
 end
+
 
 target 'QredoXDK' do
     pod 'jetfire'

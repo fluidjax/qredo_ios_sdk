@@ -7,7 +7,6 @@
 @property (atomic) XCTestExpectation *didReceiveResponseExpectation;
 @property (atomic) XCTestExpectation *didReceiveMessageExpectation;
 @property (atomic) XCTestExpectation *didRecieveOtherPartyHasLeft;
-
 @property (atomic) XCTestExpectation *didReceiveRendezvousExpectation;
 
 -(void)authoriseClient;
