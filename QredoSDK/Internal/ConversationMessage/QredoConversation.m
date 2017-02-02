@@ -238,7 +238,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.amRendezvousOwner = descriptor.rendezvousOwner;
     _metadata.rendezvousTag = descriptor.rendezvousTag;
     _metadata.type = descriptor.conversationType;
-    _metadata.authStatus = descriptor.authStatus;
+
     
     _yourPublicKey = [[QredoDhPublicKey alloc] initWithData:[descriptor.yourPublicKey bytes]];
     _myPrivateKey  = [[QredoDhPrivateKey alloc] initWithData:[descriptor.myKey.privKey bytes]];
@@ -490,8 +490,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                       conversationType:_metadata.type
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
-                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                            authStatus:_metadata.authStatus];
+                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]];
     
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
@@ -1015,6 +1014,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     
     QLFConversationDescriptor *descriptor =
+    
+   
+    
     [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
                                                        rendezvousOwner:_metadata.amRendezvousOwner
                                                         conversationId:_metadata.conversationId
@@ -1022,7 +1024,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
                                                          yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                            authStatus:_metadata.authStatus];
+                                                            ];
     
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
@@ -1086,6 +1088,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                               }];
     }
 }
+
+
+
+
+
+
 
 
 //TODO: DH - Reorder parameters to be consistent with enumerate methods? (i.e. move 'since' to 2nd argument as reads better)
