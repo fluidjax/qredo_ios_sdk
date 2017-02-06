@@ -2,6 +2,8 @@
 #import "QredoConversationMessage.h"
 #import "QredoTypes.h"
 
+
+
 @class QredoVault;
 @class QredoQUID;
 

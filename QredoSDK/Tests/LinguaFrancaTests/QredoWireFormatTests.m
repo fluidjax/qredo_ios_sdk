@@ -651,6 +651,38 @@
 }
 
 
+-(void)testSingleQUID {
+    
+    uint8_t testBytes1[6]  = { 1,2,3,4,5,6 };
+    uint8_t testBytes2[10] = { 1,2,3,4,5,6,7,8,9,10 };
+    QredoQUID *testQUID1 = [QredoQUID QUID];
+    
+    NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    [out open];
+    
+    QredoWireFormatWriter *writer = [QredoWireFormatWriter wireFormatWriterWithOutputStream:out];
+    [writer writeStart];
+    [writer writeQUID:testQUID1];
+    [writer writeEnd];
+    NSData *data = [out propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+    [out close];
+    
+    NSInputStream *in = [NSInputStream inputStreamWithData:data];
+    [in open];
+    QredoWireFormatReader *reader = [QredoWireFormatReader wireFormatReaderWithInputStream:in];
+    [reader readStart];
+    QredoQUID *actualQUID1 = [reader readQUID];
+    XCTAssertTrue([reader atEnd]);
+    [reader readEnd];
+    XCTAssertFalse([in hasBytesAvailable]);
+    [in close];
+    
+    XCTAssertNotNil(actualQUID1);
+    
+    XCTAssertTrue([actualQUID1 isEqual:testQUID1]);
+}
+
+
 -(void)testQUID {
     QredoQUID *testQUID1 = [QredoQUID QUID];
     QredoQUID *testQUID2 = [QredoQUID QUID];

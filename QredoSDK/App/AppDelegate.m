@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "Qredo.h"
+
 
 @interface AppDelegate ()
 @property (nonatomic,copy) void (^registerAPNcompletionBlock)(NSError *error, NSData *token);
@@ -177,7 +179,12 @@
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    NSLog(@"** Incoming Apple Push Notification received %@", userInfo);
+   
+    
+    
+    
+    QredoPushMessage *message = [[QredoPushMessage alloc] initWithMessage:userInfo qredoClient:self.client];
+    NSLog(@"**Incoming Message** is %@",message);
     
 //    
 //    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
@@ -221,7 +228,7 @@
     
     
     
-    completionHandler(nil);
+    completionHandler(UIBackgroundFetchResultNewData);
 }
 
 

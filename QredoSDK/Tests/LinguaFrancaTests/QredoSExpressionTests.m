@@ -66,6 +66,44 @@
 }
 
 
+
+-(void)testChris1{
+    uint8_t testAtom1[6]  = { 0,0,0,0,0,0,0 };
+    uint8_t testAtom2[8]  = { 0,0,0,0,0,0,0 };
+    uint8_t testAtom3[14] = { 15,16,17,18,19,20,21,22,23,24,25,26,27,28 };
+    NSData *testData1 = [NSData dataWithBytes:testAtom1 length:sizeof(testAtom1)];
+    NSData *testData2 = [NSData dataWithBytes:testAtom2 length:sizeof(testAtom2)];
+    NSData *testData3 = [NSData dataWithBytes:testAtom3 length:sizeof(testAtom3)];
+    
+    NSOutputStream *out = [NSOutputStream outputStreamToMemory];
+    
+    [out open];
+    QredoSExpressionWriter *writer = [QredoSExpressionWriter sexpressionWriterForOutputStream:out];
+    [writer writeLeftParen];
+    [writer writeAtom:testData1];
+    [writer writeAtom:testData2];
+    [writer writeAtom:testData3];
+    [writer writeRightParen];
+    NSData *data = [out propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+    [out close];
+    
+    NSInputStream *in = [NSInputStream inputStreamWithData:data];
+    [in open];
+    QredoSExpressionReader *reader = [QredoSExpressionReader sexpressionReaderForInputStream:in];
+    [reader readLeftParen];
+    NSData *atom1 = [reader readAtom];
+    NSData *atom2 = [reader readAtom];
+    NSData *atom3 = [reader readAtom];
+    XCTAssertTrue([atom1 isEqualToData:testData1],@"Expected read data to match written data.");
+    XCTAssertTrue([atom2 isEqualToData:testData2],@"Expected read data to match written data.");
+    XCTAssertTrue([atom3 isEqualToData:testData3],@"Expected read data to match written data.");
+    [reader readRightParen];
+    XCTAssertTrue([reader isExhausted],@"Expected reader stream to be exhausted.");
+    [in close];
+}
+
+
+
 -(void)testReadWriteMultipleAtomList {
     uint8_t testAtom1[6]  = { 1,2,3,4,5,6 };
     uint8_t testAtom2[8]  = { 7,8,9,10,11,12,13,14 };

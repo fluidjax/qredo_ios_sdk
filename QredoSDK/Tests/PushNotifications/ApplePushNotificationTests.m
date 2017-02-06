@@ -85,6 +85,7 @@ static  NSString* testMessage = @"this is a test message for push";
     apnToken = nil;
     hostAppdelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     
+    
 #if (TARGET_OS_SIMULATOR)
     XCTFail(@"Can't run Push tests in simulator");
     exit(0);
@@ -168,6 +169,8 @@ static  NSString* testMessage = @"this is a test message for push";
     
     [self buildStack1];
     
+    //inject the QredoClient into the TestApp
+    hostAppdelegate.client = testClient1;
 
     
     XCTAssertNotNil(conversation1);

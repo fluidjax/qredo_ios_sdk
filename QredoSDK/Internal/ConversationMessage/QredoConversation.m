@@ -282,17 +282,33 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary *queueIDConversationLookup = [[defaults objectForKey:kQredoConversationQueueIDUserDefaulstKey] mutableCopy];
     
+    NSMutableDictionary *queueIDConversationLookup = [[defaults objectForKey:kQredoConversationQueueIDUserDefaulstKey] mutableCopy];
+    if (!queueIDConversationLookup)queueIDConversationLookup = [[NSMutableDictionary alloc] init];
+    
+
     if (_requirePushNotifications){
-        [queueIDConversationLookup setObject:_metadata.conversationId forKey:_inboundQueueId];
+        [queueIDConversationLookup setObject:[_metadata.conversationId data] forKey:[_inboundQueueId QUIDString]];
     }else{
-        [queueIDConversationLookup removeObjectForKey:_inboundQueueId];
+        [queueIDConversationLookup removeObjectForKey:[_inboundQueueId data]];
     }
 
     [defaults setObject:[queueIDConversationLookup copy] forKey:kQredoConversationQueueIDUserDefaulstKey];
     [defaults synchronize];
+    //[self checkState];
+    //check state
 }
+
+
+
+//-(void)checkState{
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    NSDictionary *queueIDConversationLookup = [defaults objectForKey:@"ConversationQueueIDLookup"];
+//    NSLog(@"***** %@", [queueIDConversationLookup objectForKey:[_inboundQueueId QUIDString]]);
+//    
+//    
+//    
+//}
 
 
 
@@ -1197,11 +1213,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                         if (!result){
                             return;
                         }
-                        
+        
                         QLFConversationQueryItemsResult *resultItems = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
                                                                                                                              maxSequenceValue:result.sequenceValue
                                                                                                                                       current:0];
-                        
+        
+        
+        
                         //Subscriptions (or pseudo subscriptions) should not exclude control messages
                         [self  enumerateBodyWithResult:resultItems
                                  conversationItemIndex:0
@@ -1224,10 +1242,14 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     if (_requirePushNotifications && _pushDeviceToken){
         //if we require a Push notification
+        
+        [self savePushState];
+        
         [_conversationService subscribeWithPushWithQueueId:_inboundQueueId
                                             notificationId:_pushDeviceToken
                                  completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
                                      postSubscriptionCompletionHandler(result,error);
+                                     
                                  }];
         
         
