@@ -10,6 +10,7 @@
 @interface TestRendezvousListener :NSObject <QredoRendezvousObserver>
 @property XCTestExpectation *expectation;
 @property QredoConversation *incomingConversation;
+@property int count;
 @end
 
 
@@ -17,6 +18,7 @@
 @interface TestConversationMessageListener :NSObject <QredoConversationObserver>
 @property NSString *expectedMessageValue;
 @property BOOL failed;
+
 @property BOOL listening;
 @property XCTestExpectation *expectation;
 @property NSNumber *fulfilledtime;

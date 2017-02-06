@@ -236,6 +236,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                   rendezvousTag:descriptor.rendezvousTag
                 converationType:descriptor.conversationType];
     
+    
     if (!self)return nil;
     
     _metadata = [[QredoConversationMetadata alloc] init];
@@ -243,7 +244,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.amRendezvousOwner = descriptor.rendezvousOwner;
     _metadata.rendezvousTag = descriptor.rendezvousTag;
     _metadata.type = descriptor.conversationType;
-
+    _metadata.authStatus = descriptor.authStatus;
     
     _yourPublicKey = [[QredoDhPublicKey alloc] initWithData:[descriptor.yourPublicKey bytes]];
     _myPrivateKey  = [[QredoDhPrivateKey alloc] initWithData:[descriptor.myKey.privKey bytes]];
@@ -535,7 +536,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                       conversationType:_metadata.type
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
-                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]];
+                                                         yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
+                                                            authStatus:_metadata.authStatus];
     
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
@@ -1089,7 +1091,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
                                                          yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                            ];
+                                                            authStatus:_metadata.authStatus];
+    
     
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
@@ -1180,73 +1183,63 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     //Subscription is an inbound only service
     
+    
+    //block type def
+    void (^postSubscriptionCompletionHandler)(QLFConversationItemWithSequenceValue *result,NSError *error);
+    
+
+    //define completiong block
+    postSubscriptionCompletionHandler = ^(QLFConversationItemWithSequenceValue *result,NSError *error){
+                        if (error){
+                            subscriptionTerminatedHandler(error);
+                            return;
+                        }
+                        if (!result){
+                            return;
+                        }
+                        
+                        QLFConversationQueryItemsResult *resultItems = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
+                                                                                                                             maxSequenceValue:result.sequenceValue
+                                                                                                                                      current:0];
+                        
+                        //Subscriptions (or pseudo subscriptions) should not exclude control messages
+                        [self  enumerateBodyWithResult:resultItems
+                                 conversationItemIndex:0
+                                              incoming:YES
+                                excludeControlMessages:NO
+                                                 block:^(QredoConversationMessage *message,BOOL *stop) {
+                                                     block(message);
+                                                 }
+                                     completionHandler:^(NSError *error) {
+                                         if (error){
+                                             subscriptionTerminatedHandler(error);
+                                         }
+                                     }
+                                  highWatermarkHandler:highWatermarkHandler];
+        
+    };
+    
+  
+    
+    
     if (_requirePushNotifications && _pushDeviceToken){
-        NSLog(@"*** susbcribe With QueueID & Push");
+        //if we require a Push notification
         [_conversationService subscribeWithPushWithQueueId:_inboundQueueId
                                             notificationId:_pushDeviceToken
                                  completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
-                                     if (error){
-                                         subscriptionTerminatedHandler(error);
-                                         return;
-                                     }
-                                     if (!result){
-                                         return;
-                                     }
-                                     
-                                     QLFConversationQueryItemsResult *resultItems = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
-                                                                                                                                          maxSequenceValue:result.sequenceValue
-                                                                                                                                                   current:0];
-                                     
-                                     //Subscriptions (or pseudo subscriptions) should not exclude control messages
-                                     [self  enumerateBodyWithResult:resultItems
-                                              conversationItemIndex:0
-                                                           incoming:YES
-                                             excludeControlMessages:NO
-                                                              block:^(QredoConversationMessage *message,BOOL *stop) {
-                                                                  block(message);
-                                                              }
-                                                  completionHandler:^(NSError *error) {
-                                                      if (error){
-                                                          subscriptionTerminatedHandler(error);
-                                                      }
-                                                  }
-                                               highWatermarkHandler:highWatermarkHandler];
+                                     postSubscriptionCompletionHandler(result,error);
                                  }];
         
         
     }else{
-        NSLog(@"***** susbcribeWith QueueID & NO Push");
-                [_conversationService subscribeWithQueueId:_inboundQueueId
+        //A normal subscription without APN
+        [_conversationService subscribeWithQueueId:_inboundQueueId
                                      signature:ownershipSignature
-                             completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
-                                 if (error){
-                                     subscriptionTerminatedHandler(error);
-                                     return;
-                                 }
-                                 if (!result){
-                                     return;
-                                 }
-                                 
-                                 QLFConversationQueryItemsResult *resultItems = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
-                                                                                                                                      maxSequenceValue:result.sequenceValue
-                                                                                                                                               current:0];
-                                 
-                                 //Subscriptions (or pseudo subscriptions) should not exclude control messages
-                                 [self  enumerateBodyWithResult:resultItems
-                                          conversationItemIndex:0
-                                                       incoming:YES
-                                         excludeControlMessages:NO
-                                                          block:^(QredoConversationMessage *message,BOOL *stop) {
-                                                              block(message);
-                                                          }
-                                              completionHandler:^(NSError *error) {
-                                                  if (error){
-                                                      subscriptionTerminatedHandler(error);
-                                                  }
-                                              }
-                                           highWatermarkHandler:highWatermarkHandler];
-                             }];
+                                         completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
+                                             postSubscriptionCompletionHandler(result,error);
+                                         }];
     }
+    
     
     [self qredoUpdateListener:_updateListener pollWithCompletionHandler:^(NSError *error) {
         if (error){

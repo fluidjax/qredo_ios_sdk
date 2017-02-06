@@ -9,11 +9,22 @@
 @implementation TestRendezvousListener
 XCTestExpectation *timeoutExpectation;
 
+
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        _count=1;
+    }
+    return self;
+}
+
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     if (self.expectation){
-        NSLog(@"2Incoming Listener response");
-        self.incomingConversation = conversation;
-        [self.expectation fulfill];
+        self.count--;
+        if (self.count==0){
+            self.incomingConversation = conversation;
+            [self.expectation fulfill];
+        }
     }
 }
 
@@ -29,12 +40,11 @@ XCTestExpectation *timeoutExpectation;
     
     @synchronized(self) {
         if (_listening){
-            self.failed |= (message == nil);
-            self.failed |= !([message.value isEqualToData:[self.expectedMessageValue dataUsingEncoding:NSUTF8StringEncoding]]);
-            
-            _fulfilledtime = @(_fulfilledtime.intValue + 1);
-            _listening = NO;
-            [_expectation fulfill];
+                self.failed |= (message == nil);
+                self.failed |= !([message.value isEqualToData:[self.expectedMessageValue dataUsingEncoding:NSUTF8StringEncoding]]);
+                _fulfilledtime = @(_fulfilledtime.intValue + 1);
+                _listening = NO;
+                [_expectation fulfill];
         }
     }
 }

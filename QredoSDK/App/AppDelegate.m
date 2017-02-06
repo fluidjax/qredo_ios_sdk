@@ -166,7 +166,6 @@
 
 
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
-    NSLog(@"Remote notification registaion success");
     self.registerAPNcompletionBlock(nil, devToken);
 
 }
@@ -178,7 +177,51 @@
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    NSLog(@"************************   Incoming notification received");
+    NSLog(@"** Incoming Apple Push Notification received %@", userInfo);
+    
+//    
+//    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
+//    content.title = @"QredoSDK Test Suite Message";
+//    content.body = userInfo[@"aps"][@"alert"];
+//    
+//    // Create the request object.
+//    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"MorningAlarm" content:content trigger:nil];
+//    
+//    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+//    
+//    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+//        if (error){
+//            NSLog(@"Failed to display notification");
+//        }
+//    }];
+    
+    
+    
+    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
+    content.title = [NSString localizedUserNotificationStringForKey:@"Hello!" arguments:nil];
+    content.body = [NSString localizedUserNotificationStringForKey:@"Hello_message_body"
+                                                         arguments:nil];
+    content.sound = [UNNotificationSound defaultSound];
+    
+    // Deliver the notification in five seconds.
+    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger
+                                                  triggerWithTimeInterval:0.1 repeats:NO];
+    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"FiveSecond"
+                                                                          content:content trigger:trigger];
+    
+    // Schedule the notification.
+    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+        if (error){
+                       NSLog(@"Failed to display notification");
+        }
+    }];
+     
+    
+    
+    
+    
+    completionHandler(nil);
 }
 
 

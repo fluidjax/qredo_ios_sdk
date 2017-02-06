@@ -65,7 +65,6 @@ static  NSString* testMessage = @"this is a test message for push";
 
 
 -(void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message {
-    NSLog(@"**** INCOMING MESSAGE****");
     [_test.didReceiveResponseExpectation fulfill];
 }
 
@@ -204,19 +203,7 @@ static  NSString* testMessage = @"this is a test message for push";
             self.didReceiveResponseExpectation=nil;
         }
     }];
-    
-    NSLog(@"Finished");
-    
-    [self pause:5];
-    
-    
-    
-    //Client 1 subscribe to conversation with Push
-    //Client 2 Send a message on conversation
-    //Client 1 Gets push notification
-    
-    
-    
+    [self pause:20];
 }
 
 

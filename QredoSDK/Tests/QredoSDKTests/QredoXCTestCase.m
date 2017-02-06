@@ -250,7 +250,7 @@ static const int testTimeOut = 30;
     //Repspond to rendezvous on Client2 and wait for the listener on Client1 to get notified of the new Conversation
     //testClient1 - gets conversation1
     //testClient2 - gets conversation2
-    
+    __block XCTestExpectation *waitForConversation2;
     
     
     //Listening for responses and respond from another client
@@ -258,7 +258,8 @@ static const int testTimeOut = 30;
     
     XCTAssertNotNil(rendezvous1);
     
-    [rendezvous1 addRendezvousObserver:listener];
+    [rendezvous1 addRendezvousObserver:listener]; //listen for incoming conversations on rendezvous
+    
     [NSThread sleepForTimeInterval:0.1];
     
     
@@ -269,8 +270,9 @@ static const int testTimeOut = 30;
     [testClient2 respondWithTag:rendezvous1Tag
               completionHandler:^(QredoConversation *conversation,NSError *error) {
                   XCTAssertNil(error);
+                  XCTAssertNotNil(conversation);
                   conversation2 = conversation;
-                  NSLog(@"1make conv 2");
+                  [waitForConversation2 fulfill];
               }];
     
     [self waitForExpectationsWithTimeout:testTimeOut
@@ -278,11 +280,26 @@ static const int testTimeOut = 30;
                                      listener.expectation = nil;
                                  }];
     
+    
+    //at this point we have the incoming conversation, but if conversation2 is still nil, we need to wait for it also - the order of creation is not know
+    if (!conversation2){
+        waitForConversation2 = [self expectationWithDescription:@"wait for conversation 2"];
+        [self waitForExpectationsWithTimeout:testTimeOut
+                                     handler:^(NSError *error) {
+                                         waitForConversation2 = nil;
+                                     }];
+
+        
+        
+    }
+    
+
+    
+    
     conversation1 = listener.incomingConversation;
     [rendezvous1 removeRendezvousObserver:listener];
     XCTAssertNotNil(conversation1);
     XCTAssertNotNil(conversation2);
-    NSLog(@"3Ended responsd");
 }
 
 

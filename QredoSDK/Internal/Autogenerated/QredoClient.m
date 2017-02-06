@@ -4332,10 +4332,10 @@
 
 
 
-+ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey
++ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus
 {
 
-    return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey];
+    return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey authStatus:authStatus];
        
 }
 
@@ -4344,6 +4344,10 @@
     return ^(id element, QredoWireFormatWriter *writer) {
         QLFConversationDescriptor *e = (QLFConversationDescriptor *)element;
         [writer writeConstructorStartWithObjectName:@"ConversationDescriptor"];
+            [writer writeFieldStartWithFieldName:@"authStatus"];
+                [QredoPrimitiveMarshallers int32Marshaller]([NSNumber numberWithLong: [e authStatus]], writer);
+            [writer writeEnd];
+
             [writer writeFieldStartWithFieldName:@"authenticationType"];
                 [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
             [writer writeEnd];
@@ -4380,6 +4384,9 @@
 {
     return ^id(QredoWireFormatReader *reader) {
         [reader readConstructorStart];// TODO assert that constructor name is 'ConversationDescriptor'
+            [reader readFieldStart]; // TODO assert that field name is 'authStatus'
+                int32_t authStatus = (int32_t )[[QredoPrimitiveMarshallers int32Unmarshaller](reader) longValue];
+            [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
                 QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
             [reader readEnd];
@@ -4402,11 +4409,11 @@
                 QLFKeyLF *yourPublicKey = (QLFKeyLF *)[QLFKeyLF unmarshaller](reader);
             [reader readEnd];
         [reader readEnd];
-        return [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey];
+        return [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey authStatus:authStatus];
     };
 }
 
-- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey
+- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus
 {
 
     self = [super init];
@@ -4418,6 +4425,7 @@
         _authenticationType = authenticationType;
         _myKey = myKey;
         _yourPublicKey = yourPublicKey;
+        _authStatus = authStatus;
     }
     return self;
        
@@ -4433,6 +4441,7 @@
     QREDO_COMPARE_OBJECT(authenticationType);
     QREDO_COMPARE_OBJECT(myKey);
     QREDO_COMPARE_OBJECT(yourPublicKey);
+    QREDO_COMPARE_SCALAR(authStatus);
     return NSOrderedSame;
        
 }
@@ -4465,6 +4474,8 @@
         return NO;
     if (_yourPublicKey != other.yourPublicKey && ![_yourPublicKey isEqual:other.yourPublicKey])
         return NO;
+    if (_authStatus != other.authStatus)
+        return NO;
     return YES;
        
 }
@@ -4480,6 +4491,7 @@
     hash = hash * 31u + [_authenticationType hash];
     hash = hash * 31u + [_myKey hash];
     hash = hash * 31u + [_yourPublicKey hash];
+    hash = hash * 31u + (NSUInteger)_authStatus;
     return hash;
        
 }
@@ -8328,9 +8340,7 @@ QredoServiceInvoker *_invoker;
          
 }
 
-- (void)subscribeWithQueueId:(QLFConversationQueueId *)queueId
-                   signature:(QLFOwnershipSignature *)signature
-           completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler
+- (void)subscribeWithQueueId:(QLFConversationQueueId *)queueId signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler
 {
 
  [_invoker invokeService:@"Conversations"
@@ -8372,9 +8382,7 @@ QredoServiceInvoker *_invoker;
          
 }
 
-- (void)subscribeWithPushWithQueueId:(QLFConversationQueueId *)queueId
-                        notificationId:(QLFNotificationTarget *)notificationId
-                   completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler
+- (void)subscribeWithPushWithQueueId:(QLFConversationQueueId *)queueId notificationId:(QLFNotificationTarget *)notificationId completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler
 {
 
  [_invoker invokeService:@"Conversations"
