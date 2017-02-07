@@ -21,7 +21,7 @@
 
 @import UserNotifications;
 
-static  NSString* testMessage = @"this is a test message for push";
+static  NSString* testMessage = @"This is a test (encrypted) message for Push Tests";
 
 @interface ApplePushNotificationTests : QredoXCTestCase
 @property (atomic) XCTestExpectation *didReceiveResponseExpectation;
@@ -193,8 +193,6 @@ static  NSString* testMessage = @"this is a test message for push";
     [conversation2 publishMessage:messageFrom2to1
                 completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
                       XCTAssertNil(error);
-                    
-                    
                 }];
     
     self.didReceiveResponseExpectation = [self expectationWithDescription:@"published a message after listener started"];
@@ -206,7 +204,14 @@ static  NSString* testMessage = @"this is a test message for push";
             self.didReceiveResponseExpectation=nil;
         }
     }];
+    
+
     [self pause:20];
+    
+    if (hostAppdelegate.testsPassed==NO){
+        XCTFail(@"Push Tests failed in App Delegate");
+    }
+    
 }
 
 

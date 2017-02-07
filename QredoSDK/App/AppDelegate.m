@@ -21,6 +21,7 @@
 
 
 -(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.testsPassed = NO;
     //Override point for customization after application launch.
     return YES;
 }
@@ -161,7 +162,6 @@
                               }else{
                                   [[UIApplication sharedApplication] registerForRemoteNotifications];
                               }
-                              
                           }];
 }
 
@@ -179,12 +179,21 @@
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-   
+    NSLog(@"Incoming Push Message");
+    [QredoPushMessage initializeWithRemoteNotification:userInfo qredoClient:self.client completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
+        if (error){
+            NSLog(@"Error building Push Message");
+        }else{
+            //Successfully parsed incoming Push Message
+            NSLog(@"Incoming Push Message \n %@",pushMessage);
+            self.testsPassed = YES;
+        }
+        completionHandler(UIBackgroundFetchResultNewData);
+    }];
     
     
-    
-    QredoPushMessage *message = [[QredoPushMessage alloc] initWithMessage:userInfo qredoClient:self.client];
-    NSLog(@"**Incoming Message** is %@",message);
+//    QredoPushMessage *message = [[QredoPushMessage alloc] initWithMessage:userInfo qredoClient:self.client];
+//    NSLog(@"**Incoming Message** is %@",message);
     
 //    
 //    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
@@ -204,31 +213,31 @@
     
     
     
-    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
-    content.title = [NSString localizedUserNotificationStringForKey:@"Hello!" arguments:nil];
-    content.body = [NSString localizedUserNotificationStringForKey:@"Hello_message_body"
-                                                         arguments:nil];
-    content.sound = [UNNotificationSound defaultSound];
+//    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
+//    content.title = [NSString localizedUserNotificationStringForKey:@"Hello!" arguments:nil];
+//    content.body = [NSString localizedUserNotificationStringForKey:@"Hello_message_body"
+//                                                         arguments:nil];
+//    content.sound = [UNNotificationSound defaultSound];
+//    
+//    // Deliver the notification in five seconds.
+//    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger
+//                                                  triggerWithTimeInterval:0.1 repeats:NO];
+//    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"FiveSecond"
+//                                                                          content:content trigger:trigger];
+//    
+//    // Schedule the notification.
+//    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+//    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+//        if (error){
+//                       NSLog(@"Failed to display notification");
+//        }
+//    }];
+//     
+//    
     
-    // Deliver the notification in five seconds.
-    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger
-                                                  triggerWithTimeInterval:0.1 repeats:NO];
-    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"FiveSecond"
-                                                                          content:content trigger:trigger];
-    
-    // Schedule the notification.
-    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-        if (error){
-                       NSLog(@"Failed to display notification");
-        }
-    }];
-     
     
     
     
-    
-    completionHandler(UIBackgroundFetchResultNewData);
 }
 
 

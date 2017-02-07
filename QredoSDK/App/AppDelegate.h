@@ -22,6 +22,8 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
+@property (assign) BOOL testsPassed;
+
 @property(strong) QredoClient *client;
 
 -(void)saveContext;

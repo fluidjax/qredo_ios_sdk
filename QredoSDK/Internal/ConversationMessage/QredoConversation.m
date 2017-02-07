@@ -230,6 +230,21 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 }
 
 
+
+
+
+-(QLFConversationMessage*)decryptMessage:(QLFEncryptedConversationItem*)conversationItem{
+    //CSM
+    
+    NSError *error = nil;
+    QLFConversationMessage *message  = [_conversationCrypto decryptMessage:conversationItem
+                                                                   bulkKey:_inboundBulkKey
+                                                                   authKey:_inboundAuthKey
+                                                                     error:&error];
+    return message;
+}
+
+
 -(instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFConversationDescriptor *)descriptor {
     self = [self initWithClient:client
              authenticationType:descriptor.authenticationType
@@ -288,7 +303,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
 
     if (_requirePushNotifications){
-        [queueIDConversationLookup setObject:[_metadata.conversationId data] forKey:[_inboundQueueId QUIDString]];
+        [queueIDConversationLookup setObject:[_metadata.conversationRef serializedString] forKey:[_inboundQueueId QUIDString]];
     }else{
         [queueIDConversationLookup removeObjectForKey:[_inboundQueueId data]];
     }

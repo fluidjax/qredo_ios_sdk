@@ -11,6 +11,8 @@
 
 @class QredoQUID;
 @class QredoClient;
+@class QredoConversation;
+@class QredoConversationMessage;
 
 typedef NS_ENUM (NSUInteger,QredoPushMessageType) {
     QREDO_PUSH_UNKNOWNTYPE_MESSAGE = 0,
@@ -20,14 +22,17 @@ typedef NS_ENUM (NSUInteger,QredoPushMessageType) {
 
 @interface QredoPushMessage : NSObject
 
-@property (readonly) NSString* alert;
+@property (readonly)        NSString* alert;
 @property (assign,readonly) BOOL contentAvailable;
 @property (assign,readonly) BOOL mutableContent;
 @property (assign,readonly) int messageType;
-@property (readonly) QredoQUID *queueId;
+@property (readonly)        QredoQUID *queueId;
+@property (readonly)        QredoConversationMessage *conversationMessage;
+@property (readonly)        QredoConversation *conversation;
+@property (readonly)        NSString *incomingMessageText;
 
-
-
--(instancetype)initWithMessage:(NSDictionary*)message qredoClient:(QredoClient*)client;
++(void)initializeWithRemoteNotification:(NSDictionary*)message
+                            qredoClient:(QredoClient*)client
+                      completionHandler:(void (^)(QredoPushMessage *pushMessage,NSError *error))completionHandler;
 
 @end

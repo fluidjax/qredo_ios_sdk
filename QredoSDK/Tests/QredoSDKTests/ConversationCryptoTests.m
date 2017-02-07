@@ -144,36 +144,31 @@
 
 
 -(void)testEncryptDecrypt {
-    QredoQUID *messageID
-    = [[QredoQUID alloc] initWithQUIDString:@"a774a903a9a7481a818fb2afae4aa5beb935120f29c0454681319964f129447a"];
+    QredoQUID *messageID  = [[QredoQUID alloc] initWithQUIDString:@"a774a903a9a7481a818fb2afae4aa5beb935120f29c0454681319964f129447a"];
     
     NSDate *created = [QredoNetworkTime dateTime];
     QredoUTCDateTime *createdDate = [[QredoUTCDateTime alloc] initWithDate:created];
     
-    QLFConversationMessageMetadata *metadata
-    = [QLFConversationMessageMetadata conversationMessageMetadataWithID:messageID
-                                                               parentId:[NSSet set]
-                                                               sequence:nil
-                                                               sentByMe:true
-                                                                created:createdDate
-                                                               dataType:@"blob"
-                                                                 values:[NSSet set]];
+    QLFConversationMessageMetadata *metadata     = [QLFConversationMessageMetadata conversationMessageMetadataWithID:messageID
+                                                                                                            parentId:[NSSet set]
+                                                                                                            sequence:nil
+                                                                                                            sentByMe:true
+                                                                                                             created:createdDate
+                                                                                                            dataType:@"blob"
+                                                                                                              values:[NSSet set]];
     
     NSString *messageBodyString = @"Message value";
     NSData *messageBody = [messageBodyString dataUsingEncoding:NSUTF8StringEncoding];
     QLFConversationMessage *clearMessage = [QLFConversationMessage conversationMessageWithMetadata:metadata
                                                                                               body:messageBody];
     
-    NSData *requesterInboundEncryptionKey
-    = [NSData dataWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
+    NSData *requesterInboundEncryptionKey      = [NSData dataWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
     
-    NSData *requesterInboundAuthenticationKey
-    = [NSData dataWithHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
+    NSData *requesterInboundAuthenticationKey  = [NSData dataWithHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
     
-    QLFEncryptedConversationItem *encryptedMessage
-    = [_conversationCrypto encryptMessage:clearMessage
-                                  bulkKey:requesterInboundEncryptionKey
-                                  authKey:requesterInboundAuthenticationKey];
+    QLFEncryptedConversationItem *encryptedMessage = [_conversationCrypto encryptMessage:clearMessage
+                                                                                   bulkKey:requesterInboundEncryptionKey
+                                                                                   authKey:requesterInboundAuthenticationKey];
     
     [QredoPrimitiveMarshallers marshalObject:clearMessage includeHeader:NO];
     [QredoPrimitiveMarshallers marshalObject:encryptedMessage includeHeader:NO];
@@ -182,11 +177,10 @@
     XCTAssertNotNil(encryptedMessage.authCode);
     
     NSError *error = nil;
-    QLFConversationMessage *decryptedMessage
-    = [_conversationCrypto decryptMessage:encryptedMessage
-                                  bulkKey:requesterInboundEncryptionKey
-                                  authKey:requesterInboundAuthenticationKey
-                                    error:&error];
+    QLFConversationMessage *decryptedMessage   = [_conversationCrypto decryptMessage:encryptedMessage
+                                                                             bulkKey:requesterInboundEncryptionKey
+                                                                             authKey:requesterInboundAuthenticationKey
+                                                                               error:&error];
     
     XCTAssertNotNil(decryptedMessage);
     XCTAssertNil(error);
@@ -283,17 +277,15 @@
        @"96587b27 ebd7be7b 78f77c09 1b080f1e d0786349 e87ebb64 be0707f3 2826f0dd ad05e395 7971241a b392a95c"
        @"b7fd3bf7 b4349ed7 24c89e27 cacf0967 01103fda 47e04874 c1fb6889 a0f24b64 dab7f779 745dfd61 292929"];
     
-    QLFEncryptedConversationItem *encryptedMessage
-    = [QredoPrimitiveMarshallers unmarshalObject:serializedEncryptedMessage
-                                    unmarshaller:[QLFEncryptedConversationItem unmarshaller]
-                                     parseHeader:NO];
+    QLFEncryptedConversationItem *encryptedMessage = [QredoPrimitiveMarshallers unmarshalObject:serializedEncryptedMessage
+                                                                                   unmarshaller:[QLFEncryptedConversationItem unmarshaller]
+                                                                                    parseHeader:NO];
     
     NSError *error = nil;
-    QLFConversationMessage *message
-    = [_conversationCrypto decryptMessage:encryptedMessage
-                                  bulkKey:requesterInboundEncryptionKey
-                                  authKey:requesterInboundAuthenticationKey
-                                    error:&error];
+    QLFConversationMessage *message  = [_conversationCrypto decryptMessage:encryptedMessage
+                                                                   bulkKey:requesterInboundEncryptionKey
+                                                                   authKey:requesterInboundAuthenticationKey
+                                                                     error:&error];
     
     XCTAssertNotNil(message);
     XCTAssertNil(error);
