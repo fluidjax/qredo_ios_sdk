@@ -179,66 +179,38 @@
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    NSLog(@"Incoming Push Message");
-    [QredoPushMessage initializeWithRemoteNotification:userInfo qredoClient:self.client completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
-        if (error){
-            NSLog(@"Error building Push Message");
-        }else{
-            //Successfully parsed incoming Push Message
-            NSLog(@"Incoming Push Message \n %@",pushMessage);
-            self.testsPassed = YES;
-            _qredoPushMessage = pushMessage;
-        }
-        completionHandler(UIBackgroundFetchResultNewData);
-    }];
-    
-    
-//    QredoPushMessage *message = [[QredoPushMessage alloc] initWithMessage:userInfo qredoClient:self.client];
-//    NSLog(@"**Incoming Message** is %@",message);
-    
-//    
-//    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
-//    content.title = @"QredoSDK Test Suite Message";
-//    content.body = userInfo[@"aps"][@"alert"];
-//    
-//    // Create the request object.
-//    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"MorningAlarm" content:content trigger:nil];
-//    
-//    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-//    
-//    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-//        if (error){
-//            NSLog(@"Failed to display notification");
-//        }
-//    }];
-    
-    
-    
-//    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
-//    content.title = [NSString localizedUserNotificationStringForKey:@"Hello!" arguments:nil];
-//    content.body = [NSString localizedUserNotificationStringForKey:@"Hello_message_body"
-//                                                         arguments:nil];
-//    content.sound = [UNNotificationSound defaultSound];
-//    
-//    // Deliver the notification in five seconds.
-//    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger
-//                                                  triggerWithTimeInterval:0.1 repeats:NO];
-//    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"FiveSecond"
-//                                                                          content:content trigger:trigger];
-//    
-//    // Schedule the notification.
-//    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-//    [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-//        if (error){
-//                       NSLog(@"Failed to display notification");
-//        }
-//    }];
-//     
-//    
-    
-    
-    
-    
+
+    if (self.client){
+        //process the incoming Push MEssage with a QredoClient to lookup the Conversation object
+        [QredoPushMessage initializeWithRemoteNotification:userInfo qredoClient:self.client completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
+            if (error){
+                NSLog(@"Error building Push Message");
+            }else{
+                //Successfully parsed incoming Push Message
+                NSLog(@"Incoming Push Message \n %@",pushMessage);
+                self.testsPassed = YES;
+                _qredoPushMessage = pushMessage;
+            }
+            completionHandler(UIBackgroundFetchResultNewData);
+        }];
+        
+        
+    }else{
+        //process the incoming Push MEssage without a QredoClient - therefore cant decrypt
+        
+        [QredoPushMessage initializeWithRemoteNotification:userInfo completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
+            if (error){
+                NSLog(@"Error building Push Message");
+            }else{
+                //Successfully parsed incoming Push Message
+                NSLog(@"Incoming Push Message \n %@",pushMessage);
+                self.testsPassed = YES;
+                _qredoPushMessage = pushMessage;
+            }
+            completionHandler(UIBackgroundFetchResultNewData);
+        }];
+
+    }
 }
 
 

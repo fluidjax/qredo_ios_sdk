@@ -20,6 +20,8 @@
 @property (readwrite) QredoClient *client;
 @property (readwrite) QredoConversation *conversation;
 @property (readwrite) QredoConversationMessage *conversationMessage;
+@property (readwrite) QredoConversationRef *conversationRef;
+
 @property (readwrite) NSNumber *sequenceValue;
 
 @property (readwrite) NSString *incomingMessageText;
@@ -39,6 +41,60 @@
                                              }];
     
 }
+
+
++(void)initializeWithRemoteNotification:(NSDictionary*)message
+                      completionHandler:(void (^)(QredoPushMessage *pushMessage,NSError *error))completionHandler{
+    [[QredoPushMessage alloc] initializeWithRemoteNotification:message
+                                             completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
+                                                 completionHandler(pushMessage,error);
+                                             }];
+    
+}
+
+-(void)initializeWithRemoteNotification:(NSDictionary*)message
+                      completionHandler:(void (^)(QredoPushMessage *pushMessage,NSError *error))completionHandler{
+    //Process the incoming Qredo Notification where a QredoClient is not available
+    
+    NSDictionary *aps = message[@"aps"];
+    NSDictionary *q = message[@"q"];
+    
+    if (!aps || !q){
+        NSLog(@"Invalid message");
+        completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
+        return;
+    }
+    
+    self.alert        = aps[@"alert"][@"body"];
+    self.messageType  = [self decodeMessageType:q];
+    self.queueId      = [self decodeQueueID:q];
+    
+    if (aps[@"content-available"]  &&  [aps[@"content-available"] intValue]==1){
+        self.contentAvailable=YES;
+    }else{
+        self.contentAvailable=NO;
+    }
+    
+    if (aps[@"mutable-content"] && [aps[@"mutable-content"] intValue]==1){
+        self.mutableContent=YES;
+    }else{
+        self.mutableContent=NO;
+    }
+    
+    
+    
+    //find the conversationRef in the lookup
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *queueIDConversationLookup = [defaults objectForKey:@"ConversationQueueIDLookup"];
+    
+    //deserialize the ref
+    NSString *serializedConversationRef = [queueIDConversationLookup objectForKey:[self.queueId QUIDString]];
+    self.conversationRef = [[QredoConversationRef alloc] initWithSerializedString:serializedConversationRef];
+    completionHandler(self,nil);
+    
+}
+
+
 
 
 -(void)initializeWithRemoteNotification:(NSDictionary*)message
@@ -90,10 +146,10 @@
     
     //deserialize the ref
     NSString *serializedConversationRef = [queueIDConversationLookup objectForKey:[self.queueId QUIDString]];
-    QredoConversationRef *conversationRef = [[QredoConversationRef alloc] initWithSerializedString:serializedConversationRef];
+    self.conversationRef = [[QredoConversationRef alloc] initWithSerializedString:serializedConversationRef];
     
     //retrieve the conversation object using the ref
-    [client fetchConversationWithRef:conversationRef completionHandler:^(QredoConversation *retrievedConversation, NSError *error) {
+    [client fetchConversationWithRef:self.conversationRef completionHandler:^(QredoConversation *retrievedConversation, NSError *error) {
         if (error){
             self.conversation = nil;
             completionHandler(nil,error);

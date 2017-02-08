@@ -21,7 +21,6 @@
 
 @import UserNotifications;
 
-static  NSString* smallTestMessage = @"This is a test (encrypted) message for Push Tests";
 
 @interface ApplePushNotificationTests : QredoXCTestCase
 @property (atomic) XCTestExpectation *didReceiveResponseExpectation;
@@ -43,29 +42,11 @@ static  NSString* smallTestMessage = @"This is a test (encrypted) message for Pu
 
 @implementation ApplePushTestConversationListener
 
-
--(void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation {
-    @synchronized(_test) {
-        QLog(@"qredoConversation:didReceiveNewMessage:");
-        
-        if (_listening){
-            if (_test.didRecieveOtherPartyHasLeft){
-                QLog(@"really fullfilling");
-                [_test.didRecieveOtherPartyHasLeft fulfill];
-                _listening = NO;
-            }
-        }
-    }
-}
-
-
 -(void)qredoConversation:(QredoConversation *)conversation didReceiveNewMessage:(QredoConversationMessage *)message {
     [_test.didReceiveResponseExpectation fulfill];
 }
 
 @end
-
-//Main test class
 
 
 
@@ -85,24 +66,52 @@ static  NSString* smallTestMessage = @"This is a test (encrypted) message for Pu
     XCTFail(@"Can't run Push tests in simulator");
     exit(0);
 #endif
-
-    
-//    waitForToken = [self expectationWithDescription:@"waitForToken"];
-//    [self requestNotificationToken];
-//    
-//    [self waitForExpectationsWithTimeout:30
-//                                 handler:^(NSError *error) {
-//                                     waitForToken = nil;
-//                                 }];
-
-    
-    
 }
 
 - (void)tearDown {
     [super tearDown];
 }
 
+
+-(void)testLargePayloadPush{
+    [self setupPushStack];
+    NSString *largeTestString = [NSString stringWithFormat:@"This is a large test string for Push messages %@",[self randomStringWithLength:10000]];
+    [self sendMessageAndWaitForPushNotificationWithMessage:largeTestString];
+    
+    XCTAssert(hostAppdelegate.qredoPushMessage.messageType == QREDO_PUSH_CONVERSATION_MESSAGE,@"Message Type should be 1 = conversation:");
+    XCTAssert([hostAppdelegate.qredoPushMessage.sequenceValue isEqualToNumber:@1],@"Sequence Value should be 1 - this is first message in a new conversation");
+    XCTAssertNil(hostAppdelegate.qredoPushMessage.conversationMessage,@"Message should be nil - its too big for a push notification");
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.conversation,@"Conversation should not be nil");
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.conversationRef,@"ConversationRef should be looked up from incoming QueueID");
+}
+
+
+-(void)testSmallPayloadPush{
+    [self setupPushStack];
+    NSString* smallTestMessage = @"This is a test (encrypted) message for Push Tests";
+    [self sendMessageAndWaitForPushNotificationWithMessage:smallTestMessage];
+    
+    XCTAssert(hostAppdelegate.qredoPushMessage.messageType == QREDO_PUSH_CONVERSATION_MESSAGE,@"Message Type should be 1 = conversation:");
+    XCTAssert([hostAppdelegate.qredoPushMessage.sequenceValue isEqualToNumber:@1],@"Sequence Value should be 1 - this is first message in a new conversation");
+    XCTAssert([hostAppdelegate.qredoPushMessage.incomingMessageText isEqualToString:smallTestMessage],@"Message should be the smallTestMessage string");
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.conversation,@"Conversation should not be nil");
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.conversationRef,@"ConversationRef should be looked up from incoming QueueID");
+}
+
+
+-(void)testSmallPayloadPushNoClient{
+    [self setupPushStack];
+    hostAppdelegate.client = nil; //remove client reference
+    NSString* smallTestMessage = @"This is a test (encrypted) message for Push Tests";
+    [self sendMessageAndWaitForPushNotificationWithMessage:smallTestMessage];
+
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.alert,@"Should have an alert from the APN");
+    XCTAssert(hostAppdelegate.qredoPushMessage.messageType == QREDO_PUSH_CONVERSATION_MESSAGE,@"Message Type should be 1 = conversation:");
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.queueId,@"Queue should not be nil");
+    XCTAssertNil(hostAppdelegate.qredoPushMessage.conversation,@"Conversation should be nil");
+    XCTAssertNil(hostAppdelegate.qredoPushMessage.incomingMessageText,@"Shouldn't be able to decode message text as its encrypted, and no client");
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.conversationRef,@"ConversationRef should be looked up from incoming QueueID");
+}
 
 
 
@@ -123,7 +132,7 @@ static  NSString* smallTestMessage = @"This is a test (encrypted) message for Pu
     [self waitForExpectationsWithTimeout:10 handler:^(NSError *error) {
         apnTokenExpectiation = nil;
     }];
-
+    
 }
 
 
@@ -140,101 +149,24 @@ static  NSString* smallTestMessage = @"This is a test (encrypted) message for Pu
     
 }
 
-
--(void)testSmallPayloadPush{
-    NSLog(@"Completed setup");
-    
-    //resgiter with APNS
+-(void)setupPushStack{
     [self appDelegateRequestAPNToken];
-
-    
-    //Client 1 create Rendezvous
-    //Client 2 create Respond to Rendezvous - create Conversation
-    //Client 1 Receive incoming conversation
-    
     [self buildStack1];
-    
     //inject the QredoClient into the TestApp
     hostAppdelegate.client = testClient1;
-
-    
     XCTAssertNotNil(conversation1);
     XCTAssertNotNil(conversation2);
-    
-    
-    ApplePushTestConversationListener *listener = [[ApplePushTestConversationListener alloc] init];
-    listener.expectedMessageValue = smallTestMessage;
-    listener.test = self;
-   
-    [conversation1 addConversationObserver:listener withPushNotifications:apnToken];
-    [self pause:5];
-    
-    //send a message on conversation2
-    QredoConversationMessage *messageFrom2to1 = [[QredoConversationMessage alloc] initWithValue:[smallTestMessage dataUsingEncoding:NSUTF8StringEncoding] summaryValues:nil];
-
-    [conversation2 publishMessage:messageFrom2to1
-                completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
-                      XCTAssertNil(error);
-                }];
-    
-    self.didReceiveResponseExpectation = [self expectationWithDescription:@"published a message after listener started"];
-    
-    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
-        if (error){
-            NSLog(@"Error sending mesage");
-        }else{
-            self.didReceiveResponseExpectation=nil;
-        }
-    }];
-    
-
-    [self pause:20];
-    
-    if (hostAppdelegate.testsPassed==NO){
-        XCTFail(@"Push Tests failed in App Delegate");
-    }
-
-    XCTAssert(hostAppdelegate.qredoPushMessage.messageType == QREDO_PUSH_CONVERSATION_MESSAGE,@"MEssage Type should be 1 = conversation:");
-    XCTAssert([hostAppdelegate.qredoPushMessage.sequenceValue isEqualToNumber:@1],@"Sequence Value should be 1 - this is first message in a new conversation");
-    XCTAssert([hostAppdelegate.qredoPushMessage.incomingMessageText isEqualToString:smallTestMessage],@"Message should be the smallTestMessage string");
 }
 
 
--(void)testLargePayloadPush{
-    NSLog(@"Completed setup");
-    
-    //resgiter with APNS
-    [self appDelegateRequestAPNToken];
-    
-    
-    //Client 1 create Rendezvous
-    //Client 2 create Respond to Rendezvous - create Conversation
-    //Client 1 Receive incoming conversation
-    
-    [self buildStack1];
-    
-    //inject the QredoClient into the TestApp
-    hostAppdelegate.client = testClient1;
-    
-    
-    XCTAssertNotNil(conversation1);
-    XCTAssertNotNil(conversation2);
-    
-    
-    NSString *largeTestString = [NSString stringWithFormat:@"This is a large test string for Push messages %@",[self randomStringWithLength:10000]];
-    
+-(void)sendMessageAndWaitForPushNotificationWithMessage:(NSString*)message{
     ApplePushTestConversationListener *listener = [[ApplePushTestConversationListener alloc] init];
-    listener.expectedMessageValue = largeTestString;
+    listener.expectedMessageValue = message;
     listener.test = self;
-    
     [conversation1 addConversationObserver:listener withPushNotifications:apnToken];
-    
-    
-    [self pause:5];
-    
-    
+    [self pause:2];
     //send a message on conversation2
-    QredoConversationMessage *messageFrom2to1 = [[QredoConversationMessage alloc] initWithValue:[largeTestString dataUsingEncoding:NSUTF8StringEncoding] summaryValues:nil];
+    QredoConversationMessage *messageFrom2to1 = [[QredoConversationMessage alloc] initWithValue:[message dataUsingEncoding:NSUTF8StringEncoding] summaryValues:nil];
     
     [conversation2 publishMessage:messageFrom2to1
                 completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
@@ -250,71 +182,53 @@ static  NSString* smallTestMessage = @"This is a test (encrypted) message for Pu
             self.didReceiveResponseExpectation=nil;
         }
     }];
-    
-    
-    [self pause:20];
-    
+    [self pause:3];
     if (hostAppdelegate.testsPassed==NO){
         XCTFail(@"Push Tests failed in App Delegate");
     }
-    
-    XCTAssert(hostAppdelegate.qredoPushMessage.messageType == QREDO_PUSH_CONVERSATION_MESSAGE,@"MEssage Type should be 1 = conversation:");
-    XCTAssert([hostAppdelegate.qredoPushMessage.sequenceValue isEqualToNumber:@1],@"Sequence Value should be 1 - this is first message in a new conversation");
-    XCTAssertNil(hostAppdelegate.qredoPushMessage.conversationMessage,@"Message should be nil - its too big for a push notification");
-    
 }
 
 
-
-
--(void)requestNotificationToken{
-    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    UNAuthorizationOptions options = UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge;
-    
-    
-    [center requestAuthorizationWithOptions:options
-                          completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                              if (!granted) {
-                                  NSLog(@"Something went wrong");
-                              }else{
-                                  [[UIApplication sharedApplication] registerForRemoteNotifications];
-                              }
-                              
-                          }];
-    
-    
-
-    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-    content.categoryIdentifier = @"christest";
-    
-    
-    
-    
-    UNTimeIntervalNotificationTrigger *trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:10 repeats:NO];
-    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"Test local Message" content:content trigger:trigger];
-    
-    
-    
-    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                NSLog(@"Notification creation Error");
-            }else{
-                NSLog(@"Notification creation Done");
-                
-            }
-            
-        });
-    }];
-}
-
-
--(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
-    NSString  *token_string = [[[[deviceToken description]    stringByReplacingOccurrencesOfString:@"<"withString:@""]
-                                stringByReplacingOccurrencesOfString:@">" withString:@""]
-                               stringByReplacingOccurrencesOfString: @" " withString: @""];
-    NSLog(@"DeviceID:%@", token_string);
-}
+//-(void)requestNotificationToken{
+//    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+//    UNAuthorizationOptions options = UNAuthorizationOptionAlert + UNAuthorizationOptionSound + UNAuthorizationOptionBadge;
+//
+//    [center requestAuthorizationWithOptions:options
+//                          completionHandler:^(BOOL granted, NSError * _Nullable error) {
+//                              if (!granted) {
+//                                  NSLog(@"Something went wrong");
+//                              }else{
+//                                  [[UIApplication sharedApplication] registerForRemoteNotifications];
+//                              }
+//                              
+//                          }];
+//
+//    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+//    content.categoryIdentifier = @"christest";
+//    
+//    UNTimeIntervalNotificationTrigger *trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:10 repeats:NO];
+//    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"Test local Message" content:content trigger:trigger];
+//    
+//    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            if (error) {
+//                NSLog(@"Notification creation Error");
+//            }else{
+//                NSLog(@"Notification creation Done");
+//                
+//            }
+//            
+//        });
+//    }];
+//}
+//
+//
+//-(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
+//    NSString  *token_string = [[[[deviceToken description]    stringByReplacingOccurrencesOfString:@"<"withString:@""]
+//                                stringByReplacingOccurrencesOfString:@">" withString:@""]
+//                               stringByReplacingOccurrencesOfString: @" " withString: @""];
+//    NSLog(@"DeviceID:%@", token_string);
+//}
 
 
 
