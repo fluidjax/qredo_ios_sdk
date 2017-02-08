@@ -16,7 +16,7 @@
 
 typedef NS_ENUM (NSUInteger,QredoPushMessageType) {
     QREDO_PUSH_UNKNOWNTYPE_MESSAGE = 0,
-    QREDO_PUSH_CONVERSATION_MESSAGE = 0,
+    QREDO_PUSH_CONVERSATION_MESSAGE = 1,
 };
 
 
@@ -30,6 +30,7 @@ typedef NS_ENUM (NSUInteger,QredoPushMessageType) {
 @property (readonly)        QredoConversationMessage *conversationMessage;
 @property (readonly)        QredoConversation *conversation;
 @property (readonly)        NSString *incomingMessageText;
+@property (readonly)        NSNumber *sequenceValue;
 
 +(void)initializeWithRemoteNotification:(NSDictionary*)message
                             qredoClient:(QredoClient*)client

@@ -187,6 +187,7 @@
             //Successfully parsed incoming Push Message
             NSLog(@"Incoming Push Message \n %@",pushMessage);
             self.testsPassed = YES;
+            _qredoPushMessage = pushMessage;
         }
         completionHandler(UIBackgroundFetchResultNewData);
     }];

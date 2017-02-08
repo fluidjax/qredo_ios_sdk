@@ -8,11 +8,6 @@
 
 #import "QredoPushMessage.h"
 #import "Qredo.h"
-#import "QredoQUIDPrivate.h"
-#import "QredoWireFormat.h"
-//#import "QredoPrimitiveMarshallers.h"
-//#import "QredoConversationCrypto.h"
-#import "QredoClient.h"
 #import "QredoConversationPrivate.h"
 #import "QredoConversationMessagePrivate.h"
 
@@ -25,6 +20,8 @@
 @property (readwrite) QredoClient *client;
 @property (readwrite) QredoConversation *conversation;
 @property (readwrite) QredoConversationMessage *conversationMessage;
+@property (readwrite) NSNumber *sequenceValue;
+
 @property (readwrite) NSString *incomingMessageText;
 @end
 
@@ -44,99 +41,128 @@
 }
 
 
-
-#pragma Private methods
-
 -(void)initializeWithRemoteNotification:(NSDictionary*)message
                             qredoClient:(QredoClient*)client
                       completionHandler:(void (^)(QredoPushMessage *pushMessage,NSError *error))completionHandler{
-               
-        NSDictionary *aps = message[@"aps"];
-        NSDictionary *q = message[@"q"];
-        
-        if (!aps || !q){
-            NSLog(@"Invalid message");
-            completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
-            return;
-        }
-        
-        if (!client){
-            NSLog(@"Invalid Qredo Client");
-            completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
-            return;
-        }
-        
-        
-        self.alert        = aps[@"alert"][@"body"];
-        self.client       = client;
-        self.messageType  = [self decodeMessageType:q];
-        self.queueId      = [self decodeQueueID:q];
-        
-        
-        
-        
-        if (aps[@"content-available"]  &&  [aps[@"content-available"] intValue]==1){
-            self.contentAvailable=YES;
+    
+    NSDictionary *aps = message[@"aps"];
+    NSDictionary *q = message[@"q"];
+    
+    if (!aps || !q){
+        NSLog(@"Invalid message");
+        completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
+        return;
+    }
+    
+    if (!client){
+        NSLog(@"Invalid Qredo Client");
+        completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
+        return;
+    }
+    
+    
+    self.alert        = aps[@"alert"][@"body"];
+    self.client       = client;
+    self.messageType  = [self decodeMessageType:q];
+    self.queueId      = [self decodeQueueID:q];
+    
+    
+    
+    
+    if (aps[@"content-available"]  &&  [aps[@"content-available"] intValue]==1){
+        self.contentAvailable=YES;
+    }else{
+        self.contentAvailable=NO;
+    }
+    
+    
+    if (aps[@"mutable-content"] && [aps[@"mutable-content"] intValue]==1){
+        self.mutableContent=YES;
+    }else{
+        self.mutableContent=NO;
+    }
+    
+    
+    
+    //find the conversationRef in the lookup
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *queueIDConversationLookup = [defaults objectForKey:@"ConversationQueueIDLookup"];
+    
+    //deserialize the ref
+    NSString *serializedConversationRef = [queueIDConversationLookup objectForKey:[self.queueId QUIDString]];
+    QredoConversationRef *conversationRef = [[QredoConversationRef alloc] initWithSerializedString:serializedConversationRef];
+    
+    //retrieve the conversation object using the ref
+    [client fetchConversationWithRef:conversationRef completionHandler:^(QredoConversation *retrievedConversation, NSError *error) {
+        if (error){
+            self.conversation = nil;
+            completionHandler(nil,error);
         }else{
-            self.contentAvailable=NO;
-        }
-        
-        
-        if (aps[@"mutable-content"] && [aps[@"mutable-content"] intValue]==1){
-            self.mutableContent=YES;
-        }else{
-            self.mutableContent=NO;
-        }
-
-        [self decodeConversationItemWithSequenceValue:q];
-        [self decodeSequenceValue:q];
-
-    
-    
-        //find the conversationRef in the lookup
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSDictionary *queueIDConversationLookup = [defaults objectForKey:@"ConversationQueueIDLookup"];
-    
-        //deserialize the ref
-        NSString *serializedConversationRef = [queueIDConversationLookup objectForKey:[self.queueId QUIDString]];
-        QredoConversationRef *conversationRef = [[QredoConversationRef alloc] initWithSerializedString:serializedConversationRef];
-    
-        //retrieve the conversation object using the ref
-        [client fetchConversationWithRef:conversationRef completionHandler:^(QredoConversation *retrievedConversation, NSError *error) {
-            if (error){
-                completionHandler(nil,error);
+            self.conversation = retrievedConversation;
+            
+            if ([self isBigPayload:q]){
+                [self decodeConversationWithSequenceValue:q];
             }else{
-                self.conversation = retrievedConversation;
-
-                
-                //Create stream from Base64encoded data
-                NSData *data = [[NSData alloc] initWithBase64EncodedString:q[@"d"] options:0];
-                NSInputStream *readData = [[NSInputStream alloc] initWithData:data];
-                [readData open];
-                
-
-                //create a reader
-                QredoWireFormatReader *reader = [QredoWireFormatReader wireFormatReaderWithInputStream:readData];
-                
-                //Strip off header (version info)
-                [reader readMessageHeader];
-                
-                //Read ConversationItem with Sequence Value
-                QLFConversationItemWithSequenceValue *val =  [QLFConversationItemWithSequenceValue unmarshaller](reader);
-                
-                //Using conversation's keys, decrypt the message
-                QLFEncryptedConversationItem *conversationItem = val.item;
-                QLFConversationMessage *message = [self.conversation decryptMessage:conversationItem];
-                
-                
-                //Build the full QredoConversationMessage from it
-                self.conversationMessage = [[QredoConversationMessage alloc] initWithMessageLF:message incoming:YES];
-                self.incomingMessageText = [[NSString alloc] initWithData:self.conversationMessage.value encoding:NSUTF8StringEncoding];
-                
-                completionHandler(self, nil);
+                //small payload
+                [self decodeSequenceValue:q];
             }
-        }];
+            completionHandler(self, nil);
+        }
+    }];
 }
+
+
+
+
+
+
+#pragma Private methods
+
+- (void)decodeConversationWithSequenceValue:(NSDictionary *)data{
+    //Create stream from Base64encoded data
+    NSData *dataD = [[NSData alloc] initWithBase64EncodedString:data[@"d"] options:0];
+    NSInputStream *readDataD = [[NSInputStream alloc] initWithData:dataD];
+    [readDataD open];
+    //create a reader
+    QredoWireFormatReader *readerD = [QredoWireFormatReader wireFormatReaderWithInputStream:readDataD];
+    //Strip off header (version info)
+    [readerD readMessageHeader];
+    //Read ConversationItem with Sequence Value
+    QLFConversationItemWithSequenceValue *valD =  [QLFConversationItemWithSequenceValue unmarshaller](readerD);
+    //Using conversation's keys, decrypt the message
+    QLFEncryptedConversationItem *conversationItem = valD.item;
+    QLFConversationMessage *message = [self.conversation decryptMessage:conversationItem];
+    //Build the full QredoConversationMessage from it
+    self.conversationMessage = [[QredoConversationMessage alloc] initWithMessageLF:message incoming:YES];
+    self.incomingMessageText = [[NSString alloc] initWithData:self.conversationMessage.value encoding:NSUTF8StringEncoding];
+    self.sequenceValue = [self decodeRawSequenceValue:valD.sequenceValue];
+}
+
+
+
+
+
+- (void)decodeSequenceValue:(NSDictionary *)q{
+    //Create stream from Base64encoded data
+    NSData *dataS = [[NSData alloc] initWithBase64EncodedString:q[@"s"] options:0];
+    NSInputStream *readDataS = [[NSInputStream alloc] initWithData:dataS];
+    [readDataS open];
+    //create a reader
+    QredoWireFormatReader *readerS = [QredoWireFormatReader wireFormatReaderWithInputStream:readDataS];
+    //Strip off header (version info)
+    [readerS readMessageHeader];
+    NSData *sequenceValueRawData  = [readerS readByteSequence];
+    self.sequenceValue = [self decodeRawSequenceValue:sequenceValueRawData];
+}
+
+
+-(NSNumber*)decodeRawSequenceValue:(NSData*)rawdata{
+    uint32_t seqVal;
+    [rawdata getBytes:&seqVal range:NSMakeRange(0,4)];
+    NSNumber *s = @(CFSwapInt32BigToHost(seqVal));
+    return s;
+}
+
 
 
 
@@ -147,20 +173,11 @@
 }
 
 
-
--(void)decodeConversationItemWithSequenceValue:(NSDictionary*)q{
-    NSData *conv = q[@"d"];
-    if (!conv)return;
-    QredoWireFormatReader *reader = [self wireFormatReaderFromString:conv];
+-(BOOL)isBigPayload:(NSDictionary*)q{
+    if (q[@"s"])return NO;
+    return YES;
 }
 
--(void)decodeSequenceValue:(NSDictionary*)q{
-    NSData *seq = q[@"s"];
-    if (!seq)return;
-    QredoWireFormatReader *reader = [self wireFormatReaderFromString:seq];
-    
-    
-}
 
 -(QredoWireFormatReader*)wireFormatReaderFromString:(NSString*)base64Data{
     NSData *data = [[NSData alloc] initWithBase64EncodedString:base64Data options:0];
@@ -178,7 +195,6 @@
     if (messageTypeCode && [messageTypeCode isEqualToString:@"c"]){
         messageType = QREDO_PUSH_CONVERSATION_MESSAGE;
     }
-    
     return messageType;
 }
 
@@ -186,12 +202,6 @@
     NSString *queueIdData = [q objectForKey:@"i"];
     if (!queueIdData)return nil;
     QredoWireFormatReader *reader = [self wireFormatReaderFromString:queueIdData];
-    
-    //[reader readStart];
-    //NSData *p1 = [reader readByteSequence];
-    //NSData *p2  = [reader readByteSequence];
-    //this is encapulated by readMEssageHeader
-    
     [reader readMessageHeader];
     QredoQUID *incomingQueueID = (QredoQUID*)[QredoPrimitiveMarshallers quidUnmarshaller](reader);
     return incomingQueueID;
@@ -199,9 +209,7 @@
 
 
 
-
-
-- (NSString *)description{
+-(NSString *)description{
     NSMutableString *dump = [[NSMutableString alloc] init];
     [dump appendFormat:@"\nAlert:               %@\n",self.alert];
     
@@ -218,6 +226,7 @@
     
     [dump appendFormat:@"QueueId:             %@\n",self.queueId];
     [dump appendFormat:@"ConversationId:      %@\n",self.conversation.metadata.conversationId];
+    [dump appendFormat:@"SequenceValue:       %@\n",self.sequenceValue];
 
     
     

@@ -21,19 +21,14 @@
 
 @import UserNotifications;
 
-static  NSString* testMessage = @"This is a test (encrypted) message for Push Tests";
+static  NSString* smallTestMessage = @"This is a test (encrypted) message for Push Tests";
 
 @interface ApplePushNotificationTests : QredoXCTestCase
 @property (atomic) XCTestExpectation *didReceiveResponseExpectation;
 @property (atomic) XCTestExpectation *didReceiveMessageExpectation;
 @property (atomic) XCTestExpectation *didRecieveOtherPartyHasLeft;
 @property (atomic) XCTestExpectation *didReceiveRendezvousExpectation;
-
-
 @end
-
-//Define the listener
-
 
 
 
@@ -129,16 +124,6 @@ static  NSString* testMessage = @"This is a test (encrypted) message for Push Te
         apnTokenExpectiation = nil;
     }];
 
-    
-    
-    
-;
-}
-
-
--(void)testGood{
-    [self appDelegateRequestAPNToken];
-    XCTAssertTrue(1==1,@"good");
 }
 
 
@@ -156,7 +141,7 @@ static  NSString* testMessage = @"This is a test (encrypted) message for Push Te
 }
 
 
--(void)testSimplePush{
+-(void)testSmallPayloadPush{
     NSLog(@"Completed setup");
     
     //resgiter with APNS
@@ -178,18 +163,15 @@ static  NSString* testMessage = @"This is a test (encrypted) message for Push Te
     
     
     ApplePushTestConversationListener *listener = [[ApplePushTestConversationListener alloc] init];
-    listener.expectedMessageValue = testMessage;
+    listener.expectedMessageValue = smallTestMessage;
     listener.test = self;
    
     [conversation1 addConversationObserver:listener withPushNotifications:apnToken];
-
-    
     [self pause:5];
     
-    
     //send a message on conversation2
-    QredoConversationMessage *messageFrom2to1 = [[QredoConversationMessage alloc] initWithValue:[testMessage dataUsingEncoding:NSUTF8StringEncoding] summaryValues:nil];
-    
+    QredoConversationMessage *messageFrom2to1 = [[QredoConversationMessage alloc] initWithValue:[smallTestMessage dataUsingEncoding:NSUTF8StringEncoding] summaryValues:nil];
+
     [conversation2 publishMessage:messageFrom2to1
                 completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
                       XCTAssertNil(error);
@@ -211,8 +193,78 @@ static  NSString* testMessage = @"This is a test (encrypted) message for Push Te
     if (hostAppdelegate.testsPassed==NO){
         XCTFail(@"Push Tests failed in App Delegate");
     }
+
+    XCTAssert(hostAppdelegate.qredoPushMessage.messageType == QREDO_PUSH_CONVERSATION_MESSAGE,@"MEssage Type should be 1 = conversation:");
+    XCTAssert([hostAppdelegate.qredoPushMessage.sequenceValue isEqualToNumber:@1],@"Sequence Value should be 1 - this is first message in a new conversation");
+    XCTAssert([hostAppdelegate.qredoPushMessage.incomingMessageText isEqualToString:smallTestMessage],@"Message should be the smallTestMessage string");
+}
+
+
+-(void)testLargePayloadPush{
+    NSLog(@"Completed setup");
+    
+    //resgiter with APNS
+    [self appDelegateRequestAPNToken];
+    
+    
+    //Client 1 create Rendezvous
+    //Client 2 create Respond to Rendezvous - create Conversation
+    //Client 1 Receive incoming conversation
+    
+    [self buildStack1];
+    
+    //inject the QredoClient into the TestApp
+    hostAppdelegate.client = testClient1;
+    
+    
+    XCTAssertNotNil(conversation1);
+    XCTAssertNotNil(conversation2);
+    
+    
+    NSString *largeTestString = [NSString stringWithFormat:@"This is a large test string for Push messages %@",[self randomStringWithLength:10000]];
+    
+    ApplePushTestConversationListener *listener = [[ApplePushTestConversationListener alloc] init];
+    listener.expectedMessageValue = largeTestString;
+    listener.test = self;
+    
+    [conversation1 addConversationObserver:listener withPushNotifications:apnToken];
+    
+    
+    [self pause:5];
+    
+    
+    //send a message on conversation2
+    QredoConversationMessage *messageFrom2to1 = [[QredoConversationMessage alloc] initWithValue:[largeTestString dataUsingEncoding:NSUTF8StringEncoding] summaryValues:nil];
+    
+    [conversation2 publishMessage:messageFrom2to1
+                completionHandler:^(QredoConversationHighWatermark *messageHighWatermark, NSError *error) {
+                    XCTAssertNil(error);
+                }];
+    
+    self.didReceiveResponseExpectation = [self expectationWithDescription:@"published a message after listener started"];
+    
+    [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
+        if (error){
+            NSLog(@"Error sending mesage");
+        }else{
+            self.didReceiveResponseExpectation=nil;
+        }
+    }];
+    
+    
+    [self pause:20];
+    
+    if (hostAppdelegate.testsPassed==NO){
+        XCTFail(@"Push Tests failed in App Delegate");
+    }
+    
+    XCTAssert(hostAppdelegate.qredoPushMessage.messageType == QREDO_PUSH_CONVERSATION_MESSAGE,@"MEssage Type should be 1 = conversation:");
+    XCTAssert([hostAppdelegate.qredoPushMessage.sequenceValue isEqualToNumber:@1],@"Sequence Value should be 1 - this is first message in a new conversation");
+    XCTAssertNil(hostAppdelegate.qredoPushMessage.conversationMessage,@"Message should be nil - its too big for a push notification");
     
 }
+
+
 
 
 -(void)requestNotificationToken{
