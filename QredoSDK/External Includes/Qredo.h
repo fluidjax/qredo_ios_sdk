@@ -46,6 +46,8 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 @interface QredoClient :NSObject
 
 
+@property (readonly) NSString *appGroup;
+
 #pragma mark - Creating and managing a Qredo session
 
 /**
@@ -76,6 +78,16 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
                     userId:(NSString *)userId
                 userSecret:(NSString *)userSecret
          completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
+
+
++(void)initializeWithAppId:(NSString *)appId
+                 appSecret:(NSString *)appSecret
+                    userId:(NSString *)userId
+                userSecret:(NSString *)userSecret
+                  appGroup:(NSString *)appGroup
+         completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
+
+
 
 
 /**
@@ -343,5 +355,7 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  @return the current Qredo network correctly DateTime - sync'd with NTP & TLS
  */
 +(NSDate *)dateTime;
+
+
 
 @end

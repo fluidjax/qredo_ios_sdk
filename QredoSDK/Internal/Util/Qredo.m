@@ -49,8 +49,6 @@ static NSString *const QredoKeychainPassword                = @"Password123";
 NSString *systemVaultKeychainArchiveIdentifier;
 
 
-
-
 @implementation QredoClientOptions
 {
     QredoCertificate *_certificate;
@@ -98,6 +96,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 @property NSURL *serviceURL;
 @property QredoClientOptions *clientOptions;
+@property NSString *appGroup;
 
 /** Creates instance of qredo client
  @param serviceURL Root URL for Qredo services
@@ -165,9 +164,32 @@ NSString *systemVaultKeychainArchiveIdentifier;
                     appSecret:appSecret
                        userId:userId
                    userSecret:userSecret
+                     appGroup:nil
                       options:nil
             completionHandler:completionHandler];
 }
+
+
+
++(void)initializeWithAppId:(NSString *)appId
+                 appSecret:(NSString *)appSecret
+                    userId:(NSString *)userId
+                userSecret:(NSString *)userSecret
+                  appGroup:(NSString *)appGroup
+         completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
+    
+    
+    
+    [self initializeWithAppId:appId
+                    appSecret:appSecret
+                       userId:userId
+                   userSecret:userSecret
+                     appGroup:appGroup
+                      options:nil
+            completionHandler:completionHandler];
+}
+
+
 
 
 +(NSURL *)chooseServiceURL:(QredoClientOptions *)options {
@@ -207,8 +229,30 @@ NSString *systemVaultKeychainArchiveIdentifier;
                     userId:(NSString *)userId
                 userSecret:(NSString *)userSecret
                    options:(QredoClientOptions *)options
+         completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler{
+    
+    [self initializeWithAppId:appId
+                    appSecret:appSecret
+                       userId:userId
+                   userSecret:userSecret
+                     appGroup:nil
+            completionHandler:^(QredoClient *client, NSError *error) {
+                completionHandler(client,error);
+            }];
+}
+
+
++(void)initializeWithAppId:(NSString *)appId
+                 appSecret:(NSString *)appSecret
+                    userId:(NSString *)userId
+                userSecret:(NSString *)userSecret
+                  appGroup:(NSString *)appGroup
+                   options:(QredoClientOptions *)options
          completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
     //TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
+    
+    
+
     
     if (!options){
         options = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
@@ -244,6 +288,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                                            appCredentials:appCredentials
                                                           userCredentials:userCredentials];
     
+    
+    client.appGroup = appGroup;
     client.clientOptions = options;
     
     void (^completeAuthorization)(NSError *) = ^void (NSError *error) {

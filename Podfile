@@ -17,8 +17,14 @@ target 'PushTests' do
     pod 'jetfire'
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :inhibit_warnings => true
+    pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
+end
+
+
+target 'QredoPushTestServiceExtension' do
 	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
 end
+
 
 
 

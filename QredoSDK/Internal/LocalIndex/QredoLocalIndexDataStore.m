@@ -160,7 +160,7 @@ static NSMutableDictionary *dataStoreDictionary;
 -(void)buildStack:(QredoVault *)vault {
     //Model
     
-    NSAssert([NSThread isMainThread],@"Metadata Index - Initialization must be on main thread");
+  // NSAssert([NSThread isMainThread],@"Metadata Index - Initialization must be on main thread");
     
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     NSURL *modelURL = [bundle URLForResource:@"QredoLocalIndex" withExtension:@"mom"];

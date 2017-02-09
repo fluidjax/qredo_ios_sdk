@@ -40,6 +40,9 @@ NSString *const kQredoConversationVaultItemLabelType = @"type";
 NSString *const kQredoConversationQueueIDUserDefaulstKey = @"ConversationQueueIDLookup";
 
 
+
+
+
 //Bit 0   //Your public key has been dictated to you over the phone by the other party
 //Bit 1   //You have dictated the remote public key to the other party over the phone
 
@@ -275,12 +278,15 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 #pragma Save/Load Push Notification state of Conversation between sessions
 
+
+
+
 -(void)restorePushState{
     if (!_inboundQueueId)return;
     if (!_metadata.conversationId)return;
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *queueIDConversationLookup = [defaults objectForKey:kQredoConversationQueueIDUserDefaulstKey];
+
+    NSDictionary *queueIDConversationLookup = [[self userDefaults] objectForKey:kQredoConversationQueueIDUserDefaulstKey];
     
     if ([queueIDConversationLookup objectForKey:_inboundQueueId]){
         _requirePushNotifications=YES;
@@ -290,17 +296,25 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 }
 
 
+-(NSUserDefaults*)userDefaults{
+    if (self.client.appGroup){
+//        return [[NSUserDefaults alloc] initWithSuiteName:@"group.com.qredo.ChrisPush1"];
+        return [[NSUserDefaults alloc] initWithSuiteName:self.client.appGroup];
+        
+    }else{
+        return [NSUserDefaults standardUserDefaults];
+    }
+}
+
 -(void)savePushState{
     //save a lookup of Incoming QueueID against ConversationID in NSUserDEfaults (may migrate to some other data store later)
     if (!_inboundQueueId)return;
     if (!_metadata.conversationId)return;
+
     
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    NSMutableDictionary *queueIDConversationLookup = [[defaults objectForKey:kQredoConversationQueueIDUserDefaulstKey] mutableCopy];
+    //NSUserDefaults *userDefaults =  [[NSUserDefaults alloc] initWithSuiteName:@"group.com.qredo.ChrisPush1"];
+    NSMutableDictionary *queueIDConversationLookup = [[[self userDefaults] objectForKey:kQredoConversationQueueIDUserDefaulstKey] mutableCopy];
     if (!queueIDConversationLookup)queueIDConversationLookup = [[NSMutableDictionary alloc] init];
-    
 
     if (_requirePushNotifications){
         [queueIDConversationLookup setObject:[_metadata.conversationRef serializedString] forKey:[_inboundQueueId QUIDString]];
@@ -308,23 +322,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         [queueIDConversationLookup removeObjectForKey:[_inboundQueueId data]];
     }
 
-    [defaults setObject:[queueIDConversationLookup copy] forKey:kQredoConversationQueueIDUserDefaulstKey];
-    [defaults synchronize];
-    //[self checkState];
-    //check state
+    [[self userDefaults] setObject:[queueIDConversationLookup copy] forKey:kQredoConversationQueueIDUserDefaulstKey];
+    [[self userDefaults] synchronize];
+
 }
-
-
-
-//-(void)checkState{
-//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//    NSDictionary *queueIDConversationLookup = [defaults objectForKey:@"ConversationQueueIDLookup"];
-//    NSLog(@"***** %@", [queueIDConversationLookup objectForKey:[_inboundQueueId QUIDString]]);
-//    
-//    
-//    
-//}
-
 
 
 #pragma
@@ -1259,6 +1260,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         //if we require a Push notification
         
         [self savePushState];
+        NSLog(@"Saved pushState VaultID %@",_client.systemVault.vaultId);
         
         [_conversationService subscribeWithPushWithQueueId:_inboundQueueId
                                             notificationId:_pushDeviceToken

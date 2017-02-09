@@ -11,6 +11,13 @@
     NSString *k_TEST_APPID;
     NSString *k_TEST_APPSECRET;
     
+    NSString *k_TEST_USERID;
+    NSString *k_TEST_USERSECRET;
+    
+    NSString *k_TEST_USERID2;
+    NSString *k_TEST_USERSECRET2;
+
+    
     //client
     QredoClient *testClient1;
     NSString *testClient1Password;

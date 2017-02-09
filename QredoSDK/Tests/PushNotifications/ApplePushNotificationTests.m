@@ -73,6 +73,27 @@
 }
 
 
+-(void)testPushServiceExtensionin{
+    [self setupPushStack];
+    NSString* smallTestMessage = @"This is a test (encrypted) message for Push Tests";
+    
+    NSLog(@"CLOSE THE APP");
+    [self pause:5];
+    NSLog(@"Continuing");    
+    
+    [self sendMessageAndWaitForPushNotificationWithMessage:smallTestMessage];
+    
+    XCTAssert(hostAppdelegate.qredoPushMessage.messageType == QREDO_PUSH_CONVERSATION_MESSAGE,@"Message Type should be 1 = conversation:");
+    XCTAssert([hostAppdelegate.qredoPushMessage.sequenceValue isEqualToNumber:@1],@"Sequence Value should be 1 - this is first message in a new conversation");
+    XCTAssert([hostAppdelegate.qredoPushMessage.incomingMessageText isEqualToString:smallTestMessage],@"Message should be the smallTestMessage string");
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.conversation,@"Conversation should not be nil");
+    XCTAssertNotNil(hostAppdelegate.qredoPushMessage.conversationRef,@"ConversationRef should be looked up from incoming QueueID");
+}
+
+
+
+
+
 -(void)testLargePayloadPush{
     [self setupPushStack];
     NSString *largeTestString = [NSString stringWithFormat:@"This is a large test string for Push messages %@",[self randomStringWithLength:10000]];
@@ -146,6 +167,8 @@
     [self waitForExpectationsWithTimeout:delay+1 handler:^(NSError * _Nullable error) {
         //
     }];
+    expectation=nil;
+    
     
 }
 
@@ -164,7 +187,9 @@
     listener.expectedMessageValue = message;
     listener.test = self;
     [conversation1 addConversationObserver:listener withPushNotifications:apnToken];
-    [self pause:2];
+
+    
+    
     //send a message on conversation2
     QredoConversationMessage *messageFrom2to1 = [[QredoConversationMessage alloc] initWithValue:[message dataUsingEncoding:NSUTF8StringEncoding] summaryValues:nil];
     
@@ -176,13 +201,16 @@
     self.didReceiveResponseExpectation = [self expectationWithDescription:@"published a message after listener started"];
     
     [self waitForExpectationsWithTimeout:10 handler:^(NSError * _Nullable error) {
-        if (error){
-            NSLog(@"Error sending mesage");
-        }else{
-            self.didReceiveResponseExpectation=nil;
-        }
+        self.didReceiveResponseExpectation=nil;
     }];
-    [self pause:3];
+    
+    self.didReceiveResponseExpectation=nil;
+    
+    
+    
+    NSLog(@"Waiting");
+    [self pause:20];
+        NSLog(@"end Waiting");
     if (hostAppdelegate.testsPassed==NO){
         XCTFail(@"Push Tests failed in App Delegate");
     }

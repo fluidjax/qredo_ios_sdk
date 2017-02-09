@@ -8,6 +8,7 @@
 
 #import "QredoPushMessage.h"
 #import "Qredo.h"
+#import "QredoPrivate.h"
 #import "QredoConversationPrivate.h"
 #import "QredoConversationMessagePrivate.h"
 
@@ -21,9 +22,7 @@
 @property (readwrite) QredoConversation *conversation;
 @property (readwrite) QredoConversationMessage *conversationMessage;
 @property (readwrite) QredoConversationRef *conversationRef;
-
 @property (readwrite) NSNumber *sequenceValue;
-
 @property (readwrite) NSString *incomingMessageText;
 @end
 
@@ -52,10 +51,10 @@
     
 }
 
+
 -(void)initializeWithRemoteNotification:(NSDictionary*)message
                       completionHandler:(void (^)(QredoPushMessage *pushMessage,NSError *error))completionHandler{
     //Process the incoming Qredo Notification where a QredoClient is not available
-    
     NSDictionary *aps = message[@"aps"];
     NSDictionary *q = message[@"q"];
     
@@ -83,15 +82,14 @@
     
     
     
-    //find the conversationRef in the lookup
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *queueIDConversationLookup = [defaults objectForKey:@"ConversationQueueIDLookup"];
-    
-    //deserialize the ref
-    NSString *serializedConversationRef = [queueIDConversationLookup objectForKey:[self.queueId QUIDString]];
-    self.conversationRef = [[QredoConversationRef alloc] initWithSerializedString:serializedConversationRef];
-    completionHandler(self,nil);
-    
+//    //find the conversationRef in the lookup
+//    NSDictionary *queueIDConversationLookup = [[client userDefaults] objectForKey:@"ConversationQueueIDLookup"];
+//    
+//    //deserialize the ref
+//    NSString *serializedConversationRef = [queueIDConversationLookup objectForKey:[self.queueId QUIDString]];
+//    self.conversationRef = [[QredoConversationRef alloc] initWithSerializedString:serializedConversationRef];
+//    completionHandler(self,nil);
+//    
 }
 
 
@@ -100,7 +98,8 @@
 -(void)initializeWithRemoteNotification:(NSDictionary*)message
                             qredoClient:(QredoClient*)client
                       completionHandler:(void (^)(QredoPushMessage *pushMessage,NSError *error))completionHandler{
-    
+   
+
     NSDictionary *aps = message[@"aps"];
     NSDictionary *q = message[@"q"];
     
@@ -139,10 +138,11 @@
     }
     
     
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    if (self.client.appGroup)userDefaults = [[NSUserDefaults alloc] initWithSuiteName:self.client.appGroup];
+
     
-    //find the conversationRef in the lookup
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *queueIDConversationLookup = [defaults objectForKey:@"ConversationQueueIDLookup"];
+    NSDictionary *queueIDConversationLookup = [userDefaults objectForKey:@"ConversationQueueIDLookup"];
     
     //deserialize the ref
     NSString *serializedConversationRef = [queueIDConversationLookup objectForKey:[self.queueId QUIDString]];
@@ -279,13 +279,9 @@
             [dump appendString:@"Type: **UNKNOWN**\n"];
             break;
     }
-    
     [dump appendFormat:@"QueueId:             %@\n",self.queueId];
     [dump appendFormat:@"ConversationId:      %@\n",self.conversation.metadata.conversationId];
     [dump appendFormat:@"SequenceValue:       %@\n",self.sequenceValue];
-
-    
-    
     return [dump copy];
 }
 

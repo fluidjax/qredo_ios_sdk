@@ -18,11 +18,25 @@ static const int testTimeOut = 30;
     [QredoLogger colour:NO];
     [QredoLogger setLogLevel:QREDO_DEBUG_LEVEL];
 
-    k_TEST_APPID         = SERVER_APPID;
+    k_TEST_APPID        = SERVER_APPID;
     k_TEST_APPSECRET    = SERVER_APPSECRET;
-
+    
+    k_TEST_USERID       = SERVER_USERID;
+    k_TEST_USERSECRET   = SERVER_USERSECRET;
+    
+    
+    k_TEST_USERID2      = SERVER_USERID2;
+    k_TEST_USERSECRET2  = SERVER_USERSECRET2;
+    
+    
     NSAssert(k_TEST_APPID,@"Invalid AppID in");
     NSAssert(k_TEST_APPSECRET,@"Invalid k_TEST_APPSECRET in");
+    
+    if (!k_TEST_USERID)k_TEST_USERID = [self randomUsername];
+    if (!k_TEST_USERSECRET)k_TEST_USERSECRET = [self randomPassword];
+    if (!k_TEST_USERID2)k_TEST_USERID2 = [self randomUsername];
+    if (!k_TEST_USERSECRET2)k_TEST_USERSECRET2 = [self randomPassword];
+    
     
 }
 
@@ -143,16 +157,20 @@ static const int testTimeOut = 30;
 
 
 -(void)createClient1 {
-    testClient1Password = [self randomPassword];
-    testClient1User = [self randomPassword];
-    testClient1 = [self createClient:testClient1Password user:testClient1User];
+    testClient1 = [self createClientWithAppID:k_TEST_APPID
+                                    appSecret:k_TEST_APPSECRET
+                                       userId:k_TEST_USERID
+                                   userSecret:k_TEST_USERSECRET];
+                   
 }
 
 
 -(void)createClient2 {
-    testClient2Password = [self randomPassword];
-    testClient2User = [self randomPassword];
-    testClient2 = [self createClient:testClient2Password user:testClient2User];
+    testClient2 = [self createClientWithAppID:k_TEST_APPID
+                                    appSecret:k_TEST_APPSECRET
+                                       userId:k_TEST_USERID2
+                                   userSecret:k_TEST_USERSECRET2];
+
 }
 
 
@@ -160,14 +178,19 @@ static const int testTimeOut = 30;
 //Core Methods
 
 
--(QredoClient *)createClient:(NSString *)userSecret user:(NSString*)user{
+-(QredoClient *)createClientWithAppID:(NSString *)appId
+                            appSecret:(NSString *)appSecret
+                            userId:(NSString *)userId
+                            userSecret:(NSString *)userSecret{
+
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     __block QredoClient *client;
     
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:user
+    [QredoClient initializeWithAppId:appId
+                           appSecret:appSecret
+                              userId:userId
                           userSecret:userSecret
+                            appGroup:@"group.com.qredo.ChrisPush1"
                              options:[self clientOptions:YES]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
@@ -191,7 +214,6 @@ static const int testTimeOut = 30;
 -(QredoClientOptions *)clientOptions:(BOOL)resetData {
     //QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
     QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
-    
     clientOptions.transportType = self.transportType;
     return clientOptions;
 }

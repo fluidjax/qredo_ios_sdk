@@ -14,6 +14,8 @@
 //#define SERVER_PRODUCTION
 
 
+
+
 #ifdef SERVER_LOCAL
     #undef      QREDO_SERVER_URL
     #define     QREDO_SERVER_URL    @"localhost"
@@ -28,7 +30,10 @@
     #define     QREDO_SERVER_URL    @"10.0.0.110"
     #define     SERVER_APPID        @"test"
     #define     SERVER_APPSECRET    @"cafebabe"
-    #define     SERVER_USERID       @"testUserId"
+    #define     SERVER_USERID       @"testUserId1"
+    #define     SERVER_USERSECRET   @"secret1"
+    #define     SERVER_USERID2      @"testUserId2"
+    #define     SERVER_USERSECRET2  @"secret2"
     #define     USE_HTTP            @"YES"
     #define QREDO_HTTP_SERVICE_URL @"http://10.0.0.110:8080/services"
 
