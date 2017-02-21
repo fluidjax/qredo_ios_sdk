@@ -21,11 +21,7 @@ reason:[NSString stringWithFormat:msg] \
 userInfo:nil]; \
 } \
 
-@interface QredoUserCredentials ()
-@property (strong) NSString *appId;
-@property (strong) NSString *userId;
-@property (strong) NSString *userSecure;
-@end
+
 
 
 @implementation QredoUserCredentials

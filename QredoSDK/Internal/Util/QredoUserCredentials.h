@@ -5,6 +5,12 @@
 @interface QredoUserCredentials :NSObject
 
 
+
+@property (strong) NSString *appId;
+@property (strong) NSString *userId;
+@property (strong) NSString *userSecure;
+
+
 -(instancetype)initWithAppId:(NSString *)appId
                       userId:(NSString *)userId
                   userSecure:(NSString *)userSecure;

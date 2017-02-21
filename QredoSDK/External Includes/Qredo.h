@@ -90,6 +90,11 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 
 
 
+/** init as QredoClient from the values stored in the Keychain - please see   saveCredentialsInKeychain section below for security implications
+ */
++(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
+
+
 /**
  Closes the connection to Qredo. Call this when you no longer require Qredo services.
  This method will remove any Vault, Conversation or ConversationMessage observers that were installed
@@ -355,6 +360,18 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  @return the current Qredo network correctly DateTime - sync'd with NTP & TLS
  */
 +(NSDate *)dateTime;
+
+
+/** Store the QredoClient credentials into the iOS Keychain - this is essential if you need an iOS extension such as a Push Notification extension to decrypt incoming messages without
+    waiting for a hand off to the main App. It therefore allows unencrypted messages to be display on the lock screen. If this functionality is not required do not use this feature as
+    it weakens end point security
+    Once stored in the keychain, a QredoClient can be re-instantiated using
+    +(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
+ */
+
+-(void)saveCredentialsInKeychain;
+
+
 
 
 

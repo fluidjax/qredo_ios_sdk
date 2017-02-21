@@ -25,9 +25,11 @@
     #define     USE_HTTP            @"YES"
     #define     QREDO_HTTP_SERVICE_URL @"http://localhost:8080/services"
 
+
+//This one at Qredo/Office
 #elif defined SERVER_LOCAL_NETWORKED
     #undef      QREDO_SERVER_URL
-    #define     QREDO_SERVER_URL    @"10.0.0.110"
+    #define     QREDO_SERVER_URL    @"10.0.0.105"
     #define     SERVER_APPID        @"test"
     #define     SERVER_APPSECRET    @"cafebabe"
     #define     SERVER_USERID       @"testUserId1"
@@ -35,8 +37,10 @@
     #define     SERVER_USERID2      @"testUserId2"
     #define     SERVER_USERSECRET2  @"secret2"
     #define     USE_HTTP            @"YES"
-    #define QREDO_HTTP_SERVICE_URL @"http://10.0.0.110:8080/services"
+    #define QREDO_HTTP_SERVICE_URL @"http://10.0.0.105:8080/services"
 
+
+//This one a Home
 #elif defined SERVER_LOCAL_NETWORKED2
     #undef      QREDO_SERVER_URL
     #define     QREDO_SERVER_URL    @"192.168.0.50"

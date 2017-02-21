@@ -53,18 +53,18 @@
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        
                        
-                       NSLog(@"System Vault is %@", clientArg.systemVault.vaultId);
+                       NSLog(@"QREDO: System Vault is %@", clientArg.systemVault.vaultId);
                        
                        [QredoPushMessage initializeWithRemoteNotification:request.content.userInfo
                                                               qredoClient:clientArg completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
                            if (error){
-                               NSLog(@"Error- %@ building Push Message %@", error, pushMessage);
+                               NSLog(@"QREDO: Error- %@ building Push Message %@", error, pushMessage);
                            }else{
                                //Successfully parsed incoming Push Message
                                self.modifiedContent.title = pushMessage.alert;
                                self.modifiedContent.body  = pushMessage.incomingMessageText;
                            }
-                           NSLog(@"Push Complete %@",pushMessage);
+                           NSLog(@"QREDO: Push Complete %@",pushMessage);
                            contentHandler(self.modifiedContent);
                        }];
       }];

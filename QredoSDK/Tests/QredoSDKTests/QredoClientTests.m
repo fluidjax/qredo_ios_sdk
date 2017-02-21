@@ -39,6 +39,58 @@
 }
 
 
+-(void)testKeychainStorage{
+    //test the storage of the Qredo Credentials in the keychain
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block QredoClient *client;
+    
+    
+    [QredoClient initializeWithAppId:k_TEST_APPID
+                           appSecret:k_TEST_APPSECRET
+                              userId:@"testuser"
+                          userSecret:[self randomPassword]
+                   completionHandler:^(QredoClient *clientArg,NSError *error) {
+                       XCTAssertNil(error);
+                       XCTAssertNotNil(clientArg);
+                       
+                       client = clientArg;
+
+                   
+                       [client saveCredentialsInKeychain];
+                       [clientExpectation fulfill];
+                   }];
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
+                                 handler:^(NSError *error) {
+                                     //avoiding exception when 'fulfill' is called after timeout
+                                     clientExpectation = nil;
+                                 }];
+    
+    [client closeSession];
+    
+    
+    __block XCTestExpectation *clientExpectation2 = [self expectationWithDescription:@"create client"];
+    
+    
+    [QredoClient initializeFromKeychainCredentialsWithCompletionHandler:^(QredoClient *client2, NSError *error) {
+        XCTAssertNil(error);
+        XCTAssertNotNil(client2);
+        if ([client2 isClosed]==NO){
+            NSLog(@"Retrieved a credential set from the keychain and establish a Qredo Client");
+        }
+        [clientExpectation2 fulfill];
+    }];
+     
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
+                                 handler:^(NSError *error) {
+                                     //avoiding exception when 'fulfill' is called after timeout
+                                     clientExpectation = nil;
+                                 }];
+
+    
+    
+}
+
+
 -(void)testDefaultClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     __block QredoClient *client;
@@ -51,11 +103,12 @@
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
-                       [clientExpectation fulfill];
+                      
                        client = clientArg;
                        
                        QLog(@"Version is  %@",[clientArg versionString]);
                        QLog(@"Build is    %@",[clientArg buildString]);
+                       [clientExpectation fulfill];
                    }];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout

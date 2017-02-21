@@ -91,7 +91,7 @@
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"TestHost.sqlite"];
     NSError *error = nil;
-    NSString *failureReason = @"There was an error creating or loading the application's saved data.";
+    NSString *failureReason = @"QREDO: There was an error creating or loading the application's saved data.";
     
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]){
         //Report any error we got.
@@ -102,7 +102,7 @@
         error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
         //Replace this with code to handle the error appropriately.
         //abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@",error,[error userInfo]);
+        NSLog(@"QREDO: Unresolved error %@, %@",error,[error userInfo]);
         abort();
     }
     
@@ -139,7 +139,7 @@
         if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]){
             //Replace this implementation with code to handle the error appropriately.
             //abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@",error,[error userInfo]);
+            NSLog(@"QREDO: Unresolved error %@, %@",error,[error userInfo]);
             abort();
         }
     }
@@ -158,7 +158,7 @@
     [center requestAuthorizationWithOptions:options
                           completionHandler:^(BOOL granted, NSError * _Nullable error) {
                               if (!granted) {
-                                  NSLog(@"Something went wrong");
+                                  NSLog(@"QREDO: Something went wrong");
                               }else{
                                   [[UIApplication sharedApplication] registerForRemoteNotifications];
                               }
@@ -173,21 +173,21 @@
 }
 
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
-    NSLog(@"Remote notification support is unavailable due to error: %@", err);
+    NSLog(@"QREDO: Remote notification support is unavailable due to error: %@", err);
     self.registerAPNcompletionBlock(err, nil);
 }
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-
+    NSLog(@"QREDO: Incoming notification");
     if (self.client){
         //process the incoming Push MEssage with a QredoClient to lookup the Conversation object
         [QredoPushMessage initializeWithRemoteNotification:userInfo qredoClient:self.client completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
             if (error){
-                NSLog(@"Error building Push Message");
+                NSLog(@"QREDO: Error building Push Message");
             }else{
                 //Successfully parsed incoming Push Message
-                NSLog(@"Incoming Push Message \n %@",pushMessage);
+                NSLog(@"QREDO: Incoming Push Message \n %@",pushMessage);
                 self.testsPassed = YES;
                 _qredoPushMessage = pushMessage;
             }
@@ -200,10 +200,10 @@
         
         [QredoPushMessage initializeWithRemoteNotification:userInfo completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
             if (error){
-                NSLog(@"Error building Push Message");
+                NSLog(@"QREDO: Error building Push Message");
             }else{
                 //Successfully parsed incoming Push Message
-                NSLog(@"Incoming Push Message \n %@",pushMessage);
+                NSLog(@"QREDO: Incoming Push Message \n %@",pushMessage);
                 self.testsPassed = YES;
                 _qredoPushMessage = pushMessage;
             }

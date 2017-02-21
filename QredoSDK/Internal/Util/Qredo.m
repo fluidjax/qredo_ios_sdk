@@ -24,6 +24,8 @@
 #import "QredoNetworkTime.h"
 #import <UIKit/UIKit.h>
 #import "MasterConfig.h"
+#import "KeychainItemWrapper.h"
+#import "NSData+Conversion.h"
 
 NSString *const QredoVaultItemTypeKeychain                  = @"com.qredo.keychain.device-name";
 NSString *const QredoVaultItemTypeKeychainAttempt           = @"com.qredo.keychain.transfer-attempt";
@@ -45,6 +47,16 @@ NSString *const QredoRendezvousURIProtocol                  = @"qrp:";
 static NSString *const QredoKeychainOperatorName            = @"Qredo Mock Operator";
 static NSString *const QredoKeychainOperatorAccountId       = @"1234567890";
 static NSString *const QredoKeychainPassword                = @"Password123";
+
+
+//keyname constants for the keychain stored credentials
+static NSString *const QredoKeychainAppIDKey           = @"Q";
+static NSString *const QredoKeychainAppSecretKey       = @"R";
+static NSString *const QredoKeychainUserIDKey          = @"E";
+static NSString *const QredoKeychainUserSecretKey      = @"D";
+
+
+
 
 NSString *systemVaultKeychainArchiveIdentifier;
 
@@ -153,6 +165,35 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(QredoServiceInvoker *)serviceInvoker {
     return _serviceInvoker;
 }
+
+
++(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
+    NSDictionary *credentials = [QredoClient retrieveCredentialsFromKeychain];
+    
+
+    
+    NSString *appId = [credentials objectForKey:QredoKeychainAppIDKey];
+    NSString *appSecret = [credentials objectForKey:QredoKeychainAppSecretKey];
+    NSString *userId = [credentials objectForKey:QredoKeychainUserIDKey];
+    NSString *userSecret = [credentials objectForKey:QredoKeychainUserSecretKey];
+    
+    if (userSecret && userId && appSecret && appId){
+        [self initializeWithAppId:appId
+                        appSecret:appSecret
+                           userId:userId
+                       userSecret:userSecret
+                         appGroup:nil
+                          options:nil
+                completionHandler:completionHandler];
+    }else{
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeRendezvousInvalidData
+                                         userInfo:@{ NSLocalizedDescriptionKey:@"Invalid Stored Credentials"}];
+        completionHandler(nil, error);
+    }
+}
+
+
 
 
 +(void)initializeWithAppId:(NSString *)appId
@@ -1204,6 +1245,38 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(BOOL)hasDefaultVaultKeychainWithError:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
     return [self hasSystemVaultKeychainWithKeychainArchiver:keychainArchiver error:error];
+}
+
+
+
+
+-(void)saveCredentialsInKeychain{
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", bundleIdentifier];
+    KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:nil];
+    [keychain resetKeychainItem];
+    NSDictionary *credentials = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    self.appCredentials.appId,QredoKeychainAppIDKey,
+                                    [self.appCredentials.appSecret hexadecimalString], QredoKeychainAppSecretKey,
+                                    self.userCredentials.userId, QredoKeychainUserIDKey,
+                                    self.userCredentials.userSecure, QredoKeychainUserSecretKey,nil];
+    //serialize to nsdata
+    NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
+    [keychain setObject:credentialData forKey:(__bridge id)kSecValueData];
+    NSLog(@"Stored");
+}
+
+
+
++(NSDictionary*)retrieveCredentialsFromKeychain{
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", bundleIdentifier];
+    KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:nil];
+    
+    NSData *credentialData = [keychain objectForKey:(__bridge id)(kSecValueData)];
+    NSDictionary *credentials = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:credentialData];
+    NSLog(@"RETRIEVED %@",credentials);
+    return credentials;
 }
 
 

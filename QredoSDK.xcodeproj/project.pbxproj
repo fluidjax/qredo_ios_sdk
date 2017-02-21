@@ -269,6 +269,8 @@
 		834A8A2C1DCCAA89003CF01D /* ObjectSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 834A8A2B1DCCAA89003CF01D /* ObjectSerialization.m */; };
 		8350AF1F1CC623E1008A6715 /* HighwatermarksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573F81A2F3B7200D5502E /* HighwatermarksTests.m */; };
 		835B6CB01C75D7CF00A27986 /* QredoLocalIndex.xcdatamodel in Headers */ = {isa = PBXBuildFile; fileRef = 838E48C11C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel */; settings = {ATTRIBUTES = (Public, ); }; };
+		835D69D51E5C5988007CF93C /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 835D69D31E5C5981007CF93C /* KeychainItemWrapper.m */; };
+		835D69D61E5C5989007CF93C /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 835D69D31E5C5981007CF93C /* KeychainItemWrapper.m */; };
 		835FA90D1D75C385000B8C5D /* NSDictionary+QUIDSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 835FA90B1D75C385000B8C5D /* NSDictionary+QUIDSerialization.h */; };
 		835FA90E1D75C385000B8C5D /* NSDictionary+QUIDSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 835FA90C1D75C385000B8C5D /* NSDictionary+QUIDSerialization.m */; };
 		835FA9111D75C9C2000B8C5D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 835FA9101D75C9C2000B8C5D /* Default-568h@2x.png */; };
@@ -977,6 +979,8 @@
 		8346FF9A1CDB775500A4CEAE /* ReadableKeys.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadableKeys.m; sourceTree = "<group>"; };
 		834A8A2B1DCCAA89003CF01D /* ObjectSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectSerialization.m; sourceTree = "<group>"; };
 		834FB42D1D75E354002B57BA /* QredoXDK-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QredoXDK-Info.plist"; sourceTree = "<group>"; };
+		835D69D21E5C5981007CF93C /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		835D69D31E5C5981007CF93C /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		835FA90B1D75C385000B8C5D /* NSDictionary+QUIDSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+QUIDSerialization.h"; path = "../Internal/Categories/NSDictionary+QUIDSerialization.h"; sourceTree = "<group>"; };
 		835FA90C1D75C385000B8C5D /* NSDictionary+QUIDSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+QUIDSerialization.m"; sourceTree = "<group>"; };
 		835FA9101D75C9C2000B8C5D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -1717,6 +1721,8 @@
 				786CE73B1AB1EFB500162392 /* QLFOwnershipSignature+FactoryMethods.m */,
 				0AE25AE31AB90B0200C10F02 /* QredoSigner.h */,
 				0AE25AE41AB90B0200C10F02 /* QredoSigner.m */,
+				835D69D21E5C5981007CF93C /* KeychainItemWrapper.h */,
+				835D69D31E5C5981007CF93C /* KeychainItemWrapper.m */,
 			);
 			name = "Qredo Util and General";
 			path = Util;
@@ -3369,6 +3375,7 @@
 				83ADC4EE1C3BF0EF00C34A76 /* QredoRsaPrivateKey.m in Sources */,
 				83ADC4EF1C3BF0EF00C34A76 /* QredoRsaPublicKey.m in Sources */,
 				83ADC4F01C3BF0EF00C34A76 /* QredoSecKeyRefPair.m in Sources */,
+				835D69D61E5C5989007CF93C /* KeychainItemWrapper.m in Sources */,
 				83ADC4FC1C3BF0EF00C34A76 /* QredoIndexVaultItemPayload.m in Sources */,
 				83EC3B0F1CC7A0A200A55271 /* SSLTimeSyncWorker.m in Sources */,
 				83ADC4FD1C3BF0EF00C34A76 /* QredoIndexVault.m in Sources */,
@@ -3489,6 +3496,7 @@
 				83A01BB51E487A56002E987C /* QredoPushMessage.m in Sources */,
 				83F4E84C1C0F54AF00A99431 /* QredoIndexSummaryValues.m in Sources */,
 				6651492E1BF60432003491CA /* QredoClient.m in Sources */,
+				835D69D51E5C5988007CF93C /* KeychainItemWrapper.m in Sources */,
 				838E48C31C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel in Sources */,
 				6651492F1BF60432003491CA /* QredoBase58.m in Sources */,
 				83E54D381C2AA3D800476515 /* _QredoIndexVaultItemPayload.m in Sources */,
