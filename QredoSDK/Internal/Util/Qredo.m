@@ -1262,8 +1262,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                     self.userCredentials.userSecure, QredoKeychainUserSecretKey,nil];
     //serialize to nsdata
     NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
+    //Sotre in keychain
     [keychain setObject:credentialData forKey:(__bridge id)kSecValueData];
-    NSLog(@"Stored");
 }
 
 
@@ -1275,7 +1275,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     NSData *credentialData = [keychain objectForKey:(__bridge id)(kSecValueData)];
     NSDictionary *credentials = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:credentialData];
-    NSLog(@"RETRIEVED %@",credentials);
     return credentials;
 }
 
