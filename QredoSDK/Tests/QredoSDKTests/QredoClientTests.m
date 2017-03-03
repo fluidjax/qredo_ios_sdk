@@ -44,6 +44,10 @@
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     __block QredoClient *client;
     
+    XCTAssertFalse([QredoClient hasCredentialsInKeychain],@"There shouldn't be items in the keychain");
+    [QredoClient deleteCredentialsInKeychain];
+    XCTAssertFalse([QredoClient hasCredentialsInKeychain],@"There shouldn't be items in the keychain");    
+    
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
@@ -68,6 +72,10 @@
     [client closeSession];
     
     
+    XCTAssertTrue([QredoClient hasCredentialsInKeychain],@"There should be items in the keychain");
+
+    
+    
     __block XCTestExpectation *clientExpectation2 = [self expectationWithDescription:@"create client"];
     
     
@@ -79,13 +87,20 @@
         }
         [clientExpectation2 fulfill];
     }];
-     
+    
+    
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout
                                  handler:^(NSError *error) {
                                      //avoiding exception when 'fulfill' is called after timeout
                                      clientExpectation = nil;
                                  }];
 
+    XCTAssertTrue([QredoClient hasCredentialsInKeychain],@"There should be items in the keychain");
+    [QredoClient deleteCredentialsInKeychain];
+    XCTAssertFalse([QredoClient hasCredentialsInKeychain],@"There shouldn't be items in the keychain");
+
+    
+    
     
     
 }

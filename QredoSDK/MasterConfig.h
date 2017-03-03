@@ -9,7 +9,7 @@
 
 //#define SERVER_LOCAL
 #define SERVER_LOCAL_NETWORKED
-//define SERVER_LOCAL_NETWORKED2
+//#define SERVER_LOCAL_NETWORKED2
 //#define SERVER_STAGING
 //#define SERVER_PRODUCTION
 
@@ -43,12 +43,15 @@
 //This one a Home
 #elif defined SERVER_LOCAL_NETWORKED2
     #undef      QREDO_SERVER_URL
-    #define     QREDO_SERVER_URL    @"192.168.0.50"
+    #define     QREDO_SERVER_URL    @"192.168.0.35"
     #define     SERVER_APPID        @"test"
     #define     SERVER_APPSECRET    @"cafebabe"
-    #define     SERVER_USERID       @"testUserId"
+    #define     SERVER_USERID       @"testUserId1"
+    #define     SERVER_USERSECRET   @"secret1"
+    #define     SERVER_USERID2      @"testUserId2"
+    #define     SERVER_USERSECRET2  @"secret2"
     #define     USE_HTTP            @"YES"
-    #define QREDO_HTTP_SERVICE_URL @"http://192.168.0.50:8080/services"
+    #define QREDO_HTTP_SERVICE_URL @"http://192.168.0.35∫:8080/services"
 
 #elif defined SERVER_STAGING
     #undef      QREDO_SERVER_URL

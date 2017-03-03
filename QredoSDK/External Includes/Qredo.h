@@ -369,10 +369,20 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
     +(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
  */
 
+
+
+
+
 -(void)saveCredentialsInKeychain;
++(void)deleteCredentialsInKeychain;
++(BOOL)hasCredentialsInKeychain;
 
 
+/** Make this call before using a QredoClient when you wish to search the store keychain in an app with an extension.
+    keyChainGroup is the String entered into Capabilities>Keychain Sharing>KeyChain Groups for both the App & Extension
+ */
 
++(void)setKeyChainGroup:(NSString*)keyChainGroup;
 
 
 @end

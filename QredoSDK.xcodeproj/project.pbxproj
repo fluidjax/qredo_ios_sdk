@@ -320,8 +320,8 @@
 		839F70841CF46992007C2F52 /* QredoUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 839F70831CF46992007C2F52 /* QredoUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83A01BB51E487A56002E987C /* QredoPushMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A01BB01E48753B002E987C /* QredoPushMessage.m */; };
 		83A01BB61E487A56002E987C /* QredoPushMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 83A01BB01E48753B002E987C /* QredoPushMessage.m */; };
-		83A01BB71E4893E9002E987C /* QredoPushMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 83A01BAF1E48753B002E987C /* QredoPushMessage.h */; };
-		83A01BB81E4893E9002E987C /* QredoPushMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 83A01BAF1E48753B002E987C /* QredoPushMessage.h */; };
+		83A01BB71E4893E9002E987C /* QredoPushMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 83A01BAF1E48753B002E987C /* QredoPushMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		83A01BB81E4893E9002E987C /* QredoPushMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 83A01BAF1E48753B002E987C /* QredoPushMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83A0F0311CEC926D0079EAFB /* QredoUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EDB5C71CE20E1300F4F556 /* QredoUtils.m */; };
 		83A0F0321CEC92870079EAFB /* ReadableKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 8346FF9A1CDB775500A4CEAE /* ReadableKeys.m */; };
 		83A1F01D1E41EB680009DFAF /* TestCertificates.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B4B1BD5266700EC8D6C /* TestCertificates.m */; };
@@ -1972,13 +1972,13 @@
 				6602D9BC1C24239500CB5794 /* QredoVault.h in Headers */,
 				838A2EFB1DEDCA7F004F77C0 /* NSDictionary+QUIDSerialization.h in Headers */,
 				83675A4B1C7B5F2200F31533 /* QredoRendezvousHelper_Private.h in Headers */,
+				83A01BB81E4893E9002E987C /* QredoPushMessage.h in Headers */,
 				6602D9BD1C24239500CB5794 /* QredoRendezvous.h in Headers */,
 				83675A521C7B5F2200F31533 /* QredoRendezvousPrivate.h in Headers */,
 				83675A491C7B5F2200F31533 /* QredoRendezvousHelpers.h in Headers */,
 				6602D9BE1C24239500CB5794 /* QredoConversation.h in Headers */,
 				6602D9BF1C24239500CB5794 /* QredoConversationMessage.h in Headers */,
 				83675A481C7B5F2200F31533 /* QredoRendezvousCrypto.h in Headers */,
-				83A01BB81E4893E9002E987C /* QredoPushMessage.h in Headers */,
 				83675A4C1C7B5F2200F31533 /* QredoRendezvousAnonymousHelper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1995,13 +1995,13 @@
 				83675A331C7B5F2100F31533 /* QredoRendezvousCrypto.h in Headers */,
 				665149691BF6064C003491CA /* QredoErrorCodes.h in Headers */,
 				83B643301C970EA9003461F7 /* QredoQUID.h in Headers */,
-				83A01BB71E4893E9002E987C /* QredoPushMessage.h in Headers */,
 				837D300C1D08659900C0BD56 /* QredoIndexSummaryValues.h in Headers */,
 				83675A3D1C7B5F2100F31533 /* QredoRendezvousPrivate.h in Headers */,
 				6651496B1BF6064C003491CA /* QredoTypes.h in Headers */,
 				83D3E7D71D086A1A005E4B38 /* _QredoIndexSummaryValues.h in Headers */,
 				838A2EFC1DEDCA90004F77C0 /* NSDictionary+QUIDSerialization.h in Headers */,
 				83675A351C7B5F2100F31533 /* QredoRendezvousHelper.h in Headers */,
+				83A01BB71E4893E9002E987C /* QredoPushMessage.h in Headers */,
 				83675A341C7B5F2100F31533 /* QredoRendezvousHelpers.h in Headers */,
 				6651496C1BF6064C003491CA /* QredoVault.h in Headers */,
 				6651496D1BF6064C003491CA /* QredoRendezvous.h in Headers */,

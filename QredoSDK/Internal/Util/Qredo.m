@@ -102,7 +102,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoUserCredentials *_userCredentials;
     QredoAppCredentials *_appCredentials;
     
-    
     dispatch_queue_t _rendezvousQueue;
 }
 
@@ -119,6 +118,16 @@ NSString *systemVaultKeychainArchiveIdentifier;
 @end
 
 @implementation QredoClient
+
+static NSString *_keyChainGroup;
+
+
++(void)setKeyChainGroup:(NSString*)keyChainGroup{
+    _keyChainGroup = keyChainGroup;
+}
+
+
+
 
 
 +(NSDate *)dateTime {
@@ -324,6 +333,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
     //userCredentials:userCredentials];
     //
     
+    
+    
+    NSLog(@"QREDO: Attempt to conntect using %@", serviceURL);
     
     __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL
                                                            appCredentials:appCredentials
@@ -1249,11 +1261,19 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 
++(KeychainItemWrapper*)keychainItemWrapper{
+    NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", _keyChainGroup];
+    NSString *accessGroup = [NSString stringWithFormat:@"%@.%@", [QredoClient bundleSeedID], _keyChainGroup];
+    //Access group uses kSecAttrAccessGroup and should use "appidprefix.keychaingroup"
+    //Identifier
+     KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:accessGroup];
+    return keychain;
+
+}
+
 
 -(void)saveCredentialsInKeychain{
-    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", bundleIdentifier];
-    KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:nil];
+    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapper];
     [keychain resetKeychainItem];
     NSDictionary *credentials = [NSDictionary dictionaryWithObjectsAndKeys:
                                     self.appCredentials.appId,QredoKeychainAppIDKey,
@@ -1268,15 +1288,57 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 
++(BOOL)hasCredentialsInKeychain{
+    NSDictionary *dict = [QredoClient retrieveCredentialsFromKeychain];
+    if (!dict)return NO;
+    if ([dict objectForKey:QredoKeychainAppIDKey] &&
+        [dict objectForKey:QredoKeychainAppSecretKey] &&
+        [dict objectForKey:QredoKeychainUserIDKey] &&
+        [dict objectForKey:QredoKeychainUserSecretKey]) {
+        return YES;
+    }else{
+     return NO;
+    }
+}
+
+
++(void)deleteCredentialsInKeychain{
+    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapper];
+    [keychain resetKeychainItem];
+}
+
+
+
+
+
 +(NSDictionary*)retrieveCredentialsFromKeychain{
-    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", bundleIdentifier];
-    KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:nil];
-    
+    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapper];
     NSData *credentialData = [keychain objectForKey:(__bridge id)(kSecValueData)];
+    if ([credentialData length]==0)return nil;
     NSDictionary *credentials = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:credentialData];
     return credentials;
 }
 
+
+
++ (NSString *)bundleSeedID {
+    NSDictionary *query = [NSDictionary dictionaryWithObjectsAndKeys:
+                           (__bridge NSString *)kSecClassGenericPassword, (__bridge NSString *)kSecClass,
+                           @"bundleSeedID", kSecAttrAccount,
+                           @"", kSecAttrService,
+                           (id)kCFBooleanTrue, kSecReturnAttributes,
+                           nil];
+    CFDictionaryRef result = nil;
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, (CFTypeRef *)&result);
+    if (status == errSecItemNotFound)
+        status = SecItemAdd((__bridge CFDictionaryRef)query, (CFTypeRef *)&result);
+    if (status != errSecSuccess)
+        return nil;
+    NSString *accessGroup = [(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kSecAttrAccessGroup];
+    NSArray *components = [accessGroup componentsSeparatedByString:@"."];
+    NSString *bundleSeedID = [[components objectEnumerator] nextObject];
+    CFRelease(result);
+    return bundleSeedID;
+}
 
 @end

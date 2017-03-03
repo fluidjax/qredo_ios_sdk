@@ -16,6 +16,23 @@
 }
 
 
+
+-(void)testSha1{
+    QredoUserCredentials *creds = [[QredoUserCredentials alloc] init];
+    NSData *output = [creds sha1WithString:@"abc"];
+    NSData *expected = [NSData dataWithHexString:@"a9993e364706816aba3e25717850c26c9cd0d89d"];
+    XCTAssert([expected isEqualToData:output],@"Sha1 incorrect value");
+}
+
+
+
+-(void)testSha256{
+    QredoUserCredentials *creds = [[QredoUserCredentials alloc] init];
+    NSData *output = [creds sha256WithString:@"abc"];
+    NSData *expected = [NSData dataWithHexString:@"ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61 f20015ad"];
+    XCTAssert([expected isEqualToData:output],@"Sha256 incorrect value");
+}
+
 -(void)testGetMasterUnlockKey {
     NSString *TEST_USER_SECRET      = @"This is a secret";
     NSString *APPLICATION_ID         = @"test";

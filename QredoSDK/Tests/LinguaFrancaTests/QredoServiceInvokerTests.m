@@ -22,7 +22,6 @@
 
 -(void)setUp {
     [super setUp];
-    
     self.pingSemaphore = dispatch_semaphore_create(1); //Only 1 at a time
     self.getChallengeSemaphore = dispatch_semaphore_create(1); //Only 1 at a time
     self.pingSuccessResponseCount = 0;
