@@ -142,6 +142,9 @@
     if (self.client.appGroup)userDefaults = [[NSUserDefaults alloc] initWithSuiteName:self.client.appGroup];
 
     
+    NSLog(@"**100 Userdefaults %@",userDefaults);
+    
+    
     NSDictionary *queueIDConversationLookup = [userDefaults objectForKey:@"ConversationQueueIDLookup"];
     
     //deserialize the ref

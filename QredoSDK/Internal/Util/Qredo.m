@@ -54,6 +54,7 @@ static NSString *const QredoKeychainAppIDKey           = @"Q";
 static NSString *const QredoKeychainAppSecretKey       = @"R";
 static NSString *const QredoKeychainUserIDKey          = @"E";
 static NSString *const QredoKeychainUserSecretKey      = @"D";
+static NSString *const QredoKeychainAppGroup            = @"O";
 
 
 
@@ -179,19 +180,21 @@ static NSString *_keyChainGroup;
 +(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
     NSDictionary *credentials = [QredoClient retrieveCredentialsFromKeychain];
     
-
-    
     NSString *appId = [credentials objectForKey:QredoKeychainAppIDKey];
     NSString *appSecret = [credentials objectForKey:QredoKeychainAppSecretKey];
     NSString *userId = [credentials objectForKey:QredoKeychainUserIDKey];
     NSString *userSecret = [credentials objectForKey:QredoKeychainUserSecretKey];
+    NSString *appGroup = [credentials objectForKey:QredoKeychainAppGroup];
+    
+    
+    NSLog(@"**200 %@ %@ %@ %@ %@",appId, appSecret, userId, userSecret , appGroup );
     
     if (userSecret && userId && appSecret && appId){
         [self initializeWithAppId:appId
                         appSecret:appSecret
                            userId:userId
                        userSecret:userSecret
-                         appGroup:nil
+                         appGroup:appGroup
                           options:nil
                 completionHandler:completionHandler];
     }else{
@@ -1264,11 +1267,8 @@ static NSString *_keyChainGroup;
 +(KeychainItemWrapper*)keychainItemWrapper{
     NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", _keyChainGroup];
     NSString *accessGroup = [NSString stringWithFormat:@"%@.%@", [QredoClient bundleSeedID], _keyChainGroup];
-    //Access group uses kSecAttrAccessGroup and should use "appidprefix.keychaingroup"
-    //Identifier
-     KeychainItemWrapper* keychain = [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:accessGroup];
-    return keychain;
-
+    
+    return [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:accessGroup];
 }
 
 
@@ -1279,7 +1279,9 @@ static NSString *_keyChainGroup;
                                     self.appCredentials.appId,QredoKeychainAppIDKey,
                                     [self.appCredentials.appSecret hexadecimalString], QredoKeychainAppSecretKey,
                                     self.userCredentials.userId, QredoKeychainUserIDKey,
-                                    self.userCredentials.userSecure, QredoKeychainUserSecretKey,nil];
+                                    self.userCredentials.userSecure, QredoKeychainUserSecretKey,
+                                    self.appGroup, QredoKeychainAppGroup,
+                                    nil];
     //serialize to nsdata
     NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
     //Sotre in keychain
