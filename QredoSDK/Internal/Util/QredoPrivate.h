@@ -75,6 +75,8 @@ static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 -(QredoUserCredentials *)userCredentials;
 -(QredoAppCredentials *)appCredentials;
 
++(NSDictionary*)retrieveCredentialsUserDefaults;
+
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                                duration:(long)duration
                      unlimitedResponses:(BOOL)unlimitedResponses

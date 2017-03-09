@@ -139,7 +139,9 @@
     
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    if (self.client.appGroup)userDefaults = [[NSUserDefaults alloc] initWithSuiteName:self.client.appGroup];
+    NSString *appGroup = [QredoClient appGroup];
+    
+    if (appGroup)userDefaults = [[NSUserDefaults alloc] initWithSuiteName:appGroup];
 
     
     NSLog(@"**100 Userdefaults %@",userDefaults);

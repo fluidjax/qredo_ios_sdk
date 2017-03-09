@@ -50,11 +50,12 @@ static NSString *const QredoKeychainPassword                = @"Password123";
 
 
 //keyname constants for the keychain stored credentials
-static NSString *const QredoKeychainAppIDKey           = @"Q";
-static NSString *const QredoKeychainAppSecretKey       = @"R";
-static NSString *const QredoKeychainUserIDKey          = @"E";
-static NSString *const QredoKeychainUserSecretKey      = @"D";
-static NSString *const QredoKeychainAppGroup            = @"O";
+static NSString *const QredoStoredAppIDKey           = @"Q";
+static NSString *const QredoStoredAppSecretKey       = @"R";
+static NSString *const QredoStoredUserIDKey          = @"E";
+static NSString *const QredoStoredUserSecretKey      = @"D";
+static NSString *const QredoStoredAppGroup           = @"O";
+static NSString *const QredoStoredUserDefautlCredentialsKey     = @"QREDO_USER_DEFAULT_CREDENTIALS";
 
 
 
@@ -62,8 +63,7 @@ static NSString *const QredoKeychainAppGroup            = @"O";
 NSString *systemVaultKeychainArchiveIdentifier;
 
 
-@implementation QredoClientOptions
-{
+@implementation QredoClientOptions{
     QredoCertificate *_certificate;
 }
 
@@ -121,10 +121,24 @@ NSString *systemVaultKeychainArchiveIdentifier;
 @implementation QredoClient
 
 static NSString *_keyChainGroup;
+static NSString *_appGroup;
 
 
 +(void)setKeyChainGroup:(NSString*)keyChainGroup{
     _keyChainGroup = keyChainGroup;
+}
+
++(void)setAppGroup:(NSString*)appGroup{
+    _appGroup = appGroup;
+}
+
+
++(NSString*)keyChainGroup{
+    return _keyChainGroup;
+}
+
++(NSString*)appGroup{
+    return _appGroup;
 }
 
 
@@ -177,14 +191,52 @@ static NSString *_keyChainGroup;
 }
 
 
+
++(void)initializeFromUserDefaultCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
+    if (!_appGroup){
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeUnknown
+                                         userInfo:@{ NSLocalizedDescriptionKey:@"No App Group Defined"}];
+        completionHandler(nil, error);
+        return;
+    }
+    
+    
+    NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaults];
+    
+    NSString *appId         = [credentials objectForKey:QredoStoredAppIDKey];
+    NSString *appSecret     = [credentials objectForKey:QredoStoredAppSecretKey];
+    NSString *userId        = [credentials objectForKey:QredoStoredUserIDKey];
+    NSString *userSecret    = [credentials objectForKey:QredoStoredUserSecretKey];
+    
+//csm    NSString *storedAppGroup= [credentials objectForKey:QredoStoredAppGroup];
+//csm    NSLog(@"**200 %@ %@ %@ %@ %@",appId, appSecret, userId, userSecret , appGroup );
+    
+    if (userSecret && userId && appSecret && appId){
+        [self initializeWithAppId:appId
+                        appSecret:appSecret
+                           userId:userId
+                       userSecret:userSecret
+                          options:nil
+                completionHandler:completionHandler];
+    }else{
+        NSError *error = [NSError errorWithDomain:QredoErrorDomain
+                                             code:QredoErrorCodeUnknown
+                                         userInfo:@{ NSLocalizedDescriptionKey:@"Invalid Stored Credentials"}];
+        completionHandler(nil, error);
+    }
+}
+
+
+
 +(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
     NSDictionary *credentials = [QredoClient retrieveCredentialsFromKeychain];
     
-    NSString *appId = [credentials objectForKey:QredoKeychainAppIDKey];
-    NSString *appSecret = [credentials objectForKey:QredoKeychainAppSecretKey];
-    NSString *userId = [credentials objectForKey:QredoKeychainUserIDKey];
-    NSString *userSecret = [credentials objectForKey:QredoKeychainUserSecretKey];
-    NSString *appGroup = [credentials objectForKey:QredoKeychainAppGroup];
+    NSString *appId = [credentials objectForKey:QredoStoredAppIDKey];
+    NSString *appSecret = [credentials objectForKey:QredoStoredAppSecretKey];
+    NSString *userId = [credentials objectForKey:QredoStoredUserIDKey];
+    NSString *userSecret = [credentials objectForKey:QredoStoredUserSecretKey];
+    NSString *appGroup = [credentials objectForKey:QredoStoredAppGroup];
     
     
     NSLog(@"**200 %@ %@ %@ %@ %@",appId, appSecret, userId, userSecret , appGroup );
@@ -1272,15 +1324,73 @@ static NSString *_keyChainGroup;
 }
 
 
+
+-(void)saveCredentialsInUserDefaults{
+    NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+    if (self.appGroup)userdefaults = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
+
+    NSDictionary *credentials = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 self.appCredentials.appId,QredoStoredAppIDKey,
+                                 [self.appCredentials.appSecret hexadecimalString], QredoStoredAppSecretKey,
+                                 self.userCredentials.userId, QredoStoredUserIDKey,
+                                 self.userCredentials.userSecure, QredoStoredUserSecretKey,
+                                 self.appGroup, QredoStoredAppGroup,
+                                 nil];
+    //serialize to nsdata
+    NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
+    [userdefaults setObject:credentialData forKey:QredoStoredUserDefautlCredentialsKey];
+    [userdefaults synchronize];
+}
+
+
++(BOOL)hasCredentialsInUserDefaults{
+    NSDictionary *dict = [self retrieveCredentialsUserDefaults];
+    if (!dict)return NO;
+    if ([dict objectForKey:QredoStoredAppIDKey] &&
+        [dict objectForKey:QredoStoredAppSecretKey] &&
+        [dict objectForKey:QredoStoredUserIDKey] &&
+        [dict objectForKey:QredoStoredUserSecretKey]) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
+
++(void)deleteCredentialsInUserDefaults{
+    NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
+    if (_appGroup)userdefaults = [[NSUserDefaults alloc] initWithSuiteName:_appGroup];
+    [userdefaults setObject:nil forKey:QredoStoredUserDefautlCredentialsKey];
+    [userdefaults synchronize];
+}
+
+
++(NSDictionary*)retrieveCredentialsUserDefaults{
+    
+    NSUserDefaults *userdefaults;
+    if (_appGroup){
+        userdefaults = [[NSUserDefaults alloc] initWithSuiteName:_appGroup];
+    }else{
+        userdefaults = [NSUserDefaults standardUserDefaults];
+    }
+
+    
+    NSData *credentialData = [userdefaults objectForKey:QredoStoredUserDefautlCredentialsKey];
+    if ([credentialData length]==0)return nil;
+    
+    NSDictionary *credentials = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:credentialData];
+    return credentials;
+}
+
 -(void)saveCredentialsInKeychain{
     KeychainItemWrapper *keychain = [QredoClient keychainItemWrapper];
     [keychain resetKeychainItem];
     NSDictionary *credentials = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    self.appCredentials.appId,QredoKeychainAppIDKey,
-                                    [self.appCredentials.appSecret hexadecimalString], QredoKeychainAppSecretKey,
-                                    self.userCredentials.userId, QredoKeychainUserIDKey,
-                                    self.userCredentials.userSecure, QredoKeychainUserSecretKey,
-                                    self.appGroup, QredoKeychainAppGroup,
+                                    self.appCredentials.appId,QredoStoredAppIDKey,
+                                    [self.appCredentials.appSecret hexadecimalString], QredoStoredAppSecretKey,
+                                    self.userCredentials.userId, QredoStoredUserIDKey,
+                                    self.userCredentials.userSecure, QredoStoredUserSecretKey,
+                                    self.appGroup, QredoStoredAppGroup,
                                     nil];
     //serialize to nsdata
     NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
@@ -1290,13 +1400,16 @@ static NSString *_keyChainGroup;
 
 
 
+
+
+
 +(BOOL)hasCredentialsInKeychain{
     NSDictionary *dict = [QredoClient retrieveCredentialsFromKeychain];
     if (!dict)return NO;
-    if ([dict objectForKey:QredoKeychainAppIDKey] &&
-        [dict objectForKey:QredoKeychainAppSecretKey] &&
-        [dict objectForKey:QredoKeychainUserIDKey] &&
-        [dict objectForKey:QredoKeychainUserSecretKey]) {
+    if ([dict objectForKey:QredoStoredAppIDKey] &&
+        [dict objectForKey:QredoStoredAppSecretKey] &&
+        [dict objectForKey:QredoStoredUserIDKey] &&
+        [dict objectForKey:QredoStoredUserSecretKey]) {
         return YES;
     }else{
      return NO;
@@ -1308,6 +1421,7 @@ static NSString *_keyChainGroup;
     KeychainItemWrapper *keychain = [QredoClient keychainItemWrapper];
     [keychain resetKeychainItem];
 }
+
 
 
 
