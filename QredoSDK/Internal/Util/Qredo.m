@@ -306,15 +306,7 @@ static NSString *_appGroup;
     
     
     if ([USE_HTTP isEqualToString:@"YES"] ){
-        switch (transportType){
-            case QredoClientOptionsTransportTypeHTTP:
                 serviceURL = [NSURL URLWithString:QredoClientNONSSLServiceURL];
-                break;
-            case QredoClientOptionsTransportTypeWebSockets:
-                serviceURL = [NSURL URLWithString:QredoClientNONSSLWebSocketsServiceURL];
-                break;
-        }
-        
     }else{
         switch (transportType){
             case QredoClientOptionsTransportTypeHTTP:
