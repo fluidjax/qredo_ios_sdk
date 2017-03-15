@@ -37,7 +37,7 @@
 -(QredoEllipticCurvePoint *)multiplyWithPoint:(QredoEllipticCurvePoint *)point {
     NSMutableData *result = [[NSMutableData alloc] initWithLength:SCALAR_MULT_RESULT_LENGTH];
     
-    crypto_scalarmult_curve25519(result.mutableBytes,point.data.bytes,self.data.bytes);
+     BOOL unused __attribute__((unused)) = crypto_scalarmult_curve25519(result.mutableBytes,point.data.bytes,self.data.bytes);
     
     QredoEllipticCurvePoint *newPoint = [[QredoEllipticCurvePoint alloc] initWithPointData:result];
     

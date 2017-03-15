@@ -161,7 +161,7 @@
           @"Password argument must be specified.");
     
     GUARDF(iterations < UINT_MAX,
-           @"Iterations value must be lower than max allowed value (%lu).", iterations);
+           @"Iterations value must be lower than max allowed value (%lu).", (unsigned long)iterations);
     
     GUARD(iterations > 0,
           @"Iterations value cannot be zero.");

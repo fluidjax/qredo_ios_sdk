@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
-#import "QredoUtils.h"
 #import "sodium.h"
+#import "QredoUtils.h"
 
 
 @interface QredoSecureChannel ()
@@ -59,7 +59,7 @@
     int SCALAR_MULT_RESULT_LENGTH = 32;
     NSMutableData *scalarMult = [[NSMutableData alloc] initWithLength:SCALAR_MULT_RESULT_LENGTH];
     
-    crypto_scalarmult_curve25519(scalarMult.mutableBytes,self.localPrivateKeyData.bytes,self.remotePublicKeyData.bytes);
+    BOOL unused __attribute__((unused)) = crypto_scalarmult_curve25519(scalarMult.mutableBytes,self.localPrivateKeyData.bytes,self.remotePublicKeyData.bytes);
     NSMutableData *sKey = [[NSMutableData alloc] initWithLength:crypto_box_SECRETKEYBYTES];
     crypto_hash_sha256(sKey.mutableBytes,scalarMult.bytes,crypto_box_SECRETKEYBYTES);
     self.encryptionKey = [sKey copy];

@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import "MasterConfig.h"
 
-
+#undef QREDO_HTTP_SERVICE_URL
 
 #ifdef SERVER_LOCAL
     #define QREDO_HTTP_SERVICE_URL @"http://localhost:8080/services"

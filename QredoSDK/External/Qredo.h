@@ -64,7 +64,7 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  @param userId     a unique identifier for a user of the App, usually username or email address
  @param userSecret a password for the user of the App.
  
- @param completionhandler Returns the `QredoClient` object or an error.
+ @param completionHandler Returns the `QredoClient` object or an error.
  The `QredoClient` parameter will be nil if the app cannot be initialized. See the note above.
  The `NSError` parameter will be non nil if an error has occured: `error.code` contains `QredoErrorCodeUnknown` if the credentials are incorrect or if the app cannot be initialised due to a network error. `error.localizedDescription` includes more information about the error.
  
@@ -127,7 +127,7 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  
  
  @param tagSecurityLevel Use [QredoSecurityLevel](../Enums/QredoSecurityLevel.html) (QREDO_HIGH_SECURITY or QREDO_MEDIUM_SECURITY), to define the Security Level of the generated tag
- @param completionhandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
+ @param completionHandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
  
  */
 
@@ -149,7 +149,7 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  @param unlimitedResponses Set to YES if there can be an unlimited numbers of response to the Rendezvous. If the parameter is NO, then there can only be one response after which the Rendezvous will expire. Calling [activateRendezvousWithRef](#/c:objc(cs)QredoClient(im)deactivateRendezvousWithRef:completionHandler:)
  will set the response count to unlimited.
  @param summaryValues a dictionary of key/value pairs.
- @param completionhandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
+ @param completionHandler returns a `QredoRendezvous` or nil if an error occurs. `error.code` contains `QredoErrorCodeRendezvousUnknownResponse` if the the app has not been initialised, or there is no network connection. `error.localizedDescription` includes more information about the error.
  
  
  */
@@ -254,12 +254,13 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/rendezvous/updating_rendezvous.html#activate)
  
  
- @param tag The string representing the tag of the Rendezvous to respond to.
+ @param ref The QredoRendezvousRef representing the Rendezvous to respond to.
  @param completionHandler rendezvous will contain the activated Rendezvous or nil if an error occurs. error.code will contain `QredoErrorCodeRendezvousNotFound` if a Rendezvous with the specified `QredoRendezvousRef` cannot be found.
  
  
  */
--(void)activateRendezvousWithRef:(QredoRendezvousRef *)ref duration:(long)duration
+-(void)activateRendezvousWithRef:(QredoRendezvousRef *)ref
+                        duration:(long)duration
                completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
 
 /** Deactivates a Rendezvous.

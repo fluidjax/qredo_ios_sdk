@@ -221,7 +221,7 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 /**
  Stop listening for messages received in the Conversation and delete the observer object.
- @param The observer to remove
+ @param observer to remove
  
  @note Observers are automatically deleted when you close the connection to the `QredoClient`.
  

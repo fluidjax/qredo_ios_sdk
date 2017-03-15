@@ -30,7 +30,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     self = [super init];
     
     if (self){
-        sodium_init();
+        BOOL unused __attribute__((unused)) = sodium_init();
     }
     
     return self;

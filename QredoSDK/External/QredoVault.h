@@ -211,7 +211,7 @@ extern QredoVaultHighWatermark * const QredoVaultHighWatermarkOrigin;
 
 
 /** Search the metadata dictionary and return the object stored with the specified key
- @param the key to search for
+ @param key to search for
  @return the object stored with this key. Returns nil if no objects can be found with the specified key.
  */
 
@@ -310,7 +310,7 @@ extern QredoVaultHighWatermark * const QredoVaultHighWatermarkOrigin;
 
 /**
  Stop listening for items added to the Vault and delete the observer object.
- @param The observer to remove
+ @param observer to remove
  
  @note Observers are automatically deleted when you close the connection to the `QredoClient`.
  
@@ -362,7 +362,7 @@ extern QredoVaultHighWatermark * const QredoVaultHighWatermarkOrigin;
  @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
- @param since The `QredoVaultHighWatermark` specifying the location in the Vault to search from. Set this to `QredoVaultHighWatermarkOrigin` to start the enumeration from the beginning or use the `highWatermark` method to get the current watermark
+ @param sinceWatermark the `QredoVaultHighWatermark` specifying the location in the Vault to search from. Set this to `QredoVaultHighWatermarkOrigin` to start the enumeration from the beginning or use the `highWatermark` method to get the current watermark
  @param completionHandler will be called when the enumeration is complete or if an error occurs
  
  @note  Returns the latest versions of all items in the vault. Deleted items are not returned.
@@ -397,7 +397,7 @@ extern QredoVaultHighWatermark * const QredoVaultHighWatermarkOrigin;
  @see Retrieving an item from the Vault: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html), [Swift](https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html)
  
  @param block Called for each vault item, passing the `QredoVaultItemMetadata`.  Set `stop` to YES to terminate the enumeration
- @param since The `QredoVaultHighWatermark` specifying the location in the Vault to search from. Set this to `QredoVaultHighWatermarkOrigin` to start the enumeration from the beginning or use the `highWatermark` method to get the current watermark
+ @param sinceWatermark The `QredoVaultHighWatermark` specifying the location in the Vault to search from. Set this to `QredoVaultHighWatermarkOrigin` to start the enumeration from the beginning or use the `highWatermark` method to get the current watermark
  @param completionHandler will be called when the enumeration is complete or if an error occurs
  
  */
@@ -509,7 +509,7 @@ typedef void (^IncomingMetadataBlock)(QredoVaultItemMetadata *vaultMetadata);
  
  @note We recommend value caching is only turned off when free space on the device is running low, but it should be disabled before turning off the metadata cache. It is not possible to control which vault items are cached on the device, only the cache size.
  
- @param metadataCacheEnabled Set to YES to enable the cache
+ @param valueCacheEnabled Set to YES to enable the cache
  
  */
 -(void)valueCacheEnabled:(BOOL)valueCacheEnabled;

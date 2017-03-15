@@ -44,8 +44,8 @@ extern NSString *const kQredoRendezvousVaultItemLabelAuthenticationType;
 /**
  Invoked when this Rendezvous is responded to
  
- @param conversation The Rendezvous being responded to
- @param message The Conversation created by Qredo from the Rendezvous
+ @param rendezvous The Rendezvous being responded to
+ @param conversation The Conversation created by Qredo from the Rendezvous
  
  @note this method must be implemented
  */

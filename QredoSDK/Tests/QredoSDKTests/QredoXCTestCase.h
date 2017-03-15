@@ -59,7 +59,10 @@
 -(void)createClients;
 -(void)createClient1;
 -(void)createClient2;
--(QredoClient *)createClient:(NSString *)userSecret user:(NSString*)user;
+-(QredoClient *)createClientWithAppID:(NSString *)appId
+                            appSecret:(NSString *)appSecret
+                               userId:(NSString *)userId
+                           userSecret:(NSString *)userSecret;
 
 
 /* Rendezvous */
