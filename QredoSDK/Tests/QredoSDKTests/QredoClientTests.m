@@ -43,11 +43,9 @@
 
 -(void)testUserDefaultsStorageOfCredentials{
     NSString *appGroup = @"group.com.qredo.ChrisPush1";
-    [QredoClient setAppGroup:appGroup];
     
-    
-    [QredoClient deleteCredentialsInUserDefaults];
-    XCTAssertTrue([QredoClient hasCredentialsInUserDefaults]==NO,@"UserDefault credentials should be empty");
+    [QredoClient deleteCredentialsInUserDefaultsAppGroup:appGroup];
+    XCTAssertTrue([QredoClient hasCredentialsInUserDefaultsAppGroup:appGroup]==NO,@"UserDefault credentials should be empty");
     
     NSString *pass = [self randomPassword];
 
@@ -55,19 +53,23 @@
     __block QredoClient *client;
     
 
+    QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
+    options.appGroup = appGroup;
+    
+    
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
                               userId:@"testuser"
                           userSecret:pass
-                            appGroup:appGroup
+                             options:options
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
                        
                        client = clientArg;
                        [client saveCredentialsInUserDefaults];
-                       XCTAssertTrue([QredoClient hasCredentialsInUserDefaults]==YES,@"UserDefault credentials should not be empty");
+                       XCTAssertTrue([QredoClient hasCredentialsInUserDefaultsAppGroup:appGroup]==YES,@"UserDefault credentials should not be empty");
                        [clientExpectation fulfill];
                    }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout
@@ -76,10 +78,10 @@
                                      clientExpectation = nil;
                                  }];
     
-    XCTAssertTrue([QredoClient hasCredentialsInUserDefaults]==YES,@"UserDefault credentials should not be empty");
+    XCTAssertTrue([QredoClient hasCredentialsInUserDefaultsAppGroup:appGroup]==YES,@"UserDefault credentials should not be empty");
     
     
-    NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaults];
+    NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaultsAppGroup:appGroup];
     NSLog(@"CREDENTIAL ARE %@", credentials);
     XCTAssert([[credentials objectForKey:@"D"] isEqualToString:pass],@"Credentials not saved & retrieved correctly");
     
@@ -90,7 +92,8 @@
     __block XCTestExpectation *clientExpectation2 = [self expectationWithDescription:@"create client"];
     
     
-    [QredoClient initializeFromUserDefaultCredentialsWithCompletionHandler:^(QredoClient *client2, NSError *error) {
+    [QredoClient  initializeFromUserDefaultCredentialsInAppGroup:appGroup
+                                           withCompletionHandler:^(QredoClient *client2, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(client2);
         if ([client2 isClosed]==NO){
@@ -106,9 +109,9 @@
                                      clientExpectation = nil;
                                  }];
     
-    XCTAssertTrue([QredoClient hasCredentialsInUserDefaults],@"There should be items in the userdefaults");
-    [QredoClient deleteCredentialsInUserDefaults];
-    XCTAssertFalse([QredoClient hasCredentialsInUserDefaults],@"There shouldn't be items in the userdefaults");
+    XCTAssertTrue([QredoClient hasCredentialsInUserDefaultsAppGroup:appGroup],@"There should be items in the userdefaults");
+    [QredoClient deleteCredentialsInUserDefaultsAppGroup:appGroup];
+    XCTAssertFalse([QredoClient hasCredentialsInUserDefaultsAppGroup:appGroup],@"There shouldn't be items in the userdefaults");
 
     
     
@@ -118,19 +121,26 @@
 -(void)testKeychainStorage{
     //test the storage of the Qredo Credentials in the keychain
     
-    [QredoClient setKeyChainGroup:@"com.qredo.ChrisPush1"];
+    NSString *keyChainGroup = @"com.qredo.ChrisPush1";
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     __block QredoClient *client;
     
-    [QredoClient deleteCredentialsInKeychain];
-    XCTAssertFalse([QredoClient hasCredentialsInKeychain],@"There shouldn't be items in the keychain");    
+    [QredoClient deleteCredentialsInKeychainGroup:keyChainGroup];
+    XCTAssertFalse([QredoClient hasCredentialsInKeychainGroup:keyChainGroup],@"There shouldn't be items in the keychain");
+    
+    
+    QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
+    options.keyChainGroup = keyChainGroup;
+    
+
     
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
                               userId:@"testuser"
                           userSecret:[self randomPassword]
+                             options:options
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -150,14 +160,15 @@
     [client closeSession];
     
     
-    XCTAssertTrue([QredoClient hasCredentialsInKeychain],@"There should be items in the keychain");
+    XCTAssertTrue([QredoClient hasCredentialsInKeychainGroup:keyChainGroup],@"There should be items in the keychain");
 
     
     
     __block XCTestExpectation *clientExpectation2 = [self expectationWithDescription:@"create client"];
     
     
-    [QredoClient initializeFromKeychainCredentialsWithCompletionHandler:^(QredoClient *client2, NSError *error) {
+    [QredoClient initializeFromKeychainCredentialsInGroup:keyChainGroup
+                                    withCompletionHandler:^(QredoClient *client2, NSError *error) {
         XCTAssertNil(error);
         XCTAssertNotNil(client2);
         if ([client2 isClosed]==NO){
@@ -173,9 +184,9 @@
                                      clientExpectation = nil;
                                  }];
 
-    XCTAssertTrue([QredoClient hasCredentialsInKeychain],@"There should be items in the keychain");
-    [QredoClient deleteCredentialsInKeychain];
-    XCTAssertFalse([QredoClient hasCredentialsInKeychain],@"There shouldn't be items in the keychain");
+    XCTAssertTrue([QredoClient hasCredentialsInKeychainGroup:keyChainGroup],@"There should be items in the keychain");
+    [QredoClient deleteCredentialsInKeychainGroup:keyChainGroup];
+    XCTAssertFalse([QredoClient hasCredentialsInKeychainGroup:keyChainGroup],@"There shouldn't be items in the keychain");
 
     
     

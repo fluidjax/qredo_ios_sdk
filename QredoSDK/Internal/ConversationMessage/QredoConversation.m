@@ -297,10 +297,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(NSUserDefaults*)userDefaults{
-    if ([QredoClient appGroup]){
-//        return [[NSUserDefaults alloc] initWithSuiteName:@"group.com.qredo.ChrisPush1"];
-        return [[NSUserDefaults alloc] initWithSuiteName:[QredoClient appGroup]];
-        
+    if (self.client.clientOptions.appGroup){
+        return [[NSUserDefaults alloc] initWithSuiteName:self.client.clientOptions.appGroup];
     }else{
         return [NSUserDefaults standardUserDefaults];
     }

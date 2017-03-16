@@ -19,6 +19,32 @@
 @class QredoCertificate;
 
 
+
+
+
+typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
+    QredoClientOptionsTransportTypeHTTP,
+    QredoClientOptionsTransportTypeWebSockets,
+};
+
+
+@interface QredoClientOptions :NSObject
+@property (copy) NSString *serverURL;
+@property QredoClientOptionsTransportType transportType;
+@property BOOL resetData;
+@property BOOL disableMetadataIndex;
+@property (copy) NSData *pushToken;
+@property (copy) NSString *appGroup;
+@property (copy) NSString *keyChainGroup;
+@property BOOL useHTTP;
+
+
+-(instancetype)initDefault;
+-(instancetype)initTest;
+
+@end
+
+
 /** The security level used for a Rendezvous tag created with [createAnonymousRendezvousWithTagType](../Classes/QredoClient.html#/c:objc(cs)QredoClient(im)createAnonymousRendezvousWithTagType:completionHandler:)
  
  - Medium security tags have lower entropy but are more convenient to represent as a human readable string.
@@ -45,6 +71,8 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 
 @interface QredoClient :NSObject
 
+
+@property (readonly) QredoClientOptions *clientOptions;
 
 #pragma mark - Creating and managing a Qredo session
 
@@ -78,18 +106,24 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
          completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
 
 
+
+
 +(void)initializeWithAppId:(NSString *)appId
                  appSecret:(NSString *)appSecret
                     userId:(NSString *)userId
                 userSecret:(NSString *)userSecret
-                  appGroup:(NSString *)appGroup
+                   options:(QredoClientOptions *)options
          completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
-
-
 
 
 /** init as QredoClient from the values stored in the Keychain/UserDefaults - please see   saveCredentialsInKeychain section below for security implications
  */
+
++(void)initializeFromUserDefaultCredentialsInAppGroup:(NSString*)appGroup
+                                withCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
++(void)initializeFromKeychainCredentialsInGroup:(NSString*)keyChainGroup
+                                withCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
+
 +(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
 +(void)initializeFromUserDefaultCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
 
@@ -375,24 +409,19 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 
 
 -(void)saveCredentialsInKeychain;
-+(void)deleteCredentialsInKeychain;
-+(BOOL)hasCredentialsInKeychain;
++(void)deleteCredentialsInKeychainGroup:(NSString*)keyChainGroup;
++(BOOL)hasCredentialsInKeychainGroup:(NSString*)keyChainGroup;
 
 
 -(void)saveCredentialsInUserDefaults;
-+(BOOL)hasCredentialsInUserDefaults;
-+(void)deleteCredentialsInUserDefaults;
++(BOOL)hasCredentialsInUserDefaultsAppGroup:(NSString*)appGroup;
++(void)deleteCredentialsInUserDefaultsAppGroup:(NSString*)appGroup;
 
 
-
-
-/** Make this call before using a QredoClient when you wish to search the store keychain in an app with an extension.
-    keyChainGroup is the String entered into Capabilities>Keychain Sharing>KeyChain Groups for both the App & Extension
- */
-
-+(void)setKeyChainGroup:(NSString*)keyChainGroup;
-+(NSString*)keyChainGroup;
-+(void)setAppGroup:(NSString*)appGroup;
-+(NSString*)appGroup;
 
 @end
+
+
+
+
+

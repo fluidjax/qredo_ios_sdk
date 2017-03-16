@@ -18,6 +18,7 @@
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
 #import "QredoXCTestListeners.h"
+#import "MasterConfig.h"
 
 @import UserNotifications;
 
@@ -74,6 +75,7 @@
 
 
 -(void)testPushServiceExtensionin{
+    [self appDelegateRequestAPNToken];
     [self setupPushStack];
     NSString* smallTestMessage = @"This is a test (encrypted) message for Push Tests";
     
@@ -92,10 +94,21 @@
 
 
 
+-(void)configureClientOptions{
+    QredoClientOptions *options = [[QredoClientOptions alloc] initDefault]; //this is actually init Test because its is swizzled in testing
+    options.pushToken       = apnToken;
+    self.clientOptions = options;
+    NSLog(@"OPTIONS %@", self.clientOptions);
+}
+
 
 
 -(void)testLargePayloadPush{
+    [self appDelegateRequestAPNToken];
+    [self configureClientOptions];
     [self setupPushStack];
+    
+  
     NSString *largeTestString = [NSString stringWithFormat:@"This is a large test string for Push messages %@",[self randomStringWithLength:10000]];
     [self sendMessageAndWaitForPushNotificationWithMessage:largeTestString];
     
@@ -108,6 +121,7 @@
 
 
 -(void)testSmallPayloadPush{
+    [self appDelegateRequestAPNToken];
     [self setupPushStack];
     NSString* smallTestMessage = @"This is a test (encrypted) message for Push Tests";
     [self sendMessageAndWaitForPushNotificationWithMessage:smallTestMessage];
@@ -121,6 +135,7 @@
 
 
 -(void)testSmallPayloadPushNoClient{
+    [self appDelegateRequestAPNToken];
     [self setupPushStack];
     hostAppdelegate.client = nil; //remove client reference
     NSString* smallTestMessage = @"This is a test (encrypted) message for Push Tests";
@@ -173,7 +188,7 @@
 }
 
 -(void)setupPushStack{
-    [self appDelegateRequestAPNToken];
+  
     [self buildStack1];
     //inject the QredoClient into the TestApp
     hostAppdelegate.client = testClient1;

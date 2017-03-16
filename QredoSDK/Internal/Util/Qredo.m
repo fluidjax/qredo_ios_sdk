@@ -36,11 +36,7 @@ NSString *const QredoClientOptionCreateNewSystemVault       = @"com.qredo.option
 NSString *const QredoClientOptionServiceURL                 = @"com.qredo.option.serviceUrl";
 
 
-static NSString *const QredoClientDefaultServiceURL         = @"https://" QREDO_SERVER_URL  @":443/services";
-static NSString *const QredoClientWebSocketsServiceURL      = @"wss://"   QREDO_SERVER_URL  @":443/services";
 
-static NSString *const QredoClientNONSSLServiceURL          = @"http://"  QREDO_SERVER_URL  @":8080/services";
-static NSString *const QredoClientNONSSLWebSocketsServiceURL= @"ws://"   QREDO_SERVER_URL  @":8080/services";
 
 
 NSString *const QredoRendezvousURIProtocol                  = @"qrp:";
@@ -67,29 +63,59 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoCertificate *_certificate;
 }
 
--(instancetype)init {
-    self = [super init];
-    NSAssert(FALSE,@"Please use [QredoClientOptions initWithPinnedCertificate:] instead of init without arguments]");
-    self = nil;
-    return self;
-}
 
-
--(instancetype)initWithDefaultTrustedRoots {
+-(instancetype)initDefault {
     self = [super init];
-    
     if (self){
-        _certificate = nil;
+        self.serverURL  = DEFAULT_SERVER_URL;
+        self.useHTTP = DEFAULT_USE_HTTP;
+        self.pushToken  = nil;
+        self.appGroup   = nil;
+        self.keyChainGroup = nil;
     }
-    
     return self;
 }
+
+
+-(instancetype)initTest {
+    self = [super init];
+    if (self){
+        self.serverURL  = TEST_SERVER_URL;
+        self.useHTTP    = DEFAULT_USE_HTTP;
+        self.appGroup   = TEST_APP_GROUP;
+        self.keyChainGroup = TEST_KEYCHAIN_GROUP;
+    }
+    return self;
+}
+
 
 
 -(QredoCertificate *)certificate {
     return _certificate;
 }
 
+
+-(NSString*)description{
+    NSMutableString *retString = [[NSMutableString alloc] init];
+    
+    [retString appendString:@"\n"];
+    [retString appendString:[NSString stringWithFormat:@"serverURL:         %@\n", self.serverURL]];
+    [retString appendString:[NSString stringWithFormat:@"pushToken:         %@\n", self.pushToken]];
+    [retString appendString:[NSString stringWithFormat:@"appGroup:          %@\n", self.appGroup]];
+    [retString appendString:[NSString stringWithFormat:@"keyChainGroup:     %@\n", self.keyChainGroup]];
+    
+    if (self.useHTTP==YES){
+        [retString appendString:                       @"useHTTP:           YES\n"];
+    }else{
+        [retString appendString:                       @"useHTTP:           NO\n"];
+    }
+    
+    if (self.transportType==QredoClientOptionsTransportTypeHTTP)[retString appendString:@"Transport:         HTTP\n"];
+    if (self.transportType==QredoClientOptionsTransportTypeWebSockets)[retString appendString:@"Transport:         WebSockets"];
+    
+    return [retString copy];
+    
+}
 
 @end
 
@@ -107,8 +133,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 @property NSURL *serviceURL;
-@property QredoClientOptions *clientOptions;
-@property NSString *appGroup;
+@property (readwrite) QredoClientOptions *clientOptions;
+
 
 /** Creates instance of qredo client
  @param serviceURL Root URL for Qredo services
@@ -119,30 +145,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 @end
 
 @implementation QredoClient
-
-static NSString *_keyChainGroup;
-static NSString *_appGroup;
-
-
-+(void)setKeyChainGroup:(NSString*)keyChainGroup{
-    _keyChainGroup = keyChainGroup;
-}
-
-+(void)setAppGroup:(NSString*)appGroup{
-    _appGroup = appGroup;
-}
-
-
-+(NSString*)keyChainGroup{
-    return _keyChainGroup;
-}
-
-+(NSString*)appGroup{
-    return _appGroup;
-}
-
-
-
 
 
 +(NSDate *)dateTime {
@@ -192,8 +194,9 @@ static NSString *_appGroup;
 
 
 
-+(void)initializeFromUserDefaultCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
-    if (!_appGroup){
++(void)initializeFromUserDefaultCredentialsInAppGroup:(NSString*)appGroup
+                withCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
+    if (!appGroup){
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeUnknown
                                          userInfo:@{ NSLocalizedDescriptionKey:@"No App Group Defined"}];
@@ -202,7 +205,7 @@ static NSString *_appGroup;
     }
     
     
-    NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaults];
+    NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaultsAppGroup:appGroup];
     
     NSString *appId         = [credentials objectForKey:QredoStoredAppIDKey];
     NSString *appSecret     = [credentials objectForKey:QredoStoredAppSecretKey];
@@ -229,8 +232,9 @@ static NSString *_appGroup;
 
 
 
-+(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
-    NSDictionary *credentials = [QredoClient retrieveCredentialsFromKeychain];
++(void)initializeFromKeychainCredentialsInGroup:(NSString*)keyChainGroup
+            withCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
+    NSDictionary *credentials = [QredoClient retrieveCredentialsFromKeychainGroup:keyChainGroup];
     
     NSString *appId = [credentials objectForKey:QredoStoredAppIDKey];
     NSString *appSecret = [credentials objectForKey:QredoStoredAppSecretKey];
@@ -246,7 +250,6 @@ static NSString *_appGroup;
                         appSecret:appSecret
                            userId:userId
                        userSecret:userSecret
-                         appGroup:appGroup
                           options:nil
                 completionHandler:completionHandler];
     }else{
@@ -260,27 +263,12 @@ static NSString *_appGroup;
 
 
 
-+(void)initializeWithAppId:(NSString *)appId
-                 appSecret:(NSString *)appSecret
-                    userId:(NSString *)userId
-                userSecret:(NSString *)userSecret
-         completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
-    [self initializeWithAppId:appId
-                    appSecret:appSecret
-                       userId:userId
-                   userSecret:userSecret
-                     appGroup:nil
-                      options:nil
-            completionHandler:completionHandler];
-}
-
 
 
 +(void)initializeWithAppId:(NSString *)appId
                  appSecret:(NSString *)appSecret
                     userId:(NSString *)userId
                 userSecret:(NSString *)userSecret
-                  appGroup:(NSString *)appGroup
          completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
     
     
@@ -289,7 +277,6 @@ static NSString *_appGroup;
                     appSecret:appSecret
                        userId:userId
                    userSecret:userSecret
-                     appGroup:appGroup
                       options:nil
             completionHandler:completionHandler];
 }
@@ -298,61 +285,48 @@ static NSString *_appGroup;
 
 
 +(NSURL *)chooseServiceURL:(QredoClientOptions *)options {
-//    long transportType = options.transportType ? options.transportType : QredoClientOptionsTransportTypeHTTP;
     long transportType = options.transportType ? options.transportType : QredoClientOptionsTransportTypeWebSockets;
-    NSString *serviceURLString = options.serverURL;
-    NSURL *serviceURL;
-    if (serviceURLString)return [NSURL URLWithString:serviceURLString];
+    NSString *protocol;
+    NSString *port;
     
-    
-    if ([USE_HTTP isEqualToString:@"YES"] ){
-                serviceURL = [NSURL URLWithString:QredoClientNONSSLServiceURL];
-    }else{
-        switch (transportType){
-            case QredoClientOptionsTransportTypeHTTP:
-                serviceURL = [NSURL URLWithString:QredoClientDefaultServiceURL];
-                break;
-            case QredoClientOptionsTransportTypeWebSockets:
-                serviceURL = [NSURL URLWithString:QredoClientWebSocketsServiceURL];
-                break;
-        }
+    switch (transportType) {
+        case QredoClientOptionsTransportTypeHTTP:
+            protocol = @"https://";
+            port = @"443";
+            
+            if (options.useHTTP == YES){
+                protocol = @"http://";
+                port = @"8080";
+            }
+            
+            break;
+        case QredoClientOptionsTransportTypeWebSockets:
+            protocol = @"wss://";
+            port = @"443";
+            if (options.useHTTP == YES){
+                protocol = @"ws://";
+                port = @"8080";
+            }
+            break;
+        default:
+            break;
     }
-    return serviceURL;
+    NSString *serviceURLString = [NSString stringWithFormat:@"%@%@:%@/services",protocol, options.serverURL, port ];
+    return [NSURL URLWithString:serviceURLString];
 }
+
 
 
 +(void)initializeWithAppId:(NSString *)appId
                  appSecret:(NSString *)appSecret
                     userId:(NSString *)userId
                 userSecret:(NSString *)userSecret
-                   options:(QredoClientOptions *)options
-         completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler{
-    
-    [self initializeWithAppId:appId
-                    appSecret:appSecret
-                       userId:userId
-                   userSecret:userSecret
-                     appGroup:nil
-            completionHandler:^(QredoClient *client, NSError *error) {
-                completionHandler(client,error);
-            }];
-}
-
-
-+(void)initializeWithAppId:(NSString *)appId
-                 appSecret:(NSString *)appSecret
-                    userId:(NSString *)userId
-                userSecret:(NSString *)userSecret
-                  appGroup:(NSString *)appGroup
                    options:(QredoClientOptions *)options
          completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
-    //TODO: DH - Update to display the QredoClientOptions contents, now it's no longer a dictionary
-    
-    
 
     
     if (!options){
-        options = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
+        options = [[QredoClientOptions alloc] initDefault]; //this is swizzled to initTest in a unit test
     }
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appId
@@ -388,8 +362,6 @@ static NSString *_appGroup;
                                                            appCredentials:appCredentials
                                                           userCredentials:userCredentials];
     
-    
-    client.appGroup = appGroup;
     client.clientOptions = options;
     
     void (^completeAuthorization)(NSError *) = ^void (NSError *error) {
@@ -1308,9 +1280,9 @@ static NSString *_appGroup;
 
 
 
-+(KeychainItemWrapper*)keychainItemWrapper{
-    NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", _keyChainGroup];
-    NSString *accessGroup = [NSString stringWithFormat:@"%@.%@", [QredoClient bundleSeedID], _keyChainGroup];
++(KeychainItemWrapper*)keychainItemWrapperGroup:(NSString*)keyChainGroup;{
+    NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", keyChainGroup];
+    NSString *accessGroup = [NSString stringWithFormat:@"%@.%@", [QredoClient bundleSeedID], keyChainGroup];
     
     return [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:accessGroup];
 }
@@ -1319,14 +1291,14 @@ static NSString *_appGroup;
 
 -(void)saveCredentialsInUserDefaults{
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
-    if (self.appGroup)userdefaults = [[NSUserDefaults alloc] initWithSuiteName:self.appGroup];
+    if (self.clientOptions.appGroup)userdefaults = [[NSUserDefaults alloc] initWithSuiteName:self.clientOptions.appGroup];
 
     NSDictionary *credentials = [NSDictionary dictionaryWithObjectsAndKeys:
                                  self.appCredentials.appId,QredoStoredAppIDKey,
                                  [self.appCredentials.appSecret hexadecimalString], QredoStoredAppSecretKey,
                                  self.userCredentials.userId, QredoStoredUserIDKey,
                                  self.userCredentials.userSecure, QredoStoredUserSecretKey,
-                                 self.appGroup, QredoStoredAppGroup,
+                                 self.clientOptions.appGroup, QredoStoredAppGroup,
                                  nil];
     //serialize to nsdata
     NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
@@ -1335,8 +1307,8 @@ static NSString *_appGroup;
 }
 
 
-+(BOOL)hasCredentialsInUserDefaults{
-    NSDictionary *dict = [self retrieveCredentialsUserDefaults];
++(BOOL)hasCredentialsInUserDefaultsAppGroup:(NSString*)appGroup{
+    NSDictionary *dict = [self retrieveCredentialsUserDefaultsAppGroup:appGroup];
     if (!dict)return NO;
     if ([dict objectForKey:QredoStoredAppIDKey] &&
         [dict objectForKey:QredoStoredAppSecretKey] &&
@@ -1349,23 +1321,21 @@ static NSString *_appGroup;
 }
 
 
-+(void)deleteCredentialsInUserDefaults{
++(void)deleteCredentialsInUserDefaultsAppGroup:(NSString*)appGroup{
     NSUserDefaults *userdefaults = [NSUserDefaults standardUserDefaults];
-    if (_appGroup)userdefaults = [[NSUserDefaults alloc] initWithSuiteName:_appGroup];
+    if (appGroup)userdefaults = [[NSUserDefaults alloc] initWithSuiteName:appGroup];
     [userdefaults setObject:nil forKey:QredoStoredUserDefautlCredentialsKey];
     [userdefaults synchronize];
 }
 
 
-+(NSDictionary*)retrieveCredentialsUserDefaults{
-    
++(NSDictionary*)retrieveCredentialsUserDefaultsAppGroup:(NSString*)appGroup{
     NSUserDefaults *userdefaults;
-    if (_appGroup){
-        userdefaults = [[NSUserDefaults alloc] initWithSuiteName:_appGroup];
+    if (appGroup){
+        userdefaults = [[NSUserDefaults alloc] initWithSuiteName:appGroup];
     }else{
         userdefaults = [NSUserDefaults standardUserDefaults];
     }
-
     
     NSData *credentialData = [userdefaults objectForKey:QredoStoredUserDefautlCredentialsKey];
     if ([credentialData length]==0)return nil;
@@ -1375,14 +1345,14 @@ static NSString *_appGroup;
 }
 
 -(void)saveCredentialsInKeychain{
-    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapper];
+    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapperGroup:self.clientOptions.keyChainGroup];
     [keychain resetKeychainItem];
     NSDictionary *credentials = [NSDictionary dictionaryWithObjectsAndKeys:
                                     self.appCredentials.appId,QredoStoredAppIDKey,
                                     [self.appCredentials.appSecret hexadecimalString], QredoStoredAppSecretKey,
                                     self.userCredentials.userId, QredoStoredUserIDKey,
                                     self.userCredentials.userSecure, QredoStoredUserSecretKey,
-                                    self.appGroup, QredoStoredAppGroup,
+                                    self.clientOptions.appGroup, QredoStoredAppGroup,
                                     nil];
     //serialize to nsdata
     NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
@@ -1395,8 +1365,8 @@ static NSString *_appGroup;
 
 
 
-+(BOOL)hasCredentialsInKeychain{
-    NSDictionary *dict = [QredoClient retrieveCredentialsFromKeychain];
++(BOOL)hasCredentialsInKeychainGroup:(NSString *)keyChainGroup{
+    NSDictionary *dict = [QredoClient retrieveCredentialsFromKeychainGroup:keyChainGroup];
     if (!dict)return NO;
     if ([dict objectForKey:QredoStoredAppIDKey] &&
         [dict objectForKey:QredoStoredAppSecretKey] &&
@@ -1409,8 +1379,8 @@ static NSString *_appGroup;
 }
 
 
-+(void)deleteCredentialsInKeychain{
-    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapper];
++(void)deleteCredentialsInKeychainGroup:(NSString *)keyChainGroup{
+    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapperGroup:keyChainGroup];
     [keychain resetKeychainItem];
 }
 
@@ -1419,8 +1389,8 @@ static NSString *_appGroup;
 
 
 
-+(NSDictionary*)retrieveCredentialsFromKeychain{
-    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapper];
++(NSDictionary*)retrieveCredentialsFromKeychainGroup:(NSString *)keyChainGroup{
+    KeychainItemWrapper *keychain = [QredoClient keychainItemWrapperGroup:keyChainGroup];
     NSData *credentialData = [keychain objectForKey:(__bridge id)(kSecValueData)];
     if ([credentialData length]==0)return nil;
     NSDictionary *credentials = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:credentialData];

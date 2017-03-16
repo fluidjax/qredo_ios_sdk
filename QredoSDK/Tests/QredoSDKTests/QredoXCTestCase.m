@@ -5,6 +5,7 @@
 #import "QredoPrivate.h"
 #import "QredoXCTestListeners.h"
 
+@import ObjectiveC;
 
 
 static const int testTimeOut = 30;
@@ -18,15 +19,15 @@ static const int testTimeOut = 30;
     [QredoLogger colour:NO];
     [QredoLogger setLogLevel:QREDO_DEBUG_LEVEL];
 
-    k_TEST_APPID        = SERVER_APPID;
-    k_TEST_APPSECRET    = SERVER_APPSECRET;
+    k_TEST_APPID        = TEST_SERVER_APPID;
+    k_TEST_APPSECRET    = TEST_SERVER_APPSECRET;
     
-    k_TEST_USERID       = SERVER_USERID;
-    k_TEST_USERSECRET   = SERVER_USERSECRET;
+    k_TEST_USERID       = TEST_SERVER_USERID;
+    k_TEST_USERSECRET   = TEST_SERVER_USERSECRET;
     
     
-    k_TEST_USERID2      = SERVER_USERID2;
-    k_TEST_USERSECRET2  = SERVER_USERSECRET2;
+    k_TEST_USERID2      = TEST_SERVER_USERID2;
+    k_TEST_USERSECRET2  = TEST_SERVER_USERSECRET2;
     
     
     NSAssert(k_TEST_APPID,@"Invalid AppID in");
@@ -36,6 +37,31 @@ static const int testTimeOut = 30;
     if (!k_TEST_USERSECRET)k_TEST_USERSECRET = [self randomPassword];
     if (!k_TEST_USERID2)k_TEST_USERID2 = [self randomUsername];
     if (!k_TEST_USERSECRET2)k_TEST_USERSECRET2 = [self randomPassword];
+    
+    SwizzleClassMethod([QredoClientOptions class], @selector(initDefault), @selector(initTest));
+    
+}
+
+
+void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
+    
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+    
+    BOOL didAddMethod =
+    class_addMethod(class,
+                    originalSelector,
+                    method_getImplementation(swizzledMethod),
+                    method_getTypeEncoding(swizzledMethod));
+    
+    if (didAddMethod) {
+        class_replaceMethod(class,
+                            swizzledSelector,
+                            method_getImplementation(originalMethod),
+                            method_getTypeEncoding(originalMethod));
+    } else {
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
     
     
 }
@@ -190,8 +216,7 @@ static const int testTimeOut = 30;
                            appSecret:appSecret
                               userId:userId
                           userSecret:userSecret
-                            appGroup:@"group.com.qredo.ChrisPush1"
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -211,12 +236,12 @@ static const int testTimeOut = 30;
 }
 
 
--(QredoClientOptions *)clientOptions:(BOOL)resetData {
-    //QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
-    clientOptions.transportType = self.transportType;
-    return clientOptions;
-}
+//-(QredoClientOptions *)clientOptions{
+//    //QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
+//    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
+//    clientOptions.transportType = self.transportType;
+//    return clientOptions;
+//}
 
 
 -(void)createRendezvous {

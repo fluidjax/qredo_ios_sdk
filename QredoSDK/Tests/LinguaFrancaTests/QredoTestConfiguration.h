@@ -13,4 +13,7 @@
     #define QREDO_HTTP_SERVICE_URL @"https://api.oderq.com:443/services"
 #elif defined SERVER_PRODUCTION
     #define QREDO_HTTP_SERVICE_URL @"https://api.qredo.com:443/services"
+#elif defined SERVER_PUSH_TEST
+    #define QREDO_HTTP_SERVICE_URL @"https://api-push.oderq.com:443/services"
+
 #endif

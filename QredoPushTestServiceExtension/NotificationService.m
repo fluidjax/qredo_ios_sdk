@@ -8,6 +8,7 @@
 
 #import "NotificationService.h"
 #import "MasterConfig.h"
+#import "Qredo.h"
 #import "QredoPrivate.h"
 
 @interface NotificationService ()
@@ -18,6 +19,20 @@
 @end
 
 @implementation NotificationService
+
+
+
+-(QredoClientOptions*)configureClientOptions{
+    QredoClientOptions *options = [[QredoClientOptions alloc] init];
+    options.serverURL   = TEST_SERVER_URL;
+    options.pushToken   = nil;
+    options.appGroup    = TEST_APP_GROUP;
+    options.keyChainGroup = TEST_KEYCHAIN_GROUP;
+    return options;
+}
+
+
+
 
 - (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     self.contentHandler = contentHandler;
@@ -45,11 +60,11 @@
     
     
     
-    [QredoClient initializeWithAppId:SERVER_APPID
-                           appSecret:SERVER_APPSECRET
-                              userId:SERVER_USERID
-                          userSecret:SERVER_USERSECRET
-                            appGroup:@"group.com.qredo.ChrisPush1"
+    [QredoClient initializeWithAppId:TEST_SERVER_APPID
+                           appSecret:TEST_SERVER_APPSECRET
+                              userId:TEST_SERVER_USERID
+                          userSecret:TEST_SERVER_USERSECRET
+                             options:[self configureClientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        
                        

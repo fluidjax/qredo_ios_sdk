@@ -42,7 +42,7 @@
     QredoConversationHighWatermark *conversationHWM;
 }
 
-
+@property (strong) QredoClientOptions *clientOptions;
 @property (nonatomic) QredoClientOptionsTransportType transportType;
 
 /* -------------------------------------------------------------------------------------------------------------------------------- */
@@ -92,7 +92,7 @@
 -(int)countMetadataItemsInIndex;
 
 
--(QredoClientOptions *)clientOptions:(BOOL)resetData;
+-(QredoClientOptions *)clientOptions;
 
 
 

@@ -204,7 +204,7 @@ static float delayInterval = 0.4;
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -233,7 +233,7 @@ static float delayInterval = 0.4;
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);

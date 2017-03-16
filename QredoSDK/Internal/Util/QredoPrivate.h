@@ -13,10 +13,7 @@
 #import "QredoConversationPrivate.h"
 
 
-typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
-    QredoClientOptionsTransportTypeHTTP,
-    QredoClientOptionsTransportTypeWebSockets,
-};
+
 
 
 
@@ -35,35 +32,9 @@ static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 
 
 
-@interface QredoClientOptions :NSObject
-@property (strong) NSString *serverURL;
-@property (nonatomic) QredoClientOptionsTransportType transportType;
-@property BOOL resetData;
-@property BOOL disableMetadataIndex;
-
-
--(instancetype)initWithDefaultTrustedRoots;
-
-@end
 
 @interface QredoClient ()
 
-
-+(void)initializeWithAppId:(NSString *)appId
-                 appSecret:(NSString *)appSecret
-                    userId:(NSString *)userId
-                userSecret:(NSString *)userSecret
-                   options:(QredoClientOptions *)options
-         completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
-
-
-+(void)initializeWithAppId:(NSString *)appId
-                 appSecret:(NSString *)appSecret
-                    userId:(NSString *)userId
-                userSecret:(NSString *)userSecret
-                  appGroup:(NSString *)appGroup
-                   options:(QredoClientOptions *)options
-         completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
 
 
 
@@ -75,7 +46,9 @@ static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 -(QredoUserCredentials *)userCredentials;
 -(QredoAppCredentials *)appCredentials;
 
-+(NSDictionary*)retrieveCredentialsUserDefaults;
++(NSDictionary*)retrieveCredentialsUserDefaultsAppGroup:(NSString*)appGroup;
+
+
 
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                                duration:(long)duration

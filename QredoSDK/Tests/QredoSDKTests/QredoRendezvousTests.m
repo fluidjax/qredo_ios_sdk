@@ -416,7 +416,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -439,7 +439,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -466,7 +466,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -944,7 +944,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -1016,7 +1016,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                            appSecret:k_TEST_APPSECRET
                               userId:client1User
                           userSecret:client1Password
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -1042,7 +1042,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                            appSecret:k_TEST_APPSECRET
                               userId:client2User
                           userSecret:client2Password
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -1067,7 +1067,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                            appSecret:k_TEST_APPSECRET
                               userId:client1User
                           userSecret:client1Password
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -1091,7 +1091,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
                            appSecret:k_TEST_APPSECRET
                               userId:client2User
                           userSecret:client2Password
-                             options:[self clientOptions:YES]
+                             options:[self clientOptions]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);

@@ -139,7 +139,7 @@
     
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSString *appGroup = [QredoClient appGroup];
+    NSString *appGroup = client.clientOptions.appGroup;
     
     if (appGroup)userDefaults = [[NSUserDefaults alloc] initWithSuiteName:appGroup];
 
