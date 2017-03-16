@@ -40,6 +40,19 @@
 }
 
 
+-(void)testQredoClientOptionsNSCoding{
+    QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
+    options.appGroup = @"test1";
+    
+    NSData *optionsCoded = [NSKeyedArchiver archivedDataWithRootObject:options];
+    
+    QredoClientOptions *optionsNew = (QredoClientOptions*) [NSKeyedUnarchiver unarchiveObjectWithData:optionsCoded];
+    
+    
+    NSLog(@"Options New %@",optionsNew);
+    XCTAssertTrue([optionsNew.appGroup isEqualToString:options.appGroup]);
+    
+}
 
 -(void)testUserDefaultsStorageOfCredentials{
     NSString *appGroup = @"group.com.qredo.ChrisPush1";
@@ -83,7 +96,7 @@
     
     NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaultsAppGroup:appGroup];
     NSLog(@"CREDENTIAL ARE %@", credentials);
-    XCTAssert([[credentials objectForKey:@"D"] isEqualToString:pass],@"Credentials not saved & retrieved correctly");
+    XCTAssert([[credentials objectForKey:@"QD"] isEqualToString:pass],@"Credentials not saved & retrieved correctly");
     
 
     

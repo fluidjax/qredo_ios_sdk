@@ -28,7 +28,7 @@ typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
 };
 
 
-@interface QredoClientOptions :NSObject
+@interface QredoClientOptions :NSObject <NSCoding>
 @property (copy) NSString *serverURL;
 @property QredoClientOptionsTransportType transportType;
 @property BOOL resetData;
@@ -121,12 +121,9 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 
 +(void)initializeFromUserDefaultCredentialsInAppGroup:(NSString*)appGroup
                                 withCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
+
 +(void)initializeFromKeychainCredentialsInGroup:(NSString*)keyChainGroup
                                 withCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
-
-+(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
-+(void)initializeFromUserDefaultCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
-
 
 
 /**

@@ -46,11 +46,13 @@ static NSString *const QredoKeychainPassword                = @"Password123";
 
 
 //keyname constants for the keychain stored credentials
-static NSString *const QredoStoredAppIDKey           = @"Q";
-static NSString *const QredoStoredAppSecretKey       = @"R";
-static NSString *const QredoStoredUserIDKey          = @"E";
-static NSString *const QredoStoredUserSecretKey      = @"D";
-static NSString *const QredoStoredAppGroup           = @"O";
+static NSString *const QredoStoredAppIDKey           = @"QA";
+static NSString *const QredoStoredAppSecretKey       = @"QB";
+static NSString *const QredoStoredUserIDKey          = @"QC";
+static NSString *const QredoStoredUserSecretKey      = @"QD";
+static NSString *const QredoStoredAppGroup           = @"QE";
+static NSString *const QredoStoredOptions            = @"QF";
+
 static NSString *const QredoStoredUserDefautlCredentialsKey     = @"QREDO_USER_DEFAULT_CREDENTIALS";
 
 
@@ -63,6 +65,32 @@ NSString *systemVaultKeychainArchiveIdentifier;
     QredoCertificate *_certificate;
 }
 
+-(void)encodeWithCoder:(NSCoder *)coder{
+    [coder encodeObject:self.serverURL              forKey:@"Q1"];
+    [coder encodeInt:self.transportType             forKey:@"Q2"];
+    [coder encodeBool:self.resetData                forKey:@"Q3"];
+    [coder encodeBool:self.disableMetadataIndex     forKey:@"Q4"];
+    [coder encodeObject:self.pushToken              forKey:@"Q5"];
+    [coder encodeObject:self.appGroup               forKey:@"Q6"];
+    [coder encodeObject:self.keyChainGroup          forKey:@"Q7"];
+    [coder encodeBool:self.useHTTP                  forKey:@"Q8"];
+}
+
+
+-(instancetype)initWithCoder:(NSCoder *)decoder{
+    self = [super init];
+    if (self) {
+        self.serverURL                  = [decoder decodeObjectForKey:@"Q1"];
+        self.transportType              = [decoder decodeIntForKey:@"Q2"];
+        self.resetData                  = [decoder decodeBoolForKey:@"Q3"];
+        self.disableMetadataIndex       = [decoder decodeBoolForKey:@"Q4"];
+        self.pushToken                  = [decoder decodeObjectForKey:@"Q5"];
+        self.appGroup                   = [decoder decodeObjectForKey:@"Q6"];
+        self.keyChainGroup              = [decoder decodeObjectForKey:@"Q7"];
+        self.useHTTP                    = [decoder decodeBoolForKey:@"Q8"];
+    }
+    return self;
+}
 
 -(instancetype)initDefault {
     self = [super init];
@@ -87,6 +115,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
     }
     return self;
 }
+
+
+
 
 
 
@@ -211,7 +242,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
     NSString *appSecret     = [credentials objectForKey:QredoStoredAppSecretKey];
     NSString *userId        = [credentials objectForKey:QredoStoredUserIDKey];
     NSString *userSecret    = [credentials objectForKey:QredoStoredUserSecretKey];
-    
+    QredoClientOptions *options = [credentials objectForKey:QredoStoredOptions];
+
 //csm    NSString *storedAppGroup= [credentials objectForKey:QredoStoredAppGroup];
 //csm    NSLog(@"**200 %@ %@ %@ %@ %@",appId, appSecret, userId, userSecret , appGroup );
     
@@ -220,7 +252,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                         appSecret:appSecret
                            userId:userId
                        userSecret:userSecret
-                          options:nil
+                          options:options
                 completionHandler:completionHandler];
     }else{
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
@@ -241,7 +273,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     NSString *userId = [credentials objectForKey:QredoStoredUserIDKey];
     NSString *userSecret = [credentials objectForKey:QredoStoredUserSecretKey];
     NSString *appGroup = [credentials objectForKey:QredoStoredAppGroup];
-    
+    QredoClientOptions *options = [credentials objectForKey:QredoStoredOptions];
     
     NSLog(@"**200 %@ %@ %@ %@ %@",appId, appSecret, userId, userSecret , appGroup );
     
@@ -250,7 +282,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                         appSecret:appSecret
                            userId:userId
                        userSecret:userSecret
-                          options:nil
+                          options:options
                 completionHandler:completionHandler];
     }else{
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
@@ -1298,7 +1330,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                  [self.appCredentials.appSecret hexadecimalString], QredoStoredAppSecretKey,
                                  self.userCredentials.userId, QredoStoredUserIDKey,
                                  self.userCredentials.userSecure, QredoStoredUserSecretKey,
-                                 self.clientOptions.appGroup, QredoStoredAppGroup,
+                                 self.clientOptions, QredoStoredOptions,
                                  nil];
     //serialize to nsdata
     NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
@@ -1352,7 +1384,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                     [self.appCredentials.appSecret hexadecimalString], QredoStoredAppSecretKey,
                                     self.userCredentials.userId, QredoStoredUserIDKey,
                                     self.userCredentials.userSecure, QredoStoredUserSecretKey,
-                                    self.clientOptions.appGroup, QredoStoredAppGroup,
+                                    self.clientOptions, QredoStoredOptions,
                                     nil];
     //serialize to nsdata
     NSData *credentialData = [NSKeyedArchiver archivedDataWithRootObject:credentials];
