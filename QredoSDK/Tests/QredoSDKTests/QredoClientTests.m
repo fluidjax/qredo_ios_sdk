@@ -43,13 +43,9 @@
 -(void)testQredoClientOptionsNSCoding{
     QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
     options.appGroup = @"test1";
-    
     NSData *optionsCoded = [NSKeyedArchiver archivedDataWithRootObject:options];
-    
     QredoClientOptions *optionsNew = (QredoClientOptions*) [NSKeyedUnarchiver unarchiveObjectWithData:optionsCoded];
-    
-    
-    NSLog(@"Options New %@",optionsNew);
+    //NSLog(@"Options New %@",optionsNew);
     XCTAssertTrue([optionsNew.appGroup isEqualToString:options.appGroup]);
     
 }
@@ -73,8 +69,8 @@
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:@"testuser"
-                          userSecret:pass
+                              userId:k_TEST_USERID
+                          userSecret:k_TEST_USERSECRET
                              options:options
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
@@ -95,8 +91,8 @@
     
     
     NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaultsAppGroup:appGroup];
-    NSLog(@"CREDENTIAL ARE %@", credentials);
-    XCTAssert([[credentials objectForKey:@"QD"] isEqualToString:pass],@"Credentials not saved & retrieved correctly");
+    //NSLog(@"CREDENTIALS ARE %@", credentials);
+    XCTAssert([[credentials objectForKey:@"QD"] isEqualToString:k_TEST_USERSECRET],@"Credentials not saved & retrieved correctly");
     
 
     
@@ -146,12 +142,9 @@
     QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
     options.keyChainGroup = keyChainGroup;
     
-
-    
-    
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:@"testuser"
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                              options:options
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
@@ -215,7 +208,7 @@
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:@"testuser"
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
@@ -253,7 +246,7 @@
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:@"testuser"
+                              userId:k_TEST_USERID
                           userSecret:[self randomPassword]
                              options:nil
      
@@ -291,28 +284,6 @@
                        
                        QLog(@"Version is  %@",[clientArg versionString]);
                        QLog(@"Build is    %@",[clientArg buildString]);
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     clientExpectation = nil;
-                                 }];
-}
-
-
--(void)testFailingConnectToClient {
-    [QredoLogger setLogLevel:QredoLogLevelNone];
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
-    [QredoClient initializeWithAppId:@"FAILINGSECRET"
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNotNil(error);
-                       XCTAssertNil(clientArg);
-                       [clientExpectation fulfill];
                    }];
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout

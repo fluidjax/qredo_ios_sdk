@@ -51,6 +51,89 @@
                BlueprintName = "scratch"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "Base58Tests">
+               </Test>
+               <Test
+                  Identifier = "ConversationCryptoTests">
+               </Test>
+               <Test
+                  Identifier = "ConversationProtocolTest">
+               </Test>
+               <Test
+                  Identifier = "ConversationTests">
+               </Test>
+               <Test
+                  Identifier = "ConversationWebSocketTests">
+               </Test>
+               <Test
+                  Identifier = "HighwatermarksTests">
+               </Test>
+               <Test
+                  Identifier = "MultiPageMessageTest">
+               </Test>
+               <Test
+                  Identifier = "ObjectSerialization">
+               </Test>
+               <Test
+                  Identifier = "OwnershipSignatureTests">
+               </Test>
+               <Test
+                  Identifier = "QredoClientTests/testKeychainStorage">
+               </Test>
+               <Test
+                  Identifier = "QredoIndexVaultTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousAnonymousHelperTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousCryptoTest">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousTests">
+               </Test>
+               <Test
+                  Identifier = "QredoRendezvousWebSocketTests">
+               </Test>
+               <Test
+                  Identifier = "QredoSExpressionTests">
+               </Test>
+               <Test
+                  Identifier = "QredoUserCredentialsTests">
+               </Test>
+               <Test
+                  Identifier = "QredoUtilsTests">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultTests">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultUpdateTests">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultUpdateWebSocketTests">
+               </Test>
+               <Test
+                  Identifier = "QredoVaultWebSocketTests">
+               </Test>
+               <Test
+                  Identifier = "QredoXCTestCase">
+               </Test>
+               <Test
+                  Identifier = "RendezvousListenerTests">
+               </Test>
+               <Test
+                  Identifier = "SSLTimeSyncTests">
+               </Test>
+               <Test
+                  Identifier = "TestFrameworkTests">
+               </Test>
+               <Test
+                  Identifier = "VaultCryptoTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

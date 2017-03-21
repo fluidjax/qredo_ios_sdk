@@ -192,8 +192,6 @@ static float delayInterval = 0.4;
                                      fp3 = nil;
                                  }];
     
-    
-    NSLog(@"here");
 }
 
 
