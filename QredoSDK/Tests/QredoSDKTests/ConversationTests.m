@@ -354,145 +354,7 @@ static float delayInterval = 0.4;
 }
 
 
--(QredoRendezvous *)isolateCreateRendezvous {
-    __block QredoRendezvous *rendezvous = nil;
-    __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-    __block NSString *randomTag = nil;
-    
-    QredoLogDebug(@"Creating Rendezvous (with client 1)");
-    
-    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
-                                        duration:3600
-                              unlimitedResponses:YES
-                                   summaryValues:nil
-                               completionHandler:^(QredoRendezvous *_rendezvous,NSError *error) {
-                                   QredoLogDebug(@"Create rendezvous completion handler called.");
-                                   XCTAssertNil(error);
-                                   XCTAssertNotNil(_rendezvous);
-                                   randomTag = rendezvous.tag;
-                                   rendezvous = _rendezvous;
-                                   
-                                   [createExpectation fulfill];
-                               }];
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     createExpectation = nil;
-                                 }];
-    QredoLogDebug(@"Starting listening for rendezvous");
-    return rendezvous;
-}
 
-
--(QredoConversation *)isolateRespondToRendezvous:(NSString *)randomTag rendezvous:(QredoRendezvous *)rendezvous {
-    //Responding to the rendezvous
-    __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
-    
-    self.didReceiveResponseExpectation = didRespondExpectation;//[self expectationWithDescription:@"received response in the creator's delegate"];
-    
-    QredoLogDebug(@"Responding to Rendezvous");
-    __block QredoConversation *responderConversation = nil;
-    //Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
-    
-    [anotherClient respondWithTag:randomTag
-                completionHandler:^(QredoConversation *conversation,NSError *error) {
-                    XCTAssertNil(error);
-                    XCTAssertNotNil(conversation);
-                    responderConversation = conversation;
-                    QredoLogDebug(@"Responder conversation ID: %@",conversation.metadata.conversationId);
-                    [didRespondExpectation fulfill];
-                }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     didRespondExpectation = nil;
-                                     self.didReceiveResponseExpectation = nil;
-                                     
-                                     if (error){
-                                         QredoLogError(@"Failed and retrying %@",error);
-                                     }
-                                 }];
-    return responderConversation;
-}
-
-
-NSString *firstMessageText;
-NSString *secondMessageText;
--(QredoConversationHighWatermark *)isolatePublishMessage1:(ConversationMessageListener *)listener responderConversation:(QredoConversation *)responderConversation {
-    __block XCTestExpectation *didPublishMessageExpectation = [self expectationWithDescription:@"published 1 message before listener started"];
-    
-    self.didReceiveMessageExpectation = didPublishMessageExpectation;//[self expectationWithDescription:@"received 1 message published before listening"];
-    
-    QredoConversationMessage *firstMessage = [[QredoConversationMessage alloc] initWithValue:[firstMessageText dataUsingEncoding:NSUTF8StringEncoding]
-                                                                                    dataType:kMessageType
-                                                                               summaryValues:nil];
-    listener.listening = YES;
-    __block QredoConversationHighWatermark *hwm = nil;
-    
-    
-    [NSThread sleepForTimeInterval:5];
-    
-
-    
-    [responderConversation publishMessage:firstMessage
-                        completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
-                            QredoLogDebug(@"Publish message (before setting up listener) completion handler called.");
-                            XCTAssertNil(error);
-                            XCTAssertNotNil(messageHighWatermark);
-                            [didPublishMessageExpectation fulfill];
-                            hwm = messageHighWatermark;
-                        }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     didPublishMessageExpectation = nil;
-                                     
-                                     @synchronized(listener) {
-                                         listener.listening = NO;
-                                     }
-                                     
-                                     self.didReceiveMessageExpectation = nil;
-                                     QredoLogDebug(@"PASSED: firstMessageListener: %@",listener);
-                                 }];
-    return hwm;
-}
-
-
--(QredoConversationHighWatermark *)isolatePublishMessage2:(ConversationMessageListener *)listener responderConversation:(QredoConversation *)responderConversation {
-    QredoConversationMessage *secondMessage = [[QredoConversationMessage alloc] initWithValue:[secondMessageText dataUsingEncoding:NSUTF8StringEncoding] dataType:kMessageType summaryValues:nil];
-    
-    //__block XCTestExpectation *didPublishMessageExpectation2 = [self expectationWithDescription:@"published a message after listener started"];
-    listener.listening = YES;
-    __block QredoConversationHighWatermark *hwm = nil;
-    [NSThread sleepForTimeInterval:delayInterval];
-    
-    [responderConversation publishMessage:secondMessage
-                        completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
-                            QredoLogDebug(@"Publish message (after listening started) completion handler called.");
-                            XCTAssertNil(error);
-                            XCTAssertNotNil(messageHighWatermark);
-                            QredoLogDebug(@"Message 2 published. %@",messageHighWatermark);
-                            //[didPublishMessageExpectation2 fulfill];
-                            [self.didReceiveMessageExpectation fulfill];
-                            hwm = messageHighWatermark;
-                        }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     if (error){
-                                         NSLog(@"error");
-                                     }
-                                     
-                                     //didPublishMessageExpectation2 = nil;
-                                     
-                                     @synchronized(listener) {
-                                         listener.listening = NO;
-                                     }
-                                     self.didReceiveMessageExpectation = nil;
-                                     QredoLogDebug(@"PASSED: second: %@, ",listener);
-                                 }];
-    return hwm;
-}
 
 
 
@@ -534,65 +396,32 @@ NSString *secondMessageText;
 */
 
 
--(void)testConversationWatermark {
-    //static NSString *randomTag;
-    float delayInterval = 5.0;
+-(void)testConversationWatermark2{
+    [self buildStack1];
     
-    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@",kMessageTestValue,[QredoNetworkTime dateTime]];
-    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@",kMessageTestValue2,[QredoNetworkTime dateTime]];
-    rvuFulfilledTimes = 0;
-    self.didReceiveResponseExpectation = nil;
-    
-    
-    //static QredoRendezvous *rendezvous;
-    QredoRendezvous *rendezvous = [self isolateCreateRendezvous];
-    [rendezvous addRendezvousObserver:self];
-    NSString *randomTag = rendezvous.tag;
-    
-    
-    //Respond to Rendezvous
-    QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
-    
-    //register listener
-    ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
-    listener.expectedMessageValue = firstMessageText;
-    listener.test = self;
-    [creatorConversation addConversationObserver:listener];
-    [self pauseForListenerToRegister];
-    
-    
-    //Response to Rendezvous
-    QredoConversationHighWatermark *hwm1 = [self isolatePublishMessage1:listener responderConversation:responderConversation];
-    
-    
-    self.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published after listening"];
-    
-    listener.expectedMessageValue = secondMessageText;
-    
-    QredoConversationHighWatermark *hwm2 = [self isolatePublishMessage2:listener responderConversation:responderConversation];
-    
-    
+    QredoConversationHighWatermark *hwm1 = [self sendMessageFrom:conversation1 to:conversation2];
+    QredoConversationHighWatermark *hwm2 = [self sendMessageFrom:conversation1 to:conversation2];
     
     //////SETUP COMPLETE -
     //how many messages from beginning
-    int messageCount = [self countMessagesOnConversation:responderConversation since:QredoConversationHighWatermarkOrigin];
+    int messageCount = [self countSentMessagesOnConversation:conversation1 since:QredoConversationHighWatermarkOrigin];
     XCTAssert(messageCount == 2,@"Should have 2 Has %i",messageCount);
     
     //how many messages since 1st message
-    messageCount = [self countMessagesOnConversation:responderConversation since:hwm1];
+    messageCount = [self countSentMessagesOnConversation:conversation1 since:hwm1];
     XCTAssert(messageCount == 1,@"Should have 1 Has %i",messageCount);
     
     //how many messages since 2nd message
-    messageCount = [self countMessagesOnConversation:responderConversation since:hwm2];
+    messageCount = [self countSentMessagesOnConversation:conversation1 since:hwm2];
     XCTAssert(messageCount == 0,@"Should have 0 Has %i",messageCount);
     
-    [creatorConversation removeConversationObserver:listener];
-    [rendezvous removeRendezvousObserver:self];
     [client closeSession];
+    
 }
 
 
--(int)countMessagesOnConversation:(QredoConversation *)conversation since:(QredoConversationHighWatermark *)hwm {
+
+-(int)countSentMessagesOnConversation:(QredoConversation *)conversation since:(QredoConversationHighWatermark *)hwm {
     __block int messageCount = 0;
     __block XCTestExpectation *scanMsgExpectation = [self expectationWithDescription:@"scanMsgExpectation"];
     

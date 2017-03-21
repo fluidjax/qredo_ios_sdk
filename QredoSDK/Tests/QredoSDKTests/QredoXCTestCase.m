@@ -48,6 +48,8 @@ static const int testTimeOut = 30;
 }
 
 
+
+
 //void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
 //    
 //    Method originalMethod = class_getInstanceMethod(class, originalSelector);
@@ -395,7 +397,7 @@ static const int testTimeOut = 30;
 }
 
 
--(void)sendMessageFrom:(QredoConversation *)fromConversation to:(QredoConversation *)toConversation {
+-(QredoConversationHighWatermark*)sendMessageFrom:(QredoConversation *)fromConversation to:(QredoConversation *)toConversation {
     //send a message from ClientA to ClientB
     NSString *message = @"test message";
     
@@ -423,6 +425,7 @@ static const int testTimeOut = 30;
     [self waitForExpectationsWithTimeout:testTimeOut
                                  handler:^(NSError *error) {
                                  }];
+    return conversationHWM;
 }
 
 
@@ -647,6 +650,15 @@ static const int testTimeOut = 30;
 -(int)countMetadataItemsInIndex {
     return 0;
 }
+
+
+
+-(void)buildFixedCredentialStack1 {
+    [self createFixedClients];
+    [self createRendezvous];
+    [self respondToRendezvous];
+}
+
 
 
 -(void)buildStack1 {

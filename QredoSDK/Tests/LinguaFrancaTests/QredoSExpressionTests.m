@@ -68,8 +68,8 @@
 
 
 -(void)testChris1{
-    uint8_t testAtom1[6]  = { 0,0,0,0,0,0,0 };
-    uint8_t testAtom2[8]  = { 0,0,0,0,0,0,0 };
+    uint8_t testAtom1[6]  = { 0,0,0,0,0,0 };
+    uint8_t testAtom2[8]  = { 0,0,0,0,0,0,0,0 };
     uint8_t testAtom3[14] = { 15,16,17,18,19,20,21,22,23,24,25,26,27,28 };
     NSData *testData1 = [NSData dataWithBytes:testAtom1 length:sizeof(testAtom1)];
     NSData *testData2 = [NSData dataWithBytes:testAtom2 length:sizeof(testAtom2)];

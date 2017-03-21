@@ -401,7 +401,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     
     
-   // NSLog(@"QREDO: Attempt to conntect using %@ %@ %@", serviceURL, appCredentials, userCredentials);
+    //NSLog(@"QREDO: Attempt to conntect using %@ %@ %@", serviceURL, appCredentials, userCredentials);
     
     __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL
                                                            appCredentials:appCredentials

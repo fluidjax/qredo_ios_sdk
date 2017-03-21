@@ -52,6 +52,8 @@ static float WAIT_FOR_LISTENER_TO_PROCESS_DELAY = 1.0;
 
 
 /* Build the pre-defined test stacks  */
+
+-(void)buildFixedCredentialStack1; //2 clients - create rendezvous, respond to rendezvous but preset credntials
 -(void)buildStack1; //2 clients - create rendezvous, respond to rendezvous
 -(void)buildStack2; //2 clients - create rendezvous, respond to rendezvous, C2 message to C1, C1 message to C2
 
@@ -80,7 +82,7 @@ static float WAIT_FOR_LISTENER_TO_PROCESS_DELAY = 1.0;
 /* Messages */
 -(void)sendConversationMessageFrom1to2;
 -(void)sendConversationMessageFrom2to1;
--(void)sendMessageFrom:(QredoConversation *)fromConversation to:(QredoConversation *)toConversation;
+-(QredoConversationHighWatermark*)sendMessageFrom:(QredoConversation *)fromConversation to:(QredoConversation *)toConversation;
 
 
 /* Vault */
@@ -116,6 +118,5 @@ static float WAIT_FOR_LISTENER_TO_PROCESS_DELAY = 1.0;
 -(NSString *)randomUsername;
 
 -(void)pauseForListenerToRegister;
-
 
 @end

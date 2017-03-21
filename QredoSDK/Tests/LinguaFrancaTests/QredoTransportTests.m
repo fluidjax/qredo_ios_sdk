@@ -94,7 +94,7 @@
 
 
 -(void)testSend_MustOverride {
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     QredoTransport *transport = [[QredoTransport alloc] initWithServiceURL:serviceURL];
     
@@ -109,7 +109,7 @@
 
 
 -(void)testClose_MustOverride {
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     QredoTransport *transport = [[QredoTransport alloc] initWithServiceURL:serviceURL];
     

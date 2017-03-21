@@ -189,7 +189,7 @@
 
 -(void)setupPushStack{
   
-    [self buildStack1];
+    [self buildFixedCredentialStack1];
     //inject the QredoClient into the TestApp
     hostAppdelegate.client = testClient1;
     XCTAssertNotNil(conversation1);

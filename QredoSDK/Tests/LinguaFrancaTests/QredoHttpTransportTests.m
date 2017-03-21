@@ -53,7 +53,7 @@
 
 
 -(void)testSupportsMultiResponse {
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL ];
     
     BOOL canHandle = [transport supportsMultiResponse];
@@ -65,7 +65,7 @@
 
 
 -(void)testSend_Delegate {
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     
@@ -84,7 +84,7 @@
 
 
 -(void)testSend_Block {
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     
@@ -104,7 +104,7 @@
 
 
 -(void)testSend_Block_UserDataReturned {
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     
@@ -138,7 +138,7 @@
 
 
 -(void)testSend_NoBlockNoDelegate {
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     QredoHttpTransport *transport = [[QredoHttpTransport alloc] initWithServiceURL:serviceURL];
     

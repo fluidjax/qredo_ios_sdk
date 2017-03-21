@@ -1,0 +1,14 @@
+
+
+Command Line Tests
+
+
+
+Note the pipe through xcpretty - (available on git hub) which nicely formats the output (but there is a delay)
+
+
+xcodebuild    -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 7,OS=latest" -workspace QredoSDK.xcworkspace -scheme LinguaFrancaTests  build test | xcpretty
+xcodebuild    -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 7,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoCryptoTests  build test | xcpretty
+xcodebuild    -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 7,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests  build test | xcpretty
+
+Push Only works on device - so dont automate it on sim

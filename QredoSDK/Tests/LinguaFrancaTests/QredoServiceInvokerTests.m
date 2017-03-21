@@ -80,7 +80,7 @@
 
 -(void)testInit_HTTPUrl {
     //Test using the HTTP URL
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     XCTAssertNotNil(serviceURL);
     
@@ -114,7 +114,7 @@
 
 -(void)testTerminate_HTTPUrl {
     //Test using the HTTP URL
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     XCTAssertNotNil(serviceURL);
     
@@ -150,7 +150,7 @@
 
 -(void)testInvokeService_Ping_HTTPUrl {
     //Test using the HTTP URL
-    NSURL *serviceURL = [NSURL URLWithString:QREDO_HTTP_SERVICE_URL];
+    NSURL *serviceURL = [NSURL URLWithString:TEST_HTTP_SERVICE_URL];
     
     XCTAssertNotNil(serviceURL);
     
@@ -220,7 +220,7 @@
     //otherwise will terminate/close transport whilst still in use and trigger errors)
     NSTimeInterval interval = 0.9;
     
-    [self commonInvokeService_ConcurrentOperationsWithServiceURL:[NSURL URLWithString:QREDO_HTTP_SERVICE_URL]
+    [self commonInvokeService_ConcurrentOperationsWithServiceURL:[NSURL URLWithString:TEST_HTTP_SERVICE_URL]
                                                       iterations:requiredIterations
                                             intervalPerIteration:interval];
 }
