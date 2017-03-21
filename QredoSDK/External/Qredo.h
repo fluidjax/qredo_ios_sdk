@@ -194,7 +194,7 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 /** Enumerates through all the Rendezvous created by the current app user passing the `QredoRendezvousMetadata` for each one.
  
  @param block rendezvousMetadata The metadata for the current Rendezvous in the list. You can access the `QredoRendezvousRef` and tag from the metadata
- @param block stop. Set this value to YES to stop the enumeration.
+              stop, set this value to YES to stop the enumeration.
  @param completionHandler error will be non nil if an error occurs.
  
  @see Retrieving a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html)
@@ -319,8 +319,8 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  @see Listing all Conversations: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html),
  [Swift](https://docs.qredo.com/ios/objective-c/programming_guide/html/conversations/listing_all_conversations.html)
  
- @param conversationMetadata The `QredoConversationMetadata` for the current Conversation being enumerated. The `QredoConversationRef` can be extracted from the metadata.
- @param stop Set to YES to stop the enumeration.
+ @param block   conversationMetadata The `QredoConversationMetadata` for the current Conversation being enumerated. The `QredoConversationRef` can be extracted from the metadata.
+                stop Set to YES to stop the enumeration.
  @param completionHandler error will be non nil if an error occurs, such as no network connection.
  
  */

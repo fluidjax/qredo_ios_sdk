@@ -14,5 +14,4 @@
 -(void)closeClientSessions;
 -(void)testConversationCreation;
 -(void)testRespondingToConversation;
--(void)testConversation;
 @end
