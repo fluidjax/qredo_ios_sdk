@@ -125,7 +125,7 @@
     didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
     
     [rendezvous addRendezvousObserver:self];
-    [NSThread sleepForTimeInterval:0.1];
+    [self pauseForListenerToRegister];
     
     __block QredoConversation *responderConversation = nil;
     //Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test

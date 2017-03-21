@@ -15,7 +15,11 @@ static const int testTimeOut = 30;
 
 
 -(void)setUp {
+
     [super setUp];
+    
+    [QredoClient setTestMode:YES];
+
     [QredoLogger colour:NO];
     [QredoLogger setLogLevel:QREDO_DEBUG_LEVEL];
 
@@ -33,39 +37,40 @@ static const int testTimeOut = 30;
     NSAssert(k_TEST_APPID,@"Invalid AppID in");
     NSAssert(k_TEST_APPSECRET,@"Invalid k_TEST_APPSECRET in");
     
-    if (!k_TEST_USERID)k_TEST_USERID = [self randomUsername];
-    if (!k_TEST_USERSECRET)k_TEST_USERSECRET = [self randomPassword];
-    if (!k_TEST_USERID2)k_TEST_USERID2 = [self randomUsername];
-    if (!k_TEST_USERSECRET2)k_TEST_USERSECRET2 = [self randomPassword];
+//    if (!k_TEST_USERID)k_TEST_USERID = [self randomUsername];
+//    if (!k_TEST_USERSECRET)k_TEST_USERSECRET = [self randomPassword];
+//    if (!k_TEST_USERID2)k_TEST_USERID2 = [self randomUsername];
+//    if (!k_TEST_USERSECRET2)k_TEST_USERSECRET2 = [self randomPassword];
     
-    SwizzleClassMethod([QredoClientOptions class], @selector(initDefault), @selector(initTest));
-    
-}
-
-
-void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
-    
-    Method originalMethod = class_getInstanceMethod(class, originalSelector);
-    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-    
-    BOOL didAddMethod =
-    class_addMethod(class,
-                    originalSelector,
-                    method_getImplementation(swizzledMethod),
-                    method_getTypeEncoding(swizzledMethod));
-    
-    if (didAddMethod) {
-        class_replaceMethod(class,
-                            swizzledSelector,
-                            method_getImplementation(originalMethod),
-                            method_getTypeEncoding(originalMethod));
-    } else {
-        method_exchangeImplementations(originalMethod, swizzledMethod);
-    }
-    
+//    NSLog(@"***** SWIZZLING **** ");
+//    SwizzleClassMethod([QredoClientOptions class], @selector(initDefault), @selector(initTest));
     
 }
 
+
+//void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
+//    
+//    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+//    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+//    
+//    BOOL didAddMethod =
+//    class_addMethod(class,
+//                    originalSelector,
+//                    method_getImplementation(swizzledMethod),
+//                    method_getTypeEncoding(swizzledMethod));
+//    
+//    if (didAddMethod) {
+//        class_replaceMethod(class,
+//                            swizzledSelector,
+//                            method_getImplementation(originalMethod),
+//                            method_getTypeEncoding(originalMethod));
+//    } else {
+//        method_exchangeImplementations(originalMethod, swizzledMethod);
+//    }
+//    
+//    
+//}
+//
 
 -(void)tearDown {
     //client
@@ -176,13 +181,41 @@ void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector)
 //Wrapper Methods
 
 
--(void)createClients {
-    [self createClient1];
-    [self createClient2];
+-(void)createFixedClients {
+    [self createFixedClient1];
+    [self createFixedClient2];
+}
+
+-(void)createRandomClients {
+    [self createRandomClient1];
+    [self createRandomClient2];
 }
 
 
--(void)createClient1 {
+
+
+-(void)createRandomClient1 {
+    testClient1 = [self createClientWithAppID:k_TEST_APPID
+                                    appSecret:k_TEST_APPSECRET
+                                       userId:[self randomUsername]
+                                   userSecret:[self randomPassword]
+                              ];
+    
+}
+
+
+-(void)createRandomClient2 {
+    testClient2 = [self createClientWithAppID:k_TEST_APPID
+                                    appSecret:k_TEST_APPSECRET
+                                       userId:[self randomUsername]
+                                   userSecret:[self randomPassword]
+                   ];
+    
+}
+
+
+
+-(void)createFixedClient1 {
     testClient1 = [self createClientWithAppID:k_TEST_APPID
                                     appSecret:k_TEST_APPSECRET
                                        userId:k_TEST_USERID
@@ -191,7 +224,7 @@ void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector)
 }
 
 
--(void)createClient2 {
+-(void)createFixedClient2 {
     testClient2 = [self createClientWithAppID:k_TEST_APPID
                                     appSecret:k_TEST_APPSECRET
                                        userId:k_TEST_USERID2
@@ -307,12 +340,9 @@ void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector)
     
     [rendezvous1 addRendezvousObserver:listener]; //listen for incoming conversations on rendezvous
     
-    [NSThread sleepForTimeInterval:0.1];
-    
+    [self pauseForListenerToRegister];
     
     listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
-    [NSThread sleepForTimeInterval:0.1];
-    
     
     [testClient2 respondWithTag:rendezvous1Tag
               completionHandler:^(QredoConversation *conversation,NSError *error) {
@@ -350,6 +380,11 @@ void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector)
 }
 
 
+-(void)pauseForListenerToRegister{
+    [NSThread sleepForTimeInterval:WAIT_FOR_LISTENER_TO_PROCESS_DELAY];
+}
+
+
 -(void)sendConversationMessageFrom1to2 {
     [self sendMessageFrom:conversation1 to:conversation2];
 }
@@ -371,6 +406,8 @@ void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector)
     listener.listening = YES;
     
     [toConversation addConversationObserver:listener];
+    [self pauseForListenerToRegister];
+    
     
     __block QredoConversationHighWatermark *hwm = nil;
     QredoConversationMessage *qredoMessage = [[QredoConversationMessage alloc] initWithValue:[message dataUsingEncoding:NSUTF8StringEncoding]
@@ -613,14 +650,14 @@ void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector)
 
 
 -(void)buildStack1 {
-    [self createClients];
+    [self createRandomClients];
     [self createRendezvous];
     [self respondToRendezvous];
 }
 
 
 -(void)buildStack2 {
-    [self createClients];
+    [self createRandomClients];
     [self createRendezvous];
     [self respondToRendezvous];
     [self sendConversationMessageFrom1to2];

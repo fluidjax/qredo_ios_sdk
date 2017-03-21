@@ -128,4 +128,15 @@ userInfo:nil]; \
 }
 
 
+
+
+-(NSString*)description{
+    NSMutableString *ret = [[NSMutableString alloc] init];
+    [ret appendString:[NSString stringWithFormat:@"AppID     : %@", _appId]];
+    [ret appendString:[NSString stringWithFormat:@"UserID    : %@", _userId]];
+    [ret appendString:[NSString stringWithFormat:@"UserSecret: %@", _userSecure]];
+    return  [ret copy];
+}
+
+
 @end

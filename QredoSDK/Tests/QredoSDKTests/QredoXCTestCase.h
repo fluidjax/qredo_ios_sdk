@@ -7,6 +7,9 @@
 #define QLog(...)
 
 
+
+static float WAIT_FOR_LISTENER_TO_PROCESS_DELAY = 1.0;
+
 @interface QredoXCTestCase :XCTestCase {
     NSString *k_TEST_APPID;
     NSString *k_TEST_APPSECRET;
@@ -56,9 +59,9 @@
 /* -------------------------------------------------------------------------------------------------------------------------------- */
 
 /* Generate Clients */
--(void)createClients;
--(void)createClient1;
--(void)createClient2;
+-(void)createRandomClients;
+-(void)createRandomClient1;
+-(void)createRandomClient2;
 -(QredoClient *)createClientWithAppID:(NSString *)appId
                             appSecret:(NSString *)appSecret
                                userId:(NSString *)userId
@@ -111,5 +114,8 @@
 -(NSString *)randomStringWithLength:(int)len;
 -(NSString *)randomPassword;
 -(NSString *)randomUsername;
+
+-(void)pauseForListenerToRegister;
+
 
 @end

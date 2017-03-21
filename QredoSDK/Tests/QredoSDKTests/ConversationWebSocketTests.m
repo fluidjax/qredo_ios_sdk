@@ -19,7 +19,7 @@
 
 
 -(void)testConversation {
-    [super testConversation];
+    [self buildStack2];
 }
 
 

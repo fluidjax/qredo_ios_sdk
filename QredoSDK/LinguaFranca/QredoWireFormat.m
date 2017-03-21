@@ -656,6 +656,13 @@
 }
 
 
+-(NSString*)description{
+    NSMutableString *ret = [[NSMutableString alloc] init];
+    [ret appendString:[NSString stringWithFormat:@"AppID    : %@", _appId]];
+    [ret appendString:[NSString stringWithFormat:@"AppSecret: %@", _appSecret]];
+    return  [ret copy];
+}
+
 @end
 
 

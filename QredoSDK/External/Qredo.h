@@ -19,9 +19,6 @@
 @class QredoCertificate;
 
 
-
-
-
 typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
     QredoClientOptionsTransportTypeHTTP,
     QredoClientOptionsTransportTypeWebSockets,
@@ -196,8 +193,8 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 
 /** Enumerates through all the Rendezvous created by the current app user passing the `QredoRendezvousMetadata` for each one.
  
- @param rendezvousMetadata The metadata for the current Rendezvous in the list. You can access the `QredoRendezvousRef` and tag from the metadata
- @param stop. Set this value to YES to stop the enumeration.
+ @param block rendezvousMetadata The metadata for the current Rendezvous in the list. You can access the `QredoRendezvousRef` and tag from the metadata
+ @param block stop. Set this value to YES to stop the enumeration.
  @param completionHandler error will be non nil if an error occurs.
  
  @see Retrieving a Rendezvous: [Objective-C](https://docs.qredo.com/ios/objective-c/programming_guide/html/rendezvous/listing_your_rendezvous.html)

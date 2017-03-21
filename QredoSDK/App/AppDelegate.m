@@ -7,8 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "Qredo.h"
-
 
 @interface AppDelegate ()
 @property (nonatomic,copy) void (^registerAPNcompletionBlock)(NSError *error, NSData *token);

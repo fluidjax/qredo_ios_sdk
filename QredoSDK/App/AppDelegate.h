@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import "Qredo.h"
+
 
 @class QredoClient;
-@class QredoPushMessage;
+
 
 @import UserNotifications;
 

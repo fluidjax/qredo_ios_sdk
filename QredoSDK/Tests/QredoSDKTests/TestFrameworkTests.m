@@ -37,7 +37,7 @@
 
 
 -(void)testHighwaterMark {
-    [self createClient1];
+    [self createRandomClient1];
     QredoVault *vault = testClient1.defaultVault;
     
     //nothing in the vault
@@ -94,7 +94,7 @@
 
 
 -(void)testVault {
-    [self createClient1];
+    [self createRandomClient1];
     XCTAssertTrue([self countEnumAllVaultItemsOnServer] == 0,@"Vault should be empty");
     
     QredoVaultItemMetadata *itemMetadata = [self createVaultItem];

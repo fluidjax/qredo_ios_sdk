@@ -320,7 +320,7 @@ static float delayInterval = 0.4;
     
     QLog(@"\nStarting listening");
     [rendezvous addRendezvousObserver:self];
-    [NSThread sleepForTimeInterval:delayInterval];
+    [self pauseForListenerToRegister];
     
     XCTAssertNotNil(anotherClient);
     
@@ -432,6 +432,8 @@ NSString *secondMessageText;
     
     [NSThread sleepForTimeInterval:5];
     
+
+    
     [responderConversation publishMessage:firstMessage
                         completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
                             QredoLogDebug(@"Publish message (before setting up listener) completion handler called.");
@@ -536,41 +538,28 @@ NSString *secondMessageText;
     //static NSString *randomTag;
     float delayInterval = 5.0;
     
-    
-    
-    
-    
     firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@",kMessageTestValue,[QredoNetworkTime dateTime]];
     secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@",kMessageTestValue2,[QredoNetworkTime dateTime]];
     rvuFulfilledTimes = 0;
     self.didReceiveResponseExpectation = nil;
     
-    //NSLog(@"TAG %@",randomTag);
-    
-    //register listener
-    ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
-    listener.expectedMessageValue = firstMessageText;
-    listener.test = self;
-    
-    
-    //Create Rendezvous
-    [NSThread sleepForTimeInterval:delayInterval];
     
     //static QredoRendezvous *rendezvous;
     QredoRendezvous *rendezvous = [self isolateCreateRendezvous];
     [rendezvous addRendezvousObserver:self];
-    
     NSString *randomTag = rendezvous.tag;
-    
-    //this is a fix so the observer registers before the rendezvous is responded to.
-    [NSThread sleepForTimeInterval:delayInterval];
     
     
     //Respond to Rendezvous
     QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
     
+    //register listener
+    ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
+    listener.expectedMessageValue = firstMessageText;
+    listener.test = self;
     [creatorConversation addConversationObserver:listener];
-    [NSThread sleepForTimeInterval:delayInterval];
+    [self pauseForListenerToRegister];
+    
     
     //Response to Rendezvous
     QredoConversationHighWatermark *hwm1 = [self isolatePublishMessage1:listener responderConversation:responderConversation];
@@ -623,63 +612,6 @@ NSString *secondMessageText;
 }
 
 
--(void)testConversation {
-    //static NSString *randomTag;
-    NSString *randomTag = nil;
-    
-    if (!randomTag)randomTag = [[QredoQUID QUID] QUIDString];
-    
-    firstMessageText =  [NSString stringWithFormat:@"Text: %@. Timestamp: %@",kMessageTestValue,[QredoNetworkTime dateTime]];
-    secondMessageText = [NSString stringWithFormat:@"Text: %@. Timestamp: %@",kMessageTestValue2,[QredoNetworkTime dateTime]];
-    rvuFulfilledTimes = 0;
-    self.didReceiveResponseExpectation = nil;
-    
-    //NSLog(@"TAG %@",randomTag);
-    
-    //register listener
-    ConversationMessageListener *listener = [[ConversationMessageListener alloc] init];
-    listener.expectedMessageValue = firstMessageText;
-    listener.test = self;
-    
-    
-    //Create Rendezvous
-    [NSThread sleepForTimeInterval:delayInterval];
-    
-    //static QredoRendezvous *rendezvous;
-    QredoRendezvous *rendezvous = nil;
-    
-    if (!rendezvous){
-        rendezvous = [self isolateCreateRendezvous];
-        [rendezvous addRendezvousObserver:self];
-        randomTag = rendezvous.tag;
-    }
-    
-    //this is a fix so the observer registers before the rendezvous is responded to.
-    [NSThread sleepForTimeInterval:delayInterval];
-    
-    
-    //Respond to Rendezvous
-    QredoConversation *responderConversation = [self isolateRespondToRendezvous:randomTag rendezvous:rendezvous];
-    
-    [creatorConversation addConversationObserver:listener];
-    [NSThread sleepForTimeInterval:delayInterval];
-    
-    //Response to Rendezvous
-    [self isolatePublishMessage1:listener responderConversation:responderConversation];
-    
-    
-    self.didReceiveMessageExpectation = [self expectationWithDescription:@"received the message published after listening"];
-    
-    listener.expectedMessageValue = secondMessageText;
-    
-    [self isolatePublishMessage2:listener responderConversation:responderConversation];
-    
-    [rendezvous removeRendezvousObserver:self];
-    [creatorConversation removeConversationObserver:listener];
-    listener = nil;
-}
-
-
 //Rendezvous Delegate
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     @synchronized(self) {
@@ -694,96 +626,6 @@ NSString *secondMessageText;
         rvuFulfilledTimes = @(rvuFulfilledTimes.intValue + 1);
         QLog(@"CALLS TO FULFILL RVU: %d",rvuFulfilledTimes.intValue);
     }
-}
-
-
--(void)testConversationListenerReturnsSummaryValues {
-    //this is to test if after an update using
-    //conversation updateConversationWithSummaryValues
-    //the conversation returned using
-    //-(void)qredoRendezvous:(QredoRendezvous*)rendezvous  didReceiveReponse:(QredoConversation *)conversation
-    //contains those summary values (as previously it has been creating a new conversation object in the value in error)
-    
-    [self createClients];
-    [self createRendezvous];
-    //[self respondToRendezvous];
-    
-    //Listening for responses and respond from another client
-    TestRendezvousListener *listener = [[TestRendezvousListener alloc] init];
-    XCTAssertNotNil(rendezvous1);
-    
-    [rendezvous1 addRendezvousObserver:listener];
-    [NSThread sleepForTimeInterval:0.1];
-    
-    
-    listener.expectation = [self expectationWithDescription:@"verify: receive listener event for the loaded rendezvous"];
-    [NSThread sleepForTimeInterval:0.1];
-    
-    
-    [testClient2 respondWithTag:rendezvous1Tag
-              completionHandler:^(QredoConversation *conversation,NSError *error) {
-                  XCTAssertNil(error);
-                  conversation2 = conversation;
-              }];
-    
-    
-    //wait for the 1st client to receive the rendezvous
-    [self waitForExpectationsWithTimeout:10
-                                 handler:^(NSError *error) {
-                                     listener.expectation = nil;
-                                 }];
-    
-    conversation1 = listener.incomingConversation;
-    
-    
-    
-    //[rendezvous1 removeRendezvousObserver:listener];
-    //XCTAssertNotNil(conversation1);
-    //XCTAssertNotNil(conversation2);
-    //
-    //
-    //
-    //
-    //
-    //
-    //__block XCTestExpectation *rendezvousConversationIncoming = [self expectationWithDescription:@"waiting for incoming conversation"];
-    //TestRendezvousListener *trl = [[TestRendezvousListener alloc] init];
-    //trl.expectation = rendezvousConversationIncoming;
-    //[rendezvous1 addRendezvousObserver:trl];
-    //
-    //
-    //QredoConversation *conversation = conversation1;
-    //NSDictionary *summaryValues = conversation.metadata.summaryValues;
-    //XCTAssert(summaryValues==nil,@"Summary values should be nil");
-    //
-    //
-    ////update 1
-    //NSDictionary *testDictionary1 =  @{ @"testKey" : @"testValue" };
-    //__block XCTestExpectation *didRespondExpectation1 = [self expectationWithDescription:@"update conversation"];
-    //
-    //[conversation updateConversationWithSummaryValues:testDictionary1 completionHandler:^(NSError *error) {
-    //NSLog(@"Conversation1 %@", conversation.metadata.conversationRef);
-    //NSLog(@"Conversation1 %@", conversation.metadata.summaryValues);
-    //XCTAssertNil(summaryValues,@"Summary values should be nil");
-    //[didRespondExpectation1 fulfill];
-    //}];
-    //[self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-    //didRespondExpectation1 = nil;
-    //}];
-    //
-    //NSString *expected = [conversation.metadata.summaryValues objectForKey:@"testKey"];
-    //
-    //XCTAssertTrue([expected isEqualToString:@"testValue"],@"Incorrect summary value");
-    //QredoConversationRef *ref1 = conversation.metadata.conversationRef;
-    //
-    /////test listener
-    
-    
-    
-    //
-    //[self waitForExpectationsWithTimeout:10.0 handler:^(NSError *error) {
-    //rendezvousConversationIncoming = nil;
-    //}];
 }
 
 

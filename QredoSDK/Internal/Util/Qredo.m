@@ -108,10 +108,10 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(instancetype)initTest {
     self = [super init];
     if (self){
-        self.serverURL  = TEST_SERVER_URL;
-        self.useHTTP    = DEFAULT_USE_HTTP;
-        self.appGroup   = TEST_APP_GROUP;
-        self.keyChainGroup = TEST_KEYCHAIN_GROUP;
+        self.serverURL      = TEST_SERVER_URL;
+        self.useHTTP        = TEST_USE_HTTP;
+        self.appGroup       = TEST_APP_GROUP;
+        self.keyChainGroup  = TEST_KEYCHAIN_GROUP;
     }
     return self;
 }
@@ -177,6 +177,10 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 @implementation QredoClient
 
+
++(void)setTestMode:(BOOL)testMode{
+    _testMode = testMode;
+}
 
 +(NSDate *)dateTime {
     return [QredoNetworkTime dateTime];
@@ -357,9 +361,18 @@ NSString *systemVaultKeychainArchiveIdentifier;
          completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler {
 
     
-    if (!options){
-        options = [[QredoClientOptions alloc] initDefault]; //this is swizzled to initTest in a unit test
+    
+    if (_testMode == YES){
+        options = [[QredoClientOptions alloc] initTest];
+    }else if (!options){
+        options = [[QredoClientOptions alloc] initDefault];
     }
+    
+    
+    
+
+
+    
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:appId
                                                                                  userId:userId
@@ -388,7 +401,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     
     
-    NSLog(@"QREDO: Attempt to conntect using %@", serviceURL);
+   // NSLog(@"QREDO: Attempt to conntect using %@ %@ %@", serviceURL, appCredentials, userCredentials);
     
     __block QredoClient *client = [[QredoClient alloc] initWithServiceURL:serviceURL
                                                            appCredentials:appCredentials
