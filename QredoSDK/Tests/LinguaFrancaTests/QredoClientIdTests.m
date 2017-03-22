@@ -15,9 +15,6 @@
 }
 
 
--(void)testForceFailLF{
-    XCTFail(@"Forced Failed LF");
-}
 
 
 -(void)tearDown {
