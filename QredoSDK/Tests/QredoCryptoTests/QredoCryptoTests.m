@@ -32,6 +32,9 @@
 }
 
 
+-(void)testForceFail{
+    XCTFail(@"Forced Failed");
+}
 
 
 -(void)testHkdfRFC5869TestCase1{
