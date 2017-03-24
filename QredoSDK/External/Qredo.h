@@ -113,7 +113,7 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
          completionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
 
 
-/** init as QredoClient from the values stored in the Keychain/UserDefaults - please see   saveCredentialsInKeychain section below for security implications
+/** Init QredoClient from the values stored in the Keychain/UserDefaults - please see saveCredentialsInKeychain section below for security implications
  */
 
 +(void)initializeFromUserDefaultCredentialsInAppGroup:(NSString*)appGroup
@@ -395,23 +395,25 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
     waiting for a hand off to the main App. It therefore allows unencrypted messages to be display on the lock screen. If this functionality is not required do not use this feature as
     it weakens end point security
     Once stored in the keychain, a QredoClient can be re-instantiated using
-    +(void)initializeFromKeychainCredentialsWithCompletionHandler:(void (^)(QredoClient *client,NSError *error))completionHandler;
+    +(void)initializeFromKeychainCredentialsInGroup....
+    Configure the keyChainGroup in Capabilities>KeyChain Sharing, for both your App and Service Extension
  */
-
-
-
-
-
 -(void)saveCredentialsInKeychain;
 +(void)deleteCredentialsInKeychainGroup:(NSString*)keyChainGroup;
 +(BOOL)hasCredentialsInKeychainGroup:(NSString*)keyChainGroup;
 
 
+
+/** Store the QredoClient credentials into the iOS UserDefaults dictionary - this is essential if you need an iOS extension such as a Push Notification extension to decrypt incoming messages without
+ waiting for a hand off to the main App. It therefore allows unencrypted messages to be display on the lock screen. If this functionality is not required do not use this feature as
+ it weakens end point security
+ Once stored in the keychain, a QredoClient can be re-instantiated using
+ +(void)initializeFromUserDefaultCredentialsInAppGroup....
+ Configure the UserDefaults App Group  in Capabilities>App Groups, for both your App and Service Extension
+ */
 -(void)saveCredentialsInUserDefaults;
 +(BOOL)hasCredentialsInUserDefaultsAppGroup:(NSString*)appGroup;
 +(void)deleteCredentialsInUserDefaultsAppGroup:(NSString*)appGroup;
-
-
 
 @end
 
