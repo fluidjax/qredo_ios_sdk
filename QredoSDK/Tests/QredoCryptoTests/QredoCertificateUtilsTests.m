@@ -16,9 +16,11 @@
 
 -(void)setUp {
     [super setUp];
-    
+    //These test produce many intentional errors - so turn off Debug Logging so we dont get lots of error warning '❤️  ERROR'
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     //Must remove any existing keys before starting
     [QredoCrypto deleteAllKeysInAppleKeychain];
+    
 }
 
 
