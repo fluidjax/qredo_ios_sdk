@@ -19,16 +19,41 @@
 
 @implementation QredoIndexVaultTests
 
-QredoClient * client1;
+
 QredoVault *vault;
 QredoLocalIndex *qredoLocalIndex;
 
-QredoClient *client2;
 QredoVault *vault2;
 QredoLocalIndex *qredoLocalIndex2;
 
 NSDate *myTestDate;
 NSNumber *testNumber;
+
+
+
+
+-(void)setUp {
+    [super setUp];
+    [self initLogging];
+    
+    myTestDate = [QredoNetworkTime dateTime];
+    testNumber = [NSNumber numberWithInt:3];
+    self.continueAfterFailure = YES;
+    
+    [self createRandomClient1];
+    vault = testClient1.defaultVault;
+    qredoLocalIndex = testClient1.defaultVault.localIndex;
+
+    
+    [self createRandomClient2];
+    vault2 = testClient2.defaultVault;
+    qredoLocalIndex2 = testClient2.defaultVault.localIndex;
+
+    
+    XCTAssertNotNil(vault);
+    XCTAssertNotNil(qredoLocalIndex);
+    
+}
 
 
 
@@ -349,9 +374,9 @@ NSNumber *testNumber;
 
 
 -(void)testMultipleClientsAndVaults {
-    [self authoriseSecondClient:[self randomPassword]];
+
     
-    XCTAssertNotEqual(client1,client2,@"Error creating clients");
+    XCTAssertNotEqual(testClient1,testClient2,@"Error creating clients");
     XCTAssertNotEqual(vault,vault2,@"Error creating vaults");
     XCTAssertNotEqual(qredoLocalIndex,qredoLocalIndex2,@"Error creating localIndexes");
     
@@ -435,7 +460,7 @@ NSNumber *testNumber;
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [self randomStringWithLength:32];
     
-    [client1.defaultVault addMetadataIndexObserver];
+    [testClient1.defaultVault addMetadataIndexObserver];
     
     for (int i = 0; i < testCount; i++){
         QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
@@ -534,29 +559,7 @@ NSNumber *testNumber;
 #pragma mark - Private
 
 
--(void)setUp {
-    [super setUp];
-    
-    [self initLogging];
-    
-    myTestDate = [QredoNetworkTime dateTime];
-    testNumber = [NSNumber numberWithInt:3];
-    self.continueAfterFailure = YES;
-    [self authoriseClient:[self randomPassword]];
-}
 
-
--(void)tearDown {
-    [client1 closeSession];
-    [client2 closeSession];
-    
-    NSDate *myTestDate;
-    NSNumber *testNumber;
-    
-    
-    
-    [super tearDown];
-}
 
 
 -(void)summaryValueTestSearch:(int)expectedMatches {
@@ -575,63 +578,7 @@ NSNumber *testNumber;
 }
 
 
--(void)authoriseClient:(NSString *)password {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
-    
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       client1 = clientArg;
-                       [clientExpectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     clientExpectation = nil;
-                                 }];
-    vault = client1.defaultVault;
-    qredoLocalIndex = client1.defaultVault.localIndex;
-    
-    XCTAssertNotNil(client1);
-    XCTAssertNotNil(vault);
-    XCTAssertNotNil(qredoLocalIndex);
-}
 
-
--(void)authoriseSecondClient:(NSString *)password {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client2"];
-    
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       client2 = clientArg;
-                       [clientExpectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:30
-                                 handler:^(NSError *error) {
-                                     clientExpectation = nil;
-                                 }];
-    vault2 = client2.defaultVault;
-    qredoLocalIndex2 = client2.defaultVault.localIndex;
-    
-    
-    XCTAssertNotNil(client2);
-    XCTAssertNotNil(vault2);
-    XCTAssertNotNil(qredoLocalIndex2);
-}
 
 
 -(QredoVaultItem *)getItemWithDescriptor:(QredoVaultItemMetadata *)metadata inVault:(QredoVault *)vault {
@@ -850,7 +797,7 @@ NSNumber *testNumber;
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [self randomStringWithLength:32];
     
-    [client1.defaultVault addMetadataIndexObserver];
+    [testClient1.defaultVault addMetadataIndexObserver];
     
     
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -859,7 +806,7 @@ NSNumber *testNumber;
     QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadataDictionary:item1SummaryValues value:item1Data ];
     
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"TestputItemType1"];
-    [client1.defaultVault
+    [testClient1.defaultVault
      putItem:item1
      completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
          XCTAssertNil(error);
@@ -887,7 +834,7 @@ NSNumber *testNumber;
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [self randomStringWithLength:32];
     
-    [client1.defaultVault addMetadataIndexObserver];
+    [testClient1.defaultVault addMetadataIndexObserver];
     
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{ @"key1":@"test item",
@@ -896,7 +843,7 @@ NSNumber *testNumber;
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"TestputItemType1"];
     __block QredoVaultItemMetadata *itemMetadata;
     
-    [client1.defaultVault
+    [testClient1.defaultVault
      putItem:item1
      completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
          XCTAssertNil(error);
@@ -923,7 +870,7 @@ NSNumber *testNumber;
     __block XCTestExpectation *testExpectation2 = [self expectationWithDescription:@"TestputItemType1"];
     __block QredoVaultItemMetadata *itemMetadata2;
     
-    [client1.defaultVault
+    [testClient1.defaultVault
      putItem:item2
      completionHandler:^(QredoVaultItemMetadata *newItemMetadata2,NSError *error) {
          XCTAssertNil(error);
@@ -949,14 +896,13 @@ NSNumber *testNumber;
 -(void)testPutItemType4 {
     //There is an itemID with the same Sequence ID & Sequqnce Number
     //So this is an existing item, sets its value
-    [self authoriseSecondClient:[self randomPassword]];
-    
+   
     
     
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [self randomStringWithLength:32];
-    [client1.defaultVault addMetadataIndexObserver];
-    [client2.defaultVault addMetadataIndexObserver];
+    [testClient1.defaultVault addMetadataIndexObserver];
+    [testClient2.defaultVault addMetadataIndexObserver];
     
     
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -966,7 +912,7 @@ NSNumber *testNumber;
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"TestputItemType1"];
     __block QredoVaultItemMetadata *itemMetadata;
     
-    [client1.defaultVault
+    [testClient1.defaultVault
      putItem:item1
      completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
          XCTAssertNil(error);
@@ -1006,7 +952,7 @@ NSNumber *testNumber;
     
     
     
-    [client2.defaultVault
+    [testClient2.defaultVault
      putItem:item2
      completionHandler:^(QredoVaultItemMetadata *newItemMetadata2,NSError *error) {
          XCTAssertNil(error);

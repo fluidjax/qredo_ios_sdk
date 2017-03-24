@@ -29,7 +29,6 @@
 
 
 -(void)testLogging {
-    [self testSuccessConnectToClient];
     [QredoLogger setLogLevel:QredoLogLevelVerbose];
     QredoLogError(@"Ignore this intentional error:   %@",^{ return @"generated error message from block"; } ());
     QredoLogWarning(@"Ignore this intentional warning: %@",^{ return @"generated error message from block"; } ());
@@ -261,67 +260,6 @@
 }
 
 
--(void)testConnectAndCloseMultiple {
-    for (int i = 0; i < 10; i++){
-        [self testConnectAndClose];
-    }
-}
-
-
--(void)testConnectAndClose {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
-    
-    __block QredoClient *client;
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:k_TEST_USERID
-                          userSecret:[self randomPassword]
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       [clientExpectation fulfill];
-                       client = clientArg;
-                       
-                       QLog(@"Version is  %@",[clientArg versionString]);
-                       QLog(@"Build is    %@",[clientArg buildString]);
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     clientExpectation = nil;
-                                 }];
-    
-    [client closeSession];
-}
-
-
--(void)testSuccessConnectToClient {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       //XCTAssertNil(error);
-                       //XCTAssertNotNil(clientArg);
-                       [clientExpectation fulfill];
-                       
-                       QLog(@"Version is  %@",[clientArg versionString]);
-                       QLog(@"Build is    %@",[clientArg buildString]);
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     clientExpectation = nil;
-                                 }];
-}
 
 
 @end

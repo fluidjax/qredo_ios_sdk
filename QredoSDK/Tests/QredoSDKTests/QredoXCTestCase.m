@@ -31,13 +31,11 @@ static const int testTimeOut = 30;
     self.clientOptions .appGroup          = TEST_APP_GROUP;
     self.clientOptions .keyChainGroup     = TEST_KEYCHAIN_GROUP;
 
-    
     k_TEST_APPID        = TEST_SERVER_APPID;
     k_TEST_APPSECRET    = TEST_SERVER_APPSECRET;
     
     k_TEST_USERID       = TEST_SERVER_USERID;
     k_TEST_USERSECRET   = TEST_SERVER_USERSECRET;
-    
     
     k_TEST_USERID2      = TEST_SERVER_USERID2;
     k_TEST_USERSECRET2  = TEST_SERVER_USERSECRET2;
@@ -46,42 +44,10 @@ static const int testTimeOut = 30;
     NSAssert(k_TEST_APPID,@"Invalid AppID in");
     NSAssert(k_TEST_APPSECRET,@"Invalid k_TEST_APPSECRET in");
     
-//    if (!k_TEST_USERID)k_TEST_USERID = [self randomUsername];
-//    if (!k_TEST_USERSECRET)k_TEST_USERSECRET = [self randomPassword];
-//    if (!k_TEST_USERID2)k_TEST_USERID2 = [self randomUsername];
-//    if (!k_TEST_USERSECRET2)k_TEST_USERSECRET2 = [self randomPassword];
-    
-//    NSLog(@"***** SWIZZLING **** ");
-//    SwizzleClassMethod([QredoClientOptions class], @selector(initDefault), @selector(initTest));
-    
 }
 
 
 
-
-//void SwizzleClassMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
-//    
-//    Method originalMethod = class_getInstanceMethod(class, originalSelector);
-//    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-//    
-//    BOOL didAddMethod =
-//    class_addMethod(class,
-//                    originalSelector,
-//                    method_getImplementation(swizzledMethod),
-//                    method_getTypeEncoding(swizzledMethod));
-//    
-//    if (didAddMethod) {
-//        class_replaceMethod(class,
-//                            swizzledSelector,
-//                            method_getImplementation(originalMethod),
-//                            method_getTypeEncoding(originalMethod));
-//    } else {
-//        method_exchangeImplementations(originalMethod, swizzledMethod);
-//    }
-//    
-//    
-//}
-//
 
 -(void)tearDown {
     //client
@@ -206,20 +172,27 @@ static const int testTimeOut = 30;
 
 
 -(void)createRandomClient1 {
+    testClient1User     = [self randomUsername];
+    testClient1Password = [self randomPassword];
+    
+    
     testClient1 = [self createClientWithAppID:k_TEST_APPID
                                     appSecret:k_TEST_APPSECRET
-                                       userId:[self randomUsername]
-                                   userSecret:[self randomPassword]
+                                       userId:testClient1User
+                                   userSecret:testClient1Password
                               ];
     
 }
 
 
 -(void)createRandomClient2 {
+    testClient2User     = [self randomUsername];
+    testClient2Password = [self randomPassword];
+    
     testClient2 = [self createClientWithAppID:k_TEST_APPID
                                     appSecret:k_TEST_APPSECRET
-                                       userId:[self randomUsername]
-                                   userSecret:[self randomPassword]
+                                       userId:testClient2User
+                                   userSecret:testClient2Password
                    ];
     
 }
@@ -255,6 +228,7 @@ static const int testTimeOut = 30;
 
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     __block QredoClient *client;
+    
     
     [QredoClient initializeWithAppId:appId
                            appSecret:appSecret
@@ -677,6 +651,7 @@ static const int testTimeOut = 30;
     [self sendConversationMessageFrom1to2];
     [self sendConversationMessageFrom2to1];
 }
+
 
 
 @end

@@ -8,12 +8,9 @@
 
 @interface QredoRendezvousTests :QredoXCTestCase
 
-
--(void)authoriseClient;
 -(void)testCreateRendezvousAndGetResponses;
 -(void)testCreateAndFetchAnonymousRendezvous;
 -(void)testCreateDuplicateAndFetchAnonymousRendezvous;
--(void)testCreateAndRespondAnonymousRendezvous;
 -(void)testActivateExpiredRendezvous;
 -(void)testActivateExpiredRendezvousAndFetchFromNewRef;
 

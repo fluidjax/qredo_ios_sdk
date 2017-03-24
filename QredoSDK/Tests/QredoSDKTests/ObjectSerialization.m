@@ -36,13 +36,12 @@
 }
 
 
+
 -(void)testPassingConversationRefDeserialization{
     [self buildStack1];
     XCTAssertNotNil(conversation1);
-    
     NSString *serializedConversationRef = [conversation1.metadata.conversationRef serializedString];
     QredoConversationRef *convRef = [[QredoConversationRef alloc] initWithSerializedString:serializedConversationRef];
-    
     XCTAssertTrue([convRef isEqual:conversation1.metadata.conversationRef],@"serialization / deserialization values are not the same");
 }
 

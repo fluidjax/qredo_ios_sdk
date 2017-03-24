@@ -10,7 +10,6 @@
 
 @interface QredoVaultUpdateTests ()
 {
-    QredoClient *client;
     int systemItemsCount;
     NSMutableArray *systemItemDescriptors;
 }
@@ -21,44 +20,18 @@
 
 -(void)setUp {
     [super setUp];
-    [self authoriseClient];
+    [self createRandomClient1];
+    [self addSystemVaultItems];
 }
 
 
--(void)tearDown {
-    [super tearDown];
-    
-    if (client){
-        [client closeSession];
-    }
-}
 
 
--(void)authoriseClient {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       client = clientArg;
-                       [clientExpectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     clientExpectation = nil;
-                                 }];
-    
+-(void)addSystemVaultItems {
     
     //system items are those that are created when a vault is initialized. It can be, for example, device info.
     __block XCTestExpectation *systemItemsExpectation = [self expectationWithDescription:@"count system items"];
-    QredoVault *vault = [client defaultVault];
+    QredoVault *vault = [testClient1 defaultVault];
     systemItemDescriptors = [NSMutableArray array];
     systemItemsCount = 0;
     [vault enumerateVaultItemsAllVersionsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stop) {
@@ -80,7 +53,7 @@
 -(void)testGettingItems {
     __block XCTestExpectation *testExpectation = nil;
     
-    QredoVault *vault = [client defaultVault];
+    QredoVault *vault = [testClient1 defaultVault];
     
     
     NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
@@ -183,7 +156,7 @@
 -(void)testPutItems {
     __block XCTestExpectation *testExpectation = nil;
     
-    QredoVault *vault = [client defaultVault];
+    QredoVault *vault = [testClient1 defaultVault];
     
     
     NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];
@@ -321,7 +294,7 @@
 -(void)testDeleteItems {
     __block XCTestExpectation *testExpectation = nil;
     
-    QredoVault *vault = [client defaultVault];
+    QredoVault *vault = [testClient1 defaultVault];
     
     
     NSData *item1Data = [NSData qtu_dataWithRandomBytesOfLength:1024];

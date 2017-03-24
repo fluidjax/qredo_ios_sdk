@@ -102,8 +102,6 @@ static float delayInterval = 0.4;
 @end
 
 @interface ConversationTests () <QredoRendezvousObserver>{
-    QredoClient *client;
-    QredoClient *anotherClient;
     NSNumber *rvuFulfilledTimes;
     QredoConversation *creatorConversation;
 }
@@ -113,20 +111,6 @@ static float delayInterval = 0.4;
 
 @implementation ConversationTests
 
--(void)setUp {
-    [super setUp];
-    [self authoriseClient];
-    [self authoriseAnotherClient];
-}
-
-
--(void)tearDown {
-    [super tearDown];
-    
-    if (client)[client closeSession];
-    
-    if (anotherClient)[anotherClient closeSession];
-}
 
 
 -(void)testEnumerateConversaionsOnClient {
@@ -195,75 +179,13 @@ static float delayInterval = 0.4;
 }
 
 
--(void)authoriseClient {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       client = clientArg;
-                       [clientExpectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     clientExpectation = nil;
-                                 }];
-    XCTAssertNotNil(client);
-    XCTAssertNotNil(client.systemVault);
-    XCTAssertNotNil(client.systemVault.vaultId);
-    
-    //NSLog(@"Client1 system Vault %@",client.systemVault.vaultId);
-    //NSLog(@"Client1 default Vault %@",client.defaultVault.vaultId);
-}
-
-
--(void)authoriseAnotherClient {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       anotherClient = clientArg;
-                       [clientExpectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     clientExpectation = nil;
-                                 }];
-    XCTAssertNotNil(anotherClient);
-    XCTAssertNotNil(anotherClient.systemVault);
-    XCTAssertNotNil(anotherClient.systemVault.vaultId);
-    
-    //NSLog(@"Another Client default Vault %@",anotherClient.defaultVault.vaultId);
-}
-
-
--(void)closeClientSessions {
-    [client closeSession];
-    [anotherClient closeSession];
-}
-
-
 -(void)testConversationCreation {
+    [self createRandomClient1];
+    
+
     __block QredoRendezvous *rendezvous = nil;
-    
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
-    
-    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
+    [testClient1 createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:600
                               unlimitedResponses:NO
                                    summaryValues:nil
@@ -281,21 +203,23 @@ static float delayInterval = 0.4;
                                      //avoiding exception when 'fulfill' is called after timeout
                                      createExpectation = nil;
                                  }];
+    
+    XCTAssertNotNil(rendezvous);
+    
 }
 
 
 -(void)testRespondingToConversation {
-    __block QredoRendezvous *rendezvous = nil;
+    [self createRandomClient1];
+    [self createRandomClient2];
     
+
+    __block QredoRendezvous *rendezvous = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block NSString *randomTag = nil;
-    
-    
     QLog(@"\nCreating rendezvous");
     
-    
-    
-    [client createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
+    [testClient1 createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:600
                               unlimitedResponses:NO
                                    summaryValues:nil
@@ -320,7 +244,7 @@ static float delayInterval = 0.4;
     [rendezvous addRendezvousObserver:self];
     [self pauseForListenerToRegister];
     
-    XCTAssertNotNil(anotherClient);
+    XCTAssertNotNil(testClient2);
     
     //Responding to the rendezvous
     __block XCTestExpectation *didRespondExpectation = [self expectationWithDescription:@"responded to rendezvous"];
@@ -329,7 +253,7 @@ static float delayInterval = 0.4;
     __block QredoConversation *responderConversation = nil;
     QLog(@"\n2nd client responding to rendezvous");
     //Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
-    [anotherClient respondWithTag:randomTag
+    [testClient2 respondWithTag:randomTag
                 completionHandler:^(QredoConversation *conversation,NSError *error) {
                     QLog(@"\nRendezvous respond completion handler entered");
                     XCTAssertNil(error);
@@ -348,50 +272,9 @@ static float delayInterval = 0.4;
                                  }];
     
     QLog(@"\nStopping listening");
-    [client closeSession];
 }
 
 
-
-
-
-
-//This is part of Control messages and has been disabled
-/*
--(void)testOtherPartyHasLeft {
-    [self buildStack1];
-    
-    __block XCTestExpectation *deletdConv = [self expectationWithDescription:@"Delet 1st conversation"];
-    
-    
-    
-    [testClient1 deleteConversationWithRef:conversation1.metadata.conversationRef
-                         completionHandler:^(NSError *error) {
-                             XCTAssertNil(error);
-                             [deletdConv fulfill];
-                         }];
-    
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     XCTAssertNil(error);
-                                     deletdConv = nil;
-                                 }];
-    
-    
-    ConversationMessageListener *deleteListener = [[ConversationMessageListener alloc] init];
-    self.didRecieveOtherPartyHasLeft = [self expectationWithDescription:@"wait to be notified of other party has left"];
-    deleteListener.expectedMessageValue = @"Message";
-    deleteListener.test = self;
-    deleteListener.listening = YES;
-    [conversation2 addConversationObserver:deleteListener];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     XCTAssertNil(error);
-                                 }];
-}
-*/
 
 
 -(void)testConversationWatermark2{
@@ -412,9 +295,6 @@ static float delayInterval = 0.4;
     //how many messages since 2nd message
     messageCount = [self countSentMessagesOnConversation:conversation1 since:hwm2];
     XCTAssert(messageCount == 0,@"Should have 0 Has %i",messageCount);
-    
-    [client closeSession];
-    
 }
 
 

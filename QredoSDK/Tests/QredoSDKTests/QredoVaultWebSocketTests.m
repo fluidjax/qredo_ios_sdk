@@ -13,17 +13,6 @@
 }
 
 
--(void)testPersistanceVaultIdMultiple {
-    self.continueAfterFailure = NO;
-    
-    for (int i = 0; i < 5; i++){
-        QLog(@"Run number: %@",@(i));
-        
-        [super testPersistanceVaultId];
-    }
-}
-
-
 -(void)testPersistanceVaultId {
     [super testPersistanceVaultId];
 }

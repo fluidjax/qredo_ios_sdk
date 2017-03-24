@@ -11,8 +11,6 @@
 
 @implementation MultiPageMessageTest
 
-QredoClient * client1;
-QredoClient *client2;
 XCTestExpectation *incomingConversationExpectation;
 QredoConversation *incomingConversation;
 static int PAGING_SIZE = 2;  //server is set to 2, but 1 control message means only 1 actual data record returned
@@ -27,18 +25,23 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
  
  */
 
+-(void)setUp{
+    [super setUp];
+    [self createRandomClients];
+}
 
 
 -(void)testPagedMessages {
     //create conversation
+    
     NSString *tagName = [self randomStringWithLength:32];
     
-    [self createRendezvousOnClient:client1 withTag:tagName];
+    [self createRendezvousOnClient:testClient1 withTag:tagName];
     
     //respond to rendezvous by tag
     __block QredoConversation *testConversation = nil;
     __block XCTestExpectation *respondeToConversation1 = [self expectationWithDescription:@"Respond to Conversation1"];
-    [client2 respondWithTag:tagName
+    [testClient2 respondWithTag:tagName
           completionHandler:^(QredoConversation *conversation,NSError *error) {
               XCTAssertNotNil(conversation);
               testConversation = conversation;
@@ -98,14 +101,14 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     for (int i = 0; i < PAGING_SIZE + PAGING_SIZE_MODIFIER; i++){
         QLog(@"Create rendezvous %i",i);
         NSString *randomTag = [[QredoQUID QUID] QUIDString];
-        [self createRendezvousOnClient:client1 withTag:randomTag];
+        [self createRendezvousOnClient:testClient1 withTag:randomTag];
     }
     
     //enumerate the rendezvous using ALL
     __block XCTestExpectation *didEnumerateComplete2 = [self expectationWithDescription:@"didEnumerateComplete2"];
     __block int count2 = 0;
     
-    [client1 enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata,BOOL *stop) {
+    [testClient1 enumerateRendezvousWithBlock:^(QredoRendezvousMetadata *rendezvousMetadata,BOOL *stop) {
         XCTAssertNotNil(rendezvousMetadata.rendezvousRef);
         QLog(@"TAG = %@",rendezvousMetadata.tag);
         count2++;
@@ -125,16 +128,14 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
 
 
 -(void)testPagedConversations {
-    XCTAssertNotNil(client1);
-    XCTAssertNotNil(client2);
     
     NSString *tagName = [self randomStringWithLength:32];
-    [self createRendezvousOnClient:client1 withTag:tagName];
+    [self createRendezvousOnClient:testClient1 withTag:tagName];
     
     for (int i = 0; i < PAGING_SIZE + PAGING_SIZE_MODIFIER; i++){
         incomingConversation = nil;
         QredoConversation *newConversation = nil;
-        newConversation = [self createConversationOnClient:client2 withTag:tagName];
+        newConversation = [self createConversationOnClient:testClient2 withTag:tagName];
         [self createMessageOnConversation:newConversation];
     }
     
@@ -142,7 +143,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     __block int count2 = 0;
     __block XCTestExpectation *enumeateConv2 = [self expectationWithDescription:@"Enumerate conversations on client"];
     
-    [client2 enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata,BOOL *stop) {
+    [testClient2 enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata,BOOL *stop) {
         count2++;
     }
                            completionHandler:^(NSError *error) {
@@ -161,7 +162,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
 
 
 -(void)testPagedVaultItems {
-    QredoVault *vault = [client1 defaultVault];
+    QredoVault *vault = [testClient1 defaultVault];
     
     XCTAssertNotNil(vault);
     
@@ -220,48 +221,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
 #pragma mark
 #pragma mark Utility Methods
 
--(void)authoriseClient {
-    //Create two clients each with their own new random vaults
-    
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client1"];
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                            options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       client1 = clientArg;
-                       [clientExpectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:30
-                                 handler:^(NSError *error) {
-                                     clientExpectation = nil;
-                                 }];
-    
-    __block XCTestExpectation *client2Expectation = [self expectationWithDescription:@"create client2"];
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:[self randomUsername]
-                          userSecret:[self randomPassword]
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       client2 = clientArg;
-                       [client2Expectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:30
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     client2Expectation = nil;
-                                 }];
-}
+
 
 
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
@@ -270,21 +230,16 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
 }
 
 
--(void)setUp {
-    [super setUp];
-    [self authoriseClient];
-}
 
-
--(void)tearDown {
-    [client1 closeSession];
-    [client2 closeSession];
-    [super tearDown];
-}
 
 
 -(QredoConversation *)createConversationOnClient:(QredoClient *)qredoClient withTag:(NSString *)tagName {
     //respond to rendezvous by tag
+    
+    XCTAssertNotNil(qredoClient);
+    XCTAssertNotNil(tagName);
+    
+    
     incomingConversationExpectation = [self expectationWithDescription:@"Wait for incoming Conversation"];
     
     __block QredoConversation *newConversation = nil;
@@ -336,6 +291,9 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
 
 -(QredoRendezvous *)createRendezvousOnClient:(QredoClient *)qredoClient withTag:(NSString *)tagName {
     //create rendezvous
+    XCTAssertNotNil(qredoClient);
+    XCTAssertNotNil(tagName);
+
     
     __block XCTestExpectation *createRendezvous1Expectation = [self expectationWithDescription:@"Create rendezvous 1"];
     __block QredoRendezvous *newRendezvous = nil;

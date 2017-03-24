@@ -6,7 +6,6 @@
 @interface QredoVaultTests :QredoXCTestCase
 
 
--(void)authoriseClient;
 -(void)testPersistanceVaultId;
 -(void)testPutItem;
 -(void)testPutItemMultiple;

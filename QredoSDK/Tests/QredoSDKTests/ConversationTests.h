@@ -9,9 +9,6 @@
 @property (atomic) XCTestExpectation *didRecieveOtherPartyHasLeft;
 @property (atomic) XCTestExpectation *didReceiveRendezvousExpectation;
 
--(void)authoriseClient;
--(void)authoriseAnotherClient;
--(void)closeClientSessions;
 -(void)testConversationCreation;
 -(void)testRespondingToConversation;
 @end

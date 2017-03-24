@@ -90,12 +90,7 @@
 @end
 
 
-@interface QredoVaultTests ()
-{
-    QredoClient *client;
-    NSString *savedPassword;
-    NSString *savedUsername;
-    
+@interface QredoVaultTests (){
 }
 
 @end
@@ -105,70 +100,41 @@
 
 -(void)setUp {
     [super setUp];
-    [self authoriseClient];
+    [self createRandomClient1];
 }
 
 
--(void)tearDown {
-    [super tearDown];
-    
-    if (client){
-        [client closeSession];
-    }
-}
 
-
--(void)authoriseClient {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    
-    
-    savedPassword = [self randomPassword];
-    savedUsername = [self randomUsername];
-    
-    [QredoClient initializeWithAppId:k_TEST_APPID
-                           appSecret:k_TEST_APPSECRET
-                              userId:savedUsername
-                          userSecret:savedPassword
-                             options:self.clientOptions
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       client = clientArg;
-                       [clientExpectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     clientExpectation = nil;
-                                 }];
-}
 
 
 -(void)testPersistanceVaultId {
     QredoQUID *firstQUID = nil;
     
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     firstQUID = vault.vaultId;
     XCTAssertNotNil(firstQUID);
     
     vault = nil;
-    client = nil;
+    testClient1 = nil;
     
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     
+    
+    __block QredoClient *sameClientAgain = nil;
+    
+    //This explicit call the initializeWithAppId is required to ensure persistence of vaults between calls using the same params
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
-                              userId:savedUsername
-                          userSecret:savedPassword
+                              userId:testClient1User
+                          userSecret:testClient1Password
                              options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
-                       client = clientArg;
+                       sameClientAgain = clientArg;
                        [clientExpectation fulfill];
                    }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout
@@ -177,14 +143,14 @@
                                      clientExpectation = nil;
                                  }];
     
-    XCTAssertEqualObjects([[client defaultVault] vaultId],firstQUID);
+    XCTAssertEqualObjects([[sameClientAgain defaultVault] vaultId],firstQUID);
 }
 
 
 -(void)testEnumerateContainsDeletedItems {
     [self resetKeychain];
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create an item and store in vault
@@ -365,18 +331,14 @@
                                  }];
     
     XCTAssertTrue(count3 == 0,@"there should be 0 items in the vault "); //first has a new version, 2nd is deleted
-    
-    
-    
-    
-    [client closeSession];
+ 
 }
 
 
 -(void)testEnumerateUpdated {
     [self resetKeychain];
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create an item and store in vault
@@ -575,19 +537,13 @@
     
     XCTAssertTrue(count3 == 3,@"there should be 3 items in the vault there are %i",count3);
     
-    
-    
-    
-    
-    
-    [client closeSession];
-}
+  }
 
 
 -(void)testPutDelete {
     [self resetKeychain];
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create an item and store in vault
@@ -735,8 +691,8 @@
 
 -(void)testGetLatestMetaDataItemFromIndex {
     [self resetKeychain];
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create an item and store in vault
@@ -878,14 +834,13 @@
                                  }];
     
     XCTAssertTrue([item2Metadata.descriptor isEqual:test4vaultItemMetadata.descriptor],@"Retrieved item should be second");
-    [client closeSession];
 }
 
 
 -(void)testGetLatestMetaDataItemFromIndexAfterDelete {
     [self resetKeychain];
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create an item and store in vault
@@ -1021,15 +976,13 @@
                                  }];
     
     XCTAssertNil(test4vaultItemMetadata,@"Should be nil");
-    [client closeSession];
 }
 
 
 -(void)testGetLatestItemFromIndexAfterDelete {
     [self resetKeychain];
-    XCTAssertNotNil(client);
-    [self authoriseClient];
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create an item and store in vault
@@ -1166,15 +1119,13 @@
                                  }];
     
     XCTAssertNil(test4vaultItem,@"Should be nil");
-    
-    [client closeSession];
 }
 
 
 -(void)testGetLatestVaultItemFromIndex {
     [self resetKeychain];
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create an item and store in vault
@@ -1317,123 +1268,9 @@
 }
 
 
-//-(void)testGetLatestFromIndex{
-////put some data
-//
-//XCTAssertNotNil(client);
-//QredoVault *vault = [client defaultVault];
-//XCTAssertNotNil(vault);
-//
-//__block int counter =0;
-//
-//NSData *item1Data = [self randomDataWithLength:1024];
-//NSDictionary *item1SummaryValues = @{@"key1": @0};
-//QredoVaultItem *item1 = [QredoVaultItem vaultItemWithMetadata:[QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:item1SummaryValues] value:item1Data];
-//
-//__block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
-//
-//__block QredoVaultItemMetadata *newItemMetadata = nil;
-//
-//[vault putItem:item1 completionHandler:^(QredoVaultItemMetadata *incomingMetadata, NSError *error) {
-//XCTAssertNil(error);
-//XCTAssertNotNil(incomingMetadata);
-//[testExpectation fulfill];
-//newItemMetadata = incomingMetadata;
-//counter++;
-//}];
-//[self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//// avoiding exception when 'fulfill' is called after timeout
-//testExpectation = nil;
-//}];
-//
-//XCTAssertNotNil(newItemMetadata);
-//
-////update the item with new versions
-//
-//
-//for (int i=1;i<10;i++){
-//QredoVaultItemMetadata *updateMetadata = newItemMetadata;
-//updateMetadata.summaryValues = @{@"key1": [NSNumber numberWithInt:i],
-//@"key2": @"updated"};
-//
-//__block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
-//
-//[vault updateItem:updateMetadata value:item1Data completionHandler:^(QredoVaultItemMetadata *newItemMetadata, NSError *error) {
-//XCTAssertNil(error);
-//XCTAssertNotNil(newItemMetadata);
-//[testExpectation fulfill];
-//counter++;
-//
-//}];
-//
-//[self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//// avoiding exception when 'fulfill' is called after timeout
-//testExpectation = nil;
-//}];
-//}
-//
-//XCTAssertTrue(counter==10,@"Didnt import 10 items");
-//
-//
-////Just get the latest item from the Index
-//QredoVaultItemDescriptor *descriptor = [[QredoVaultItemDescriptor alloc] initWithSequenceId:nil
-//sequenceValue:0
-//itemId:item1.metadata.descriptor.itemId];
-//__block QredoVaultItem *latestVaultItemFromCache = nil;
-//
-//__block XCTestExpectation *getFromIndexExpectation = [self expectationWithDescription:@"get fromIndex"];
-//[vault getItemWithDescriptor:descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
-//XCTAssertNil(error);
-//XCTAssertNotNil(vaultItem);
-//latestVaultItemFromCache = vaultItem;
-//[getFromIndexExpectation fulfill];
-//}];
-//
-//[self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//// avoiding exception when 'fulfill' is called after timeout
-//getFromIndexExpectation = nil;
-//}];
-//
-//
-//
-//
-//NSNumber *testVal = [latestVaultItemFromCache objectForMetadataKey:@"key1"];
-//
-//XCTAssertTrue([testVal isEqualToNumber:@9],@"Didnt get the latest value from the cache");
-//XCTAssert(latestVaultItemFromCache.metadata.origin == QredoVaultItemOriginCache,@"Metata data in vault item not set correctly");
-//
-//
-//
-////disable the index
-//[client.defaultVault metadataCacheEnabled:NO];
-//[client.defaultVault valueCacheEnabled:NO];
-//
-//
-////get from the server - should report an error
-//__block XCTestExpectation *getFromServerExpectation = [self expectationWithDescription:@"get from Server"];
-//
-//[vault getItemWithDescriptor:descriptor completionHandler:^(QredoVaultItem *vaultItem, NSError *error) {
-//XCTAssert(error);
-//XCTAssertNil(vaultItem);
-//latestVaultItemFromCache = vaultItem;
-//[getFromServerExpectation fulfill];
-//}];
-//
-//[self waitForExpectationsWithTimeout:qtu_defaultTimeout handler:^(NSError *error) {
-//// avoiding exception when 'fulfill' is called after timeout
-//getFromServerExpectation = nil;
-//}];
-//
-//
-//
-//
-//}
-
-
-
 -(void)testPutItem {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     
@@ -1461,8 +1298,8 @@
 
 
 -(void)testGetSetShortcuts {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     
@@ -1504,8 +1341,8 @@
 
 
 -(void)testPutItemMultiple {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     for (int i = 0; i < 3; i++){
@@ -1535,8 +1372,8 @@
 
 
 -(void)testMenualGet {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -1608,8 +1445,8 @@
 
 
 -(void)testGettingItems {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     NSData *item1Data = [self randomDataWithLength:1024];
@@ -1732,10 +1569,12 @@
 
 
 -(void)testGettingItemsFromCache {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
-    [vault addMetadataIndexObserver];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
+    
+    [vault addMetadataIndexObserver];
+    
     
     NSData *item1Data = [self randomDataWithLength:1024];
     NSDictionary *item1SummaryValues = @{ @"key1":@"value1",
@@ -1922,13 +1761,13 @@
                                      //avoiding exception when 'fulfill' is called after timeout
                                      testExpectation = nil;
                                  }];
-    [client closeSession];
+
 }
 
 
 -(void)testEnumeration {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     __block NSError *error = nil;
@@ -1952,8 +1791,8 @@
 
 
 -(void)testEnumerationReturnsCreatedItem {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create an item and store in vault
@@ -2047,8 +1886,8 @@
 
 
 -(void)testEnumerationAbortsOnStop {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     //Create 2 items and store in vault (ensures there's more than 1 item in vault when enumerating
@@ -2133,8 +1972,8 @@
 
 
 -(void)testListener {
-    XCTAssertNotNil(client);
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     QredoVaultListener *listener = [[QredoVaultListener alloc] init];
@@ -2166,16 +2005,13 @@
     XCTAssertNotNil(listener.receivedItems);
     XCTAssertTrue(listener.receivedItems.count > 0);
     
-    
-    //[vault removeVaultObserver:listener];
-    [client closeSession];
 }
 
 
 -(void)testMultipleListeners {
-    XCTAssertNotNil(client);
+    XCTAssertNotNil(testClient1);
     
-    QredoVault *vault = [client defaultVault];
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     QredoVaultListener *listener1 = [[QredoVaultListener alloc] init];
@@ -2217,19 +2053,12 @@
     XCTAssertNotNil(listener2.receivedItems);
     XCTAssertTrue(listener2.receivedItems.count > 0);
     
-    
-    //[vault removeVaultObserver:listener1];
-    //[vault removeVaultObserver:listener2];
-    
-    
-    [client closeSession];
 }
 
 
 -(void)testRemovingListenerDurringNotification {
-    XCTAssertNotNil(client);
-    
-    QredoVault *vault = [client defaultVault];
+    XCTAssertNotNil(testClient1);
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     NSMutableArray *listeners = [NSMutableArray new];
@@ -2291,9 +2120,9 @@
 
 
 -(void)testRemovingNotObservingListener {
-    XCTAssertNotNil(client);
+    XCTAssertNotNil(testClient1);
     
-    QredoVault *vault = [client defaultVault];
+    QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
     
     QredoVaultListener *listener1 = [[QredoVaultListener alloc] init];
