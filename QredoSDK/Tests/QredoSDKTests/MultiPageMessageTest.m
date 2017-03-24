@@ -229,6 +229,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
+                            options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -247,6 +248,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);

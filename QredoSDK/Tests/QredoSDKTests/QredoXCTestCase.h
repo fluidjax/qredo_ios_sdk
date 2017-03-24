@@ -48,6 +48,8 @@ static float WAIT_FOR_LISTENER_TO_PROCESS_DELAY = 1.0;
 @property (strong) QredoClientOptions *clientOptions;
 @property (nonatomic) QredoClientOptionsTransportType transportType;
 
+
+
 /* -------------------------------------------------------------------------------------------------------------------------------- */
 
 

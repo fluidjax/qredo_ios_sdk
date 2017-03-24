@@ -23,6 +23,7 @@ extern NSString *const QredoVaultItemTypeKeychainAttempt;
 extern NSString *const QredoVaultItemSummaryKeyDeviceName;
 static long long QREDO_DEFAULT_INDEX_CACHE_SIZE = 250000000; //in bytes 250Meg
 static BOOL _testMode = NO;
+static NSString* _testAppSecret = nil;
 
 @class QredoKeychainReceiver,QredoKeychainSender,QredoKeychain;
 
@@ -31,7 +32,7 @@ static BOOL _testMode = NO;
 
 @interface QredoClient ()
 
-+(void)setTestMode:(BOOL)testMode;
++(void)setTestMode:(BOOL)testMode withAppSecret:(NSString*)appSecret;
 
 -(QredoServiceInvoker *)serviceInvoker;
 -(QredoVault *)systemVault;

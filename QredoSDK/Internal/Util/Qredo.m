@@ -95,11 +95,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(instancetype)initDefault {
     self = [super init];
     if (self){
-        self.serverURL  = DEFAULT_SERVER_URL;
-        self.useHTTP = DEFAULT_USE_HTTP;
-        self.pushToken  = nil;
-        self.appGroup   = nil;
-        self.keyChainGroup = nil;
+        self.serverURL      = DEFAULT_SERVER_URL;
+        self.useHTTP        = DEFAULT_USE_HTTP;
+        self.pushToken      = nil;
+        self.appGroup       = nil;
+        self.keyChainGroup  = nil;
     }
     return self;
 }
@@ -178,8 +178,10 @@ NSString *systemVaultKeychainArchiveIdentifier;
 @implementation QredoClient
 
 
-+(void)setTestMode:(BOOL)testMode{
++(void)setTestMode:(BOOL)testMode withAppSecret:(NSString*)appSecret{
     _testMode = testMode;
+    _testAppSecret = appSecret;
+    
 }
 
 +(NSDate *)dateTime {
@@ -238,18 +240,13 @@ NSString *systemVaultKeychainArchiveIdentifier;
         completionHandler(nil, error);
         return;
     }
-    
-    
     NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaultsAppGroup:appGroup];
-    
     NSString *appId         = [credentials objectForKey:QredoStoredAppIDKey];
     NSString *appSecret     = [credentials objectForKey:QredoStoredAppSecretKey];
     NSString *userId        = [credentials objectForKey:QredoStoredUserIDKey];
     NSString *userSecret    = [credentials objectForKey:QredoStoredUserSecretKey];
     QredoClientOptions *options = [credentials objectForKey:QredoStoredOptions];
 
-//csm    NSString *storedAppGroup= [credentials objectForKey:QredoStoredAppGroup];
-//csm    NSLog(@"**200 %@ %@ %@ %@ %@",appId, appSecret, userId, userSecret , appGroup );
     
     if (userSecret && userId && appSecret && appId){
         [self initializeWithAppId:appId
@@ -276,10 +273,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
     NSString *appSecret = [credentials objectForKey:QredoStoredAppSecretKey];
     NSString *userId = [credentials objectForKey:QredoStoredUserIDKey];
     NSString *userSecret = [credentials objectForKey:QredoStoredUserSecretKey];
-    NSString *appGroup = [credentials objectForKey:QredoStoredAppGroup];
-    QredoClientOptions *options = [credentials objectForKey:QredoStoredOptions];
     
-    NSLog(@"**200 %@ %@ %@ %@ %@",appId, appSecret, userId, userSecret , appGroup );
+    QredoClientOptions *options = [credentials objectForKey:QredoStoredOptions];
     
     if (userSecret && userId && appSecret && appId){
         [self initializeWithAppId:appId
@@ -362,15 +357,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
     
     
-    if (_testMode == YES){
-        options = [[QredoClientOptions alloc] initTest];
-    }else if (!options){
+    if (!options){
         options = [[QredoClientOptions alloc] initDefault];
     }
     
     
-    
-
 
     
     

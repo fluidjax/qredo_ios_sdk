@@ -129,7 +129,7 @@
                            appSecret:k_TEST_APPSECRET
                               userId:savedUsername
                           userSecret:savedPassword
-                             options:[self clientOptions]
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -164,7 +164,7 @@
                            appSecret:k_TEST_APPSECRET
                               userId:savedUsername
                           userSecret:savedPassword
-                             options:[self clientOptions]
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);

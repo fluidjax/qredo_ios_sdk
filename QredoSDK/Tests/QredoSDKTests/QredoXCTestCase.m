@@ -18,11 +18,20 @@ static const int testTimeOut = 30;
 
     [super setUp];
     
-    [QredoClient setTestMode:YES];
+
 
     [QredoLogger colour:NO];
     [QredoLogger setLogLevel:QREDO_DEBUG_LEVEL];
 
+    
+    self.clientOptions = [[QredoClientOptions alloc] init];
+    self.clientOptions .serverURL         = TEST_SERVER_URL;
+    self.clientOptions .useHTTP           = TEST_USE_HTTP;
+    self.clientOptions .useHTTP           = TEST_USE_HTTP;
+    self.clientOptions .appGroup          = TEST_APP_GROUP;
+    self.clientOptions .keyChainGroup     = TEST_KEYCHAIN_GROUP;
+
+    
     k_TEST_APPID        = TEST_SERVER_APPID;
     k_TEST_APPSECRET    = TEST_SERVER_APPSECRET;
     
@@ -251,7 +260,7 @@ static const int testTimeOut = 30;
                            appSecret:appSecret
                               userId:userId
                           userSecret:userSecret
-                             options:[self clientOptions]
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -270,13 +279,6 @@ static const int testTimeOut = 30;
     return client;
 }
 
-
-//-(QredoClientOptions *)clientOptions{
-//    //QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initDefaultPinnnedCertificate];
-//    QredoClientOptions *clientOptions = [[QredoClientOptions alloc] initWithDefaultTrustedRoots];
-//    clientOptions.transportType = self.transportType;
-//    return clientOptions;
-//}
 
 
 -(void)createRendezvous {

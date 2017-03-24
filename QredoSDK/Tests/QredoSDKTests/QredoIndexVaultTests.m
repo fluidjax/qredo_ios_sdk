@@ -583,6 +583,7 @@ NSNumber *testNumber;
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -611,6 +612,7 @@ NSNumber *testNumber;
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);

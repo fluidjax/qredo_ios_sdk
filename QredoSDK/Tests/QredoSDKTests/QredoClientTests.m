@@ -3,7 +3,7 @@
 #import "QredoXCTestCase.h"
 #import "QredoTestUtils.h"
 #import "QredoPrivate.h"
-
+#import "MasterConfig.h"
 #import "NSDictionary+Contains.h"
 
 
@@ -62,16 +62,14 @@
     __block QredoClient *client;
     
 
-    QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
-    options.appGroup = appGroup;
-    
+    self.clientOptions.appGroup = appGroup;
     
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
                               userId:k_TEST_USERID
                           userSecret:k_TEST_USERSECRET
-                             options:options
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -139,14 +137,13 @@
     XCTAssertFalse([QredoClient hasCredentialsInKeychainGroup:keyChainGroup],@"There shouldn't be items in the keychain");
     
     
-    QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
-    options.keyChainGroup = keyChainGroup;
+    self.clientOptions.keyChainGroup = keyChainGroup;
     
     [QredoClient initializeWithAppId:k_TEST_APPID
                            appSecret:k_TEST_APPSECRET
                               userId:k_TEST_USERID
                           userSecret:[self randomPassword]
-                             options:options
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -200,8 +197,40 @@
     
 }
 
+-(void)testLiveClient {
+    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
+    __block QredoClient *client;
+    
+    //remove test ClientOptions
+    self.clientOptions = nil;
+    
+    
+    [QredoClient initializeWithAppId:TEST_LIVE_SERVER_APP_ID
+                           appSecret:TEST_LIVE_SERVER_APP_SECRET
+                              userId:k_TEST_USERID
+                          userSecret:[self randomPassword]
+                   completionHandler:^(QredoClient *clientArg,NSError *error) {
+                       XCTAssertNil(error);
+                       XCTAssertNotNil(clientArg);
+                       
+                       client = clientArg;
+                       
+                       QLog(@"Version is  %@",[clientArg versionString]);
+                       QLog(@"Build is    %@",[clientArg buildString]);
+                       [clientExpectation fulfill];
+                   }];
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
+                                 handler:^(NSError *error) {
+                                     //avoiding exception when 'fulfill' is called after timeout
+                                     clientExpectation = nil;
+                                 }];
+    
+    [client closeSession];
+}
 
--(void)testDefaultClient {
+
+-(void)testTestClient {
     __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
     __block QredoClient *client;
     
@@ -210,6 +239,7 @@
                            appSecret:k_TEST_APPSECRET
                               userId:k_TEST_USERID
                           userSecret:[self randomPassword]
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -248,8 +278,7 @@
                            appSecret:k_TEST_APPSECRET
                               userId:k_TEST_USERID
                           userSecret:[self randomPassword]
-                             options:nil
-     
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        XCTAssertNil(error);
                        XCTAssertNotNil(clientArg);
@@ -277,6 +306,7 @@
                            appSecret:k_TEST_APPSECRET
                               userId:[self randomUsername]
                           userSecret:[self randomPassword]
+                             options:self.clientOptions
                    completionHandler:^(QredoClient *clientArg,NSError *error) {
                        //XCTAssertNil(error);
                        //XCTAssertNotNil(clientArg);
