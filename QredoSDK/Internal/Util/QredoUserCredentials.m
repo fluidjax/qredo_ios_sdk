@@ -110,13 +110,13 @@ userInfo:nil]; \
 }
 
 -(NSString *)buildIndexName {
-    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@",self.appId,self.userId,INDEX_NAME_SALT];
+    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure,INDEX_NAME_SALT];
     return [self shaAsHex:userCredentials];
 }
 
 
 -(NSString *)buildIndexKey {
-    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@",self.appId,self.userId, INDEX_KEY_SALT];
+    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure, INDEX_KEY_SALT];
     return [self shaAsHex:userCredentials];
 }
 

@@ -832,6 +832,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 
 
 
+//-(void)testMultiplePublicKeyPersistence {
+//    for (int i=0;i<100;i++){
+//        [self testPublicKeyPersistence];
+//    }
+//}
+    
 
 -(void)testPublicKeyPersistence {
     self.continueAfterFailure = YES;

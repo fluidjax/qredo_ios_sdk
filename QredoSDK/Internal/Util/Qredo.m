@@ -343,6 +343,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
             break;
     }
     NSString *serviceURLString = [NSString stringWithFormat:@"%@%@:%@/services",protocol, options.serverURL, port ];
+    NSLog(@"Service URL: %@",serviceURLString);
     return [NSURL URLWithString:serviceURLString];
 }
 
@@ -369,14 +370,14 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                                                                  userId:userId
                                                                              userSecure:userSecret];
     
-    QredoLogInfo(@"UserCredentials: Appid:%@   userID:%@   userSecure:%@",appId,userId,userSecret);
+    //NSLog(@"UserCredentials: Appid:%@   userID:%@   userSecure:%@",appId,userId,userSecret);
     
     
     
     QredoAppCredentials *appCredentials = [QredoAppCredentials appCredentialsWithAppId:appId
                                                                              appSecret:[NSData dataWithHexString:appSecret]];
     
-    QredoLogInfo(@"AppCredentials: Appid:%@   appSecret:%@",appId,appSecret);
+   //NSLog(@"AppCredentials: Appid:%@   appSecret:%@",appId,appSecret);
     
     systemVaultKeychainArchiveIdentifier = [userCredentials createSystemVaultIdentifier];
     

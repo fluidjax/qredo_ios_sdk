@@ -1032,6 +1032,17 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(void)addConversationObserver:(id<QredoConversationObserver>)observer withPushNotifications:(NSData*)deviceToken{
+    
+    
+    if (!deviceToken){
+        //Do a normal observer if there is no Push notification Token
+        NSLog(@"No APN Push token - revert to normal Conversation Observer");
+        _requirePushNotifications = NO;
+        _pushDeviceToken = nil;
+        [self addConversationObserver:observer];
+        return;
+    }
+    
     _pushDeviceToken = [QLFNotificationTarget apnsDeviceTokenWithToken:deviceToken];
     _requirePushNotifications = YES;
     
@@ -1042,6 +1053,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         [_updateListener startListening];
     }
 
+    
+   NSLog(@"Registered for APN Notification on %@ with Token:%@",_inboundQueueId, deviceToken);
     
     
 }
@@ -1258,11 +1271,16 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         //if we require a Push notification
         
         [self savePushState];
-        NSLog(@"Saved pushState VaultID %@",_client.systemVault.vaultId);
+        NSLog(@"*** Saved pushState VaultID %@",_client.systemVault.vaultId);
+        NSLog(@"** Registering for Pushnotifications on %@ with Token: %@", _inboundQueueId, _pushDeviceToken);
+        
         
         [_conversationService subscribeWithPushWithQueueId:_inboundQueueId
                                             notificationId:_pushDeviceToken
                                  completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
+                                     
+                                     //NSLog(@"** Completed Registering for Pushnotifications on %@ with Token: %@ - error %@", _inboundQueueId, _pushDeviceToken, error);
+                                     
                                      postSubscriptionCompletionHandler(result,error);
                                      
                                  }];

@@ -95,8 +95,9 @@
 
 
 -(void)configureClientOptions{
-    QredoClientOptions *options = [[QredoClientOptions alloc] initDefault]; //this is actually init Test because its is swizzled in testing
+    QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
     options.pushToken       = apnToken;
+
     self.clientOptions = options;
     NSLog(@"OPTIONS %@", self.clientOptions);
 }
@@ -224,7 +225,7 @@
     
     
     NSLog(@"Waiting");
-    [self pause:20];
+    [self pause:60];
         NSLog(@"end Waiting");
     if (hostAppdelegate.testsPassed==NO){
         XCTFail(@"Push Tests failed in App Delegate");
