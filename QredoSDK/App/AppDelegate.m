@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "MasterConfig.h"
-#import "QredoPrivate.h" //for testMode
+#import "QredoPrivate.h" 
 
 @interface AppDelegate ()
 @property (nonatomic,copy) void (^registerAPNcompletionBlock)(NSError *error, NSData *token);
@@ -181,8 +181,6 @@
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
     NSLog(@"QREDO: Incoming notification");
     if (self.client){
-        
-        [QredoClient setTestMode:YES withAppSecret:TEST_SERVER_APPSECRET];
         
         //process the incoming Push MEssage with a QredoClient to lookup the Conversation object
         [QredoPushMessage initializeWithRemoteNotification:userInfo qredoClient:self.client completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {

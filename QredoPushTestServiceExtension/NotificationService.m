@@ -38,30 +38,9 @@
     self.contentHandler = contentHandler;
     self.modifiedContent = [request.content mutableCopy];
     
-    //constants set in MasterConfig.h
-    //NSUserDefaults *userDefaults;
-    //NSDictionary *queueIDConversationLookup;
     
-    //fails
-//    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"9W2U485A5G.group.com.qredo.ChrisPush1"];
-//    NSDictionary *queueIDConversationLookup = [userDefaults objectForKey:@"ConversationQueueIDLookup"];
-//    NSLog(@"1: %@", queueIDConversationLookup);
-   
-    
-//    //this one Works!!!
-//    userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.qredo.ChrisPush1"];
-//    queueIDConversationLookup = [userDefaults objectForKey:@"ConversationQueueIDLookup"];
-//    NSLog(@"2: %@", queueIDConversationLookup);
-    
-    //fails
-//    userDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"com.qredo.ChrisPush1"];
-//    queueIDConversationLookup = [userDefaults objectForKey:@"ConversationQueueIDLookup"];
-//    NSLog(@"3: %@", queueIDConversationLookup);
-    
-    
-    
-    [QredoClient initializeWithAppId:TEST_SERVER_APPID
-                           appSecret:TEST_SERVER_APPSECRET
+    [QredoClient initializeWithAppId:TEST_SERVER_APP_ID
+                           appSecret:TEST_SERVER_APP_SECRET
                               userId:TEST_SERVER_USERID
                           userSecret:TEST_SERVER_USERSECRET
                              options:[self configureClientOptions]

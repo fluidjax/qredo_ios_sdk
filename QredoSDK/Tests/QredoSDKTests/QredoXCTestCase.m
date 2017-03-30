@@ -15,24 +15,23 @@ static const int testTimeOut = 30;
 
 
 -(void)setUp {
-
     [super setUp];
-    
-
-
     [QredoLogger colour:NO];
     [QredoLogger setLogLevel:QREDO_DEBUG_LEVEL];
 
     
-    self.clientOptions = [[QredoClientOptions alloc] init];
+    //Here we determine which Server & Credentials are used in all the tests
+    //(except for the special Server Tests - which test Dev, Live & Test server specifically)
+    
+    self.clientOptions = [[QredoClientOptions alloc] initTest];
     self.clientOptions .serverURL         = TEST_SERVER_URL;
     self.clientOptions .useHTTP           = TEST_USE_HTTP;
     self.clientOptions .useHTTP           = TEST_USE_HTTP;
     self.clientOptions .appGroup          = TEST_APP_GROUP;
     self.clientOptions .keyChainGroup     = TEST_KEYCHAIN_GROUP;
 
-    k_TEST_APPID        = TEST_SERVER_APPID;
-    k_TEST_APPSECRET    = TEST_SERVER_APPSECRET;
+    k_TEST_APPID        = TEST_SERVER_APP_ID;
+    k_TEST_APPSECRET    = TEST_SERVER_APP_SECRET;
     
     k_TEST_USERID       = TEST_SERVER_USERID;
     k_TEST_USERSECRET   = TEST_SERVER_USERSECRET;

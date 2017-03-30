@@ -1,7 +1,6 @@
 /* HEADER GOES HERE */
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "QredoTestConfiguration.h"
 #import "QredoHttpTransport.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoLoggerPrivate.h"

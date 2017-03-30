@@ -36,7 +36,8 @@ typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
 @property BOOL useHTTP;
 
 
--(instancetype)initDefault;
+-(instancetype)initLive;
+-(instancetype)initDev;
 -(instancetype)initTest;
 
 @end

@@ -1,9 +1,10 @@
 /* HEADER GOES HERE */
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "QredoTestConfiguration.h"
 #import "QredoTransport.h"
 #import "QredoHttpTransport.h"
+#import "MasterConfig.h"
+
 
 @interface QredoTransportTests :XCTestCase
 

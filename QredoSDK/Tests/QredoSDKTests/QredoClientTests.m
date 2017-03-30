@@ -17,7 +17,6 @@
     [super setUp];
 }
 
-
 -(void)tearDown {
     //Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
@@ -196,37 +195,7 @@
     
 }
 
--(void)testLiveClient {
-    __block XCTestExpectation *clientExpectation = [self expectationWithDescription:@"create client"];
-    __block QredoClient *client;
-    
-    //remove test ClientOptions
-    self.clientOptions = nil;
-    
-    
-    [QredoClient initializeWithAppId:TEST_LIVE_SERVER_APP_ID
-                           appSecret:TEST_LIVE_SERVER_APP_SECRET
-                              userId:k_TEST_USERID
-                          userSecret:[self randomPassword]
-                   completionHandler:^(QredoClient *clientArg,NSError *error) {
-                       XCTAssertNil(error);
-                       XCTAssertNotNil(clientArg);
-                       
-                       client = clientArg;
-                       
-                       QLog(@"Version is  %@",[clientArg versionString]);
-                       QLog(@"Build is    %@",[clientArg buildString]);
-                       [clientExpectation fulfill];
-                   }];
-    
-    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
-                                 handler:^(NSError *error) {
-                                     //avoiding exception when 'fulfill' is called after timeout
-                                     clientExpectation = nil;
-                                 }];
-    
-    [client closeSession];
-}
+
 
 
 -(void)testTestClient {

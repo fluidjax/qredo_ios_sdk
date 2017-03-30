@@ -92,11 +92,23 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return self;
 }
 
--(instancetype)initDefault {
+-(instancetype)initLive {
     self = [super init];
     if (self){
-        self.serverURL      = DEFAULT_SERVER_URL;
-        self.useHTTP        = DEFAULT_USE_HTTP;
+        self.serverURL      = LIVE_SERVER_URL;
+        self.useHTTP        = LIVE_USE_HTTP;
+        self.pushToken      = nil;
+        self.appGroup       = nil;
+        self.keyChainGroup  = nil;
+    }
+    return self;
+}
+
+-(instancetype)initDev {
+    self = [super init];
+    if (self){
+        self.serverURL      = DEV_SERVER_URL;
+        self.useHTTP        = DEV_USE_HTTP;
         self.pushToken      = nil;
         self.appGroup       = nil;
         self.keyChainGroup  = nil;
@@ -110,11 +122,14 @@ NSString *systemVaultKeychainArchiveIdentifier;
     if (self){
         self.serverURL      = TEST_SERVER_URL;
         self.useHTTP        = TEST_USE_HTTP;
+        self.pushToken      = nil;
         self.appGroup       = TEST_APP_GROUP;
         self.keyChainGroup  = TEST_KEYCHAIN_GROUP;
     }
     return self;
 }
+
+
 
 
 
@@ -178,11 +193,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 @implementation QredoClient
 
 
-+(void)setTestMode:(BOOL)testMode withAppSecret:(NSString*)appSecret{
-    _testMode = testMode;
-    _testAppSecret = appSecret;
-    
-}
 
 +(NSDate *)dateTime {
     return [QredoNetworkTime dateTime];
@@ -359,7 +369,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     
     if (!options){
-        options = [[QredoClientOptions alloc] initDefault];
+        options = [[QredoClientOptions alloc] initLive];
     }
     
     

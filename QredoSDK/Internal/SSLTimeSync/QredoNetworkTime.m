@@ -10,15 +10,15 @@
 
 #import "QredoNetworkTime.h"
 #import "SSLTimeSyncWorker.h"
-#import "ios-ntp.h"
 #import "QredoLogger.h"
+#import "QredoNetworkClock.h"
 
 static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
 
 @interface QredoNetworkTime ()
 @property (strong) NSMutableArray *serversList;
 @property (nonatomic,strong) dispatch_queue_t queue;
-@property (nonatomic,strong) NetworkClock *netClock;
+@property (nonatomic,strong) QredoNetworkClock *netClock;
 @property (assign) int activeCounter;
 @end
 
@@ -32,7 +32,7 @@ static int MAX_ACCEPTABLE_NTP_TLS_DIFF = 5;
     dispatch_once(&onceToken,^{
         tlsDate = [[self alloc] init];
         tlsDate.queue = dispatch_queue_create("dateRetrieveQueue",NULL);
-        tlsDate.netClock = [NetworkClock sharedNetworkClock];
+        tlsDate.netClock = [QredoNetworkClock sharedNetworkClock];
         [tlsDate loadServerList];
     });
     return tlsDate;
