@@ -175,6 +175,8 @@
     
     signDataBlock signingHandler = nil; //Must be nil as not used
     
+    NSLog(@"*** The following 'Assertion failure' is intentional ***");
+    
     XCTAssertThrows([QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                                           fullTag:initialFullTag
                                                                            crypto:nil
@@ -288,6 +290,8 @@
     NSError *error = nil;
     
     NSString *initialFullTag = @"AnonymousRendezvousTag";
+    
+    NSLog(@"*** The following 'Assertion failure' is intentional ***");
     
     XCTAssertThrows([QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                                           fullTag:initialFullTag

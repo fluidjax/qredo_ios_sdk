@@ -92,15 +92,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "66F7752B1BD6538D00F01A2C"
-            BuildableName = "LinguaFrancaTests.xctest"
-            BlueprintName = "LinguaFrancaTests"
-            ReferencedContainer = "container:QredoSDK.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

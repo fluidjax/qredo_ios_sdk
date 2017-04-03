@@ -5,19 +5,18 @@ platform :ios, '8.0'
 #inhibit_all_warnings!
 
 
+############################################################
+### Apps and Containers for Testing
+############################################################
+
+
 target 'TestHost' do
-    pod 'jetfire'
-    pod 'OpenSSL', '~> 1.0'
-    pod 'libsodium', :inhibit_warnings => true
-	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
+ 	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
 end
 
 
 target 'PushTests' do
-    pod 'jetfire'
-    pod 'OpenSSL', '~> 1.0'
-    pod 'libsodium', :inhibit_warnings => true
-    pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
+     pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
 end
 
 
@@ -25,38 +24,43 @@ target 'QredoPushTestServiceExtension' do
 	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
 end
 
-
+############################################################
+### Test Targets
+############################################################
 
 
 target 'QredoSDKTests' do
-  pod 'libsodium', :inhibit_warnings => true
 end
 
 target 'LinguaFrancaTests' do
-   pod 'libsodium', :inhibit_warnings => true
-   pod 'jetfire'
 end
 
 target 'QredoCryptoTests' do
-   pod 'libsodium', :inhibit_warnings => true
-   pod 'OpenSSL', '~> 1.0'
 end
 
 
+############################################################
+### Qredo Products
+############################################################
+
+
 target 'QredoXDK' do
-    pod 'jetfire'
+    pod 'jetfire', :inhibit_warnings => true
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :inhibit_warnings => true
-    pod 'ios-ntp'
+    pod 'ios-ntp', :inhibit_warnings => true
 end
 
 
 target 'QredoXDK_Universal' do
-    pod 'jetfire'
-    pod 'OpenSSL', '~> 1.0'
-    pod 'libsodium', :inhibit_warnings => true
-    pod 'ios-ntp'
+#     pod 'jetfire', :inhibit_warnings => true
+#     pod 'OpenSSL', '~> 1.0'
+#     pod 'libsodium', :inhibit_warnings => true
+#     pod 'ios-ntp', :inhibit_warnings => true
 end
+
+
+############################################################
 
 
 post_install do |installer_representation|

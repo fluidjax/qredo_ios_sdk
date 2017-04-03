@@ -12,3 +12,11 @@ xcodebuild    -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPh
 xcodebuild    -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 7,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoSDKTests  build test | xcpretty
 
 Push Only works on device - so dont automate it on sim
+
+
+
+
+Build & Test
+    To test Project
+        Clean & Build QredoXDK
+        Clean &  Build QredoXDK_universal (this creates the framework)

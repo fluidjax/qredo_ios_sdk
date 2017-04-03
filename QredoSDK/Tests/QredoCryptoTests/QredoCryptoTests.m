@@ -1583,6 +1583,7 @@
 
 
 -(void)testDeleteKeyInAppleKeychainWithIdentifier_NoKeysPresent {
+    [QredoLogger setLogLevel:QredoLogLevelNone];
     //No keys present (so nothing to delete) should return error when deleting a specific key
     NSString *keyIdentifier = @"com.qredo.TestMissingKey1";
     BOOL expectedSuccess = NO;

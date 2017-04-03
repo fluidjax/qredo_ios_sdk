@@ -353,7 +353,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
             break;
     }
     NSString *serviceURLString = [NSString stringWithFormat:@"%@%@:%@/services",protocol, options.serverURL, port ];
-    NSLog(@"Service URL: %@",serviceURLString);
+    //NSLog(@"Service URL: %@",serviceURLString);
     return [NSURL URLWithString:serviceURLString];
 }
 
