@@ -102,12 +102,8 @@
         XCTAssertNil(error);
         XCTAssertNotNil(client2);
         XCTAssertTrue([client2 isClosed]==NO,@"Client should be connected");
-//        if ([client2 isClosed]==NO){
-//            NSLog(@"Retrieved a credential set from the keychain and establish a Qredo Client");
-//        }
         [clientExpectation2 fulfill];
     }];
-    
     
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout
                                  handler:^(NSError *error) {

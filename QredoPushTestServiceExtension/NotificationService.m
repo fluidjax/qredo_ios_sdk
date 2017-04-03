@@ -23,7 +23,7 @@
 
 
 -(QredoClientOptions*)configureClientOptions{
-    QredoClientOptions *options = [[QredoClientOptions alloc] init];
+    QredoClientOptions *options = [[QredoClientOptions alloc] initTest];
     options.serverURL   = TEST_SERVER_URL;
     options.pushToken   = nil;
     options.appGroup    = TEST_APP_GROUP;

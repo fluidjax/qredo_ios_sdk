@@ -6,13 +6,15 @@
 //#define     DEFAULT_USE_HTTP        NO
 
 
-//The Live Server
+//The Live Server  [QredoClientOptions alloc] initLive]
 #define     LIVE_SERVER_URL             @"api.qredo.com"
 #define     LIVE_USE_HTTP               NO
 #define     LIVE_SERVER_APP_ID          @"test"
 #define     LIVE_SERVER_APP_SECRET      @"074af11737f877505167177726501aa0"
 
 
+
+//The Dev Server  use [QredoClientOptions alloc] initDev]
 #define     DEV_SERVER_URL              @"api-dev.oderq.com"
 #define     DEV_USE_HTTP                NO
 #define     DEV_SERVER_APP_ID           @"test"
@@ -21,7 +23,7 @@
 
 
 
-
+//The Test Server [QredoClientOptions alloc] initTest]
 //These are used in Testing to create an QredoClientOption object and pass it into the QredoClient init method
 #define     TEST_SERVER_URL             @"api-push.oderq.com"
 #define     TEST_USE_HTTP               NO
@@ -37,6 +39,8 @@
 
 
 
+
+//Misc stuff just stored
 //#define     TEST_SERVER_URL          @"10.0.0.111"
 //#define     TEST_USE_HTTP            YES
 //#define     TEST_SERVER_APPID        @"test"
@@ -50,8 +54,6 @@
 //
 //
 
-
-//These are use in testing to test the live server (testLiveClient)
 
 
 

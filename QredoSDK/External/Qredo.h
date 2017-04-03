@@ -35,7 +35,7 @@ typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
 @property (copy) NSString *keyChainGroup;
 @property BOOL useHTTP;
 
-
+-(instancetype)init;        //this calls initLive
 -(instancetype)initLive;
 -(instancetype)initDev;
 -(instancetype)initTest;

@@ -92,6 +92,12 @@ NSString *systemVaultKeychainArchiveIdentifier;
     return self;
 }
 
+
+-(instancetype)init{
+    return [self initLive];
+}
+
+
 -(instancetype)initLive {
     self = [super init];
     if (self){

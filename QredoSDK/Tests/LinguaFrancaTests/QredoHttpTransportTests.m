@@ -36,6 +36,7 @@
 
 
 -(void)testInit_CannotBeCalledDirectly {
+    NSLog(@"*** The following 'Assertion failure' is intentional ***");
     XCTAssertThrowsSpecificNamed([[QredoHttpTransport alloc] init],NSException,NSInternalInconsistencyException,@"Called 'init' on QredoHttpTransport class but NSInternalInconsistencyException not thrown.");
 }
 

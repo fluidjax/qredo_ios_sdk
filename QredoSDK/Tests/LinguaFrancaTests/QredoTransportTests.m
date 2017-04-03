@@ -52,6 +52,7 @@
 
 
 -(void)testInit_CannotBeCalledDirectly {
+    NSLog(@"*** The following 'Assertion failure' is intentional ***");
     XCTAssertThrowsSpecificNamed([[QredoTransport alloc] init],NSException,NSInternalInconsistencyException,@"Called 'init' on base QredoTransport class but NSInternalInconsistencyException not thrown.");
 }
 

@@ -837,7 +837,7 @@
 		83227B7F1C15CEA5006CAD75 /* _QredoIndexVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _QredoIndexVault.m; sourceTree = "<group>"; };
 		83227B831C15CECB006CAD75 /* QredoIndexVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexVault.h; path = LocalIndex/QredoIndexVault.h; sourceTree = "<group>"; };
 		83227B841C15CECB006CAD75 /* QredoIndexVault.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoIndexVault.m; path = LocalIndex/QredoIndexVault.m; sourceTree = "<group>"; };
-		8334ED721CF5A130006C89CE /* MasterConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterConfig.h; sourceTree = "<group>"; };
+		8334ED721CF5A130006C89CE /* MasterConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MasterConfig.h; path = QredoSDK/MasterConfig.h; sourceTree = "<group>"; };
 		833980151CE4D34A00D5A592 /* QredoSecureChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoSecureChannel.m; sourceTree = "<group>"; };
 		833A3BEE1C4E9FA500FAD9FC /* QredoIndexModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = QredoIndexModel.h; path = LocalIndex/QredoIndexModel.h; sourceTree = "<group>"; };
 		833B3E1A1C5287DF00C10A81 /* QredoXCTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoXCTestCase.h; sourceTree = "<group>"; };
@@ -1050,6 +1050,7 @@
 		0A16F88619C3566B00639779 = {
 			isa = PBXGroup;
 			children = (
+				8334ED721CF5A130006C89CE /* MasterConfig.h */,
 				83B66EA11E81625F0019F5A5 /* TESTNOTES */,
 				8345DA6A1D8AD496001D6F35 /* TestHost.entitlements */,
 				83BE6FFF1D82BC4B003B2C7E /* IMPORTANT */,
@@ -1086,7 +1087,6 @@
 			isa = PBXGroup;
 			children = (
 				836A74C51E79953F005C9EF2 /* External */,
-				8334ED721CF5A130006C89CE /* MasterConfig.h */,
 				834FB42D1D75E354002B57BA /* QredoXDK-Info.plist */,
 				837120971C7B16FE00648E47 /* App */,
 				666059C61BD5064300EC8D6C /* Crypto */,
