@@ -1,7 +1,11 @@
+############################################################
+## NOTE: The empty targets are necessay
+############################################################
+
+
+
 xcodeproj 'QredoSDK.xcodeproj/'
-
 platform :ios, '8.0'
-
 #inhibit_all_warnings!
 
 
@@ -23,6 +27,7 @@ end
 target 'QredoPushTestServiceExtension' do
 	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
 end
+
 
 ############################################################
 ### Test Targets
@@ -53,10 +58,6 @@ end
 
 
 target 'QredoXDK_Universal' do
-#     pod 'jetfire', :inhibit_warnings => true
-#     pod 'OpenSSL', '~> 1.0'
-#     pod 'libsodium', :inhibit_warnings => true
-#     pod 'ios-ntp', :inhibit_warnings => true
 end
 
 
