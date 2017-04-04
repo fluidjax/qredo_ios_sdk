@@ -981,6 +981,65 @@
 @end
 
 
+@interface QLFNotificationTarget : NSObject<QredoMarshallable>
+
+
+
++ (QLFNotificationTarget *)fcmRegistrationTokenWithToken:(NSString *)token;
+
++ (QLFNotificationTarget *)apnsDeviceTokenWithToken:(NSData *)token;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (void)ifFcmRegistrationToken:(void (^)(NSString *))ifFcmRegistrationTokenBlock ifApnsDeviceToken:(void (^)(NSData *))ifApnsDeviceTokenBlock;
+- (NSComparisonResult)compare:(QLFNotificationTarget *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToNotificationTarget:(QLFNotificationTarget *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFFcmRegistrationToken : QLFNotificationTarget
+
+@property (readonly) NSString *token;
+
++ (QLFNotificationTarget *)fcmRegistrationTokenWithToken:(NSString *)token;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithToken:(NSString *)token;
+- (NSComparisonResult)compare:(QLFFcmRegistrationToken *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToFcmRegistrationToken:(QLFFcmRegistrationToken *)other;
+- (NSUInteger)hash;
+
+@end
+
+
+@interface QLFApnsDeviceToken : QLFNotificationTarget
+
+@property (readonly) NSData *token;
+
++ (QLFNotificationTarget *)apnsDeviceTokenWithToken:(NSData *)token;
+
++ (QredoMarshaller)marshaller;
+
++ (QredoUnmarshaller)unmarshaller;
+
+- (instancetype)initWithToken:(NSData *)token;
+- (NSComparisonResult)compare:(QLFApnsDeviceToken *)other;
+- (BOOL)isEqualTo:(id)other;
+- (BOOL)isEqualToApnsDeviceToken:(QLFApnsDeviceToken *)other;
+- (NSUInteger)hash;
+
+@end
+
+
 @interface QLFOwnershipSignature : NSObject<QredoMarshallable>
 
 @property (readonly) QLFOperationType *op;
@@ -1666,6 +1725,8 @@
 - (void)queryItemsWithQueueId:(QLFConversationQueueId *)queueId after:(NSSet *)after fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationQueryItemsResult *result, NSError *error))completionHandler;
 - (void)acknowledgeReceiptWithQueueId:(QLFConversationQueueId *)queueId upTo:(QLFConversationSequenceValue *)upTo signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationAckResult *result, NSError *error))completionHandler;
 - (void)subscribeWithQueueId:(QLFConversationQueueId *)queueId signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler;
+- (void)subscribeAfterWithQueueId:(QLFConversationQueueId *)queueId after:(NSSet *)after fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler;
+- (void)subscribeWithPushWithQueueId:(QLFConversationQueueId *)queueId notificationId:(QLFNotificationTarget *)notificationId completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler;
 
 @end
 
@@ -1695,6 +1756,7 @@
 - (void)respondWithResponse:(QLFRendezvousResponse *)response completionHandler:(void(^)(QLFRendezvousRespondResult *result, NSError *error))completionHandler;
 - (void)getResponsesWithHashedTag:(QLFRendezvousHashedTag *)hashedTag after:(QLFRendezvousSequenceValue)after signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousResponsesResult *result, NSError *error))completionHandler;
 - (void)subscribeToResponsesWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousResponseWithSequenceValue *result, NSError *error))completionHandler;
+- (void)subscribeToResponsesAfterWithHashedTag:(QLFRendezvousHashedTag *)hashedTag after:(QLFRendezvousSequenceValue)after fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousResponseWithSequenceValue *result, NSError *error))completionHandler;
 - (void)deactivateWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousDeactivated *result, NSError *error))completionHandler;
 
 @end
@@ -1712,6 +1774,7 @@
 - (void)getItemHeaderWithVaultId:(QLFVaultId *)vaultId sequenceId:(QLFVaultSequenceId *)sequenceId sequenceValue:(NSSet *)sequenceValue itemId:(QLFVaultItemId *)itemId signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(NSSet *result, NSError *error))completionHandler;
 - (void)queryItemHeadersWithVaultId:(QLFVaultId *)vaultId sequenceStates:(NSSet *)sequenceStates signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFVaultItemQueryResults *result, NSError *error))completionHandler;
 - (void)subscribeToItemHeadersWithVaultId:(QLFVaultId *)vaultId signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFEncryptedVaultItemHeader *result, NSError *error))completionHandler;
+- (void)subscribeToItemHeadersAfterWithVaultId:(QLFVaultId *)vaultId sequenceStates:(NSSet *)sequenceStates fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFEncryptedVaultItemHeader *result, NSError *error))completionHandler;
 
 @end
 

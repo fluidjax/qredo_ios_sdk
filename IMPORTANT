@@ -1,0 +1,36 @@
+TODO Before release!
+
+1) Insert licence file and file headers (search/replace "/* HEADER GOES HERE */")
+
+2) Create a new repo without any history
+    Dont include
+        Pods/
+        Podfile.lock
+        .git
+        IMPORTANT     - ie.This File
+
+
+3) Remove test credentials from MasterConfig.h (item 2 should have fixed any history)
+
+
+
+4) Included Library Licence Summary
+    1) Jetfire - Apache
+    2) libsodium - ISC - for any use
+    3) ios-ntp - MIT - for any user
+    4) OpenSSL - Proprietry
+
+
+
+
+
+Version
+    The Main Version number of the form (master.minor.patch) eg. 0.99.3  - this is manually set
+    The Build an autoincrementing integer - this is autoincremented by a script when the framework is creared (build_universal target)
+
+    The versions/build numbers are stored in [projectdir]/QredoSDK/QredoXDK-Info.plist
+    A file is written in the project directory called version & version.json
+    These contain the current version framework.
+
+
+

@@ -1,9 +1,6 @@
-/*
- *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import "_QredoIndexVaultItemPayload.h"
 
-@interface QredoIndexVaultItemPayload : _QredoIndexVaultItemPayload {}
-// Custom logic goes here.
+@interface QredoIndexVaultItemPayload :_QredoIndexVaultItemPayload {}
+//Custom logic goes here.
 @end

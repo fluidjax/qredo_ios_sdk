@@ -1,48 +1,67 @@
+############################################################
+## NOTE: The empty targets are necessay
+############################################################
+
+
+
 xcodeproj 'QredoSDK.xcodeproj/'
-
 platform :ios, '8.0'
+#inhibit_all_warnings!
 
-inhibit_all_warnings!
+
+############################################################
+### Apps and Containers for Testing
+############################################################
 
 
 target 'TestHost' do
-    pod 'jetfire'
-    pod 'OpenSSL', '~> 1.0'
-    pod 'libsodium'
-    pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'end
+ 	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
+end
+
+
+target 'PushTests' do
+     pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
+end
+
+
+target 'QredoPushTestServiceExtension' do
+	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
+end
+
+
+############################################################
+### Test Targets
+############################################################
+
 
 target 'QredoSDKTests' do
-  pod 'libsodium'
-
 end
 
 target 'LinguaFrancaTests' do
-   pod 'libsodium'
-   pod 'jetfire'
-
 end
 
 target 'QredoCryptoTests' do
-   pod 'libsodium'
-    pod 'OpenSSL', '~> 1.0'
-
-
 end
 
+
+############################################################
+### Qredo Products
+############################################################
+
+
 target 'QredoXDK' do
-    pod 'jetfire'
+    pod 'jetfire', :inhibit_warnings => true
     pod 'OpenSSL', '~> 1.0'
-    pod 'libsodium'
-    pod 'ios-ntp', :git => 'https://github.com/qredo/SSL-NTP-Time-Sync'    
+    pod 'libsodium', :inhibit_warnings => true
+    pod 'ios-ntp', :inhibit_warnings => true
 end
 
 
 target 'QredoXDK_Universal' do
-    pod 'jetfire'
-    pod 'OpenSSL', '~> 1.0'
-    pod 'libsodium'
-    pod 'ios-ntp', :git => 'https://github.com/qredo/SSL-NTP-Time-Sync'    
 end
+
+
+############################################################
 
 
 post_install do |installer_representation|

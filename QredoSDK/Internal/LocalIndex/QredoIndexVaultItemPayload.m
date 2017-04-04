@@ -1,17 +1,14 @@
-/*
- *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import "QredoIndexVaultItemPayload.h"
 
 @interface QredoIndexVaultItemPayload ()
 
-// Private interface goes here.
+//Private interface goes here.
 
 @end
 
 @implementation QredoIndexVaultItemPayload
 
-// Custom logic goes here.
+//Custom logic goes here.
 
 @end

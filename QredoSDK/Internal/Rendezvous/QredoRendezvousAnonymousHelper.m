@@ -1,7 +1,4 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import "QredoRendezvousAnonymousHelper.h"
 #import "QredoRendezvousHelper_Private.h"
 #import "QredoLoggerPrivate.h"
@@ -12,53 +9,49 @@
 @end
 
 @interface QredoRendezvousAnonymousCreateHelper ()
-@property (nonatomic, copy) NSString *fullTag;
+@property (nonatomic,copy) NSString *fullTag;
 @end
 
 @implementation QredoRendezvousAnonymousCreateHelper
 
 static const NSUInteger kRandomTagLength = 32;
 
-- (instancetype)initWithFullTag:(NSString *)fullTag
-                         crypto:(id<CryptoImpl>)crypto
-                trustedRootPems:(NSArray *)trustedRootPems
-                        crlPems:(NSArray *)crlPems
-                 signingHandler:(signDataBlock)signingHandler
-                          error:(NSError **)error
-{
+-(instancetype)initWithFullTag:(NSString *)fullTag
+                        crypto:(id<CryptoImpl>)crypto
+               trustedRootPems:(NSArray *)trustedRootPems
+                       crlPems:(NSArray *)crlPems
+                signingHandler:(signDataBlock)signingHandler
+                         error:(NSError **)error {
     self = [super initWithCrypto:crypto];
-    if (self) {
+    
+    if (self){
+        //Crypto, TrustedRootPems and CrlPems are unused in anonymous rendezvous
         
-        // Crypto, TrustedRootPems and CrlPems are unused in anonymous rendezvous
-        
-        if (!fullTag) {
+        if (!fullTag){
             QredoLogError(@"Full tag is nil.");
-            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
+            updateErrorWithQredoRendezvousHelperError(error,QredoRendezvousHelperErrorMissingTag,nil);
             return nil;
         }
         
-        // Signing handler unnecessary for anonymous rendezvous
-        if (signingHandler)
-        {
+        //Signing handler unnecessary for anonymous rendezvous
+        if (signingHandler){
             QredoLogError(@"Signing handler provided for anonymous rendezvous.");
-            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided, nil);
+            updateErrorWithQredoRendezvousHelperError(error,QredoRendezvousHelperErrorSignatureHandlerIncorrectlyProvided,nil);
             return nil;
         }
-
-        // When creating a rendezvous, empty tag indicates helper should generate one automatically
-        if (fullTag.length == 0) {
-            // Empty tag, so generate a random tag
+        
+        //When creating a rendezvous, empty tag indicates helper should generate one automatically
+        if (fullTag.length == 0){
+            //Empty tag, so generate a random tag
             _fullTag = [self getRandomTag];
-        }
-        else {
-            
-            // Anonymous tag must not look like an authenticated rendezvous
-            if ([fullTag containsString:@"@"]) {
+        } else {
+            //Anonymous tag must not look like an authenticated rendezvous
+            if ([fullTag containsString:@"@"]){
                 QredoLogError(@"Full tag contains @, not valid for anonymous rendezvous tag.");
-                updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMalformedTag, nil);
+                updateErrorWithQredoRendezvousHelperError(error,QredoRendezvousHelperErrorMalformedTag,nil);
                 return nil;
             }
-
+            
             _fullTag = [fullTag copy];
         }
     }
@@ -66,12 +59,12 @@ static const NSUInteger kRandomTagLength = 32;
     return self;
 }
 
-- (instancetype)initWithFullTag:(NSString *)fullTag
-                         crypto:(id<CryptoImpl>)crypto
-                trustedRootPems:(NSArray *)trustedRootPems
-                        crlPems:(NSArray *)crlPems
-                          error:(NSError **)error
-{
+
+-(instancetype)initWithFullTag:(NSString *)fullTag
+                        crypto:(id<CryptoImpl>)crypto
+               trustedRootPems:(NSArray *)trustedRootPems
+                       crlPems:(NSArray *)crlPems
+                         error:(NSError **)error {
     return [self initWithFullTag:fullTag
                           crypto:crypto
                  trustedRootPems:trustedRootPems
@@ -80,28 +73,28 @@ static const NSUInteger kRandomTagLength = 32;
                            error:error];
 }
 
-- (QredoRendezvousAuthenticationType)type
-{
+
+-(QredoRendezvousAuthenticationType)type {
     return QredoRendezvousAuthenticationTypeAnonymous;
 }
 
-- (NSString *)tag
-{
+
+-(NSString *)tag {
     return self.fullTag;
 }
 
-- (QLFRendezvousAuthSignature *)emptySignature
-{
+
+-(QLFRendezvousAuthSignature *)emptySignature {
     return nil;
 }
 
-- (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
-{
+
+-(QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error {
     return nil;
 }
 
-- (NSString *)getRandomTag
-{
+
+-(NSString *)getRandomTag {
     NSData *randomTagData = [NSData dataWithRandomBytesOfLength:kRandomTagLength];
     
     NSString *tag = [QredoBase58 encodeData:randomTagData];
@@ -109,42 +102,42 @@ static const NSUInteger kRandomTagLength = 32;
     return tag;
 }
 
+
 @end
 
 @interface QredoRendezvousAnonymousRespondHelper ()
-@property (nonatomic, copy) NSString *fullTag;
+@property (nonatomic,copy) NSString *fullTag;
 @end
 
 @implementation QredoRendezvousAnonymousRespondHelper
 
-- (instancetype)initWithFullTag:(NSString *)fullTag
-                         crypto:(id<CryptoImpl>)crypto
-                trustedRootPems:(NSArray *)trustedRootPems
-                        crlPems:(NSArray *)crlPems
-                          error:(NSError **)error
-{
+-(instancetype)initWithFullTag:(NSString *)fullTag
+                        crypto:(id<CryptoImpl>)crypto
+               trustedRootPems:(NSArray *)trustedRootPems
+                       crlPems:(NSArray *)crlPems
+                         error:(NSError **)error {
     self = [super initWithCrypto:crypto];
-    if (self) {
+    
+    if (self){
+        //Crypto, TrustedRootPems and CrlPems are unused for anonymous rendezvous
         
-        // Crypto, TrustedRootPems and CrlPems are unused for anonymous rendezvous
-
-        if (!fullTag) {
+        if (!fullTag){
             QredoLogError(@"Full tag is nil.");
-            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
-            return nil;
-        }
-
-        // When responding to a rendezvous, can't have an empty tag
-        if (fullTag.length == 0) {
-            QredoLogError(@"Full tag is empty.");
-            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMissingTag, nil);
+            updateErrorWithQredoRendezvousHelperError(error,QredoRendezvousHelperErrorMissingTag,nil);
             return nil;
         }
         
-        // Anonymous tag must not look like an authenticated rendezvous
-        if ([fullTag containsString:@"@"]) {
+        //When responding to a rendezvous, can't have an empty tag
+        if (fullTag.length == 0){
+            QredoLogError(@"Full tag is empty.");
+            updateErrorWithQredoRendezvousHelperError(error,QredoRendezvousHelperErrorMissingTag,nil);
+            return nil;
+        }
+        
+        //Anonymous tag must not look like an authenticated rendezvous
+        if ([fullTag containsString:@"@"]){
             QredoLogError(@"Full tag contains @, not valid for anonymous rendezvous tag.");
-            updateErrorWithQredoRendezvousHelperError(error, QredoRendezvousHelperErrorMalformedTag, nil);
+            updateErrorWithQredoRendezvousHelperError(error,QredoRendezvousHelperErrorMalformedTag,nil);
             return nil;
         }
         
@@ -155,31 +148,29 @@ static const NSUInteger kRandomTagLength = 32;
 }
 
 
-- (QredoRendezvousAuthenticationType)type
-{
+-(QredoRendezvousAuthenticationType)type {
     return QredoRendezvousAuthenticationTypeAnonymous;
 }
 
-- (NSString *)tag
-{
+
+-(NSString *)tag {
     return self.fullTag;
 }
 
-- (QLFRendezvousAuthSignature *)emptySignature
-{
+
+-(QLFRendezvousAuthSignature *)emptySignature {
     return nil;
 }
 
-- (QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error
-{
+
+-(QLFRendezvousAuthSignature *)signatureWithData:(NSData *)data error:(NSError **)error {
     return nil;
 }
 
-- (BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error
-{
+
+-(BOOL)isValidSignature:(QLFRendezvousAuthSignature *)signature rendezvousData:(NSData *)rendezvousData error:(NSError **)error {
     return YES;
 }
 
+
 @end
-
-

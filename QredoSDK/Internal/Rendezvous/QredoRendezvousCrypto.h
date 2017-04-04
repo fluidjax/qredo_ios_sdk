@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "QredoKeyPair.h"
@@ -6,62 +7,62 @@
 
 @protocol QredoRendezvousHelper;
 
-@interface QredoRendezvousCrypto : NSObject
+@interface QredoRendezvousCrypto :NSObject
 
-+ (QredoRendezvousCrypto *)instance;
++(QredoRendezvousCrypto *)instance;
 
-- (QLFAuthenticationCode *)authenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                         authenticationKey:(NSData *)authenticationKey
-                                    encryptedResponderData:(NSData *)encryptedResponderData;
-
-
-- (QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                                  authenticationKey:(NSData *)authenticationKey
-                                                 responderPublicKey:(NSData *)responderPublicKey;
+-(QLFAuthenticationCode *)authenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                        authenticationKey:(NSData *)authenticationKey
+                                   encryptedResponderData:(NSData *)encryptedResponderData;
 
 
-- (QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString*)keyId;
-- (QLFKeyPairLF *)newRequesterKeyPair;
-- (QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
+-(QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                                 authenticationKey:(NSData *)authenticationKey
+                                                responderPublicKey:(NSData *)responderPublicKey;
 
-- (SecKeyRef)accessControlPublicKeyWithTag:(NSString*)tag;
-- (SecKeyRef)accessControlPrivateKeyWithTag:(NSString*)tag;
 
-- (NSData *)signChallenge:(NSData*)challenge
-                  hashtag:(QLFRendezvousHashedTag*)hashtag
-                    nonce:(QLFNonce*)nonce
-               privateKey:(QredoPrivateKey*)privateKey;
+-(QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString *)keyId;
+-(QLFKeyPairLF *)newRequesterKeyPair;
+-(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
 
-- (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
-                   encryptionKey:(NSData *)encryptionKey;
+-(SecKeyRef)accessControlPublicKeyWithTag:(NSString *)tag;
+-(SecKeyRef)accessControlPrivateKeyWithTag:(NSString *)tag;
 
-- (NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
-                   encryptionKey:(NSData *)encryptionKey
-                              iv:(NSData *)iv;
+-(NSData *)signChallenge:(NSData *)challenge
+                 hashtag:(QLFRendezvousHashedTag *)hashtag
+                   nonce:(QLFNonce *)nonce
+              privateKey:(QredoPrivateKey *)privateKey;
 
-- (QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
-                                               encryptionKey:(NSData *)encryptionKey
-                                                       error:(NSError **)error;
+-(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
+                  encryptionKey:(NSData *)encryptionKey;
 
-- (BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
-                     authenticationKey:(NSData *)authenticationKey
-                         tag:(NSString *)tag
-                             hashedTag:(QLFRendezvousHashedTag *)hashedTag
-                       trustedRootPems:(NSArray *)trustedRootPems
-                               crlPems:(NSArray *)crlPems
-                       error:(NSError **)error;
+-(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
+                  encryptionKey:(NSData *)encryptionKey
+                             iv:(NSData *)iv;
 
-- (id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
-                                                                 fullTag:(NSString *)fullTag
-                                                         trustedRootPems:(NSArray *)trustedRootPems
-                                                                 crlPems:(NSArray *)crlPems
-                                                          signingHandler:(signDataBlock)signingHandler
-                                                                   error:(NSError **)error;
+-(QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
+                                              encryptionKey:(NSData *)encryptionKey
+                                                      error:(NSError **)error;
 
-- (NSData *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId;
-- (QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey;
-- (NSData *)encryptionKeyWithMasterKey:(NSData *)masterKey;
-- (NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey;
-+ (NSData *)transformPrivateKeyToData:(SecKeyRef)key;
+-(BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
+                    authenticationKey:(NSData *)authenticationKey
+                                  tag:(NSString *)tag
+                            hashedTag:(QLFRendezvousHashedTag *)hashedTag
+                      trustedRootPems:(NSArray *)trustedRootPems
+                              crlPems:(NSArray *)crlPems
+                                error:(NSError **)error;
+
+-(id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
+                                                                fullTag:(NSString *)fullTag
+                                                        trustedRootPems:(NSArray *)trustedRootPems
+                                                                crlPems:(NSArray *)crlPems
+                                                         signingHandler:(signDataBlock)signingHandler
+                                                                  error:(NSError **)error;
+
+-(NSData *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId;
+-(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey;
+-(NSData *)encryptionKeyWithMasterKey:(NSData *)masterKey;
+-(NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey;
++(NSData *)transformPrivateKeyToData:(SecKeyRef)key;
 
 @end

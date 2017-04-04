@@ -1,18 +1,15 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
 @interface NSDictionary (IndexableSet)
 
-- (NSSet*) indexableSet;
+-(NSSet *)indexableSet;
 
 @end
 
 
 @interface NSSet (IndexableSet)
 
-- (NSDictionary*)dictionaryFromIndexableSet;
+-(NSDictionary *)dictionaryFromIndexableSet;
 
 @end

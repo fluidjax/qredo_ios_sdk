@@ -1,7 +1,4 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "Qredo.h"
 #import "QredoVault.h"
@@ -9,26 +6,28 @@
 
 @implementation QredoVaultItem
 
-+(instancetype)vaultItemWithValue:(NSData *)value{
-    return  [QredoVaultItem vaultItemWithMetadataDictionary:[NSDictionary dictionary] value:value];
++(instancetype)vaultItemWithValue:(NSData *)value {
+    return [QredoVaultItem vaultItemWithMetadataDictionary:[NSDictionary dictionary] value:value];
 }
 
-+ (instancetype)vaultItemWithMetadataDictionary:(NSDictionary *)metadataDictionary value:(NSData *)value{
+
++(instancetype)vaultItemWithMetadataDictionary:(NSDictionary *)metadataDictionary value:(NSData *)value {
     QredoVaultItemMetadata *vaultItemMetadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:metadataDictionary];
+    
     return [[QredoVaultItem alloc] initWithMetadata:vaultItemMetadata value:value];
 }
 
 
-+ (instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value{
++(instancetype)vaultItemWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value {
     return [[QredoVaultItem alloc] initWithMetadata:metadata value:value];
 }
 
 
-
-
-- (instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value{
+-(instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value {
     self = [super init];
-    if (!self) return nil;
+    
+    if (!self)return nil;
+    
     _metadata = metadata;
     _value = value;
     QredoLogInfo(@"Created Vault Item Metadata");
@@ -36,18 +35,17 @@
 }
 
 
-
--(id)objectForMetadataKey:(NSString*)key{
+-(id)objectForMetadataKey:(NSString *)key {
     return [_metadata objectForMetadataKey:key];
 }
 
--(NSString*)description{
+
+-(NSString *)description {
     NSMutableString *desc = [[NSMutableString alloc] init];
-    [desc appendFormat:@"%@", self.metadata];
+    
+    [desc appendFormat:@"%@",self.metadata];
     return [desc copy];
 }
 
+
 @end
-
-
-

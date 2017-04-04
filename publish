@@ -1,9 +1,0 @@
-#!/bin/bash
-echo git checkout release
-echo git merge --squash master
-echo git add .
-echo git commit -m '"${1}"'
-echo git tag '"${1}"'
-echo git checkout master
-echo git merge release -m'"Merge Back release ${1}"'
-

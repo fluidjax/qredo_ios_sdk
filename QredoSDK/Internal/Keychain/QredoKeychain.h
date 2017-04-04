@@ -1,7 +1,4 @@
-/*
- *  Copyright (c) 2011-2016 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "CryptoImpl.h"
@@ -9,7 +6,7 @@
 
 @class QredoUserCredentials;
 
-extern NS_ENUM(NSInteger, QredoCredentialType) {
+extern NS_ENUM (NSInteger,QredoCredentialType) {
     QredoCredentialTypeNoCredential = 0,
     QredoCredentialTypePIN = 1,
     QredoCredentialTypePattern = 2,
@@ -19,20 +16,20 @@ extern NS_ENUM(NSInteger, QredoCredentialType) {
     QredoCredentialTypeRandomBytes = 6
 };
 
-@interface QredoKeychain : NSObject
+@interface QredoKeychain :NSObject
 
 @property QLFOperatorInfo *operatorInfo;
 
 @property QredoVaultKeys *systemVaultKeys;
 @property QredoVaultKeys *defaultVaultKeys;
 
-- (instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo;
+-(instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo;
 
-// used in tests only
-- (instancetype)initWithData:(NSData *)serializedData;
+//used in tests only
+-(instancetype)initWithData:(NSData *)serializedData;
 
-- (NSData *)data;
-- (void)generateNewKeys:(QredoUserCredentials*)userCredentials;
+-(NSData *)data;
+-(void)generateNewKeys:(QredoUserCredentials *)userCredentials;
 
 
 

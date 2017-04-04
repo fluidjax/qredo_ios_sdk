@@ -1,12 +1,8 @@
-/*
- *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
-
+/* HEADER GOES HERE */
 #import "_QredoIndexVariableValue.h"
 
 
-@interface QredoIndexVariableValue : _QredoIndexVariableValue {}
+@interface QredoIndexVariableValue :_QredoIndexVariableValue {}
 
 
 @end

@@ -4498,6 +4498,270 @@
 
 @end
 
+@implementation QLFNotificationTarget
+
+
+
++ (QLFNotificationTarget *)fcmRegistrationTokenWithToken:(NSString *)token
+{
+
+    return [[QLFFcmRegistrationToken alloc] initWithToken:token];
+       
+}
+
++ (QLFNotificationTarget *)apnsDeviceTokenWithToken:(NSData *)token
+{
+
+    return [[QLFApnsDeviceToken alloc] initWithToken:token];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        if ([element isKindOfClass:[QLFFcmRegistrationToken class]]) {
+            [QLFFcmRegistrationToken marshaller](element, writer);
+        } else if ([element isKindOfClass:[QLFApnsDeviceToken class]]) {
+            [QLFApnsDeviceToken marshaller](element, writer);
+        } else {
+            // TODO throw exception instead
+        }
+    };
+         
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        NSString *constructorSymbol = [reader readConstructorStart];
+        if ([constructorSymbol isEqualToString:@"FcmRegistrationToken"]) {
+            QLFNotificationTarget *_temp = [QLFFcmRegistrationToken unmarshaller](reader);
+            [reader readEnd];
+            return _temp;
+        }
+
+        if ([constructorSymbol isEqualToString:@"ApnsDeviceToken"]) {
+            QLFNotificationTarget *_temp = [QLFApnsDeviceToken unmarshaller](reader);
+            [reader readEnd];
+            return _temp;
+        }
+
+       return nil;// TODO throw exception instead?
+    };
+
+}
+
+- (void)ifFcmRegistrationToken:(void (^)(NSString *))ifFcmRegistrationTokenBlock ifApnsDeviceToken:(void (^)(NSData *))ifApnsDeviceTokenBlock
+{
+    if ([self isKindOfClass:[QLFFcmRegistrationToken class]]) {
+        ifFcmRegistrationTokenBlock([((QLFFcmRegistrationToken *) self) token]);
+    } else if ([self isKindOfClass:[QLFApnsDeviceToken class]]) {
+        ifApnsDeviceTokenBlock([((QLFApnsDeviceToken *) self) token]);
+    }
+}
+
+- (NSComparisonResult)compare:(QLFNotificationTarget *)other
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't compare instances of this class" userInfo:nil];
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
+}
+
+- (BOOL)isEqualToNotificationTarget:(QLFNotificationTarget *)other
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't check instances of this class for equality" userInfo:nil];
+}
+
+- (NSUInteger)hash
+{
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Can't hash instances of this class" userInfo:nil];
+}
+
+@end
+
+@implementation QLFFcmRegistrationToken
+
+
+
++ (QLFNotificationTarget *)fcmRegistrationTokenWithToken:(NSString *)token
+{
+
+    return [[QLFFcmRegistrationToken alloc] initWithToken:token];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFFcmRegistrationToken *e = (QLFFcmRegistrationToken *)element;
+        [writer writeConstructorStartWithObjectName:@"FcmRegistrationToken"];
+            [writer writeFieldStartWithFieldName:@"token"];
+                [QredoPrimitiveMarshallers stringMarshaller]([e token], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        
+            [reader readFieldStart]; // TODO assert that field name is 'token'
+                NSString *token = (NSString *)[QredoPrimitiveMarshallers stringUnmarshaller](reader);
+            [reader readEnd];
+        
+        return [QLFNotificationTarget fcmRegistrationTokenWithToken:token];
+    };
+}
+
+- (instancetype)initWithToken:(NSString *)token
+{
+
+    self = [super init];
+    if (self) {
+        _token = token;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFFcmRegistrationToken *)other
+{
+    if ([other isKindOfClass:[QLFNotificationTarget class]] && ![other isKindOfClass:[QLFFcmRegistrationToken class]]) {
+        // N.B. impose an ordering among subtypes of NotificationTarget
+        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
+    }
+
+    QREDO_COMPARE_OBJECT(token);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToFcmRegistrationToken:other];
+       
+}
+
+- (BOOL)isEqualToFcmRegistrationToken:(QLFFcmRegistrationToken *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_token != other.token && ![_token isEqual:other.token])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + [_token hash];
+    return hash;
+       
+}
+
+@end
+
+@implementation QLFApnsDeviceToken
+
+
+
++ (QLFNotificationTarget *)apnsDeviceTokenWithToken:(NSData *)token
+{
+
+    return [[QLFApnsDeviceToken alloc] initWithToken:token];
+       
+}
+
++ (QredoMarshaller)marshaller
+{
+    return ^(id element, QredoWireFormatWriter *writer) {
+        QLFApnsDeviceToken *e = (QLFApnsDeviceToken *)element;
+        [writer writeConstructorStartWithObjectName:@"ApnsDeviceToken"];
+            [writer writeFieldStartWithFieldName:@"token"];
+                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e token], writer);
+            [writer writeEnd];
+
+        [writer writeEnd];
+    };
+}
+
++ (QredoUnmarshaller)unmarshaller
+{
+    return ^id(QredoWireFormatReader *reader) {
+        
+            [reader readFieldStart]; // TODO assert that field name is 'token'
+                NSData *token = (NSData *)[QredoPrimitiveMarshallers byteSequenceUnmarshaller](reader);
+            [reader readEnd];
+        
+        return [QLFNotificationTarget apnsDeviceTokenWithToken:token];
+    };
+}
+
+- (instancetype)initWithToken:(NSData *)token
+{
+
+    self = [super init];
+    if (self) {
+        _token = token;
+    }
+    return self;
+       
+}
+
+- (NSComparisonResult)compare:(QLFApnsDeviceToken *)other
+{
+    if ([other isKindOfClass:[QLFNotificationTarget class]] && ![other isKindOfClass:[QLFApnsDeviceToken class]]) {
+        // N.B. impose an ordering among subtypes of NotificationTarget
+        return [NSStringFromClass([self class]) compare:NSStringFromClass([other class])];
+    }
+
+    QREDO_COMPARE_OBJECT(token);
+    return NSOrderedSame;
+       
+}
+
+- (BOOL)isEqualTo:(id)other
+{
+
+    return [self isEqualToApnsDeviceToken:other];
+       
+}
+
+- (BOOL)isEqualToApnsDeviceToken:(QLFApnsDeviceToken *)other
+{
+
+    if (other == self)
+        return YES;
+    if (!other || ![other.class isEqual:self.class])
+        return NO;
+    if (_token != other.token && ![_token isEqual:other.token])
+        return NO;
+    return YES;
+       
+}
+
+- (NSUInteger)hash
+{
+
+    NSUInteger hash = 0;
+    hash = hash * 31u + [_token hash];
+    return hash;
+       
+}
+
+@end
+
 @implementation QLFOwnershipSignature
 
 
@@ -8096,6 +8360,48 @@ QredoServiceInvoker *_invoker;
          
 }
 
+- (void)subscribeAfterWithQueueId:(QLFConversationQueueId *)queueId after:(NSSet *)after fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler
+{
+
+ [_invoker invokeService:@"Conversations"
+               operation:@"subscribeAfter"
+           requestWriter:^(QredoWireFormatWriter *writer) {
+                  [QredoPrimitiveMarshallers quidMarshaller](queueId, writer);
+                  [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]](after, writer);
+                  [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]](fetchSize, writer);
+                  [QLFOwnershipSignature marshaller](signature, writer);
+           }
+          responseReader:^(QredoWireFormatReader *reader) {
+               QLFConversationItemWithSequenceValue *result = [QLFConversationItemWithSequenceValue unmarshaller](reader);
+               completionHandler(result, nil);
+          }
+            errorHandler:^(NSError *error) {
+                 completionHandler(nil, error);
+            }
+           multiResponse:YES];
+         
+}
+
+- (void)subscribeWithPushWithQueueId:(QLFConversationQueueId *)queueId notificationId:(QLFNotificationTarget *)notificationId completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler
+{
+
+ [_invoker invokeService:@"Conversations"
+               operation:@"subscribeWithPush"
+           requestWriter:^(QredoWireFormatWriter *writer) {
+                  [QredoPrimitiveMarshallers quidMarshaller](queueId, writer);
+                  [QLFNotificationTarget marshaller](notificationId, writer);
+           }
+          responseReader:^(QredoWireFormatReader *reader) {
+               QLFConversationItemWithSequenceValue *result = [QLFConversationItemWithSequenceValue unmarshaller](reader);
+               completionHandler(result, nil);
+          }
+            errorHandler:^(NSError *error) {
+                 completionHandler(nil, error);
+            }
+           multiResponse:YES];
+         
+}
+
 @end
 
 @implementation QLFPing
@@ -8287,6 +8593,28 @@ QredoServiceInvoker *_invoker;
          
 }
 
+- (void)subscribeToResponsesAfterWithHashedTag:(QLFRendezvousHashedTag *)hashedTag after:(QLFRendezvousSequenceValue)after fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousResponseWithSequenceValue *result, NSError *error))completionHandler
+{
+
+ [_invoker invokeService:@"Rendezvous"
+               operation:@"subscribeToResponsesAfter"
+           requestWriter:^(QredoWireFormatWriter *writer) {
+                  [QredoPrimitiveMarshallers quidMarshaller](hashedTag, writer);
+                  [QredoPrimitiveMarshallers int64Marshaller]([NSNumber numberWithLongLong: after], writer);
+                  [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]](fetchSize, writer);
+                  [QLFOwnershipSignature marshaller](signature, writer);
+           }
+          responseReader:^(QredoWireFormatReader *reader) {
+               QLFRendezvousResponseWithSequenceValue *result = [QLFRendezvousResponseWithSequenceValue unmarshaller](reader);
+               completionHandler(result, nil);
+          }
+            errorHandler:^(NSError *error) {
+                 completionHandler(nil, error);
+            }
+           multiResponse:YES];
+         
+}
+
 - (void)deactivateWithHashedTag:(QLFRendezvousHashedTag *)hashedTag signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFRendezvousDeactivated *result, NSError *error))completionHandler
 {
 
@@ -8427,6 +8755,28 @@ QredoServiceInvoker *_invoker;
                operation:@"subscribeToItemHeaders"
            requestWriter:^(QredoWireFormatWriter *writer) {
                   [QredoPrimitiveMarshallers quidMarshaller](vaultId, writer);
+                  [QLFOwnershipSignature marshaller](signature, writer);
+           }
+          responseReader:^(QredoWireFormatReader *reader) {
+               QLFEncryptedVaultItemHeader *result = [QLFEncryptedVaultItemHeader unmarshaller](reader);
+               completionHandler(result, nil);
+          }
+            errorHandler:^(NSError *error) {
+                 completionHandler(nil, error);
+            }
+           multiResponse:YES];
+         
+}
+
+- (void)subscribeToItemHeadersAfterWithVaultId:(QLFVaultId *)vaultId sequenceStates:(NSSet *)sequenceStates fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFEncryptedVaultItemHeader *result, NSError *error))completionHandler
+{
+
+ [_invoker invokeService:@"Vault"
+               operation:@"subscribeToItemHeadersAfter"
+           requestWriter:^(QredoWireFormatWriter *writer) {
+                  [QredoPrimitiveMarshallers quidMarshaller](vaultId, writer);
+                  [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QLFVaultSequenceState marshaller]](sequenceStates, writer);
+                  [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]](fetchSize, writer);
                   [QLFOwnershipSignature marshaller](signature, writer);
            }
           responseReader:^(QredoWireFormatReader *reader) {

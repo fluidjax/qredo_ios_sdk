@@ -1,8 +1,4 @@
-/*
- *  Copyright (c) 2011-2015 Qredo Ltd.  Strictly confidential.  All rights reserved.
- */
-
-
+/* HEADER GOES HERE */
 #import "QredoIndexVault.h"
 #import "QredoVault.h"
 #import "QredoQUID.h"
@@ -16,11 +12,15 @@
 
 +(QredoIndexVault *)fetchOrCreateWith:(QredoVault *)vault inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
     __block QredoIndexVault *qredoIndexVault;
+    
     [managedObjectContext performBlockAndWait:^{
         NSData *dataVaultId = vault.vaultId.data;
-        qredoIndexVault = [QredoIndexVault searchForVaultIndexWithId:dataVaultId inManageObjectContext:managedObjectContext];
-        if (!qredoIndexVault) {
-            qredoIndexVault = [QredoIndexVault create:vault inManageObjectContext:managedObjectContext];
+        qredoIndexVault = [QredoIndexVault                       searchForVaultIndexWithId:dataVaultId
+                                                                     inManageObjectContext:managedObjectContext];
+        
+        if (!qredoIndexVault){
+            qredoIndexVault = [QredoIndexVault                   create:vault
+                                    inManageObjectContext              :managedObjectContext];
         }
     }];
     return qredoIndexVault;
@@ -32,23 +32,23 @@
 
 
 +(QredoIndexVault *)searchForVaultIndexWithId:(NSData *)vaultId inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
-	NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"vaultId==%@",vaultId];
-	[fetchRequest setPredicate:predicate];
-	[fetchRequest setFetchLimit:1];
-	NSError *error = nil;
-	NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-	return [results lastObject];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[[self class] entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"vaultId==%@",vaultId];
+    
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setFetchLimit:1];
+    NSError *error = nil;
+    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    return [results lastObject];
 }
 
 
-
-
 +(QredoIndexVault *)create:(QredoVault *)qredoVault inManageObjectContext:(NSManagedObjectContext *)managedObjectContext {
-	QredoIndexVault *newIndexVault =  [[self class] insertInManagedObjectContext:managedObjectContext];
-	newIndexVault.vaultId = qredoVault.vaultId.data;
-	newIndexVault.highWaterMark = nil;
-	return newIndexVault;
+    QredoIndexVault *newIndexVault =  [[self class] insertInManagedObjectContext:managedObjectContext];
+    
+    newIndexVault.vaultId = qredoVault.vaultId.data;
+    newIndexVault.highWaterMark = nil;
+    return newIndexVault;
 }
 
 

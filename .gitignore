@@ -3,6 +3,8 @@ temp
 package
 QredoXDK.framework
 macosx/
+*.swp
+
 
 # Cocoapods
 #
@@ -36,8 +38,9 @@ DerivedData
 # http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
 #
 # Pods/
-
 **.DS_Store
 Podfile.lock
-
 docs/objc
+/QredoSDK.xcworkspace
+/version
+/version.json
