@@ -22,3 +22,15 @@ TODO Before release!
 
 
 
+
+
+Version
+    The Main Version number of the form (master.minor.patch) eg. 0.99.3  - this is manually set
+    The Build an autoincrementing integer - this is autoincremented by a script when the framework is creared (build_universal target)
+
+    The versions/build numbers are stored in [projectdir]/QredoSDK/QredoXDK-Info.plist
+    A file is written in the project directory called version & version.json
+    These contain the current version framework.
+
+
+
