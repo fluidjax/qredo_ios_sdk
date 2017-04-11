@@ -1,0 +1,71 @@
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+cd ../docs/
+rm -rf objc
+mkdir objc
+cd ..
+jazzy\
+ --module QredoSDK \
+ --objc \
+ --clean \
+ --sdk iphonesimulator \
+ --author Qredo Ltd \
+ --author_url http://qredo.com \
+ --framework-root . \
+ --source-directory . \
+ --umbrella-header QredoSDK/External/Qredo.h \
+ --output docs/objc \
+ --theme fullwidth \
+ --hide-documentation-coverage \
+ --skip-undocumented \
+ --copyright "@[Qredo](https://qredo.com) Ltd 2016. All rights reserved. API version 0.99.1" 
+ 
+#awk '/'UnsafeMutablePointer'/{c++;if(c==2){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoConversationHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=0}}1' docs/objc/Classes/QredoConversation.html > docs/objc/Classes/x.html
+
+
+
+path=docs/objc/Classes
+
+#both in Conversation
+awk '/'UnsafeMutablePointer'/{sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoConversationHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)")}1' $path/QredoConversation.html > $path/x.html
+mv $path/x.html $path/QredoConversation.html
+
+
+#1st in Rendezvous
+awk '/'UnsafeMutablePointer'/{c++;if(c==1){sub("UnsafeMutablePointer","QredoConversationMetadata!,<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoRendezvous.html > $path/x.html
+mv $path/x.html $path/QredoRendezvous.html
+
+#1st in Vault
+awk '/'UnsafeMutablePointer'/{c++;if(c==1){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;completionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoVault.html > $path/x.html
+mv $path/x.html $path/QredoVault.html
+
+#2nd in Vault
+awk '/'UnsafeMutablePointer'/{c++;if(c==2){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoVaultHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoVault.html > $path/x.html
+mv $path/x.html $path/QredoVault.html
+
+#3rd in Vault
+awk '/'UnsafeMutablePointer'/{c++;if(c==3){sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;since: QredoVaultHighWatermark!,  <br>\\&nbsp;\\&nbsp;\\&nbsp;\\&nbsp;\\&nbspcompletionHandler: ((NSError!) -> Void)!)");c=100}}1' $path/QredoVault.html > $path/x.html
+mv $path/x.html $path/QredoVault.html
+
+
+#both in Client
+awk '/'UnsafeMutablePointer'/{sub("UnsafeMutablePointer","<br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;UnsafeMutablePointer\\&ltObjCBool\\&gt) -> Void)!, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;completionHandler: ((NSError!) -> Void)!)")}1' $path/QredoClient.html > $path/x.html
+mv $path/x.html $path/QredoClient.html
+
+#in Logger
+awk '/'UnsafePointer'/{sub("UnsafePointer","UnsafePointer\\&ltInt8\\&gt, <br>\\&nbsp;\\&nbsp\\&nbsp;\\&nbsp;\\&nbsp;function: UnsafePointer\\&ltInt8\\&gt, line: Uint)")}1' $path/QredoLogger.html > $path/x.html
+mv $path/x.html $path/QredoLogger.html
+
+#4th in Vault
+sed 's|<span class="nv">block</span><span class="p">||' $path/QredoVault.html  > $path/x.html
+mv $path/x.html $path/QredoVault.html
+
+#Add our edited jazzy.css file
+rm -f  docs/objc/css/jazzy.css
+cp scripts/jazzy.css docs/objc/css
+mv docs/objc docs/apireference
+
+
+
+
+

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>QredoVaultItemMetadata Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/objc/Class/QredoVaultItemMetadata" class="dashAnchor"></a>
+
+    <a title="QredoVaultItemMetadata Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          QredoSDK Docs
+        </a>
+        
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">QredoSDK Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      QredoVaultItemMetadata Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoClient.html">QredoClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoConversation.html">QredoConversation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoConversationHighWatermark.html">QredoConversationHighWatermark</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoConversationMessage.html">QredoConversationMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoConversationMetadata.html">QredoConversationMetadata</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes.html#/c:objc(cs)QredoConversationRef">QredoConversationRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoLogger.html">QredoLogger</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoMutableVaultItemMetadata.html">QredoMutableVaultItemMetadata</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoObjectRef.html">QredoObjectRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoPushMessage.html">QredoPushMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoQUID.html">QredoQUID</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoRendezvous.html">QredoRendezvous</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoRendezvousMetadata.html">QredoRendezvousMetadata</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes.html#/c:objc(cs)QredoRendezvousRef">QredoRendezvousRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoSecureChannel.html">QredoSecureChannel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoUtils.html">QredoUtils</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoVault.html">QredoVault</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes.html#/c:objc(cs)QredoVaultHighWatermark">QredoVaultHighWatermark</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoVaultItem.html">QredoVaultItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Constants.html">Constants</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@QredoConversationHighWatermarkOrigin">QredoConversationHighWatermarkOrigin</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@QredoRendezvousHighWatermarkOrigin">QredoRendezvousHighWatermarkOrigin</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@QredoVaultHighWatermarkOrigin">QredoVaultHighWatermarkOrigin</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@kQredoRendezvousVaultItemLabelAuthenticationType">kQredoRendezvousVaultItemLabelAuthenticationType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@kQredoRendezvousVaultItemLabelTag">kQredoRendezvousVaultItemLabelTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@kQredoRendezvousVaultItemType">kQredoRendezvousVaultItemType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/QredoAuthenticationStatus.html">QredoAuthenticationStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/QredoLogLevel.html">QredoLogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/QredoSecurityLevel.html">QredoSecurityLevel</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/QredoConversationObserver.html">QredoConversationObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/QredoRendezvousObserver.html">QredoRendezvousObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/QredoVaultObserver.html">QredoVaultObserver</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Type Definitions.html">Type Definitions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Type Definitions.html#/c:QredoRendezvous.h@T@QredoRendezvousHighWatermark">QredoRendezvousHighWatermark</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content">
+            <h1>QredoVaultItemMetadata</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="k">@interface</span> <span class="nc">QredoVaultItemMetadata</span> <span class="p">:</span> <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">NSCopying</span><span class="p">,</span> <span class="n">NSMutableCopying</span><span class="o">&gt;</span></code></pre>
+
+                </div>
+              </div>
+            <p>Information about a vault item. These properties are read only.
+ Constructed when a <code><a href="../Classes/QredoVaultItem.html">QredoVaultItem</a></code> is created and returned from <code>enumerateVaultItemsUsingBlock</code></p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Properties"></a>
+                <a name="//apple_ref/objc/Section/Properties" class="dashAnchor"></a>
+                <a href="#/Properties">
+                  <h3 class="section-name">Properties</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVaultItemMetadata(py)descriptor"></a>
+                    <a name="//apple_ref/objc/Property/descriptor" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVaultItemMetadata(py)descriptor">descriptor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The <code><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></code> used to retrieve an item from the Vault with <code>getItemWithDescriptor</code> and <code>getItemMetadataWithDescriptor</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">atomic</span><span class="p">)</span> <span class="n"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span> <span class="o">*</span><span class="n">descriptor</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">descriptor</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span><span class="o">!</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVaultItemMetadata(py)created"></a>
+                    <a name="//apple_ref/objc/Property/created" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVaultItemMetadata(py)created">created</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The date and time that the item was created, in UTC format</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">atomic</span><span class="p">)</span> <span class="n">NSDate</span> <span class="o">*</span><span class="n">created</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">created</span><span class="p">:</span> <span class="kt">Date</span><span class="o">!</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVaultItemMetadata(py)summaryValues"></a>
+                    <a name="//apple_ref/objc/Property/summaryValues" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVaultItemMetadata(py)summaryValues">summaryValues</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The metadata dictionary stored as a dictionary of key/ value pairs
+ - note: The summaryValues can contain anything you like, but must be of one of <code>NSNumber</code>, <code>NSDate</code> or <code>NSString</code></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">atomic</span><span class="p">)</span> <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">summaryValues</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">summaryValues</span><span class="p">:</span> <span class="p">[</span><span class="kt">AnyHashable</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span><span class="o">!</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Methods"></a>
+                <a name="//apple_ref/objc/Section/Methods" class="dashAnchor"></a>
+                <a href="#/Methods">
+                  <h3 class="section-name">Methods</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVaultItemMetadata(cm)vaultItemMetadataWithSummaryValues:"></a>
+                    <a name="//apple_ref/objc/Method/+vaultItemMetadataWithSummaryValues:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVaultItemMetadata(cm)vaultItemMetadataWithSummaryValues:">+vaultItemMetadataWithSummaryValues:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Construct the metadata with the specified summary values
+ - parameter: summaryValues a dictionary of key/value pairs
+ - returns: the newly created metadata</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    Adding an item to the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/adding_an_item_to_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/adding_an_item_to_the_vault.html">Swift</a>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">vaultItemMetadataWithSummaryValues</span><span class="p">:</span>
+    <span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">summaryValues</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">convenience</span> <span class="nf">init</span><span class="o">!</span><span class="p">(</span><span class="nv">summaryValues</span><span class="p">:</span> <span class="p">[</span><span class="kt">AnyHashable</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>summaryValues</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>a dictionary of key/value pairs</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>the newly created metadata</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVaultItemMetadata(cm)vaultItemMetadataWithIndexMetadata:"></a>
+                    <a name="//apple_ref/objc/Method/+vaultItemMetadataWithIndexMetadata:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVaultItemMetadata(cm)vaultItemMetadataWithIndexMetadata:">+vaultItemMetadataWithIndexMetadata:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Converts an index coredata summaryValue object retrieved by an index search predicate into a <code>QredoVaultItemMetadata</code>
+ - note: You only need to call this function if you are accessing the <code>NSManagedObjectContext</code> directly.</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    The CustomerLookup example app
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">+</span> <span class="p">(</span><span class="n">instancetype</span><span class="p">)</span><span class="nf">vaultItemMetadataWithIndexMetadata</span><span class="p">:</span>
+    <span class="p">(</span><span class="n">QredoIndexSummaryValues</span> <span class="o">*</span><span class="p">)</span><span class="nv">summaryValue</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="n">convenience</span> <span class="nf">init</span><span class="o">!</span><span class="p">(</span><span class="n">indexMetadata</span> <span class="nv">summaryValue</span><span class="p">:</span> <span class="kt">QredoIndexSummaryValues</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVaultItemMetadata(im)objectForMetadataKey:"></a>
+                    <a name="//apple_ref/objc/Method/-objectForMetadataKey:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVaultItemMetadata(im)objectForMetadataKey:">-objectForMetadataKey:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the metadata dictionary object referred to by the specified key
+ - parameter: key The key to lookup
+ - returns: The object stored under this key. nil if the key cannot be found</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="nf">objectForMetadataKey</span><span class="p">:(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">object</span><span class="p">(</span><span class="n">forMetadataKey</span> <span class="nv">key</span><span class="p">:</span> <span class="kt">String</span><span class="o">!</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Any</span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>key</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The key to lookup</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The object stored under this key. nil if the key cannot be found</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVaultItemMetadata(im)isDeleted"></a>
+                    <a name="//apple_ref/objc/Method/-isDeleted" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVaultItemMetadata(im)isDeleted">-isDeleted</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Call this to determine if this metadata refers to a deleted item</p>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    When you request that an item is deleted, Qredo will actually create a new item with the same <code><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></code>, but marked as deleted. This allows you to update any of your own data structures that may refer to this item.
+
+</div>
+
+<p>There are two cases where you may need to call this method: when you are sent a deleted item in the Vault item listener
+ <a href="../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:">didReceiveVaultItemMetadata</a> method
+ or when you are enumerated through all vault items on the server using <a href="QredoVault.html#/c:objc(cs)QredoVault(im)enumerateVaultItemsUsingBlock:completionHandler:">enumerateVaultItemsUsingBlock</a></p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="n">BOOL</span><span class="p">)</span><span class="n">isDeleted</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">isDeleted</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>YES if this is a deleted item</p>
+
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>@<a class="link" href="https://qredo.com" target="_blank" rel="external">Qredo</a> Ltd 2016. All rights reserved. API version 0.99.1</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>

@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>QredoVault Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/objc/Class/QredoVault" class="dashAnchor"></a>
+
+    <a title="QredoVault Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          QredoSDK Docs
+        </a>
+        
+      </p>
+    
+      <p class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </p>
+    
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">QredoSDK Reference</a>
+      <img class="carat" src="../img/carat.png" />
+      QredoVault Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoClient.html">QredoClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoConversation.html">QredoConversation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoConversationHighWatermark.html">QredoConversationHighWatermark</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoConversationMessage.html">QredoConversationMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoConversationMetadata.html">QredoConversationMetadata</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes.html#/c:objc(cs)QredoConversationRef">QredoConversationRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoLogger.html">QredoLogger</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoMutableVaultItemMetadata.html">QredoMutableVaultItemMetadata</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoObjectRef.html">QredoObjectRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoPushMessage.html">QredoPushMessage</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoQUID.html">QredoQUID</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoRendezvous.html">QredoRendezvous</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoRendezvousMetadata.html">QredoRendezvousMetadata</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes.html#/c:objc(cs)QredoRendezvousRef">QredoRendezvousRef</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoSecureChannel.html">QredoSecureChannel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoUtils.html">QredoUtils</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoVault.html">QredoVault</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes.html#/c:objc(cs)QredoVaultHighWatermark">QredoVaultHighWatermark</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoVaultItem.html">QredoVaultItem</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Constants.html">Constants</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@QredoConversationHighWatermarkOrigin">QredoConversationHighWatermarkOrigin</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@QredoRendezvousHighWatermarkOrigin">QredoRendezvousHighWatermarkOrigin</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@QredoVaultHighWatermarkOrigin">QredoVaultHighWatermarkOrigin</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@kQredoRendezvousVaultItemLabelAuthenticationType">kQredoRendezvousVaultItemLabelAuthenticationType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@kQredoRendezvousVaultItemLabelTag">kQredoRendezvousVaultItemLabelTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Constants.html#/c:@kQredoRendezvousVaultItemType">kQredoRendezvousVaultItemType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/QredoAuthenticationStatus.html">QredoAuthenticationStatus</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/QredoLogLevel.html">QredoLogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/QredoSecurityLevel.html">QredoSecurityLevel</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/QredoConversationObserver.html">QredoConversationObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/QredoRendezvousObserver.html">QredoRendezvousObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/QredoVaultObserver.html">QredoVaultObserver</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Type Definitions.html">Type Definitions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Type Definitions.html#/c:QredoRendezvous.h@T@QredoRendezvousHighWatermark">QredoRendezvousHighWatermark</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content">
+            <h1>QredoVault</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="k">@interface</span> <span class="nc">QredoVault</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                </div>
+              </div>
+            <p>Contains the methods to add, retrieve, search for and delete items in a Qredo Vault.</p>
+
+<p>Objects of this class are not constructed by the developer, but returned from the <a href="QredoClient.html#/c:objc(cs)QredoClient(im)defaultVault">defaultVault</a> method</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)vaultId"></a>
+                    <a name="//apple_ref/objc/Method/-vaultId" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)vaultId">-vaultId</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the id of this Vault. Not currently used</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="n"><a href="../Classes/QredoQUID.html">QredoQUID</a></span> <span class="o">*</span><span class="p">)</span><span class="n">vaultId</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">vaultId</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/QredoQUID.html">QredoQUID</a></span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Retrieving%20Vault%20items"></a>
+                <a name="//apple_ref/objc/Section/Retrieving Vault items" class="dashAnchor"></a>
+                <a href="#/Retrieving%20Vault%20items">
+                  <h3 class="section-name">Retrieving Vault items</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)getItemWithDescriptor:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-getItemWithDescriptor:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)getItemWithDescriptor:completionHandler:">-getItemWithDescriptor:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Retrieves the item with the given descriptor from the Vault</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Retrieving an item from the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Swift</a></p>
+
+</div>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>Retrieves the specific version of the vault item referred to by the descriptor. If the item has been updated or deleted, then this will not be the latest version of the vault item. The <a href="QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created">created</a> property can be used to compare versions.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">getItemWithDescriptor</span><span class="p">:(</span><span class="n"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span> <span class="o">*</span><span class="p">)</span><span class="nv">itemDescriptor</span>
+            <span class="nf">completionHandler</span><span class="p">:</span>
+                <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItem.html">QredoVaultItem</a></span> <span class="o">*</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="nv">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">getItemWith</span><span class="p">(</span><span class="n">_</span> <span class="nv">itemDescriptor</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span><span class="o">!</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItem.html">QredoVaultItem</a></span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>itemDescriptor</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The descriptor for the item to retrieve. This can be found in the <code>QredoVaultItemMetadata</code></p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Returns the vaultItem or an error if it cannot be found or some other error occurs.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)getItemMetadataWithDescriptor:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-getItemMetadataWithDescriptor:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)getItemMetadataWithDescriptor:completionHandler:">-getItemMetadataWithDescriptor:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Retrieves the metadata for the vault item specified by the given descriptor</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Retrieving an item from the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Swift</a></p>
+
+</div>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>Retrieves the metadata for the specific version of the vault item referred to by the descriptor. If the item has been updated or deleted, then this will not be the latest version of the vault item. The <a href="QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created">created</a> property can be used to compare versions.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">getItemMetadataWithDescriptor</span><span class="p">:(</span><span class="n"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span> <span class="o">*</span><span class="p">)</span><span class="nv">itemDescriptor</span>
+                    <span class="nf">completionHandler</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">,</span>
+                                                <span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="n">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">getItemMetadata</span><span class="p">(</span><span class="n">with</span> <span class="nv">itemDescriptor</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span><span class="o">!</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>itemDescriptor</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The descriptor for the item to retrieve. This can be found in the <code>QredoVaultItemMetadata</code></p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Returns the vaultItem or an error if it cannot be found or some other error occurs.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)getLatestItemWithDescriptor:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-getLatestItemWithDescriptor:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)getLatestItemWithDescriptor:completionHandler:">-getLatestItemWithDescriptor:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Retrieves the latest version of the vault item with the given descriptor</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Retrieving an item from the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Swift</a></p>
+
+</div>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>Call this method if you have a reference to a vault item, but are not sure if it is the latest one. The item may have been updated or deleted by the same user from another device, for example. You can use the <a href="QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created">created</a> property to compare versions.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">getLatestItemWithDescriptor</span><span class="p">:(</span><span class="n"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span> <span class="o">*</span><span class="p">)</span><span class="nv">itemDescriptor</span>
+                  <span class="nf">completionHandler</span><span class="p">:</span>
+                      <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItem.html">QredoVaultItem</a></span> <span class="o">*</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="nv">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">getLatestItem</span><span class="p">(</span><span class="n">with</span> <span class="nv">itemDescriptor</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span><span class="o">!</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItem.html">QredoVaultItem</a></span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>itemDescriptor</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The descriptor for the item to retrieve. This can be found in the <code>QredoVaultItemMetadata</code></p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Returns the vaultItem, nil if the item has been deleted, or an error if it cannot be found or some other error occurs.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)getLatestItemMetadataWithDescriptor:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-getLatestItemMetadataWithDescriptor:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)getLatestItemMetadataWithDescriptor:completionHandler:">-getLatestItemMetadataWithDescriptor:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Retrieves the metadata for the latest version of the vault item with the given descriptor</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Retrieving an item from the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Swift</a></p>
+
+</div>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>Call this method if you have a reference to a vault item, but are not sure if it is the latest one and want to get the metadata before deciding whether to retrieve the vailt item value. The item may have been updated or deleted by the same user from another device, for example. You can use the <a href="QredoVaultItemMetadata.html#/c:objc(cs)QredoVaultItemMetadata(py)created">created</a> property to compare versions.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="nf">getLatestItemMetadataWithDescriptor</span><span class="p">:(</span><span class="n"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span> <span class="o">*</span><span class="p">)</span><span class="nv">itemDescriptor</span>
+                  <span class="nf">completionHandler</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">,</span>
+                                              <span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="n">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">getLatestItemMetadata</span><span class="p">(</span><span class="n">with</span> <span class="nv">itemDescriptor</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span><span class="o">!</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>itemDescriptor</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The descriptor for the item to retrieve.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Returns the vault item metadata, nil if the item has been deleted, or an error if it cannot be found</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Vault%20listeners"></a>
+                <a name="//apple_ref/objc/Section/Vault listeners" class="dashAnchor"></a>
+                <a href="#/Vault%20listeners">
+                  <h3 class="section-name">Vault listeners</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)addVaultObserver:"></a>
+                    <a name="//apple_ref/objc/Method/-addVaultObserver:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)addVaultObserver:">-addVaultObserver:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Start listening for items added to the Vault</p>
+
+<p>Adds an observer that adopts the <code><a href="../Protocols/QredoVaultObserver.html">QredoVaultObserver</a></code> protocol. The <a href="../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:">didReceiveVaultItemMetadata</a> method must be implemented</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Vault listeners: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/vault_listeners.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/vault_listeners.html">Swift</a></p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">addVaultObserver</span><span class="p">:(</span><span class="n">id</span><span class="o">&lt;</span><span class="n"><a href="../Protocols/QredoVaultObserver.html">QredoVaultObserver</a></span><span class="o">&gt;</span><span class="p">)</span><span class="nv">observer</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="n">_</span> <span class="nv">observer</span><span class="p">:</span> <span class="kt"><a href="../Protocols/QredoVaultObserver.html">QredoVaultObserver</a></span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>observer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The object that implements the <code>QredoVaultObserver</code> protocol.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)removeVaultObserver:"></a>
+                    <a name="//apple_ref/objc/Method/-removeVaultObserver:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)removeVaultObserver:">-removeVaultObserver:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Stop listening for items added to the Vault and delete the observer object.
+- parameter: observer to remove</p>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    Observers are automatically deleted when you close the connection to the <code><a href="../Classes/QredoClient.html">QredoClient</a></code>.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeVaultObserver</span><span class="p">:(</span><span class="n">id</span><span class="o">&lt;</span><span class="n"><a href="../Protocols/QredoVaultObserver.html">QredoVaultObserver</a></span><span class="o">&gt;</span><span class="p">)</span><span class="nv">observer</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="n">_</span> <span class="nv">observer</span><span class="p">:</span> <span class="kt"><a href="../Protocols/QredoVaultObserver.html">QredoVaultObserver</a></span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>observer</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>to remove</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Adding%20items%20to%20the%20Vault"></a>
+                <a name="//apple_ref/objc/Section/Adding items to the Vault" class="dashAnchor"></a>
+                <a href="#/Adding%20items%20to%20the%20Vault">
+                  <h3 class="section-name">Adding items to the Vault</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)putItem:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-putItem:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)putItem:completionHandler:">-putItem:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Add the specified item to the Vault.</p>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>If the vault item is successfully added, the <code><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></code> will contain the <code><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></code> used to retrieve the item later</p>
+
+</div>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Adding an item to the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/adding_an_item_to_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/adding_an_item_to_the_vault.html">Swift</a></p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">putItem</span><span class="p">:(</span><span class="n"><a href="../Classes/QredoVaultItem.html">QredoVaultItem</a></span> <span class="o">*</span><span class="p">)</span><span class="nv">vaultItem</span>
+    <span class="nf">completionHandler</span><span class="p">:</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="nv">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">put</span><span class="p">(</span><span class="n">_</span> <span class="nv">vaultItem</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoVaultItem.html">QredoVaultItem</a></span><span class="o">!</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>vaultItem</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The item to add</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Invoked with the new item&rsquo;s metadata if the item is successfully added. Error will be non nil if an error occurs.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Finding%20items%20in%20the%20Vault"></a>
+                <a name="//apple_ref/objc/Section/Finding items in the Vault" class="dashAnchor"></a>
+                <a href="#/Finding%20items%20in%20the%20Vault">
+                  <h3 class="section-name">Finding items in the Vault</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)enumerateVaultItemsUsingBlock:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-enumerateVaultItemsUsingBlock:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)enumerateVaultItemsUsingBlock:completionHandler:">-enumerateVaultItemsUsingBlock:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Goes through the items in this Vault and calls the specified code block on each one</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Retrieving an item from the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Swift</a></p>
+
+</div>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>Returns the latest versions of all items in the vault. Deleted items are not returned.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">enumerateVaultItemsUsingBlock</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">,</span>
+                                                <span class="n">BOOL</span> <span class="o">*</span><span class="p">))</span><span class="n">block</span>
+                    <span class="n">completionHandler</span><span class="o">:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="n">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">enumerateItems</span><span class="p">(</span><span class="n">_</span> <span class="nv">block</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="p">?,</span> <span class="kt">UnsafeMutablePointer</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>block</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Called for each vault item, passing the <code>QredoVaultItemMetadata</code>.  Set <code>stop</code> to YES to terminate the enumeration</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>will be called when the enumeration is complete or if an error occurs</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)enumerateVaultItemsUsingBlock:since:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-enumerateVaultItemsUsingBlock:since:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)enumerateVaultItemsUsingBlock:since:completionHandler:">-enumerateVaultItemsUsingBlock:since:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Goes through the items in this Vault at the point after the specified highwatermark and calls the specified code block on each one</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Retrieving an item from the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Swift</a></p>
+
+</div>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>Returns the latest versions of all items in the vault. Deleted items are not returned.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">enumerateVaultItemsUsingBlock</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">,</span>
+                                                <span class="n">BOOL</span> <span class="o">*</span><span class="p">))</span><span class="n">block</span>
+                                <span class="n">since</span><span class="o">:</span><span class="p">(</span><span class="n"><a href="../Classes.html#/c:objc(cs)QredoVaultHighWatermark">QredoVaultHighWatermark</a></span> <span class="o">*</span><span class="p">)</span><span class="n">sinceWatermark</span>
+                    <span class="n">completionHandler</span><span class="o">:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="n">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">enumerateItems</span><span class="p">(</span><span class="n">_</span> <span class="nv">block</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="p">?,</span> <span class="kt">UnsafeMutablePointer</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>block</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Called for each vault item, passing the <code>QredoVaultItemMetadata</code>.  Set <code>stop</code> to YES to terminate the enumeration</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sinceWatermark</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>the <code>QredoVaultHighWatermark</code> specifying the location in the Vault to search from. Set this to <code>QredoVaultHighWatermarkOrigin</code> to start the enumeration from the beginning or use the <code>highWatermark</code> method to get the current watermark</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>will be called when the enumeration is complete or if an error occurs</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)enumerateVaultItemsAllVersionsUsingBlock:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-enumerateVaultItemsAllVersionsUsingBlock:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)enumerateVaultItemsAllVersionsUsingBlock:completionHandler:">-enumerateVaultItemsAllVersionsUsingBlock:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Goes through the items in this Vault and calls the specified code block on each one. Iterates through all versions of all items in the Vault, including deleted items.</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Retrieving an item from the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Swift</a></p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">enumerateVaultItemsAllVersionsUsingBlock</span><span class="p">:</span>
+            <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">,</span> <span class="n">BOOL</span> <span class="o">*</span><span class="p">))</span><span class="nv">block</span>
+                               <span class="nf">completionHandler</span><span class="p">:</span>
+                                   <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="nv">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">enumerateItemsAllVersions</span><span class="p">(</span><span class="n">_</span> <span class="nv">block</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="p">?,</span> <span class="kt">UnsafeMutablePointer</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>block</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Called for each vault item, passing the <code>QredoVaultItemMetadata</code>.  Set <code>stop</code> to YES to terminate the enumeration</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>will be called when the enumeration is complete or if an error occurs</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)enumerateVaultItemsAllVersionsUsingBlock:since:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-enumerateVaultItemsAllVersionsUsingBlock:since:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)enumerateVaultItemsAllVersionsUsingBlock:since:completionHandler:">-enumerateVaultItemsAllVersionsUsingBlock:since:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Goes through the items in this Vault at the point after the specified highwatermark and calls the specified code block on each one. Iterates through all versions of all items in the Vault, including deleted items.</p>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Retrieving an item from the Vault: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/retrieving_an_item_from_the_vault.html">Swift</a></p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="nf">enumerateVaultItemsAllVersionsUsingBlock</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">,</span>
+                                                   <span class="n">BOOL</span> <span class="o">*</span><span class="p">))</span><span class="n">block</span>
+                                   <span class="n">since</span><span class="o">:</span>
+                                       <span class="p">(</span><span class="n"><a href="../Classes.html#/c:objc(cs)QredoVaultHighWatermark">QredoVaultHighWatermark</a></span> <span class="o">*</span><span class="p">)</span><span class="n">sinceWatermark</span>
+                       <span class="n">completionHandler</span><span class="o">:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="n">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">enumerateItemsAllVersions</span><span class="p">(</span><span class="n">_</span> <span class="nv">block</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="p">?,</span> <span class="kt">UnsafeMutablePointer</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>block</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Called for each vault item, passing the <code>QredoVaultItemMetadata</code>.  Set <code>stop</code> to YES to terminate the enumeration</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>sinceWatermark</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>QredoVaultHighWatermark</code> specifying the location in the Vault to search from. Set this to <code>QredoVaultHighWatermarkOrigin</code> to start the enumeration from the beginning or use the <code>highWatermark</code> method to get the current watermark</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>will be called when the enumeration is complete or if an error occurs</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)highWatermark"></a>
+                    <a name="//apple_ref/objc/Method/-highWatermark" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)highWatermark">-highWatermark</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The current highwatermark for this Vault.</p>
+
+<p>This is the location from which updates will arrive in the <a href="../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:">didReceiveVaultItemMetadata</a> method</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="n"><a href="../Classes.html#/c:objc(cs)QredoVaultHighWatermark">QredoVaultHighWatermark</a></span> <span class="o">*</span><span class="p">)</span><span class="n">highWatermark</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">highWatermark</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes.html#/c:objc(cs)QredoVaultHighWatermark">QredoVaultHighWatermark</a></span><span class="o">!</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)resetWatermark"></a>
+                    <a name="//apple_ref/objc/Method/-resetWatermark" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)resetWatermark">-resetWatermark</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Resets the highwatermark for this Vault to the beginning.
+ If a <code><a href="../Protocols/QredoVaultObserver.html">QredoVaultObserver</a></code> has been added, the <a href="../Protocols/QredoVaultObserver.html#/c:objc(pl)QredoVaultObserver(im)qredoVault:didReceiveVaultItemMetadata:">didReceiveVaultItemMetadata</a> will be invoked with all items in the Vault</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">resetWatermark</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">resetWatermark</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Deleting%20Vault%20items"></a>
+                <a name="//apple_ref/objc/Section/Deleting Vault items" class="dashAnchor"></a>
+                <a href="#/Deleting%20Vault%20items">
+                  <h3 class="section-name">Deleting Vault items</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)deleteItem:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-deleteItem:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)deleteItem:completionHandler:">-deleteItem:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Deletes a vault item and returns its descriptor</p>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    The item will be permanently deleted and cannot be retrieved later
+
+</div>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Deleting a Vault item: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/deleting_a_vault_item.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/deleting_a_vault_item.html">Swift</a></p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">deleteItem</span><span class="p">:(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">)</span><span class="nv">metadata</span>
+    <span class="nf">completionHandler</span><span class="p">:</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span> <span class="o">*</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="nv">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">deleteItem</span><span class="p">(</span><span class="n">_</span> <span class="nv">metadata</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="o">!</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemDescriptor.html">QredoVaultItemDescriptor</a></span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>metadata</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>QredoVaultItemMetadata</code> of the item to delete</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Called with the <code>QredoVaultItemDescriptor</code> of the deleted item if the delete is successful or an error.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Updating%20Vault%20items"></a>
+                <a name="//apple_ref/objc/Section/Updating Vault items" class="dashAnchor"></a>
+                <a href="#/Updating%20Vault%20items">
+                  <h3 class="section-name">Updating Vault items</h3>
+                </a>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoVault(im)updateItem:value:completionHandler:"></a>
+                    <a name="//apple_ref/objc/Method/-updateItem:value:completionHandler:" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoVault(im)updateItem:value:completionHandler:">-updateItem:value:completionHandler:</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Updates the vault item with new metadata and value</p>
+
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>To store a reference to the updated vault item, use <code>newItemMetadata.descriptor</code></p>
+
+</div>
+
+<div class="aside aside-see">
+    <p class="aside-title">See</p>
+    <p>Updating a vault item: <a href="https://docs.qredo.com/ios/objective-c/programming_guide/html/the_vault/updating_a_vaultitem.html">Objective-C</a>, <a href="https://docs.qredo.com/ios/swift/programming_guide/html/the_vault/updating_a_vaultitem.html">Swift</a></p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">updateItem</span><span class="p">:(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">)</span><span class="nv">metadata</span>
+                <span class="nf">value</span><span class="p">:(</span><span class="n">NSData</span> <span class="o">*</span><span class="p">)</span><span class="nv">value</span>
+    <span class="nf">completionHandler</span><span class="p">:</span>
+        <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span> <span class="o">*</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="p">))</span><span class="nv">completionHandler</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">func</span> <span class="nf">updateItem</span><span class="p">(</span><span class="n">_</span> <span class="nv">metadata</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="o">!</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Data</span><span class="o">!</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="p">((</span><span class="kt"><a href="../Classes/QredoVaultItemMetadata.html">QredoVaultItemMetadata</a></span><span class="p">?,</span> <span class="kt">Error</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span><span class="o">!</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>metadata</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The metadata for the vault item to update. To update the vault item&rsquo;s metadata, pass a <code>QredoMutableVaultItemMetadata</code> containing the updated data</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>value</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The new value of the vault item</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completionHandler</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Invoked with a new meta data object for the updated vault item or an error.</p>
+
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>@<a class="link" href="https://qredo.com" target="_blank" rel="external">Qredo</a> Ltd 2016. All rights reserved. API version 0.99.1</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.5</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>
