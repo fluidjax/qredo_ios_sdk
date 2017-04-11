@@ -149,7 +149,7 @@ extern QredoVaultHighWatermark * const QredoVaultHighWatermarkOrigin;
 @interface QredoMutableVaultItemMetadata :QredoVaultItemMetadata
 
 /** The `QredoVaultItemDescriptor` used to retrieve an item from the Vault with `getItemWithDescriptor` and `getItemMetadataWithDescriptor`  */
-@property QredoVaultItemDescriptor *descriptor;
+@property (copy) QredoVaultItemDescriptor *descriptor;
 /** Editable version of the metadata dictionary  */
 @property (copy) NSDictionary *summaryValues;
 /** Set the value of the object with the specified key in the metadata dictionary
