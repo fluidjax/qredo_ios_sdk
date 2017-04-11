@@ -17,7 +17,7 @@
 @class QredoClient;
 @class QredoRendezvousMetadata;
 @class QredoCertificate;
-
+@class QredoPushMessage;
 
 typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
     QredoClientOptionsTransportTypeHTTP,

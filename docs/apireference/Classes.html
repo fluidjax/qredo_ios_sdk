@@ -74,6 +74,9 @@
                 <a class="nav-group-task-link" href="Classes/QredoObjectRef.html">QredoObjectRef</a>
               </li>
               <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/QredoPushMessage.html">QredoPushMessage</a>
+              </li>
+              <li class="nav-group-task">
                 <a class="nav-group-task-link" href="Classes/QredoQUID.html">QredoQUID</a>
               </li>
               <li class="nav-group-task">
@@ -469,6 +472,50 @@ Listening for Conversation Messages: <a href="https://docs.qredo.com/ios/objecti
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="kd">class</span> <span class="kt">QredoLogger</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoPushMessage"></a>
+                    <a name="//apple_ref/objc/Class/QredoPushMessage" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoPushMessage">QredoPushMessage</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Encapsulates the decoding of incoming Apple Push Notifications into Qredo Objects representing the decrypted message and its parent (QredoConversation)
+The APN contains a Qredo Queue ID which is an internal representation of one side of a QredoConversation, this reference is used to lookup a reference
+to the coresponding QredoConversaition. This lookup table is store in NSUserDefaults
+Although the Payload of the Push Notification is Encrypted, the Push Notification leaks some information - in particular the  Queue ID could be used to group
+a number sequence of Push Notificaiotns together.</p>
+
+<p>Without a QredoClient object the Push Notificaiton can&rsquo;t be decrypted. So in order to automatically create a QredoClient when an incoming Push Message is
+received the Login/Credential values must be stored somewhere locally. See Qredo.h initializeFromUserDefaultCredentialsInAppGroup for more details.</p>
+
+                        <a href="Classes/QredoPushMessage.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">@interface</span> <span class="nc">QredoPushMessage</span> <span class="p">:</span> <span class="nc">NSObject</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">class</span> <span class="kt">QredoPushMessage</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
 
                         </div>
                       </div>

@@ -184,23 +184,51 @@
     },
     {
       "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
-      "line": 27,
+      "line": 11,
       "symbol": "QredoPushMessageType",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.enum",
       "warning": "undocumented"
     },
     {
       "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
-      "line": 27,
+      "line": 11,
       "symbol": "QredoPushMessageType",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
       "warning": "undocumented"
     },
     {
       "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
-      "line": 33,
-      "symbol": "QredoPushMessage",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
+      "line": 48,
+      "symbol": "QredoPushMessage.messageType",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
+      "line": 49,
+      "symbol": "QredoPushMessage.queueId",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
+      "line": 61,
+      "symbol": "QredoPushMessage.sequenceValue",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
+      "line": 62,
+      "symbol": "QredoPushMessage.conversationRef",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
+      "line": 73,
+      "symbol": "QredoPushMessage.+initializeWithRemoteNotification:completionHandler:",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
       "warning": "undocumented"
     },
     {
