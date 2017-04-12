@@ -94,7 +94,7 @@ userInfo:nil]; \
     NSMutableString *sbuf = [NSMutableString stringWithCapacity:capacity];
     const unsigned char *buf = data.bytes;
     
-    for (int i = 0; i < data.length; i++){
+    for (uint i = 0; i < data.length; i++){
         [sbuf appendFormat:@"%02X",(unsigned int)buf[i]];
     }
     

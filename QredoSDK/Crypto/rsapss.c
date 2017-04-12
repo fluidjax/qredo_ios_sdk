@@ -92,7 +92,7 @@ int rsa_pss_sha256_encode(const void *input_hash_data,size_t input_hash_data_len
     //11. Set the leftmost 8emLen - emBits bits of the leftmost octet in
     //maskedDB to zero.
     
-    long zeroCount = 8 * emLen - emBits;
+    long zeroCount = (long)(8 * emLen - emBits);
     
     int byteNum = 0;
     
@@ -146,7 +146,7 @@ int rsa_pss_sha256_verify(const void *mHash,size_t mHashLen,
     
     const uint8_t *EM = (const uint8_t *)encoded_message;
     
-    int i;
+    uint i;
     
     //skipping 2. This function just decodes PSS, but doesn't verify
     
@@ -182,7 +182,7 @@ int rsa_pss_sha256_verify(const void *mHash,size_t mHashLen,
     //maskedDB are not all equal to zero, output "inconsistent" and
     //stop.
     
-    long zeroCount = 8 * emLen - emBits;
+    long zeroCount = (long)(8 * emLen - emBits);
     
     
     
@@ -209,7 +209,7 @@ int rsa_pss_sha256_verify(const void *mHash,size_t mHashLen,
     //9.  Set the leftmost 8emLen - emBits bits of the leftmost octet in DB
     //to zero.
     
-    zeroCount = 8 * emLen - emBits;
+    zeroCount = (long)(8 * emLen - emBits);
     
     byteNum = 0;
     
@@ -289,7 +289,6 @@ fail:
  * \param dlen      length of destination buffer
  * \param src       source of the mask generation
  * \param slen      length of the source buffer
- * \param md_ctx    message digest context to use
  */
 static void mgf_mask(unsigned char *dst,size_t dlen,
                      unsigned char *src,size_t slen) {

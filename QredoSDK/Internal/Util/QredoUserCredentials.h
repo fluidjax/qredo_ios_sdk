@@ -6,9 +6,9 @@
 
 
 
-@property (strong) NSString *appId;
-@property (strong) NSString *userId;
-@property (strong) NSString *userSecure;
+@property (strong, atomic) NSString *appId;
+@property (strong, atomic) NSString *userId;
+@property (strong, atomic) NSString *userSecure;
 
 
 -(instancetype)initWithAppId:(NSString *)appId

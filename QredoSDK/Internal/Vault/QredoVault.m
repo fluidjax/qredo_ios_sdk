@@ -820,7 +820,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 
 -(void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler {
     //TODO: DH - No current way to stop subscribing, short of disconnecting from server. Services team may add support for this in future.
-    QredoLogDebug(@"QredoVault: unsubscribeWithCompletionHandler"); //<- not called
+    QredoLogDebug(@"QredoVault: unsubscribeWithCompletionHandler"); 
 }
 
 

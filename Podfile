@@ -57,8 +57,8 @@ target 'QredoXDK' do
 end
 
 
-target 'QredoXDK_Universal' do
-end
+# target 'QredoXDK_Universal' do
+# end
 
 
 ############################################################
@@ -68,6 +68,7 @@ post_install do |installer_representation|
     installer_representation.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
             config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
+			config.build_settings['OTHER_CFLAGS'] = "$(inherited) -Qunused-arguments -Xanalyzer -analyzer-disable-all-checks"
         end
     end
 end

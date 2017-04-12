@@ -174,7 +174,6 @@
 		66F775441BD6545200F01A2C /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */; };
 		66FCEC141C1848C200C865FE /* QredoTransportSSLTrustUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F774DA1BD64CE200F01A2C /* QredoTransportSSLTrustUtils.h */; };
 		6FF88F3B9B3BE35432CA28D2 /* libPods-QredoCryptoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD51C2673DD70D3F697B2E77 /* libPods-QredoCryptoTests.a */; };
-		77537D7A8CAD1109BB103FBA /* libPods-QredoXDK_Universal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E5A89C886B1B626BA9CE8B62 /* libPods-QredoXDK_Universal.a */; };
 		83089DA51E8D270D0051F148 /* QredoNetworkClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 83089DA31E8D268F0051F148 /* QredoNetworkClock.m */; };
 		830A3EF01BFF38EC002CE210 /* MultiPageMessageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 830A3EEF1BFF38EC002CE210 /* MultiPageMessageTest.m */; };
 		831164CA1C1895E600661D7C /* QredoLocalIndexDataStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 831164C71C18941400661D7C /* QredoLocalIndexDataStore.m */; };
@@ -627,7 +626,6 @@
 		1109FBEC1418EED5DADBE6DD /* Pods-QredoPushTestServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoPushTestServiceExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoPushTestServiceExtension/Pods-QredoPushTestServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		15B56EDB18E433E1DF80E9C2 /* Pods-QredoXDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoXDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoXDK/Pods-QredoXDK.debug.xcconfig"; sourceTree = "<group>"; };
 		4341D992A0FFD5D002B40FC8 /* Pods-QredoXDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoXDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoXDK/Pods-QredoXDK.release.xcconfig"; sourceTree = "<group>"; };
-		4A9F9FB8819A74BDF4A94F9C /* Pods-QredoXDK_Universal.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoXDK_Universal.debug.xcconfig"; path = "Pods/Target Support Files/Pods-QredoXDK_Universal/Pods-QredoXDK_Universal.debug.xcconfig"; sourceTree = "<group>"; };
 		4BEEDDB9EFC735DBF8AFD05E /* Pods-QredoCryptoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoCryptoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoCryptoTests/Pods-QredoCryptoTests.release.xcconfig"; sourceTree = "<group>"; };
 		4F9F780D971578BAF3F6A2C4 /* libPods-QredoXDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoXDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5496FFA511232933B5FC27E2 /* Pods-PushTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PushTests/Pods-PushTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -831,6 +829,7 @@
 		83089DA21E8D268F0051F148 /* QredoNetworkClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoNetworkClock.h; sourceTree = "<group>"; };
 		83089DA31E8D268F0051F148 /* QredoNetworkClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoNetworkClock.m; sourceTree = "<group>"; };
 		830A3EEF1BFF38EC002CE210 /* MultiPageMessageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiPageMessageTest.m; sourceTree = "<group>"; };
+		830B3D791E9E391F002059B8 /* XcodeWarnings.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = XcodeWarnings.xcconfig; sourceTree = "<group>"; };
 		831164C61C18941400661D7C /* QredoLocalIndexDataStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoLocalIndexDataStore.h; path = LocalIndex/QredoLocalIndexDataStore.h; sourceTree = "<group>"; };
 		831164C71C18941400661D7C /* QredoLocalIndexDataStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QredoLocalIndexDataStore.m; path = LocalIndex/QredoLocalIndexDataStore.m; sourceTree = "<group>"; };
 		83227B7E1C15CEA5006CAD75 /* _QredoIndexVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _QredoIndexVault.h; sourceTree = "<group>"; };
@@ -946,7 +945,6 @@
 		CD51C2673DD70D3F697B2E77 /* libPods-QredoCryptoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoCryptoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFBF22CDE056F14403CE2377 /* Pods-TestHost.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestHost.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestHost/Pods-TestHost.debug.xcconfig"; sourceTree = "<group>"; };
 		D7666A857CC104A468E78B16 /* Pods-LinguaFrancaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LinguaFrancaTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LinguaFrancaTests/Pods-LinguaFrancaTests.debug.xcconfig"; sourceTree = "<group>"; };
-		DB082FB5FE4FFC1618F5F25C /* Pods-QredoXDK_Universal.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoXDK_Universal.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoXDK_Universal/Pods-QredoXDK_Universal.release.xcconfig"; sourceTree = "<group>"; };
 		DCC22DA91A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoAuthenticatedRendezvousTag.h; sourceTree = "<group>"; };
 		DCC22DAA1A8398D90047AB18 /* QredoAuthenticatedRendezvousTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoAuthenticatedRendezvousTag.m; sourceTree = "<group>"; };
 		DCCEED681A9CDD0C001CCC78 /* QredoRendezvousAnonymousHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoRendezvousAnonymousHelperTests.m; sourceTree = "<group>"; };
@@ -962,7 +960,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77537D7A8CAD1109BB103FBA /* libPods-QredoXDK_Universal.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1082,6 +1079,7 @@
 		0A16F8BB19C3567E00639779 /* Qredo */ = {
 			isa = PBXGroup;
 			children = (
+				830B3D791E9E391F002059B8 /* XcodeWarnings.xcconfig */,
 				8334ED721CF5A130006C89CE /* MasterConfig.h */,
 				834FB42D1D75E354002B57BA /* QredoXDK-Info.plist */,
 				836A74C51E79953F005C9EF2 /* External */,
@@ -1294,8 +1292,6 @@
 				82CA98E079053836F198710A /* Pods-TestHost.release.xcconfig */,
 				D7666A857CC104A468E78B16 /* Pods-LinguaFrancaTests.debug.xcconfig */,
 				BE71788DA7E457B75175D565 /* Pods-LinguaFrancaTests.release.xcconfig */,
-				4A9F9FB8819A74BDF4A94F9C /* Pods-QredoXDK_Universal.debug.xcconfig */,
-				DB082FB5FE4FFC1618F5F25C /* Pods-QredoXDK_Universal.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1928,16 +1924,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6602D9C41C24239500CB5794 /* Build configuration list for PBXNativeTarget "QredoXDK_Universal" */;
 			buildPhases = (
-				48ABE97ED0D672AD3D681932 /* [CP] Check Pods Manifest.lock */,
-				3F1AB869DDA5DB50313D0F1A /* [CP] Check Pods Manifest.lock */,
-				6FFC214A6D83E872BA4A3EFB /* [CP] Check Pods Manifest.lock */,
 				6602D94F1C24239500CB5794 /* Sources */,
 				6602D9B21C24239500CB5794 /* Frameworks */,
 				6602D9B41C24239500CB5794 /* Headers */,
 				6602D9C21C24239500CB5794 /* Resources */,
 				8370BB731E939C6A008E1BA9 /* Update Version and Build Numbers */,
 				6602D9C91C2423B100CB5794 /* Build */,
-				7690BA2A6AB25A804479B6C3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2537,22 +2529,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		3F1AB869DDA5DB50313D0F1A /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		3FDA3931CBD33A6669047F30 /* [CP] Copy Pods Resources */ = {
@@ -2600,21 +2577,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PushTests/Pods-PushTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		48ABE97ED0D672AD3D681932 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		4E3F92292CD8220E6084D73D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2657,7 +2619,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		6031BDF1B09624274DFE5B4D /* [CP] Copy Pods Resources */ = {
@@ -2734,21 +2696,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoCryptoTests/Pods-QredoCryptoTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6FFC214A6D83E872BA4A3EFB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		75036E3875526886651E16E3 /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2762,21 +2709,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoSDKTests/Pods-QredoSDKTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7690BA2A6AB25A804479B6C3 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-QredoXDK_Universal/Pods-QredoXDK_Universal-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		785AC0932EEF81D2696D2F3D /* 📦 Copy Pods Resources */ = {
@@ -2880,7 +2812,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		A67FD2704D8D2753A3039F76 /* 📦 Copy Pods Resources */ = {
@@ -3000,7 +2932,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		BEB855A0DC4EA90A253C8BB3 /* [CP] Check Pods Manifest.lock */ = {
@@ -3015,7 +2947,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		CAFCA11529CD8B3698CBD0E3 /* [CP] Check Pods Manifest.lock */ = {
@@ -3045,7 +2977,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D8102137EB5BD4385FCA910E /* [CP] Copy Pods Resources */ = {
@@ -3165,7 +3097,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		F2131AF8DD3A1DEE5739DFEC /* [CP] Embed Pods Frameworks */ = {
@@ -3574,7 +3506,6 @@
 		};
 		6602D9C51C24239500CB5794 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4A9F9FB8819A74BDF4A94F9C /* Pods-QredoXDK_Universal.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3623,7 +3554,6 @@
 		};
 		6602D9C61C24239500CB5794 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DB082FB5FE4FFC1618F5F25C /* Pods-QredoXDK_Universal.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3876,6 +3806,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
@@ -3930,6 +3861,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
