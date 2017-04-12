@@ -1,83 +1,6 @@
 {
   "warnings": [
     {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/NSDictionary+QUIDSerialization.h",
-      "line": 4,
-      "symbol": "NSDictionary(QUIDSerialization)",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.category",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/QredoIndexSummaryValues.h",
-      "line": 4,
-      "symbol": "IndexSummaryValueDataType",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.enum",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/QredoIndexSummaryValues.h",
-      "line": 4,
-      "symbol": "IndexSummaryValueDataType",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/QredoIndexSummaryValues.h",
-      "line": 12,
-      "symbol": "QredoIndexSummaryValues",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/_QredoIndexSummaryValues.h",
-      "line": 6,
-      "symbol": "QredoIndexSummaryValuesAttributes",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/_QredoIndexSummaryValues.h",
-      "line": 9,
-      "symbol": "QredoIndexSummaryValuesAttributes",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.constant",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/_QredoIndexSummaryValues.h",
-      "line": 11,
-      "symbol": "QredoIndexSummaryValuesRelationships",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/_QredoIndexSummaryValues.h",
-      "line": 14,
-      "symbol": "QredoIndexSummaryValuesRelationships",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.constant",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/_QredoIndexSummaryValues.h",
-      "line": 19,
-      "symbol": "QredoIndexSummaryValuesID",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/_QredoIndexSummaryValues.h",
-      "line": 22,
-      "symbol": "_QredoIndexSummaryValues",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/Pods/Headers/Public/QredoXDK/QredoXDK/_QredoIndexSummaryValues.h",
-      "line": 50,
-      "symbol": "_QredoIndexSummaryValues(CoreDataGeneratedPrimitiveAccessors)",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.category",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/Qredo.h",
       "line": 22,
       "symbol": "QredoClientOptionsTransportType",
@@ -225,13 +148,6 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
-      "line": 73,
-      "symbol": "QredoPushMessage.+initializeWithRemoteNotification:completionHandler:",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.method.class",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoRendezvous.h",
       "line": 65,
       "symbol": "QredoRendezvousRef.-description",
@@ -278,6 +194,83 @@
       "line": 461,
       "symbol": "IncomingMetadataBlock",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/Categories/NSDictionary+QUIDSerialization.h",
+      "line": 4,
+      "symbol": "NSDictionary(QUIDSerialization)",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.category",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/QredoIndexSummaryValues.h",
+      "line": 4,
+      "symbol": "IndexSummaryValueDataType",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/QredoIndexSummaryValues.h",
+      "line": 4,
+      "symbol": "IndexSummaryValueDataType",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.typedef",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/QredoIndexSummaryValues.h",
+      "line": 12,
+      "symbol": "QredoIndexSummaryValues",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/_QredoIndexSummaryValues.h",
+      "line": 6,
+      "symbol": "QredoIndexSummaryValuesAttributes",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/_QredoIndexSummaryValues.h",
+      "line": 9,
+      "symbol": "QredoIndexSummaryValuesAttributes",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.constant",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/_QredoIndexSummaryValues.h",
+      "line": 11,
+      "symbol": "QredoIndexSummaryValuesRelationships",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/_QredoIndexSummaryValues.h",
+      "line": 14,
+      "symbol": "QredoIndexSummaryValuesRelationships",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.constant",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/_QredoIndexSummaryValues.h",
+      "line": 19,
+      "symbol": "QredoIndexSummaryValuesID",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/_QredoIndexSummaryValues.h",
+      "line": 22,
+      "symbol": "_QredoIndexSummaryValues",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/Internal/LocalIndex/_QredoIndexSummaryValues.h",
+      "line": 50,
+      "symbol": "_QredoIndexSummaryValues(CoreDataGeneratedPrimitiveAccessors)",
+      "symbol_kind": "sourcekitten.source.lang.objc.decl.category",
       "warning": "undocumented"
     }
   ],

@@ -78,4 +78,9 @@ PROJECT STRUCTURE
 
 
 
+Documentation is built using Jazzy
+    Install 'sudo gem install jazzy'
+    To create docs, cd scripts and run './builddocs'
+
+
 
