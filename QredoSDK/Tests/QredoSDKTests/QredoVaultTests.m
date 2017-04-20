@@ -1334,8 +1334,10 @@
 
 
 -(void)testMultiplePutItem {
-    for (int i = 0; i < 5; i++){
+    for (int i = 0; i < 500; i++){
         [self testPutItem];
+        NSLog(@"Loop %i",i);
+        
     }
 }
 
@@ -2073,10 +2075,8 @@
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY,0),^{
         while (keepNotifying){
             [vault notifyObservers:^(id < QredoVaultObserver > observer) {
-                [observer qredoVault:vault
-         didReceiveVaultItemMetadata:nil];
-                [observer        qredoVault:vault
-                      didFailWithError     :nil];
+                [observer qredoVault:vault didReceiveVaultItemMetadata:nil];
+                [observer qredoVault:vault didFailWithError:nil];
             }];
         }
     });

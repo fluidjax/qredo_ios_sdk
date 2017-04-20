@@ -3,7 +3,6 @@ General Notes on compiling the QredoXDK framework - 6/9/16
 
 INSTALL
 -------
-
     PreRequisites
         OSX         (tested with 10.11.6)
         XCode       (tested with 7.3.1)
@@ -11,19 +10,13 @@ INSTALL
                     sudo gem install activesupport -v 4.2.6
                     sudo gem install cocoapods
 
-
     1)  Run "pod install" from base directory.
         The first time this takes several (5-10) minutes to build.  (it probably hasn't crashed its OpenSSL building from source)
-
     2)  Open QredoSDK.xcworkspace
     3)  For the "QredoXDK" Target set Team/Provisioning Profile for your own account.
     4)  To Generate the QredoXDK framework, set the scheme to "QredoXDK_Universal" and build. (takes a few minutes)
     5)  The framwork file is copied into the project's 'base directory, and is named "QredoXDK.framework"
             This framework provides the full Qredo service and can be included in the tutorial project by dragging it into "Embeded Binaries"
-
-
-
-
 
 
 The Main Project Target is QredoXDK
@@ -37,19 +30,11 @@ To build the framework
 The Framework is built using Target QredoXDK_Universal, this places the generated QredoXDK.framework file in the main QredoSDK directory
 
 
-
-
-
-
-
 PROJECT STRUCTURE
 -----------------
-
-
     README                          - this file
     QredoXDK-Info.plist             - plist for building
 !   MasterConfig.h                  - Server definitions and UserID & AppSecret - **** you will need to add your own User/Secret data here *****
-
 
     Qredo
         App                             - App For Testing
@@ -75,12 +60,6 @@ PROJECT STRUCTURE
             QredoSDKTests               - Tests for Main SDK
             QredoCryptTests             - Tests for Crypto sub project
 
-
-
-
 Documentation is built using Jazzy
     Install 'sudo gem install jazzy'
     To create docs, cd scripts and run './builddocs'
-
-
-

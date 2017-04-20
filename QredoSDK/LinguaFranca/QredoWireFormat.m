@@ -177,14 +177,8 @@
 
 -(instancetype)initWithSymbol:(NSString *)symbol {
     self = [super init];
-    NSRegularExpression *regex =
-    [NSRegularExpression regularExpressionWithPattern:@"[a-zA-Z_][a-zA-Z_0-9]*"
-                                              options:0
-                                                error:nil];
-    NSTextCheckingResult *result =
-    [regex firstMatchInString:symbol
-                      options:0
-                        range:NSMakeRange(0,symbol.length)];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[a-zA-Z_][a-zA-Z_0-9]*" options:0 error:nil];
+    NSTextCheckingResult *result = [regex firstMatchInString:symbol options:0 range:NSMakeRange(0,symbol.length)];
     
     if ([symbol isEqualToString:[symbol substringWithRange:[result range]]]){
         _marker = QredoMarkerSymbol;

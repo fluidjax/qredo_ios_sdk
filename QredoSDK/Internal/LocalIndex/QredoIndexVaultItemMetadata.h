@@ -1,5 +1,5 @@
 /* HEADER GOES HERE */
-#import "_QredoIndexVaultItemMetaData.h"
+#import "_QredoIndexVaultItemMetadata.h"
 
 @class QredoVaultItemMetadata;
 @class QredoVaultItemDescriptor;
