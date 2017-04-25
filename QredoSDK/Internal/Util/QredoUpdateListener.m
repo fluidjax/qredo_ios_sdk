@@ -46,6 +46,11 @@
 }
 
 
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
 -(void)startListening {
     NSAssert(_delegate,@"Conversation delegate should be set before starting listening for the updates");
     

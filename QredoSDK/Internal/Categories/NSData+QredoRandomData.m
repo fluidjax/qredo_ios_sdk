@@ -5,7 +5,7 @@
 @implementation NSData (QredoRandomData)
 
 +(NSData *)dataWithRandomBytesOfLength:(NSUInteger)length {
-    uint8_t *randomBytes = malloc(length);
+    uint8_t *randomBytes = malloc(length); //this is automatically freed in the dataWithBytesNoCopy call
     
     int err = SecRandomCopyBytes(kSecRandomDefault,length,randomBytes);
     

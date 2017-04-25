@@ -371,7 +371,7 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
                  QredoQUID *previousSequenceId =metadata.summaryValues[QredoVaultItemMetadataItemVersionId];
                  
                  
-                 if (!previousSequenceValue){
+                 if (previousSequenceValue==nil){
                      return nil;
                  }
                  

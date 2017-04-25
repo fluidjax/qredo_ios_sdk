@@ -890,6 +890,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
         QredoLogError(@"Failed to decode PSS data. Result %d",pss_result);
     }
     
+    free(decryptedSignatureBytes);
     return pss_result == QREDO_RSA_PSS_VERIFIED;
 }
 
@@ -923,6 +924,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
     BOOL success = YES;
     
     NSData *tag = [keyIdentifier dataUsingEncoding:NSUTF8StringEncoding];
+    
+    if (!tag)return NO;
     
     //Specify that all items of kSecClassKey which have this identifier tag should be deleted
     NSDictionary *secKeysToDelete = @{ (__bridge id)kSecClass:(__bridge id)kSecClassKey,

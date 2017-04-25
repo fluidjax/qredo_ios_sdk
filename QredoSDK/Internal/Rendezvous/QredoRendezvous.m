@@ -152,7 +152,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     NSNumber *hwmNum = [defaults objectForKey:self.tag];
     
-    if (!hwmNum){
+    if (hwmNum==nil){
         self->_highWatermark = QredoRendezvousHighWatermarkOrigin;
     } else {
         self->_highWatermark = [hwmNum longLongValue];
