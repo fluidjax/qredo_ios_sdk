@@ -36,7 +36,7 @@
     [[QredoPushMessage alloc] initializeWithRemoteNotification:message
                                                    qredoClient:client
                                              completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
-                                                 completionHandler(pushMessage,error);
+                                                 if (completionHandler)completionHandler(pushMessage,error);
                                              }];
     
 }
@@ -46,7 +46,7 @@
                       completionHandler:(void (^)(QredoPushMessage *pushMessage,NSError *error))completionHandler{
     [[QredoPushMessage alloc] initializeWithRemoteNotification:message
                                              completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
-                                                 completionHandler(pushMessage,error);
+                                                if (completionHandler)completionHandler(pushMessage,error);
                                              }];
     
 }
@@ -60,7 +60,7 @@
     
     if (!aps || !q){
         NSLog(@"Invalid message");
-        completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
+        if (completionHandler)completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
         return;
     }
     
@@ -105,13 +105,13 @@
     
     if (!aps || !q){
         NSLog(@"Invalid message");
-        completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
+        if (completionHandler)completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
         return;
     }
     
     if (!client){
         NSLog(@"Invalid Qredo Client");
-        completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
+        if (completionHandler)completionHandler(nil, [NSError errorWithDomain:@"qredopushmessage" code:1000 userInfo:nil]);
         return;
     }
     
@@ -157,7 +157,7 @@
     [client fetchConversationWithRef:self.conversationRef completionHandler:^(QredoConversation *retrievedConversation, NSError *error) {
         if (error){
             self.conversation = nil;
-            completionHandler(nil,error);
+            if (completionHandler)completionHandler(nil,error);
         }else{
             self.conversation = retrievedConversation;
             
@@ -167,7 +167,7 @@
                 //small payload
                 [self decodeSequenceValue:q];
             }
-            completionHandler(self, nil);
+            if (completionHandler)completionHandler(self, nil);
         }
     }];
 }

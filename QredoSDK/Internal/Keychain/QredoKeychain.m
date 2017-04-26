@@ -40,10 +40,12 @@
 
 -(instancetype)initWithData:(NSData *)serializedData {
     self = [super init];
-    [self initialize];
-    _isInitialized = YES;
-    _masterKey = [serializedData copy];
-    [self deriveKeys];
+    if (self){
+        [self initialize];
+        _isInitialized = YES;
+        _masterKey = [serializedData copy];
+        [self deriveKeys];
+    }
     return self;
 }
 

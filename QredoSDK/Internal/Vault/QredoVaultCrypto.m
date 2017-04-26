@@ -15,28 +15,39 @@
 #define QREDO_VAULT_SYSTEM_INFO  @"System Vault"
 #define QREDO_VAULT_USER_INFO    @"User Vault"
 
+
+
 @implementation QredoVaultKeys
 
 -(instancetype)initWithVaultKey:(NSData *)vaultKey {
     self = [super init];
     
-    if (!self)return nil;
-    
-    QredoED25519SigningKey *ownershipKeyPair = [QredoVaultCrypto ownershipSigningKeyWithVaultKey:vaultKey];
-    QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
-    QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
-    
-    _vaultKey = vaultKey;
-    _ownershipKeyPair = ownershipKeyPair;
-    _encryptionKey = encryptionAndAuthKeys.encryptionKey;
-    _authenticationKey = encryptionAndAuthKeys.authenticationKey;
-    _vaultId = vaultID;
+    if (self){
+        QredoED25519SigningKey *ownershipKeyPair = [QredoVaultCrypto ownershipSigningKeyWithVaultKey:vaultKey];
+        QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
+        QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
+        
+        _vaultKey = vaultKey;
+        _ownershipKeyPair = ownershipKeyPair;
+        _encryptionKey = encryptionAndAuthKeys.encryptionKey;
+        _authenticationKey = encryptionAndAuthKeys.authenticationKey;
+        _vaultId = vaultID;
+    }
     
     return self;
 }
 
 
 @end
+
+
+
+
+@interface QredoVaultCrypto()
+@property (readwrite) NSData *bulkKey;
+@property (readwrite) NSData *authenticationKey;
+@end
+
 
 @implementation QredoVaultCrypto
 
@@ -54,8 +65,10 @@
 -(instancetype)initWithBulkKey:(NSData *)bulkKey
              authenticationKey:(NSData *)authenticationKey {
     self = [super init];
-    _bulkKey           = bulkKey;
-    _authenticationKey = authenticationKey;
+    if (self){
+        _bulkKey           = bulkKey;
+        _authenticationKey = authenticationKey;
+    }
     return self;
 }
 
@@ -119,7 +132,7 @@
 -(NSData *)encryptIncludingMessageHeaderWithData:(NSData *)data {
     if (!data)data = [NSData data];
     
-    NSData *encryptedMetadata = [[CryptoImplV1 sharedInstance] encryptWithKey:_bulkKey data:data];
+    NSData *encryptedMetadata = [[CryptoImplV1 sharedInstance] encryptWithKey:self.bulkKey data:data];
     
     NSData *encryptedMetadataWithMessageHeader =
     [QredoPrimitiveMarshallers marshalObject:encryptedMetadata
@@ -136,7 +149,7 @@
     
     [authCodeData appendData:serializedItemRef];
     
-    return [[CryptoImplV1 sharedInstance] getAuthCodeWithKey:_authenticationKey data:authCodeData];
+    return [[CryptoImplV1 sharedInstance] getAuthCodeWithKey:self.authenticationKey data:authCodeData];
 }
 
 
@@ -186,7 +199,7 @@
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
     
-    NSData *value = [[CryptoImplV1 sharedInstance] decryptWithKey:_bulkKey data:encryptedBodyRaw];
+    NSData *value = [[CryptoImplV1 sharedInstance] decryptWithKey:self.bulkKey data:encryptedBodyRaw];
     
     return [QLFVaultItem vaultItemWithRef:encryptedVaultItem.header.ref metadata:vaultItemMetaDataLF body:value];
 }
@@ -213,7 +226,7 @@
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
     
-    NSData *decryptedHeaders = [[CryptoImplV1 sharedInstance] decryptWithKey:_bulkKey data:encyrptedHeadersRaw];
+    NSData *decryptedHeaders = [[CryptoImplV1 sharedInstance] decryptWithKey:self.bulkKey data:encyrptedHeadersRaw];
     
     return [QredoPrimitiveMarshallers unmarshalObject:decryptedHeaders
                                          unmarshaller:[QLFVaultItemMetadata unmarshaller]
@@ -224,7 +237,7 @@
 -(NSData *)encryptVaultItemValue:(NSData *)data {
     if (!data)data = [NSData data];
     
-    return [[CryptoImplV1 sharedInstance] encryptWithKey:_bulkKey data:data];
+    return [[CryptoImplV1 sharedInstance] encryptWithKey:self.bulkKey data:data];
 }
 
 

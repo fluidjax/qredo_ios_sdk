@@ -2,6 +2,14 @@
 #import "QredoDateTime.h"
 #import "QredoHelpers.h"
 
+
+@interface QredoDate ()
+@property (readwrite) NSUInteger hour;
+@property (readwrite) NSUInteger minute;
+@property (readwrite) NSUInteger second;
+@property (readwrite) NSUInteger milli;
+@end
+
 @implementation QredoDate :NSObject
 
 +(instancetype)dateWithYear:(NSUInteger)year month:(NSUInteger)month day:(NSUInteger)day {
@@ -21,9 +29,11 @@
 
 -(instancetype)initWithYear:(NSUInteger)year month:(NSUInteger)month day:(NSUInteger)day {
     self = [super init];
-    _year  = year;
-    _month = month;
-    _day   = day;
+    if (self){
+        _year  = year;
+        _month = month;
+        _day   = day;
+    }
     return self;
 }
 
@@ -41,17 +51,19 @@
 
 -(instancetype)initWithDateComponents:(NSDateComponents *)dateComponents {
     self = [super init];
-    _year  = [dateComponents year];
-    _month = [dateComponents month];
-    _day   = [dateComponents day];
+    if (self){
+        _year  = [dateComponents year];
+        _month = [dateComponents month];
+        _day   = [dateComponents day];
+    }
     return self;
 }
 
 
 -(NSComparisonResult)compare:(QredoDate *)other {
-    QREDO_COMPARE_SCALAR(year);
-    QREDO_COMPARE_SCALAR(month);
-    QREDO_COMPARE_SCALAR(day);
+    QREDO_COMPARE_SCALAR2(self.year, other.year);
+    QREDO_COMPARE_SCALAR2(self.month, other.month);
+    QREDO_COMPARE_SCALAR2(self.day, other.day);
     return NSOrderedSame;
 }
 
@@ -115,22 +127,22 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
 
 -(instancetype)initWithMillisSinceMidnight:(NSUInteger)millisSinceMidnight {
     self = [super init];
-    
-    _millisSinceMidnight = millisSinceMidnight;
-    uint32_t timeMillis  = (uint32_t)millisSinceMidnight;
-    uint32_t hour   = timeMillis / MILLIS_PER_HOUR;
-    timeMillis -= hour * MILLIS_PER_HOUR;
-    uint32_t minute = timeMillis / MILLIS_PER_MINUTE;
-    timeMillis -= minute * MILLIS_PER_MINUTE;
-    uint32_t second = timeMillis / MILLIS_PER_SECOND;
-    timeMillis -= second * MILLIS_PER_SECOND;
-    uint32_t milli  = timeMillis;
-    
-    _hour   = hour;
-    _minute = minute;
-    _second = second;
-    _milli  = milli;
-    
+    if (self){
+        _millisSinceMidnight = millisSinceMidnight;
+        uint32_t timeMillis  = (uint32_t)millisSinceMidnight;
+        uint32_t hour   = timeMillis / MILLIS_PER_HOUR;
+        timeMillis -= hour * MILLIS_PER_HOUR;
+        uint32_t minute = timeMillis / MILLIS_PER_MINUTE;
+        timeMillis -= minute * MILLIS_PER_MINUTE;
+        uint32_t second = timeMillis / MILLIS_PER_SECOND;
+        timeMillis -= second * MILLIS_PER_SECOND;
+        uint32_t milli  = timeMillis;
+        
+        _hour   = hour;
+        _minute = minute;
+        _second = second;
+        _milli  = milli;
+    }
     return self;
 }
 
@@ -159,28 +171,29 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
 
 -(instancetype)initWithDateComponents:(NSDateComponents *)dateComponents {
     self = [super init];
-    
-    NSInteger hour   = [dateComponents hour];
-    NSInteger minute = [dateComponents minute];
-    NSInteger second = [dateComponents second];
-    NSInteger milli  = 0;
-    NSInteger millisSinceMidnight = (hour * MILLIS_PER_HOUR) + (minute * MILLIS_PER_MINUTE) + (second * MILLIS_PER_SECOND);
-    
-    _millisSinceMidnight = millisSinceMidnight;
-    _hour   = hour;
-    _minute = minute;
-    _second = second;
-    _milli  = milli;
+    if (self){
+        NSInteger hour   = [dateComponents hour];
+        NSInteger minute = [dateComponents minute];
+        NSInteger second = [dateComponents second];
+        NSInteger milli  = 0;
+        NSInteger millisSinceMidnight = (hour * MILLIS_PER_HOUR) + (minute * MILLIS_PER_MINUTE) + (second * MILLIS_PER_SECOND);
+        
+        _millisSinceMidnight = millisSinceMidnight;
+        _hour   = hour;
+        _minute = minute;
+        _second = second;
+        _milli  = milli;
+    }
     
     return self;
 }
 
 
 -(NSComparisonResult)compare:(QredoTime *)other {
-    QREDO_COMPARE_SCALAR(hour);
-    QREDO_COMPARE_SCALAR(minute);
-    QREDO_COMPARE_SCALAR(second);
-    QREDO_COMPARE_SCALAR(milli);
+    QREDO_COMPARE_SCALAR2(self.hour, other.hour);
+    QREDO_COMPARE_SCALAR2(self.minute, other.minute);
+    QREDO_COMPARE_SCALAR2(self.second, other.second);
+    QREDO_COMPARE_SCALAR2(self.milli, other.milli);
     return NSOrderedSame;
 }
 
@@ -199,11 +212,11 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
     
     if (time == nil)return NO;
     
-    if (_millisSinceMidnight == time.millisSinceMidnight &&
-        _hour == time.hour &&
-        _minute == time.minute &&
-        _second == time.second &&
-        _milli == time.milli)return YES;
+    if (self.millisSinceMidnight == time.millisSinceMidnight &&
+        self.hour == time.hour &&
+        self.minute == time.minute &&
+        self.second == time.second &&
+        self.milli == time.milli)return YES;
     
     return NO;
 }
@@ -256,24 +269,30 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
 
 -(instancetype)initWithDate:(QredoDate *)date time:(QredoTime *)time {
     self = [super init];
-    _date = date;
-    _time = time;
+    if (self){
+        _date = date;
+        _time = time;
+    }
     return self;
 }
 
 
 -(instancetype)initWithDate:(NSDate *)date {
     self = [super init];
-    _date = [QredoDate dateWithDate:date];
-    _time = [QredoTime timeWithDate:date];
+    if (self){
+        _date = [QredoDate dateWithDate:date];
+        _time = [QredoTime timeWithDate:date];
+    }
     return self;
 }
 
 
 -(instancetype)initWithDateComponents:(NSDateComponents *)dateComponents {
     self = [super init];
-    _date = [QredoDate dateWithDateComponents:dateComponents];
-    _time = [QredoTime timeWithDateComponents:dateComponents];
+    if (self){
+        _date = [QredoDate dateWithDateComponents:dateComponents];
+        _time = [QredoTime timeWithDateComponents:dateComponents];
+    }
     return self;
 }
 
@@ -281,12 +300,12 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
 -(NSDate *)asDateInTimezone:(NSTimeZone *)timeZone {
     NSDateComponents *dateComponents = [NSDateComponents new];
     
-    [dateComponents setYear:_date.year];
-    [dateComponents setMonth:_date.month];
-    [dateComponents setDay:_date.day];
-    [dateComponents setHour:_time.hour];
-    [dateComponents setMinute:_time.minute];
-    [dateComponents setSecond:_time.second];
+    [dateComponents setYear:self.date.year];
+    [dateComponents setMonth:self.date.month];
+    [dateComponents setDay:self.date.day];
+    [dateComponents setHour:self.time.hour];
+    [dateComponents setMinute:self.time.minute];
+    [dateComponents setSecond:self.time.second];
     [dateComponents setTimeZone:timeZone];
     
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
@@ -295,15 +314,15 @@ const int MILLIS_PER_HOUR   = MILLIS_PER_MINUTE * 60;
 
 
 -(NSComparisonResult)compare:(QredoDateTime *)object {
-    QREDO_COMPARE_SCALAR2(_date.year,object.date.year);
-    QREDO_COMPARE_SCALAR2(_date.month,object.date.month);
-    QREDO_COMPARE_SCALAR2(_date.day,object.date.day);
+    QREDO_COMPARE_SCALAR2(self.date.year,object.date.year);
+    QREDO_COMPARE_SCALAR2(self.date.month,object.date.month);
+    QREDO_COMPARE_SCALAR2(self.date.day,object.date.day);
     
     
-    QREDO_COMPARE_SCALAR2(_time.hour,object.time.hour);
-    QREDO_COMPARE_SCALAR2(_time.minute,object.time.minute);
-    QREDO_COMPARE_SCALAR2(_time.second,object.time.second);
-    QREDO_COMPARE_SCALAR2(_time.milli,object.time.milli);
+    QREDO_COMPARE_SCALAR2(self.time.hour,object.time.hour);
+    QREDO_COMPARE_SCALAR2(self.time.minute,object.time.minute);
+    QREDO_COMPARE_SCALAR2(self.time.second,object.time.second);
+    QREDO_COMPARE_SCALAR2(self.time.milli,object.time.milli);
     return NSOrderedSame;
 }
 

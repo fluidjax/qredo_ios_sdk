@@ -22,6 +22,13 @@ userInfo:nil]; \
 } \
 
 
+@interface QredoUserCredentials ()
+@property (readwrite) NSString *appId;
+@property (readwrite) NSString *userId;
+@property (readwrite) NSString *userSecure;
+
+
+@end
 
 
 @implementation QredoUserCredentials
@@ -132,9 +139,9 @@ userInfo:nil]; \
 
 -(NSString*)description{
     NSMutableString *ret = [[NSMutableString alloc] init];
-    [ret appendString:[NSString stringWithFormat:@"AppID     : %@", _appId]];
-    [ret appendString:[NSString stringWithFormat:@"UserID    : %@", _userId]];
-    [ret appendString:[NSString stringWithFormat:@"UserSecret: %@", _userSecure]];
+    [ret appendString:[NSString stringWithFormat:@"AppID     : %@", self.appId]];
+    [ret appendString:[NSString stringWithFormat:@"UserID    : %@", self.userId]];
+    [ret appendString:[NSString stringWithFormat:@"UserSecret: %@", self.userSecure]];
     return  [ret copy];
 }
 

@@ -16,6 +16,7 @@ static int signum(long n);
     
     const uint8_t *ours   = [self bytes];
     const uint8_t *theirs = [other bytes];
+    if (!theirs)return (NSComparisonResult)cmp;
     
     for (int i = 0; i < ourlen; i++){
         cmp = signum(ours[i] - theirs[i]);

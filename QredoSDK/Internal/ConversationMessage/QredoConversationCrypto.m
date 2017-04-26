@@ -24,13 +24,10 @@
 
 -(instancetype)initWithCrypto:(id<CryptoImpl>)crypto {
     NSAssert(crypto,@"crypto should not be nil");
-    
     self = [super init];
-    
-    if (!self)return nil;
-    
-    _crypto = crypto;
-    
+    if (self){
+        _crypto = crypto;
+    }
     return self;
 }
 

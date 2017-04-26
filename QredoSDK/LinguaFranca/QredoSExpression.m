@@ -3,6 +3,16 @@
 
 #pragma mark - Qredo S-expression reader implementation
 
+
+
+
+@interface QredoSExpressionReader ()
+@property (readwrite) QredoToken lastToken;
+@property (readwrite) QredoAtom *lastAtom;
+@property (readwrite) NSInputStream *inputStream;
+@end
+
+
 @implementation QredoSExpressionReader
 {
     uint8_t _lookAhead;
@@ -15,22 +25,24 @@
 
 -(instancetype)initWithInputStream:(NSInputStream *)inputStream {
     self = [super init];
-    _lookAhead   = 0;
-    _inputStream = inputStream;
+    if (self){
+        _lookAhead   = 0;
+        _inputStream = inputStream;
+    }
     return self;
 }
 
 
 -(bool)isExhausted {
-    return ![_inputStream hasBytesAvailable];
+    return ![self.inputStream hasBytesAvailable];
 }
 
 
 -(QredoToken)lookAhead {
-    if (![_inputStream hasBytesAvailable]){
+    if (![self.inputStream hasBytesAvailable]){
         return QredoTokenEnd;
     } else {
-        [_inputStream read:&_lookAhead maxLength:1];
+        [self.inputStream read:&_lookAhead maxLength:1];
         switch (_lookAhead){
             case '(':
                 return QredoTokenLParen;
@@ -47,8 +59,8 @@
 
 -(QredoAtom *)readAtom {
     if (_lookAhead != 0){
-        if (![_inputStream hasBytesAvailable]){
-            _lastToken = QredoTokenEnd;
+        if (![self.inputStream hasBytesAvailable]){
+            self.lastToken = QredoTokenEnd;
             @throw [NSException exceptionWithName:@"QredoEOFException"
                                            reason:@"Expected atom, but got EOF."
                                          userInfo:nil];
@@ -56,10 +68,10 @@
     }
     
     //get and parse size
-    NSData *sizeBytes = [_inputStream readUntilByte:':'];
+    NSData *sizeBytes = [self.inputStream readUntilByte:':'];
     
     if (sizeBytes == nil){
-        _lastToken = QredoTokenEnd;
+        self.lastToken = QredoTokenEnd;
         @throw [NSException exceptionWithName:@"QredoEOFException"
                                        reason:@"Expected atom size, but got EOF."
                                      userInfo:nil];
@@ -78,11 +90,11 @@
     NSInteger length = [[NSString stringWithUTF8String:[newBytes bytes]] integerValue];
     
     //now read the given data size
-    NSData *data = [_inputStream readExactLength:length];
+    NSData *data = [self.inputStream readExactLength:length];
     
     //finally return the data
-    _lastToken = QredoTokenAtom;
-    _lastAtom  = data;
+    self.lastToken = QredoTokenAtom;
+    self.lastAtom  = data;
     
     return data;
 }
@@ -103,7 +115,7 @@
                                            reason:[NSString stringWithFormat:@"Expected LPAREN, but got '%c'.",_lookAhead]
                                          userInfo:nil];
     }
-    _lastToken = QredoTokenLParen;
+    self.lastToken = QredoTokenLParen;
 }
 
 
@@ -122,16 +134,16 @@
                                            reason:[NSString stringWithFormat:@"Expected RPAREN, but got '%c'.",_lookAhead]
                                          userInfo:nil];
     }
-    _lastToken = QredoTokenRParen;
+    self.lastToken = QredoTokenRParen;
 }
 
 
 -(void)expectByte:(uint8_t)expectedByte {
     uint8_t inputByte;
-    NSInteger bytesRead = [_inputStream read:&inputByte maxLength:1];
+    NSInteger bytesRead = [self.inputStream read:&inputByte maxLength:1];
     
     if (bytesRead != 1){
-        _lastToken = QredoTokenEnd;
+        self.lastToken = QredoTokenEnd;
         @throw [NSException exceptionWithName:@"QredoUnexpectedTokenException"
                                        reason:[NSString stringWithFormat:@"Expected 1 byte, got %d.",(unsigned int)bytesRead]
                                      userInfo:nil];
@@ -158,7 +170,9 @@
 
 -(instancetype)initWithOutputStream:(NSOutputStream *)outputStream {
     self = [super init];
-    _outputStream = outputStream;
+    if (self){
+        _outputStream = outputStream;
+    }
     return self;
 }
 
@@ -169,19 +183,19 @@
     const char *lengthCString = [lengthString cStringUsingEncoding:NSUTF8StringEncoding];
     NSData *lengthBytes = [NSData dataWithBytes:lengthCString length:[lengthString length]];
     
-    [_outputStream write:[lengthBytes bytes] maxLength:[lengthBytes length]];
-    [_outputStream writeByte:':'];
-    [_outputStream write:(uint8_t *)[atom bytes] maxLength:[atom length]];
+    [self.outputStream write:[lengthBytes bytes] maxLength:[lengthBytes length]];
+    [self.outputStream writeByte:':'];
+    [self.outputStream write:(uint8_t *)[atom bytes] maxLength:[atom length]];
 }
 
 
 -(void)writeLeftParen {
-    [_outputStream writeByte:'('];
+    [self.outputStream writeByte:'('];
 }
 
 
 -(void)writeRightParen {
-    [_outputStream writeByte:')'];
+    [self.outputStream writeByte:')'];
 }
 
 

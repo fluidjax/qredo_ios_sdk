@@ -40,7 +40,7 @@
 
 
 -(id)objectForMetadataKey:(NSString *)key {
-    return [_summaryValues objectForKey:key];
+    return [self.summaryValues objectForKey:key];
 }
 
 
@@ -51,14 +51,13 @@
                     summaryValues:(NSDictionary *)summaryValues {
     self = [super init];
     
-    if (!self)return nil;
-    
-    _descriptor = descriptor;
-    _dataType = dataType;
-    _accessLevel = accessLevel;
-    _created = created;
-    _summaryValues = summaryValues;
-    
+    if (self){
+        _descriptor = descriptor;
+        _dataType = dataType;
+        _accessLevel = accessLevel;
+        _created = created;
+        _summaryValues = summaryValues;
+    }
     return self;
 }
 

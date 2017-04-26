@@ -229,6 +229,7 @@
 #else
     // DFH
     id val = [dictionaryToConvert objectForKey:(__bridge id)kSecValueData];
+    if (!val)return nil;
     if([val isKindOfClass:[NSString class]]) {
         val = [(NSString *)val dataUsingEncoding:NSUTF8StringEncoding];
     }

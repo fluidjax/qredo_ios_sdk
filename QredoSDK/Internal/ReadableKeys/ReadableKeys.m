@@ -46,6 +46,7 @@ static int wsrch __ARGS((char *w,int low,int high));
     
     NSMutableData *keyout = [[NSMutableData alloc] initWithCapacity:128];
     char *cpy = calloc([words length] + 1,1);
+    NSAssert(cpy,@"critical failure"); 
     const char *c = [words UTF8String];
     strncpy(cpy,c,[words length]);
     char *output = keyout.mutableBytes;
@@ -175,6 +176,7 @@ char *e;
         
         NSMutableData *keyout = [[NSMutableData alloc] initWithCapacity:128];
         char *cpy = calloc([subEnglish length] + 1,1);
+        NSAssert(cpy,@"critical failure"); 
         const char *c = [subEnglish UTF8String];
         strncpy(cpy,c,[subEnglish length]);
         char *output = keyout.mutableBytes;

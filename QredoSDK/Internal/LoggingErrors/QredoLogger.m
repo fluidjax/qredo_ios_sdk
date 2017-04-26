@@ -13,8 +13,7 @@ static BOOL inColour = NO;
 static NSMutableArray *classRestrictionArray;
 
 
-static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, const char *, const char *, NSUInteger) = ^(NSString *(^message)(void),
-                        QredoLogLevel currentLevel,QredoLogLevel level, const char *file, const char *functionChar, NSUInteger line)   {
+static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, const char *, const char *, NSUInteger) = ^(NSString *(^message)(void), QredoLogLevel currentLevel,QredoLogLevel level, const char *file, const char *functionChar, NSUInteger line)   {
 
     if (level==QredoLogLevelNone)return;
     if (currentLevel<level)return;  //no logging at this currentLogginLevel
@@ -26,6 +25,10 @@ static void (^LogHandler)(NSString * (^)(void),QredoLogLevel,  QredoLogLevel, co
     
     if ([classRestrictionArray count]>0 && ![QredoLogger isClassOfInterest:className]){
         return;
+    }
+    
+    if (!message){
+        
     }
     
     //❤️💛💚💙💜

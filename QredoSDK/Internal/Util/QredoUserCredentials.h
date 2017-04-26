@@ -5,10 +5,9 @@
 @interface QredoUserCredentials :NSObject
 
 
-
-@property (strong, atomic) NSString *appId;
-@property (strong, atomic) NSString *userId;
-@property (strong, atomic) NSString *userSecure;
+@property (readonly) NSString *appId;
+@property (readonly) NSString *userId;
+@property (readonly) NSString *userSecure;
 
 
 -(instancetype)initWithAppId:(NSString *)appId

@@ -53,13 +53,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
              rendezvousRef:(QredoRendezvousRef *)rendezvousRef
              summaryValues:(NSDictionary *)summaryValues {
     self = [super init];
-    
-    if (!self)return nil;
-    
-    _tag = [tag copy];
-    _authenticationType = authenticationType;
-    _rendezvousRef = rendezvousRef;
-    _summaryValues = summaryValues;
+    if (self){
+        _tag = [tag copy];
+        _authenticationType = authenticationType;
+        _rendezvousRef = rendezvousRef;
+        _summaryValues = summaryValues;
+    }
     
     return self;
 }
@@ -75,13 +74,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount {
     self = [super init];
     
-    if (!self)return nil;
-    
-    _summaryValues = [summaryValues copy];
-    _conversationType = [conversationType copy];
-    _durationSeconds = durationSeconds;
-    _isUnlimitedResponseCount = isUnlimitedResponseCount;
-    _expiresAt = nil;
+    if (self){
+        _summaryValues = [summaryValues copy];
+        _conversationType = [conversationType copy];
+        _durationSeconds = durationSeconds;
+        _isUnlimitedResponseCount = isUnlimitedResponseCount;
+        _expiresAt = nil;
+    }
     return self;
 }
 
@@ -93,13 +92,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                               expiresAt:(NSDate *)expiresAt {
     self = [super init];
     
-    if (!self)return nil;
-    
-    _summaryValues = [summaryValues copy];
-    _conversationType = [conversationType copy];
-    _durationSeconds = durationSeconds;
-    _isUnlimitedResponseCount = isUnlimitedResponseCount;
-    _expiresAt = expiresAt;
+    if (self){
+        _summaryValues = [summaryValues copy];
+        _conversationType = [conversationType copy];
+        _durationSeconds = durationSeconds;
+        _isUnlimitedResponseCount = isUnlimitedResponseCount;
+        _expiresAt = expiresAt;
+    }
     return self;
 }
 
@@ -134,6 +133,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 @property (readwrite,copy) NSString *tag;
 @property (readwrite) QredoRendezvousAuthenticationType authenticationType;
 @property  QredoRendezvousMetadata *metadata;
+@property (readwrite) QredoRendezvousHighWatermark highWatermark;
 
 -(NSSet *)maybe:(long)val;
 
@@ -146,16 +146,16 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     if (!self.tag){
-        self->_highWatermark = QredoRendezvousHighWatermarkOrigin;
+        self.highWatermark = QredoRendezvousHighWatermarkOrigin;
         return;
     }
     
     NSNumber *hwmNum = [defaults objectForKey:self.tag];
     
     if (hwmNum==nil){
-        self->_highWatermark = QredoRendezvousHighWatermarkOrigin;
+        self.highWatermark = QredoRendezvousHighWatermarkOrigin;
     } else {
-        self->_highWatermark = [hwmNum longLongValue];
+        self.highWatermark = [hwmNum longLongValue];
     }
 }
 
@@ -170,36 +170,37 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 -(instancetype)initWithClient:(QredoClient *)client {
     self = [super init];
     
-    if (!self)return nil;
-    
-    _client = client;
-    _rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
-    _vault = [_client systemVault];
-    
-    _enumerationQueue = dispatch_queue_create("com.qredo.rendezvous.enumrate",nil);
-    
-    _observers = [[QredoObserverList alloc] init];
-    
-    _updateListener = [[QredoUpdateListener alloc] init];
-    _updateListener.delegate = self;
-    _updateListener.dataSource = self;
-    _updateListener.pollInterval = kQredoRendezvousUpdateInterval;
-    _updateListener.renewSubscriptionInterval = kQredoRendezvousRenewSubscriptionInterval;
+    if (self){
+        _client = client;
+        _rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
+        _vault = [_client systemVault];
+        
+        _enumerationQueue = dispatch_queue_create("com.qredo.rendezvous.enumrate",nil);
+        
+        _observers = [[QredoObserverList alloc] init];
+        
+        _updateListener = [[QredoUpdateListener alloc] init];
+        _updateListener.delegate = self;
+        _updateListener.dataSource = self;
+        _updateListener.pollInterval = kQredoRendezvousUpdateInterval;
+        _updateListener.renewSubscriptionInterval = kQredoRendezvousRenewSubscriptionInterval;
+    }
     return self;
 }
 
 
 -(instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFRendezvousDescriptor *)descriptor {
     self = [self initWithClient:client];
-    _descriptor = descriptor;
-    
-    _lfAuthType = _descriptor.authenticationType;
-    _tag = _descriptor.tag;
-    _hashedTag = _descriptor.hashedTag;
-    _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:descriptor.requesterKeyPair.privKey.bytes];
-    _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
-    _ownershipPrivateKey = [[QredoRendezvousCrypto instance] accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
-    [self loadHWM];
+    if (self){
+        _descriptor = descriptor;
+        _lfAuthType = _descriptor.authenticationType;
+        _tag = _descriptor.tag;
+        _hashedTag = _descriptor.hashedTag;
+        _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:descriptor.requesterKeyPair.privKey.bytes];
+        _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
+        _ownershipPrivateKey = [[QredoRendezvousCrypto instance] accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
+        [self loadHWM];
+    }
     return self;
 }
 
@@ -587,7 +588,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 @end
 
+
+
 @implementation QredoRendezvous
+
+
 
 
 +(NSString *)readableToTag:(NSString *)readableText {
@@ -647,7 +652,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 
 -(void)resetHighWatermark {
-    _highWatermark = QredoRendezvousHighWatermarkOrigin;
+    self.highWatermark = QredoRendezvousHighWatermarkOrigin;
 }
 
 
@@ -865,7 +870,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoConversation *conversation = [[QredoConversation alloc] initWithClient:_client
                                                              authenticationType:_lfAuthType
                                                                   rendezvousTag:_tag
-                                                                converationType:_configuration.conversationType];
+                                                                converationType:self.configuration.conversationType];
     
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
     
@@ -975,7 +980,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                     completionHandler:completionHandler
                                 since:self.highWatermark
                  highWatermarkHandler:^(QredoRendezvousHighWatermark newWatermark) {
-                     self->_highWatermark = newWatermark;
+                     self.highWatermark = newWatermark;
                      [self saveHWM];
                  }];
 }
@@ -1028,7 +1033,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                         [_updateListener  processSingleItem:conversation
                                                                                               sequenceValue:@(result.sequenceValue)];
                                                                     }];
-                                     self->_highWatermark = result.sequenceValue;
+                                     self.highWatermark = result.sequenceValue;
                                      [self saveHWM];
                                  }];
 }

@@ -14,8 +14,10 @@
 
 -(instancetype)init {
     self = [super init];
-    NSAssert(FALSE,@"QredoCertificate can not be initialized with init without arguments. Please use one of the other init methods");
-    self = nil;
+    if (self){
+        NSAssert(FALSE,@"QredoCertificate can not be initialized with init without arguments. Please use one of the other init methods");
+        self = nil;
+    }
     return self;
 }
 

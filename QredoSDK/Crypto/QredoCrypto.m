@@ -890,7 +890,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
         QredoLogError(@"Failed to decode PSS data. Result %d",pss_result);
     }
     
-    free(decryptedSignatureBytes);
     return pss_result == QREDO_RSA_PSS_VERIFIED;
 }
 
