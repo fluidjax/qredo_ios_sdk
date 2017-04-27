@@ -16,7 +16,8 @@
     
     NSData *randomData = [NSData dataWithBytesNoCopy:randomBytes
                                               length:length
-                                        freeWhenDone:YES];
+                                        freeWhenDone:NO];
+    free(randomBytes);
     return randomData;
 }
 

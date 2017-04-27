@@ -260,7 +260,9 @@
 
 
 -(NSData *)asData {
-    NSMutableData *data = [NSMutableData dataWithBytes:&_marker length:1];
+    NSNumber *i = @(self.marker);
+    char c = [i charValue];
+    NSMutableData *data = [NSMutableData dataWithBytes:&c length:1];
     if ([self.data length] > 0){
         [data appendData:self.data];
     }
