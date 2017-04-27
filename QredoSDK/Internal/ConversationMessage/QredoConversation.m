@@ -105,7 +105,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 -(instancetype)initWithSequenceValue:(NSData *)sequenceValue {
     self = [super init];
-    _sequenceValue = sequenceValue;
+    if (self){
+        _sequenceValue = sequenceValue;
+    }
     return self;
 }
 
@@ -116,7 +118,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     //assuming that watermark is just an integer in the NSData
     //Just to handle the generic usecase treating this as variable length
     
-    const uint8_t *myBytes = (const uint8_t *)_sequenceValue.bytes;
+    const uint8_t *myBytes = (const uint8_t *)self.sequenceValue.bytes;
     const uint8_t *otherBytes = (const uint8_t *)other.sequenceValue.bytes;
     
     unsigned long mySkipBytes = (self.sequenceValue.length < other.sequenceValue.length) ? other.sequenceValue.length - self.sequenceValue.length : 0;
@@ -203,32 +205,32 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
               converationType:(NSString *)conversationType {
     self = [super init];
     
-    if (!self)return nil;
-    
-    self.client = client;
-    
-    //TODO: move to a singleton to avoid creation of these stateless objects for every conversation
-    //or make all the methods as class methods
-    _crypto = [CryptoImplV1 new];
-    _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
-    
-    _conversationQueue = dispatch_queue_create("com.qredo.conversation",nil);
-    
-    _enumerationQueue = dispatch_queue_create("com.qredo.enumeration",nil);
-    _conversationService = [QLFConversations conversationsWithServiceInvoker:self.client.serviceInvoker];
-    
-    _metadata = [QredoConversationMetadata new];
-    _metadata.rendezvousTag = rendezvousTag;
-    _metadata.type = conversationType;
-    
-    _authenticationType = authenticationType;
-    
-    _observers = [[QredoObserverList alloc] init];
-    
-    _updateListener = [QredoUpdateListener new];
-    _updateListener.dataSource = self;
-    _updateListener.delegate = self;
-    [self restorePushState];
+    if (self){
+        self.client = client;
+        
+        //TODO: move to a singleton to avoid creation of these stateless objects for every conversation
+        //or make all the methods as class methods
+        _crypto = [CryptoImplV1 new];
+        _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
+        
+        _conversationQueue = dispatch_queue_create("com.qredo.conversation",nil);
+        
+        _enumerationQueue = dispatch_queue_create("com.qredo.enumeration",nil);
+        _conversationService = [QLFConversations conversationsWithServiceInvoker:self.client.serviceInvoker];
+        
+        _metadata = [QredoConversationMetadata new];
+        _metadata.rendezvousTag = rendezvousTag;
+        _metadata.type = conversationType;
+        
+        _authenticationType = authenticationType;
+        
+        _observers = [[QredoObserverList alloc] init];
+        
+        _updateListener = [QredoUpdateListener new];
+        _updateListener.dataSource = self;
+        _updateListener.delegate = self;
+        [self restorePushState];
+    }
     return self;
 }
 
@@ -833,6 +835,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @end
 
 
+@interface QredoConversation ()
+@property (readwrite) QredoConversationHighWatermark *highWatermark;
+@end
+
 @implementation QredoConversation
 
 
@@ -893,7 +899,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(void)resetHighWatermark {
-    _highWatermark = QredoConversationHighWatermarkOrigin;
+    self.highWatermark = QredoConversationHighWatermarkOrigin;
 }
 
 
@@ -1418,7 +1424,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                 since:self.highWatermark
                     completionHandler:completionHandler
                  highWatermarkHandler:^(QredoConversationHighWatermark *highWatermark) {
-                     _highWatermark = highWatermark;
+                     self.highWatermark = highWatermark;
                  } ];
 }
 
@@ -1440,7 +1446,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
          }
                                  since:self.highWatermark
                   highWatermarkHandler:^(QredoConversationHighWatermark *newWatermark) {
-                      self->_highWatermark = newWatermark;
+                      self.highWatermark = newWatermark;
                   }];
 }
 

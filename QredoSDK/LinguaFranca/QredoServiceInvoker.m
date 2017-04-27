@@ -47,9 +47,8 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 
 -(instancetype)initWithServiceURL:(NSURL *)serviceURL appCredentials:(QredoAppCredentials *)appCredentials {
     self = [super init];
-    
-    if (self != nil){
-        _terminated = NO;
+    if (self){
+        self.terminated = NO;
         
         callbacks = [NSMutableDictionary dictionary];
         
@@ -75,8 +74,8 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
 
 
 -(void)terminate {
-    if (!_terminated){
-        _terminated = YES;
+    if (!self.terminated){
+        self.terminated = YES;
         
         //Closes down the transport threads. Requires re-initialisation.  Transport will trigger error handlers if attempted to be used after termination
         [self.transport close];
@@ -147,7 +146,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
                                                        operationName:operationName];
         [wireFormatWriter writeInterchangeHeader:interchangeHeader];
         [wireFormatWriter writeInvocationHeader:self.appCredentials];
-        requestWriter(wireFormatWriter);
+        if (requestWriter)requestWriter(wireFormatWriter);
         [wireFormatWriter writeEnd];
         [wireFormatWriter writeEnd];
         [wireFormatWriter writeEnd];
@@ -169,7 +168,7 @@ NSString *const QredoLFErrorDomain = @"QredoLFError";
     
     //Send the data to the service
     @try {
-        [_transport send:body userData:correlationID];
+        [self.transport send:body userData:correlationID];
     } @catch (NSException *e){
         if (errorHandler){
             errorHandler([[NSError alloc]initWithDomain:[NSString stringWithFormat:@"Error sending data to Transport - %@",e]

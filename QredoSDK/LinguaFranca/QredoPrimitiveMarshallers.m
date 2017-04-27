@@ -240,8 +240,7 @@
                                                                                                                      minor:QREDO_MINOR_RELEASE_VERSION
                                                                                                                      patch:QREDO_PATCH_RELEASE_VERSION]]];
         }
-        
-        marshaller(object,writer);
+        if (marshaller)marshaller(object,writer);
         
         if (includeHeader){
             [writer writeEnd];
@@ -270,7 +269,7 @@
             [reader readMessageHeader];
         }
         
-        object = unmarshaller(reader);
+        if (unmarshaller)object = unmarshaller(reader);
         
         if (parseHeader){
             [reader readEnd];

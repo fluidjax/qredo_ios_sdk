@@ -14,12 +14,10 @@
 
 -(instancetype)initWithSequenceId:(QredoQUID *)sequenceId itemId:(QredoQUID *)itemId {
     self = [super init];
-    
-    if (!self)return nil;
-    
-    _sequenceId = sequenceId;
-    _itemId = itemId;
-    
+    if (self){
+        _sequenceId = sequenceId;
+        _itemId = itemId;
+    }
     return self;
 }
 
@@ -37,7 +35,7 @@
 
 
 -(NSUInteger)hash {
-    return [_itemId hash] ^ [_sequenceId hash] ^ (NSUInteger)_sequenceValue;
+    return [self.itemId hash] ^ [self.sequenceId hash] ^ (NSUInteger)self.sequenceValue;
 }
 
 

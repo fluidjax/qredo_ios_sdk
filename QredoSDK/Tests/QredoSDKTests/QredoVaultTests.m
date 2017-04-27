@@ -1334,7 +1334,7 @@
 
 
 -(void)testMultiplePutItem {
-    for (int i = 0; i < 500; i++){
+    for (int i = 0; i < 50; i++){
         [self testPutItem];
         NSLog(@"Loop %i",i);
         

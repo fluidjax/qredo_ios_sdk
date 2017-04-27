@@ -25,18 +25,18 @@
 
 -(instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value {
     self = [super init];
-    
-    if (!self)return nil;
-    
-    _metadata = metadata;
-    _value = value;
-    QredoLogInfo(@"Created Vault Item Metadata");
+
+    if (self){
+        _metadata = metadata;
+        _value = value;
+        QredoLogInfo(@"Created Vault Item Metadata");
+    }
     return self;
 }
 
 
 -(id)objectForMetadataKey:(NSString *)key {
-    return [_metadata objectForMetadataKey:key];
+    return [self.metadata objectForMetadataKey:key];
 }
 
 

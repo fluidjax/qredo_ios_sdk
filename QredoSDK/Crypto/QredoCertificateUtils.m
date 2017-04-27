@@ -559,7 +559,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     
     NSDictionary *options = @{ (__bridge id)kSecImportExportPassphrase:password };
     
-    CFArrayRef items = CFArrayCreate(NULL,0,0,NULL);
+    CFArrayRef items = NULL;
     OSStatus status = SecPKCS12Import((__bridge CFDataRef)pkcs12Data,(__bridge CFDictionaryRef)options,&items);
     
     if (status == errSecSuccess){
@@ -574,8 +574,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
     } else {
         QredoLogError(@"Importing PKCS#12 data failed: %@",[QredoLogger stringFromOSStatus:status]);
     }
-    CFRelease(items);
-
+  
     if (identityDictionary){
         //Successfully imported 1 identity, now must validate that identity
         SecTrustRef trustRef = (SecTrustRef)CFDictionaryGetValue(identityDictionary,kSecImportItemTrust);

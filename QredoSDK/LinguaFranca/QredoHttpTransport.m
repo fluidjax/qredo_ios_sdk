@@ -133,7 +133,7 @@ static const NSUInteger maxNumberOfConnections = 10;
     [urlRequest setHTTPMethod:@"POST"];
     
     NSURLSessionUploadTask *uploadTask =
-    [_urlSession uploadTaskWithRequest:urlRequest
+    [self.urlSession uploadTaskWithRequest:urlRequest
                               fromData:payload
                      completionHandler:^void (NSData *inputData,NSURLResponse *response,NSError *error) {
                          if (error){

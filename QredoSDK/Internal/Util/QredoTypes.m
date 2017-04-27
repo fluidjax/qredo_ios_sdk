@@ -79,7 +79,7 @@
     
     QredoObjectRef *obRef = (QredoObjectRef*)object;
     
-    return [_vaultItemDescriptor isEqual:obRef.vaultItemDescriptor];
+    return [self.vaultItemDescriptor isEqual:obRef.vaultItemDescriptor];
 }
 
 

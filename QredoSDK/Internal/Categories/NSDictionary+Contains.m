@@ -6,6 +6,8 @@
 -(BOOL)containsDictionary:(NSDictionary *)subdictionary comparison:(BOOL (^)(id a,id b))comparison {
     NSArray *allkeys = [subdictionary allKeys];
     
+    if (!comparison)return NO;
+    
     for (id key in allkeys){
         id value = [self objectForKey:key];
         id otherValue = [subdictionary objectForKey:key];

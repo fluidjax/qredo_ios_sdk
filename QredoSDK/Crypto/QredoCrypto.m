@@ -880,7 +880,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
     size_t destinationIndex = keyLength - outputDataLength;
     memcpy(decryptedSignatureBytes + destinationIndex,buffer.bytes,outputDataLength);
     
-    NSMutableData *decryptedSignature = [NSMutableData dataWithBytesNoCopy:decryptedSignatureBytes length:keyLength freeWhenDone:YES];
+    NSMutableData *decryptedSignature = [NSMutableData dataWithBytesNoCopy:decryptedSignatureBytes length:keyLength freeWhenDone:NO];
+    free(decryptedSignatureBytes);
     
     NSData *hash = [self sha256:message];
     
@@ -890,7 +891,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding padding,size_t ke
         QredoLogError(@"Failed to decode PSS data. Result %d",pss_result);
     }
     
-    free(decryptedSignatureBytes);
     return pss_result == QREDO_RSA_PSS_VERIFIED;
 }
 

@@ -15,9 +15,11 @@
 
 -(instancetype)init {
     self = [super init];
-    _itemSequenceIds    = [self loadItemSequenceIds];
-    _itemSequenceValues = [self loadItemSequenceValues];
-    _sequenceValue      = [self loadSequenceValue];
+    if (self){
+        _itemSequenceIds    = [self loadItemSequenceIds];
+        _itemSequenceValues = [self loadItemSequenceValues];
+        _sequenceValue      = [self loadSequenceValue];
+    }
     return self;
 }
 

@@ -253,7 +253,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeUnknown
                                          userInfo:@{ NSLocalizedDescriptionKey:@"No App Group Defined"}];
-        completionHandler(nil, error);
+        if (completionHandler)completionHandler(nil, error);
         return;
     }
     NSDictionary *credentials = [QredoClient retrieveCredentialsUserDefaultsAppGroup:appGroup];
@@ -275,7 +275,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeUnknown
                                          userInfo:@{ NSLocalizedDescriptionKey:@"Invalid Stored Credentials"}];
-        completionHandler(nil, error);
+        if (completionHandler)completionHandler(nil, error);
     }
 }
 
@@ -303,7 +303,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
         NSError *error = [NSError errorWithDomain:QredoErrorDomain
                                              code:QredoErrorCodeRendezvousInvalidData
                                          userInfo:@{ NSLocalizedDescriptionKey:@"Invalid Stored Credentials"}];
-        completionHandler(nil, error);
+        if (completionHandler)completionHandler(nil, error);
     }
 }
 

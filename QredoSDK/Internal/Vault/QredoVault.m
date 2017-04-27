@@ -107,45 +107,42 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     
     self = [super init];
     
-    
-    
-    if (!self)return nil;
-    
-    _vaultType = vaultType;
-    _vaultKeys = vaultKeys;
-    _userCredentials = client.userCredentials;
-    _highwatermark = QredoVaultHighWatermarkOrigin;
-    
-    _observers = [[QredoObserverList alloc] init];
-    
-    _queue = dispatch_queue_create("com.qredo.vault.updates",nil);
-    
-    [self loadState];
-    
-    if (!_sequenceId){
-        _sequenceId = [QredoQUID QUID];
-        [self saveState];
+    if (self){
+        _vaultType = vaultType;
+        _vaultKeys = vaultKeys;
+        _userCredentials = client.userCredentials;
+        _highwatermark = QredoVaultHighWatermarkOrigin;
+        
+        _observers = [[QredoObserverList alloc] init];
+        
+        _queue = dispatch_queue_create("com.qredo.vault.updates",nil);
+        
+        [self loadState];
+        
+        if (!_sequenceId){
+            _sequenceId = [QredoQUID QUID];
+            [self saveState];
+        }
+        
+        _updateListener = [[QredoUpdateListener alloc] init];
+        _updateListener.delegate = self;
+        _updateListener.dataSource = self;
+        _updateListener.pollInterval = kQredoVaultUpdateInterval;
+        
+        _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:vaultKeys.encryptionKey
+                                              authenticationKey:vaultKeys.authenticationKey];
+        
+        _vaultSequenceCache = [QredoVaultSequenceCache instance];
+        
+        _vaultServerAccess = [[QredoVaultServerAccess alloc] initWithClient:client
+                                                                vaultCrypto:_vaultCrypto
+                                                                 sequenceId:_sequenceId
+                                                                  vaultKeys:_vaultKeys
+                                                         vaultSequenceCache:_vaultSequenceCache
+                                                           enumerationQueue:_queue];
+        
+        _localIndex = (localIndexing) ? [[QredoLocalIndex alloc] initWithVault:self] : nil;
     }
-    
-    _updateListener = [[QredoUpdateListener alloc] init];
-    _updateListener.delegate = self;
-    _updateListener.dataSource = self;
-    _updateListener.pollInterval = kQredoVaultUpdateInterval;
-    
-    _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:vaultKeys.encryptionKey
-                                          authenticationKey:vaultKeys.authenticationKey];
-    
-    _vaultSequenceCache = [QredoVaultSequenceCache instance];
-    
-    _vaultServerAccess = [[QredoVaultServerAccess alloc] initWithClient:client
-                                                            vaultCrypto:_vaultCrypto
-                                                             sequenceId:_sequenceId
-                                                              vaultKeys:_vaultKeys
-                                                     vaultSequenceCache:_vaultSequenceCache
-                                                       enumerationQueue:_queue];
-    
-    _localIndex = (localIndexing) ? [[QredoLocalIndex alloc] initWithVault:self] : nil;
-    
     
     return self;
 }

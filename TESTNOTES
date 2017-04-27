@@ -24,18 +24,9 @@ Build & Test
 
 
 INFER Static Analysis Results
+-----------------------------
+Run by executing script in project root called run-infer
 
-DIRECT_ATOMIC_PROPERTY_ACCESS: 665
-PARAMETER_NOT_NULL_CHECKED: 61
-NULL_DEREFERENCE: 42
-MEMORY_LEAK: 5                                      //4 OK, 1 in QredoCertificateUtils.m I dont understand
-                QredoSDK/Crypto/QredoCertificateUtils.m:563: error: MEMORY_LEAK
-                memory dynamically allocated to `items` by call to `CFArrayCreate()` at line 562, column 24 is not reachable after line 563, column 23
-                561.
-                562.       CFArrayRef items = CFArrayCreate(NULL,0,0,NULL);
-                563. >     OSStatus status = SecPKCS12Import((__bridge CFDataRef)pkcs12Data,(__bridge CFDictionaryRef)options,&items);
-                564.
-                565.       if (status == errSecSuccess){
-IVAR_NOT_NULL_CHECKED: 4                            //ignore
-BAD_POINTER_COMPARISON: 2                           //ignore
-REGISTERED_OBSERVER_BEING_DEALLOCATED: 1            //ignore
+Excludes Pods & Auto Generated Qredo Code. (Qredo.h)
+
+Currenty no warnings/errors

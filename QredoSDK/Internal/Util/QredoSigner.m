@@ -16,10 +16,9 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 -(instancetype)initWithSigningKey:(QredoED25519SigningKey *)signingKey {
     NSAssert(signingKey,@"The signing key must be provided.");
     self = [super init];
-    
-    if (!self)return nil;
-    
-    _signingKey = signingKey;
+    if (self){
+        _signingKey = signingKey;
+    }
     
     return self;
 }
@@ -40,11 +39,9 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 -(instancetype)initWithRSAKeyRef:(SecKeyRef)keyRef {
     NSAssert(keyRef,@"The key reference must be provided.");
     self = [super init];
-    
-    if (!self)return nil;
-    
-    _keyRef = keyRef;
-    
+    if (self){
+        _keyRef = keyRef;
+    }
     return self;
 }
 

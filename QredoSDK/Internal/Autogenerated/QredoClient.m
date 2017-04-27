@@ -1,3 +1,7 @@
+/*
+INFER_IGNORE
+*/
+
 #import <Foundation/Foundation.h>
 #import "QredoHelpers.h"
 #import "QredoWireFormat.h"

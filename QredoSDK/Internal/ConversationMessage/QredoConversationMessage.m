@@ -45,13 +45,11 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
 
 -(instancetype)initWithValue:(NSData *)value dataType:(NSString *)dataType summaryValues:(NSDictionary *)summaryValues {
     self = [super init];
-    
-    if (!self)return nil;
-    
-    _dataType = [dataType copy];
-    _value = [value copy];
-    _summaryValues = [summaryValues copy];
-    
+    if (self){
+        _dataType = [dataType copy];
+        _value = [value copy];
+        _summaryValues = [summaryValues copy];
+    }
     return self;
 }
 
