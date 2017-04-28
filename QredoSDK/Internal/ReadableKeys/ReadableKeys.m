@@ -16,6 +16,15 @@ static void insert __ARGS((char *s,int x,int start,int length));
 static int wsrch __ARGS((char *w,int low,int high));
 
 
+//prototypes
+char *btoe(char*,char*);
+NSMutableData *etobSimple(char*,char*);
+int etob(char*,char*);
+char *put8(char*,char*);
+char *key2eng(char*,char*);
+int eng2key(char*,char*);
+
+
 +(NSData *)eng2Key:(NSString *)english {
     //Non RFC1751 implementation
     NSString *sanitized = [english copy];
@@ -92,7 +101,7 @@ static int wsrch __ARGS((char *w,int low,int high));
         if (first == YES){
             first = NO;
         } else {
-            strcat(output," ");
+            strlcat(output," ",strlen(output)+2);
         }
         
         wordCount++;
@@ -468,15 +477,15 @@ char *c,*engout;
     
     cp[8] = (char)p << 6;
     strncat(engout,&Wp[extract(cp,0,11)][0],4);
-    strcat(engout," ");
+    strlcat(engout," ",1);
     strncat(engout,&Wp[extract(cp,11,11)][0],4);
-    strcat(engout," ");
+    strlcat(engout," ",1);
     strncat(engout,&Wp[extract(cp,22,11)][0],4);
-    strcat(engout," ");
+    strlcat(engout," ",1);
     strncat(engout,&Wp[extract(cp,33,11)][0],4);
-    strcat(engout," ");
+    strlcat(engout," ",1);
     strncat(engout,&Wp[extract(cp,44,11)][0],4);
-    strcat(engout," ");
+    strlcat(engout," ",1);
     strncat(engout,&Wp[extract(cp,55,11)][0],4);
 #ifdef  notdef
     printf("engout is %s\n\r",engout);
@@ -680,7 +689,7 @@ char *key2eng(engout,key)
 char *engout,*key;
 {
     btoe(engout,key);
-    strcat(engout," ");
+    strlcat(engout," ",1);
     btoe(engout + strlen(engout),key + 8);
     return engout;
 }

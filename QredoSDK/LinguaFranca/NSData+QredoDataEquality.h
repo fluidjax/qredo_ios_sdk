@@ -6,3 +6,4 @@
 -(NSComparisonResult)compare:(NSData *)other;
 
 @end
+

@@ -12,6 +12,9 @@
 
 @implementation QredoAuthenticatedRendezvousTag
 
+
+NSError *createError(QredoAuthenticatedRendezvousTagError,NSString *);
+
 -(instancetype)initWithFullTag:(NSString *)fullTag error:(NSError **)error {
     self = [super init];
     

@@ -23,7 +23,7 @@ userInfo:nil]; \
 
 
 @interface QredoUserCredentials ()
-@property (readwrite) NSString *appId;
+@property (readwrite, atomic) NSString *appId;
 @property (readwrite) NSString *userId;
 @property (readwrite) NSString *userSecure;
 

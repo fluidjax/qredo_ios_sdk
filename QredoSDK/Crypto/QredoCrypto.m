@@ -10,6 +10,10 @@
 
 @implementation QredoCrypto
 
+
+SecPadding secPaddingFromQredoPadding(QredoPadding);
+SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
+
 #define PBKDF2_MIN_SALT_LENGTH       8 //RFC recommends minimum of 8 bytes salt
 
 /*
