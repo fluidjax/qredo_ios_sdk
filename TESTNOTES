@@ -29,4 +29,38 @@ Run by executing script in project root called run-infer
 
 Excludes Pods & Auto Generated Qredo Code. (Qredo.h)
 
-Currenty no warnings/errors
+Found 3 issues - All 3 issues arrise from the Static Analyser not understanding that
+    [NSData dataWithBytesNoCopy: length: freeWhenDone:]
+When freeWhenDone=YES, the resulting NSData object takes ownership of the memory de-allocation (free/release), therefore no explicit free is required.
+
+
+
+
+QredoSDK/LinguaFranca/NSData+QredoRandomData.m:16: error: MEMORY_LEAK
+memory dynamically allocated to `randomBytes` by call to `malloc()` at line 8, column 28 is not reachable after line 16, column 5
+14.
+15.       //this doesn't leak - its a false positive
+16. >     NSData *randomData = [NSData dataWithBytesNoCopy:randomBytes
+17.                                                 length:length
+18.                                           freeWhenDone:YES];
+
+QredoSDK/Crypto/QredoCrypto.m:893: error: MEMORY_LEAK
+memory dynamically allocated by call to `malloc()` at line 883, column 40 is not reachable after line 893, column 5
+891.       NSData *hash = [self sha256:message];
+892.
+893. >     int pss_result = rsa_pss_sha256_verify(hash.bytes,hash.length,decryptedSignature.bytes,decryptedSignature.length,saltLength,keyLength * 8 - 1);
+894.
+895.       if (pss_result < 0 && pss_result != QREDO_RSA_PSS_NOT_VERIFIED){
+
+QredoSDK/Crypto/QredoCrypto.m:888: error: MEMORY_LEAK
+memory dynamically allocated to `decryptedSignatureBytes` by call to `malloc()` at line 883, column 40 is not reachable after line 888, column 5
+886.
+887.       //This doesn't leak
+888. >     NSMutableData *decryptedSignature = [NSMutableData dataWithBytesNoCopy:decryptedSignatureBytes length:keyLength freeWhenDone:YES];
+889.
+890.
+
+Summary of the reports
+
+MEMORY_LEAK: 3
+chris@quince:~/Develo
