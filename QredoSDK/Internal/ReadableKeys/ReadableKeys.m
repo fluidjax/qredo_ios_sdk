@@ -477,15 +477,15 @@ char *c,*engout;
     
     cp[8] = (char)p << 6;
     strncat(engout,&Wp[extract(cp,0,11)][0],4);
-    strlcat(engout," ",1);
+    strlcat(engout," ",strlen(engout)+2);
     strncat(engout,&Wp[extract(cp,11,11)][0],4);
-    strlcat(engout," ",1);
+    strlcat(engout," ",strlen(engout)+2);
     strncat(engout,&Wp[extract(cp,22,11)][0],4);
-    strlcat(engout," ",1);
+    strlcat(engout," ",strlen(engout)+2);
     strncat(engout,&Wp[extract(cp,33,11)][0],4);
-    strlcat(engout," ",1);
+    strlcat(engout," ",strlen(engout)+2);
     strncat(engout,&Wp[extract(cp,44,11)][0],4);
-    strlcat(engout," ",1);
+    strlcat(engout," ",strlen(engout)+2);
     strncat(engout,&Wp[extract(cp,55,11)][0],4);
 #ifdef  notdef
     printf("engout is %s\n\r",engout);
@@ -689,7 +689,7 @@ char *key2eng(engout,key)
 char *engout,*key;
 {
     btoe(engout,key);
-    strlcat(engout," ",1);
+    strlcat(engout," ",strlen(engout)+2);
     btoe(engout + strlen(engout),key + 8);
     return engout;
 }
