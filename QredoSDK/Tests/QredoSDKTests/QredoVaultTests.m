@@ -1333,13 +1333,13 @@
 }
 
 
--(void)testMultiplePutItem {
-    for (int i = 0; i < 50; i++){
-        [self testPutItem];
-        NSLog(@"Loop %i",i);
-        
-    }
-}
+//-(void)testMultiplePutItem {
+//    for (int i = 0; i < 50; i++){
+//        [self testPutItem];
+//        NSLog(@"Loop %i",i);
+//        
+//    }
+//}
 
 
 -(void)testPutItemMultiple {
@@ -1767,6 +1767,13 @@
 }
 
 
+//-(void)testMultipleEnumeration {
+//    for (int i=0;i<1000;i++){
+//        NSLog(@"Loop %i",i);
+//        [self testEnumeration];
+//    }
+//}
+
 -(void)testEnumeration {
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
@@ -1781,6 +1788,9 @@
                                   completionHandler:^(NSError *errorBlock) {
                                       XCTAssertNil(errorBlock);
                                       error = errorBlock;
+                                      if (error){
+                                          //here
+                                      }
                                       [testExpectation fulfill];
                                   }];
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout

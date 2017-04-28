@@ -13,11 +13,11 @@
         @throw [NSException exceptionWithName:@"Critical Error" reason:@".Failed to generate random number." userInfo:nil];
     
 
-    
+    //this doesn't leak - its a false positive
     NSData *randomData = [NSData dataWithBytesNoCopy:randomBytes
                                               length:length
-                                        freeWhenDone:NO];
-    free(randomBytes);
+                                        freeWhenDone:YES];
+   
     return randomData;
 }
 

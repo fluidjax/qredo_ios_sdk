@@ -455,6 +455,16 @@ NSNumber *testNumber;
 }
 
 
+
+
+//-(void)testMultipleSimplerPut{
+//        for (int i=0;i<1000;i++){
+//            NSLog(@"Loop %i",i);
+//            [self testSimplePut];
+//        }
+//}
+
+
 -(void)testSimplePut {
     int testCount = 10;
     NSInteger before = [qredoLocalIndex count];
@@ -469,6 +479,7 @@ NSNumber *testNumber;
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + testCount,@"Failed to put new LocalIndex item Before %ld After %ld",(long)before,(long)after);
     //QLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+    [testClient1.defaultVault removeMetadataIndexObserver];
 }
 
 

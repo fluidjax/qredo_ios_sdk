@@ -11,12 +11,11 @@
     if (err){
         NSAssert(true, @"Critical error creating random number");
     }
-    
+
+    //this doesn't leak - its a false positive
     NSData *randomData = [NSData dataWithBytesNoCopy:randomBytes
                                               length:length
-                                        freeWhenDone:NO];
-    
-    free(randomBytes);
+                                        freeWhenDone:YES];
     
     return randomData;
 }

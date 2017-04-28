@@ -233,6 +233,7 @@
 		8346FF9C1CDB775500A4CEAE /* ReadableKeys.h in Headers */ = {isa = PBXBuildFile; fileRef = 8346FF991CDB775500A4CEAE /* ReadableKeys.h */; };
 		8346FF9E1CDB775500A4CEAE /* ReadableKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = 8346FF9A1CDB775500A4CEAE /* ReadableKeys.m */; };
 		834A8A2C1DCCAA89003CF01D /* ObjectSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 834A8A2B1DCCAA89003CF01D /* ObjectSerialization.m */; };
+		834DB3621EB34A5D001E329B /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774BB1BD64CE200F01A2C /* NSData+QredoRandomData.m */; };
 		8350AF1F1CC623E1008A6715 /* HighwatermarksTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A6573F81A2F3B7200D5502E /* HighwatermarksTests.m */; };
 		835B6CB01C75D7CF00A27986 /* QredoLocalIndex.xcdatamodel in Headers */ = {isa = PBXBuildFile; fileRef = 838E48C11C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel */; settings = {ATTRIBUTES = (Public, ); }; };
 		835D69D51E5C5988007CF93C /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 835D69D31E5C5981007CF93C /* KeychainItemWrapper.m */; };
@@ -3272,6 +3273,7 @@
 				83E6CFEE1C1AE80000A501D8 /* QredoClientTests.m in Sources */,
 				83B023461CE236ED00431532 /* QredoUtilsTests.m in Sources */,
 				66605CA91BD6408D00EC8D6C /* ConversationWebSocketTests.m in Sources */,
+				834DB3621EB34A5D001E329B /* NSData+QredoRandomData.m in Sources */,
 				66605CAA1BD6408D00EC8D6C /* ConversationTests.m in Sources */,
 				66605CAD1BD6408D00EC8D6C /* QredoRendezvousWebSocketTests.m in Sources */,
 				8399ABF81E8D38CF009F76D9 /* QredoServerTests.m in Sources */,
