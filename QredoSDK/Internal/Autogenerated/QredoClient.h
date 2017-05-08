@@ -964,15 +964,16 @@
 @property (readonly) QLFRendezvousAuthType *authenticationType;
 @property (readonly) QLFKeyPairLF *myKey;
 @property (readonly) QLFKeyLF *yourPublicKey;
-@property (readonly) int32_t authStatus;
+@property (readonly) BOOL myPublicKeyVerified;
+@property (readonly) BOOL yourPublicKeyVerified;
 
-+ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus;
++ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey myPublicKeyVerified:(BOOL)myPublicKeyVerified yourPublicKeyVerified:(BOOL)yourPublicKeyVerified;
 
 + (QredoMarshaller)marshaller;
 
 + (QredoUnmarshaller)unmarshaller;
 
-- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus;
+- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey myPublicKeyVerified:(BOOL)myPublicKeyVerified yourPublicKeyVerified:(BOOL)yourPublicKeyVerified;
 - (NSComparisonResult)compare:(QLFConversationDescriptor *)other;
 - (BOOL)isEqualTo:(id)other;
 - (BOOL)isEqualToConversationDescriptor:(QLFConversationDescriptor *)other;
