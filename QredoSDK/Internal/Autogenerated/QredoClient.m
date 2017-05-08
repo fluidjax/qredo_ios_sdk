@@ -1,7 +1,3 @@
-/*
-INFER_IGNORE
-*/
-
 #import <Foundation/Foundation.h>
 #import "QredoHelpers.h"
 #import "QredoWireFormat.h"
@@ -4336,10 +4332,10 @@ INFER_IGNORE
 
 
 
-+ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus
++ (QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey myPublicKeyVerified:(BOOL)myPublicKeyVerified yourPublicKeyVerified:(BOOL)yourPublicKeyVerified
 {
 
-    return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey authStatus:authStatus];
+    return [[QLFConversationDescriptor alloc] initWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey myPublicKeyVerified:myPublicKeyVerified yourPublicKeyVerified:yourPublicKeyVerified];
        
 }
 
@@ -4348,10 +4344,6 @@ INFER_IGNORE
     return ^(id element, QredoWireFormatWriter *writer) {
         QLFConversationDescriptor *e = (QLFConversationDescriptor *)element;
         [writer writeConstructorStartWithObjectName:@"ConversationDescriptor"];
-            [writer writeFieldStartWithFieldName:@"authStatus"];
-                [QredoPrimitiveMarshallers int32Marshaller]([NSNumber numberWithLong: [e authStatus]], writer);
-            [writer writeEnd];
-
             [writer writeFieldStartWithFieldName:@"authenticationType"];
                 [QLFRendezvousAuthType marshaller]([e authenticationType], writer);
             [writer writeEnd];
@@ -4368,6 +4360,10 @@ INFER_IGNORE
                 [QLFKeyPairLF marshaller]([e myKey], writer);
             [writer writeEnd];
 
+            [writer writeFieldStartWithFieldName:@"myPublicKeyVerified"];
+                [QredoPrimitiveMarshallers booleanMarshaller]([NSNumber numberWithBool: [e myPublicKeyVerified]], writer);
+            [writer writeEnd];
+
             [writer writeFieldStartWithFieldName:@"rendezvousOwner"];
                 [QredoPrimitiveMarshallers booleanMarshaller]([NSNumber numberWithBool: [e rendezvousOwner]], writer);
             [writer writeEnd];
@@ -4380,6 +4376,10 @@ INFER_IGNORE
                 [QLFKeyLF marshaller]([e yourPublicKey], writer);
             [writer writeEnd];
 
+            [writer writeFieldStartWithFieldName:@"yourPublicKeyVerified"];
+                [QredoPrimitiveMarshallers booleanMarshaller]([NSNumber numberWithBool: [e yourPublicKeyVerified]], writer);
+            [writer writeEnd];
+
         [writer writeEnd];
     };
 }
@@ -4388,9 +4388,6 @@ INFER_IGNORE
 {
     return ^id(QredoWireFormatReader *reader) {
         [reader readConstructorStart];// TODO assert that constructor name is 'ConversationDescriptor'
-            [reader readFieldStart]; // TODO assert that field name is 'authStatus'
-                int32_t authStatus = (int32_t )[[QredoPrimitiveMarshallers int32Unmarshaller](reader) longValue];
-            [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'authenticationType'
                 QLFRendezvousAuthType *authenticationType = (QLFRendezvousAuthType *)[QLFRendezvousAuthType unmarshaller](reader);
             [reader readEnd];
@@ -4403,6 +4400,9 @@ INFER_IGNORE
             [reader readFieldStart]; // TODO assert that field name is 'myKey'
                 QLFKeyPairLF *myKey = (QLFKeyPairLF *)[QLFKeyPairLF unmarshaller](reader);
             [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'myPublicKeyVerified'
+                BOOL myPublicKeyVerified = (BOOL )[[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
+            [reader readEnd];
             [reader readFieldStart]; // TODO assert that field name is 'rendezvousOwner'
                 BOOL rendezvousOwner = (BOOL )[[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
             [reader readEnd];
@@ -4412,12 +4412,15 @@ INFER_IGNORE
             [reader readFieldStart]; // TODO assert that field name is 'yourPublicKey'
                 QLFKeyLF *yourPublicKey = (QLFKeyLF *)[QLFKeyLF unmarshaller](reader);
             [reader readEnd];
+            [reader readFieldStart]; // TODO assert that field name is 'yourPublicKeyVerified'
+                BOOL yourPublicKeyVerified = (BOOL )[[QredoPrimitiveMarshallers booleanUnmarshaller](reader) boolValue];
+            [reader readEnd];
         [reader readEnd];
-        return [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey authStatus:authStatus];
+        return [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag rendezvousOwner:rendezvousOwner conversationId:conversationId conversationType:conversationType authenticationType:authenticationType myKey:myKey yourPublicKey:yourPublicKey myPublicKeyVerified:myPublicKeyVerified yourPublicKeyVerified:yourPublicKeyVerified];
     };
 }
 
-- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey authStatus:(int32_t)authStatus
+- (instancetype)initWithRendezvousTag:(NSString *)rendezvousTag rendezvousOwner:(BOOL)rendezvousOwner conversationId:(QLFConversationId *)conversationId conversationType:(NSString *)conversationType authenticationType:(QLFRendezvousAuthType *)authenticationType myKey:(QLFKeyPairLF *)myKey yourPublicKey:(QLFKeyLF *)yourPublicKey myPublicKeyVerified:(BOOL)myPublicKeyVerified yourPublicKeyVerified:(BOOL)yourPublicKeyVerified
 {
 
     self = [super init];
@@ -4429,7 +4432,8 @@ INFER_IGNORE
         _authenticationType = authenticationType;
         _myKey = myKey;
         _yourPublicKey = yourPublicKey;
-        _authStatus = authStatus;
+        _myPublicKeyVerified = myPublicKeyVerified;
+        _yourPublicKeyVerified = yourPublicKeyVerified;
     }
     return self;
        
@@ -4445,7 +4449,8 @@ INFER_IGNORE
     QREDO_COMPARE_OBJECT(authenticationType);
     QREDO_COMPARE_OBJECT(myKey);
     QREDO_COMPARE_OBJECT(yourPublicKey);
-    QREDO_COMPARE_SCALAR(authStatus);
+    QREDO_COMPARE_SCALAR(myPublicKeyVerified);
+    QREDO_COMPARE_SCALAR(yourPublicKeyVerified);
     return NSOrderedSame;
        
 }
@@ -4478,7 +4483,9 @@ INFER_IGNORE
         return NO;
     if (_yourPublicKey != other.yourPublicKey && ![_yourPublicKey isEqual:other.yourPublicKey])
         return NO;
-    if (_authStatus != other.authStatus)
+    if (_myPublicKeyVerified != other.myPublicKeyVerified)
+        return NO;
+    if (_yourPublicKeyVerified != other.yourPublicKeyVerified)
         return NO;
     return YES;
        
@@ -4495,7 +4502,8 @@ INFER_IGNORE
     hash = hash * 31u + [_authenticationType hash];
     hash = hash * 31u + [_myKey hash];
     hash = hash * 31u + [_yourPublicKey hash];
-    hash = hash * 31u + (NSUInteger)_authStatus;
+    hash = hash * 31u + (NSUInteger)_myPublicKeyVerified;
+    hash = hash * 31u + (NSUInteger)_yourPublicKeyVerified;
     return hash;
        
 }

@@ -46,7 +46,9 @@ NSString *const kQredoConversationQueueIDUserDefaulstKey = @"ConversationQueueID
 //Bit 0   //Your public key has been dictated to you over the phone by the other party
 //Bit 1   //You have dictated the remote public key to the other party over the phone
 
-NSString *const kQredoConversationVaultItemLabelAuthStatus = @"as";
+NSString *const kQredoConversationVaultItemLabelMyPublicKeyVerified = @"mkv";
+NSString *const kQredoConversationVaultItemLabelYourPublicKeyVerified = @"ykv";
+
 
 
 static NSString *const kQredoConversationMessageKeyCreated = @"_created";
@@ -78,7 +80,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @property (readwrite) QredoQUID *conversationId;
 @property (readwrite) BOOL amRendezvousOwner;
 @property (readwrite) NSString *rendezvousTag;
-@property (readwrite) int authStatus;
+@property (readwrite) BOOL myPublicKeyVerified;
+@property (readwrite) BOOL yourPublicKeyVerified;
 @property (readwrite) NSDictionary *summaryValues;
 
 @end
@@ -264,7 +267,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.amRendezvousOwner = descriptor.rendezvousOwner;
     _metadata.rendezvousTag = descriptor.rendezvousTag;
     _metadata.type = descriptor.conversationType;
-    _metadata.authStatus = descriptor.authStatus;
+    _metadata.myPublicKeyVerified = descriptor.myPublicKeyVerified;
+    _metadata.yourPublicKeyVerified = descriptor.yourPublicKeyVerified;
     
     _yourPublicKey = [[QredoDhPublicKey alloc] initWithData:[descriptor.yourPublicKey bytes]];
     _myPrivateKey  = [[QredoDhPrivateKey alloc] initWithData:[descriptor.myKey.privKey bytes]];
@@ -287,7 +291,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     if (!_inboundQueueId)return;
     if (!_metadata.conversationId)return;
     
-
+    
     NSDictionary *queueIDConversationLookup = [[self userDefaults] objectForKey:kQredoConversationQueueIDUserDefaulstKey];
     
     if ([queueIDConversationLookup objectForKey:_inboundQueueId]){
@@ -310,21 +314,21 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     //save a lookup of Incoming QueueID against ConversationID in NSUserDEfaults (may migrate to some other data store later)
     if (!_inboundQueueId)return;
     if (!_metadata.conversationId)return;
-
+    
     
     //NSUserDefaults *userDefaults =  [[NSUserDefaults alloc] initWithSuiteName:@"group.com.qredo.ChrisPush1"];
     NSMutableDictionary *queueIDConversationLookup = [[[self userDefaults] objectForKey:kQredoConversationQueueIDUserDefaulstKey] mutableCopy];
     if (!queueIDConversationLookup)queueIDConversationLookup = [[NSMutableDictionary alloc] init];
-
+    
     if (_requirePushNotifications){
         [queueIDConversationLookup setObject:[_metadata.conversationRef serializedString] forKey:[_inboundQueueId QUIDString]];
     }else{
         [queueIDConversationLookup removeObjectForKey:[_inboundQueueId data]];
     }
-
+    
     [[self userDefaults] setObject:[queueIDConversationLookup copy] forKey:kQredoConversationQueueIDUserDefaulstKey];
     [[self userDefaults] synchronize];
-
+    
 }
 
 
@@ -387,18 +391,18 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         if (completionHandler) completionHandler(error);
         
         
-//Control messages removed
-//        NSData *qrvValue = [QredoPrimitiveMarshallers       marshalObject:[QLFCtrl qRV]
-//                                                               marshaller:[QLFCtrl marshaller]];
-//        
-//        QredoConversationMessage *joinedControlMessage = [[QredoConversationMessage alloc]       initWithValue:qrvValue
-//                                                                                                      dataType:kQredoConversationMessageTypeControl
-//                                                                                                 summaryValues:nil];
-//        
-//        [self       publishMessage:joinedControlMessage
-//               completionHandler  :^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
-//                   if (completionHandler) completionHandler(error);
-//               }];
+        //Control messages removed
+        //        NSData *qrvValue = [QredoPrimitiveMarshallers       marshalObject:[QLFCtrl qRV]
+        //                                                               marshaller:[QLFCtrl marshaller]];
+        //
+        //        QredoConversationMessage *joinedControlMessage = [[QredoConversationMessage alloc]       initWithValue:qrvValue
+        //                                                                                                      dataType:kQredoConversationMessageTypeControl
+        //                                                                                                 summaryValues:nil];
+        //
+        //        [self       publishMessage:joinedControlMessage
+        //               completionHandler  :^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
+        //                   if (completionHandler) completionHandler(error);
+        //               }];
     }];
 }
 
@@ -562,6 +566,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     
     QLFConversationDescriptor *descriptor =
+    
+    
     [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
                                                        rendezvousOwner:_metadata.amRendezvousOwner
                                                         conversationId:_metadata.conversationId
@@ -569,7 +575,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
                                                          yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                            authStatus:_metadata.authStatus];
+                                                   myPublicKeyVerified:_metadata.myPublicKeyVerified
+                                                 yourPublicKeyVerified:_metadata.yourPublicKeyVerified];
     
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
@@ -862,7 +869,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 //otherPartyHasMyFingerPrint - they have my public key - I can received securely
 //if they have my publickey, everthing sent to me is encrypted with my public key
 -(void)otherPartyHasMyFingerPrint:(void (^)(NSError *error))completionHandler {
-    self.metadata.authStatus |= 1;
+    self.metadata.myPublicKeyVerified = YES;
     [self updateConversationWithCompletionHandler:completionHandler];
 }
 
@@ -870,20 +877,18 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 //iHaveRemoteFingerPrint - I have the other partys public key - I can securely
 //if I have their public key, everything I send to them can only be decrytped by them
 -(void)iHaveRemoteFingerPrint:(void (^)(NSError *error))completionHandler {
-    self.metadata.authStatus |= 2;
+    self.metadata.yourPublicKeyVerified = YES;
     [self updateConversationWithCompletionHandler:completionHandler];
 }
 
 
 -(QredoAuthenticationStatus)authTrafficLight {
-    if ((self.metadata.authStatus & 3) == 0)return QREDO_RED;
+    if (self.metadata.myPublicKeyVerified  && self.metadata.yourPublicKeyVerified)  return QREDO_GREEN;
+    if (self.metadata.myPublicKeyVerified  && !self.metadata.yourPublicKeyVerified) return QREDO_AMBER;
+    if (!self.metadata.myPublicKeyVerified && self.metadata.yourPublicKeyVerified)  return QREDO_AMBER;
+    if (!self.metadata.myPublicKeyVerified && !self.metadata.yourPublicKeyVerified) return QREDO_RED;
     
-    if ((self.metadata.authStatus & 3) == 1)return QREDO_AMBER;
-    
-    if ((self.metadata.authStatus & 3) == 2)return QREDO_AMBER;
-    
-    if ((self.metadata.authStatus & 3) == 3)return QREDO_GREEN;
-    
+    NSAssert(true,@"Unknown key verfication state");
     return QREDO_RED;
 }
 
@@ -1058,9 +1063,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     if (!_updateListener.isListening){
         [_updateListener startListening];
     }
-
     
-   NSLog(@"Registered for APN Notification on %@ with Token:%@",_inboundQueueId, deviceToken);
+    
+    NSLog(@"Registered for APN Notification on %@ with Token:%@",_inboundQueueId, deviceToken);
     
     
 }
@@ -1085,42 +1090,42 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(void)deleteConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler {
-//Control messages removed
+    //Control messages removed
     
-//    NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRT]
-//                                                     marshaller:[QLFCtrl marshaller]];
-//    QredoConversationMessage *leftControlMessage = [[QredoConversationMessage alloc] initWithValue:qrtValue
-//                                                                                          dataType:kQredoConversationMessageTypeControl
-//                                                                                     summaryValues:nil];
-//    
-//    [self  publishMessage:leftControlMessage
-//        completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
-//            if (error){
-//                if (completionHandler) completionHandler(error);
-//                
-//                return;
-//            }
+    //    NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRT]
+    //                                                     marshaller:[QLFCtrl marshaller]];
+    //    QredoConversationMessage *leftControlMessage = [[QredoConversationMessage alloc] initWithValue:qrtValue
+    //                                                                                          dataType:kQredoConversationMessageTypeControl
+    //                                                                                     summaryValues:nil];
+    //
+    //    [self  publishMessage:leftControlMessage
+    //        completionHandler:^(QredoConversationHighWatermark *messageHighWatermark,NSError *error) {
+    //            if (error){
+    //                if (completionHandler) completionHandler(error);
+    //
+    //                return;
+    //            }
     
-            _deleted = YES;
-            
-            QredoVault *vault = [_client systemVault];
-            
-            [vault  getItemMetadataWithDescriptor:self.metadata.conversationRef.vaultItemDescriptor
-                                completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata,NSError *error) {
-                                    if (error){
-                                        QredoLogError(@"Delete Conversation failed with error %@",error);
-                                        
-                                        if (completionHandler) completionHandler(error);
-                                        
-                                        return;
-                                    }
-                                    
-                                    [vault     deleteItem:vaultItemMetadata
-                                        completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor,NSError *error) {
-                                            if (completionHandler) completionHandler(error);
-                                        }];
+    _deleted = YES;
+    
+    QredoVault *vault = [_client systemVault];
+    
+    [vault  getItemMetadataWithDescriptor:self.metadata.conversationRef.vaultItemDescriptor
+                        completionHandler:^(QredoVaultItemMetadata *vaultItemMetadata,NSError *error) {
+                            if (error){
+                                QredoLogError(@"Delete Conversation failed with error %@",error);
+                                
+                                if (completionHandler) completionHandler(error);
+                                
+                                return;
+                            }
+                            
+                            [vault     deleteItem:vaultItemMetadata
+                                completionHandler:^(QredoVaultItemDescriptor *newItemDescriptor,NSError *error) {
+                                    if (completionHandler) completionHandler(error);
                                 }];
-//        }];
+                        }];
+    //        }];
 }
 
 
@@ -1131,7 +1136,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     QLFConversationDescriptor *descriptor =
     
-   
+    
     
     [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
                                                        rendezvousOwner:_metadata.amRendezvousOwner
@@ -1140,7 +1145,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                     authenticationType:_authenticationType
                                                                  myKey:myKey
                                                          yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                            authStatus:_metadata.authStatus];
+                                                   myPublicKeyVerified:_metadata.myPublicKeyVerified
+                                                 yourPublicKeyVerified:_metadata.yourPublicKeyVerified
+     ];
     
     
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
@@ -1160,7 +1167,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                          kQredoConversationVaultItemLabelId:_metadata.conversationId,
                                          kQredoConversationVaultItemLabelTag:_metadata.rendezvousTag,
                                          kQredoConversationVaultItemLabelType:_metadata.type,
-                                         kQredoConversationVaultItemLabelAuthStatus:[NSNumber numberWithInteger:_metadata.authStatus],
+                                         kQredoConversationVaultItemLabelMyPublicKeyVerified:[NSNumber numberWithBool:_metadata.myPublicKeyVerified],
+                                         kQredoConversationVaultItemLabelYourPublicKeyVerified:[NSNumber numberWithBool:_metadata.yourPublicKeyVerified],
                                          @"_vSeqValue":[NSNumber numberWithLongLong:_metadata.conversationRef.vaultItemDescriptor.sequenceValue],
                                          @"_vSeqId":[_metadata.conversationRef.vaultItemDescriptor.sequenceId QUIDString]
                                          };
@@ -1196,7 +1204,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                               completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
                                                   if (newItemMetadata){
                                                       self.metadata.conversationRef = [[QredoConversationRef alloc] initWithVaultItemDescriptor:newItemMetadata.descriptor
-                                                                                                                    vault:self.client.systemVault];
+                                                                                                                                          vault:self.client.systemVault];
                                                       self.metadata.summaryValues = newValues;
                                                   }
                                                   
@@ -1236,41 +1244,41 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     //block type def
     void (^postSubscriptionCompletionHandler)(QLFConversationItemWithSequenceValue *result,NSError *error);
     
-
+    
     //define completiong block
     postSubscriptionCompletionHandler = ^(QLFConversationItemWithSequenceValue *result,NSError *error){
-                        if (error){
-                            subscriptionTerminatedHandler(error);
-                            return;
-                        }
-                        if (!result){
-                            return;
-                        }
+        if (error){
+            subscriptionTerminatedHandler(error);
+            return;
+        }
+        if (!result){
+            return;
+        }
         
-                        QLFConversationQueryItemsResult *resultItems = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
-                                                                                                                             maxSequenceValue:result.sequenceValue
-                                                                                                                                      current:0];
+        QLFConversationQueryItemsResult *resultItems = [QLFConversationQueryItemsResult conversationQueryItemsResultWithItems:@[result]
+                                                                                                             maxSequenceValue:result.sequenceValue
+                                                                                                                      current:0];
         
         
         
-                        //Subscriptions (or pseudo subscriptions) should not exclude control messages
-                        [self  enumerateBodyWithResult:resultItems
-                                 conversationItemIndex:0
-                                              incoming:YES
-                                excludeControlMessages:NO
-                                                 block:^(QredoConversationMessage *message,BOOL *stop) {
-                                                     block(message);
-                                                 }
-                                     completionHandler:^(NSError *error) {
-                                         if (error){
-                                             subscriptionTerminatedHandler(error);
-                                         }
-                                     }
-                                  highWatermarkHandler:highWatermarkHandler];
+        //Subscriptions (or pseudo subscriptions) should not exclude control messages
+        [self  enumerateBodyWithResult:resultItems
+                 conversationItemIndex:0
+                              incoming:YES
+                excludeControlMessages:NO
+                                 block:^(QredoConversationMessage *message,BOOL *stop) {
+                                     block(message);
+                                 }
+                     completionHandler:^(NSError *error) {
+                         if (error){
+                             subscriptionTerminatedHandler(error);
+                         }
+                     }
+                  highWatermarkHandler:highWatermarkHandler];
         
     };
     
-  
+    
     
     
     if (_requirePushNotifications && _pushDeviceToken){
@@ -1283,22 +1291,22 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         
         [_conversationService subscribeWithPushWithQueueId:_inboundQueueId
                                             notificationId:_pushDeviceToken
-                                 completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
-                                     
-                                     //NSLog(@"** Completed Registering for Pushnotifications on %@ with Token: %@ - error %@", _inboundQueueId, _pushDeviceToken, error);
-                                     
-                                     postSubscriptionCompletionHandler(result,error);
-                                     
-                                 }];
+                                         completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
+                                             
+                                             //NSLog(@"** Completed Registering for Pushnotifications on %@ with Token: %@ - error %@", _inboundQueueId, _pushDeviceToken, error);
+                                             
+                                             postSubscriptionCompletionHandler(result,error);
+                                             
+                                         }];
         
         
     }else{
         //A normal subscription without APN
         [_conversationService subscribeWithQueueId:_inboundQueueId
-                                     signature:ownershipSignature
-                                         completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
-                                             postSubscriptionCompletionHandler(result,error);
-                                         }];
+                                         signature:ownershipSignature
+                                 completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
+                                     postSubscriptionCompletionHandler(result,error);
+                                 }];
     }
     
     
