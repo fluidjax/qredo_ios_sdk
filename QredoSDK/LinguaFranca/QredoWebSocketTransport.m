@@ -144,10 +144,14 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
         }
     }
     
+    //[self dump:payload maxLength:80 tag:@"OUT"];
     [_webSocket writeData:payload];
 }
 
 
+    
+    
+    
 -(void)setTransportClosed:(BOOL)transportClosed {
     if (_transportClosed == transportClosed)return;
     
@@ -158,6 +162,7 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
 #pragma mark JFRWebSocketDelegate
 
 -(void)websocket:(JFRWebSocket *)socket didReceiveData:(NSData *)data {
+    //[self dump:data maxLength:80 tag:@"IN "];
     [self notifyListenerOfResponseData:data userData:nil];
 }
 
@@ -178,5 +183,23 @@ static const NSTimeInterval WebSocketSendCheckConnectedDelay = 3.0; //1 second d
     }
 }
 
-
+//Used to debug LF trasmissions - enable the calls in send & didReceiveData
+//To enable the dumping of incoming & outgoing LF data
+-(void)dump:(NSData*)payload maxLength:(int)maxLen tag:(NSString*)tag{
+    int len = (int)payload.length;
+    NSMutableString *output = [[NSMutableString alloc] init];
+    
+    for (int i = 0; i<len; i++){
+        char buffer[1];
+        [payload getBytes:buffer range:NSMakeRange(i,1)];
+        
+        if (buffer[0] >= ' ' && buffer[0] <= '}'){
+            int x = buffer[0];
+            
+            [output appendString:[NSString stringWithFormat:@"%c",x]];
+        }
+    }
+    NSLog(@"%@:%@  [%i]",tag, [output substringToIndex:MIN(maxLen, output.length)], len);
+    
+}
 @end

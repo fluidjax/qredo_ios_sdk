@@ -932,6 +932,7 @@
 		83EC3B101CC7A30F00A55271 /* SSLTimeSyncTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSLTimeSyncTests.m; sourceTree = "<group>"; };
 		83EDB5C71CE20E1300F4F556 /* QredoUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUtils.m; sourceTree = "<group>"; };
 		83EDB5CF1CE2236A00F4F556 /* TestFrameworkTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFrameworkTests.m; sourceTree = "<group>"; };
+		83F37F771EC5797D00715F36 /* BENCHMARKS */ = {isa = PBXFileReference; lastKnownFileType = text; path = BENCHMARKS; sourceTree = "<group>"; };
 		83F4E85B1C0F568500A99431 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		83F850451E4B61B900E10965 /* QredoPushTestServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = QredoPushTestServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		83F850471E4B61B900E10965 /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
@@ -1047,6 +1048,7 @@
 		0A16F88619C3566B00639779 = {
 			isa = PBXGroup;
 			children = (
+				83F37F771EC5797D00715F36 /* BENCHMARKS */,
 				83E8A37A1D7833B000900150 /* INSTALL */,
 				83B66EA11E81625F0019F5A5 /* TESTNOTES */,
 				83BE6FFF1D82BC4B003B2C7E /* IMPORTANT */,

@@ -1,0 +1,59 @@
+Banchmarks & Network usage statistics
+
+
+
+
+WebSockets
+
+1)      Create a Qredo Client
+        Websockets Connect a Qredo Client & immediately Close
+                IN:     10 kB
+                OUT:    3.5 kB
+
+        HTTP Connect a Qredo Client & immediately Close
+                IN:     14.5 kB
+                OUT:    4.6 kB
+
+
+
+
+2)      Websockets Keepalive Traffic per minute - (connect Client - dont close)
+                IN:     15 kB
+                OUT:    32 kB
+
+        HTTP Keepalive Traffic per minute - (connect Client - dont close)
+                IN:     16 kB
+                OUT:    33 kB
+
+
+
+
+3)      HTTP/Websockets are very similar
+
+        Add item to vault size 30Bytes (output is overhead only, ie. - data size)
+                IN:     172 B
+                OUT:    96 B
+
+        Add item to vault size 100 kB (output is overhead only, ie. - data size)
+                IN:     0.8 kB
+                OUT:    10 kB
+
+        Add item to vault size 10 mB (note 1mB = 1024^2)
+                IN:     4.87 kB
+                OUT:    230 kB
+
+4)  Rendezvous - listen for
+    Per min dev
+        in  35
+        out 90
+
+
+    live
+        17
+        35
+
+
+
+
+
+
