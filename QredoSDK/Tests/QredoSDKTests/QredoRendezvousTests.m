@@ -840,6 +840,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
 
 -(void)testPublicKeyPersistence {
+    
     self.continueAfterFailure = YES;
     
     //Created CLIENTS

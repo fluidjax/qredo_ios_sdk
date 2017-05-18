@@ -20,7 +20,6 @@
 -(NSString *)createSystemVaultIdentifier;
 -(NSString *)dataToHexString:(NSData *)data;
 -(NSString *)buildIndexName;
--(NSString *)buildIndexKey;
 -(NSData *)sha1WithString:(NSString *)str;
 -(NSData *)sha256WithString:(NSString *)str;
 @end

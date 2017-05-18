@@ -19,10 +19,7 @@
 
 @implementation QredoLocalIndexDataStore
 
-NSURL *_storeUrl;
-
 static NSMutableDictionary *dataStoreDictionary;
-
 
 +(void)initialize {
     //this is run just once when the class is first loaded
@@ -31,7 +28,8 @@ static NSMutableDictionary *dataStoreDictionary;
 
 
 -(instancetype)initWithVault:(QredoVault *)vault {
-    //we cache the Datastores so if a new client requests an already loaded data store, it returns the existing one - otherwise we have two clients access the sqllite separately
+    //we cache the Datastores  in dataStoreDictionary
+    //so if a new client requests an already loaded data store, it returns the existing one - otherwise we have two clients access the sqllite separately
     
     QredoUserCredentials *userCredentials = vault.userCredentials;
     self.vault = vault;
@@ -87,41 +85,26 @@ static NSMutableDictionary *dataStoreDictionary;
 -(long)persistentStoreFileSize {
     long fileSize = 0;
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *path = [[QredoLocalIndexDataStore storeURL:self.userCredentials vault:self.vault] path];
+    NSString *path = [[QredoLocalIndexDataStore storeURLWithVault:self.vault] path];
     
     fileSize = (long)[[fileManager attributesOfItemAtPath:path error:nil] fileSize];
     return fileSize;
 }
 
 
-+(NSURL *)storeURL:(QredoUserCredentials *)userCredentials vault:(QredoVault*)vault{
-    if (_storeUrl)return _storeUrl;
-    
++(NSURL *)storeURLWithVault:(QredoVault*)vault{
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     NSString *subDirectory = @".qredo";
-    
     //create directory
     NSURL *qredoDirectory = [documentsURL URLByAppendingPathComponent:subDirectory isDirectory:YES];
-    
     BOOL isDir;
     
     if (![fileManager fileExistsAtPath:[qredoDirectory path] isDirectory:&isDir])
         if (![fileManager createDirectoryAtPath:[qredoDirectory path] withIntermediateDirectories:NO attributes:nil error:NULL])NSLog(@"Error: Create folder failed %@",qredoDirectory);
     
-    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
-    
-    if (!bundleID || [bundleID isEqualToString:@""]){
-        bundleID = @"com.qredo.sdk";
-    }
-    
-    NSString *userPart = [userCredentials buildIndexName];
-    NSString *vaultId = [vault.vaultId QUIDString];
-    NSString *filename = [NSString stringWithFormat:@"%@.%@.%@.%@",bundleID,userPart,vaultId,@"QredoLocalIndex.sqlite"];
-    
+    NSString *filename = [NSString stringWithFormat:@"%@.sqlite",[vault.vaultId QUIDString]];
     NSURL *storeURL = [qredoDirectory URLByAppendingPathComponent:filename];
-    _storeUrl = _storeUrl;
-    
     return storeURL;
 }
 
@@ -185,7 +168,7 @@ static NSMutableDictionary *dataStoreDictionary;
     options[NSSQLitePragmasOption] = @{ @"journal_mode":@"DELETE" };
     options[NSPersistentStoreFileProtectionKey] = NSFileProtectionComplete;
     
-    NSURL *storeURL = [QredoLocalIndexDataStore storeURL:self.userCredentials vault:vault];
+    NSURL *storeURL = [QredoLocalIndexDataStore storeURLWithVault:vault];
     
     NSError *error = nil;
     [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error];
