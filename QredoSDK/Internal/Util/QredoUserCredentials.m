@@ -7,14 +7,11 @@
 #define SALT_USER_UNLOCK                 [@"3aK3VkzxClECvyFW" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_USER_MASTER                 [@"wjB9zA2l1Z4eiW5t" dataUsingEncoding:NSUTF8StringEncoding]
 #define INFO_USER_MASTER                 [@"QREDO_INFO_USER_MASTER" dataUsingEncoding:NSUTF8StringEncoding]
-#define SALT_VAULT_IDENTIFIER            [@"65gDFtgikmbUYjho" dataUsingEncoding:NSUTF8StringEncoding]
-
-#define INDEX_KEY_SALT                   [@"6GdwobGnGj85rD2Z" dataUsingEncoding:NSUTF8StringEncoding]
 #define INDEX_NAME_SALT                  [@"48JGdrpomHvzO9ng" dataUsingEncoding:NSUTF8StringEncoding]
-#define INFO_INDEX                       [@"QREDO_COREDATA_INDEX_KEY" dataUsingEncoding:NSUTF8StringEncoding]
 
 #define PBKDF2_USERUNLOCK_KEY_ITERATIONS 1000
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES  32
+
 #define CHECK_ARG(expr,msg) \
 if (expr){ @throw [NSException exceptionWithName:NSInvalidArgumentException \
 reason:[NSString stringWithFormat:msg] \
@@ -117,15 +114,10 @@ userInfo:nil]; \
 }
 
 -(NSString *)buildIndexName {
-    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure,INDEX_NAME_SALT];
-    return [self shaAsHex:userCredentials];
+    NSString *indexName = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure,INDEX_NAME_SALT];
+    return [self shaAsHex:indexName];
 }
 
-
--(NSString *)buildIndexKey {
-    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure, INDEX_KEY_SALT];
-    return [self shaAsHex:userCredentials];
-}
 
 
 -(NSString *)createSystemVaultIdentifier {

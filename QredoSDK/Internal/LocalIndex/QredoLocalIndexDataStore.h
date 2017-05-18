@@ -18,7 +18,7 @@
  */
 //- (void)deleteStore:(QredoVault *)vault;
 
-+(NSURL *)storeURL:(QredoUserCredentials *)userCredentials vault:(QredoVault*)vault;
++(NSURL *)storeURLWithVault:(QredoVault*)vault;
 //+(void)deleteStore:(QredoUserCredentials *)userCredentials;
 //+(void)renameStoreFrom:(QredoUserCredentials *)fromUserCredentials to:(QredoUserCredentials *)toUserCredentials;
 @end
