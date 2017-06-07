@@ -184,11 +184,10 @@
 
                 </div>
               </div>
-            <p>Encapsulates the decoding of incoming Apple Push Notifications into Qredo Objects representing the decrypted message and its parent (QredoConversation)
+            <p>Encapsulates the decoding of incoming Apple Push Notifications into Qredo Objects it contains the decrypted message and a refernece of it&rsquo;s parent &lsquo;QredoConversation&rsquo;.
 The APN contains a Qredo Queue ID which is an internal representation of one side of a QredoConversation, this reference is used to lookup a reference
-to the coresponding QredoConversaition. This lookup table is store in NSUserDefaults
-Although the Payload of the Push Notification is Encrypted, the Push Notification leaks some information - in particular the  Queue ID could be used to group
-a number sequence of Push Notificaiotns together.</p>
+to the coresponding QredoConversaition. This lookup table is stored in NSUserDefaults
+Although the Payload of the Push Notification is encrypted, the remaining parts of the Push Notification leaks some information - in particular the Queue ID could be used to group a number of Push Notificaiotns together. Careful thought should be given to the security requirements of your App, before using Push Notifications.</p>
 
 <p>Without a QredoClient object the Push Notificaiton can&rsquo;t be decrypted. So in order to automatically create a QredoClient when an incoming Push Message is
 received the Login/Credential values must be stored somewhere locally. See Qredo.h initializeFromUserDefaultCredentialsInAppGroup for more details.</p>
@@ -278,7 +277,7 @@ You can safely ignore this message/value</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The mutableContent property in the APNS message</p>
+                        <p>The mutableContent property in the APNS message - this is currently always set to Yes, to enable a Push Notification Service Extension to run when the main app is not running/backgrounded.</p>
 
                       </div>
                       <div class="declaration">
@@ -291,6 +290,70 @@ You can safely ignore this message/value</p>
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight"><code><span class="k">var</span> <span class="nv">mutableContent</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoPushMessage(py)messageType"></a>
+                    <a name="//apple_ref/objc/Property/messageType" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoPushMessage(py)messageType">messageType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An Enum Integer representing the &lsquo;QredoPushMessageType&rsquo; of the incoming message.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">assign</span><span class="p">,</span> <span class="n">atomic</span><span class="p">)</span> <span class="n">QredoPushMessageType</span> <span class="n">messageType</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">messageType</span><span class="p">:</span> <span class="kt">QredoPushMessageType</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:objc(cs)QredoPushMessage(py)queueId"></a>
+                    <a name="//apple_ref/objc/Property/queueId" class="dashAnchor"></a>
+                    <a class="token" href="#/c:objc(cs)QredoPushMessage(py)queueId">queueId</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The QueueID that the message is sent on, this value is used to locally (NSUserDefaults) lookup the Conversation ID, and create the parent (of the message) QredoConversation object.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Objective-C</p>
+                          <pre class="highlight"><code><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">atomic</span><span class="p">)</span> <span class="n"><a href="../Classes/QredoQUID.html">QredoQUID</a></span> <span class="o">*</span><span class="n">queueId</span><span class="p">;</span></code></pre>
+
+                        </div>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">var</span> <span class="nv">queueId</span><span class="p">:</span> <span class="kt"><a href="../Classes/QredoQUID.html">QredoQUID</a></span><span class="o">!</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -437,7 +500,7 @@ You can safely ignore this message/value</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>a dictionary passed into the App from iOS Push service.</p>
+                                  <p>a dictionary passed into the App from iOS Push service. Available from UNNotificationRequest.content.userInfo.</p>
 
                                 </div>
                               </td>
@@ -504,7 +567,7 @@ You can safely ignore this message/value</p>
                               </td>
                               <td>
                                 <div>
-                                  <p>A dictionary passed into the App from iOS Push service.</p>
+                                  <p>A dictionary passed into the App from iOS Push service. Available from UNNotificationRequest.content.userInfo.</p>
 
                                 </div>
                               </td>

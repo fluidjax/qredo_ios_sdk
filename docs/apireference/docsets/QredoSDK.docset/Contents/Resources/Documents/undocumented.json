@@ -121,28 +121,14 @@
     },
     {
       "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
-      "line": 48,
-      "symbol": "QredoPushMessage.messageType",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
-      "line": 49,
-      "symbol": "QredoPushMessage.queueId",
-      "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
-      "line": 61,
+      "line": 67,
       "symbol": "QredoPushMessage.sequenceValue",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"
     },
     {
       "file": "/Users/chris/Development/work/Qredo/qredo_ios_sdk/QredoSDK/External/QredoPushMessage.h",
-      "line": 62,
+      "line": 68,
       "symbol": "QredoPushMessage.conversationRef",
       "symbol_kind": "sourcekitten.source.lang.objc.decl.property",
       "warning": "undocumented"

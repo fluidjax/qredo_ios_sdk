@@ -495,11 +495,10 @@ Listening for Conversation Messages: <a href="https://docs.qredo.com/ios/objecti
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Encapsulates the decoding of incoming Apple Push Notifications into Qredo Objects representing the decrypted message and its parent (QredoConversation)
+                        <p>Encapsulates the decoding of incoming Apple Push Notifications into Qredo Objects it contains the decrypted message and a refernece of it&rsquo;s parent &lsquo;QredoConversation&rsquo;.
 The APN contains a Qredo Queue ID which is an internal representation of one side of a QredoConversation, this reference is used to lookup a reference
-to the coresponding QredoConversaition. This lookup table is store in NSUserDefaults
-Although the Payload of the Push Notification is Encrypted, the Push Notification leaks some information - in particular the  Queue ID could be used to group
-a number sequence of Push Notificaiotns together.</p>
+to the coresponding QredoConversaition. This lookup table is stored in NSUserDefaults
+Although the Payload of the Push Notification is encrypted, the remaining parts of the Push Notification leaks some information - in particular the Queue ID could be used to group a number of Push Notificaiotns together. Careful thought should be given to the security requirements of your App, before using Push Notifications.</p>
 
 <p>Without a QredoClient object the Push Notificaiton can&rsquo;t be decrypted. So in order to automatically create a QredoClient when an incoming Push Message is
 received the Login/Credential values must be stored somewhere locally. See Qredo.h initializeFromUserDefaultCredentialsInAppGroup for more details.</p>
