@@ -42,5 +42,5 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 +(BOOL)deleteKeyInAppleKeychainWithIdentifier:(NSString *)keyIdentifier;
 
 OSStatus fixedSecItemCopyMatching(CFDictionaryRef query,CFTypeRef *result);
-
++(NSData*)incremement256BitValue:(NSData*)value;
 @end

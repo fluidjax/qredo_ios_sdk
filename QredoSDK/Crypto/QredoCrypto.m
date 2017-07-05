@@ -8,6 +8,16 @@
 #import "rsapss.h"
 //#import "QredoCertificateUtils.h"
 
+#import "NACrypto.h"
+
+#import "NSData+ParseHex.h"
+#import "NSData+Conversion.h"
+
+#import <openssl/bn.h>
+#import <openssl/rand.h>
+#import <Security/SecRandom.h>
+
+
 @implementation QredoCrypto
 
 
@@ -40,49 +50,91 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     }
 
 +(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-    return [self aes:data withOperation:kCCDecrypt with256bitAesKey:key iv:iv];
+     return [self aesCTR:data with256bitAesKey:key iv:iv];
 }
 
 
 +(NSData *)encryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-    return [self aes:data withOperation:kCCEncrypt with256bitAesKey:key iv:iv];
+     return [self aesCTR:data with256bitAesKey:key iv:iv];
 }
 
-+(NSData *)aes:(NSData *)input withOperation:(CCOperation)operation with256bitAesKey:(NSData *)key iv:(NSData *)iv {
++(NSData *)aesCTR:(NSData *)input with256bitAesKey:(NSData *)key iv:(NSData *)iv {
+    GUARD(input,@"Input argument is nil.");
+    GUARD(key,@"Key argument is nil");
+    GUARDF(key.length == kCCKeySizeAES256,@"Key must be %d bytes.", kCCKeySizeAES256);
+    GUARDF((iv && iv.length == kCCBlockSizeAES128), @"IV must be %d bytes.", kCCBlockSizeAES128);
     
-    GUARD(input,
-          @"Input argument is nil.");
     
-    GUARD(key,
-          @"Key argument is nil");
+    NSData *nonce = [iv copy];
     
-    GUARDF(key.length == kCCKeySizeAES256,
-           @"Key must be %d bytes.", kCCKeySizeAES256);
+    NSError *error = nil;
+    NSMutableData *mutableResult = [[NSMutableData alloc] init];
+    NAAES *AES = [[NAAES alloc] initWithAlgorithm:NAAESAlgorithm256CTR];
+    NSUInteger length = [input length];
+    NSUInteger chunkSize = 16;
+    NSUInteger offset = 0;
     
-    GUARDF((iv && iv.length == kCCBlockSizeAES128), //note block size is same for all key lengths - ie.128bit
-           @"IV must be %d bytes.", kCCBlockSizeAES128);
+    do {
+        NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
+        NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[input bytes] + offset
+                                             length:thisChunkSize
+                                       freeWhenDone:NO];
+        offset += thisChunkSize;
+        NSData *encrypted = [AES encrypt:chunk nonce:nonce key:key error:&error];
+        nonce = [QredoCrypto incremement256BitValue:nonce];
+        
+        [mutableResult appendData:encrypted];
+    } while (offset < length);
     
-    NSMutableData *output = [NSMutableData dataWithLength:(input.length + kCCBlockSizeAES128)];
-    size_t outputLength;
-    CCCryptorStatus result = CCCrypt(operation,
-                                     kCCAlgorithmAES,
-                                     kCCOptionPKCS7Padding,
-                                     key.bytes,
-                                     key.length,
-                                     iv.bytes,
-                                     input.bytes,
-                                     input.length,
-                                     output.mutableBytes,
-                                     output.length,
-                                     &outputLength);
-    
-    if (result == kCCSuccess) {
-        return [output subdataWithRange:NSMakeRange(0, outputLength)];
-    } else {
-        return nil;
-    }
-    
+    return [mutableResult copy];
 }
+
++(NSData*)incremement256BitValue:(NSData*)value{
+    
+    GUARD(value,@"Value argument is nil");
+    GUARDF(value.length == kCCBlockSizeAES128,@"Value must be %d bytes.", kCCBlockSizeAES128);
+    
+    
+    NSString *valueString = [value hexadecimalString];
+    BN_CTX *ctx = BN_CTX_new(); // used for temp storage
+    
+    //convert initial value to BIGNUM
+    BIGNUM *bigvalue = BN_new();
+    BN_hex2bn(&bigvalue,[valueString UTF8String]);
+    
+    //Maximum value - used as divisor
+    BIGNUM *rollover = BN_new();
+    BN_hex2bn(&rollover,"100000000000000000000000000000000");
+    
+    //Define - BIGNUM one to add as increment  (there is no increment method for BIGNUMs)
+    BIGNUM *one = BN_new();
+    BN_hex2bn(&one,"1");
+    
+    //Add one to value
+    BIGNUM *incrementedValue = BN_new();
+    BN_add(incrementedValue, bigvalue, one);
+    
+    //Divide incrementedValue by rollover and use the remainder (ie. removes carry)
+    BIGNUM *dv = BN_new();
+    BIGNUM *remainder = BN_new();
+    BN_div(dv, remainder, incrementedValue, rollover, ctx);
+    
+    //Convert remainder to NSString & lowercase
+    const char *str = nil;
+    str = BN_bn2hex(remainder);
+    NSString *unpaddedRetValue = [[NSString stringWithUTF8String:str] lowercaseString];
+    
+    //Create 0 Left padding string of the correct length
+    NSString *padding = [@"" stringByPaddingToLength:32 - [unpaddedRetValue length]
+                                          withString:@"0"
+                                     startingAtIndex:0];
+    
+    //return left padded result as NSData
+    NSString *resultString = [padding stringByAppendingString: unpaddedRetValue];
+    return [NSData dataWithHexString:resultString];
+}
+
+
 
 
 +(NSData *)hkdfExtractSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
