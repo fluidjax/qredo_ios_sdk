@@ -77,6 +77,14 @@ userInfo:nil]; \
     return outputBytes;
 }
 
+-(NSData *)sha512WithString:(NSString *)str {
+    NSMutableData *outputBytes = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
+    NSData *inputBytes = [str dataUsingEncoding:NSUTF8StringEncoding];
+    CC_SHA512(inputBytes.bytes,(CC_LONG)inputBytes.length,outputBytes.mutableBytes);
+    return outputBytes;
+}
+
+
 
 
 -(NSData *)masterKey {
