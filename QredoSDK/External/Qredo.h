@@ -12,12 +12,11 @@
 #import <CoreData/CoreData.h>
 #import "QredoUtils.h"
 #import "QredoIndexSummaryValues.h"
-#import "QredoPushMessage.h"
+
 
 @class QredoClient;
 @class QredoRendezvousMetadata;
 @class QredoCertificate;
-@class QredoPushMessage;
 
 typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
     QredoClientOptionsTransportTypeHTTP,
@@ -30,7 +29,6 @@ typedef NS_ENUM (NSUInteger,QredoClientOptionsTransportType) {
 @property QredoClientOptionsTransportType transportType;
 @property BOOL resetData;
 @property BOOL disableMetadataIndex;
-@property (copy) NSData *pushToken;
 @property (copy) NSString *appGroup;
 @property (copy) NSString *keyChainGroup;
 @property BOOL useHTTP;
@@ -390,31 +388,6 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  @return the current Qredo network correctly DateTime - sync'd with NTP & TLS
  */
 +(NSDate *)dateTime;
-
-
-/** Store the QredoClient credentials into the iOS Keychain - this is essential if you need an iOS extension such as a Push Notification extension to decrypt incoming messages without
-    waiting for a hand off to the main App. It therefore allows unencrypted messages to be display on the lock screen. If this functionality is not required do not use this feature as
-    it weakens end point security
-    Once stored in the keychain, a QredoClient can be re-instantiated using
-    +(void)initializeFromKeychainCredentialsInGroup....
-    Configure the keyChainGroup in Capabilities>KeyChain Sharing, for both your App and Service Extension
- */
--(void)saveCredentialsInKeychain;
-+(void)deleteCredentialsInKeychainGroup:(NSString*)keyChainGroup;
-+(BOOL)hasCredentialsInKeychainGroup:(NSString*)keyChainGroup;
-
-
-
-/** Store the QredoClient credentials into the iOS UserDefaults dictionary - this is essential if you need an iOS extension such as a Push Notification extension to decrypt incoming messages without
- waiting for a hand off to the main App. It therefore allows unencrypted messages to be display on the lock screen. If this functionality is not required do not use this feature as
- it weakens end point security
- Once stored in the keychain, a QredoClient can be re-instantiated using
- +(void)initializeFromUserDefaultCredentialsInAppGroup....
- Configure the UserDefaults App Group  in Capabilities>App Groups, for both your App and Service Extension
- */
--(void)saveCredentialsInUserDefaults;
-+(BOOL)hasCredentialsInUserDefaultsAppGroup:(NSString*)appGroup;
-+(void)deleteCredentialsInUserDefaultsAppGroup:(NSString*)appGroup;
 
 @end
 

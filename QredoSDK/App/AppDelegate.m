@@ -178,42 +178,5 @@
 }
 
 
--(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    NSLog(@"QREDO: Incoming notification");
-    if (self.client){
-        
-        //process the incoming Push MEssage with a QredoClient to lookup the Conversation object
-        [QredoPushMessage initializeWithRemoteNotification:userInfo qredoClient:self.client completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
-            if (error){
-                NSLog(@"QREDO: Error building Push Message");
-            }else{
-                //Successfully parsed incoming Push Message
-                NSLog(@"QREDO: Incoming Push Message \n %@",pushMessage);
-                self.testsPassed = YES;
-                _qredoPushMessage = pushMessage;
-            }
-            completionHandler(UIBackgroundFetchResultNewData);
-        }];
-        
-        
-    }else{
-        //process the incoming Push MEssage without a QredoClient - therefore cant decrypt
-        
-        [QredoPushMessage initializeWithRemoteNotification:userInfo completionHandler:^(QredoPushMessage *pushMessage, NSError *error) {
-            if (error){
-                NSLog(@"QREDO: Error building Push Message");
-            }else{
-                //Successfully parsed incoming Push Message
-                NSLog(@"QREDO: Incoming Push Message \n %@",pushMessage);
-                self.testsPassed = YES;
-                _qredoPushMessage = pushMessage;
-            }
-            completionHandler(UIBackgroundFetchResultNewData);
-        }];
-
-    }
-}
-
-
 
 @end
