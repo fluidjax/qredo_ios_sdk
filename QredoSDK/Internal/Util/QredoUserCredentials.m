@@ -6,8 +6,10 @@
 
 #define SALT_USER_UNLOCK                 [@"3aK3VkzxClECvyFW" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_USER_MASTER                 [@"wjB9zA2l1Z4eiW5t" dataUsingEncoding:NSUTF8StringEncoding]
+#define SALT_INDEX_NAME                  [@"48JGdrpomHvzO9ng" dataUsingEncoding:NSUTF8StringEncoding]
+
 #define INFO_USER_MASTER                 [@"QREDO_INFO_USER_MASTER" dataUsingEncoding:NSUTF8StringEncoding]
-#define INDEX_NAME_SALT                  [@"48JGdrpomHvzO9ng" dataUsingEncoding:NSUTF8StringEncoding]
+
 
 #define PBKDF2_USERUNLOCK_KEY_ITERATIONS 1000
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES  32
@@ -77,6 +79,14 @@ userInfo:nil]; \
     return outputBytes;
 }
 
+-(NSData *)sha512WithString:(NSString *)str {
+    NSMutableData *outputBytes = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
+    NSData *inputBytes = [str dataUsingEncoding:NSUTF8StringEncoding];
+    CC_SHA512(inputBytes.bytes,(CC_LONG)inputBytes.length,outputBytes.mutableBytes);
+    return outputBytes;
+}
+
+
 
 
 -(NSData *)masterKey {
@@ -114,7 +124,7 @@ userInfo:nil]; \
 }
 
 -(NSString *)buildIndexName {
-    NSString *indexName = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure,INDEX_NAME_SALT];
+    NSString *indexName = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure,SALT_INDEX_NAME];
     return [self shaAsHex:indexName];
 }
 

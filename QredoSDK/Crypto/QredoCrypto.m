@@ -306,21 +306,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 }
 
 
-+(NSData *)sha256Tom:(NSData *)data {
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    
-    CC_SHA256(data.bytes,(CC_LONG)data.length,hash.mutableBytes);
-    
-    return hash;
-}
-
-
 +(NSData *)secureRandomWithSize:(NSUInteger)size {
     size_t randomSize  = size;
     uint8_t *randomBytes = alloca(randomSize);

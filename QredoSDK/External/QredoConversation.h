@@ -211,14 +211,6 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 -(void)addConversationObserver:(id<QredoConversationObserver>)observer;
 
-/**
- Add Conversation listener, and in addition requests Push Notification Messages for the Apple Supplied DeviceToken specified.
- @note Observers are automatically deleted when you close the connection to the `QredoClient`, but push notifications subscriptions are persistent across sessions.
-    [Requires server VXX.XX.XX]
- */
-
--(void)addConversationObserver:(id<QredoConversationObserver>)observer withPushNotifications:(NSData*)deviceToken;
-
 
 /**
  Stop listening for messages received in the Conversation and delete the observer object.

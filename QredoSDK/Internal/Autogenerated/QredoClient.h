@@ -1727,7 +1727,6 @@
 - (void)acknowledgeReceiptWithQueueId:(QLFConversationQueueId *)queueId upTo:(QLFConversationSequenceValue *)upTo signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationAckResult *result, NSError *error))completionHandler;
 - (void)subscribeWithQueueId:(QLFConversationQueueId *)queueId signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler;
 - (void)subscribeAfterWithQueueId:(QLFConversationQueueId *)queueId after:(NSSet *)after fetchSize:(NSSet *)fetchSize signature:(QLFOwnershipSignature *)signature completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler;
-- (void)subscribeWithPushWithQueueId:(QLFConversationQueueId *)queueId notificationId:(QLFNotificationTarget *)notificationId completionHandler:(void(^)(QLFConversationItemWithSequenceValue *result, NSError *error))completionHandler;
 
 @end
 

@@ -19,16 +19,6 @@ target 'TestHost' do
 end
 
 
-target 'PushTests' do
-     pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
-end
-
-
-target 'QredoPushTestServiceExtension' do
-	pod 'QredoXDK', :path =>  'QredoXDK.framework.podspec'
-end
-
-
 ############################################################
 ### Test Targets
 ############################################################

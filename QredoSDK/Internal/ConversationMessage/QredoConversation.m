@@ -184,10 +184,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     QredoObserverList *_observers;
     QredoUpdateListener *_updateListener;
-    
-    BOOL _requirePushNotifications;
-    QLFNotificationTarget *_pushDeviceToken;
-    
+   
 }
 
 @property (nonatomic,readwrite) QredoClient *client;
@@ -232,7 +229,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         _updateListener = [QredoUpdateListener new];
         _updateListener.dataSource = self;
         _updateListener.delegate = self;
-        [self restorePushState];
     }
     return self;
 }
@@ -277,29 +273,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     //this method is called when we are loading the conversation from the vault, therefore, we don't need to store it again. Only generating keys here
     [self generateKeysWithPrivateKey:_myPrivateKey publicKey:_yourPublicKey myPublicKey:_myPublicKey rendezvousOwner:_metadata.amRendezvousOwner];
     
-    [self restorePushState];
     return self;
 }
 
 
-#pragma Save/Load Push Notification state of Conversation between sessions
-
-
-
-
--(void)restorePushState{
-    if (!_inboundQueueId)return;
-    if (!_metadata.conversationId)return;
-    
-    
-    NSDictionary *queueIDConversationLookup = [[self userDefaults] objectForKey:kQredoConversationQueueIDUserDefaulstKey];
-    
-    if ([queueIDConversationLookup objectForKey:_inboundQueueId]){
-        _requirePushNotifications=YES;
-    }else{
-        _requirePushNotifications=NO;
-    }
-}
 
 
 -(NSUserDefaults*)userDefaults{
@@ -308,27 +285,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     }else{
         return [NSUserDefaults standardUserDefaults];
     }
-}
-
--(void)savePushState{
-    //save a lookup of Incoming QueueID against ConversationID in NSUserDEfaults (may migrate to some other data store later)
-    if (!_inboundQueueId)return;
-    if (!_metadata.conversationId)return;
-    
-    
-    //NSUserDefaults *userDefaults =  [[NSUserDefaults alloc] initWithSuiteName:@"group.com.qredo.ChrisPush1"];
-    NSMutableDictionary *queueIDConversationLookup = [[[self userDefaults] objectForKey:kQredoConversationQueueIDUserDefaulstKey] mutableCopy];
-    if (!queueIDConversationLookup)queueIDConversationLookup = [[NSMutableDictionary alloc] init];
-    
-    if (_requirePushNotifications){
-        [queueIDConversationLookup setObject:[_metadata.conversationRef serializedString] forKey:[_inboundQueueId QUIDString]];
-    }else{
-        [queueIDConversationLookup removeObjectForKey:[_inboundQueueId data]];
-    }
-    
-    [[self userDefaults] setObject:[queueIDConversationLookup copy] forKey:kQredoConversationQueueIDUserDefaulstKey];
-    [[self userDefaults] synchronize];
-    
 }
 
 
@@ -1041,39 +997,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 }
 
 
-
--(void)addConversationObserver:(id<QredoConversationObserver>)observer withPushNotifications:(NSData*)deviceToken{
-    
-    
-    if (!deviceToken){
-        //Do a normal observer if there is no Push notification Token
-        NSLog(@"No APN Push token - revert to normal Conversation Observer");
-        _requirePushNotifications = NO;
-        _pushDeviceToken = nil;
-        [self addConversationObserver:observer];
-        return;
-    }
-    
-    _pushDeviceToken = [QLFNotificationTarget apnsDeviceTokenWithToken:deviceToken];
-    _requirePushNotifications = YES;
-    
-    QredoLogInfo(@"Added conversation observer");
-    [_observers addObserver:observer];
-    
-    if (!_updateListener.isListening){
-        [_updateListener startListening];
-    }
-    
-    
-    NSLog(@"Registered for APN Notification on %@ with Token:%@",_inboundQueueId, deviceToken);
-    
-    
-}
-
-
-
-
-
 -(void)removeConversationObserver:(id<QredoConversationObserver>)observer {
     QredoLogInfo(@"Remove conversation observer");
     [_observers removeObserver:observer];
@@ -1281,33 +1204,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     
     
-    if (_requirePushNotifications && _pushDeviceToken){
-        //if we require a Push notification
-        
-        [self savePushState];
-        NSLog(@"*** Saved pushState VaultID %@",_client.systemVault.vaultId);
-        NSLog(@"** Registering for Pushnotifications on %@ with Token: %@", _inboundQueueId, _pushDeviceToken);
-        
-        
-        [_conversationService subscribeWithPushWithQueueId:_inboundQueueId
-                                            notificationId:_pushDeviceToken
-                                         completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
-                                             
-                                             //NSLog(@"** Completed Registering for Pushnotifications on %@ with Token: %@ - error %@", _inboundQueueId, _pushDeviceToken, error);
-                                             
-                                             postSubscriptionCompletionHandler(result,error);
-                                             
-                                         }];
-        
-        
-    }else{
+
         //A normal subscription without APN
-        [_conversationService subscribeWithQueueId:_inboundQueueId
+    [_conversationService subscribeWithQueueId:_inboundQueueId
                                          signature:ownershipSignature
                                  completionHandler:^(QLFConversationItemWithSequenceValue *result,NSError *error) {
                                      postSubscriptionCompletionHandler(result,error);
                                  }];
-    }
     
     
     [self qredoUpdateListener:_updateListener pollWithCompletionHandler:^(NSError *error) {

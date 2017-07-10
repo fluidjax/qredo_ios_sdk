@@ -5,8 +5,6 @@ Note the pipe through xcpretty - (available on git hub) which nicely formats the
 Main Tests includes LF, Crypto & SDK for CI:
 --------------------------------------------
 xcodebuild    -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 7,OS=latest" -workspace QredoSDK.xcworkspace -scheme QredoXDK  build test | xcpretty
-Note the push tests can't be automated (on the Sim) as they must be run on a device. Therefore they are not included for CI testing.
-
 
 For Manually running individual Tests Use:
 ------------------------------------------

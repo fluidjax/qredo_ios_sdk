@@ -70,7 +70,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     [coder encodeInt:self.transportType             forKey:@"Q2"];
     [coder encodeBool:self.resetData                forKey:@"Q3"];
     [coder encodeBool:self.disableMetadataIndex     forKey:@"Q4"];
-    [coder encodeObject:self.pushToken              forKey:@"Q5"];
     [coder encodeObject:self.appGroup               forKey:@"Q6"];
     [coder encodeObject:self.keyChainGroup          forKey:@"Q7"];
     [coder encodeBool:self.useHTTP                  forKey:@"Q8"];
@@ -84,7 +83,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
         self.transportType              = [decoder decodeIntForKey:@"Q2"];
         self.resetData                  = [decoder decodeBoolForKey:@"Q3"];
         self.disableMetadataIndex       = [decoder decodeBoolForKey:@"Q4"];
-        self.pushToken                  = [decoder decodeObjectForKey:@"Q5"];
         self.appGroup                   = [decoder decodeObjectForKey:@"Q6"];
         self.keyChainGroup              = [decoder decodeObjectForKey:@"Q7"];
         self.useHTTP                    = [decoder decodeBoolForKey:@"Q8"];
@@ -103,7 +101,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     if (self){
         self.serverURL      = LIVE_SERVER_URL;
         self.useHTTP        = LIVE_USE_HTTP;
-        self.pushToken      = nil;
         self.appGroup       = nil;
         self.keyChainGroup  = nil;
     }
@@ -115,7 +112,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     if (self){
         self.serverURL      = DEV_SERVER_URL;
         self.useHTTP        = DEV_USE_HTTP;
-        self.pushToken      = nil;
         self.appGroup       = nil;
         self.keyChainGroup  = nil;
     }
@@ -128,7 +124,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     if (self){
         self.serverURL      = TEST_SERVER_URL;
         self.useHTTP        = TEST_USE_HTTP;
-        self.pushToken      = nil;
         self.appGroup       = TEST_APP_GROUP;
         self.keyChainGroup  = TEST_KEYCHAIN_GROUP;
     }
@@ -152,7 +147,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     
     [retString appendString:@"\n"];
     [retString appendString:[NSString stringWithFormat:@"serverURL:         %@\n", self.serverURL]];
-    [retString appendString:[NSString stringWithFormat:@"pushToken:         %@\n", self.pushToken]];
     [retString appendString:[NSString stringWithFormat:@"appGroup:          %@\n", self.appGroup]];
     [retString appendString:[NSString stringWithFormat:@"keyChainGroup:     %@\n", self.keyChainGroup]];
     
