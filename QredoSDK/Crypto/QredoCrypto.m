@@ -248,22 +248,12 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 
 +(BOOL)equalsConstantTime:(NSData *)left right:(NSData *)right {
-    //This is intended to take a constant amount of time to verify.
-    //Combination of example from https://crackstation.net/hashing-security.htm
-    //and Qredo's Android CryptoUtil
-    
-    //TODO: DH - look at replacing with libsodium sodium_memcmp which is constant-time?
-    
-    //Get the hash of each to ensure always comparing same length data
-    NSData *leftHash = [QredoCrypto sha256:left];
-    NSData *rightHash = [QredoCrypto sha256:right];
-    
-    uint8_t *leftHashBytes = (uint8_t *)leftHash.bytes;
-    uint8_t *rightHashBytes = (uint8_t *)rightHash.bytes;
-    
-    //Now use a comparison which always processes each element in constant time
-    unsigned long difference = leftHash.length ^ rightHash.length;
-    
+
+    uint8_t *leftHashBytes  = (uint8_t *)left.bytes;
+    uint8_t *rightHashBytes = (uint8_t *)right.bytes;
+
+    unsigned long difference = left.length ^ right.length;
+
     for (unsigned long i = 0; i < left.length && i < right.length; i++){
         difference |= leftHashBytes[i] ^ rightHashBytes[i];
     }
