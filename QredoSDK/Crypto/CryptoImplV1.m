@@ -102,7 +102,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     //However CTR allows 0 length data blocks, so minimum size is IV (1 block length)
     if (data.length < kCCBlockSizeAES128){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is too short. Must be at least 2 blocks long (%d bytes) for IV and encrypted data.",2 * kCCBlockSizeAES128]
+                                       reason:[NSString stringWithFormat:@"Data argument is too short. Must be at least 1 blocks long (%d bytes) for IV and encrypted data.", kCCBlockSizeAES128]
                                      userInfo:nil];
     }
     

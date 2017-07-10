@@ -6,9 +6,6 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoLoggerPrivate.h"
 #import "rsapss.h"
-//#import "QredoCertificateUtils.h"
-
-#import "NACrypto.h"
 
 #import "NSData+ParseHex.h"
 #import "NSData+Conversion.h"
@@ -35,6 +32,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 #define RSA_OAEP_MIN_PADDING_LENGTH  42
 #define RSA_PKCS1_MIN_PADDING_LENGTH 11
 
+
 #define GUARD(condition, msg) \
     if (!(condition)) { \
         @throw [NSException exceptionWithName:NSInvalidArgumentException \
@@ -50,91 +48,103 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     }
 
 +(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-     return [self aesCTR:data with256bitAesKey:key iv:iv];
+     return [self aesDecrypt:data with256bitAesKey:key iv:iv];
 }
 
 
 +(NSData *)encryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-     return [self aesCTR:data with256bitAesKey:key iv:iv];
+     return [self aesEncrypt:data with256bitAesKey:key iv:iv];
 }
 
-+(NSData *)aesCTR:(NSData *)input with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-    GUARD(input,@"Input argument is nil.");
+
++(NSData *)aesEncrypt:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv{
+    GUARD(data,@"Input argument is nil.");
     GUARD(key,@"Key argument is nil");
     GUARDF(key.length == kCCKeySizeAES256,@"Key must be %d bytes.", kCCKeySizeAES256);
     GUARDF((iv && iv.length == kCCBlockSizeAES128), @"IV must be %d bytes.", kCCBlockSizeAES128);
     
-    
-    NSData *nonce = [iv copy];
-    
-    NSError *error = nil;
-    NSMutableData *mutableResult = [[NSMutableData alloc] init];
-    NAAES *AES = [[NAAES alloc] initWithAlgorithm:NAAESAlgorithm256CTR];
-    NSUInteger length = [input length];
-    NSUInteger chunkSize = 16;
-    NSUInteger offset = 0;
-    
-    do {
-        NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
-        NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[input bytes] + offset
-                                             length:thisChunkSize
-                                       freeWhenDone:NO];
-        offset += thisChunkSize;
-        NSData *encrypted = [AES encrypt:chunk nonce:nonce key:key error:&error];
-        nonce = [QredoCrypto incremement128BitValue:nonce];
-        
-        [mutableResult appendData:encrypted];
-    } while (offset < length);
-    
-    return [mutableResult copy];
-}
+    CCCryptorRef cryptor = NULL;
+    NSMutableData *cipherData = [NSMutableData dataWithLength:data.length + kCCBlockSizeAES128];
+    NSMutableData *ivMutable =  [iv mutableCopy];
 
-+(NSData*)incremement128BitValue:(NSData*)value{
+    CCCryptorStatus  create = CCCryptorCreateWithMode(kCCEncrypt,
+                                                      kCCModeCTR,
+                                                      kCCAlgorithmAES,
+                                                      ccPKCS7Padding,
+                                                      ivMutable.bytes,
+                                                      key.bytes,
+                                                      key.length,
+                                                      NULL,
+                                                      0,
+                                                      0,
+                                                      kCCModeOptionCTR_BE,
+                                                      &cryptor);
+    if (create != kCCSuccess) return nil;
     
-    GUARD(value,@"Value argument is nil");
-    GUARDF(value.length == kCCBlockSizeAES128,@"Value must be %d bytes.", kCCBlockSizeAES128);
+    size_t outLength;
+    CCCryptorStatus  update = CCCryptorUpdate(cryptor,
+                                              data.bytes,
+                                              data.length,
+                                              cipherData.mutableBytes,
+                                              cipherData.length,
+                                              &outLength);
+    if (update != kCCSuccess) return nil;
     
+    cipherData.length = outLength;
+    CCCryptorStatus final = CCCryptorFinal(cryptor,
+                                           cipherData.mutableBytes,
+                                           cipherData.length,
+                                           &outLength);
+    if (final != kCCSuccess) return nil;
     
-    NSString *valueString = [value hexadecimalString];
-    BN_CTX *ctx = BN_CTX_new(); // used for temp storage
-    
-    //convert initial value to BIGNUM
-    BIGNUM *bigvalue = BN_new();
-    BN_hex2bn(&bigvalue,[valueString UTF8String]);
-    
-    //Maximum value - used as divisor
-    BIGNUM *rollover = BN_new();
-    BN_hex2bn(&rollover,"100000000000000000000000000000000");
-    
-    //Define - BIGNUM one to add as increment  (there is no increment method for BIGNUMs)
-    BIGNUM *one = BN_new();
-    BN_hex2bn(&one,"1");
-    
-    //Add one to value
-    BIGNUM *incrementedValue = BN_new();
-    BN_add(incrementedValue, bigvalue, one);
-    
-    //Divide incrementedValue by rollover and use the remainder (ie. removes carry)
-    BIGNUM *dv = BN_new();
-    BIGNUM *remainder = BN_new();
-    BN_div(dv, remainder, incrementedValue, rollover, ctx);
-    
-    //Convert remainder to NSString & lowercase
-    const char *str = nil;
-    str = BN_bn2hex(remainder);
-    NSString *unpaddedRetValue = [[NSString stringWithUTF8String:str] lowercaseString];
-    
-    //Create 0 Left padding string of the correct length
-    NSString *padding = [@"" stringByPaddingToLength:32 - [unpaddedRetValue length]
-                                          withString:@"0"
-                                     startingAtIndex:0];
-    
-    //return left padded result as NSData
-    NSString *resultString = [padding stringByAppendingString: unpaddedRetValue];
-    return [NSData dataWithHexString:resultString];
+    CCCryptorRelease(cryptor );
+    return cipherData;
 }
 
 
++(NSData *)aesDecrypt:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv{
+    GUARD(data,@"Input argument is nil.");
+    GUARD(key,@"Key argument is nil");
+    GUARDF(key.length == kCCKeySizeAES256,@"Key must be %d bytes.", kCCKeySizeAES256);
+    GUARDF((iv && iv.length == kCCBlockSizeAES128), @"IV must be %d bytes.", kCCBlockSizeAES128);
+
+    CCCryptorRef cryptor = NULL;
+    NSMutableData *ivMutable =  [iv mutableCopy];
+    
+    CCCryptorStatus createDecrypt = CCCryptorCreateWithMode(kCCDecrypt,
+                                                            kCCModeCTR,
+                                                            kCCAlgorithmAES,
+                                                            ccPKCS7Padding,
+                                                            ivMutable.bytes,
+                                                            key.bytes,
+                                                            key.length,
+                                                            NULL,
+                                                            0,
+                                                            0,
+                                                            kCCModeOptionCTR_BE,
+                                                            &cryptor);
+    if (createDecrypt != kCCSuccess)return nil;
+    
+    NSMutableData *cipherDataDecrypt = [NSMutableData dataWithLength:data.length + kCCBlockSizeAES128];
+    size_t outLengthDecrypt;
+    CCCryptorStatus updateDecrypt = CCCryptorUpdate(cryptor,
+                                                    data.bytes,
+                                                    data.length,
+                                                    cipherDataDecrypt.mutableBytes,
+                                                    cipherDataDecrypt.length,
+                                                    &outLengthDecrypt);
+    if (updateDecrypt != kCCSuccess) return nil;
+    
+    cipherDataDecrypt.length = outLengthDecrypt;
+    CCCryptorStatus final = CCCryptorFinal(cryptor,
+                                           cipherDataDecrypt.mutableBytes,
+                                           cipherDataDecrypt.length,
+                                           &outLengthDecrypt);
+    if (final != kCCSuccess) return nil;
+    
+    CCCryptorRelease(cryptor);
+    return cipherDataDecrypt;
+}
 
 
 +(NSData *)hkdfExtractSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
