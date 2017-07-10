@@ -257,43 +257,4 @@
 }
 
 
-//-(void)testDecrypt {
-//    NSData *requesterInboundEncryptionKey
-//    = [NSData dataWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
-//    
-//    NSData *requesterInboundAuthenticationKey
-//    = [NSData dataWithHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
-//    
-//    NSData *serializedEncryptedMessage
-//    = [NSData dataWithHexString:
-//       @"28313a43 32363a27 456e6372 79707465 64436f6e 76657273 6174696f 6e497465 6d28393a 27617574 68436f64"
-//       @"6533333a 622163d3 2af2c6e4 8faa5d17 a82ecac9 9a49774d 80fb76f0 1621d259 d7f57b62 b1292831 373a2765"
-//       @"6e637279 70746564 4d657373 61676533 33303a62 28373a62 00000002 0000373a 62000000 02000033 30353a62"
-//       @"bc38b889 fa0c1552 d9410fb3 61a8f4b5 ccfadf92 3a1cfa24 18403212 8f2f182f 5220aafd 68dfc986 97c13b5f"
-//       @"ba978562 020a37df cdc18fb5 b4de6ca4 61e5d742 eaa85ba1 a8b18a35 e302a9be 82bd59c4 b9eda3f4 66263475"
-//       @"b9a5f759 5355e1a5 d5060ca8 4bf4399c 549e1fc4 d0a20193 4b995a5e 152a10a8 7c39521e 9b182777 7e958251"
-//       @"e3f89eca 45d8d5dd 3def194d 57f267e0 d84851c3 6ebde159 bb934a80 d4ea3eff 24a67092 f18151c0 e3df1e86"
-//       @"9413e4f0 fb2c2b11 a4e89cce b9aefde3 64927d9f 799232e1 57145c7a b9e27326 a15c8fbe 7f57d7d8 8241ba82"
-//       @"96587b27 ebd7be7b 78f77c09 1b080f1e d0786349 e87ebb64 be0707f3 2826f0dd ad05e395 7971241a b392a95c"
-//       @"b7fd3bf7 b4349ed7 24c89e27 cacf0967 01103fda 47e04874 c1fb6889 a0f24b64 dab7f779 745dfd61 292929"];
-//    
-//    QLFEncryptedConversationItem *encryptedMessage = [QredoPrimitiveMarshallers unmarshalObject:serializedEncryptedMessage
-//                                                                                   unmarshaller:[QLFEncryptedConversationItem unmarshaller]
-//                                                                                    parseHeader:NO];
-//    
-//    NSError *error = nil;
-//    QLFConversationMessage *message  = [_conversationCrypto decryptMessage:encryptedMessage
-//                                                                   bulkKey:requesterInboundEncryptionKey
-//                                                                   authKey:requesterInboundAuthenticationKey
-//                                                                     error:&error];
-//    
-//    XCTAssertNotNil(message);
-//    XCTAssertNil(error);
-//    
-//    NSString *messageBodyString = @"Message value";
-//    NSData *messageBodyExpected = [messageBodyString dataUsingEncoding:NSUTF8StringEncoding];
-//    XCTAssertEqualObjects(message.body,messageBodyExpected);
-//}
-//
-
 @end
