@@ -81,7 +81,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                        freeWhenDone:NO];
         offset += thisChunkSize;
         NSData *encrypted = [AES encrypt:chunk nonce:nonce key:key error:&error];
-        nonce = [QredoCrypto incremement256BitValue:nonce];
+        nonce = [QredoCrypto incremement128BitValue:nonce];
         
         [mutableResult appendData:encrypted];
     } while (offset < length);
@@ -89,7 +89,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     return [mutableResult copy];
 }
 
-+(NSData*)incremement256BitValue:(NSData*)value{
++(NSData*)incremement128BitValue:(NSData*)value{
     
     GUARD(value,@"Value argument is nil");
     GUARDF(value.length == kCCBlockSizeAES128,@"Value must be %d bytes.", kCCBlockSizeAES128);
