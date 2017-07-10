@@ -47,6 +47,15 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                             userInfo:nil]; \
     }
 
+#define AESGUARD(condition, msg) \
+    if (!(condition)) { \
+        @throw [NSException exceptionWithName:NSGenericException \
+                            reason:[NSString stringWithFormat:(msg)] \
+                            userInfo:nil]; \
+    }
+
+
+
 +(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
      return [self aesDecrypt:data with256bitAesKey:key iv:iv];
 }
@@ -79,7 +88,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                                       0,
                                                       kCCModeOptionCTR_BE,
                                                       &cryptor);
-    if (create != kCCSuccess) return nil;
+    
+    AESGUARD((create == kCCSuccess), @"AES Encrypt failed (1) CCCryptorCreateWithMode");
     
     size_t outLength;
     CCCryptorStatus  update = CCCryptorUpdate(cryptor,
@@ -88,14 +98,16 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                               cipherData.mutableBytes,
                                               cipherData.length,
                                               &outLength);
-    if (update != kCCSuccess) return nil;
+    
+    AESGUARD((update == kCCSuccess), @"AES Encrypt failed (2) CCCryptorUpdate");
     
     cipherData.length = outLength;
     CCCryptorStatus final = CCCryptorFinal(cryptor,
                                            cipherData.mutableBytes,
                                            cipherData.length,
                                            &outLength);
-    if (final != kCCSuccess) return nil;
+    
+    AESGUARD((final == kCCSuccess), @"AES Encrypt failed (3) CCCryptorFinal");
     
     CCCryptorRelease(cryptor );
     return cipherData;
@@ -123,7 +135,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                                             0,
                                                             kCCModeOptionCTR_BE,
                                                             &cryptor);
-    if (createDecrypt != kCCSuccess)return nil;
+    AESGUARD((createDecrypt == kCCSuccess), @"AES Decrypt failed (1) CCCryptorCreateWithMode");
     
     NSMutableData *cipherDataDecrypt = [NSMutableData dataWithLength:data.length + kCCBlockSizeAES128];
     size_t outLengthDecrypt;
@@ -133,15 +145,15 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                                     cipherDataDecrypt.mutableBytes,
                                                     cipherDataDecrypt.length,
                                                     &outLengthDecrypt);
-    if (updateDecrypt != kCCSuccess) return nil;
-    
+    AESGUARD((updateDecrypt == kCCSuccess), @"AES Decrypt failed (2) CCCryptorUpdate");
+
     cipherDataDecrypt.length = outLengthDecrypt;
     CCCryptorStatus final = CCCryptorFinal(cryptor,
                                            cipherDataDecrypt.mutableBytes,
                                            cipherDataDecrypt.length,
                                            &outLengthDecrypt);
-    if (final != kCCSuccess) return nil;
     
+    AESGUARD((final == kCCSuccess), @"AES Decrypt failed (3) CCCryptorFinal");
     CCCryptorRelease(cryptor);
     return cipherDataDecrypt;
 }
