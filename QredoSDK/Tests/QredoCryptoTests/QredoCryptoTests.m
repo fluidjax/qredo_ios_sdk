@@ -72,6 +72,29 @@
 }
 
 
+
+-(void)testEncryptDecryptAES{
+    NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
+    NSData *iv                  = [QredoUtils hexStringToData:@"f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"];
+    
+    [self encryptDecrypt:[QredoUtils hexStringToData:@""] key:key iv:iv];
+    [self encryptDecrypt:[QredoUtils hexStringToData:@"01"] key:key iv:iv];
+    [self encryptDecrypt:[QredoUtils hexStringToData:@"0102030405060708090a0b0c0d0e0f"] key:key iv:iv];
+    [self encryptDecrypt:[QredoUtils hexStringToData:@"0102030405060708090a0b0c0d0e0f0102030405060708090a0b0c0d0e0f"] key:key iv:iv];
+    [self encryptDecrypt:[QredoUtils hexStringToData:@"ffff"] key:key iv:iv];
+}
+
+
+
+-(void)encryptDecrypt:(NSData*)plaintext key:(NSData*)key iv:(NSData*)iv{
+    NSData *encrypted = [QredoCrypto encryptData:plaintext with256bitAesKey:key iv:iv];
+    NSData *decrypted = [QredoCrypto decryptData:encrypted with256bitAesKey:key iv:iv];
+    XCTAssertNotNil(decrypted,@"Encrypted data should not be nil.");
+    if (plaintext.length>0) XCTAssertFalse([encrypted isEqualToData:plaintext],@"If plaintext is not 0 bytes, encrypted shouldn't be the same as plaintext.");
+    XCTAssertTrue([decrypted isEqualToData:plaintext],@"Encrypted data incorrect.");
+}
+
+
 -(void)testDecryptData256BitKey {
     NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
     NSData *iv                  = [QredoUtils hexStringToData:@"f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"];
@@ -169,37 +192,6 @@
 }
 
 
-/* AES now only supports 128b keys
--(void)testEncryptData128BitKey {
-    uint8_t keyDataArray[] = {
-        0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f
-    };
-    NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
-    
-    uint8_t ivDataArray[] = {
-        0x12,0x34,0x56,0x78,0x90,0x12,0x34,0x56,0x78,0x90,0x12,0x34,0x56,0x78,0x90,0x12
-    };
-    NSData *ivData = [NSData dataWithBytes:ivDataArray length:sizeof(ivDataArray) / sizeof(uint8_t)];
-    
-    NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
-    NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    uint8_t expectedDataArray[] = {
-        0x1d,0xb8,0x50,0x74,0xaf,0xc3,0x4d,0x73,0x16,0x85,0x3c,0x12,0x22,0xda,0x2b,0x4d,
-        0xba,0xf2,0x5b,0xd3,0xfe,0xe0,0x17,0x43,0xce,0x65,0x72,0x6c,0xe6,0xf8,0x4f,0x8a,
-        0x7a,0xdb,0x7e,0xed,0x0d,0x5e,0x00,0x98,0x30,0x89,0xa2,0xfc,0x47,0x25,0xfa,0x88,
-        0x5c,0x19,0x9a,0x80,0xa3,0x3d,0xc9,0x96,0xeb,0x3f,0x73,0x5b,0x7e,0x22,0xd8,0x5f
-    };
-    NSData *expectedData = [NSData dataWithBytes:expectedDataArray length:sizeof(expectedDataArray) / sizeof(uint8_t)];
-    
-    NSData *encryptedData = [QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData];
-    
-    XCTAssertNotNil(encryptedData,@"Encrypted data should not be nil.");
-    XCTAssertTrue([expectedData isEqualToData:encryptedData],@"Encrypted data incorrect.");
-}
-
- */
-
 -(void)testEncryptData256BitKey {
     NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
     NSData *iv                  = [QredoUtils hexStringToData:@"f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"];
@@ -221,7 +213,7 @@
 
 -(void)testEncryptData256BitNilInput {
     NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
-    NSData *iv                  = [QredoUtils hexStringToData:@"0000000000000000"]; //nonce starts at f0f1f2f3f4f5f6f70000000000000000
+    NSData *iv                  = [QredoUtils hexStringToData:@"0000000000000000"];
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
     XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:nil with256bitAesKey:key iv:iv],NSException,NSInvalidArgumentException,@"Should throw an exception");
 }
