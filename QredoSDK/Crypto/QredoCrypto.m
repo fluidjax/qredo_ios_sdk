@@ -101,6 +101,9 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 +(NSData *)hkdfExpandSha256WithKey:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
     
+    GUARD(prk, @"PRK must be specified.");
+    GUARD(outputLength, @"Output length must be specified.");
+    
     uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
     
     NSUInteger N = ceil((double)outputLength / (double)hashLen);
@@ -119,8 +122,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
         Tnext += hashLen;
     }
     
-    NSData *okm = [[NSData dataWithBytes:T length:outputLength] copy];
-    return okm;
+    return [NSData dataWithBytes:T length:outputLength];
     
 }
 
