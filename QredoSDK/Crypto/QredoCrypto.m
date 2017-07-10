@@ -84,25 +84,38 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     
 }
 
++(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
 
-+(NSData *)hkdfExtractSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
+    GUARD(salt, @"Salt must be specified in Qredo code, despite RFC optionality.");
+    GUARD(ikm, @"IKM must be specified.");
+    GUARD(outputLength > 0, @"Output length must be greater than zero.");
 
-    GUARD(ikm, @"IKM must be specified.")
+    // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
     
-    // HKDF-Extract gets a pseudo random key (PRK) from the initial key material (IKM)
-    // PRK = HMAC-Hash(salt, IKM)
+    NSData *realSalt = salt ? salt : [NSData new];
+    NSData *realInfo = info ? info : [NSData new];
+        
+    NSData *prk = [QredoCrypto hkdfSha256ExtractWithSalt:realSalt initialKeyMaterial:ikm];
+    NSData *okm = [QredoCrypto hkdfSha256ExpandWithKey:prk info:realInfo outputLength:outputLength];
+    
+    return okm;
+    
+}
+
++(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info {
+    return [self hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:CC_SHA256_DIGEST_LENGTH];
+}
+
++(NSData *)hkdfSha256ExtractWithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
+    
     NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    
-    // HKDF-Extract
     CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
     
     return prk;
+    
 }
 
-+(NSData *)hkdfExpandSha256WithKey:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
-    
-    GUARD(prk, @"PRK must be specified.");
-    GUARD(outputLength, @"Output length must be specified.");
++(NSData *)hkdfSha256ExpandWithKey:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
     
     uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
     
@@ -124,29 +137,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     
     return [NSData dataWithBytes:T length:outputLength];
     
-}
-
-
-+(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info {
-    //Convenience wrapper to provide 256bit output keys
-    return [self hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:CC_SHA256_DIGEST_LENGTH];
-}
-
-
-+(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
-    //Taken from https://tools.ietf.org/html/rfc5869
-    // Additional resources https://github.com/FredericJacobs/HKDFKit
-    
-    //stage 1: From input material generates a psuedo random key
-    //         This redistributes unevenly distributed entropy in the source material
-    NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:salt initialKeyMaterial:ikm];
-    
-    //Stage 2: Exapnds  the key into several additional random keys, concatenates them into a longer key,
-    // returns    longerKey.sub(0,requiredKeylength)
-    NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:prk info:info outputLength:outputLength];
-    
-    
-    return okm;
 }
 
 +(NSData *)pbkdf2Sha256WithSalt:(NSData *)salt passwordData:(NSData *)passwordData requiredKeyLengthBytes:(NSUInteger)requiredKeyLengthBytes iterations:(NSUInteger)iterations {
