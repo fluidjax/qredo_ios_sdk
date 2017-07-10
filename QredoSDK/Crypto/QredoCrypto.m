@@ -99,34 +99,29 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     return prk;
 }
 
-
-+(NSData *)hkdfExpandSha256WithKey:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength {
-    //based on the required output Length calucate the number of iterations required
-    int iterations = (int)ceil((double)outputLength / (double)CC_SHA256_DIGEST_LENGTH);
-    NSData *mixin = [NSData data];
++(NSData *)hkdfExpandSha256WithKey:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
     
-    NSMutableData *results = [NSMutableData data];
+    uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
     
+    NSUInteger N = ceil((double)outputLength / (double)hashLen);
+    uint8_t *T   = alloca(N * hashLen);
     
-    for (int i = 0; i < iterations; i++){
+    uint8_t *Tlast = NULL;
+    uint8_t *Tnext = T;
+    for (uint8_t ctr = 1; ctr <= N; ctr++) {
         CCHmacContext ctx;
-        CCHmacInit(&ctx,kCCHmacAlgSHA256,[key bytes],[key length]);
-        CCHmacUpdate(&ctx,[mixin bytes],[mixin length]);
-        
-        if (info != nil){
-            CCHmacUpdate(&ctx,[info bytes],[info length]);
-        }
-        
-        unsigned char c = i + 1;
-        CCHmacUpdate(&ctx,&c,1);
-        unsigned char T[CC_SHA256_DIGEST_LENGTH];
-        CCHmacFinal(&ctx,T);
-        NSData *stepResult = [NSData dataWithBytes:T length:CC_SHA256_DIGEST_LENGTH];
-        [results appendData:stepResult];
-        mixin = [stepResult copy];
+        CCHmacInit(&ctx, kCCHmacAlgSHA256, prk.bytes, prk.length);
+        CCHmacUpdate(&ctx, Tlast, Tlast ? hashLen : 0); // T[n-1] or empty for T[0]
+        CCHmacUpdate(&ctx, info.bytes, info.length);    // optional info
+        CCHmacUpdate(&ctx, &ctr, 1);                    // counter octet
+        CCHmacFinal(&ctx, Tnext);                       // write to T[n]
+        Tlast  = Tnext;
+        Tnext += hashLen;
     }
-    //from the result only return the required length, discarding anything above
-    return [[NSData dataWithData:results] subdataWithRange:NSMakeRange(0,outputLength)];
+    
+    NSData *okm = [[NSData dataWithBytes:T length:outputLength] copy];
+    return okm;
+    
 }
 
 
