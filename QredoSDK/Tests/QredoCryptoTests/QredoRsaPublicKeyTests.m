@@ -3,6 +3,8 @@
 #import <XCTest/XCTest.h>
 #import "QredoRsaPublicKey.h"
 #import "QredoCrypto.h"
+#import "QredoCryptoTestUtilities.h"
+
 
 @interface QredoRsaPublicKeyTests :XCTestCase
 
@@ -15,7 +17,7 @@
     //Put setup code here. This method is called before the invocation of each test method in the class.
     
     //Must remove any existing keys before starting
-    [QredoCrypto deleteAllKeysInAppleKeychain];
+    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
 }
 
 
@@ -24,7 +26,7 @@
     [super tearDown];
     
     //Must remove any keys after completing
-    [QredoCrypto deleteAllKeysInAppleKeychain];
+    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
 }
 
 

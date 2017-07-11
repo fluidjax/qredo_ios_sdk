@@ -9,6 +9,10 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
     QredoPaddingPkcs1
 };
 
+
+#define RSA_OAEP_MIN_PADDING_LENGTH  42
+#define RSA_PKCS1_MIN_PADDING_LENGTH 11
+
 @interface QredoCrypto :NSObject
 
 +(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv;
@@ -23,23 +27,14 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 +(NSData *)secureRandomWithSize:(NSUInteger)size;
 +(BOOL)equalsConstantTime:(NSData *)left right:(NSData *)right;
 
-+(SecKeyRef)importPkcs1KeyData:(NSData *)keyData keyLengthBits:(NSUInteger)keyLengthBits keyIdentifier:(NSString *)keyIdentifier isPrivate:(BOOL)isPrivate;
 +(QredoSecKeyRefPair *)generateRsaKeyPairOfLength:(NSInteger)lengthBits publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys;
-+(SecCertificateRef)getCertificateRefFromIdentityRef:(SecIdentityRef)identityRef;
-+(SecKeyRef)getPrivateKeyRefFromIdentityRef:(SecIdentityRef)identityRef;
-+(SecKeyRef)getPublicKeyRefFromIdentityRef:(SecIdentityRef)identityRef;
++(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef;
 +(SecKeyRef)getPublicKeyRefFromEvaluatedTrustRef:(SecTrustRef)trustRef;
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier;
 +(NSData *)getKeyDataForIdentifier:(NSString *)keyIdentifier;
-
-+(NSData *)rsaEncryptPlainTextData:(NSData *)plainTextData padding:(QredoPadding)padding keyRef:(SecKeyRef)keyRef;
-+(NSData *)rsaDecryptCipherTextData:(NSData *)cipherTextData padding:(QredoPadding)padding keyRef:(SecKeyRef)keyRef;
-
-+(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef;
-+(BOOL)rsaPssVerifySignature:(NSData *)signature forMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef;
-
-+(BOOL)deleteAllKeysInAppleKeychain;
-+(BOOL)deleteKeyInAppleKeychainWithIdentifier:(NSString *)keyIdentifier;
-
 OSStatus fixedSecItemCopyMatching(CFDictionaryRef query,CFTypeRef *result);
+
+
+
+
 @end

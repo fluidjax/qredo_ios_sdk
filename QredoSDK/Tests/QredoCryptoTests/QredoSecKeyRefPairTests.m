@@ -6,6 +6,7 @@
 #import "QredoLoggerPrivate.h"
 #import "TestCertificates.h"
 #import "QredoCertificateUtils.h"
+#import "QredoCryptoTestUtilities.h"
 
 @interface QredoSecKeyRefPairTests :XCTestCase
 
@@ -17,7 +18,7 @@
     [super setUp];
     
     //Must remove any existing keys before starting
-    [QredoCrypto deleteAllKeysInAppleKeychain];
+    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
 }
 
 
@@ -25,7 +26,7 @@
     [super tearDown];
     
     //Must remove any existing keys after finishing
-    [QredoCrypto deleteAllKeysInAppleKeychain];
+    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
 }
 
 
@@ -77,12 +78,12 @@
     XCTAssertNotNil((__bridge id)privateKeyRef);
     
     //Encrypt some data using the public key
-    NSData *cipherText = [QredoCrypto rsaEncryptPlainTextData:plainTextData padding:QredoPaddingOaep keyRef:publicKeyRef];
+    NSData *cipherText = [QredoCryptoTestUtilities rsaEncryptPlainTextData:plainTextData padding:QredoPaddingOaep keyRef:publicKeyRef];
     XCTAssertNotNil(cipherText);
     XCTAssertEqual(cipherText.length,lengthBits / 8);
     
     //Attempt to decrypt the data using the private key (before dealloc)
-    NSData *returnedPlainTextData = [QredoCrypto rsaDecryptCipherTextData:cipherText padding:QredoPaddingOaep keyRef:privateKeyRef];
+    NSData *returnedPlainTextData = [QredoCryptoTestUtilities rsaDecryptCipherTextData:cipherText padding:QredoPaddingOaep keyRef:privateKeyRef];
     XCTAssertNotNil(returnedPlainTextData);
     XCTAssertTrue([returnedPlainTextData isEqualToData:plainTextData]);
     returnedPlainTextData = nil;
@@ -109,13 +110,13 @@
     NSData *privateKeyData = [NSData dataWithBytes:TestPrivKeyJavaSdkClient2048Pkcs1DerArray
                                             length:sizeof(TestPrivKeyJavaSdkClient2048Pkcs1DerArray) / sizeof(uint8_t)];
     XCTAssertNotNil(privateKeyData);
-    SecKeyRef publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyPkcs1Data
+    SecKeyRef publicKeyRef = [QredoCryptoTestUtilities importPkcs1KeyData:publicKeyPkcs1Data
                                                keyLengthBits:keySizeBits
                                                keyIdentifier:publicKeyIdentifier
                                                    isPrivate:NO];
     XCTAssertTrue((__bridge id)publicKeyRef,@"Public Key import failed.");
     
-    SecKeyRef privateKeyRef = [QredoCrypto importPkcs1KeyData:privateKeyData
+    SecKeyRef privateKeyRef = [QredoCryptoTestUtilities importPkcs1KeyData:privateKeyData
                                                 keyLengthBits:keySizeBits
                                                 keyIdentifier:privateKeyIdentifier
                                                     isPrivate:YES];
@@ -128,12 +129,12 @@
     //Encrypt some data using the public key
     QredoPadding encryptPaddingType = QredoPaddingPkcs1;
     QredoPadding decryptPaddingType = QredoPaddingPkcs1;
-    NSData *cipherText = [QredoCrypto rsaEncryptPlainTextData:plainTextData padding:encryptPaddingType keyRef:publicKeyRef];
+    NSData *cipherText = [QredoCryptoTestUtilities rsaEncryptPlainTextData:plainTextData padding:encryptPaddingType keyRef:publicKeyRef];
     XCTAssertNotNil(cipherText);
     XCTAssertEqual(cipherText.length,keySizeBits / 8);
     
     //Attempt to decrypt the data using the private key (before dealloc)
-    NSData *returnedPlainTextData = [QredoCrypto rsaDecryptCipherTextData:cipherText padding:decryptPaddingType keyRef:privateKeyRef];
+    NSData *returnedPlainTextData = [QredoCryptoTestUtilities rsaDecryptCipherTextData:cipherText padding:decryptPaddingType keyRef:privateKeyRef];
     XCTAssertNotNil(returnedPlainTextData);
     XCTAssertTrue([returnedPlainTextData isEqualToData:plainTextData]);
     
