@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoCrypto.h"
+#import "CryptoImplV1.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "rsapss.h"
 #import "QredoRsaPublicKey.h"
@@ -10,6 +11,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoUtils.h"
 #import "QredoCryptoTestUtilities.h"
+#import "QredoConversationCrypto.h"
 
 @interface QredoCryptoTests :XCTestCase
 
@@ -25,11 +27,36 @@
 }
 
 
+
 -(void)tearDown {
     //Must remove any keys after completing
     [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
     
     [super tearDown];
+}
+
+
+-(void)testED25519Sign{
+    CryptoImplV1 *crypto = [CryptoImplV1 sharedInstance];
+    QredoConversationCrypto *conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:crypto];
+    
+    NSData *myPrivateKeyData  = [QredoUtils hexStringToData:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    NSData *yourPublicKeyData = [QredoUtils hexStringToData:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
+    QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
+    QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
+    NSData *masterKey = [conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    NSData *requesterInboundEncryptionKey = [conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
+    NSData *requesterInboundAuthenticationKey = [conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
+    NSData *requesterInboundQueueSeed = [conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    QredoED25519SigningKey *requesterOwnershipKeyPair = [crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
+    
+    
+    NSData *message     = [QredoUtils hexStringToData:@"0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"];
+    NSData *expected = [QredoUtils hexStringToData:@"e439f1f2 a42e13a1 94c54887 55432003 7fbadbaa 0cc70a56 209b4b38 081486fb 7b5af188 c4c45f3a 4cfe6944 cfa4153a 89e48999 58ee5fe5 3d2367dd b8e6db0e"];
+    
+    NSData *result = [crypto qredoED25519SignMessage:message withKey:requesterOwnershipKeyPair error:nil];
+    
+    XCTAssertTrue([result isEqualToData:expected],@"Failed to sign");
 }
 
 
