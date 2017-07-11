@@ -16,6 +16,7 @@
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
 #import "NSData+ParseHex.h"
+#import "QredoCryptoTestUtilities.h"
 
 #import <objc/runtime.h>
 
@@ -104,7 +105,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     self.cryptoImpl = [[CryptoImplV1 alloc] init];
     
     //Must remove any existing keys before starting
-    [QredoCrypto deleteAllKeysInAppleKeychain];
+    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
 
     
     [self createRandomClients];
@@ -114,7 +115,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 -(void)tearDown {
     [super tearDown];
     //Should remove any existing keys after finishing
-    [QredoCrypto deleteAllKeysInAppleKeychain];
+    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
 }
 
 
@@ -274,13 +275,13 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     XCTAssertNotNil(privateKeyData);
     
-    SecKeyRef publicKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyData
+    SecKeyRef publicKeyRef = [QredoCryptoTestUtilities importPkcs1KeyData:publicKeyData
                                                keyLengthBits:keySizeBits
                                                keyIdentifier:publicKeyIdentifier
                                                    isPrivate:NO];
     XCTAssertTrue((__bridge id)publicKeyRef,@"Public Key import failed.");
     
-    SecKeyRef privateKeyRef = [QredoCrypto importPkcs1KeyData:privateKeyData
+    SecKeyRef privateKeyRef = [QredoCryptoTestUtilities importPkcs1KeyData:privateKeyData
                                                 keyLengthBits:keySizeBits
                                                 keyIdentifier:privateKeyIdentifier
                                                     isPrivate:YES];
@@ -371,7 +372,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     XCTAssertNotNil((__bridge id)identityRef,@"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
     
     //Extract the SecKeyRef from the identity
-    self.privateKeyRef = [QredoCrypto getPrivateKeyRefFromIdentityRef:identityRef];
+    self.privateKeyRef = [QredoCryptoTestUtilities getPrivateKeyRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)self.privateKeyRef);
     
     //2.) Create Certificate Refs from Identity Dictionary and convert to PEM string

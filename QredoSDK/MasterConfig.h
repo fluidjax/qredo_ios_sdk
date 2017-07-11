@@ -42,3 +42,29 @@
 #define     LIVE_SERVER_APP_SECRET      @"074af11737f877505167177726501aa0"
 #define     DEV_SERVER_APP_ID           @"test"
 #define     DEV_SERVER_APP_SECRET       @"a23469be8be13768c74ca0937cec47d1"
+
+
+
+
+#define GUARD(condition, msg) \
+    if (!(condition)) { \
+    @throw [NSException exceptionWithName:NSInvalidArgumentException \
+    reason:[NSString stringWithFormat:(msg)] \
+    userInfo:nil]; \
+    }
+
+#define GUARDF(condition, fmt, ...) \
+    if (!(condition)) { \
+    @throw [NSException exceptionWithName:NSInvalidArgumentException \
+    reason:[NSString stringWithFormat:(fmt), __VA_ARGS__] \
+    userInfo:nil]; \
+    }
+
+#define AESGUARD(condition, msg) \
+    if (!(condition)) { \
+    @throw [NSException exceptionWithName:NSGenericException \
+    reason:[NSString stringWithFormat:(msg)] \
+    userInfo:nil]; \
+    }
+
+

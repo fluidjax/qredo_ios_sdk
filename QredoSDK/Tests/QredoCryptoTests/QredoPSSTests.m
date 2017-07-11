@@ -6,6 +6,8 @@
 #import "NSData+Conversion.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoRsaPrivateKey.h"
+#import "QredoCryptoTestUtilities.h"
+
 
 @interface QredoPSSTests :XCTestCase
 {
@@ -37,9 +39,9 @@
 
 
 -(void)tearDown {
-    if (privateKeyName)[QredoCrypto deleteKeyInAppleKeychainWithIdentifier:privateKeyName];
+    if (privateKeyName)[QredoCryptoTestUtilities deleteKeyInAppleKeychainWithIdentifier:privateKeyName];
     
-    if (publicKeyName)[QredoCrypto deleteKeyInAppleKeychainWithIdentifier:publicKeyName];
+    if (publicKeyName)[QredoCryptoTestUtilities deleteKeyInAppleKeychainWithIdentifier:publicKeyName];
     
     [super tearDown];
 }
@@ -73,7 +75,7 @@
                                             length:sizeof(privateKeyDataArray) / sizeof(uint8_t)];
     
     //Import the public key
-    SecKeyRef importPubKeyRef = [QredoCrypto importPkcs1KeyData:publicKeyData
+    SecKeyRef importPubKeyRef = [QredoCryptoTestUtilities importPkcs1KeyData:publicKeyData
                                                   keyLengthBits:keySizeBits
                                                   keyIdentifier:publicKeyName
                                                       isPrivate:NO];
@@ -81,7 +83,7 @@
     
     
     //Import the private key
-    SecKeyRef importPrivKeyRef = [QredoCrypto importPkcs1KeyData:privateKeyData
+    SecKeyRef importPrivKeyRef = [QredoCryptoTestUtilities importPkcs1KeyData:privateKeyData
                                                    keyLengthBits:keySizeBits
                                                    keyIdentifier:privateKeyName
                                                        isPrivate:YES];
@@ -132,7 +134,7 @@
     
     XCTAssertNotNil(signature);
     
-    BOOL verified = [QredoCrypto rsaPssVerifySignature:signature forMessage:message saltLength:saltLen keyRef:publicKey];
+    BOOL verified = [QredoCryptoTestUtilities rsaPssVerifySignature:signature forMessage:message saltLength:saltLen keyRef:publicKey];
     XCTAssertTrue(verified);
     
     if (!verified)failed++;

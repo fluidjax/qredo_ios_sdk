@@ -299,6 +299,7 @@
 		83B023441CE2338A00431532 /* QredoXCTestListeners.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B023421CE2338A00431532 /* QredoXCTestListeners.m */; };
 		83B023461CE236ED00431532 /* QredoUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B023451CE236ED00431532 /* QredoUtilsTests.m */; };
 		83BE70001D82BC4B003B2C7E /* IMPORTANT in Resources */ = {isa = PBXBuildFile; fileRef = 83BE6FFF1D82BC4B003B2C7E /* IMPORTANT */; };
+		83BFC76C1F14C0CA006EED18 /* QredoCryptoTestUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 83BFC76A1F14BE2F006EED18 /* QredoCryptoTestUtilities.m */; };
 		83C1F2311C7490550043015E /* QredoKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A1035291A389DFD002479D9 /* QredoKeychain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		83CF37BF1D7973290042EFC1 /* NSDictionary+Contains.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CF37BD1D7973290042EFC1 /* NSDictionary+Contains.m */; };
 		83CF37C01D7973290042EFC1 /* NSDictionary+Contains.m in Sources */ = {isa = PBXBuildFile; fileRef = 83CF37BD1D7973290042EFC1 /* NSDictionary+Contains.m */; };
@@ -803,6 +804,8 @@
 		83B023451CE236ED00431532 /* QredoUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUtilsTests.m; sourceTree = "<group>"; };
 		83B66EA11E81625F0019F5A5 /* TESTNOTES */ = {isa = PBXFileReference; lastKnownFileType = text; path = TESTNOTES; sourceTree = "<group>"; };
 		83BE6FFF1D82BC4B003B2C7E /* IMPORTANT */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IMPORTANT; sourceTree = "<group>"; };
+		83BFC7691F14BE2F006EED18 /* QredoCryptoTestUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoCryptoTestUtilities.h; sourceTree = "<group>"; };
+		83BFC76A1F14BE2F006EED18 /* QredoCryptoTestUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoCryptoTestUtilities.m; sourceTree = "<group>"; };
 		83C614E41C514A96002CCC5C /* QredoLoggerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoLoggerPrivate.h; sourceTree = "<group>"; };
 		83CF37BD1D7973290042EFC1 /* NSDictionary+Contains.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Contains.m"; sourceTree = "<group>"; };
 		83CF37BE1D7973290042EFC1 /* NSDictionary+Contains.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Contains.h"; sourceTree = "<group>"; };
@@ -1186,6 +1189,8 @@
 		66605B3E1BD5266700EC8D6C /* QredoCryptoTests */ = {
 			isa = PBXGroup;
 			children = (
+				83BFC7691F14BE2F006EED18 /* QredoCryptoTestUtilities.h */,
+				83BFC76A1F14BE2F006EED18 /* QredoCryptoTestUtilities.m */,
 				66605B3F1BD5266700EC8D6C /* CryptoImplV1Tests.m */,
 				66605B411BD5266700EC8D6C /* QredoCertificateUtilsTests.m */,
 				66605B421BD5266700EC8D6C /* QredoCryptoTests.m */,
@@ -2648,21 +2653,6 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		F20E3D0F5BDD517751A0F9BE /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		F2131AF8DD3A1DEE5739DFEC /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2701,6 +2691,7 @@
 				66BE627B1BF632D000FA15F7 /* NSData+Conversion.m in Sources */,
 				83CF37C11D7973290042EFC1 /* NSDictionary+Contains.m in Sources */,
 				6651490E1BF60432003491CA /* NSArray+QredoArrayEquality.m in Sources */,
+				83BFC76C1F14C0CA006EED18 /* QredoCryptoTestUtilities.m in Sources */,
 				6651490F1BF60432003491CA /* NSData+QredoDataEquality.m in Sources */,
 				665149101BF60432003491CA /* NSData+QredoRandomData.m in Sources */,
 				665149111BF60432003491CA /* NSSet+QredoSetEquality.m in Sources */,

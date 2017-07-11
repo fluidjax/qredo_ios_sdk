@@ -7,6 +7,7 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoCrypto.h"
 #import "QredoLoggerPrivate.h"
+#import "QredoCryptoTestUtilities.h"
 
 @interface QredoCertificateUtilsTests :XCTestCase
 
@@ -19,14 +20,14 @@
     //These test produce many intentional errors - so turn off Debug Logging so we dont get lots of error warning '❤️  ERROR'
     [QredoLogger setLogLevel:QredoLogLevelNone];
     //Must remove any existing keys before starting
-    [QredoCrypto deleteAllKeysInAppleKeychain];
+    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
     
 }
 
 
 -(void)tearDown {
     //Must remove any keys after completing
-    [QredoCrypto deleteAllKeysInAppleKeychain];
+    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
     
     [super tearDown];
 }
@@ -203,7 +204,7 @@
     XCTAssertNotNil((__bridge id)identityRef,@"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
     
     //2.) Create Certificate Ref from Identity
-    SecCertificateRef certificateRef = [QredoCrypto getCertificateRefFromIdentityRef:identityRef];
+    SecCertificateRef certificateRef = [QredoCryptoTestUtilities getCertificateRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)certificateRef);
     
     //3.) Actual test - convert the Certificate Ref to a PEM string
@@ -248,7 +249,7 @@
     
     XCTAssertNotNil(pkcs1Data);
     
-    SecKeyRef keyRef = [QredoCrypto importPkcs1KeyData:pkcs1Data
+    SecKeyRef keyRef = [QredoCryptoTestUtilities importPkcs1KeyData:pkcs1Data
                                          keyLengthBits:keySizeBits
                                          keyIdentifier:publicKeyIdentifier
                                              isPrivate:NO];
@@ -1551,9 +1552,9 @@
     const int saltLen = 32;
     NSData *message = [NSData dataWithRandomBytesOfLength:messageLength];
     
-    SecKeyRef privateKeyRef = [QredoCrypto getPrivateKeyRefFromIdentityRef:identityRef];
+    SecKeyRef privateKeyRef = [QredoCryptoTestUtilities getPrivateKeyRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)privateKeyRef);
-    SecKeyRef publicKeyRef = [QredoCrypto getPublicKeyRefFromIdentityRef:identityRef];
+    SecKeyRef publicKeyRef = [QredoCryptoTestUtilities getPublicKeyRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)publicKeyRef);
     
     //3.) Sign data
@@ -1561,7 +1562,7 @@
     XCTAssertNotNil(signature);
     
     //4.) Verify data
-    BOOL verified = [QredoCrypto rsaPssVerifySignature:signature forMessage:message saltLength:saltLen keyRef:publicKeyRef];
+    BOOL verified = [QredoCryptoTestUtilities rsaPssVerifySignature:signature forMessage:message saltLength:saltLen keyRef:publicKeyRef];
     XCTAssertTrue(verified);
 }
 
@@ -1601,9 +1602,9 @@
     const int saltLen = 32;
     NSData *message = [NSData dataWithRandomBytesOfLength:messageLength];
     
-    SecKeyRef privateKeyRef = [QredoCrypto getPrivateKeyRefFromIdentityRef:identityRef];
+    SecKeyRef privateKeyRef = [QredoCryptoTestUtilities getPrivateKeyRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)privateKeyRef);
-    SecKeyRef publicKeyRef = [QredoCrypto getPublicKeyRefFromIdentityRef:identityRef];
+    SecKeyRef publicKeyRef = [QredoCryptoTestUtilities getPublicKeyRefFromIdentityRef:identityRef];
     XCTAssertNotNil((__bridge id)publicKeyRef);
     
     //3.) Sign data
@@ -1611,7 +1612,7 @@
     XCTAssertNotNil(signature);
     
     //4.) Verify data
-    BOOL verified = [QredoCrypto rsaPssVerifySignature:signature forMessage:message saltLength:saltLen keyRef:publicKeyRef];
+    BOOL verified = [QredoCryptoTestUtilities rsaPssVerifySignature:signature forMessage:message saltLength:saltLen keyRef:publicKeyRef];
     XCTAssertTrue(verified);
 }
 
