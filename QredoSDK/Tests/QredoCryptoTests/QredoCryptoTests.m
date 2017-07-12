@@ -220,6 +220,22 @@
 }
 
 
+
+
+-(void)testEncryptData256BitKeyRollOver {
+    NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
+    NSData *iv                  = [QredoUtils hexStringToData:@"6666666666666666ffffffffffffffff"];
+
+    NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
+    NSData *encrypted           = [QredoUtils hexStringToData:@"1fb6d992fafa44500fe03c61781d111710e1078e8609529cc4f9e8be68d4d38bcd0f55c344a974af029b79b28960e8c943bc75428d46b51457dc261246a075ac"];
+    
+    NSData *result = [QredoCrypto encryptData:plaintext with256bitAesKey:key iv:iv];
+    XCTAssertNotNil(result,@"Encrypted data should not be nil.");
+    XCTAssertTrue([result isEqualToData:encrypted],@"Encrypted data incorrect.");
+}
+
+
+
 -(void)testEncryptData256BitKey {
     NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
     NSData *iv                  = [QredoUtils hexStringToData:@"f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"];

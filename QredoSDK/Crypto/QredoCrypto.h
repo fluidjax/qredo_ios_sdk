@@ -25,7 +25,6 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 +(NSData *)generateHmacSha256ForData:(NSData *)data length:(NSUInteger)length key:(NSData *)key;
 +(NSData *)sha256:(NSData *)data;
 +(NSData *)secureRandomWithSize:(NSUInteger)size;
-+(NSData *)aesCTRIV;
 +(BOOL)equalsConstantTime:(NSData *)left right:(NSData *)right;
 
 +(QredoSecKeyRefPair *)generateRsaKeyPairOfLength:(NSInteger)lengthBits publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys;

@@ -253,26 +253,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 }
 
 
-+(NSData*)aesCTRIV{
-    //generates 64bit random + 64 zeros (counter) because Apple CTR implementation uses only 64 bits
-    //so if we rollover at 64bits it doesnt increment correctly, so we start at 0 to ensure we have 2^64 blocks available
-    size_t randomSize  = 8;
-    uint8_t *randomBytes = alloca(randomSize);
-    int result = SecRandomCopyBytes(kSecRandomDefault,randomSize,randomBytes);
-    
-    if (result != 0){
-        @throw [NSException exceptionWithName:@"QredoSecureRandomGenerationException"
-                                       reason:[NSString stringWithFormat:@"Failed to generate a secure random byte array of size %lu (result: %d)..",(unsigned long)randomSize,result]
-                                     userInfo:nil];
-    }
-    
-    NSMutableData *res =  [[NSData dataWithBytes:randomBytes length:randomSize] mutableCopy];
-    [res increaseLengthBy:8];
-    return [res copy];
-}
-
-
-
 +(NSData *)secureRandomWithSize:(NSUInteger)size {
     size_t randomSize  = size;
     uint8_t *randomBytes = alloca(randomSize);
