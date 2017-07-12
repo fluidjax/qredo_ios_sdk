@@ -7,6 +7,7 @@
 #import "QredoEllipticCurvePoint.h"
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
+#import "MasterConfig.h"
 
 NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDictionary *userInfo);
 
@@ -352,36 +353,23 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 
 
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error {
-    NSAssert(sk,@"Signing key is required for signing");
+    GUARD(sk, @"Signing key is required for signing");
     
     if ([message length] < 1){
         if (error){
             *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedSignatureData,nil);
         }
-        
         return nil;
     }
     
-    const unsigned char *messageBytes = [message bytes];
-    NSUInteger messageLength = [message length];
+    NSMutableData *signature    = [NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH];
     
-    
-    NSUInteger signatureLength = ED25519_VERIFY_KEY_LENGTH * 2;
-    NSMutableData *signatureMessage = [NSMutableData dataWithLength:signatureLength + messageLength];
-    [signatureMessage
-     replaceBytesInRange:NSMakeRange(signatureLength,messageLength)
-     withBytes:messageBytes
-     ];
-    
-    unsigned char *signatureMessageBytes = [signatureMessage mutableBytes];
-    unsigned long long signatureMessageLength = [signatureMessage length];
-    
-    const unsigned char *skBytes = [sk.data bytes];
-    
-    crypto_sign_ed25519(signatureMessageBytes,&signatureMessageLength,messageBytes,messageLength,skBytes);
-    
-    NSData *signature = [signatureMessage subdataWithRange:NSMakeRange(0,signatureLength)];
-    return signature;
+    crypto_sign_ed25519_detached([signature mutableBytes],
+                                 nil,
+                                 [message bytes],
+                                 [message length],
+                                 [sk.data bytes]);
+    return [signature copy];
 }
 
 

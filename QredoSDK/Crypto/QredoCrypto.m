@@ -246,14 +246,10 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 
 +(NSData *)sha256:(NSData *)data {
-
     GUARD(data, @"Data must be specified.");
-    
     NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    CC_SHA256(data.bytes, data.length, hash.mutableBytes);
-    
+    CC_SHA256(data.bytes, (unsigned int)data.length, hash.mutableBytes);
     return hash;
-
 }
 
 
@@ -267,7 +263,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                        reason:[NSString stringWithFormat:@"Failed to generate a secure random byte array of size %lu (result: %d)..",(unsigned long)size,result]
                                      userInfo:nil];
     }
-    
     return [NSData dataWithBytes:randomBytes length:randomSize];
 }
 
