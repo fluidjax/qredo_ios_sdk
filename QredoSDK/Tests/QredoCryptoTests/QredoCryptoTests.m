@@ -279,7 +279,7 @@
     };
     NSData *expectedPrkData = [NSData dataWithBytes:expectedPrkDataArray length:sizeof(expectedPrkDataArray) / sizeof(uint8_t)];
     
-    NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:saltData initialKeyMaterial:ikmData];
+    NSData *prk = [QredoCrypto hkdfSha256ExtractWithSalt:saltData initialKeyMaterial:ikmData];
     
     XCTAssertNotNil(prk,@"PRK should not be nil.");
     XCTAssertTrue([expectedPrkData isEqualToData:prk],@"PRK data incorrect.");
@@ -306,7 +306,7 @@
     };
     NSData *expectedOkmData = [NSData dataWithBytes:expectedOkmDataArray length:sizeof(expectedOkmDataArray) / sizeof(uint8_t)];
     
-    NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:keyData info:infoData outputLength:outputLength];
+    NSData *okm = [QredoCrypto hkdfSha256ExpandWithKey:keyData info:infoData outputLength:outputLength];
     
     XCTAssertNotNil(okm,@"OKM should not be nil.");
     XCTAssertTrue([expectedOkmData isEqualToData:okm],@"OKM data incorrect.");

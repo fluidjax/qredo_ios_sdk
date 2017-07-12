@@ -22,7 +22,6 @@
 SecPadding secPaddingFromQredoPadding(QredoPadding);
 SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
-
 #define PBKDF2_MIN_SALT_LENGTH       8 //RFC recommends minimum of 8 bytes salt
 
 /*
@@ -32,6 +31,19 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
  we later specify a different OAEP MGF1 digest algorithm
  */
 
+#define GUARD(condition, msg) \
+    if (!(condition)) { \
+        @throw [NSException exceptionWithName:NSInvalidArgumentException \
+                            reason:[NSString stringWithFormat:(msg)] \
+                            userInfo:nil]; \
+    }
+
+#define GUARDF(condition, fmt, ...) \
+    if (!(condition)) { \
+        @throw [NSException exceptionWithName:NSInvalidArgumentException \
+                            reason:[NSString stringWithFormat:(fmt), __VA_ARGS__] \
+                            userInfo:nil]; \
+    }
 
 #define AESGUARD(condition, msg) \
     if (!(condition)) { \
@@ -41,10 +53,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                             reason:[NSString stringWithFormat:(msg)] \
                             userInfo:nil]; \
     }
-
-
-
-
 
 
 +(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
@@ -111,73 +119,60 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     return [self aes:data operation:kCCDecrypt key:key iv:iv];
 }
 
++(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
+    
+    GUARD(ikm, @"IKM must be specified.");
+    GUARD(outputLength > 0, @"Output length must be greater than zero.");
 
-
-+(NSData *)hkdfExtractSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
-
-    GUARD(ikm, @"IKM must be specified.")
+    // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
     
-    // HKDF-Extract gets a pseudo random key (PRK) from the initial key material (IKM)
-    // PRK = HMAC-Hash(salt, IKM)
-    NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    
-    // HKDF-Extract
-    CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
-    
-    return prk;
-}
-
-
-+(NSData *)hkdfExpandSha256WithKey:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength {
-    //based on the required output Length calucate the number of iterations required
-    int iterations = (int)ceil((double)outputLength / (double)CC_SHA256_DIGEST_LENGTH);
-    NSData *mixin = [NSData data];
-    
-    NSMutableData *results = [NSMutableData data];
-    
-    
-    for (int i = 0; i < iterations; i++){
-        CCHmacContext ctx;
-        CCHmacInit(&ctx,kCCHmacAlgSHA256,[key bytes],[key length]);
-        CCHmacUpdate(&ctx,[mixin bytes],[mixin length]);
+    NSData *realSalt = salt ? salt : [NSData new];
+    NSData *realInfo = info ? info : [NSData new];
         
-        if (info != nil){
-            CCHmacUpdate(&ctx,[info bytes],[info length]);
-        }
-        
-        unsigned char c = i + 1;
-        CCHmacUpdate(&ctx,&c,1);
-        unsigned char T[CC_SHA256_DIGEST_LENGTH];
-        CCHmacFinal(&ctx,T);
-        NSData *stepResult = [NSData dataWithBytes:T length:CC_SHA256_DIGEST_LENGTH];
-        [results appendData:stepResult];
-        mixin = [stepResult copy];
-    }
-    //from the result only return the required length, discarding anything above
-    return [[NSData dataWithData:results] subdataWithRange:NSMakeRange(0,outputLength)];
+    NSData *prk = [QredoCrypto hkdfSha256ExtractWithSalt:realSalt initialKeyMaterial:ikm];
+    NSData *okm = [QredoCrypto hkdfSha256ExpandWithKey:prk info:realInfo outputLength:outputLength];
+    
+    return okm;
+    
 }
-
 
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info {
-    //Convenience wrapper to provide 256bit output keys
     return [self hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:CC_SHA256_DIGEST_LENGTH];
 }
 
++(NSData *)hkdfSha256ExtractWithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
 
-+(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
-    //Taken from https://tools.ietf.org/html/rfc5869
-    // Additional resources https://github.com/FredericJacobs/HKDFKit
+    GUARD(ikm, @"IKM must be specified.")
     
-    //stage 1: From input material generates a psuedo random key
-    //         This redistributes unevenly distributed entropy in the source material
-    NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:salt initialKeyMaterial:ikm];
+    NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
     
-    //Stage 2: Exapnds  the key into several additional random keys, concatenates them into a longer key,
-    // returns    longerKey.sub(0,requiredKeylength)
-    NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:prk info:info outputLength:outputLength];
+    return prk;
     
+}
+
++(NSData *)hkdfSha256ExpandWithKey:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
     
-    return okm;
+    uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
+    
+    NSUInteger N = ceil((double)outputLength / (double)hashLen);
+    uint8_t *T   = alloca(N * hashLen);
+    
+    uint8_t *Tlast = NULL;
+    uint8_t *Tnext = T;
+    for (uint8_t ctr = 1; ctr <= N; ctr++) {
+        CCHmacContext ctx;
+        CCHmacInit(&ctx, kCCHmacAlgSHA256, prk.bytes, prk.length);
+        CCHmacUpdate(&ctx, Tlast, Tlast ? hashLen : 0); // T[n-1] or empty for T[0]
+        CCHmacUpdate(&ctx, info.bytes, info.length);    // optional info
+        CCHmacUpdate(&ctx, &ctr, 1);                    // counter octet
+        CCHmacFinal(&ctx, Tnext);                       // write to T[n]
+        Tlast  = Tnext;
+        Tnext += hashLen;
+    }
+    
+    return [NSData dataWithBytes:T length:outputLength];
+    
 }
 
 +(NSData *)pbkdf2Sha256WithSalt:(NSData *)salt passwordData:(NSData *)passwordData requiredKeyLengthBytes:(NSUInteger)requiredKeyLengthBytes iterations:(NSUInteger)iterations {
