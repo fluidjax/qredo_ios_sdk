@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoCrypto.h"
+#import "CryptoImplV1.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "rsapss.h"
 #import "QredoRsaPublicKey.h"
@@ -10,6 +11,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoUtils.h"
 #import "QredoCryptoTestUtilities.h"
+#import "QredoConversationCrypto.h"
 
 @interface QredoCryptoTests :XCTestCase
 
@@ -25,11 +27,36 @@
 }
 
 
+
 -(void)tearDown {
     //Must remove any keys after completing
     [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
     
     [super tearDown];
+}
+
+
+-(void)testED25519Sign{
+    CryptoImplV1 *crypto = [CryptoImplV1 sharedInstance];
+    QredoConversationCrypto *conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:crypto];
+    
+    NSData *myPrivateKeyData  = [QredoUtils hexStringToData:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    NSData *yourPublicKeyData = [QredoUtils hexStringToData:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
+    QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
+    QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
+    NSData *masterKey = [conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    NSData *requesterInboundEncryptionKey = [conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
+    NSData *requesterInboundAuthenticationKey = [conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
+    NSData *requesterInboundQueueSeed = [conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    QredoED25519SigningKey *requesterOwnershipKeyPair = [crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
+    
+    
+    NSData *message     = [QredoUtils hexStringToData:@"0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"];
+    NSData *expected = [QredoUtils hexStringToData:@"e439f1f2 a42e13a1 94c54887 55432003 7fbadbaa 0cc70a56 209b4b38 081486fb 7b5af188 c4c45f3a 4cfe6944 cfa4153a 89e48999 58ee5fe5 3d2367dd b8e6db0e"];
+    
+    NSData *result = [crypto qredoED25519SignMessage:message withKey:requesterOwnershipKeyPair error:nil];
+    
+    XCTAssertTrue([result isEqualToData:expected],@"Failed to sign");
 }
 
 
@@ -191,6 +218,22 @@
     
     XCTAssertThrowsSpecificNamed([QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:ivData],NSException,NSInvalidArgumentException,@"Invalid key length but NSInvalidArgumentException not thrown.");
 }
+
+
+
+
+-(void)testEncryptData256BitKeyRollOver {
+    NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
+    NSData *iv                  = [QredoUtils hexStringToData:@"6666666666666666ffffffffffffffff"];
+
+    NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
+    NSData *encrypted           = [QredoUtils hexStringToData:@"1fb6d992fafa44500fe03c61781d111710e1078e8609529cc4f9e8be68d4d38bcd0f55c344a974af029b79b28960e8c943bc75428d46b51457dc261246a075ac"];
+    
+    NSData *result = [QredoCrypto encryptData:plaintext with256bitAesKey:key iv:iv];
+    XCTAssertNotNil(result,@"Encrypted data should not be nil.");
+    XCTAssertTrue([result isEqualToData:encrypted],@"Encrypted data incorrect.");
+}
+
 
 
 -(void)testEncryptData256BitKey {
