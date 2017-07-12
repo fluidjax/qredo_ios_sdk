@@ -85,8 +85,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 }
 
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
-
-    GUARD(salt, @"Salt must be specified in Qredo code, despite RFC optionality.");
+    
     GUARD(ikm, @"IKM must be specified.");
     GUARD(outputLength > 0, @"Output length must be greater than zero.");
 
