@@ -400,8 +400,18 @@ NSNumber *testNumber;
 }
 
 
+//-(void)testIndexSourceMultiple{
+//    for (int i=0;i<1000;i++){
+//        NSLog(@"Count %i",i);
+//        [self setUp];
+//        [self testIndexSource];
+//        [self tearDown];
+//    }
+//}
+
+
 -(void)testIndexSource {
-    //put item in index
+    //put item in index
     //delete item from index
     //clear cache (reset watermark)
     //wait for it to populate from server
@@ -438,6 +448,7 @@ NSNumber *testNumber;
     
     
     [vault addMetadataIndexObserver:^(QredoVaultItemMetadata *vaultMetaData) {
+        
         incomingMetadata = vaultMetaData;
         [receivedAfterPurgeExpectation fulfill];
     }];
@@ -455,22 +466,17 @@ NSNumber *testNumber;
 }
 
 
-
-
-//-(void)testMultipleSimplerPut{
-//        for (int i=0;i<1000;i++){
-//            NSLog(@"Loop %i",i);
-//            [self testSimplePut];
-//        }
-//}
-
-
 -(void)testSimplePut {
     int testCount = 10;
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [self randomStringWithLength:32];
     
     [testClient1.defaultVault addMetadataIndexObserver];
+    
+    
+    //wait for registration
+    sleep(2);
+
     
     for (int i = 0; i < testCount; i++){
         QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
@@ -772,8 +778,7 @@ NSNumber *testNumber;
     __block XCTestExpectation *testExpectation = [self expectationWithDescription:@"put item 1"];
     __block QredoVaultItemMetadata *createdItemMetaData = nil;
     
-    [vault putItem:item1
- completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
+    [vault putItem:item1  completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
      XCTAssertNil(error);
      XCTAssertNotNil(newItemMetadata);
      createdItemMetaData = newItemMetadata;

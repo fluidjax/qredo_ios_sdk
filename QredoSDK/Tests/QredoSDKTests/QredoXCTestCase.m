@@ -70,6 +70,9 @@ static const int testTimeOut = 30;
     conversation2 = nil;
     conversationHWM = nil;
     
+    testClient1 = nil;
+    testClient2 = nil;
+    
     [super tearDown];
 }
 
@@ -400,6 +403,9 @@ static const int testTimeOut = 30;
     [self waitForExpectationsWithTimeout:testTimeOut
                                  handler:^(NSError *error) {
                                  }];
+    
+    [toConversation removeConversationObserver:listener];
+    
     return conversationHWM;
 }
 
