@@ -31,19 +31,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
  we later specify a different OAEP MGF1 digest algorithm
  */
 
-#define GUARD(condition, msg) \
-    if (!(condition)) { \
-        @throw [NSException exceptionWithName:NSInvalidArgumentException \
-                            reason:[NSString stringWithFormat:(msg)] \
-                            userInfo:nil]; \
-    }
-
-#define GUARDF(condition, fmt, ...) \
-    if (!(condition)) { \
-        @throw [NSException exceptionWithName:NSInvalidArgumentException \
-                            reason:[NSString stringWithFormat:(fmt), __VA_ARGS__] \
-                            userInfo:nil]; \
-    }
 
 #define AESGUARD(condition, msg) \
     if (!(condition)) { \

@@ -11,6 +11,8 @@
  */
 
 
+#include "QredoMacros.h"
+
 #define QREDO_DEBUG_LEVEL 1
 
 //The Live Server  [QredoClientOptions alloc] initLive]
@@ -45,19 +47,5 @@
 
 
 
-
-#define GUARD(condition, msg) \
-    if (!(condition)) { \
-    @throw [NSException exceptionWithName:NSInvalidArgumentException \
-    reason:[NSString stringWithFormat:(msg)] \
-    userInfo:nil]; \
-    }
-
-#define GUARDF(condition, fmt, ...) \
-    if (!(condition)) { \
-    @throw [NSException exceptionWithName:NSInvalidArgumentException \
-    reason:[NSString stringWithFormat:(fmt), __VA_ARGS__] \
-    userInfo:nil]; \
-    }
 
 
