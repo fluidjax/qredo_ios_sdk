@@ -1373,7 +1373,7 @@
 }
 
 
--(void)testMenualGet {
+-(void)testManualGet {
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
