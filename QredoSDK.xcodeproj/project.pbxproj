@@ -1938,6 +1938,8 @@
 			mainGroup = 0A16F88619C3566B00639779;
 			productRefGroup = 0A16F8C119C358B400639779 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+			);
 			projectRoot = "";
 			targets = (
 				66F7752B1BD6538D00F01A2C /* LinguaFrancaTests */,
