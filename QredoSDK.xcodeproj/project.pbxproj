@@ -32,7 +32,6 @@
 		6651491E1BF60432003491CA /* QredoKeyPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059891BD505FE00EC8D6C /* QredoKeyPair.m */; };
 		665149201BF60432003491CA /* QredoPrivateKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660598E1BD505FE00EC8D6C /* QredoPrivateKey.m */; };
 		665149211BF60432003491CA /* QredoPublicKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059901BD505FE00EC8D6C /* QredoPublicKey.m */; };
-		665149221BF60432003491CA /* QredoRsaBlindSignature.c in Sources */ = {isa = PBXBuildFile; fileRef = 666059911BD505FE00EC8D6C /* QredoRsaBlindSignature.c */; };
 		665149231BF60432003491CA /* QredoRsaPrivateKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059941BD505FE00EC8D6C /* QredoRsaPrivateKey.m */; };
 		665149241BF60432003491CA /* QredoRsaPublicKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059961BD505FE00EC8D6C /* QredoRsaPublicKey.m */; };
 		665149251BF60432003491CA /* QredoSecKeyRefPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059981BD505FE00EC8D6C /* QredoSecKeyRefPair.m */; };
@@ -291,7 +290,6 @@
 		838E48C31C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 838E48C11C1F1A4300784C11 /* QredoLocalIndex.xcdatamodel */; };
 		8399ABF81E8D38CF009F76D9 /* QredoServerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8399ABF61E8D38CF009F76D9 /* QredoServerTests.m */; };
 		839D42B21C7C7416006180DD /* QredoCryptoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B421BD5266700EC8D6C /* QredoCryptoTests.m */; };
-		83ADC5751C3BF16900C34A76 /* QredoRsaBlindSignature.c in Sources */ = {isa = PBXBuildFile; fileRef = 666059911BD505FE00EC8D6C /* QredoRsaBlindSignature.c */; };
 		83ADC5761C3BF16900C34A76 /* rsapss.c in Sources */ = {isa = PBXBuildFile; fileRef = 666059991BD505FE00EC8D6C /* rsapss.c */; };
 		83AF3A411C11DEE5003B258F /* _QredoIndexVariableValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AF3A3D1C11DEE5003B258F /* _QredoIndexVariableValue.m */; };
 		83AF3A471C11DEFF003B258F /* QredoIndexVariableValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 83AF3A431C11DEFF003B258F /* QredoIndexVariableValue.m */; };
@@ -558,8 +556,6 @@
 		6660598E1BD505FE00EC8D6C /* QredoPrivateKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoPrivateKey.m; sourceTree = "<group>"; };
 		6660598F1BD505FE00EC8D6C /* QredoPublicKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoPublicKey.h; sourceTree = "<group>"; };
 		666059901BD505FE00EC8D6C /* QredoPublicKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoPublicKey.m; sourceTree = "<group>"; };
-		666059911BD505FE00EC8D6C /* QredoRsaBlindSignature.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = QredoRsaBlindSignature.c; sourceTree = "<group>"; };
-		666059921BD505FE00EC8D6C /* QredoRsaBlindSignature.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRsaBlindSignature.h; sourceTree = "<group>"; };
 		666059931BD505FE00EC8D6C /* QredoRsaPrivateKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRsaPrivateKey.h; sourceTree = "<group>"; };
 		666059941BD505FE00EC8D6C /* QredoRsaPrivateKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoRsaPrivateKey.m; sourceTree = "<group>"; };
 		666059951BD505FE00EC8D6C /* QredoRsaPublicKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRsaPublicKey.h; sourceTree = "<group>"; };
@@ -1638,8 +1634,6 @@
 				6660598E1BD505FE00EC8D6C /* QredoPrivateKey.m */,
 				6660598F1BD505FE00EC8D6C /* QredoPublicKey.h */,
 				666059901BD505FE00EC8D6C /* QredoPublicKey.m */,
-				666059911BD505FE00EC8D6C /* QredoRsaBlindSignature.c */,
-				666059921BD505FE00EC8D6C /* QredoRsaBlindSignature.h */,
 				666059861BD505FE00EC8D6C /* QredoKey.h */,
 				666059871BD505FE00EC8D6C /* QredoKey.m */,
 				666059881BD505FE00EC8D6C /* QredoKeyPair.h */,
@@ -2221,7 +2215,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		3FDA3931CBD33A6669047F30 /* [CP] Copy Pods Resources */ = {
@@ -2296,7 +2290,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		6031BDF1B09624274DFE5B4D /* [CP] Copy Pods Resources */ = {
@@ -2534,7 +2528,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		BEB855A0DC4EA90A253C8BB3 /* [CP] Check Pods Manifest.lock */ = {
@@ -2549,7 +2543,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		CAFCA11529CD8B3698CBD0E3 /* [CP] Check Pods Manifest.lock */ = {
@@ -2579,7 +2573,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D8102137EB5BD4385FCA910E /* [CP] Copy Pods Resources */ = {
@@ -2679,7 +2673,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83ADC5751C3BF16900C34A76 /* QredoRsaBlindSignature.c in Sources */,
 				83ADC5761C3BF16900C34A76 /* rsapss.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2718,7 +2711,6 @@
 				665149201BF60432003491CA /* QredoPrivateKey.m in Sources */,
 				665149211BF60432003491CA /* QredoPublicKey.m in Sources */,
 				83EC3B0E1CC7A0A200A55271 /* SSLTimeSyncWorker.m in Sources */,
-				665149221BF60432003491CA /* QredoRsaBlindSignature.c in Sources */,
 				665149231BF60432003491CA /* QredoRsaPrivateKey.m in Sources */,
 				83EDB5CD1CE20E1300F4F556 /* QredoUtils.m in Sources */,
 				83800C731C50E837007B3401 /* QredoLogger.m in Sources */,
