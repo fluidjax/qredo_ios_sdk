@@ -1,8 +1,6 @@
-/* HEADER GOES HERE */
 #import "QredoUserCredentials.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoCrypto.h"
-#import "QredoLoggerPrivate.h"
 
 #define SALT_USER_UNLOCK                 [@"3aK3VkzxClECvyFW" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_USER_MASTER                 [@"wjB9zA2l1Z4eiW5t" dataUsingEncoding:NSUTF8StringEncoding]
@@ -97,9 +95,9 @@ userInfo:nil]; \
 
 
 -(NSData *)masterKey:(NSData *)userUnlockKey {
-    NSData *masterKey = [QredoCrypto hkdfSha256WithSalt:SALT_USER_MASTER initialKeyMaterial:userUnlockKey info:INFO_USER_MASTER outputLength:256];
-    
-    return masterKey;
+    NSData *prk = [QredoCrypto hkdfSha256Extract:userUnlockKey salt:SALT_USER_MASTER];
+    NSData *okm = [QredoCrypto hkdfSha256Expand:prk info:INFO_USER_MASTER outputLength:256];
+    return okm;
 }
 
 

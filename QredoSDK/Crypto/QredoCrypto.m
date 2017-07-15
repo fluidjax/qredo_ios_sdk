@@ -94,8 +94,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 }
 
-#if NEW_CRYPTO_CODE
-
 +(BOOL)constantEquals:(NSData *)lhs rhs:(NSData *)rhs {
 
     uint8_t *leftHashBytes  = (uint8_t *)lhs.bytes;
@@ -138,12 +136,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 +(BOOL)ed25519Sha512Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair {
     return crypto_sign_ed25519_verify_detached(signature.bytes, payload.bytes, payload.length, keyPair.publicKey.convertKeyToNSData.bytes) == 0;
-}
-
-+(NSData *)hkdfSha256:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info outputLength:(NSUInteger)outputLength {
-    NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:salt initialKeyMaterial:ikm];
-    NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:prk info:info outputLength:outputLength];
-    return okm;
 }
 
 +(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations {
@@ -206,44 +198,38 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
      return [self aes256CtrEncrypt:data key:key iv:iv];
 }
 
-+(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {
-    
-    GUARD(ikm, @"IKM must be specified.");
-    GUARD(outputLength > 0, @"Output length must be greater than zero.");
++(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt {
 
     // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
-    
-    NSData *realSalt = salt ? salt : [NSData new];
-    NSData *realInfo = info ? info : [NSData new];
-        
-    NSData *prk = [QredoCrypto hkdfSha256ExtractWithSalt:realSalt initialKeyMaterial:ikm];
-    NSData *okm = [QredoCrypto hkdfSha256ExpandWithKey:prk info:realInfo outputLength:outputLength];
-    
-    return okm;
-    
-}
 
-+(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info {
-    return [self hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:info outputLength:CC_SHA256_DIGEST_LENGTH];
-}
-
-+(NSData *)hkdfSha256ExtractWithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm {
-
-    GUARD(ikm, @"IKM must be specified.")
+    NSAssert(ikm,  @"IKM must be specified.");
+    NSAssert(ikm.length > 0, @"IKM must be non-empty.");
+    NSAssert(salt, @"Salt must be specified.");
+    NSAssert(salt.length > 0, @"Salt must be non-empty.");
     
     NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
+
+    NSAssert(prk.length == CC_SHA256_DIGEST_LENGTH, @"Expected PRK to be SHA256 length.");
     
-    return prk;
+    return [prk copy];
     
 }
 
-+(NSData *)hkdfSha256ExpandWithKey:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
-    
++(NSData *)hkdfSha256Expand:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
+
+    // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
+
+    NSAssert(prk, @"PRK must be specified.");
+    NSAssert(prk.length > 0, @"PRK must be non-empty.");
+    NSAssert(info, @"Info must be specified.");
+    NSAssert(outputLength > 0, @"Output length must be greater than zero.");
+
     uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
     
     NSUInteger N = ceil((double)outputLength / (double)hashLen);
     uint8_t *T   = alloca(N * hashLen);
+    NSAssert(T, @"Could not allocate expansion vector.");
     
     uint8_t *Tlast = NULL;
     uint8_t *Tnext = T;
@@ -257,8 +243,12 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
         Tlast  = Tnext;
         Tnext += hashLen;
     }
+
+    NSData *okm = [NSData dataWithBytes:T length:outputLength];
+    NSAssert(okm.length > 0, @"Expected OKM of non-zero length.");
+    NSAssert(okm.length == outputLength, @"Expected OKM to match requested output length.");
     
-    return [NSData dataWithBytes:T length:outputLength];
+    return okm;
     
 }
 

@@ -2,11 +2,8 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "sodium.h"
 #import "CryptoImplV1.h"
-#import "NSData+QredoRandomData.h"
 #import "QredoCrypto.h"
 #import "QredoEllipticCurvePoint.h"
-#import "QredoDhPrivateKey.h"
-#import "QredoDhPublicKey.h"
 #import "MasterConfig.h"
 
 NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDictionary *userInfo);
@@ -279,7 +276,9 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     NSData *ikm = [self getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
     
     //HKDF using SHA-256
-    NSData *diffieHellmanSecretData = [QredoCrypto hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:nil];
+    NSData *prk = [QredoCrypto hkdfSha256Extract:ikm salt:salt];
+    NSData *okm = [QredoCrypto hkdfSha256Expand:prk info:nil outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *diffieHellmanSecretData = okm;
     
     return diffieHellmanSecretData;
 }

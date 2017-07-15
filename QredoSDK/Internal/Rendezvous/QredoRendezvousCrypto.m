@@ -1,21 +1,12 @@
-/* HEADER GOES HERE */
+#import <CommonCrypto/CommonDigest.h>
 #import "QredoRendezvousCrypto.h"
-#import "QredoKeyPair.h"
 #import "CryptoImplV1.h"
-#import "NSData+QredoRandomData.h"
-#import "QredoDhPrivateKey.h"
-#import "QredoDhPublicKey.h"
 #import "QredoCrypto.h"
 #import "QredoRsaPublicKey.h"
-#import "QredoRsaPrivateKey.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoLoggerPrivate.h"
-#import "QredoAuthenticatedRendezvousTag.h"
 #import "QredoErrorCodes.h"
-#import "QredoQUIDPrivate.h"
 
-#define QREDO_RENDEZVOUS_AUTH_KEY        [@"Authenticate" dataUsingEncoding:NSUTF8StringEncoding]
-#define QREDO_RENDEZVOUS_SALT            [@"Rendezvous" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_CONVERSATION_ID             [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]
 
 #define QREDO_RENDEZVOUS_MASTER_KEY_SALT [@"8YhZWIxieGYyW07D" dataUsingEncoding:NSUTF8StringEncoding]
@@ -315,10 +306,13 @@ static const int QredoRendezvousMasterKeyLength = 32;
 -(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(NSData *)masterKey {
     NSAssert(masterKey,@"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
-    
-    NSData *hashedTagData = [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_HASHED_TAG_SALT
-                                         initialKeyMaterial:masterKey
-                                                       info:nil];
+
+    NSData *prk = [QredoCrypto hkdfSha256Extract:masterKey
+                                            salt:QREDO_RENDEZVOUS_HASHED_TAG_SALT];
+    NSData *okm = [QredoCrypto hkdfSha256Expand:prk
+                                           info:[NSData data]
+                                   outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *hashedTagData = okm;
     
     return [[QredoQUID alloc] initWithQUIDData:hashedTagData];
 }
@@ -327,16 +321,26 @@ static const int QredoRendezvousMasterKeyLength = 32;
 -(NSData *)encryptionKeyWithMasterKey:(NSData *)masterKey {
     NSAssert(masterKey,@"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
-    
-    return [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_ENC_SALT initialKeyMaterial:masterKey info:nil];
+
+    NSData *prk = [QredoCrypto hkdfSha256Extract:masterKey
+                                            salt:QREDO_RENDEZVOUS_ENC_SALT];
+    NSData *okm = [QredoCrypto hkdfSha256Expand:prk
+                                           info:[NSData data]
+                                   outputLength:CC_SHA256_DIGEST_LENGTH];
+    return okm;
 }
 
 
 -(NSData *)authenticationKeyWithMasterKey:(NSData *)masterKey {
     NSAssert(masterKey,@"Master key should not be nil");
     NSAssert(masterKey.length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
-    
-    return [QredoCrypto hkdfSha256WithSalt:QREDO_RENDEZVOUS_AUTH_SALT initialKeyMaterial:masterKey info:nil];
+
+    NSData *prk = [QredoCrypto hkdfSha256Extract:masterKey
+                                            salt:QREDO_RENDEZVOUS_AUTH_SALT];
+    NSData *okm = [QredoCrypto hkdfSha256Expand:prk
+                                           info:[NSData data]
+                                   outputLength:CC_SHA256_DIGEST_LENGTH];
+    return okm;
 }
 
 
