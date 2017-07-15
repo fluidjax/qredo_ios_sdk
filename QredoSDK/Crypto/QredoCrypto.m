@@ -347,11 +347,11 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     
     //Set key-type and key-size
     keyPairAttr[(__bridge id)kSecAttrKeyType] = (__bridge id)kSecAttrKeyTypeRSA;
-    keyPairAttr[(__bridge id)kSecAttrKeySizeInBits] = [NSNumber numberWithInteger:lengthBits];
+    keyPairAttr[(__bridge id)kSecAttrKeySizeInBits] = @(lengthBits);
     
     //Specifies whether private/public key is stored permanently (i.e. in keychain)
-    privateKeyAttr[(__bridge id)kSecAttrIsPermanent] = [NSNumber numberWithBool:persistKeys];
-    publicKeyAttr[(__bridge id)kSecAttrIsPermanent] = [NSNumber numberWithBool:persistKeys];
+    privateKeyAttr[(__bridge id)kSecAttrIsPermanent] = @(persistKeys);
+    publicKeyAttr[(__bridge id)kSecAttrIsPermanent] = @(persistKeys);
     
     //Set the identifier name for private/public key
     privateKeyAttr[(__bridge id)kSecAttrApplicationTag] = privateTag;
