@@ -5,9 +5,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoCrypto.h"
 
-
 @implementation QredoCrypto
-
 
 SecPadding secPaddingFromQredoPadding(QredoPadding);
 SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
@@ -95,6 +93,17 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
     return difference == 0;
 
+}
+
++(NSData *)secureRandom:(NSUInteger)size {
+    NSAssert(size > 0, @"Expected non-zero size.");
+
+    uint8_t *bytes = alloca(size);
+    int result = SecRandomCopyBytes(kSecRandomDefault, size, bytes);
+
+    NSAssert(result == 0, @"Failed to generate %d secure random bytes.", size);
+
+    return [NSData dataWithBytes:bytes length:size];
 }
 
 #if NEW_CRYPTO_CODE
@@ -293,20 +302,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     CC_SHA256(data.bytes, (unsigned int)data.length, hash.mutableBytes);
     return hash;
-}
-
-
-+(NSData *)secureRandomWithSize:(NSUInteger)size {
-    size_t randomSize  = size;
-    uint8_t *randomBytes = alloca(randomSize);
-    int result = SecRandomCopyBytes(kSecRandomDefault,randomSize,randomBytes);
-    
-    if (result != 0){
-        @throw [NSException exceptionWithName:@"QredoSecureRandomGenerationException"
-                                       reason:[NSString stringWithFormat:@"Failed to generate a secure random byte array of size %lu (result: %d)..",(unsigned long)size,result]
-                                     userInfo:nil];
-    }
-    return [NSData dataWithBytes:randomBytes length:randomSize];
 }
 
 +(QredoSecKeyRefPair *)generateRsaKeyPairOfLength:(NSInteger)lengthBits publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys {
@@ -517,8 +512,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     if (result != errSecSuccess){
         //Something went wrong, so return nil;
         QredoLogError(@"SecKeyRawSign returned error: %@.",[QredoLogger stringFromOSStatus:result]);
-        outputData = nil;
-        
+
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Failed to sign the data" userInfo:nil];
     }
     

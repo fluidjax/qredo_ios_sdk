@@ -541,12 +541,12 @@
 
 
 -(void)testSecureRandom {
-    NSData *randomBytes1 = [QredoCrypto secureRandomWithSize:32];
-    NSData *randomBytes2 = [QredoCrypto secureRandomWithSize:32];
-    NSData *randomBytes3 = [QredoCrypto secureRandomWithSize:64];
-    NSData *randomBytes4 = [QredoCrypto secureRandomWithSize:128];
-    NSData *randomBytes5 = [QredoCrypto secureRandomWithSize:256];
-    NSData *randomBytes6 = [QredoCrypto secureRandomWithSize:131072];
+    NSData *randomBytes1 = [QredoCrypto secureRandom:32];
+    NSData *randomBytes2 = [QredoCrypto secureRandom:32];
+    NSData *randomBytes3 = [QredoCrypto secureRandom:64];
+    NSData *randomBytes4 = [QredoCrypto secureRandom:128];
+    NSData *randomBytes5 = [QredoCrypto secureRandom:256];
+    NSData *randomBytes6 = [QredoCrypto secureRandom:131072];
     
     XCTAssertEqual([randomBytes1 length],32);
     XCTAssertEqual([randomBytes2 length],32);

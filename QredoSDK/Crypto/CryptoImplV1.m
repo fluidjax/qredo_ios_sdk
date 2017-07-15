@@ -48,7 +48,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data {
     //Generate a random IV of the correct length for AES
-    NSData *iv = [QredoCrypto secureRandomWithSize:kCCBlockSizeAES128];
+    NSData *iv = [QredoCrypto secureRandom:kCCBlockSizeAES128];
     
     return [self encryptWithKey:secretKey data:data iv:iv];
 }
@@ -218,14 +218,14 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 
 
 -(NSData *)getRandomKey {
-    NSData *randomKey = [QredoCrypto secureRandomWithSize:BULK_KEY_SIZE_IN_BYTES];
+    NSData *randomKey = [QredoCrypto secureRandom:BULK_KEY_SIZE_IN_BYTES];
     
     return randomKey;
 }
 
 
 -(NSData *)generateRandomNonce:(NSUInteger)size {
-    return [QredoCrypto secureRandomWithSize:size];
+    return [QredoCrypto secureRandom:size];
 }
 
 
