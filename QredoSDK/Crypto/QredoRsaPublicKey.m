@@ -133,9 +133,7 @@
     
     
     //This method will parse the first SEQUENCE section, and extract the PKCS#1 data, and then pass that data onto the other parser for processing of the actual key data
-    
-    BOOL dataIsValid = YES;
-    
+
     if (!publicKeyData){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"Public key data argument is nil"]
@@ -149,7 +147,7 @@
     NSData *pkcs1KeyData = nil;
     
     //Process the SEQUENCE tag (don't need the data, but do need the data offset)
-    dataIsValid = [QredoDerUtils findOffsetOfDataWithExpectedTag:ASN1_SEQUENCE_TAG atOffset:currentOffset withinData:publicKeyData offsetOfData:&dataOffset lengthOfData:&dataLength];
+    BOOL dataIsValid = [QredoDerUtils findOffsetOfDataWithExpectedTag:ASN1_SEQUENCE_TAG atOffset:currentOffset withinData:publicKeyData offsetOfData:&dataOffset lengthOfData:&dataLength];
     
     if (dataIsValid){
         //SEQUENCE tag found.  Move to the start of the data, which should be the SEQUENCE field for the algorithm identifier
@@ -258,9 +256,7 @@
      Note that due to INTEGER in ASN.1 being encoded as 2's complement, 0x00 may be prepended onto odd numbers, which may or may not need to be removed/handled.
      
      */
-    
-    BOOL dataIsValid = YES;
-    
+
     if (!publicKeyData){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"Public key data argument is nil"]
@@ -274,7 +270,7 @@
     NSData *publicExponent = nil;
     
     //Process the SEQUENCE tag (don't need the data, but do need the data offset)
-    dataIsValid = [QredoDerUtils findOffsetOfDataWithExpectedTag:ASN1_SEQUENCE_TAG atOffset:currentOffset withinData:publicKeyData offsetOfData:&dataOffset lengthOfData:&dataLength];
+    BOOL dataIsValid = [QredoDerUtils findOffsetOfDataWithExpectedTag:ASN1_SEQUENCE_TAG atOffset:currentOffset withinData:publicKeyData offsetOfData:&dataOffset lengthOfData:&dataLength];
     
     if (dataIsValid){
         //SEQUENCE tag found.  Move to the start of the data, which should be the modulus INTEGER field
