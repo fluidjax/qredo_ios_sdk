@@ -33,15 +33,14 @@ typedef NS_ENUM (NSUInteger,QredoCryptoImplError) {
 -(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data;
 -(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data mac:(NSData *)mac;
 -(NSData *)getRandomKey;
--(NSData *)generateRandomNonce:(NSUInteger)size;
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password;
 
--(NSData *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoPrivateKey *)myPrivateKey
-                                       yourPublicKey:(QredoPublicKey *)yourPublicKey;
+-(NSData *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                                       yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
-                             myPrivateKey:(QredoPrivateKey *)myPrivateKey
-                            yourPublicKey:(QredoPublicKey *)yourPublicKey;
+                             myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(QredoKeyPair *)generateDHKeyPair;
 

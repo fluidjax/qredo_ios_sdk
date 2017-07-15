@@ -223,12 +223,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return randomKey;
 }
 
-
--(NSData *)generateRandomNonce:(NSUInteger)size {
-    return [QredoCrypto secureRandom:size];
-}
-
-
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password {
     NSData *passwordData = [password dataUsingEncoding:PASSWORD_ENCODING_FOR_PBKDF2];
     
