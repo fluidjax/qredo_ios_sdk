@@ -451,7 +451,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     queryKey[(__bridge id)kSecReturnData] = @YES;
     
     //Get the key data bits.
-    OSStatus result = fixedSecItemCopyMatching((__bridge CFDictionaryRef)queryKey,(CFTypeRef *)&keyDataRef);
+    OSStatus result = fixedSecItemCopyMatching((__bridge CFDictionaryRef)queryKey, &keyDataRef);
     
     if (result != errSecSuccess){
         if (result == errSecItemNotFound){
