@@ -54,10 +54,7 @@ userInfo:nil]; \
     [concatenatedBytes appendData:[self sha1WithString:self.userId]];
     [concatenatedBytes appendData:[self sha1WithString:self.userSecure]];
     
-    NSData *key = [QredoCrypto pbkdf2Sha256WithSalt:SALT_USER_UNLOCK
-                                       passwordData:concatenatedBytes
-                             requiredKeyLengthBytes:PBKDF2_DERIVED_KEY_LENGTH_BYTES
-                                         iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
+    NSData *key = [QredoCrypto pbkdf2Sha256:concatenatedBytes salt:SALT_USER_UNLOCK outputLen:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
     return key;
 }
 

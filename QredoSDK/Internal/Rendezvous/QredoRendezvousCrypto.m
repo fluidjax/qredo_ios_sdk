@@ -296,10 +296,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     NSString *compositeTag = [NSString stringWithFormat:@"%@%@",appId,tag];
     NSData *tagData = [compositeTag dataUsingEncoding:NSUTF8StringEncoding];
 
-    return [QredoCrypto pbkdf2Sha256WithSalt:QREDO_RENDEZVOUS_MASTER_KEY_SALT
-                                passwordData:tagData
-                      requiredKeyLengthBytes:32
-                                  iterations:10000];
+    return [QredoCrypto pbkdf2Sha256:tagData salt:QREDO_RENDEZVOUS_MASTER_KEY_SALT outputLen:32 iterations:10000];
 }
 
 

@@ -252,7 +252,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     
 }
 
-+(NSData *)pbkdf2Sha256WithSalt:(NSData *)salt passwordData:(NSData *)passwordData requiredKeyLengthBytes:(NSUInteger)requiredKeyLengthBytes iterations:(NSUInteger)iterations {
++ (NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLen:(NSUInteger)outputLen iterations:(NSUInteger)iterations {
     
     GUARD(salt,
           @"Salt argument must be specified.");
@@ -261,7 +261,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
            @"Salt length must be at least minimum RFC-recommended value (%d bytes).",
            PBKDF2_MIN_SALT_LENGTH);
     
-    GUARD(passwordData,
+    GUARD(ikm,
           @"Password argument must be specified.");
     
     GUARDF(iterations < UINT_MAX,
@@ -270,14 +270,14 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     GUARD(iterations > 0,
           @"Iterations value cannot be zero.");
     
-    GUARD(requiredKeyLengthBytes > 0,
+    GUARD(outputLen > 0,
           @"Required key length must be a positive integer.");
     
-    NSMutableData *derivedKey = [NSMutableData dataWithLength:requiredKeyLengthBytes];
+    NSMutableData *derivedKey = [NSMutableData dataWithLength:outputLen];
     
     int result = CCKeyDerivationPBKDF(kCCPBKDF2,
-                                      passwordData.bytes,
-                                      passwordData.length,
+                                      ikm.bytes,
+                                      ikm.length,
                                       salt.bytes,
                                       salt.length,
                                       kCCPRFHmacAlgSHA256,

@@ -403,7 +403,7 @@
     };
     NSData *expectedDerivedKeyData = [NSData dataWithBytes:expectedDerivedKeyDataArray length:sizeof(expectedDerivedKeyDataArray) / sizeof(uint8_t)];
     
-    NSData *derivedKey = [QredoCrypto pbkdf2Sha256WithSalt:saltData passwordData:passwordData requiredKeyLengthBytes:keyLength iterations:iterations];
+    NSData *derivedKey = [QredoCrypto pbkdf2Sha256:passwordData salt:saltData outputLen:keyLength iterations:iterations];
     
     XCTAssertNotNil(derivedKey,@"Derived key should not be nil.");
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:derivedKey],@"Derived key incorrect.");
