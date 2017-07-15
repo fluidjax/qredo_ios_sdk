@@ -31,17 +31,23 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                             userInfo:nil]; \
     }
 
+/*****************************************************************************
+ * new work
+ ****************************************************************************/
 
-+(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-     return [self aesDecrypt:data with256bitAesKey:key iv:iv];
+#define NEW_CRYPTO_CODE FALSE
+
+
+
++(NSData *)aes256CtrEncrypt:(NSData *)plaintext key:(NSData *)key iv:(NSData *)iv {
+    return [self aes256Ctr:plaintext operation:kCCEncrypt key:key iv:iv];
 }
 
-
-+(NSData *)encryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-     return [self aesEncrypt:data with256bitAesKey:key iv:iv];
++(NSData *)aes256CtrDecrypt:(NSData *)ciphertext key:(NSData *)key iv:(NSData *)iv {
+    return [self aes256Ctr:ciphertext operation:kCCDecrypt key:key iv:iv];
 }
 
-+(NSData *)aes:(NSData *)input operation:(CCOperation)op key:(NSData *)key iv:(NSData *)iv {
++(NSData *)aes256Ctr:(NSData *)input operation:(CCOperation)op key:(NSData *)key iv:(NSData *)iv {
 
     GUARD(input, @"Input must be specified.");
     GUARD((op == kCCEncrypt) || (op == kCCDecrypt), @"Operation must be encryption or decryption.");
@@ -88,12 +94,114 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 }
 
-+(NSData *)aesEncrypt:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv{
-    return [self aes:data operation:kCCEncrypt key:key iv:iv];
+#if NEW_CRYPTO_CODE
+
++(BOOL)constantEquals:(NSData *)lhs rhs:(NSData *)rhs {
+
+    uint8_t *leftHashBytes  = (uint8_t *)lhs.bytes;
+    uint8_t *rightHashBytes = (uint8_t *)rhs.bytes;
+
+    unsigned long difference = lhs.length ^ rhs.length;
+
+    for (unsigned long i = 0; i < lhs.length && i < rhs.length; i++){
+        difference |= leftHashBytes[i] ^ rightHashBytes[i];
+    }
+
+    return difference == 0;
+
 }
 
-+(NSData *)aesDecrypt:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv{
-    return [self aes:data operation:kCCDecrypt key:key iv:iv];
++(QredoKeyPair *)ed25519Derive:(NSData *)seed {
+
+    NSMutableData *pk = [NSMutableData dataWithLength:ED25519_VERIFY_KEY_LENGTH];
+    NSMutableData *sk = [NSMutableData dataWithLength:ED25519_SIGNING_KEY_LENGTH];
+
+    crypto_sign_ed25519_seed_keypair(pk.mutableBytes, sk.mutableBytes, seed.bytes);
+
+    QredoED25519VerifyKey *qpk  = [[QredoED25519VerifyKey new]  initWithKeyData:pk];
+    QredoED25519SigningKey *qsk = [[QredoED25519SigningKey new] initWithSeed:seed keyData:sk verifyKey:qpk];
+
+    return [[QredoKeyPair new] initWithPublicKey:qpk privateKey:qsk];
+
+}
+
++(NSData *)ed25519Sha512Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair {
+
+    NSMutableData *signature = [NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH]
+
+    crypto_sign_ed25519_detached(signature.mutableBytes, NULL, payload.bytes, payload.length, keyPair.privateKey.convertKeyToNSData.bytes);
+    return signature;
+
+}
+
++(BOOL)ed25519Sha512Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair {
+    return crypto_sign_ed25519_verify_detached(signature.bytes, payload.bytes, payload.length, keyPair.publicKey.convertKeyToNSData.bytes) == 0;
+}
+
++(NSData *)hkdfSha256:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info outputLength:(NSUInteger)outputLength {
+    NSData *prk = [QredoCrypto hkdfExtractSha256WithSalt:salt initialKeyMaterial:ikm];
+    NSData *okm = [QredoCrypto hkdfExpandSha256WithKey:prk info:info outputLength:outputLength];
+    return okm;
+}
+
++(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations {
+
+    NSAssert(ikm, @"PBKDF2-SHA256 IKM == nil.");
+    NSAssert(ikm.length > 0, @"PBKDF2-SHA256 IKM length == 0.");
+    NSAssert(outputLength > 0, @"PBKDF2-SHA256 output length == 0.");
+    NSAssert(iterations > 0, @"PBKDF2-SHA256 iterations == 0");
+
+    NSMutableData *derivedKey = [NSMutableData dataWithLength:outputLength];
+
+    int result = CCKeyDerivationPBKDF(kCCPBKDF2,
+            ikm.bytes,
+            ikm.length,
+            salt.bytes,
+            salt.length,
+            kCCPRFHmacAlgSHA256,
+            iterations,
+            derivedKey.mutableBytes,
+            derivedKey.length);
+
+    NSAssert(result == kCCSuccess, @"CCKeyDerivationPBKDF: failure %d.", result);
+
+    return derivedKey;
+
+}
+
++(QredoKeyPair *)rsaGenerate {
+    return nil;
+}
+
++(NSData *)rsaPssSha256Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair {
+    return nil;
+}
+
++(BOOL)rsaPassSha256Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair {
+    return nil;
+}
+
++(NSData *)secureRandom:(NSUInteger)size {
+    return nil;
+}
+
++(NSData *)sha256:(NSData *)payload salt:(NSData *)salt {
+    return nil;
+}
+
+#endif
+
+/*****************************************************************************
+ * old work
+ ****************************************************************************/
+
++(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
+     return [self aes256CtrDecrypt:data key:key iv:iv];
+}
+
+
++(NSData *)encryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
+     return [self aes256CtrEncrypt:data key:key iv:iv];
 }
 
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info outputLength:(NSUInteger)outputLength {

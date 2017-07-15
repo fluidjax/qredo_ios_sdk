@@ -70,9 +70,9 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
                                        reason:[NSString stringWithFormat:@"Data argument is nil"]
                                      userInfo:nil];
     }
-    
-    NSData *encryptedData = [QredoCrypto encryptData:data with256bitAesKey:secretKey iv:iv];
-    
+
+    NSData *encryptedData = [QredoCrypto aes256CtrEncrypt:data key:secretKey iv:iv];
+
     NSMutableData *ivAndEncryptedData = nil;
     
     if (encryptedData != nil){
@@ -117,7 +117,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     NSRange encryptedDataRange = NSMakeRange(ivLength,data.length - ivLength);
     NSData *dataToDecrypt = [data subdataWithRange:encryptedDataRange];
     
-    NSData *decryptedData = [QredoCrypto decryptData:dataToDecrypt with256bitAesKey:secretKey iv:iv];
+    NSData *decryptedData = [QredoCrypto aes256CtrDecrypt:dataToDecrypt key:secretKey iv:iv];
     
     return decryptedData;
 }

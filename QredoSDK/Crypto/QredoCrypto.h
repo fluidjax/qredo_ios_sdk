@@ -15,8 +15,8 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 
 @interface QredoCrypto :NSObject
 
-+(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv;
-+(NSData *)encryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv;
++(NSData *)aes256CtrEncrypt:(NSData *)plaintext key:(NSData *)key iv:(NSData *)iv;
++(NSData *)aes256CtrDecrypt:(NSData *)ciphertext key:(NSData *)key iv:(NSData *)iv;
 +(NSData *)hkdfSha256ExtractWithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm;
 +(NSData *)hkdfSha256ExpandWithKey:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength;
 +(NSData *)hkdfSha256WithSalt:(NSData *)salt initialKeyMaterial:(NSData *)ikm info:(NSData *)info;
