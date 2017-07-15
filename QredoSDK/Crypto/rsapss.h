@@ -1,12 +1,10 @@
-/* HEADER GOES HERE */
-
-
 //PSS encoding for RSA signatures
 
 //The only dependency on iOS at the moment is using CommonCrypto for calculation SHA256
 //and generation of crypto-random numbers
 //In future that can be wrapped or even replaced by #define
 
+#include <stdlib.h>
 #include <stdint.h>
 
 
