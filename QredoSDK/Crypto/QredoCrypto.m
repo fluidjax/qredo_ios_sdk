@@ -111,6 +111,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 }
 
+#if NEW_CRYPTO_CODE
+
 +(QredoKeyPair *)ed25519Derive:(NSData *)seed {
 
     NSMutableData *pk = [NSMutableData dataWithLength:ED25519_VERIFY_KEY_LENGTH];
@@ -345,25 +347,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     }
     return [NSData dataWithBytes:randomBytes length:randomSize];
 }
-
-
-+(BOOL)equalsConstantTime:(NSData *)left right:(NSData *)right {
-
-    uint8_t *leftHashBytes  = (uint8_t *)left.bytes;
-    uint8_t *rightHashBytes = (uint8_t *)right.bytes;
-
-    unsigned long difference = left.length ^ right.length;
-
-    for (unsigned long i = 0; i < left.length && i < right.length; i++){
-        difference |= leftHashBytes[i] ^ rightHashBytes[i];
-    }
-    
-    return difference == 0;
-}
-
-
-
-
 
 +(QredoSecKeyRefPair *)generateRsaKeyPairOfLength:(NSInteger)lengthBits publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys {
     /*

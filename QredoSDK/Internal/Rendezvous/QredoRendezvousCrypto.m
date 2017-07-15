@@ -242,8 +242,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                           authenticationKey:authenticationKey
                      encryptedResponderData:encryptedResponderData];
     
-    BOOL isValidAuthCode = [QredoCrypto equalsConstantTime:calculatedAuthenticationCode
-                                                     right:authenticationCode];
+    BOOL isValidAuthCode = [QredoCrypto constantEquals:calculatedAuthenticationCode rhs:authenticationCode];
     
     __block BOOL isValidSignature = NO;
     [authenticationType ifRendezvousAnonymous:^{

@@ -557,7 +557,7 @@
 }
 
 
--(void)testEqualsConstantTime_SameData {
+-(void)testConstantEquals_SameData {
     uint8_t leftDataArray[] = {
         0xE3,0xB0,0xC4,0x42,0x98,0xFC,0x1C,0x14,0x9A,0xFB,0xF4,0xC8,0x99,0x6F,0xB9,0x24,
         0x27,0xAE,0x41,0xE4,0x64,0x9B,0x93,0x4C,0xA4,0x95,0x99,0x1B,0x78,0x52,0xB8,0x55
@@ -572,13 +572,13 @@
     
     BOOL expectedComparisonResult = YES;
     
-    BOOL comparisonResult = [QredoCrypto equalsConstantTime:leftData right:rightData];
+    BOOL comparisonResult = [QredoCrypto constantEquals:leftData rhs:rightData];
     
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
 
 
--(void)testEqualsConstantTime_DifferentLengths {
+-(void)testConstantEquals_DifferentLengths {
     uint8_t leftDataArray[] = {
         0xE3,0xB0,0xC4,0x42,0x98,0xFC,0x1C,0x14,0x9A,0xFB,0xF4,0xC8,0x99,0x6F,0xB9,0x24,
         0x27,0xAE,0x41,0xE4,0x64,0x9B,0x93,0x4C,0xA4,0x95,0x99,0x1B,0x78,0x52,0xB8
@@ -593,13 +593,13 @@
     
     BOOL expectedComparisonResult = NO;
     
-    BOOL comparisonResult = [QredoCrypto equalsConstantTime:leftData right:rightData];
+    BOOL comparisonResult = [QredoCrypto constantEquals:leftData rhs:rightData];
     
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
 
 
--(void)testEqualsConstantTime_EmptyData {
+-(void)testConstantEquals_EmptyData {
     uint8_t leftDataArray[] = {
     };
     NSData *leftData = [NSData dataWithBytes:leftDataArray length:sizeof(leftDataArray) / sizeof(uint8_t)];
@@ -610,13 +610,13 @@
     
     BOOL expectedComparisonResult = YES;
     
-    BOOL comparisonResult = [QredoCrypto equalsConstantTime:leftData right:rightData];
+    BOOL comparisonResult = [QredoCrypto constantEquals:leftData rhs:rightData];
     
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
 
 
--(void)testEqualsConstantTime_CheckComparisonTimesCorrect {
+-(void)testConstantEquals_CheckComparisonTimesCorrect {
     uint8_t leftDataArray[] = {
         0xE3,0xB0,0xC4,0x42,0x98,0xFC,0x1C,0x14,0x9A,0xFB,0xF4,0xC8,0x99,0x6F,0xB9,0x24,
         0x27,0xAE,0x41,0xE4,0x64,0x9B,0x93,0x4C,0xA4,0x95,0x99,0x1B,0x78,0x52,0xB8,0x55
@@ -634,14 +634,13 @@
         
         //Repeat enough so the measurement is fairly accurate
         for (int i = 0; i < 10000; i++){
-            [QredoCrypto   equalsConstantTime:leftData
-                                        right:rightCorrectData];
+            [QredoCrypto constantEquals:leftData rhs:rightCorrectData];
         }
     }];
 }
 
 
--(void)testEqualsConstantTime_CheckComparisonTimesWithFirstByteWrong {
+-(void)testConstantEquals_CheckComparisonTimesWithFirstByteWrong {
     uint8_t leftDataArray[] = {
         0xE3,0xB0,0xC4,0x42,0x98,0xFC,0x1C,0x14,0x9A,0xFB,0xF4,0xC8,0x99,0x6F,0xB9,0x24,
         0x27,0xAE,0x41,0xE4,0x64,0x9B,0x93,0x4C,0xA4,0x95,0x99,0x1B,0x78,0x52,0xB8,0x55
@@ -659,8 +658,7 @@
         
         //Repeat enough so the measurement is fairly accurate
         for (int i = 0; i < 10000; i++){
-            [QredoCrypto   equalsConstantTime:leftData
-                                        right:rightIncorrectData];
+            [QredoCrypto constantEquals:leftData rhs:rightIncorrectData];
         }
     }];
 }

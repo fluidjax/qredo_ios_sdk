@@ -215,7 +215,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     //Generate the HMAC and compare to provided value (using constant time comparison function)
     NSData *generatedHmac = [QredoCrypto generateHmacSha256ForData:data length:data.length key:authKey];
     
-    BOOL macCorrect = [QredoCrypto equalsConstantTime:generatedHmac right:mac];
+    BOOL macCorrect = [QredoCrypto constantEquals:generatedHmac rhs:mac];
     
     return macCorrect;
 }
