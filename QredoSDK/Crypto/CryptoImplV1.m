@@ -1,4 +1,3 @@
-/* HEADER GOES HERE */
 #import <CommonCrypto/CommonCrypto.h>
 #import "sodium.h"
 #import "CryptoImplV1.h"

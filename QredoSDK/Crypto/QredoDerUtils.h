@@ -10,8 +10,7 @@
 #define ASN1_SEQUENCE_TAG      0x30
 
 typedef NS_ENUM (uint8_t,QredoAsn1ObjectIdentifier) {
-    QredoAsn1ObjectIdentifierNotSet = 0,
-    QredoAsn1ObjectIdentifierUnknown,
+    QredoAsn1ObjectIdentifierUnknown = 1,
     QredoAsn1ObjectIdentifierRsa,
 };
 

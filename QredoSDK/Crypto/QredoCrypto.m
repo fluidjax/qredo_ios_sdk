@@ -163,28 +163,11 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     return nil;
 }
 
-+(NSData *)secureRandom:(NSUInteger)size {
-    return nil;
-}
-
-+(NSData *)sha256:(NSData *)payload salt:(NSData *)salt {
-    return nil;
-}
-
 #endif
 
 /*****************************************************************************
  * old work
  ****************************************************************************/
-
-+(NSData *)decryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-     return [self aes256CtrDecrypt:data key:key iv:iv];
-}
-
-
-+(NSData *)encryptData:(NSData *)data with256bitAesKey:(NSData *)key iv:(NSData *)iv {
-     return [self aes256CtrEncrypt:data key:key iv:iv];
-}
 
 +(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt {
 
