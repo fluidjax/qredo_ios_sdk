@@ -297,14 +297,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return keyPair;
 }
 
-
--(QredoED25519SigningKey *)qredoED25519SigningKey {
-    NSData *seed = [self generateRandomNonce:ED25519_SEED_LENGTH];
-    
-    return [self qredoED25519SigningKeyWithSeed:seed];
-}
-
-
 -(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed {
     NSAssert([seed length] == ED25519_SEED_LENGTH,@"Malformed seed");
     NSMutableData *skData = [NSMutableData dataWithLength:ED25519_SIGNING_KEY_LENGTH];
@@ -322,7 +314,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:skData verifyKey:vk];
 }
 
-
 -(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error {
     if ([data length] != ED25519_VERIFY_KEY_LENGTH){
         if (error){
@@ -334,18 +325,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     
     return [[QredoED25519VerifyKey alloc] initWithKeyData:data];
 }
-
-
--(NSData *)qredoED25519EmptySignature {
-    static NSData *signatureData = nil;
-    static dispatch_once_t onceToken;
-    
-    dispatch_once(&onceToken,^{
-        signatureData = [[NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH] copy];
-    });
-    return signatureData;
-}
-
 
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error {
     GUARD(sk, @"Signing key is required for signing");
@@ -366,48 +345,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
                                  [sk.data bytes]);
     return [signature copy];
 }
-
-
--(BOOL)qredoED25519VerifySignature:(NSData *)signature
-                         ofMessage:(NSData *)message
-                         verifyKey:(QredoED25519VerifyKey *)vk
-                             error:(NSError **)error {
-    NSAssert(vk,@"A verification key is needed");
-    
-    if ([signature length] < 1){
-        if (error){
-            *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedSignatureData,nil);
-        }
-        
-        return NO;
-    }
-    
-    if ([message length] < 1){
-        if (error){
-            *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedData,nil);
-        }
-        
-        return NO;
-    }
-    
-    NSMutableData *signatureMessage = [signature mutableCopy];
-    [signatureMessage appendData:message];
-    const unsigned char *signatureMessageBytes = [signatureMessage bytes];
-    const NSUInteger signatureMessageLength = [signatureMessage length];
-    
-    NSMutableData *messageOut = [NSMutableData dataWithLength:signatureMessageLength];
-    unsigned char *messageOutBytes = [messageOut mutableBytes];
-    unsigned long long messageOutLength = [messageOut length];
-    
-    const unsigned char *vkBytes = [vk.data bytes];
-    
-    int cryptoResult = crypto_sign_ed25519_open(messageOutBytes,&messageOutLength,
-                                                signatureMessageBytes,signatureMessageLength,
-                                                vkBytes);
-    
-    return cryptoResult == 0;
-}
-
 
 @end
 

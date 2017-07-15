@@ -3,7 +3,6 @@
 
 @interface QredoCertificateUtils (Private)
 
-+(SecCertificateRef)createCertificateWithPemCertificate:(NSString *)pemCertificate;
 +(SecCertificateRef)createCertificateWithDerData:(NSData *)certificateData;
 +(NSString *)convertCertificateRefToPemCertificate:(SecCertificateRef)certificateRef;
 +(NSData *)convertPemWrappedStringToDer:(NSString *)pemEncodedData startMarker:(NSString *)startMarker endMarker:(NSString *)endMarker;
