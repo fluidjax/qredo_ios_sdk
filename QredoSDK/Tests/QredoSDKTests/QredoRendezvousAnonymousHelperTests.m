@@ -16,7 +16,7 @@
 -(void)setUp {
     [super setUp];
     
-    self.cryptoImpl = [[CryptoImplV1 alloc] init];
+    self.cryptoImpl = [CryptoImplV1 sharedInstance];
 }
 
 

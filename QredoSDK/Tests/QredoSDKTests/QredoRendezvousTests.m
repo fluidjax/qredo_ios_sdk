@@ -102,7 +102,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     //Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
     [self setupRootCertificates];
     [self setupCrls];
-    self.cryptoImpl = [[CryptoImplV1 alloc] init];
+    self.cryptoImpl = [CryptoImplV1 sharedInstance];
     
     //Must remove any existing keys before starting
     [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
