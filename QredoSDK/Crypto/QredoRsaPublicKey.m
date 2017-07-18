@@ -84,7 +84,7 @@
 }
 
 
--(NSData *)convertKeyToNSData {
+-(NSData *)serialize {
     //Override the QredoKey stuf - default format will be X.509, as it's interchangeable with BouncyCastle
     return [self convertToX509Format];
 }

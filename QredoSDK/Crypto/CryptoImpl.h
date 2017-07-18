@@ -6,19 +6,7 @@
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
 
-
-static NSString *const QredoCryptoImplErrorDomain = @"QredoCryptoImplErrorDomain";
-
-typedef NS_ENUM (NSUInteger,QredoCryptoImplError) {
-    QredoCryptoImplErrorMalformedData = 1,
-    QredoCryptoImplErrorMalformedKeyData,
-    QredoCryptoImplErrorMalformedSignatureData,
-};
-
-
 @protocol CryptoImpl
-
-
 
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data;
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv;
@@ -44,9 +32,7 @@ typedef NS_ENUM (NSUInteger,QredoCryptoImplError) {
 
 -(QredoKeyPair *)generateDHKeyPair;
 
--(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed;
--(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error;
-
+-(QredoKeyPair *)qredoED25519KeyPairWithSeed:(NSData *)seed;
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error;
 
 @end

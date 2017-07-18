@@ -1,4 +1,3 @@
-/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "Qredo.h"
 #import "QredoQUID.h"
@@ -378,43 +377,40 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                      yourPublicKey:publicKey];
     
     NSData *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
-    
     NSData *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
     
     NSData *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
-    
     NSData *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
     
-    NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    NSData *requesterInboundQueueKeyPairSeed = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    NSData *responderInboundQueueKeyPairSeed = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
     
-    NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
+    QredoKeyPair *requesterInboundQueueKeyPair = [_crypto qredoED25519KeyPairWithSeed:requesterInboundQueueKeyPairSeed];
+    QredoKeyPair *responderInboundQueueKeyPair = [_crypto qredoED25519KeyPairWithSeed:responderInboundQueueKeyPairSeed];
     
-    QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
-    QredoED25519SigningKey *responderInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueKeyPairSalt];
-    
-    QredoQUID *requesterInboundQueueId = [[QredoQUID alloc] initWithQUIDData:requesterInboundQueueSigningKey.verifyKey.data];
-    QredoQUID *responderInboundQueueId = [[QredoQUID alloc] initWithQUIDData:responderInboundQueueSigningKey.verifyKey.data];
+    QredoQUID *requesterInboundQueueId = [[QredoQUID alloc] initWithQUIDData:requesterInboundQueueKeyPair.publicKey.serialize];
+    QredoQUID *responderInboundQueueId = [[QredoQUID alloc] initWithQUIDData:responderInboundQueueKeyPair.publicKey.serialize];
     
     if (rendezvousOwner){
         _inboundBulkKey = requesterInboundBulkKey;
         _inboundAuthKey = requesterInboundAuthKey;
         _inboundQueueId = requesterInboundQueueId;
-        _inboundSigningKey = requesterInboundQueueSigningKey;
+        _inboundSigningKey = (QredoED25519SigningKey *)requesterInboundQueueKeyPair.privateKey;
         
         _outboundBulkKey = responderInboundBulkKey;
         _outboundAuthKey = responderInboundAuthKey;
         _outboundQueueId = responderInboundQueueId;
-        _outboundSigningKey = responderInboundQueueSigningKey;
+        _outboundSigningKey = (QredoED25519SigningKey *)responderInboundQueueKeyPair.privateKey;
     } else {
         _inboundBulkKey = responderInboundBulkKey;
         _inboundAuthKey = responderInboundAuthKey;
         _inboundQueueId = responderInboundQueueId;
-        _inboundSigningKey = responderInboundQueueSigningKey;
+        _inboundSigningKey = (QredoED25519SigningKey *)responderInboundQueueKeyPair.privateKey;
         
         _outboundBulkKey = requesterInboundBulkKey;
         _outboundAuthKey = requesterInboundAuthKey;
         _outboundQueueId = requesterInboundQueueId;
-        _outboundSigningKey = requesterInboundQueueSigningKey;
+        _outboundSigningKey = (QredoED25519SigningKey *)requesterInboundQueueKeyPair.privateKey;
     }
     
     _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];

@@ -24,7 +24,7 @@
 }
 
 
--(NSData *)convertKeyToNSData {
+-(NSData *)serialize {
     return _data;
 }
 

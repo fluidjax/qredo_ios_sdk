@@ -5,11 +5,6 @@
 #import "QredoEllipticCurvePoint.h"
 #import "MasterConfig.h"
 
-NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDictionary *userInfo);
-
-@interface CryptoImplV1 ()
-@end
-
 @implementation CryptoImplV1
 
 #define HMAC_SIZE_IN_BYTES              CC_SHA256_DIGEST_LENGTH
@@ -17,19 +12,11 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 #define PBKDF2_ITERATION_COUNT          10000
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES 32
 #define PASSWORD_ENCODING_FOR_PBKDF2    NSUTF8StringEncoding
-#define ED25519_VERIFY_KEY_LENGTH       32
-#define ED25519_SIGNING_KEY_LENGTH      64
-#define ED25519_SIGNATURE_LENGTH        64
-#define ED25519_SEED_LENGTH             32
-
 
 -(instancetype)init {
     self = [super init];
-    
-    if (self){
-        BOOL unused __attribute__((unused)) = sodium_init();
-    }
-    
+    int result = sodium_init();
+    NSAssert(result >= 0, @"Could not initialize libsodium.");
     return self;
 }
 
@@ -37,7 +24,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 +(instancetype)sharedInstance {
     static CryptoImplV1 *instance = nil;
     static dispatch_once_t onceToken;
-    
     dispatch_once(&onceToken,^{
         instance = [[self alloc] init];
     });
@@ -276,8 +262,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 
 -(QredoKeyPair *)generateDHKeyPair {
     //Generate a new key pair from curve 25519.
-    
-    //libsodium defines the length of the key data
+
     NSMutableData *publicKeyData = [[NSMutableData alloc] initWithLength:crypto_box_SECRETKEYBYTES];
     NSMutableData *privateKeyData = [[NSMutableData alloc] initWithLength:crypto_box_SECRETKEYBYTES];
     
@@ -291,57 +276,14 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return keyPair;
 }
 
--(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed {
-    NSAssert([seed length] == ED25519_SEED_LENGTH,@"Malformed seed");
-    NSMutableData *skData = [NSMutableData dataWithLength:ED25519_SIGNING_KEY_LENGTH];
-    NSMutableData *vkData = [NSMutableData dataWithLength:ED25519_VERIFY_KEY_LENGTH];
-    
-    crypto_sign_ed25519_seed_keypair(vkData.mutableBytes,skData.mutableBytes,seed.bytes);
-    
-    QredoED25519VerifyKey *vk = [self qredoED25519VerifyKeyWithData:[vkData copy] error:nil];
-    NSAssert(vk,@"Could not create verification key.");
-    
-    if (!vk){
-        return nil;
-    }
-    
-    return [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:skData verifyKey:vk];
-}
-
--(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error {
-    if ([data length] != ED25519_VERIFY_KEY_LENGTH){
-        if (error){
-            *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedKeyData,nil);
-        }
-        
-        return nil;
-    }
-    
-    return [[QredoED25519VerifyKey alloc] initWithKeyData:data];
+-(QredoKeyPair *)qredoED25519KeyPairWithSeed:(NSData *)seed {
+    return [QredoCrypto ed25519Derive:seed];
 }
 
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error {
-    GUARD(sk, @"Signing key is required for signing");
-    
-    if ([message length] < 1){
-        if (error){
-            *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedSignatureData,nil);
-        }
-        return nil;
-    }
-    
-    NSMutableData *signature    = [NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH];
-    
-    crypto_sign_ed25519_detached([signature mutableBytes],
-                                 nil,
-                                 [message bytes],
-                                 [message length],
-                                 [sk.data bytes]);
-    return [signature copy];
+    // This code is a temporary stepping stone towards fixing this layer correctly.
+    QredoKeyPair *keyPair = [QredoCrypto ed25519DeriveFromSecretKey:sk.serialize];
+    return [QredoCrypto ed25519Sha512Sign:message keyPair:keyPair];
 }
 
 @end
-
-NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDictionary *userInfo) {
-    return [NSError errorWithDomain:QredoCryptoImplErrorDomain code:errorCode userInfo:userInfo];
-}

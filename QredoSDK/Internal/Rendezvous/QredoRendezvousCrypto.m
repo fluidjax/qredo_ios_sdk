@@ -194,8 +194,8 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 -(QredoQUID *)hashWithKeyPair:(QredoKeyPair *)keyPair salt:(NSData *)salt {
     NSData *quidData = [_crypto getDiffieHellmanSecretWithSalt:salt
-                                                  myPrivateKey:keyPair.privateKey
-                                                 yourPublicKey:keyPair.publicKey];
+                                                  myPrivateKey:(QredoDhPrivateKey *)keyPair.privateKey
+                                                 yourPublicKey:(QredoDhPublicKey *)keyPair.publicKey];
     
     return [[QredoQUID alloc] initWithQUIDData:quidData];
 }

@@ -137,7 +137,7 @@
 }
 
 
--(NSData *)convertKeyToNSData {
+-(NSData *)serialize {
     //Override the QredoKey stuf - default format will be PKCS#8, as it's interchangeable with BouncyCastle
     return [self convertToPkcs8Format];
 }

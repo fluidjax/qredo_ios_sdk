@@ -1,9 +1,13 @@
 #import <CommonCrypto/CommonCrypto.h>
+#import "sodium.h"
 #import "rsapss.h"
 
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoCrypto.h"
+#import "QredoKeyPair.h"
+#import "QredoED25519VerifyKey.h"
+#import "QredoED25519SigningKey.h"
 
 @implementation QredoCrypto
 
@@ -42,7 +46,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSAssert(iv && iv.length == kCCBlockSizeAES128, @"Expected IV to be %d bytes.", kCCBlockSizeAES128);
 
     CCCryptorRef cryptor = NULL;
-    CCCryptorStatus createStatus = CCCryptorCreateWithMode(op,
+    CCCryptorStatus createStatus = CCCryptorCreateWithMode(
+            op,
             kCCModeCTR,
             kCCAlgorithmAES,
             ccPKCS7Padding,
@@ -59,7 +64,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
     NSMutableData *cipherData = [NSMutableData dataWithLength:input.length + kCCBlockSizeAES128];
     size_t outLength;
-    CCCryptorStatus updateStatus = CCCryptorUpdate(cryptor,
+    CCCryptorStatus updateStatus = CCCryptorUpdate(
+            cryptor,
             input.bytes,
             input.length,
             cipherData.mutableBytes,
@@ -69,7 +75,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSAssert(updateStatus == kCCSuccess, @"CCCryptorUpdate failed with status %d.", updateStatus);
 
     cipherData.length = outLength;
-    CCCryptorStatus finalStatus = CCCryptorFinal(cryptor,
+    CCCryptorStatus finalStatus = CCCryptorFinal(
+            cryptor,
             cipherData.mutableBytes,
             cipherData.length,
             &outLength);
@@ -87,7 +94,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
     unsigned long difference = lhs.length ^ rhs.length;
 
-    for (unsigned long i = 0; i < lhs.length && i < rhs.length; i++){
+    for (unsigned long i = 0; i < lhs.length && i < rhs.length; i++) {
         difference |= leftHashBytes[i] ^ rightHashBytes[i];
     }
 
@@ -101,39 +108,78 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     uint8_t *bytes = alloca(size);
     int result = SecRandomCopyBytes(kSecRandomDefault, size, bytes);
 
-    NSAssert(result == 0, @"Failed to generate %d secure random bytes.", size);
+    NSAssert(result == 0, @"Failed to generate %lu secure random bytes.", (unsigned long)size);
 
     return [NSData dataWithBytes:bytes length:size];
 }
 
-#if NEW_CRYPTO_CODE
-
 +(QredoKeyPair *)ed25519Derive:(NSData *)seed {
 
-    NSMutableData *pk = [NSMutableData dataWithLength:ED25519_VERIFY_KEY_LENGTH];
-    NSMutableData *sk = [NSMutableData dataWithLength:ED25519_SIGNING_KEY_LENGTH];
+    NSAssert(seed, @"Expected seed.");
+    NSAssert(seed.length == crypto_sign_SEEDBYTES,
+            @"Expected seed of length %ud.", crypto_sign_SEEDBYTES);
 
-    crypto_sign_ed25519_seed_keypair(pk.mutableBytes, sk.mutableBytes, seed.bytes);
+    NSMutableData *pk = [NSMutableData dataWithLength:crypto_sign_PUBLICKEYBYTES];
+    NSMutableData *sk = [NSMutableData dataWithLength:crypto_sign_SECRETKEYBYTES];
 
-    QredoED25519VerifyKey *qpk  = [[QredoED25519VerifyKey new]  initWithKeyData:pk];
-    QredoED25519SigningKey *qsk = [[QredoED25519SigningKey new] initWithSeed:seed keyData:sk verifyKey:qpk];
+    int result = crypto_sign_ed25519_seed_keypair(pk.mutableBytes, sk.mutableBytes, seed.bytes);
+    NSAssert(result == 0, @"Could not generate Ed25519 key pair from seed.");
 
-    return [[QredoKeyPair new] initWithPublicKey:qpk privateKey:qsk];
+    QredoED25519VerifyKey *qpk  =
+            [[QredoED25519VerifyKey alloc] initWithKeyData:pk];
+    QredoED25519SigningKey *qsk =
+            [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:sk verifyKey:qpk];
+    QredoKeyPair *kp =
+            [[QredoKeyPair alloc] initWithPublicKey:qpk privateKey:qsk];
 
+    NSAssert(kp, @"Expected key pair to be generated.");
+    NSAssert([kp.publicKey isMemberOfClass:QredoED25519VerifyKey.class],
+            @"Expected Ed25519 public key in generated key pair.");
+    NSAssert([kp.privateKey isMemberOfClass:QredoED25519SigningKey.class],
+            @"Expected Ed25519 private key in generated key pair.");
+
+    return kp;
+
+}
+
++(QredoKeyPair *)ed25519DeriveFromSecretKey:(NSData *)secretKey {
+    // This method is only used to support a stepping stone, and will soon vanish.
+    NSAssert(secretKey, @"Expected secret key.");
+    NSAssert(secretKey.length == crypto_sign_SECRETKEYBYTES,
+            @"Expected secret key to be of length %ud.", crypto_sign_SECRETKEYBYTES);
+
+    NSMutableData *seed = [NSMutableData dataWithLength:crypto_sign_SEEDBYTES];
+
+    int result = crypto_sign_ed25519_sk_to_seed(seed.mutableBytes, secretKey.bytes);
+    NSAssert(result == 0, @"Could not turn secret key into seed.");
+
+    return [self ed25519Derive:seed];
 }
 
 +(NSData *)ed25519Sha512Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair {
 
-    NSMutableData *signature = [NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH]
+    NSMutableData *signature = [NSMutableData dataWithLength:crypto_sign_BYTES];
 
-    crypto_sign_ed25519_detached(signature.mutableBytes, NULL, payload.bytes, payload.length, keyPair.privateKey.convertKeyToNSData.bytes);
+    crypto_sign_ed25519_detached(
+            signature.mutableBytes,
+            NULL,
+            payload.bytes,
+            payload.length,
+            keyPair.privateKey.serialize.bytes);
+
     return signature;
 
 }
 
 +(BOOL)ed25519Sha512Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair {
-    return crypto_sign_ed25519_verify_detached(signature.bytes, payload.bytes, payload.length, keyPair.publicKey.convertKeyToNSData.bytes) == 0;
+    return crypto_sign_ed25519_verify_detached(
+            signature.bytes,
+            payload.bytes,
+            payload.length,
+            keyPair.publicKey.serialize.bytes) == 0;
 }
+
+#if NEW_CRYPTO_CODE
 
 +(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations {
 
