@@ -16,6 +16,47 @@ QredoRSASigner uses
 
 
 
-To migrate to using ED25519 we can't sign inside secure enclave, the keys can be stored there
+To migrate to using ED25519 we can't sign inside keychain, the keys can be stored there
 but must be extracted to perform signing
 
+
+
+QredORendezvous
+ _ownershipPrivateKey = [crypto accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
+
+
+QLFOwnershipSignature *ownershipSignature =  [QLFOwnershipSignature     ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
+                                                                                       operationType:[QLFOperationType operationCreate]
+                                                                                      marshalledData:payloadData
+                                                                                                error:&error];
+
+
+@implementation QredoED25519Singer
+{
+QredoED25519SigningKey *_signingKey;
+}
+
+-(instancetype)initWithSigningKey:(QredoED25519SigningKey *)signingKey {
+
+
+
+
+Generate  QredoED25519SigningKey
+
+ QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
+
+
+
+QLFOwnershipSignature *ownershipSignature =  [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_ownershipECPrivateKey]
+operationType:[QLFOperationType operationCreate]
+marshalledData:payloadData
+error:&error];
+
+
+
+
++ (QLFKeyPairLF *)keyPairLFWithPubKey:(QLFKeyLF *)pubKey privKey:(QLFKeyLF *)privKey;
+
+
+_ownershipECPrivateKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
+ _ownershipECPrivateKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];

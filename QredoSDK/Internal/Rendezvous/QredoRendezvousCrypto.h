@@ -22,6 +22,8 @@
 
 
 -(QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString *)keyId;
+-(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed;
+
 -(QLFKeyPairLF *)newRequesterKeyPair;
 -(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
 

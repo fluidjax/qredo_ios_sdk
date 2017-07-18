@@ -75,13 +75,13 @@ static const int QredoRendezvousMasterKeyLength = 32;
 }
 
 
--(SecKeyRef)accessControlPublicKeyWithTag:(NSString *)tag {
-    NSString *publicKeyId = [tag stringByAppendingString:@".public"];
-    
-    SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyId];
-    
-    return keyReference;
-}
+//-(SecKeyRef)accessControlPublicKeyWithTag:(NSString *)tag {
+//    NSString *publicKeyId = [tag stringByAppendingString:@".public"];
+//    
+//    SecKeyRef keyReference (__bridge SecKeyRef)(= [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyI)d];
+//    
+//    return keyReference;
+//}
 
 
 +(NSData *)transformPublicKeyToData:(SecKeyRef)key {
@@ -148,12 +148,27 @@ static const int QredoRendezvousMasterKeyLength = 32;
 }
 
 
--(SecKeyRef)accessControlPrivateKeyWithTag:(NSString *)tag {
-    NSString *privateKeyId = [tag stringByAppendingString:@".private"];
-    
-    SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];
-    
-    return keyReference;
+
+
+
+
+//-(SecKeyRef)accessControlPrivateKeyWithTag:(NSString *)tag {
+//    NSString *privateKeyId = [tag stringByAppendingString:@".private"];
+//    
+//    SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];
+//    
+//    return keyReference;
+//}
+
+
+
+-(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed {
+    QredoED25519SigningKey *signKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:seed];
+    QredoPublicKey  *pubKey     = signKey.verifyKey;
+    QredoPrivateKey *privKey    = signKey;
+    QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:[pubKey convertKeyToNSData]];
+    QLFKeyLF *privateKeyLF = [QLFKeyLF keyLFWithBytes:[privKey convertKeyToNSData]];
+    return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF  privKey:privateKeyLF];
 }
 
 

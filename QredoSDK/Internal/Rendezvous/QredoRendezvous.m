@@ -13,6 +13,7 @@
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
 #import "QredoCrypto.h"
+#import "CryptoImplV1.h"
 #import "QredoVaultCrypto.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoLoggerPrivate.h"
@@ -118,7 +119,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     QLFRendezvousAuthType *_lfAuthType;
     
-    SecKeyRef _ownershipPrivateKey;
+    QredoED25519SigningKey *_ownershipECPrivateKey;
+    
     
     NSString *_tag;
     
@@ -198,7 +200,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         _hashedTag = _descriptor.hashedTag;
         _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:descriptor.requesterKeyPair.privKey.bytes];
         _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
-        _ownershipPrivateKey = [[QredoRendezvousCrypto instance] accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
+        _ownershipECPrivateKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
+
         [self loadHWM];
     }
     return self;
@@ -245,6 +248,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     [self loadHWM];
     return self;
 }
+
+
 
 
 //TODO: DH - provide alternative method signature for non-X.509 authenticated rendezvous without trustedRootPems?
@@ -301,13 +306,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoLogDebug(@"Hashed tag: %@",_hashedTag);
     
     //Generate the rendezvous key pairs.
-    QLFKeyPairLF *ownershipKeyPair = [crypto newAccessControlKeyPairWithId:[_hashedTag QUIDString]];
+    QLFKeyPairLF *ownershipKeyPair     = [crypto newECAccessControlKeyPairWithSeed:[_hashedTag data]];
     QLFKeyPairLF *requesterKeyPair     = [crypto newRequesterKeyPair];
     
     _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:requesterKeyPair.privKey.bytes];
     _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:requesterKeyPair.pubKey.bytes];
     
-    _ownershipPrivateKey = [crypto accessControlPrivateKeyWithTag:[_hashedTag QUIDString]];
+    _ownershipECPrivateKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
     
     NSData *ownershipPublicKeyBytes      = [[ownershipKeyPair pubKey] bytes];
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];
@@ -443,12 +448,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     marshalledData = [QredoPrimitiveMarshallers marshalObject:durationSeconds marshaller:setMarshaller includeHeader:NO];
     [payloadData appendData:marshalledData];
     
-    
+
     QLFOwnershipSignature *ownershipSignature =
-    [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
-                                          operationType:[QLFOperationType operationCreate]
-                                         marshalledData:payloadData
-                                                  error:&error];
+                [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_ownershipECPrivateKey]
+                                                      operationType:[QLFOperationType operationCreate]
+                                                     marshalledData:payloadData
+                                                              error:&error];
+
+    
     
     if (error){
         if (completionHandler)completionHandler(error);
@@ -564,11 +571,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                            }
                                                      includeHeader:NO];
     
+    
     QLFOwnershipSignature *ownershipSignature =
-    [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
-                                          operationType:[QLFOperationType operationDelete]
-                                         marshalledData:payloadData
-                                                  error:&error];
+                [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_ownershipECPrivateKey]
+                                                      operationType:[QLFOperationType operationDelete]
+                                                     marshalledData:payloadData
+                                                              error:&error];
+
     
     if (error){
         if (completionHandler)completionHandler(error);
@@ -769,10 +778,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                      includeHeader:NO];
     
     QLFOwnershipSignature *ownershipSignature =
-    [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
-                                          operationType:[QLFOperationType operationList]
-                                         marshalledData:payloadData
-                                                  error:&error];
+            [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_ownershipECPrivateKey]
+                                                  operationType:[QLFOperationType operationList]
+                                                 marshalledData:payloadData
+                                                          error:&error];
     
     if (error){
         if (completionHandler)completionHandler(error);
@@ -1000,10 +1009,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     NSError *error = nil;
     
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoRSASinger alloc] initWithRSAKeyRef:_ownershipPrivateKey]
-                                            operationType:[QLFOperationType operationList]
-                                           marshalledData:payloadData
-                                                    error:&error];
+            = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_ownershipECPrivateKey]
+                                                    operationType:[QLFOperationType operationList]
+                                                   marshalledData:payloadData
+                                                            error:&error];
     
     if (error){
         if (completionHandler)completionHandler(error);
