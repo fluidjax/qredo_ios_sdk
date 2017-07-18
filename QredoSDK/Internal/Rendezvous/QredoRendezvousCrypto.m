@@ -78,7 +78,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 //-(SecKeyRef)accessControlPublicKeyWithTag:(NSString *)tag {
 //    NSString *publicKeyId = [tag stringByAppendingString:@".public"];
 //    
-//    SecKeyRef keyReference (__bridge SecKeyRef)(= [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyI)d];
+//    SecKeyRef keyReference = [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyId];
 //    
 //    return keyReference;
 //}
@@ -169,39 +169,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
     QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:[pubKey convertKeyToNSData]];
     QLFKeyLF *privateKeyLF = [QLFKeyLF keyLFWithBytes:[privKey convertKeyToNSData]];
     return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF  privKey:privateKeyLF];
-}
-
-
--(QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString *)keyId {
-    NSString *publicKeyId = [keyId stringByAppendingString:@".public"];
-    NSString *privateKeyId = [keyId stringByAppendingString:@".private"];
-    
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:2048
-                                                         publicKeyIdentifier:publicKeyId
-                                                        privateKeyIdentifier:privateKeyId
-                                                      persistInAppleKeychain:YES];
-    
-    if (!keyPairRef){
-        //TODO: What should happen if keypair generation failed? More than just log it
-        QredoLogError(@"Failed to generate keypair for identifiers: '%@' and '%@'",publicKeyId,privateKeyId);
-    }
-    
-    QredoRsaPublicKey *rsaPublicKey = [[QredoRsaPublicKey alloc] initWithPkcs1KeyData:[QredoCrypto getKeyDataForIdentifier:publicKeyId]];
-    
-    uint8_t *pubKeyBytes = (uint8_t *)(rsaPublicKey.modulus.bytes);
-    //stripping the leading zero
-    ++pubKeyBytes;
-    
-    
-    NSData *publicKeyBytes  = [NSData dataWithBytes:pubKeyBytes length:256];
-    
-    NSData *privateKeyBytes = [QredoCrypto getKeyDataForIdentifier:privateKeyId];
-    
-    QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:publicKeyBytes];
-    QLFKeyLF *privateKeyLF = [QLFKeyLF keyLFWithBytes:privateKeyBytes];
-    
-    return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF
-                                     privKey:privateKeyLF];
 }
 
 

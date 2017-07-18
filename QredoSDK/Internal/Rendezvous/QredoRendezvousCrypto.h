@@ -21,7 +21,6 @@
                                                 responderPublicKey:(NSData *)responderPublicKey;
 
 
--(QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString *)keyId;
 -(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed;
 
 -(QLFKeyPairLF *)newRequesterKeyPair;
