@@ -13,8 +13,7 @@
 #define SALT_RESPONDER_INBOUND_QUEUE   [@"Wo6ahjata4tae5ij" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_CONVERSATION_ID           [@"0HvoEAAzECt71nYp" dataUsingEncoding:NSUTF8StringEncoding]
 
-@interface QredoConversationCrypto ()
-{
+@interface QredoConversationCrypto (){
     id<CryptoImpl> _crypto;
 }
 
@@ -22,7 +21,7 @@
 
 @implementation QredoConversationCrypto
 
--(instancetype)initWithCrypto:(id<CryptoImpl>)crypto {
+-(instancetype)initWithCrypto:(id<CryptoImpl>)crypto{
     NSAssert(crypto,@"crypto should not be nil");
     self = [super init];
     if (self){
@@ -32,52 +31,38 @@
 }
 
 
--(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey {
+-(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey{
     NSData *serializedMessage =
     [QredoPrimitiveMarshallers marshalObject:message
                                   marshaller:[QLFConversationMessage marshaller]];
     
-    
     NSData *encryptedMessage = [_crypto encryptWithKey:bulkKey data:serializedMessage];
-    
-    NSData *serialiedEncryptedMessage =
-    [QredoPrimitiveMarshallers marshalObject:encryptedMessage
-                                  marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
+    NSData *serialiedEncryptedMessage = [QredoPrimitiveMarshallers marshalObject:encryptedMessage
+                                                                      marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
     
     NSData *auth = [_crypto getAuthCodeWithKey:authKey data:serialiedEncryptedMessage];
-    
     return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:serialiedEncryptedMessage
                                                                               authCode:auth];
 }
 
 
 -(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError **)error {
-    //verify auth code
-    
     BOOL verified = [_crypto verifyAuthCodeWithKey:authKey
                                               data:encryptedMessage.encryptedMessage
                                                mac:encryptedMessage.authCode];
-    
     if (!verified){
         if (error){
             *error = [NSError errorWithDomain:QredoErrorDomain
                                          code:QredoErrorCodeConversationWrongAuthenticationCode
                                      userInfo:@{ NSLocalizedDescriptionKey:@"Authentication code doesn't match" }];
         }
-        
         return nil;
     }
     
     NSData *encryptedData = encryptedMessage.encryptedMessage;
-    
-    
     NSData *deserializedEncryptedData = [QredoPrimitiveMarshallers unmarshalObject:encryptedData
                                                                       unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]];
-    
-    
     NSData *decryptedMessageData = [_crypto decryptWithKey:bulkKey data:deserializedEncryptedData];
-    
-    
     @try {
         return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData
                                              unmarshaller:[QLFConversationMessage unmarshaller]];
@@ -87,7 +72,6 @@
                                          code:QredoErrorCodeConversationInvalidData
                                      userInfo:@{ NSLocalizedDescriptionKey:@"Failed to parse data" }];
         }
-        
         return nil;
     }
 }
@@ -131,7 +115,6 @@
 
 -(QredoQUID *)conversationIdWithMasterKey:(NSData *)masterKey {
     NSData *conversationIdData = [QredoCrypto hkdfSha256WithSalt:SALT_CONVERSATION_ID initialKeyMaterial:masterKey info:nil];
-    
     return [[QredoQUID alloc] initWithQUIDData:conversationIdData];
 }
 

@@ -1,5 +1,6 @@
 /* HEADER GOES HERE */
 #import "QredoDhPublicKey.h"
+#import "QredoMacros.h"
 
 @interface QredoDhPublicKey ()
 
@@ -17,18 +18,11 @@
 
 
 -(instancetype)initWithData:(NSData *)data {
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(data,@"Data argument is nil");
     self = [super init];
-    
     if (self){
         _data = data;
     }
-    
     return self;
 }
 

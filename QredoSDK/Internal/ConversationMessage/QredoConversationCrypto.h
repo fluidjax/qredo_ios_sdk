@@ -15,9 +15,7 @@
 -(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey;
 -(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError **)error;
 
--(NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                   yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
-
+-(NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 -(NSData *)requesterInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
 -(NSData *)requesterInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
 -(NSData *)requesterInboundQueueSeedWithMasterKey:(NSData *)masterKey;

@@ -6,17 +6,14 @@
 
 
 #pragma mark Properties
-
 @property (nonatomic,readonly) NSString *associationKey;
 
 
 #pragma mark Inits
-
 -(instancetype)initWithAssociationKey:(NSString *)associationKey;
 
 
 #pragma mark Add, remove and notify observers
-
 -(void)addObserver:(id)observer;
 -(void)removeObserver:(id)observer;
 -(void)notifyObservers:(void (^)(id observer))notificationBlock;
@@ -24,7 +21,6 @@
 -(void)removeAllObservers;
 
 #pragma mark Misc utils
-
 -(NSUInteger)count;
 
 

@@ -8,23 +8,10 @@
 
 static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
-
-
-//==============================================================================================================
-#pragma mark - Private events -
-//==============================================================================================================
-
-
 @protocol QredoConversationProtocolPrivateEvents <NSObject>
-
 -(void)didReceiveTimeoutCallbackWithIdentifier:(QredoQUID *)identifier;
-
 @end
 
-
-//==============================================================================================================
-#pragma mark - Interfaces -
-//==============================================================================================================
 
 
 @interface QredoConversationProtocolState ()
@@ -34,29 +21,21 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 @end
 
 
-//--------------------------------------------------------------------------------------------------------------
-#pragma mark -
 
-@interface QredoConversationProtocol ()<QredoConversationObserver>
-{
+@interface QredoConversationProtocol ()<QredoConversationObserver>{
     BOOL _isObservingConversation;
 }
 @property (nonatomic) dispatch_queue_t protocolQueue;
 @property (nonatomic) QredoConversation *conversation;
 @end
 
+
+
 @interface QredoConversationProtocol (PrivateEvents)<QredoConversationProtocolPrivateEvents>
 @end
 
 
-
-//==============================================================================================================
-#pragma mark - State Implementations -
-//==============================================================================================================
-
-
-@implementation QredoConversationProtocolState
-{
+@implementation QredoConversationProtocolState{
     BOOL _timeoutEnabled;
     NSTimeInterval _timeoutInterval;
     QredoQUID *_timeoutIdentifier;
@@ -65,7 +44,6 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 -(void)prepareForReuseWithConversationProtocol:(QredoConversationProtocol *)conversationProtocol
                                    configBlock:(dispatch_block_t)configBlock {
     self.conversationProtocol = conversationProtocol;
-    
     if (configBlock){
         configBlock();
     }
@@ -130,18 +108,13 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 @end
 
 
-//--------------------------------------------------------------------------------------------------------------
-#pragma mark -
-
 @implementation QredoConversationProtocolCancelableState
 
 -(instancetype)init {
     self = [super init];
-    
     if (self){
         _cancelMessageType = kDefaultCancelMessageType;
     }
-    
     return self;
 }
 
@@ -189,22 +162,17 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
 
 
-//==============================================================================================================
 #pragma mark - Protocol Implementation -
-//==============================================================================================================
-
 
 @implementation QredoConversationProtocol
 
 
 -(instancetype)initWithConversation:(QredoConversation *)conversation {
     self = [super init];
-    
     if (self){
         _protocolQueue = dispatch_queue_create("QredoConversationProtocol__protocolQueue",DISPATCH_QUEUE_SERIAL);
         self.conversation = conversation;
     }
-    
     return self;
 }
 
@@ -214,7 +182,6 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
         NSAssert1(TRUE,@"Attempting to start observing a conversation in %@ while the conversation is already observed.",NSStringFromClass([self class]));
         return;
     }
-    
     [self.conversation addConversationObserver:self];
     _isObservingConversation = YES;
 }
@@ -235,11 +202,9 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
 -(NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
     NSMethodSignature *signature = [super methodSignatureForSelector:aSelector];
-    
     if (!signature){
         signature = [self.currentState methodSignatureForSelector:aSelector];
     }
-    
     return signature;
 }
 
@@ -265,9 +230,7 @@ static NSString *const kDefaultCancelMessageType = @"com.qredo.cancel";
 
 -(void)switchToState:(QredoConversationProtocolState *)state withConfigBlock:(dispatch_block_t)configBlock {
     NSAssert(state != nil,@"State is not initialized");
-    
     [state prepareForReuseWithConversationProtocol:self configBlock:configBlock];
-    
     [_currentState willExit];
     _currentState = state;
     [_currentState didEnter];

@@ -22,6 +22,4 @@ typedef NSData * (^signDataBlock)(NSData *data,QredoRendezvousAuthenticationType
 
 -(instancetype)initWithVaultItemDescriptor:(QredoVaultItemDescriptor *)vaultItemDescriptor vault:(QredoVault *)vault;
 
-
-
 @end

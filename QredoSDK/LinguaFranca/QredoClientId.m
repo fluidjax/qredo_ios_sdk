@@ -1,5 +1,6 @@
 /* HEADER GOES HERE */
 #import "QredoClientId.h"
+#import "QredoMacros.h"
 
 @interface QredoClientId ()
 
@@ -35,17 +36,8 @@ const int ReturnChannelIdSize = 16;
 
 
 +(instancetype)clientIdFromData:(NSData *)data {
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"Data argument is nil"
-                                     userInfo:nil];
-    }
-    
-    if (data.length != ReturnChannelIdSize){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument must be %d bytes long",ReturnChannelIdSize]
-                                     userInfo:nil];
-    }
+    GUARD(data,@"Data argument is nil");
+    GUARDF(data.length == ReturnChannelIdSize, @"Data argument must be %d bytes long", ReturnChannelIdSize);
     
     NSString *base64String = [data base64EncodedStringWithOptions:0];
     NSString *topicSafe = [QredoClientId getTopicSafeStringFromBase64:base64String];

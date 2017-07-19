@@ -1,6 +1,7 @@
 /* HEADER GOES HERE */
 
 #import "QredoSecKeyRefPair.h"
+#import "QredoMacros.h"
 
 @interface QredoSecKeyRefPair ()
 
@@ -16,18 +17,9 @@
     self = [super init];
     
     if (self){
-        if (!publicKeyRef){
-            @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                           reason:[NSString stringWithFormat:@"Public key ref argument is nil"]
-                                         userInfo:nil];
-        }
         
-        if (!privateKeyRef){
-            @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                           reason:[NSString stringWithFormat:@"Private key ref argument is nil"]
-                                         userInfo:nil];
-        }
-        
+        GUARD(publicKeyRef,@"Public key ref argument is nil");
+        GUARD(privateKeyRef,@"Private key ref argument is nil");
         _publicKeyRef = publicKeyRef;
         _privateKeyRef = privateKeyRef;
     }

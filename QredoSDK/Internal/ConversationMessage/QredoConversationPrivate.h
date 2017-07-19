@@ -18,7 +18,8 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 @property (nonatomic,readonly) QredoClient *client;
 
 
--(QLFConversationMessage*)decryptMessage:(QLFEncryptedConversationItem*)messageData;
+//CSM -(QLFConversationMessage*)decryptMessage:(QLFEncryptedConversationItem*)messageData;
+
 -(QredoVault *)store;
 -(instancetype)initWithClient:(QredoClient *)client;
 -(instancetype)initWithClient:(QredoClient *)client fromLFDescriptor:(QLFConversationDescriptor *)descriptor;
