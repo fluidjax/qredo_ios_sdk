@@ -9,7 +9,6 @@
 @property (readonly) NSString *userId;
 @property (readonly) NSString *userSecure;
 
-
 -(instancetype)initWithAppId:(NSString *)appId
                       userId:(NSString *)userId
                   userSecure:(NSString *)userSecure;

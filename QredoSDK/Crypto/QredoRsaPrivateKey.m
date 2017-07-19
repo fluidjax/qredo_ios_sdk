@@ -2,6 +2,7 @@
 #import "QredoRsaPrivateKey.h"
 #import "QredoDerUtils.h"
 #import "QredoLoggerPrivate.h"
+#import "QredoMacros.h"
 
 #define PKCS_FORMAT_VERSION_LENGTH     1
 #define PKCS8_SUPPORTED_FORMAT_VERSION 0
@@ -32,56 +33,17 @@
 
 
 -(instancetype)initWithModulus:(NSData *)modulus publicExponent:(NSData *)publicExponent privateExponent:(NSData *)privateExponent crtPrime1:(NSData *)crtPrime1 crtPrime2:(NSData *)crtPrime2 crtExponent1:(NSData *)crtExponent1 crtExponent2:(NSData *)crtExponent2 crtCoefficient:(NSData *)crtCoefficient {
-    if (!modulus){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Modulus argument is nil"]
-                                     userInfo:nil];
-    }
     
-    if (!publicExponent){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public Exponent argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!privateExponent){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Private Exponent argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!crtPrime1){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"CRT Prime 1 argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!crtPrime2){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"CRT Prime 2 argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!crtExponent1){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"CRT Exponent 1 argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!crtExponent2){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"CRT Exponent 2 argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!crtCoefficient){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"CRT Coefficient argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(modulus,@"Modulus argument is nil");
+    GUARD(publicExponent,@"Public Exponent argument is nil");
+    GUARD(privateExponent,@"Private Exponent argument is nil");
+    GUARD(crtPrime1,@"CRT Prime 1 argument is nil");
+    GUARD(crtPrime2,@"CRT Prime 2 argument is nil");
+    GUARD(crtExponent1,@"CRT Exponent 1 argument is nil");
+    GUARD(crtExponent2,@"CRT Exponent 2 argument is nil");
+    GUARD(crtCoefficient,@"CRT Coefficient argument is nil");
     
     self = [super init];
-    
     if (self){
         _modulus = modulus;
         _publicExponent = publicExponent;
@@ -92,47 +54,32 @@
         _crtExponent2 = crtExponent2;
         _crtCoefficient = crtCoefficient;
     }
-    
     return self;
 }
 
 
 -(instancetype)initWithPkcs1KeyData:(NSData *)keyData {
-    if (!keyData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key identifier argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(keyData,@"Key data argument is nil");
     self = [super init];
-    
     if (self){
         if (![self populatePrivateKeyComponentsFromPrivateKeyPkcs1Data:keyData]){
             //Something went wrong
             return nil;
         }
     }
-    
     return self;
 }
 
 
 -(instancetype)initWithPkcs8KeyData:(NSData *)keyData {
-    if (!keyData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key data argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(keyData,@"Key data argument is nil");
     self = [super init];
-    
     if (self){
         if (![self populatePrivateKeyComponentsFromPublicKeyPkcs8Data:keyData]){
             //Something went wrong
             return nil;
         }
     }
-    
     return self;
 }
 
@@ -200,11 +147,7 @@
     
     BOOL dataIsValid = YES;
     
-    if (!privateKeyData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Private key data argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(privateKeyData,@"Private key data argument is nil");
     
     int currentOffset = 0;
     int dataOffset = 0;
@@ -348,11 +291,8 @@
     
     BOOL dataIsValid = YES;
     
-    if (!publicKeyData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public key data argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(publicKeyData,@"Public key data argument is nil");
+    
     
     int currentOffset = 0;
     int dataOffset = 0;
