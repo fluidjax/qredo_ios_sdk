@@ -6,8 +6,7 @@
 #import "QredoRendezvous.h"
 //#import "QredoPrivate.h"
 
-@interface QredoUpdateListener ()
-{
+@interface QredoUpdateListener (){
     dispatch_queue_t _queue;
     dispatch_source_t _timer;
     dispatch_queue_t _subscriptionRenewalQueue;
@@ -24,16 +23,15 @@
     
     //Indicates that the Query after Subscribe has completed, and no more entries to process
     BOOL _queryAfterSubscribeComplete;
-
 }
 
 @end
+
 
 @implementation QredoUpdateListener
 
 -(instancetype)init {
     self = [super init];
-    
     if (self){
         _dedupeStore = [[NSMutableDictionary alloc] init];
         _queue = dispatch_queue_create("com.qredo.conversation.updates",nil);
@@ -41,7 +39,6 @@
         _pollIntervalDuringSubscribe = 10.0;
         _renewSubscriptionInterval = 5.0;
     }
-    
     return self;
 }
 
@@ -53,25 +50,22 @@
 
 -(void)startListening {
     NSAssert(_delegate,@"Conversation delegate should be set before starting listening for the updates");
-    
     //If we support multi-response, then use it, otherwise poll
-    
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self]){
-        if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")])[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resubscribeWithCompletionHandler:) name:@"resubscribe" object:nil];
-        
+        if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")] || [self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]){
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resubscribeWithCompletionHandler:) name:@"resubscribe" object:nil];
+        }
         [self startSubscribing];
     } else {
         _isPollingActive = YES;
         [self startPolling];
     }
-    
     _isListening = YES;
 }
 
 
 -(void)stopListening {
     _isListening = NO;
-    
     //If we support multi-response, then use it, otherwise poll
     if ([self.dataSource qredoUpdateListenerDoesSupportMultiResponseQuery:self]){
         [self stopSubscribing];
@@ -91,11 +85,8 @@
     
     //Setup re-subscribe timer first
     
-    
-    
     @synchronized(self) {
         if (_subscriptionRenewalTimer)return;
-        
         _subscriptionRenewalTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,0,0,_subscriptionRenewalQueue);
         
         if (_subscriptionRenewalTimer){
@@ -111,9 +102,7 @@
                     }
                     
                     [self subscribeWithCompletionHandler:nil];
-                    
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reconnect" object:nil];
-                    
                     
                     //[NSThread sleepForTimeInterval:5];
                     
@@ -164,9 +153,7 @@
     if (_subscribedToMessages){
         return;
     }
-    
     NSAssert(_delegate,@"Conversation delegate should be set before starting listening for the updates");
-    
     _subscribedToMessages = YES;
     
     /*
@@ -176,7 +163,7 @@
     _dedupeNecessary = YES;
     _queryAfterSubscribeComplete = YES;
     
-    [self.dataSource  qredoUpdateListener:self   subscribeWithCompletionHandler:^(NSError *error) {
+    [self.dataSource  qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
          _queryAfterSubscribeComplete = YES;
          
          if (!error){
@@ -205,29 +192,15 @@
         _queryAfterSubscribeComplete = YES;
         
         completionHandler = nil;
-        
-        //if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoConversation")]) {
-        //QredoConversation *conversation = self.dataSource;
-        //[conversation resetHighWatermark];
-        //} else if ([self.dataSource isMemberOfClass:NSClassFromString(@"QredoRendezvous")]) {
-        //QredoRendezvous *rendezvous = self.dataSource;
-        //[rendezvous resetHighWatermark];
-        //}
-        [self.dataSource
-         qredoUpdateListener:self
-         subscribeWithCompletionHandler:^(NSError *error) {
+
+        [self.dataSource qredoUpdateListener:self subscribeWithCompletionHandler:^(NSError *error) {
              _queryAfterSubscribeComplete = YES;
-             
              if (!error){
-                 [self.dataSource
-                  qredoUpdateListener:self
-                  pollWithCompletionHandler:^(NSError *error) {
-                      if (completionHandler)
-                          if (completionHandler) completionHandler(error);
+                 [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error) {
+                      if (completionHandler)completionHandler(error);
                   }];
              } else {
-                 if (completionHandler)
-                     if (completionHandler) completionHandler(error);
+                 if (completionHandler)completionHandler(error);
              }
          }];
     }
@@ -235,11 +208,8 @@
 
 
 -(void)unsubscribeWithCompletionHandler:(void (^)(NSError *error))completionHandler {
-    [self.dataSource
-     qredoUpdateListener:self
-     unsubscribeWithCompletionHandler:^(NSError *error) {
+    [self.dataSource qredoUpdateListener:self unsubscribeWithCompletionHandler:^(NSError *error) {
          _subscribedToMessages = NO;
-         
          if (completionHandler) completionHandler(error);
      }];
 }
@@ -254,7 +224,6 @@
             _subscriptionRenewalTimer = nil;
         }
     }
-    
     [self unsubscribeWithCompletionHandler:nil];
 }
 
@@ -265,7 +234,6 @@
             return NO;
         }
     }
-    
     [self.delegate qredoUpdateListener:self processSingleItem:item];
     return YES;
 }
@@ -276,7 +244,6 @@
     if (!_isPollingActive){
         return;
     }
-    
     [self.dataSource qredoUpdateListener:self pollWithCompletionHandler:^(NSError *error){
          if (!_isPollingActive){
              return;
@@ -297,9 +264,7 @@
 
 -(BOOL)isDuplicateOrOldItem:(id)item sequenceValue:(id)sequenceValue {
     BOOL itemIsDuplicate = NO;
-    
     //TODO: DH - Store hashes, rather than actual values if those values are large?
-    
     //TODO: DH - Confirm whether sequence value for Items are unique to that item - i.e. can just store sequence values for dedupe?
     //A duplicate item is being taken to be a specific item which has the same sequence value
     @synchronized(_dedupeStore) {

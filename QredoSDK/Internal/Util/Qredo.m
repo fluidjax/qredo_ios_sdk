@@ -1210,7 +1210,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
         [self initializeVaults];
         return YES;
     }
-    
     return NO;
 }
 
@@ -1219,10 +1218,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
     if (!_systemVault || !_defaultVault){
         return YES;
     }
-    
     [_systemVault clearAllData];
     [_defaultVault clearAllData];
-    
     return [self deleteDefaultVaultKeychainWithError:error];
 }
 
@@ -1230,10 +1227,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)createSystemVaultWithUserCredentials:(QredoUserCredentials *)userCredentials completionHandler:(void (^)(NSError *error))completionHandler {
     _userCredentials = userCredentials;
     [self deleteCurrentDataWithError:nil];
-    
     [self createDefaultKeychain:userCredentials];
     [self initializeVaults];
-    
     [self addDeviceToVaultWithCompletionHandler:completionHandler];
 }
 
@@ -1242,9 +1237,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     _systemVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.systemVaultKeys withLocalIndex:YES  vaultType:QredoSystemVault];
     //always add an observer for the system vault
     [_systemVault addMetadataIndexObserver];
-    
-    
-    
     BOOL withIndex = !self.clientOptions.disableMetadataIndex;
     _defaultVault = [[QredoVault alloc] initWithClient:self vaultKeys:_keychain.defaultVaultKeys withLocalIndex:withIndex  vaultType:QredoDefaultVault];
 }
@@ -1408,10 +1400,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
-
-
-
-
 +(BOOL)hasCredentialsInKeychainGroup:(NSString *)keyChainGroup{
     NSDictionary *dict = [QredoClient retrieveCredentialsFromKeychainGroup:keyChainGroup];
     if (!dict)return NO;
@@ -1432,10 +1420,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
-
-
-
-
 +(NSDictionary*)retrieveCredentialsFromKeychainGroup:(NSString *)keyChainGroup{
     KeychainItemWrapper *keychain = [QredoClient keychainItemWrapperGroup:keyChainGroup];
     NSData *credentialData = [keychain objectForKey:(__bridge id)(kSecValueData)];
@@ -1443,7 +1427,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     NSDictionary *credentials = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:credentialData];
     return credentials;
 }
-
 
 
 + (NSString *)bundleSeedID {
