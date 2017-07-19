@@ -897,7 +897,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                   completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *vault = [self systemVault];
 
-    //CSM changed to use the INDEX!
+    //Changed to use the INDEX!
      NSPredicate *predicate = [NSPredicate predicateWithFormat:@" 1 == 1 "];
     [vault enumerateIndexUsingPredicate:predicate withBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
     //[vault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {

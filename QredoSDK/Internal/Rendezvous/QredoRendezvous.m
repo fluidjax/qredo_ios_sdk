@@ -697,11 +697,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoVault *systemVault = _vault;
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@" 1 == 1 "];
     
-//CSM changed to use the INDEX!
+    //Changed to use the INDEX!
     [systemVault enumerateIndexUsingPredicate:predicate withBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
-//    [systemVault enumerateVaultItemsUsingBlock:^(QredoVaultItemMetadata *vaultItemMetadata,BOOL *stopVaultEnumeration) {
-        
-        
         if ([vaultItemMetadata.dataType
              isEqualToString:kQredoConversationVaultItemType]){
             QredoConversationMetadata *metadata = [[QredoConversationMetadata alloc] init];

@@ -14,28 +14,18 @@ extern NSString *const kQredoConversationMessageTypeControl;
 
 @interface QredoConversationMessage ()
 @property (readwrite) NSString *dataType;
-
 @end
 
 
 @interface QredoConversationMessage (Private)
-
-
+@property QredoConversationHighWatermark *highWatermark;
 
 -(instancetype)initWithMessageLF:(QLFConversationMessage *)messageLF incoming:(BOOL)incoming;
-//making read/write for private use
-
 -(instancetype)initWithValue:(NSData *)value
                     dataType:(NSString *)dataType
                summaryValues:(NSDictionary *)summaryValues;
-
-
-@property QredoConversationHighWatermark *highWatermark;
-
-
 -(BOOL)isControlMessage;
 -(QredoConversationControlMessageType)controlMessageType;
-
 -(QLFConversationMessage *)messageLF;
 
 @end
