@@ -152,10 +152,10 @@ static const int QredoRendezvousMasterKeyLength = 32;
     NSString *publicKeyId = [keyId stringByAppendingString:@".public"];
     NSString *privateKeyId = [keyId stringByAppendingString:@".private"];
     
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:2048
-                                                         publicKeyIdentifier:publicKeyId
-                                                        privateKeyIdentifier:privateKeyId
-                                                      persistInAppleKeychain:YES];
+    QredoSecKeyRefPair *keyPairRef = [QredoCrypto rsaGenerate:2048
+                                          publicKeyIdentifier:publicKeyId
+                                         privateKeyIdentifier:privateKeyId
+                                       persistInAppleKeychain:YES];
     
     if (!keyPairRef){
         //TODO: What should happen if keypair generation failed? More than just log it

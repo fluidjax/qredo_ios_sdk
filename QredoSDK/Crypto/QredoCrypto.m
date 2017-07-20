@@ -11,6 +11,7 @@
 // TODO: pragma mark
 // TODO: clean up old commentary
 // TODO: reformat long lines
+// TODO: look at keychain wrapper
 
 @implementation QredoCrypto
 
@@ -303,7 +304,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     return nil;
 }
 
-+(BOOL)rsaPassSha256Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair {
++(BOOL)rsaPssSha256Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair {
     return nil;
 }
 
@@ -333,78 +334,70 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
  * old work
  ****************************************************************************/
 
-+(QredoSecKeyRefPair *)generateRsaKeyPairOfLength:(NSInteger)lengthBits publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys {
++(QredoSecKeyRefPair *)rsaGenerate:(NSInteger)keySize publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys {
+
     /*
-     NOTE: Keys which are not persisted in the keychain can only be used via the methods which take a SecKeyRef.
-     You cannot find them with SecItemCopyMatching etc as they're not in the keychain, so you cannot get access to
-     the generated key data itself, just the ref to the key.
+     NOTE: Keys which are not persisted in the keychain can only be used via the
+     methods which take a SecKeyRef. You cannot find them with SecItemCopyMatch-
+     ing etc. as they're not in the keychain, so you cannot get access to the
+     generated key data itself, just the ref to the key.
      */
-    
-    QredoSecKeyRefPair *keyRefPair = nil;
-    
-    GUARD(lengthBits > 0,
-          @"Required key length must be a positive integer.");
-    
-    GUARD(publicKeyIdentifier,
-          @"Public key identifier argument is nil");
-    
-    GUARD(![publicKeyIdentifier isEqualToString:@""],
-          @"Public key identifier must not be empty string.");
-    
-    GUARD(privateKeyIdentifier,
-          @"Private key identifier argument is nil.");
-    
-    GUARD(![privateKeyIdentifier isEqualToString:@""],
-        @"Private key identifier must not be empty string.");
-    
-    GUARD(![publicKeyIdentifier isEqualToString:privateKeyIdentifier],
-          @"Public and Private key identifiers must be different.");
-    
-    OSStatus status = noErr;
-    
-    //Allocate dictionaries used for attributes in the SecKeyGeneratePair function
-    NSMutableDictionary *privateKeyAttr = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *publicKeyAttr = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *keyPairAttr = [[NSMutableDictionary alloc] init];
-    
-    //NSData of the string attributes, used for finding keys easier
-    NSData *publicTag = [publicKeyIdentifier dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *privateTag = [privateKeyIdentifier dataUsingEncoding:NSUTF8StringEncoding];
-    
+    const int RSA_RECOMMENDED_KEY_SIZE = 2048;
+
+    NSAssert(keySize > 0,
+            @"Expected key size greater than 0.");
+    QredoAssertWarn(keySize < RSA_RECOMMENDED_KEY_SIZE,
+            @"Generating RSA key < %d bits, which is weaker than expected.",
+            RSA_RECOMMENDED_KEY_SIZE);
+    NSAssert(publicKeyIdentifier,
+            @"Expected public key identifier.");
+    NSAssert(publicKeyIdentifier.length > 0,
+            @"Expected non-empty public key identifier.");
+    NSAssert(privateKeyIdentifier,
+            @"Expected private key identifier.");
+    NSAssert(privateKeyIdentifier.length > 0,
+            @"Expected non-empty private key identifier.");
+    NSAssert(![publicKeyIdentifier isEqualToString:privateKeyIdentifier],
+            @"Expected different public and private key identifiers.");
+
+    NSDictionary *keyPairAttributes = @{
+            (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+            (id)kSecAttrKeySizeInBits: @(keySize),
+            (id)kSecPrivateKeyAttrs: @{
+                    (id)kSecAttrIsPermanent: @(persistKeys),
+                    (id)kSecAttrApplicationTag: [privateKeyIdentifier
+                            dataUsingEncoding:NSUTF8StringEncoding]
+            },
+            (id)kSecPublicKeyAttrs: @{
+                    (id)kSecAttrIsPermanent: @(persistKeys),
+                    (id)kSecAttrApplicationTag: [publicKeyIdentifier
+                            dataUsingEncoding:NSUTF8StringEncoding]
+            }
+    };
+
     SecKeyRef publicKeyRef = NULL;
     SecKeyRef privateKeyRef = NULL;
-    
-    //Set key-type and key-size
-    keyPairAttr[(__bridge id)kSecAttrKeyType] = (__bridge id)kSecAttrKeyTypeRSA;
-    keyPairAttr[(__bridge id)kSecAttrKeySizeInBits] = @(lengthBits);
-    
-    //Specifies whether private/public key is stored permanently (i.e. in keychain)
-    privateKeyAttr[(__bridge id)kSecAttrIsPermanent] = @(persistKeys);
-    publicKeyAttr[(__bridge id)kSecAttrIsPermanent] = @(persistKeys);
-    
-    //Set the identifier name for private/public key
-    privateKeyAttr[(__bridge id)kSecAttrApplicationTag] = privateTag;
-    publicKeyAttr[(__bridge id)kSecAttrApplicationTag] = publicTag;
-    
-    //Sets the private/public key attributes just built up
-    keyPairAttr[(__bridge id)kSecPrivateKeyAttrs] = privateKeyAttr;
-    keyPairAttr[(__bridge id)kSecPublicKeyAttrs] = publicKeyAttr;
-    
-    //Generate the keypair
-    status = SecKeyGeneratePair((__bridge CFDictionaryRef)keyPairAttr,&publicKeyRef,&privateKeyRef);
-    
-    if (status != errSecSuccess){
-        QredoLogError(@"Failed to generate %ld bit keypair. Public key ID: '%@', Private key ID: '%@'. Status: %@",(long)lengthBits,publicKeyIdentifier,privateKeyIdentifier,[QredoLogger stringFromOSStatus:status]);
-    } else {
-        //This class will CFRelease the SecKeyRef on dealloc
-        keyRefPair = [[QredoSecKeyRefPair alloc] initWithPublicKeyRef:publicKeyRef privateKeyRef:privateKeyRef];
-    }
+
+    OSStatus status = SecKeyGeneratePair(
+            (__bridge CFDictionaryRef)keyPairAttributes,
+            &publicKeyRef,
+            &privateKeyRef);
+
+    NSAssert(status == errSecSuccess,
+            @"Failed to generate %ld bit keypair. Public key ID: '%@', "
+                    "Private key ID: '%@'. Status: %@",
+            (long)keySize,
+            publicKeyIdentifier,
+            privateKeyIdentifier,
+            [QredoLogger stringFromOSStatus:status]);
+
+    QredoSecKeyRefPair *keyRefPair = [[QredoSecKeyRefPair alloc]
+            initWithPublicKeyRef:publicKeyRef
+                   privateKeyRef:privateKeyRef];
     
     return keyRefPair;
+
 }
-
-
-
 
 //TODO: DH - Add unit tests for getPublicKeyRefFromEvaluatedTrustRef
 +(SecKeyRef)getPublicKeyRefFromEvaluatedTrustRef:(SecTrustRef)trustRef {

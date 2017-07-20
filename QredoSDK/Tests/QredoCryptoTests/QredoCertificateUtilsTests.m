@@ -222,10 +222,10 @@
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKey";
     NSUInteger keySizeBits = 2048;
     
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits
-                                                         publicKeyIdentifier:publicKeyIdentifier
-                                                        privateKeyIdentifier:privateKeyIdentifier
-                                                      persistInAppleKeychain:YES];
+    QredoSecKeyRefPair *keyPairRef = [QredoCrypto rsaGenerate:keySizeBits
+                                          publicKeyIdentifier:publicKeyIdentifier
+                                         privateKeyIdentifier:privateKeyIdentifier
+                                       persistInAppleKeychain:YES];
     
     XCTAssertNotNil(keyPairRef);
     

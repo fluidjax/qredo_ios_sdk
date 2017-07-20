@@ -80,10 +80,10 @@
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyExport1";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyExport1";
     NSInteger keySizeBits = 1024;
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits
-                                                         publicKeyIdentifier:publicKeyIdentifier
-                                                        privateKeyIdentifier:privateKeyIdentifier
-                                                      persistInAppleKeychain:YES];
+    QredoSecKeyRefPair *keyPairRef = [QredoCrypto rsaGenerate:keySizeBits
+                                          publicKeyIdentifier:publicKeyIdentifier
+                                         privateKeyIdentifier:privateKeyIdentifier
+                                       persistInAppleKeychain:YES];
     
     XCTAssertNotNil(keyPairRef,"RSA key generation failed (nil object returned).");
     XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef,"RSA key generation failed (nil public key ref returned).");
@@ -184,10 +184,10 @@
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyExport1";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyExport1";
     NSInteger keySizeBits = 1024;
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:keySizeBits
-                                                         publicKeyIdentifier:publicKeyIdentifier
-                                                        privateKeyIdentifier:privateKeyIdentifier
-                                                      persistInAppleKeychain:YES];
+    QredoSecKeyRefPair *keyPairRef = [QredoCrypto rsaGenerate:keySizeBits
+                                          publicKeyIdentifier:publicKeyIdentifier
+                                         privateKeyIdentifier:privateKeyIdentifier
+                                       persistInAppleKeychain:YES];
     
     XCTAssertNotNil(keyPairRef,"RSA key generation failed (nil object returned).");
     XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef,"RSA key generation failed (nil public key ref returned).");

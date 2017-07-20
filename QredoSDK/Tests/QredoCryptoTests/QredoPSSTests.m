@@ -48,10 +48,10 @@
 
 
 -(void)generateRandomKeys {
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto generateRsaKeyPairOfLength:2048
-                                                         publicKeyIdentifier:publicKeyName
-                                                        privateKeyIdentifier:privateKeyName
-                                                      persistInAppleKeychain:YES];
+    QredoSecKeyRefPair *keyPairRef = [QredoCrypto rsaGenerate:2048
+                                          publicKeyIdentifier:publicKeyName
+                                         privateKeyIdentifier:privateKeyName
+                                       persistInAppleKeychain:YES];
     
     XCTAssertNotNil(keyPairRef,"RSA key generation failed (nil object returned).");
     XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef,"RSA key generation failed (nil public key ref returned).");

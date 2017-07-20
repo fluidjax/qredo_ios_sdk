@@ -206,25 +206,15 @@
 
 
 -(void)testGetAuthCodeWithKey_EmptyKeyEmptyData {
-    uint8_t keyDataArray[] = {
-    };
+    uint8_t keyDataArray[] = {};
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
     
-    uint8_t inputDataArray[] = {
-    };
+    uint8_t inputDataArray[] = {};
     NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
     
-    uint8_t expectedAuthCodeArray[] = {
-        0xB6,0x13,0x67,0x9A,0x08,0x14,0xD9,0xEC,0x77,0x2F,0x95,0xD7,0x78,0xC3,0x5F,0xC5,
-        0xFF,0x16,0x97,0xC4,0x93,0x71,0x56,0x53,0xC6,0xC7,0x12,0x14,0x42,0x92,0xC5,0xAD
-    };
-    NSData *expectedAuthCode = [NSData dataWithBytes:expectedAuthCodeArray length:sizeof(expectedAuthCodeArray) / sizeof(uint8_t)];
-    
     CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
-    NSData *authCode = [cryptoImpl getAuthCodeWithKey:keyData data:inputData];
     
-    XCTAssertNotNil(authCode,@"Auth code should not be nil.");
-    XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
+    XCTAssertThrows([cryptoImpl getAuthCodeWithKey:keyData data:inputData]);
 }
 
 
