@@ -23,7 +23,7 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 +(BOOL)ed25519Sha512Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair;
 +(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt;
 +(NSData *)hkdfSha256Expand:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength;
-+(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLen:(NSUInteger)outputLen iterations:(NSUInteger)iterations;
++(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations;
 +(NSData *)secureRandom:(NSUInteger)size;
 
 +(NSData *)generateHmacSha256ForData:(NSData *)data length:(NSUInteger)length key:(NSData *)key;

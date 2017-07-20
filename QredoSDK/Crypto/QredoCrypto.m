@@ -5,16 +5,17 @@
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoCrypto.h"
-#import "QredoKeyPair.h"
 #import "QredoED25519VerifyKey.h"
 #import "QredoED25519SigningKey.h"
+
+// TODO: pragma mark
+// TODO: clean up old commentary
+// TODO: reformat long lines
 
 @implementation QredoCrypto
 
 SecPadding secPaddingFromQredoPadding(QredoPadding);
 SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
-
-#define PBKDF2_MIN_SALT_LENGTH       8 //RFC recommends minimum of 8 bytes salt
 
 /*
  OAEP padding adds minimum 2+(2*hash_size) bytes padding.
@@ -179,32 +180,54 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
             keyPair.publicKey.serialize.bytes) == 0;
 }
 
-#if NEW_CRYPTO_CODE
++(NSData *)pbkdf2Sha256:(NSData *)ikm
+                   salt:(NSData *)salt
+           outputLength:(NSUInteger)outputLength
+             iterations:(NSUInteger)iterations {
 
-+(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations {
+    const int PBKDF2_RFC_MIN_SALT_LENGTH = 8;
 
-    NSAssert(ikm, @"PBKDF2-SHA256 IKM == nil.");
-    NSAssert(ikm.length > 0, @"PBKDF2-SHA256 IKM length == 0.");
-    NSAssert(outputLength > 0, @"PBKDF2-SHA256 output length == 0.");
-    NSAssert(iterations > 0, @"PBKDF2-SHA256 iterations == 0");
+    NSAssert(ikm,
+            @"Expected IKM.");
+    NSAssert(ikm.length > 0,
+            @"Expected IKM of non-zero length.");
+    NSAssert(salt,
+            @"Expected salt.");
+    NSAssert(salt.length >= PBKDF2_RFC_MIN_SALT_LENGTH,
+            @"Expected salt of minimum length %d, as recommended by RFC 2898 "
+            @"Sec. 4.1.",
+            PBKDF2_RFC_MIN_SALT_LENGTH);
+    NSAssert(outputLength > 0,
+            @"Expected output length greater than zero.");
+    NSAssert(iterations > 0,
+            @"Expected iteration count greater than 0.");
+    NSAssert(iterations < UINT_MAX,
+            @"Expected iteration count less than %d.", UINT_MAX);
 
-    NSMutableData *derivedKey = [NSMutableData dataWithLength:outputLength];
+    NSMutableData *derivation = [NSMutableData dataWithLength:outputLength];
 
-    int result = CCKeyDerivationPBKDF(kCCPBKDF2,
+    int result = CCKeyDerivationPBKDF(
+            kCCPBKDF2,
             ikm.bytes,
             ikm.length,
             salt.bytes,
             salt.length,
             kCCPRFHmacAlgSHA256,
-            iterations,
-            derivedKey.mutableBytes,
-            derivedKey.length);
+            (unsigned int)iterations,
+            derivation.mutableBytes,
+            derivation.length);
 
-    NSAssert(result == kCCSuccess, @"CCKeyDerivationPBKDF: failure %d.", result);
+    NSAssert(result == kCCSuccess,
+            @"CCKeyDerivationPBKDF: failure %d.", result);
+    NSAssert(derivation.length == outputLength,
+            @"Expected derivation of specified output length %lu.",
+            (unsigned long)outputLength);
 
-    return derivedKey;
+    return derivation;
 
 }
+
+#if NEW_CRYPTO_CODE
 
 +(QredoKeyPair *)rsaGenerate {
     return nil;
@@ -219,10 +242,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 }
 
 #endif
-
-/*****************************************************************************
- * old work
- ****************************************************************************/
 
 +(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt {
 
@@ -278,47 +297,9 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     
 }
 
-+ (NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLen:(NSUInteger)outputLen iterations:(NSUInteger)iterations {
-    
-    GUARD(salt,
-          @"Salt argument must be specified.");
-    
-    GUARDF(salt.length >= PBKDF2_MIN_SALT_LENGTH,
-           @"Salt length must be at least minimum RFC-recommended value (%d bytes).",
-           PBKDF2_MIN_SALT_LENGTH);
-    
-    GUARD(ikm,
-          @"Password argument must be specified.");
-    
-    GUARDF(iterations < UINT_MAX,
-           @"Iterations value must be lower than max allowed value (%lu).", (unsigned long)iterations);
-    
-    GUARD(iterations > 0,
-          @"Iterations value cannot be zero.");
-    
-    GUARD(outputLen > 0,
-          @"Required key length must be a positive integer.");
-    
-    NSMutableData *derivedKey = [NSMutableData dataWithLength:outputLen];
-    
-    int result = CCKeyDerivationPBKDF(kCCPBKDF2,
-                                      ikm.bytes,
-                                      ikm.length,
-                                      salt.bytes,
-                                      salt.length,
-                                      kCCPRFHmacAlgSHA256,
-                                      (uint)iterations,
-                                      derivedKey.mutableBytes,
-                                      derivedKey.length);
-    
-    if (result == kCCSuccess){
-        return derivedKey;
-    } else {
-        return nil;
-    }
-    
-}
-
+/*****************************************************************************
+ * old work
+ ****************************************************************************/
 
 +(NSData *)generateHmacSha256ForData:(NSData *)data length:(NSUInteger)length key:(NSData *)key {
     
@@ -341,7 +322,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     return mac;
     
 }
-
 
 +(NSData *)sha256:(NSData *)data {
     GUARD(data, @"Data must be specified.");
