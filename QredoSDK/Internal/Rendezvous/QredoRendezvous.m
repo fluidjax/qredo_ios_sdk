@@ -695,7 +695,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 -(void)enumerateConversationsWithBlock:(void (^)(QredoConversationMetadata *metadata,BOOL *stop))block
                      completionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *systemVault = _vault;
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@" 1 == 1 "];
+    NSPredicate *predicate = [NSPredicate predicateWithValue:YES];
     
     //Changed to use the INDEX!
     [systemVault enumerateIndexUsingPredicate:predicate withBlock:^(QredoVaultItemMetadata *vaultItemMetadata, BOOL *stopVaultEnumeration) {
