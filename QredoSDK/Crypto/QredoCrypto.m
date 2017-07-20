@@ -103,17 +103,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 }
 
-+(NSData *)secureRandom:(NSUInteger)size {
-    NSAssert(size > 0, @"Expected non-zero size.");
-
-    uint8_t *bytes = alloca(size);
-    int result = SecRandomCopyBytes(kSecRandomDefault, size, bytes);
-
-    NSAssert(result == 0, @"Failed to generate %lu secure random bytes.", (unsigned long)size);
-
-    return [NSData dataWithBytes:bytes length:size];
-}
-
 +(QredoKeyPair *)ed25519Derive:(NSData *)seed {
 
     NSAssert(seed, @"Expected seed.");
@@ -180,6 +169,29 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
             keyPair.publicKey.serialize.bytes) == 0;
 }
 
++ (NSData *)hmacSha256:(NSData *)data key:(NSData *)key outputLen:(NSUInteger)outputLen {
+
+    NSAssert(data,
+            @"Expected data.");
+    NSAssert(key, @"Expected key.");
+    NSAssert(key.length > 0, @"Expected non-zero length key.");
+
+    //The MAC size is the same size as the underlying hash function output
+    NSMutableData *mac = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA256,
+            key.bytes,
+            key.length,
+            data.bytes,
+            outputLen,
+            mac.mutableBytes);
+
+    NSAssert(mac.length == CC_SHA256_DIGEST_LENGTH,
+            @"Expected hash output of length %d.", CC_SHA256_DIGEST_LENGTH);
+
+    return [mac copy];
+
+}
+
 +(NSData *)pbkdf2Sha256:(NSData *)ikm
                    salt:(NSData *)salt
            outputLength:(NSUInteger)outputLength
@@ -225,6 +237,17 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
     return derivation;
 
+}
+
++(NSData *)secureRandom:(NSUInteger)size {
+    NSAssert(size > 0, @"Expected non-zero size.");
+
+    uint8_t *bytes = alloca(size);
+    int result = SecRandomCopyBytes(kSecRandomDefault, size, bytes);
+
+    NSAssert(result == 0, @"Failed to generate %lu secure random bytes.", (unsigned long)size);
+
+    return [NSData dataWithBytes:bytes length:size];
 }
 
 #if NEW_CRYPTO_CODE
@@ -300,28 +323,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 /*****************************************************************************
  * old work
  ****************************************************************************/
-
-+(NSData *)generateHmacSha256ForData:(NSData *)data length:(NSUInteger)length key:(NSData *)key {
-    
-    GUARD(data,
-          @"Data argument must be specified.");
-    
-    GUARDF(length <= data.length,
-           @"Length argument (%lu) exceeds data length (%lu)",
-           (unsigned long)length, (unsigned long)data.length);
-    
-    GUARD(key,
-          @"Key argument must be specified.");
-    
-    //Key can be 0 length (it will be zero padded to hash length)
-    
-    //The MAC size is the same size as the underlying hash function output
-    NSMutableData *mac = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    CCHmac(kCCHmacAlgSHA256,key.bytes,key.length,data.bytes,length,mac.mutableBytes);
-    
-    return mac;
-    
-}
 
 +(NSData *)sha256:(NSData *)data {
     GUARD(data, @"Data must be specified.");

@@ -456,7 +456,7 @@
     NSData *expectedMacData = [NSData dataWithBytes:expectedMacDataArray length:sizeof(expectedMacDataArray) / sizeof(uint8_t)];
     
     
-    NSData *mac = [QredoCrypto generateHmacSha256ForData:data length:data.length key:keyData];
+    NSData *mac = [QredoCrypto hmacSha256:data key:keyData outputLen:data.length];
     
     XCTAssertNotNil(mac,@"MAC should not be nil.");
     XCTAssertTrue([expectedMacData isEqualToData:mac],@"MAC data incorrect.");
@@ -488,7 +488,7 @@
     NSData *expectedMacData = [NSData dataWithBytes:expectedMacDataArray length:sizeof(expectedMacDataArray) / sizeof(uint8_t)];
     
     //Only use the first 64 bytes
-    NSData *mac = [QredoCrypto generateHmacSha256ForData:data length:64 key:keyData];
+    NSData *mac = [QredoCrypto hmacSha256:data key:keyData outputLen:64];
     
     XCTAssertNotNil(mac,@"MAC should not be nil.");
     XCTAssertTrue([expectedMacData isEqualToData:mac],@"MAC data incorrect.");

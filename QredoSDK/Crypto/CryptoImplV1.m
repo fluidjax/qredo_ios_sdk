@@ -132,7 +132,7 @@
                                      userInfo:nil];
     }
     
-    NSData *authCode = [QredoCrypto generateHmacSha256ForData:data length:length key:authKey];
+    NSData *authCode = [QredoCrypto hmacSha256:data key:authKey outputLen:length];
     
     return authCode;
 }
@@ -195,7 +195,7 @@
     }
     
     //Generate the HMAC and compare to provided value (using constant time comparison function)
-    NSData *generatedHmac = [QredoCrypto generateHmacSha256ForData:data length:data.length key:authKey];
+    NSData *generatedHmac = [QredoCrypto hmacSha256:data key:authKey outputLen:data.length];
     
     BOOL macCorrect = [QredoCrypto constantEquals:generatedHmac rhs:mac];
     
