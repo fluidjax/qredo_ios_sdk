@@ -293,17 +293,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 }
 
-+(NSData *)secureRandom:(NSUInteger)size {
-    NSAssert(size > 0, @"Expected non-zero size.");
-
-    uint8_t *bytes = alloca(size);
-    int result = SecRandomCopyBytes(kSecRandomDefault, size, bytes);
-
-    NSAssert(result == 0, @"Failed to generate %lu secure random bytes.", (unsigned long)size);
-
-    return [NSData dataWithBytes:bytes length:size];
-}
-
 #if NEW_CRYPTO_CODE
 
 +(QredoKeyPair *)rsaGenerate {
@@ -320,16 +309,29 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 #endif
 
++(NSData *)secureRandom:(NSUInteger)size {
+    NSAssert(size > 0, @"Expected non-zero size.");
+
+    uint8_t *bytes = alloca(size);
+    int result = SecRandomCopyBytes(kSecRandomDefault, size, bytes);
+
+    NSAssert(result == 0, @"Failed to generate %lu secure random bytes.", (unsigned long)size);
+
+    return [NSData dataWithBytes:bytes length:size];
+}
+
++(NSData *)sha256:(NSData *)data {
+    NSAssert(data, @"Expected data.");
+    NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    CC_SHA256(data.bytes, (unsigned int)data.length, hash.mutableBytes);
+    NSAssert(hash.length == CC_SHA256_DIGEST_LENGTH,
+            @"Expected output hash of length %d", CC_SHA256_DIGEST_LENGTH);
+    return [hash copy];
+}
+
 /*****************************************************************************
  * old work
  ****************************************************************************/
-
-+(NSData *)sha256:(NSData *)data {
-    GUARD(data, @"Data must be specified.");
-    NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    CC_SHA256(data.bytes, (unsigned int)data.length, hash.mutableBytes);
-    return hash;
-}
 
 +(QredoSecKeyRefPair *)generateRsaKeyPairOfLength:(NSInteger)lengthBits publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys {
     /*
