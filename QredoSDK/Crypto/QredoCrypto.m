@@ -169,6 +169,60 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
             keyPair.publicKey.serialize.bytes) == 0;
 }
 
++(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt {
+
+    // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
+
+    NSAssert(ikm,  @"IKM must be specified.");
+    NSAssert(ikm.length > 0, @"IKM must be non-empty.");
+    NSAssert(salt, @"Salt must be specified.");
+    NSAssert(salt.length > 0, @"Salt must be non-empty.");
+
+    NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
+
+    NSAssert(prk.length == CC_SHA256_DIGEST_LENGTH, @"Expected PRK to be SHA256 length.");
+
+    return [prk copy];
+
+}
+
++(NSData *)hkdfSha256Expand:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
+
+    // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
+
+    NSAssert(prk, @"PRK must be specified.");
+    NSAssert(prk.length > 0, @"PRK must be non-empty.");
+    NSAssert(info, @"Info must be specified.");
+    NSAssert(outputLength > 0, @"Output length must be greater than zero.");
+
+    uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
+
+    NSUInteger N = ceil((double)outputLength / (double)hashLen);
+    uint8_t *T   = alloca(N * hashLen);
+    NSAssert(T, @"Could not allocate expansion vector.");
+
+    uint8_t *Tlast = NULL;
+    uint8_t *Tnext = T;
+    for (uint8_t ctr = 1; ctr <= N; ctr++) {
+        CCHmacContext ctx;
+        CCHmacInit(&ctx, kCCHmacAlgSHA256, prk.bytes, prk.length);
+        CCHmacUpdate(&ctx, Tlast, Tlast ? hashLen : 0); // T[n-1] or empty for T[0]
+        CCHmacUpdate(&ctx, info.bytes, info.length);    // optional info
+        CCHmacUpdate(&ctx, &ctr, 1);                    // counter octet
+        CCHmacFinal(&ctx, Tnext);                       // write to T[n]
+        Tlast  = Tnext;
+        Tnext += hashLen;
+    }
+
+    NSData *okm = [NSData dataWithBytes:T length:outputLength];
+    NSAssert(okm.length > 0, @"Expected OKM of non-zero length.");
+    NSAssert(okm.length == outputLength, @"Expected OKM to match requested output length.");
+
+    return okm;
+
+}
+
 + (NSData *)hmacSha256:(NSData *)data key:(NSData *)key outputLen:(NSUInteger)outputLen {
 
     NSAssert(data,
@@ -265,60 +319,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 }
 
 #endif
-
-+(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt {
-
-    // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
-
-    NSAssert(ikm,  @"IKM must be specified.");
-    NSAssert(ikm.length > 0, @"IKM must be non-empty.");
-    NSAssert(salt, @"Salt must be specified.");
-    NSAssert(salt.length > 0, @"Salt must be non-empty.");
-    
-    NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
-
-    NSAssert(prk.length == CC_SHA256_DIGEST_LENGTH, @"Expected PRK to be SHA256 length.");
-    
-    return [prk copy];
-    
-}
-
-+(NSData *)hkdfSha256Expand:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
-
-    // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
-
-    NSAssert(prk, @"PRK must be specified.");
-    NSAssert(prk.length > 0, @"PRK must be non-empty.");
-    NSAssert(info, @"Info must be specified.");
-    NSAssert(outputLength > 0, @"Output length must be greater than zero.");
-
-    uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
-    
-    NSUInteger N = ceil((double)outputLength / (double)hashLen);
-    uint8_t *T   = alloca(N * hashLen);
-    NSAssert(T, @"Could not allocate expansion vector.");
-    
-    uint8_t *Tlast = NULL;
-    uint8_t *Tnext = T;
-    for (uint8_t ctr = 1; ctr <= N; ctr++) {
-        CCHmacContext ctx;
-        CCHmacInit(&ctx, kCCHmacAlgSHA256, prk.bytes, prk.length);
-        CCHmacUpdate(&ctx, Tlast, Tlast ? hashLen : 0); // T[n-1] or empty for T[0]
-        CCHmacUpdate(&ctx, info.bytes, info.length);    // optional info
-        CCHmacUpdate(&ctx, &ctr, 1);                    // counter octet
-        CCHmacFinal(&ctx, Tnext);                       // write to T[n]
-        Tlast  = Tnext;
-        Tnext += hashLen;
-    }
-
-    NSData *okm = [NSData dataWithBytes:T length:outputLength];
-    NSAssert(okm.length > 0, @"Expected OKM of non-zero length.");
-    NSAssert(okm.length == outputLength, @"Expected OKM to match requested output length.");
-    
-    return okm;
-    
-}
 
 /*****************************************************************************
  * old work
