@@ -15,7 +15,7 @@
 #import "QredoKeychain.h"
 #import "QredoKeychainArchiver.h"
 #import "NSData+QredoRandomData.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 
 #import "QredoCertificate.h"
 #import "QredoUserCredentials.h"
@@ -25,7 +25,7 @@
 #import <UIKit/UIKit.h>
 #import "MasterConfig.h"
 #import "KeychainItemWrapper.h"
-#import "NSData+Conversion.h"
+#import "NSData+HexTools.h"
 
 NSString *const QredoVaultItemTypeKeychain                  = @"com.qredo.keychain.device-name";
 NSString *const QredoVaultItemTypeKeychainAttempt           = @"com.qredo.keychain.transfer-attempt";

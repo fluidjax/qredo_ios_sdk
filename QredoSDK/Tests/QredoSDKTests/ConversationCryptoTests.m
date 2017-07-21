@@ -4,7 +4,7 @@
 #import "QredoConversationCrypto.h"
 #import "CryptoImplV1.h"
 #import "QredoXCTestCase.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 #import "QredoNetworkTime.h"
 
 @interface ConversationCryptoTests :QredoXCTestCase

@@ -7,8 +7,8 @@
 #import "QredoLoggerPrivate.h"
 #import "rsapss.h"
 
-#import "NSData+ParseHex.h"
-#import "NSData+Conversion.h"
+#import "NSData+HexTools.h"
+#import "NSData+HexTools.h"
 
 #import <openssl/bn.h>
 #import <openssl/rand.h>

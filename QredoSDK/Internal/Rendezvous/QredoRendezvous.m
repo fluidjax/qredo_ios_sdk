@@ -24,7 +24,7 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoObserverList.h"
 #import "QredoNetworkTime.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 
 const QredoRendezvousHighWatermark QredoRendezvousHighWatermarkOrigin = 0;
 

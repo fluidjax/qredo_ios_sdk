@@ -3,18 +3,14 @@
 
 #import "Qredo.h"
 #import "QredoPrivate.h"
-
 #import "QredoVaultCrypto.h"
 #import "QredoVaultSequenceCache.h"
-
 #import "NSDictionary+QUIDSerialization.h"
 #import "NSDictionary+IndexableSet.h"
-
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoED25519SigningKey.h"
 #import "QredoED25519VerifyKey.h"
 #import "QredoSigner.h"
-
 #import "QredoErrorCodes.h"
 #import "QredoLoggerPrivate.h"
 
@@ -22,8 +18,7 @@ NSString *const QredoVaultItemMetadataItemVersionValue = @"_vSeqValue";
 NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
 
 
-@interface QredoVaultServerAccess ()
-{
+@interface QredoVaultServerAccess () {
     QredoClient *_client;
     QLFVault *_vaultService;
     QredoVaultKeys *_vaultKeys;
@@ -52,7 +47,6 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
         _vaultKeys = vaultKeys;
         _queue = enumerationQueue;
         _vaultSequenceCache = vaultSequenceCache;
-        
         _vaultService = [QLFVault vaultWithServiceInvoker:_client.serviceInvoker];
     }
     
@@ -64,20 +58,17 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
            completionHandler:(void (^)(QredoVaultItem *vaultItem,NSError *error))completionHandler {
     QLFVaultSequenceId *sequenceId    = itemDescriptor.sequenceId;
     QLFVaultSequenceValue sequenceValue = itemDescriptor.sequenceValue;
-    
     NSError *error = nil;
-    
     NSSet *sequenceValues = [NSSet setWithObject:@(sequenceValue)];
     
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
-                                                     vaultItemDescriptor:itemDescriptor
-                                                 vaultItemSequenceValues:sequenceValues
-                                                                   error:&error];
+                    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
+                                                                     vaultItemDescriptor:itemDescriptor
+                                                                 vaultItemSequenceValues:sequenceValues
+                                                                                   error:&error];
     
     if (error){
         if (completionHandler)completionHandler(nil,error);
-        
         return;
     }
     
@@ -86,8 +77,7 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
                         sequenceValue:sequenceValues
                                itemId:itemDescriptor.itemId
                             signature:ownershipSignature
-                    completionHandler:^(NSSet *result,NSError *error)
-     {
+                    completionHandler:^(NSSet *result,NSError *error) {
          if (!error && [result count]){
              QLFEncryptedVaultItem *encryptedVaultItem = [result anyObject];
              [_vaultCrypto decryptEncryptedVaultItem:encryptedVaultItem
@@ -99,7 +89,6 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
                                              code:QredoErrorCodeVaultItemNotFound
                                          userInfo:nil];
              }
-             
              if (completionHandler) completionHandler(nil,error);
          }
      }];
@@ -111,20 +100,16 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     QLFVaultSequenceId *sequenceId = itemDescriptor.sequenceId;
     //QLFVaultSequenceValue sequenceValue = [_vaultSequenceCache sequenceValueForItem:itemDescriptor.itemId];
     QLFVaultSequenceValue sequenceValue = itemDescriptor.sequenceValue;
-    
     NSError *error = nil;
-    
     NSSet *sequenceValues = sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : [NSSet set];
-    
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
-                                                     vaultItemDescriptor:itemDescriptor
-                                                 vaultItemSequenceValues:sequenceValues
-                                                                   error:&error];
-    
+                    = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
+                                                                     vaultItemDescriptor:itemDescriptor
+                                                                 vaultItemSequenceValues:sequenceValues
+                                                                                   error:&error];
+                    
     if (error){
         if (completionHandler)completionHandler(nil,error);
-        
         return;
     }
     
@@ -133,8 +118,7 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
                               sequenceValue:sequenceValues
                                      itemId:itemDescriptor.itemId
                                   signature:ownershipSignature
-                          completionHandler:^(NSSet *result,NSError *error)
-     {
+                          completionHandler:^(NSSet *result,NSError *error) {
          if (!error && result.count){
              QLFEncryptedVaultItemHeader *encryptedVaultItemHeader = [result anyObject];
              
@@ -172,14 +156,12 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     QredoUTCDateTime *createdDate = [[QredoUTCDateTime alloc] initWithDate:created];
     
     
-    QLFVaultItemMetadata *vaultItemMetaDataLF =
-    [QLFVaultItemMetadata vaultItemMetadataWithDataType:dataType
-                                                created:createdDate
-                                                 values:[summaryValues indexableSet]];
+    QLFVaultItemMetadata *vaultItemMetaDataLF = [QLFVaultItemMetadata vaultItemMetadataWithDataType:dataType
+                                                                                            created:createdDate
+                                                                                             values:[summaryValues indexableSet]];
     
-    QLFEncryptedVaultItemHeader *encryptedVaultItemHeader =
-    [_vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemDescriptor
-                                           metadata:vaultItemMetaDataLF];
+    QLFEncryptedVaultItemHeader *encryptedVaultItemHeader =  [_vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemDescriptor
+                                                                                                    metadata:vaultItemMetaDataLF];
     
     QLFEncryptedVaultItem *encryptedVaultItem = [_vaultCrypto encryptVaultItemWithBody:vaultItem.value
                                                               encryptedVaultItemHeader:encryptedVaultItemHeader];
@@ -187,21 +169,19 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     NSError *error = nil;
     
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
-                                            operationType:[QLFOperationType operationCreate]
-                                                     data:encryptedVaultItem
-                                                    error:&error];
-    
+                    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_vaultKeys.ownershipKeyPair]
+                                                            operationType:[QLFOperationType operationCreate]
+                                                                     data:encryptedVaultItem
+                                                                    error:&error];
+                    
     if (error){
         if (completionHandler)completionHandler(nil,nil,error);
-        
         return;
     }
     
     [_vaultService putItemWithItem:encryptedVaultItem
                          signature:ownershipSignature
-                 completionHandler:^void (BOOL result,NSError *error)
-     {
+                 completionHandler:^void (BOOL result,NSError *error) {
          if (result && !error){
              @synchronized(_vaultSequenceCache) {
                  [_vaultSequenceCache setItemSequence:itemId
@@ -246,17 +226,15 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
                                                   consolidatingResults:shouldConsolidateResults];
                                } else {
                                    QredoLogInfo(@"Enumerate vaults items complete");
-                                   
                                    if (completionHandler) completionHandler(error);
                                }
-                           }
+                            }
                             watermarkHandler:^(QredoVaultHighWatermark *vaultHighWaterMark) {
                                 highWaterMark = vaultHighWaterMark;
-                                
                                 if (watermarkHandler) watermarkHandler(vaultHighWaterMark);
                             }
-                                       since:sinceWatermark
-                        consolidatingResults:shouldConsolidateResults];
+                            since:sinceWatermark
+                            consolidatingResults:shouldConsolidateResults];
 }
 
 
@@ -282,7 +260,6 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     
     if (error){
         if (completionHandler)completionHandler(error);
-        
         return;
     }
     
@@ -290,8 +267,7 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     [_vaultService queryItemHeadersWithVaultId:_vaultKeys.vaultId
                                 sequenceStates:sequenceStates
                                      signature:ownershipSignature
-                             completionHandler:^void (QLFVaultItemQueryResults *vaultItemMetaDataResults,NSError *error)
-     {
+                             completionHandler:^void (QLFVaultItemQueryResults *vaultItemMetaDataResults,NSError *error) {
          if (error){
              if (completionHandler){
                  if (completionHandler) completionHandler(error);
@@ -325,16 +301,14 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
                          continue;
                      }
                      
-                     QredoVaultItemDescriptor *descriptor
-                     = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.ref.sequenceId
-                                                                     sequenceValue:result.ref.sequenceValue
-                                                                            itemId:result.ref.itemId];
+                     QredoVaultItemDescriptor *descriptor = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:result.ref.sequenceId
+                                                                                                          sequenceValue:result.ref.sequenceValue
+                                                                                                                 itemId:result.ref.itemId];
                      
-                     QredoVaultItemMetadata *externalItem
-                     = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
-                                                                      dataType:decryptedItem.dataType
-                                                                       created:decryptedItem.created.asDate
-                                                                 summaryValues:[decryptedItem.values dictionaryFromIndexableSet]];
+                     QredoVaultItemMetadata *externalItem = [QredoVaultItemMetadata vaultItemMetadataWithDescriptor:descriptor
+                                                                                                           dataType:decryptedItem.dataType
+                                                                                                            created:decryptedItem.created.asDate
+                                                                                                      summaryValues:[decryptedItem.values dictionaryFromIndexableSet]];
                      
                      if (handler){
                          handler(externalItem,&stop);
@@ -427,13 +401,9 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
                  continue;
              }
              
-             QLFVaultSequenceState *sequenceState =
-             [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId
-                                                       sequenceValue:0];
+             QLFVaultSequenceState *sequenceState = [QLFVaultSequenceState vaultSequenceStateWithSequenceId:sequenceId sequenceValue:0];
              [sequenceStates addObject:sequenceState];
-             
-             [newWatermarkDictionary setObject:@0
-                                        forKey:sequenceId];
+             [newWatermarkDictionary setObject:@0 forKey:sequenceId];
              discoveredNewSequence = YES;
          }
          

@@ -52,11 +52,8 @@
                     sequenceValue:(QLFVaultSequenceValue)sequenceValue
                            itemId:(QredoQUID *)itemId {
     self = [self initWithSequenceId:sequenceId itemId:itemId];
-    
     if (!self)return nil;
-    
     _sequenceValue = sequenceValue;
-    
     return self;
 }
 
@@ -70,7 +67,6 @@
     NSString *desc = [NSString stringWithFormat:@"ItemId:   %@ \n"
                       "Seq#  :   %lld \n"
                       "SeqId :   %@",self.itemId,self.sequenceValue,self.sequenceId];
-    
     return desc;
 }
 

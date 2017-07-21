@@ -15,7 +15,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 #import "QredoCryptoTestUtilities.h"
 
 #import <objc/runtime.h>

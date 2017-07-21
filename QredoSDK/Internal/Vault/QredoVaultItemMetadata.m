@@ -34,7 +34,6 @@
 
 +(instancetype)vaultItemMetadataWithIndexMetadata:(QredoIndexSummaryValues *)summaryValue {
     QredoIndexVaultItemMetadata *indexMetadata = summaryValue.vaultMetadata;
-    
     return [indexMetadata buildQredoVaultItemMetadata];
 }
 
@@ -50,7 +49,6 @@
                           created:(NSDate *)created
                     summaryValues:(NSDictionary *)summaryValues {
     self = [super init];
-    
     if (self){
         _descriptor = descriptor;
         _dataType = dataType;
@@ -87,7 +85,6 @@
 
 -(BOOL)isDeleted {
     if ([self.dataType isEqualToString:QredoVaultItemMetadataItemTypeTombstone])return YES;
-    
     return NO;
 }
 

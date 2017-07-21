@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import "QredoSExpression.h"
 #import "QredoWireFormat.h"
-#import "NSData+Conversion.h"
+#import "NSData+HexTools.h"
 #import <CoreFoundation/CoreFoundation.h>
 
 #pragma mark - Qredo marked atom implementation

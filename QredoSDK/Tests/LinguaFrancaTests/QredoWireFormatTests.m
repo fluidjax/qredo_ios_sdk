@@ -5,7 +5,7 @@
 #import "QredoWireFormat.h"
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 
 @interface QredoWireFormatTests :QredoXCTestCase
 

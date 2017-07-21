@@ -6,7 +6,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoDhPublicKey.h"
 #import "QredoDhPrivateKey.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 
 @interface CryptoImplV1Tests :XCTestCase
 
