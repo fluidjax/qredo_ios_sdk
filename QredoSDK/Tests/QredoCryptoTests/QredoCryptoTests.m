@@ -1900,34 +1900,4 @@
     XCTAssertNotNil((__bridge id)privateKeyRef,@"Should not have got a nil private key ref");
 }
 
-
--(void)testGetPublicKeyRefFromIdentityRef {
-    //Test client 2048 certificate + priv key from Java-SDK, with intermediate cert
-    
-    NSError *error = nil;
-    
-    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert2.2048.IntCA1" error:&error];
-    
-    NSString *pkcs12Password = @"password";
-    
-    //Java-SDK root cert
-    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
-    
-    //Setup
-    NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
-    
-    XCTAssertNotNil(rootCertificates,@"Root certificates should not be nil.");
-    
-    NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data password:pkcs12Password rootCertificateRefs:rootCertificates];
-    XCTAssertNotNil(identityDictionary,@"Incorrect identity validation result. Should have returned valid NSDictionary.");
-    
-    SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,kSecImportItemIdentity);
-    XCTAssertNotNil((__bridge id)identityRef,@"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
-    
-    //Test
-    SecKeyRef publicKeyRef = [QredoCryptoTestUtilities getPublicKeyRefFromIdentityRef:identityRef];
-    XCTAssertNotNil((__bridge id)publicKeyRef,@"Should not have got a nil public key ref");
-}
-
-
 @end

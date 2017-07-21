@@ -12,6 +12,7 @@
 // TODO: clean up old commentary
 // TODO: reformat long lines
 // TODO: look at keychain wrapper
+// TODO: use warning assertions more often
 
 @implementation QredoCrypto
 
@@ -296,10 +297,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 #if NEW_CRYPTO_CODE
 
-+(QredoKeyPair *)rsaGenerate {
-    return nil;
-}
-
 +(NSData *)rsaPssSha256Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair {
     return nil;
 }
@@ -398,22 +395,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     return keyRefPair;
 
 }
-
-//TODO: DH - Add unit tests for getPublicKeyRefFromEvaluatedTrustRef
-+(SecKeyRef)getPublicKeyRefFromEvaluatedTrustRef:(SecTrustRef)trustRef {
-
-    GUARD(trustRef,
-          @"Trust ref argument is nil");
-    
-    SecKeyRef publicKeyRef = SecTrustCopyPublicKey(trustRef);
-    
-    if (!publicKeyRef){
-        QredoLogError(@"SecTrustCopyPublicKey returned nil ref.");
-    }
-    
-    return publicKeyRef;
-}
-
 
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier {
     
