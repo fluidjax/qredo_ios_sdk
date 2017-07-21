@@ -31,19 +31,13 @@ NSString *const QredoVaultItemTypeKeychain                  = @"com.qredo.keycha
 NSString *const QredoVaultItemTypeKeychainAttempt           = @"com.qredo.keychain.transfer-attempt";
 NSString *const QredoVaultItemSummaryKeyDeviceName          = @"device-name";
 
-
 NSString *const QredoClientOptionCreateNewSystemVault       = @"com.qredo.option.create.new.system.vault";
 NSString *const QredoClientOptionServiceURL                 = @"com.qredo.option.serviceUrl";
-
-
-
-
 
 NSString *const QredoRendezvousURIProtocol                  = @"qrp:";
 static NSString *const QredoKeychainOperatorName            = @"Qredo Mock Operator";
 static NSString *const QredoKeychainOperatorAccountId       = @"1234567890";
 static NSString *const QredoKeychainPassword                = @"Password123";
-
 
 //keyname constants for the keychain stored credentials
 static NSString *const QredoStoredAppIDKey           = @"QA";
@@ -54,9 +48,6 @@ static NSString *const QredoStoredAppGroup           = @"QE";
 static NSString *const QredoStoredOptions            = @"QF";
 
 static NSString *const QredoStoredUserDefautlCredentialsKey     = @"QREDO_USER_DEFAULT_CREDENTIALS";
-
-
-
 
 NSString *systemVaultKeychainArchiveIdentifier;
 
@@ -557,14 +548,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
--(void)createAnonymousRendezvousWithCompletionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
-    [self createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
-                                      duration:0
-                            unlimitedResponses:YES
-                                 summaryValues:nil
-                             completionHandler:completionHandler];
-}
 
+#pragma Public Create Rendezvous
 
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                           completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
@@ -575,90 +560,46 @@ NSString *systemVaultKeychainArchiveIdentifier;
                              completionHandler:completionHandler];
 }
 
-
--(void)createAnonymousRendezvousWithTag:(QredoSecurityLevel)tagSecurityLevel
-                               duration:(long)duration
-                      completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
-    [self createAnonymousRendezvousWithTagType:tagSecurityLevel
-                                      duration:duration
-                            unlimitedResponses:YES
-                                 summaryValues:nil
-                             completionHandler:completionHandler];
-}
-
-
--(void)createAnonymousRendezvousWithTag:(NSString *)tag
-                               duration:(long)duration
-                     unlimitedResponses:(BOOL)unlimitedResponses
-                      completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
-    QredoLogVerbose(@"Start createAnonymousRendezvousWithTag %@",tag);
-    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc]
-                                                   initWithConversationType:@""
-                                                   durationSeconds:duration
-                                                   summaryValues:nil
-                                                   isUnlimitedResponseCount:unlimitedResponses];
-    
-    [self createRendezvousWithTag:tag
-               authenticationType:QredoRendezvousAuthenticationTypeAnonymous
-                    configuration:configuration
-                  trustedRootPems:[[NSArray alloc] init]
-                          crlPems:[[NSArray alloc] init]
-                   signingHandler:nil
-                   appCredentials:self.appCredentials
-                completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
-                    QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@",tag);
-                    
-                    if (completionHandler) completionHandler(rendezvous,error);
-                }
-     ];
-}
 
 
 -(void)createAnonymousRendezvousWithTagType:(QredoSecurityLevel)tagSecurityLevel
                                    duration:(long)duration
                          unlimitedResponses:(BOOL)unlimitedResponses
-                              summaryValues:(NSDictionary *)summaryValues
+                              summaryValues:summaryValues
                           completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
-    //Anonymous Rendezvous are created using the full tag. Signing handler, trustedRootPems and crlPems are unused
-    
-    
+
     NSData *dataTag = [QredoUtils randomKey:tagSecurityLevel];
     NSString *tag = [QredoUtils dataToHexString:dataTag];
-    
-    
+
     QredoLogVerbose(@"Start createAnonymousRendezvousWithTag %@",tag);
-    QredoRendezvousConfiguration *configuration =  [[QredoRendezvousConfiguration alloc] initWithConversationType:@""
-                                                                                                  durationSeconds:duration
-                                                                                                    summaryValues:summaryValues
-                                                                                         isUnlimitedResponseCount:unlimitedResponses];
     
-    
-    
-    
-    
-    [self createRendezvousWithTag:tag
-               authenticationType:QredoRendezvousAuthenticationTypeAnonymous
-                    configuration:configuration
-                  trustedRootPems:[[NSArray alloc] init]
-                          crlPems:[[NSArray alloc] init]
-                   signingHandler:nil
-                   appCredentials:self.appCredentials
-                completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
-                    QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@",tag);
-                    
-                    if (completionHandler) completionHandler(rendezvous,error);
-                }
+    [self createAnonymousRendezvousWithTag:tag
+                                  duration:duration
+                        unlimitedResponses:unlimitedResponses
+                             summaryValues:summaryValues
+                         completionHandler:^(QredoRendezvous *rendezvous, NSError *error) {
+                                QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@",tag);
+                                if (completionHandler) completionHandler(rendezvous,error);
+                         }
      ];
 }
 
 
-//TODO: DH - Create unit tests for createAnonymousRendezvousWithTag
+#pragma Private Create Rendezvous - manually specified tag - removed from Public interface
+
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
-                          configuration:(QredoRendezvousConfiguration *)configuration
+                               duration:(long)duration
+                     unlimitedResponses:(BOOL)unlimitedResponses
+                          summaryValues:summaryValues
                       completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
-    //Anonymous Rendezvous are created using the full tag. Signing handler, trustedRootPems and crlPems are unused
     QredoLogVerbose(@"Start createAnonymousRendezvousWithTag %@",tag);
-    [self createRendezvousWithTag:tag
+    QredoRendezvousConfiguration *configuration = [[QredoRendezvousConfiguration alloc]
+                                                   initWithConversationType:@""
+                                                   durationSeconds:duration
+                                                   summaryValues:summaryValues
+                                                   isUnlimitedResponseCount:unlimitedResponses];
+    
+    [self makeRendezvousWithTag:tag
                authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                     configuration:configuration
                   trustedRootPems:[[NSArray alloc] init]
@@ -674,107 +615,8 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
-//TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (internal keys)
-//TODO: DH - create unit tests which provide incorrect authentication types
--(void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
-                            authenticationType:(QredoRendezvousAuthenticationType)authenticationType
-                                 configuration:(QredoRendezvousConfiguration *)configuration
-                             completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
-    if (authenticationType == QredoRendezvousAuthenticationTypeAnonymous){
-        //Not an authenticated rendezvous, so shouldn't be using this method
-        NSString *message = @"'Anonymous' is invalid, use the method dedicated to anonymous rendezvous.";
-        QredoLogError(@"%@",message);
-        NSError *error = [NSError errorWithDomain:QredoErrorDomain
-                                             code:QredoErrorCodeRendezvousInvalidData
-                                         userInfo:@{ NSLocalizedDescriptionKey:message }];
-        
-        if (completionHandler)completionHandler(nil,error);
-        
-        return;
-    }
-    
-    //Authenticated Rendezvous with internally generated keys are created using just the optional prefix.
-    //@ is not part of the prefix and must not appear in prefix (this will be validated later)
-    
-    //Nil, or empty prefix is fine. The final tag will have the public key appended, but keypair hasn't been
-    //generated yet, so for now just use @, and add prefix if provided
-    NSString *prefixedTag = @"@";
-    
-    if (prefix){
-        prefixedTag = [NSString stringWithFormat:@"%@@",prefix];
-    }
-    
-    //Authenticated Rendezvous with internally generated keys. Signing handler, trustedRootPems and crlPems are unused
-    [self createRendezvousWithTag:prefixedTag
-               authenticationType:authenticationType
-                    configuration:configuration
-                  trustedRootPems:[[NSArray alloc] init]
-                          crlPems:[[NSArray alloc] init]
-                   signingHandler:nil
-                   appCredentials:self.appCredentials
-                completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
-                    QredoLogInfo(@"CreatedAnonymousRendezvousWithTag %@",prefixedTag);
-                    
-                    if (completionHandler) completionHandler(rendezvous,error);
-                }
-     ];
-}
 
-
-//TODO: DH - Create unit tests for createAuthenticatedRendezvousWithPrefix (external keys)
-//TODO: DH - create unit test with nil signing handler and confirm detected deeper down stack
--(void)createAuthenticatedRendezvousWithPrefix:(NSString *)prefix
-                            authenticationType:(QredoRendezvousAuthenticationType)authenticationType
-                                 configuration:(QredoRendezvousConfiguration *)configuration
-                                     publicKey:(NSString *)publicKey
-                               trustedRootPems:(NSArray *)trustedRootPems
-                                       crlPems:(NSArray *)crlPems
-                                signingHandler:(signDataBlock)signingHandler
-                             completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
-    if (authenticationType == QredoRendezvousAuthenticationTypeAnonymous){
-        //Not an authenticated rendezvous, so shouldn't be using this method
-        NSString *message = @"'Anonymous' is invalid, use the method dedicated to anonymous rendezvous.";
-        QredoLogError(@"%@",message);
-        NSError *error = [NSError errorWithDomain:QredoErrorDomain
-                                             code:QredoErrorCodeRendezvousInvalidData
-                                         userInfo:@{ NSLocalizedDescriptionKey:message }];
-        
-        if (completionHandler)completionHandler(nil,error);
-        
-        return;
-    }
-    
-    //TODO: DH - validate that the configuration provided is an authenticated rendezvous, and that public key is present
-    //TODO: DH - validate inputs (any which aren't validated later)
-    
-    //Authenticated Rendezvous with externally generated keys are created using optional prefix and mandatory
-    //public key data. @ is indicator of an authenticated rendebous but is not part of the prefix and must not
-    //appear in prefix, or public key parts
-    
-    //The full tag is (optional) prefix and (mandatory) public key/cert appended
-    NSString *fullTag = nil;
-    
-    if (prefix){
-        //Prefix and public key
-        fullTag = [NSString stringWithFormat:@"%@@%@",prefix,publicKey];
-    } else {
-        //Just public key
-        fullTag = [NSString stringWithFormat:@"@%@",publicKey];
-    }
-    
-    //Authenticated Rendezvous with externally generated keys. Signing handler is required
-    [self createRendezvousWithTag:fullTag
-               authenticationType:authenticationType
-                    configuration:configuration
-                  trustedRootPems:trustedRootPems
-                          crlPems:crlPems
-                   signingHandler:signingHandler
-                   appCredentials:self.appCredentials
-                completionHandler:completionHandler];
-}
-
-
--(void)createRendezvousWithTag:(NSString *)tag
+-(void)makeRendezvousWithTag:(NSString *)tag
             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                  configuration:(QredoRendezvousConfiguration *)configuration
                trustedRootPems:(NSArray *)trustedRootPems
@@ -782,14 +624,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
                 signingHandler:(signDataBlock)signingHandler
                 appCredentials:(QredoAppCredentials *)appCredentials
              completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
-    //although createRendezvousWithTag is asynchronous, it generates keys synchronously, which may cause a lag
     
     QredoLogVerbose(@"Start createRendezvousWithTag %@",tag);
     
-    
     dispatch_async(_rendezvousQueue,^{
         QredoRendezvous *rendezvous = [[QredoRendezvous alloc] initWithClient:self];
-        
         QredoLogVerbose(@"Start createRendezvousWithTag on rendezvousQueue %@",tag);
         
         [rendezvous createRendezvousWithTag:tag
@@ -1070,10 +909,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 -(void)deleteConversationWithRef:(QredoConversationRef *)conversationRef
-               completionHandler:(void (^)(NSError *error))completionHandler {
+               completionHandler:(void (^)(NSError *error))completionHandler{
     [self fetchConversationWithRef:conversationRef
-                 completionHandler:^(QredoConversation *conversation,NSError *error)
-     {
+                 completionHandler:^(QredoConversation *conversation,NSError *error){
          if (error){
              if (completionHandler) completionHandler(error);
              
@@ -1146,11 +984,9 @@ NSString *systemVaultKeychainArchiveIdentifier;
     }
     
     //get the Rendezvous using the ref
-    [self fetchRendezvousWithRef:ref
-               completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
+    [self fetchRendezvousWithRef:ref completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
                    if (error){
                        if (completionHandler) completionHandler(error);
-                       
                        return;
                    }
                    
@@ -1159,7 +995,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
                        
                        if (completionHandler) completionHandler(error);
                    }];
-               }];
+     }];
 }
 
 
@@ -1168,7 +1004,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 -(NSString *)deviceName {
     NSString *name = [[UIDevice currentDevice] name];
-    
     return (!name) ? @"iOS device" : name;
 }
 
@@ -1176,34 +1011,27 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)addDeviceToVaultWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     QredoVault *systemVault = [self systemVault];
     
-    QredoVaultItemMetadata *metadata
-    = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:
-       @{
-         QredoVaultItemSummaryKeyDeviceName:[self deviceName]
-         }];
+    QredoVaultItemMetadata *metadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:@{
+                    QredoVaultItemSummaryKeyDeviceName:[self deviceName]
+    }];
+    
     QredoVaultItem *deviceInfoItem = [QredoVaultItem vaultItemWithMetadata:metadata value:nil];
     
-    
-    [systemVault  putItem:deviceInfoItem
-        completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error)
-     {
+    [systemVault  putItem:deviceInfoItem completionHandler:^(__unused QredoVaultItemMetadata *newItemMetadata,NSError *error){
          if (completionHandler) completionHandler(error);
-     }];
+    }];
 }
 
 
 -(BOOL)saveStateWithError:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
-    return [self saveSystemVaultKeychain:_keychain
-        withKeychainWithKeychainArchiver:keychainArchiver
-                                   error:error];
+    return [self saveSystemVaultKeychain:_keychain withKeychainWithKeychainArchiver:keychainArchiver error:error];
 }
 
 
 -(BOOL)loadStateWithError:(NSError **)error {
     id<QredoKeychainArchiver> keychainArchiver = [self qredoKeychainArchiver];
-    QredoKeychain *systemVaultKeychain = [self loadSystemVaultKeychainWithKeychainArchiver:keychainArchiver
-                                                                                     error:error];
+    QredoKeychain *systemVaultKeychain = [self loadSystemVaultKeychainWithKeychainArchiver:keychainArchiver error:error];
     
     if (systemVaultKeychain){
         _keychain = systemVaultKeychain;
@@ -1301,7 +1129,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
                                                      userCredentials:_userCredentials];
     [newClient loadStateWithError:error];
     [newClient addDeviceToVaultWithCompletionHandler:nil];
-    
     return result;
 }
 
@@ -1322,7 +1149,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 +(KeychainItemWrapper*)keychainItemWrapperGroup:(NSString*)keyChainGroup;{
     NSString *keyChainID = [NSString stringWithFormat:@"%@.qredoClientCredentials", keyChainGroup];
     NSString *accessGroup = [NSString stringWithFormat:@"%@.%@", [QredoClient bundleSeedID], keyChainGroup];
-    
     return [[KeychainItemWrapper alloc] initWithIdentifier:keyChainID accessGroup:accessGroup];
 }
 
@@ -1429,7 +1255,7 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
-+ (NSString *)bundleSeedID {
++(NSString *)bundleSeedID {
     NSDictionary *query = [NSDictionary dictionaryWithObjectsAndKeys:
                            (__bridge NSString *)kSecClassGenericPassword, (__bridge NSString *)kSecClass,
                            @"bundleSeedID", kSecAttrAccount,
@@ -1438,10 +1264,12 @@ NSString *systemVaultKeychainArchiveIdentifier;
                            nil];
     CFDictionaryRef result = nil;
     OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, (CFTypeRef *)&result);
-    if (status == errSecItemNotFound)
+    if (status == errSecItemNotFound){
         status = SecItemAdd((__bridge CFDictionaryRef)query, (CFTypeRef *)&result);
-    if (status != errSecSuccess)
+    }
+    if (status != errSecSuccess){
         return nil;
+    }
     NSString *accessGroup = [(__bridge NSDictionary *)result objectForKey:(__bridge NSString *)kSecAttrAccessGroup];
     NSArray *components = [accessGroup componentsSeparatedByString:@"."];
     NSString *bundleSeedID = [[components objectEnumerator] nextObject];

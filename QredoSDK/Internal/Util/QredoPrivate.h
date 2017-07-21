@@ -34,6 +34,7 @@ static NSString* _testAppSecret = nil;
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                                duration:(long)duration
                      unlimitedResponses:(BOOL)unlimitedResponses
+                          summaryValues:summaryValues
                       completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
 -(void)createSystemVaultWithUserCredentials:(QredoUserCredentials *)userCredentials completionHandler:(void (^)(NSError *error))completionHandler;
 -(BOOL)saveStateWithError:(NSError **)error;

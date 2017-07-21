@@ -30,7 +30,9 @@ NSError *createError(QredoAuthenticatedRendezvousTagError,NSString *);
 }
 
 
--(instancetype)initWithPrefix:(NSString *)prefix authenticationTag:(NSString *)authenticationTag error:(NSError **)error {
+-(instancetype)initWithPrefix:(NSString *)prefix
+            authenticationTag:(NSString *)authenticationTag
+                        error:(__unused NSError **)error {
     self = [super init];
     
     if (self){

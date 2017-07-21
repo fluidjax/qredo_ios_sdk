@@ -627,6 +627,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [testClient1 createAnonymousRendezvousWithTag:randomTag
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
+                               summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
                                XCTAssertNotNil(error);
                                XCTAssertNil(rendezvous);
@@ -743,6 +744,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [testClient1 createAnonymousRendezvousWithTag:randomTag
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
+                                    summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous,NSError *error)
      {
          XCTAssertNotNil(error);

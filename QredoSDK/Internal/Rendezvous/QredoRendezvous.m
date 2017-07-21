@@ -32,9 +32,7 @@ static const double kQredoRendezvousUpdateInterval = 1.0; //seconds - polling pe
 static const double kQredoRendezvousRenewSubscriptionInterval = 300.0; //5 mins in seconds - auto-renew subscription period (multi-response transports)
 NSString *const kQredoRendezvousVaultItemType = @"com.qredo.rendezvous";
 NSString *const kQredoRendezvousVaultItemLabelTag = @"tag";
-
 NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticationType";
-
 
 
 @implementation QredoRendezvousRef
@@ -43,8 +41,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     return [NSString stringWithFormat:@"%@",self.vaultItemDescriptor];
 }
 
-
 @end
+
 
 @implementation QredoRendezvousMetadata
 
@@ -59,12 +57,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         _rendezvousRef = rendezvousRef;
         _summaryValues = summaryValues;
     }
-    
     return self;
 }
 
 
 @end
+
 
 @implementation QredoRendezvousConfiguration
 
@@ -73,7 +71,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                           summaryValues:(NSDictionary *)summaryValues
                isUnlimitedResponseCount:(BOOL)isUnlimitedResponseCount {
     self = [super init];
-    
     if (self){
         _summaryValues = [summaryValues copy];
         _conversationType = [conversationType copy];
@@ -91,7 +88,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                           summaryValues:(NSDictionary *)summaryValues
                               expiresAt:(NSDate *)expiresAt {
     self = [super init];
-    
     if (self){
         _summaryValues = [summaryValues copy];
         _conversationType = [conversationType copy];
@@ -108,20 +104,15 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 @interface QredoRendezvous () <QredoUpdateListenerDataSource,QredoUpdateListenerDelegate>{
     QredoClient *_client;
     QredoRendezvousHighWatermark _highWatermark;
-    
     QLFRendezvous *_rendezvous;
     QredoVault *_vault;
     QredoDhPrivateKey *_requesterPrivateKey;
     QredoDhPublicKey *_requesterPublicKey;
     QLFRendezvousHashedTag *_hashedTag;
     QLFRendezvousDescriptor *_descriptor;
-    
     QLFRendezvousAuthType *_lfAuthType;
-    
     SecKeyRef _ownershipPrivateKey;
-    
     NSString *_tag;
-    
     dispatch_queue_t _enumerationQueue;
     QredoObserverList *_observers;
     QredoUpdateListener *_updateListener;
@@ -139,8 +130,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 @end
 
-@implementation QredoRendezvous (Private)
 
+@implementation QredoRendezvous (Private)
 
 -(void)loadHWM {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -162,23 +153,18 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 -(void)saveHWM {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
     [defaults setObject:@(self.highWatermark) forKey:self.tag];
 }
 
 
 -(instancetype)initWithClient:(QredoClient *)client {
     self = [super init];
-    
     if (self){
         _client = client;
         _rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:_client.serviceInvoker];
         _vault = [_client systemVault];
-        
         _enumerationQueue = dispatch_queue_create("com.qredo.rendezvous.enumrate",nil);
-        
         _observers = [[QredoObserverList alloc] init];
-        
         _updateListener = [[QredoUpdateListener alloc] init];
         _updateListener.delegate = self;
         _updateListener.dataSource = self;
@@ -210,9 +196,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                          unmarshaller:[QLFRendezvousDescriptor unmarshaller]];
     
     self = [self initWithClient:client fromLFDescriptor:descriptor];
-    
     __block BOOL isUnlimitedResponseCount = NO;
-    
     [descriptor.responseCountLimit
      ifRendezvousSingleResponse:^{
          isUnlimitedResponseCount = NO;
@@ -221,8 +205,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
          isUnlimitedResponseCount = YES;
      }];
     
-    
-    
     self.configuration = [[QredoRendezvousConfiguration alloc] initWithConversationType:descriptor.conversationType
                                                                         durationSeconds:[[descriptor.durationSeconds anyObject] intValue]
                                                                           summaryValues:vaultItem.metadata.summaryValues
@@ -230,14 +212,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     
     QredoVault *vault = [_client systemVault];
-    
     QredoRendezvousRef *rendezvousRef = [[QredoRendezvousRef alloc] initWithVaultItemDescriptor:vaultItem.metadata.descriptor
                                                                                           vault:vault];
     
     QredoRendezvousAuthenticationType authenticationType = [[vaultItem.metadata.summaryValues
                                                              objectForKey:kQredoRendezvousVaultItemLabelAuthenticationType] intValue];
-    
-    
+
     self.metadata = [[QredoRendezvousMetadata alloc] initWithTag:descriptor.tag
                                               authenticationType:authenticationType
                                                    rendezvousRef:rendezvousRef
@@ -435,9 +415,12 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     NSMutableData *payloadData = [NSMutableData data];
     
     
-    marshalledData = [QredoPrimitiveMarshallers marshalObject:nil marshaller:^(id element,QredoWireFormatWriter *writer) { [writer writeQUID:_hashedTag]; } includeHeader:NO];
+    marshalledData = [QredoPrimitiveMarshallers marshalObject:nil
+                                                   marshaller:^(__unused id element,QredoWireFormatWriter *writer) {
+                                                        [writer writeQUID:_hashedTag];
+                                                   }
+                                                includeHeader:NO];
     [payloadData appendData:marshalledData];
-    
     
     QredoMarshaller setMarshaller = [QredoPrimitiveMarshallers setMarshallerWithElementMarshaller:[QredoPrimitiveMarshallers int32Marshaller]];
     marshalledData = [QredoPrimitiveMarshallers marshalObject:durationSeconds marshaller:setMarshaller includeHeader:NO];
@@ -558,7 +541,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     NSError *error = nil;
     
     NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:nil
-                                                        marshaller:^(id element,QredoWireFormatWriter *writer)
+                                                        marshaller:^(__unused id element,QredoWireFormatWriter *writer)
                            {
                                [writer writeQUID:_hashedTag];
                            }
@@ -578,7 +561,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     [_rendezvous deactivateWithHashedTag:_hashedTag
                                signature:ownershipSignature
-                       completionHandler:^(QLFRendezvousDeactivated *result,NSError *error)
+                       completionHandler:^(__unused QLFRendezvousDeactivated *result,NSError *error)
      {
          if (completionHandler) completionHandler(error);
      }
@@ -656,7 +639,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
--(void)deleteWithCompletionHandler:(void (^)(NSError *error))completionHandler {
+-(void)deleteWithCompletionHandler:(__unused void (^)(NSError *error))completionHandler {
     //TODO: implement later
 }
 
@@ -684,10 +667,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
--(BOOL)processResponse:(QLFRendezvousResponse *)response
-         sequenceValue:(QLFRendezvousSequenceValue)sequenceValue
-             withBlock:(void (^)(QredoConversation *conversation))block
-          errorHandler:(void (^)(NSError *))errorHandler {
+-(BOOL)processResponse:(__unused QLFRendezvousResponse *)response
+         sequenceValue:(__unused QLFRendezvousSequenceValue)sequenceValue
+             withBlock:(__unused void (^)(QredoConversation *conversation))block
+          errorHandler:(__unused void (^)(NSError *))errorHandler {
     return YES;
 }
 
@@ -739,7 +722,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                      completionHandler:(void (^)(NSError *error))completionHandler
                                  since:(QredoRendezvousHighWatermark)sinceWatermark
                   highWatermarkHandler:(void (^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler {
-    [self enumerateResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse,QredoConversation *conversation,BOOL *stop) {
+    [self enumerateResponsesWithBlock:^(__unused QLFRendezvousResponsesResult *rendezvousResponse,QredoConversation *conversation,BOOL *stop) {
         block(conversation,stop);
     }
                     completionHandler:^(NSError *error) {
@@ -758,7 +741,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
               highWatermarkHandler:(void (^)(QredoRendezvousHighWatermark newWatermark))highWatermarkHandler {
     NSError *error = nil;
     NSData *payloadData = [QredoPrimitiveMarshallers marshalObject:nil
-                                                        marshaller:^(id element,QredoWireFormatWriter *writer)
+                                                        marshaller:^(__unused id element,QredoWireFormatWriter *writer)
                            {
                                [writer writeQUID:_hashedTag];
                                [writer writeInt64:@(sinceWatermark)];
@@ -964,13 +947,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 #pragma mark -
 #pragma mark Qredo Update Listener - Data Source
--(BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(QredoUpdateListener *)updateListener {
+-(BOOL)qredoUpdateListenerDoesSupportMultiResponseQuery:(__unused QredoUpdateListener *)updateListener {
     return _client.serviceInvoker.supportsMultiResponse;
 }
 
 
--(void)qredoUpdateListener:(QredoUpdateListener *)updateListener pollWithCompletionHandler:(void (^)(NSError *))completionHandler {
-    [self enumerateResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse,QredoConversation *conversation,BOOL *stop) {
+-(void)qredoUpdateListener:(__unused QredoUpdateListener *)updateListener pollWithCompletionHandler:(void (^)(NSError *))completionHandler {
+    [self enumerateResponsesWithBlock:^(QLFRendezvousResponsesResult *rendezvousResponse,QredoConversation *conversation,__unused BOOL *stop) {
         [_updateListener       processSingleItem:conversation
                                    sequenceValue:@(rendezvousResponse.sequenceValue)];
     }
@@ -983,7 +966,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
--(void)qredoUpdateListener:(QredoUpdateListener *)updateListener subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler {
+-(void)qredoUpdateListener:(__unused QredoUpdateListener *)updateListener subscribeWithCompletionHandler:(void (^)(NSError *))completionHandler {
     NSAssert([_observers count] > 0,@"There shoud be 1 or more rendezvous observers before starting listening for the updates");
     
     NSAssert(_subscriptionCorrelationId == nil,@"Already subscribed");
@@ -1036,7 +1019,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
--(void)qredoUpdateListener:(QredoUpdateListener *)updateListener unsubscribeWithCompletionHandler:(void (^)(NSError *))completionHandler {
+-(void)qredoUpdateListener:(__unused QredoUpdateListener *)updateListener
+            unsubscribeWithCompletionHandler:(__unused void (^)(__unused NSError *))completionHandler {
     //TODO: ownership
     //[_rendezvous unsubscribeWithCorrelationId:_subscriptionCorrelationId completionHandler:^(NSError *error) {
     //_subscriptionCorrelationId = nil;
@@ -1050,7 +1034,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 #pragma mark Qredo Update Listener - Delegate
 
--(void)qredoUpdateListener:(QredoUpdateListener *)updateListener processSingleItem:(id)item {
+-(void)qredoUpdateListener:(__unused QredoUpdateListener *)updateListener
+         processSingleItem:(id)item {
     QredoConversation *conversation = (QredoConversation *)item;
     
     [self notifyObservers:^(id < QredoRendezvousObserver > observer) {

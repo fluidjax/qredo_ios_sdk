@@ -301,7 +301,7 @@ static int PAGING_SIZE_MODIFIER = 5; //added to PAGING_SIZE to make the enumerat
     [qredoClient createAnonymousRendezvousWithTag:tagName
                                          duration:0
                                unlimitedResponses:YES
-     
+                                    summaryValues:nil
                                 completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
                                     XCTAssertNotNil(rendezvous);
                                     newRendezvous = rendezvous;
