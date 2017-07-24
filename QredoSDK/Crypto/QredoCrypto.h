@@ -14,6 +14,8 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 
 @interface QredoCrypto : NSObject
 
+NS_ASSUME_NONNULL_BEGIN
+
 +(NSData *)aes256CtrEncrypt:(NSData *)plaintext key:(NSData *)key iv:(NSData *)iv;
 +(NSData *)aes256CtrDecrypt:(NSData *)ciphertext key:(NSData *)key iv:(NSData *)iv;
 +(BOOL)constantEquals:(NSData *)lhs rhs:(NSData *)rhs;
@@ -32,9 +34,10 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 +(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef;
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier;
 +(NSData *)getKeyDataForIdentifier:(NSString *)keyIdentifier;
-OSStatus fixedSecItemCopyMatching(CFDictionaryRef query,CFTypeRef *result);
-
-
+OSStatus fixedSecItemCopyMatching(CFDictionaryRef query, CFTypeRef _Nonnull * _Nonnull  result);
 
 
 @end
+
+
+NS_ASSUME_NONNULL_END

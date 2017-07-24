@@ -253,7 +253,7 @@
     
     //HKDF using SHA-256
     NSData *prk = [QredoCrypto hkdfSha256Extract:ikm salt:salt];
-    NSData *okm = [QredoCrypto hkdfSha256Expand:prk info:nil outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *okm = [QredoCrypto hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:CC_SHA256_DIGEST_LENGTH];
     NSData *diffieHellmanSecretData = okm;
     
     return diffieHellmanSecretData;
