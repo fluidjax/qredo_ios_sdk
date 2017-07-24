@@ -145,9 +145,7 @@
     
     //This method will parse the first SEQUENCE section, and extract the PKCS#1 data, and then pass that data onto the other parser for processing of the actual key data
 
-    
-    BOOL dataIsValid = YES;
-    
+   
     GUARD(privateKeyData,@"Private key data argument is nil");
     
     int currentOffset = 0;
@@ -289,10 +287,7 @@
      Note that due to INTEGER in ASN.1 being encoded as 2's complement, 0x00 may be prepended onto odd numbers, which may or may not need to be removed/handled.
      
      */
-
-    
-    BOOL dataIsValid = YES;
-    
+   
     GUARD(publicKeyData,@"Public key data argument is nil");
     
     

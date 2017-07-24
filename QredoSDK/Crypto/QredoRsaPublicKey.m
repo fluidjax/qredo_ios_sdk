@@ -110,10 +110,8 @@
     
     //This method will parse the first SEQUENCE section, and extract the PKCS#1 data, and then pass that data onto the other parser for processing of the actual key data
 
-    
-    BOOL dataIsValid = YES;
     GUARD(publicKeyData,@"Public key data argument is nil");
-    
+
     int currentOffset = 0;
     int dataOffset = 0;
     int dataLength = 0;
@@ -231,9 +229,6 @@
      
      */
 
-    
-    BOOL dataIsValid = YES;
-    
     GUARD(publicKeyData,@"Public key data argument is nil");
     
     int currentOffset = 0;

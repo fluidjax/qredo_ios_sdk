@@ -2,13 +2,6 @@
 #import "sodium.h"
 #import "rsapss.h"
 
-#import "NSData+HexTools.h"
-#import "NSData+HexTools.h"
-
-#import <openssl/bn.h>
-#import <openssl/rand.h>
-#import <Security/SecRandom.h>
-
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoCrypto.h"
@@ -33,12 +26,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
  we later specify a different OAEP MGF1 digest algorithm
  */
 
-
-#define AESGUARD(condition, msg) \
-    if (!(condition)) { \
-        if (cryptor) \
-            CCCryptorRelease(cryptor); \
-        @throw [NSException exceptionWithName:NSGenericException \
 /*****************************************************************************
  * new work
  ****************************************************************************/
@@ -54,169 +41,169 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 }
 
 +(NSData *)aes256Ctr:(NSData *)input operation:(CCOperation)op key:(NSData *)key iv:(NSData *)iv {
-
-    GUARD(input, @"Input must be specified.");
-    GUARD((op == kCCEncrypt) || (op == kCCDecrypt), @"Operation must be encryption or decryption.");
-    GUARD(key, @"Key must be specified");
-    GUARDF(key.length == kCCKeySizeAES256, @"Key must be %d bytes.", kCCKeySizeAES256);
-    GUARDF(iv && iv.length == kCCBlockSizeAES128, @"IV must be %d bytes.", kCCBlockSizeAES128);
-
+    
+    NSAssert(input, @"Expected input data.");
+    NSAssert((op == kCCEncrypt) || (op == kCCDecrypt), @"Expected encryption or decryption operations.");
+    NSAssert(key, @"Expected key.");
+    NSAssert(key.length == kCCKeySizeAES256, @"Expected key to be %d bytes.", kCCKeySizeAES256);
+    NSAssert(iv && iv.length == kCCBlockSizeAES128, @"Expected IV to be %d bytes.", kCCBlockSizeAES128);
+    
     CCCryptorRef cryptor = NULL;
     CCCryptorStatus createStatus = CCCryptorCreateWithMode(
-            op,
-            kCCModeCTR,
-            kCCAlgorithmAES,
-            ccPKCS7Padding,
-            iv.bytes,
-            key.bytes,
-            key.length,
-            NULL,
-            0,
-            0,
-            kCCModeOptionCTR_BE,
-            &cryptor);
-
-    AESGUARD((createStatus == kCCSuccess), @"AES operation failed (1) CCCryptorCreateWithMode");
-
+                                                           op,
+                                                           kCCModeCTR,
+                                                           kCCAlgorithmAES,
+                                                           ccPKCS7Padding,
+                                                           iv.bytes,
+                                                           key.bytes,
+                                                           key.length,
+                                                           NULL,
+                                                           0,
+                                                           0,
+                                                           kCCModeOptionCTR_BE,
+                                                           &cryptor);
+    
+    NSAssert(createStatus == kCCSuccess, @"CCCCryptorCreateWithMode failed with status %d.", createStatus);
+    
     NSMutableData *cipherData = [NSMutableData dataWithLength:input.length + kCCBlockSizeAES128];
     size_t outLength;
     CCCryptorStatus updateStatus = CCCryptorUpdate(
-            cryptor,
-            input.bytes,
-            input.length,
-            cipherData.mutableBytes,
-            cipherData.length,
-            &outLength);
-
-    AESGUARD((updateStatus == kCCSuccess), @"AES operation failed (2) CCCryptorUpdate");
-
+                                                   cryptor,
+                                                   input.bytes,
+                                                   input.length,
+                                                   cipherData.mutableBytes,
+                                                   cipherData.length,
+                                                   &outLength);
+    
+    NSAssert(updateStatus == kCCSuccess, @"CCCryptorUpdate failed with status %d.", updateStatus);
+    
     cipherData.length = outLength;
     CCCryptorStatus finalStatus = CCCryptorFinal(
-            cryptor,
-            cipherData.mutableBytes,
-            cipherData.length,
-            &outLength);
-
-    AESGUARD((finalStatus == kCCSuccess), @"AES operation failed (3) CCCryptorFinal");
-
+                                                 cryptor,
+                                                 cipherData.mutableBytes,
+                                                 cipherData.length,
+                                                 &outLength);
+    
+    NSAssert(finalStatus == kCCSuccess, @"CCCryptorFinal failed with status %d.", finalStatus);
+    
     return cipherData;
-
+    
 }
 
 +(BOOL)constantEquals:(NSData *)lhs rhs:(NSData *)rhs {
-
+    
     uint8_t *leftHashBytes  = (uint8_t *)lhs.bytes;
     uint8_t *rightHashBytes = (uint8_t *)rhs.bytes;
-
+    
     unsigned long difference = lhs.length ^ rhs.length;
-
+    
     for (unsigned long i = 0; i < lhs.length && i < rhs.length; i++) {
         difference |= leftHashBytes[i] ^ rightHashBytes[i];
     }
-
+    
     return difference == 0;
-
+    
 }
 
 +(QredoKeyPair *)ed25519Derive:(NSData *)seed {
-
+    
     NSAssert(seed, @"Expected seed.");
     NSAssert(seed.length == crypto_sign_SEEDBYTES,
-            @"Expected seed of length %ud.", crypto_sign_SEEDBYTES);
-
+             @"Expected seed of length %ud.", crypto_sign_SEEDBYTES);
+    
     NSMutableData *pk = [NSMutableData dataWithLength:crypto_sign_PUBLICKEYBYTES];
     NSMutableData *sk = [NSMutableData dataWithLength:crypto_sign_SECRETKEYBYTES];
-
+    
     int result = crypto_sign_ed25519_seed_keypair(pk.mutableBytes, sk.mutableBytes, seed.bytes);
     NSAssert(result == 0, @"Could not generate Ed25519 key pair from seed.");
-
+    
     QredoED25519VerifyKey *qpk  =
-            [[QredoED25519VerifyKey alloc] initWithKeyData:pk];
+    [[QredoED25519VerifyKey alloc] initWithKeyData:pk];
     QredoED25519SigningKey *qsk =
-            [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:sk verifyKey:qpk];
+    [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:sk verifyKey:qpk];
     QredoKeyPair *kp =
-            [[QredoKeyPair alloc] initWithPublicKey:qpk privateKey:qsk];
-
+    [[QredoKeyPair alloc] initWithPublicKey:qpk privateKey:qsk];
+    
     NSAssert(kp, @"Expected key pair to be generated.");
     NSAssert([kp.publicKey isMemberOfClass:QredoED25519VerifyKey.class],
-            @"Expected Ed25519 public key in generated key pair.");
+             @"Expected Ed25519 public key in generated key pair.");
     NSAssert([kp.privateKey isMemberOfClass:QredoED25519SigningKey.class],
-            @"Expected Ed25519 private key in generated key pair.");
-
+             @"Expected Ed25519 private key in generated key pair.");
+    
     return kp;
-
+    
 }
 
 +(QredoKeyPair *)ed25519DeriveFromSecretKey:(NSData *)secretKey {
     // This method is only used to support a stepping stone, and will soon vanish.
     NSAssert(secretKey, @"Expected secret key.");
     NSAssert(secretKey.length == crypto_sign_SECRETKEYBYTES,
-            @"Expected secret key to be of length %ud.", crypto_sign_SECRETKEYBYTES);
-
+             @"Expected secret key to be of length %ud.", crypto_sign_SECRETKEYBYTES);
+    
     NSMutableData *seed = [NSMutableData dataWithLength:crypto_sign_SEEDBYTES];
-
+    
     int result = crypto_sign_ed25519_sk_to_seed(seed.mutableBytes, secretKey.bytes);
     NSAssert(result == 0, @"Could not turn secret key into seed.");
-
+    
     return [self ed25519Derive:seed];
 }
 
 +(NSData *)ed25519Sha512Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair {
-
+    
     NSMutableData *signature = [NSMutableData dataWithLength:crypto_sign_BYTES];
-
+    
     crypto_sign_ed25519_detached(
-            signature.mutableBytes,
-            NULL,
-            payload.bytes,
-            payload.length,
-            keyPair.privateKey.serialize.bytes);
-
+                                 signature.mutableBytes,
+                                 NULL,
+                                 payload.bytes,
+                                 payload.length,
+                                 keyPair.privateKey.serialize.bytes);
+    
     return signature;
-
+    
 }
 
 +(BOOL)ed25519Sha512Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair {
     return crypto_sign_ed25519_verify_detached(
-            signature.bytes,
-            payload.bytes,
-            payload.length,
-            keyPair.publicKey.serialize.bytes) == 0;
+                                               signature.bytes,
+                                               payload.bytes,
+                                               payload.length,
+                                               keyPair.publicKey.serialize.bytes) == 0;
 }
 
 +(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt {
-
+    
     // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
-
+    
     NSAssert(ikm,  @"IKM must be specified.");
     NSAssert(ikm.length > 0, @"IKM must be non-empty.");
     NSAssert(salt, @"Salt must be specified.");
     NSAssert(salt.length > 0, @"Salt must be non-empty.");
-
+    
     NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
-
+    
     NSAssert(prk.length == CC_SHA256_DIGEST_LENGTH, @"Expected PRK to be SHA256 length.");
-
+    
     return [prk copy];
-
+    
 }
 
 +(NSData *)hkdfSha256Expand:(NSData *)prk info:(NSData *)info outputLength:(NSUInteger)outputLength {
-
+    
     // Please read https://tools.ietf.org/html/rfc5869 to understand HKDF.
-
+    
     NSAssert(prk, @"PRK must be specified.");
     NSAssert(prk.length > 0, @"PRK must be non-empty.");
     NSAssert(info, @"Info must be specified.");
     NSAssert(outputLength > 0, @"Output length must be greater than zero.");
-
+    
     uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
-
+    
     NSUInteger N = ceil((double)outputLength / (double)hashLen);
     uint8_t *T   = alloca(N * hashLen);
     NSAssert(T, @"Could not allocate expansion vector.");
-
+    
     uint8_t *Tlast = NULL;
     uint8_t *Tnext = T;
     for (uint8_t ctr = 1; ctr <= N; ctr++) {
@@ -229,83 +216,83 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
         Tlast  = Tnext;
         Tnext += hashLen;
     }
-
+    
     NSData *okm = [NSData dataWithBytes:T length:outputLength];
     NSAssert(okm.length > 0, @"Expected OKM of non-zero length.");
     NSAssert(okm.length == outputLength, @"Expected OKM to match requested output length.");
-
+    
     return okm;
-
+    
 }
 
 + (NSData *)hmacSha256:(NSData *)data key:(NSData *)key outputLen:(NSUInteger)outputLen {
-
+    
     NSAssert(data,
-            @"Expected data.");
+             @"Expected data.");
     NSAssert(key, @"Expected key.");
     NSAssert(key.length > 0, @"Expected non-zero length key.");
-
+    
     //The MAC size is the same size as the underlying hash function output
     NSMutableData *mac = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     CCHmac(kCCHmacAlgSHA256,
-            key.bytes,
-            key.length,
-            data.bytes,
-            outputLen,
-            mac.mutableBytes);
-
+           key.bytes,
+           key.length,
+           data.bytes,
+           outputLen,
+           mac.mutableBytes);
+    
     NSAssert(mac.length == CC_SHA256_DIGEST_LENGTH,
-            @"Expected hash output of length %d.", CC_SHA256_DIGEST_LENGTH);
-
+             @"Expected hash output of length %d.", CC_SHA256_DIGEST_LENGTH);
+    
     return [mac copy];
-
+    
 }
 
 +(NSData *)pbkdf2Sha256:(NSData *)ikm
                    salt:(NSData *)salt
            outputLength:(NSUInteger)outputLength
              iterations:(NSUInteger)iterations {
-
+    
     const int PBKDF2_RFC_MIN_SALT_LENGTH = 8;
-
+    
     NSAssert(ikm,
-            @"Expected IKM.");
+             @"Expected IKM.");
     NSAssert(ikm.length > 0,
-            @"Expected IKM of non-zero length.");
+             @"Expected IKM of non-zero length.");
     NSAssert(salt,
-            @"Expected salt.");
+             @"Expected salt.");
     NSAssert(salt.length >= PBKDF2_RFC_MIN_SALT_LENGTH,
-            @"Expected salt of minimum length %d, as recommended by RFC 2898 "
-            @"Sec. 4.1.",
-            PBKDF2_RFC_MIN_SALT_LENGTH);
+             @"Expected salt of minimum length %d, as recommended by RFC 2898 "
+             @"Sec. 4.1.",
+             PBKDF2_RFC_MIN_SALT_LENGTH);
     NSAssert(outputLength > 0,
-            @"Expected output length greater than zero.");
+             @"Expected output length greater than zero.");
     NSAssert(iterations > 0,
-            @"Expected iteration count greater than 0.");
+             @"Expected iteration count greater than 0.");
     NSAssert(iterations < UINT_MAX,
-            @"Expected iteration count less than %d.", UINT_MAX);
-
+             @"Expected iteration count less than %d.", UINT_MAX);
+    
     NSMutableData *derivation = [NSMutableData dataWithLength:outputLength];
-
+    
     int result = CCKeyDerivationPBKDF(
-            kCCPBKDF2,
-            ikm.bytes,
-            ikm.length,
-            salt.bytes,
-            salt.length,
-            kCCPRFHmacAlgSHA256,
-            (unsigned int)iterations,
-            derivation.mutableBytes,
-            derivation.length);
-
+                                      kCCPBKDF2,
+                                      ikm.bytes,
+                                      ikm.length,
+                                      salt.bytes,
+                                      salt.length,
+                                      kCCPRFHmacAlgSHA256,
+                                      (unsigned int)iterations,
+                                      derivation.mutableBytes,
+                                      derivation.length);
+    
     NSAssert(result == kCCSuccess,
-            @"CCKeyDerivationPBKDF: failure %d.", result);
+             @"CCKeyDerivationPBKDF: failure %d.", result);
     NSAssert(derivation.length == outputLength,
-            @"Expected derivation of specified output length %lu.",
-            (unsigned long)outputLength);
-
+             @"Expected derivation of specified output length %lu.",
+             (unsigned long)outputLength);
+    
     return derivation;
-
+    
 }
 
 #if NEW_CRYPTO_CODE
@@ -322,12 +309,12 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 +(NSData *)secureRandom:(NSUInteger)size {
     NSAssert(size > 0, @"Expected non-zero size.");
-
+    
     uint8_t *bytes = alloca(size);
     int result = SecRandomCopyBytes(kSecRandomDefault, size, bytes);
-
+    
     NSAssert(result == 0, @"Failed to generate %lu secure random bytes.", (unsigned long)size);
-
+    
     return [NSData dataWithBytes:bytes length:size];
 }
 
@@ -336,7 +323,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
     CC_SHA256(data.bytes, (unsigned int)data.length, hash.mutableBytes);
     NSAssert(hash.length == CC_SHA256_DIGEST_LENGTH,
-            @"Expected output hash of length %d", CC_SHA256_DIGEST_LENGTH);
+             @"Expected output hash of length %d", CC_SHA256_DIGEST_LENGTH);
     return [hash copy];
 }
 
@@ -345,7 +332,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
  ****************************************************************************/
 
 +(QredoSecKeyRefPair *)rsaGenerate:(NSInteger)keySize publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys {
-
+    
     /*
      NOTE: Keys which are not persisted in the keychain can only be used via the
      methods which take a SecKeyRef. You cannot find them with SecItemCopyMatch-
@@ -353,61 +340,61 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
      generated key data itself, just the ref to the key.
      */
     const int RSA_RECOMMENDED_KEY_SIZE = 2048;
-
+    
     NSAssert(keySize > 0,
-            @"Expected key size greater than 0.");
+             @"Expected key size greater than 0.");
     QredoAssertWarn(keySize < RSA_RECOMMENDED_KEY_SIZE,
-            @"Generating RSA key < %d bits, which is weaker than expected.",
-            RSA_RECOMMENDED_KEY_SIZE);
+                    @"Generating RSA key < %d bits, which is weaker than expected.",
+                    RSA_RECOMMENDED_KEY_SIZE);
     NSAssert(publicKeyIdentifier,
-            @"Expected public key identifier.");
+             @"Expected public key identifier.");
     NSAssert(publicKeyIdentifier.length > 0,
-            @"Expected non-empty public key identifier.");
+             @"Expected non-empty public key identifier.");
     NSAssert(privateKeyIdentifier,
-            @"Expected private key identifier.");
+             @"Expected private key identifier.");
     NSAssert(privateKeyIdentifier.length > 0,
-            @"Expected non-empty private key identifier.");
+             @"Expected non-empty private key identifier.");
     NSAssert(![publicKeyIdentifier isEqualToString:privateKeyIdentifier],
-            @"Expected different public and private key identifiers.");
-
+             @"Expected different public and private key identifiers.");
+    
     NSDictionary *keyPairAttributes = @{
-            (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
-            (id)kSecAttrKeySizeInBits: @(keySize),
-            (id)kSecPrivateKeyAttrs: @{
-                    (id)kSecAttrIsPermanent: @(persistKeys),
-                    (id)kSecAttrApplicationTag: [privateKeyIdentifier
-                            dataUsingEncoding:NSUTF8StringEncoding]
-            },
-            (id)kSecPublicKeyAttrs: @{
-                    (id)kSecAttrIsPermanent: @(persistKeys),
-                    (id)kSecAttrApplicationTag: [publicKeyIdentifier
-                            dataUsingEncoding:NSUTF8StringEncoding]
-            }
-    };
-
-
-
-
+                                        (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
+                                        (id)kSecAttrKeySizeInBits: @(keySize),
+                                        (id)kSecPrivateKeyAttrs: @{
+                                                (id)kSecAttrIsPermanent: @(persistKeys),
+                                                (id)kSecAttrApplicationTag: [privateKeyIdentifier
+                                                                             dataUsingEncoding:NSUTF8StringEncoding]
+                                                },
+                                        (id)kSecPublicKeyAttrs: @{
+                                                (id)kSecAttrIsPermanent: @(persistKeys),
+                                                (id)kSecAttrApplicationTag: [publicKeyIdentifier
+                                                                             dataUsingEncoding:NSUTF8StringEncoding]
+                                                }
+                                        };
+    
+    SecKeyRef publicKeyRef = NULL;
+    SecKeyRef privateKeyRef = NULL;
+    
     OSStatus status = SecKeyGeneratePair(
-            (__bridge CFDictionaryRef)keyPairAttributes,
-            &publicKeyRef,
-            &privateKeyRef);
-
+                                         (__bridge CFDictionaryRef)keyPairAttributes,
+                                         &publicKeyRef,
+                                         &privateKeyRef);
+    
     NSAssert(status == errSecSuccess,
-            @"Failed to generate %ld bit keypair. Public key ID: '%@', "
-                    "Private key ID: '%@'. Status: %@",
-            (long)keySize,
-            publicKeyIdentifier,
-            privateKeyIdentifier,
-            [QredoLogger stringFromOSStatus:status]);
-
+             @"Failed to generate %ld bit keypair. Public key ID: '%@', "
+             "Private key ID: '%@'. Status: %@",
+             (long)keySize,
+             publicKeyIdentifier,
+             privateKeyIdentifier,
+             [QredoLogger stringFromOSStatus:status]);
+    
     QredoSecKeyRefPair *keyRefPair = [[QredoSecKeyRefPair alloc]
-            initWithPublicKeyRef:publicKeyRef
-                   privateKeyRef:privateKeyRef];
+                                      initWithPublicKeyRef:publicKeyRef
+                                      privateKeyRef:privateKeyRef];
     
     return keyRefPair;
-
-
+    
+}
 
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier {
     
@@ -528,7 +515,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     if (result != errSecSuccess){
         //Something went wrong, so return nil;
         QredoLogError(@"SecKeyRawSign returned error: %@.",[QredoLogger stringFromOSStatus:result]);
-
+        
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Failed to sign the data" userInfo:nil];
     }
     
