@@ -13,9 +13,6 @@
 #import "QredoConversationPrivate.h"
 
 
-
-
-
 extern NSString *const QredoClientOptionServiceURL;
 extern NSString *const QredoRendezvousURIProtocol;
 extern NSString *const QredoVaultItemTypeKeychain;
@@ -26,9 +23,6 @@ static NSString* _testAppSecret = nil;
 
 @class QredoKeychainReceiver,QredoKeychainSender,QredoKeychain;
 
-
-
-
 @interface QredoClient ()
 
 -(QredoServiceInvoker *)serviceInvoker;
@@ -36,17 +30,12 @@ static NSString* _testAppSecret = nil;
 -(QredoKeychain *)keychain;
 -(QredoUserCredentials *)userCredentials;
 -(QredoAppCredentials *)appCredentials;
-
 +(NSDictionary*)retrieveCredentialsUserDefaultsAppGroup:(NSString*)appGroup;
-
-
-
 -(void)createAnonymousRendezvousWithTag:(NSString *)tag
                                duration:(long)duration
                      unlimitedResponses:(BOOL)unlimitedResponses
+                          summaryValues:summaryValues
                       completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler;
-
-
 -(void)createSystemVaultWithUserCredentials:(QredoUserCredentials *)userCredentials completionHandler:(void (^)(NSError *error))completionHandler;
 -(BOOL)saveStateWithError:(NSError **)error;
 -(BOOL)deleteCurrentDataWithError:(NSError **)error;

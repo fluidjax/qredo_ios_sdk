@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "QredoUserCredentials.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 #import "QredoXCTestCase.h"
 
 @interface QredoUserCredentialsTests :QredoXCTestCase

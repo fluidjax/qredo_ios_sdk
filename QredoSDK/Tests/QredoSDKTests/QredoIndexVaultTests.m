@@ -467,7 +467,7 @@ NSNumber *testNumber;
 
 
 -(void)testSimplePut {
-    int testCount = 10;
+    int testCount = 2;
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [self randomStringWithLength:32];
     

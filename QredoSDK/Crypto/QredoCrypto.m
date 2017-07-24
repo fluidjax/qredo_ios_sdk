@@ -2,6 +2,13 @@
 #import "sodium.h"
 #import "rsapss.h"
 
+#import "NSData+HexTools.h"
+#import "NSData+HexTools.h"
+
+#import <openssl/bn.h>
+#import <openssl/rand.h>
+#import <Security/SecRandom.h>
+
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoCrypto.h"
@@ -26,6 +33,12 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
  we later specify a different OAEP MGF1 digest algorithm
  */
 
+
+#define AESGUARD(condition, msg) \
+    if (!(condition)) { \
+        if (cryptor) \
+            CCCryptorRelease(cryptor); \
+        @throw [NSException exceptionWithName:NSGenericException \
 /*****************************************************************************
  * new work
  ****************************************************************************/
@@ -42,11 +55,11 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 +(NSData *)aes256Ctr:(NSData *)input operation:(CCOperation)op key:(NSData *)key iv:(NSData *)iv {
 
-    NSAssert(input, @"Expected input data.");
-    NSAssert((op == kCCEncrypt) || (op == kCCDecrypt), @"Expected encryption or decryption operations.");
-    NSAssert(key, @"Expected key.");
-    NSAssert(key.length == kCCKeySizeAES256, @"Expected key to be %d bytes.", kCCKeySizeAES256);
-    NSAssert(iv && iv.length == kCCBlockSizeAES128, @"Expected IV to be %d bytes.", kCCBlockSizeAES128);
+    GUARD(input, @"Input must be specified.");
+    GUARD((op == kCCEncrypt) || (op == kCCDecrypt), @"Operation must be encryption or decryption.");
+    GUARD(key, @"Key must be specified");
+    GUARDF(key.length == kCCKeySizeAES256, @"Key must be %d bytes.", kCCKeySizeAES256);
+    GUARDF(iv && iv.length == kCCBlockSizeAES128, @"IV must be %d bytes.", kCCBlockSizeAES128);
 
     CCCryptorRef cryptor = NULL;
     CCCryptorStatus createStatus = CCCryptorCreateWithMode(
@@ -63,7 +76,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
             kCCModeOptionCTR_BE,
             &cryptor);
 
-    NSAssert(createStatus == kCCSuccess, @"CCCCryptorCreateWithMode failed with status %d.", createStatus);
+    AESGUARD((createStatus == kCCSuccess), @"AES operation failed (1) CCCryptorCreateWithMode");
 
     NSMutableData *cipherData = [NSMutableData dataWithLength:input.length + kCCBlockSizeAES128];
     size_t outLength;
@@ -75,7 +88,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
             cipherData.length,
             &outLength);
 
-    NSAssert(updateStatus == kCCSuccess, @"CCCryptorUpdate failed with status %d.", updateStatus);
+    AESGUARD((updateStatus == kCCSuccess), @"AES operation failed (2) CCCryptorUpdate");
 
     cipherData.length = outLength;
     CCCryptorStatus finalStatus = CCCryptorFinal(
@@ -84,7 +97,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
             cipherData.length,
             &outLength);
 
-    NSAssert(finalStatus == kCCSuccess, @"CCCryptorFinal failed with status %d.", finalStatus);
+    AESGUARD((finalStatus == kCCSuccess), @"AES operation failed (3) CCCryptorFinal");
 
     return cipherData;
 
@@ -372,8 +385,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
             }
     };
 
-    SecKeyRef publicKeyRef = NULL;
-    SecKeyRef privateKeyRef = NULL;
+
+
 
     OSStatus status = SecKeyGeneratePair(
             (__bridge CFDictionaryRef)keyPairAttributes,
@@ -394,7 +407,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     
     return keyRefPair;
 
-}
+
 
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier {
     

@@ -33,13 +33,11 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
 
 -(instancetype)initWithLocalIndex:(QredoLocalIndex *)localIndex maxCacheSize:(long long)maxCacheSize {
     self = [super init];
-    
     if (self){
         _localIndex = localIndex;
         _qredoIndexVault = localIndex.qredoIndexVault;
         _maxCacheSize = maxCacheSize;
     }
-    
     return self;
 }
 
@@ -60,7 +58,6 @@ static const long COREDATA_BASE_SQLLITE_OVERHEAD = 143360;             //storage
 
 -(void)updateAccessDate:(QredoIndexVaultItemMetadata *)indexVaultItemMetadata {
     NSDate *now = [QredoNetworkTime dateTime];
-    
     indexVaultItemMetadata.lastAccessed = now;
 }
 

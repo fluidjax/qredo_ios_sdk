@@ -11,14 +11,5 @@
 -(instancetype)initWithVault:(QredoVault *)vault;
 -(void)saveContext:(BOOL)wait;
 -(long)persistentStoreFileSize;
-
-/** Delete the coredata sqllite database, and rebuild the coredata stack
- This ensures a clean start point, useful for errors and tests
- Use before any QredoClients are created
- */
-//- (void)deleteStore:(QredoVault *)vault;
-
 +(NSURL *)storeURLWithVault:(QredoVault*)vault;
-//+(void)deleteStore:(QredoUserCredentials *)userCredentials;
-//+(void)renameStoreFrom:(QredoUserCredentials *)fromUserCredentials to:(QredoUserCredentials *)toUserCredentials;
 @end

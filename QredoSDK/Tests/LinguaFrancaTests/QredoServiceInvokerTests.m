@@ -5,7 +5,7 @@
 #import "MasterConfig.h"
 #import "QredoClient.h"
 #import "NSData+QredoRandomData.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 
 @interface QredoServiceInvokerTests :QredoXCTestCase
 

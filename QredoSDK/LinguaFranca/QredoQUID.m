@@ -2,7 +2,7 @@
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
 #import <CommonCrypto/CommonCrypto.h>
-
+#import "QredoMacros.h"
 
 static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
 
@@ -21,16 +21,9 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
 
 
 +(NSData *)sha256:(NSData *)data {
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(data,@"Data argument is nil");
     NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
-    
     CC_SHA256(data.bytes,(CC_LONG)data.length,hash.mutableBytes);
-    
     return hash;
 }
 

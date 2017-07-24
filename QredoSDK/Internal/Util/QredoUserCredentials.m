@@ -1,6 +1,8 @@
 #import "QredoUserCredentials.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoCrypto.h"
+#import "QredoLoggerPrivate.h"
+#include "QredoMacros.h"
 
 #define SALT_USER_UNLOCK                 [@"3aK3VkzxClECvyFW" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_USER_MASTER                 [@"wjB9zA2l1Z4eiW5t" dataUsingEncoding:NSUTF8StringEncoding]
@@ -11,12 +13,6 @@
 
 #define PBKDF2_USERUNLOCK_KEY_ITERATIONS 1000
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES  32
-
-#define CHECK_ARG(expr,msg) \
-if (expr){ @throw [NSException exceptionWithName:NSInvalidArgumentException \
-reason:[NSString stringWithFormat:msg] \
-userInfo:nil]; \
-} \
 
 
 @interface QredoUserCredentials ()
@@ -33,21 +29,19 @@ userInfo:nil]; \
 
 -(instancetype)initWithAppId:(NSString *)appId userId:(NSString *)userId userSecure:(NSString *)userSecure {
     self = [super init];
-    
     if (self){
         _appId = appId;
         _userId = userId;
         _userSecure = userSecure;
     }
-    
     return self;
 }
 
 
 -(NSData *)userUnlockKey {
-    CHECK_ARG(!self.appId,@"appId cannot be nil");
-    CHECK_ARG(!self.userId,@"userId cannot be nil");
-    CHECK_ARG(!self.userSecure,@"userSecure cannot be nil");
+    GUARD(self.appId,@"appId cannot be nil");
+    GUARD(self.userId,@"userId cannot be nil");
+    GUARD(self.userSecure,@"userSecure cannot be nil");
     
     NSMutableData *concatenatedBytes = [[NSMutableData alloc] init];
     [concatenatedBytes appendData:[self sha1WithString:self.appId]];
@@ -74,14 +68,13 @@ userInfo:nil]; \
     return outputBytes;
 }
 
+
 -(NSData *)sha512WithString:(NSString *)str {
     NSMutableData *outputBytes = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
     NSData *inputBytes = [str dataUsingEncoding:NSUTF8StringEncoding];
     CC_SHA512(inputBytes.bytes,(CC_LONG)inputBytes.length,outputBytes.mutableBytes);
     return outputBytes;
 }
-
-
 
 
 -(NSData *)masterKey {
@@ -106,11 +99,8 @@ userInfo:nil]; \
     for (uint i = 0; i < data.length; i++){
         [sbuf appendFormat:@"%02X",(unsigned int)buf[i]];
     }
-    
     return [sbuf copy];
 }
-
-
 
 
 -(NSString*)shaAsHex:(NSString*)string{
@@ -118,11 +108,11 @@ userInfo:nil]; \
     return [self dataToHexString:shaData];
 }
 
+
 -(NSString *)buildIndexName {
     NSString *indexName = [NSString stringWithFormat:@"%@-%@-%@-%@",self.appId,self.userId,self.userSecure,SALT_INDEX_NAME];
     return [self shaAsHex:indexName];
 }
-
 
 
 -(NSString *)createSystemVaultIdentifier {
@@ -130,8 +120,6 @@ userInfo:nil]; \
     NSString *sha1UserCredentialsString =  [self shaAsHex:userCredentials];
     return [NSString stringWithFormat:@"com.qredo.system.vault.key-%@",sha1UserCredentialsString];
 }
-
-
 
 
 -(NSString*)description{

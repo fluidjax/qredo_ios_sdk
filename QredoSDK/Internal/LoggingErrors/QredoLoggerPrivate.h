@@ -3,9 +3,7 @@
 #import "QredoLogger.h"
 
 
-
 @interface QredoLogger ()
-
 
 +(NSString *)extractClassName:(NSString *)prettyFunction;
 +(BOOL)isClassOfInterest:(NSString *)className;
@@ -14,6 +12,5 @@
 +(NSString *)printBytesAsHex:(const unsigned char *)bytes numberOfBytes:(const unsigned int)numberOfBytes;
 +(NSString *)stringFromOSStatus:(OSStatus)osStatus;
 +(void)notImplementedYet:(SEL)selector;
-
 
 @end

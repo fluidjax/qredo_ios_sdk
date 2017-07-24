@@ -19,19 +19,16 @@
 
 -(instancetype)initWithVaultKey:(NSData *)vaultKey {
     self = [super init];
-    
     if (self){
         QredoED25519SigningKey *ownershipKeyPair = [QredoVaultCrypto ownershipSigningKeyWithVaultKey:vaultKey];
         QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
         QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
-        
         _vaultKey = vaultKey;
         _ownershipKeyPair = ownershipKeyPair;
         _encryptionKey = encryptionAndAuthKeys.encryptionKey;
         _authenticationKey = encryptionAndAuthKeys.authenticationKey;
         _vaultId = vaultID;
     }
-    
     return self;
 }
 

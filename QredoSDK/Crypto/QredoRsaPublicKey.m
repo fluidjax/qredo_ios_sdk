@@ -2,6 +2,7 @@
 #import "QredoRsaPublicKey.h"
 #import "QredoDerUtils.h"
 #import "QredoLoggerPrivate.h"
+#import "QredoMacros.h"
 
 @interface QredoRsaPublicKey ()
 
@@ -21,18 +22,8 @@
 
 
 -(instancetype)initWithModulus:(NSData *)modulus publicExponent:(NSData *)publicExponent {
-    if (!modulus){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Modulus argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!publicExponent){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public Exponent argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(modulus,@"Modulus argument is nil");
+    GUARD(publicExponent,@"Public Exponent argument is nil");
     self = [super init];
     
     if (self){
@@ -45,41 +36,27 @@
 
 
 -(instancetype)initWithPkcs1KeyData:(NSData *)keyData {
-    if (!keyData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key data argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(keyData,@"Key data argument is nil");
     self = [super init];
-    
     if (self){
         if (![self populatePublicKeyComponentsFromPublicKeyPkcs1Data:keyData]){
             //Something went wrong
             return nil;
         }
     }
-    
     return self;
 }
 
 
 -(instancetype)initWithX509KeyData:(NSData *)keyData {
-    if (!keyData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Key data argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(keyData,@"Key data argument is nil");
     self = [super init];
-    
     if (self){
         if (![self populatePublicKeyComponentsFromPublicKeyX509Data:keyData]){
             //Something went wrong
             return nil;
         }
     }
-    
     return self;
 }
 
@@ -133,11 +110,9 @@
     
     //This method will parse the first SEQUENCE section, and extract the PKCS#1 data, and then pass that data onto the other parser for processing of the actual key data
 
-    if (!publicKeyData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public key data argument is nil"]
-                                     userInfo:nil];
-    }
+    
+    BOOL dataIsValid = YES;
+    GUARD(publicKeyData,@"Public key data argument is nil");
     
     int currentOffset = 0;
     int dataOffset = 0;
@@ -256,11 +231,10 @@
      
      */
 
-    if (!publicKeyData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public key data argument is nil"]
-                                     userInfo:nil];
-    }
+    
+    BOOL dataIsValid = YES;
+    
+    GUARD(publicKeyData,@"Public key data argument is nil");
     
     int currentOffset = 0;
     int dataOffset = 0;

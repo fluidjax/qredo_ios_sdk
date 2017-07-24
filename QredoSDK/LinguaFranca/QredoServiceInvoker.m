@@ -5,7 +5,7 @@
 #import "QredoTransport.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoCertificate.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 #import "QredoHelpers.h"
 
 NSString *const QredoLFErrorDomain = @"QredoLFError";

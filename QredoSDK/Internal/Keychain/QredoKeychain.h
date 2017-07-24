@@ -19,18 +19,14 @@ extern NS_ENUM (NSInteger,QredoCredentialType) {
 @interface QredoKeychain :NSObject
 
 @property QLFOperatorInfo *operatorInfo;
-
 @property QredoVaultKeys *systemVaultKeys;
 @property QredoVaultKeys *defaultVaultKeys;
 
 -(instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo;
-
-//used in tests only
--(instancetype)initWithData:(NSData *)serializedData;
-
 -(NSData *)data;
 -(void)generateNewKeys:(QredoUserCredentials *)userCredentials;
 
-
+//used in tests only
+-(instancetype)initWithData:(NSData *)serializedData;
 
 @end

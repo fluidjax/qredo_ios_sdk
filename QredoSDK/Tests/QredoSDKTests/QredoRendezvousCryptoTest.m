@@ -6,7 +6,7 @@
 #import "QredoCrypto.h"
 #import "CryptoImpl.h"
 #import "CryptoImplV1.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 
 @interface QredoRendezvousCryptoTest :QredoXCTestCase
 {

@@ -5,6 +5,7 @@
 #import "QredoWebSocketTransport.h"
 #import "QredoTransportErrorUtils.h"
 #import "QredoCertificate.h"
+#import "QredoMacros.h"
 
 NSString *const QredoTransportErrorDomain = @"QredoTransportError";
 
@@ -22,11 +23,7 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
 @implementation QredoTransport
 
 +(instancetype)transportForServiceURL:(NSURL *)serviceURL {
-    if (!serviceURL){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"Service URL argument is nil"
-                                     userInfo:nil];
-    }
+    GUARD(serviceURL,@"Service URL argument is nil");
     
     QredoTransport *transport;
     
@@ -62,22 +59,14 @@ NSString *const QredoTransportErrorDomain = @"QredoTransportError";
 
 
 -(instancetype)initWithServiceURL:(NSURL *)serviceURL {
-    if (!serviceURL){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Service URL argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(serviceURL,@"Service URL argument is nil");
     self = [super init];
-    
     if (self){
         //Concurrent queue - needed as can have multiple responses being processed at same time
         _notificationQueue = dispatch_queue_create("com.qredo.transport.notifications",DISPATCH_QUEUE_CONCURRENT);
-        
         _serviceURL = serviceURL;
         _clientId = [QredoClientId randomClientId];
     }
-    
     return self;
 }
 

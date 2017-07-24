@@ -5,7 +5,7 @@
 #import "QredoVaultCrypto.h"
 #import "NSData+QredoRandomData.h"
 #import "NSDictionary+IndexableSet.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 #import "QredoNetworkTime.h"
 
 @interface VaultCryptoTests :QredoXCTestCase

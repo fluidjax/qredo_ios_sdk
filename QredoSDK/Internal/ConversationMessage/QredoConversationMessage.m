@@ -24,11 +24,9 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
                  summaryValues:[messageLF.metadata.values dictionaryFromIndexableSet]];
     
     if (!self)return nil;
-    
     _messageId = messageLF.metadata.id;
     _parentId = [messageLF.metadata.parentId anyObject];
     _incoming = incoming;
-    
     return self;
 }
 
@@ -56,11 +54,8 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
 
 -(QLFConversationMessage *)messageLF {
     NSSet *summaryValuesSet = [self.summaryValues indexableSet];
-    
     //NOTE: QLFConversationMessageMetadata and QLFConversationMessage  will be removed in v0.52 of CommonDefs
-    
     QredoUTCDateTime *createdDate = [[QredoUTCDateTime alloc] initWithDate:self.summaryValues[kQredoConversationMessageKeyCreated]];
-    
     QLFConversationMessageMetadata *messageMetadata =
     [QLFConversationMessageMetadata conversationMessageMetadataWithID:[QredoQUID QUID]
                                                              parentId:self.parentId ? [NSSet setWithObject:self.parentId] : nil
@@ -69,9 +64,7 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
                                                               created:createdDate
                                                              dataType:self.dataType
                                                                values:summaryValuesSet];
-    
     QLFConversationMessage *message = [[QLFConversationMessage alloc] initWithMetadata:messageMetadata body:self.value];
-    
     return message;
 }
 
@@ -83,17 +76,12 @@ NSString *const kQredoConversationMessageKeyCreated = @"_created";
 
 -(QredoConversationControlMessageType)controlMessageType {
     if (![self isControlMessage])return QredoConversationControlMessageTypeNotControlMessage;
-    
     NSData *qrvValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRV]
                                                      marshaller:[QLFCtrl marshaller]];
-    
     if ([self.value isEqualToData:qrvValue])return QredoConversationControlMessageTypeJoined;
-    
     NSData *qrtValue = [QredoPrimitiveMarshallers marshalObject:[QLFCtrl qRT]
                                                      marshaller:[QLFCtrl marshaller]];
-    
     if ([self.value isEqualToData:qrtValue])return QredoConversationControlMessageTypeLeft;
-    
     return QredoConversationControlMessageTypeUnknown;
 }
 

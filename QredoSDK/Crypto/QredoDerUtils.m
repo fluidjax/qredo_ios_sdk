@@ -2,6 +2,7 @@
 
 #import "QredoDerUtils.h"
 #import "QredoLoggerPrivate.h"
+#import "QredoMacros.h"
 
 @implementation QredoDerUtils
 
@@ -15,29 +16,10 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
 +(BOOL)findOffsetOfDataWithExpectedTag:(uint8_t)expectedTag atOffset:(int)offset withinData:(NSData *)data offsetOfData:(int *)offsetOfData lengthOfData:(int *)lengthOfData {
     BOOL dataIsValid = YES;
     
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!offsetOfData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"OffsetOfData pointer argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!lengthOfData){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"LengthOfData pointer argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (offset > data.length){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Offset exceeds length of data"]
-                                     userInfo:nil];
-    }
+    GUARD(data,@"Data argument is nil");
+    GUARD(offsetOfData,@"OffsetOfData pointer argument is nil");
+    GUARD(lengthOfData,@"LengthOfData pointer argument is nil");
+    GUARD((offset <= data.length),@"Offset exceeds length of data");
     
     const unsigned char *dataBytes = data.bytes;
     
@@ -77,29 +59,10 @@ uint8_t rsaIdentifierArray[] = { 0x2A,0x86,0x48,0x86,0xF7,0x0D,0x01,0x01,0x01 };
     *lengthByteCount = 0;
     *length = 0;
     
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!lengthByteCount){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"LengthByteCount pointer argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!length){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Length pointer argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (offset > data.length){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Offset exceeds length of data"]
-                                     userInfo:nil];
-    }
+    GUARD(data,@"Data argument is nil");
+    GUARD(lengthByteCount,@"LengthByteCount pointer argument is nil");
+    GUARD(length,@"Length pointer argument is nil");
+    GUARD((offset <= data.length),@"Offset exceeds length of data");
     
     const unsigned char *dataBytes = data.bytes;
     

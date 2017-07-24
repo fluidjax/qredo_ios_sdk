@@ -34,6 +34,34 @@
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "66F7752B1BD6538D00F01A2C"
+               BuildableName = "LinguaFrancaTests.xctest"
+               BlueprintName = "LinguaFrancaTests"
+               ReferencedContainer = "container:QredoSDK.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "66605C361BD55A9F00EC8D6C"
+               BuildableName = "QredoCryptoTests.xctest"
+               BlueprintName = "QredoCryptoTests"
+               ReferencedContainer = "container:QredoSDK.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -46,94 +74,31 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "83E2510C1E8133090051B526"
-               BuildableName = "scratch.xctest"
-               BlueprintName = "scratch"
+               BlueprintIdentifier = "66F7752B1BD6538D00F01A2C"
+               BuildableName = "LinguaFrancaTests.xctest"
+               BlueprintName = "LinguaFrancaTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "Base58Tests">
-               </Test>
-               <Test
-                  Identifier = "ConversationCryptoTests">
-               </Test>
-               <Test
-                  Identifier = "ConversationProtocolTest">
-               </Test>
-               <Test
-                  Identifier = "ConversationTests">
-               </Test>
-               <Test
-                  Identifier = "ConversationWebSocketTests">
-               </Test>
-               <Test
-                  Identifier = "HighwatermarksTests">
-               </Test>
-               <Test
-                  Identifier = "MultiPageMessageTest">
-               </Test>
-               <Test
-                  Identifier = "ObjectSerialization">
-               </Test>
-               <Test
-                  Identifier = "OwnershipSignatureTests">
-               </Test>
-               <Test
-                  Identifier = "QredoClientTests/testKeychainStorage">
-               </Test>
-               <Test
-                  Identifier = "QredoIndexVaultTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousAnonymousHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousCryptoTest">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousWebSocketTests">
-               </Test>
-               <Test
-                  Identifier = "QredoSExpressionTests">
-               </Test>
-               <Test
-                  Identifier = "QredoUserCredentialsTests">
-               </Test>
-               <Test
-                  Identifier = "QredoUtilsTests">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultTests">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultUpdateTests">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultUpdateWebSocketTests">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultWebSocketTests">
-               </Test>
-               <Test
-                  Identifier = "QredoXCTestCase">
-               </Test>
-               <Test
-                  Identifier = "RendezvousListenerTests">
-               </Test>
-               <Test
-                  Identifier = "SSLTimeSyncTests">
-               </Test>
-               <Test
-                  Identifier = "TestFrameworkTests">
-               </Test>
-               <Test
-                  Identifier = "VaultCryptoTests">
-               </Test>
-            </SkippedTests>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "66605C361BD55A9F00EC8D6C"
+               BuildableName = "QredoCryptoTests.xctest"
+               BlueprintName = "QredoCryptoTests"
+               ReferencedContainer = "container:QredoSDK.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "66605C8F1BD6402E00EC8D6C"
+               BuildableName = "QredoSDKTests.xctest"
+               BlueprintName = "QredoSDKTests"
+               ReferencedContainer = "container:QredoSDK.xcodeproj">
+            </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
@@ -183,6 +148,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "83E2510C1E8133090051B526"
+            BuildableName = "scratch.xctest"
+            BlueprintName = "scratch"
+            ReferencedContainer = "container:QredoSDK.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -15,7 +15,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 #import "QredoCryptoTestUtilities.h"
 
 #import <objc/runtime.h>
@@ -102,7 +102,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     //Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
     [self setupRootCertificates];
     [self setupCrls];
-    self.cryptoImpl = [[CryptoImplV1 alloc] init];
+    self.cryptoImpl = [CryptoImplV1 sharedInstance];
     
     //Must remove any existing keys before starting
     [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
@@ -627,6 +627,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [testClient1 createAnonymousRendezvousWithTag:randomTag
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
+                               summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
                                XCTAssertNotNil(error);
                                XCTAssertNil(rendezvous);
@@ -743,6 +744,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [testClient1 createAnonymousRendezvousWithTag:randomTag
                                     duration:kRendezvousTestDurationSeconds
                           unlimitedResponses:YES
+                                    summaryValues:nil
                            completionHandler:^(QredoRendezvous *rendezvous,NSError *error)
      {
          XCTAssertNotNil(error);

@@ -6,7 +6,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoDhPublicKey.h"
 #import "QredoDhPrivateKey.h"
-#import "NSData+ParseHex.h"
+#import "NSData+HexTools.h"
 
 @interface CryptoImplV1Tests :XCTestCase
 
@@ -38,7 +38,7 @@
     NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     NSData *encryptedDataWithIv = [cryptoImpl encryptWithKey:keyData data:plaintextData];
     
     XCTAssertNotNil(encryptedDataWithIv,@"Encrypted data with IV should not be nil.");
@@ -71,7 +71,7 @@
     NSString *expectedString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *expectedData = [expectedString dataUsingEncoding:NSASCIIStringEncoding];
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     NSData *decryptedData = [cryptoImpl decryptWithKey:keyData data:ivAndEncryptedData];
     
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
@@ -192,7 +192,7 @@
     };
     NSData *plaintextData = [NSData dataWithBytes:plaintextDataArray length:sizeof(plaintextDataArray) / sizeof(uint8_t)];
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     NSData *encryptedDataWithIv = [cryptoImpl encryptWithKey:keyData data:plaintextData];
     
     XCTAssertNotNil(encryptedDataWithIv,@"Encrypted data with IV should not be nil.");
@@ -212,7 +212,7 @@
     uint8_t inputDataArray[] = {};
     NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     
     XCTAssertThrows([cryptoImpl getAuthCodeWithKey:keyData data:inputData]);
 }
@@ -231,7 +231,7 @@
     };
     NSData *expectedAuthCode = [NSData dataWithBytes:expectedAuthCodeArray length:sizeof(expectedAuthCodeArray) / sizeof(uint8_t)];
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     NSData *authCode = [cryptoImpl getAuthCodeWithKey:keyData data:inputData];
     
     XCTAssertNotNil(authCode,@"Auth code should not be nil.");
@@ -253,7 +253,7 @@
     };
     NSData *expectedAuthCode = [NSData dataWithBytes:expectedAuthCodeArray length:sizeof(expectedAuthCodeArray) / sizeof(uint8_t)];
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     //Only generate the HMAC over the first 43 bytes
     NSData *authCode = [cryptoImpl getAuthCodeWithKey:keyData data:inputData length:43];
     
@@ -277,7 +277,7 @@
     
     BOOL expectedVerification = YES;
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
@@ -299,7 +299,7 @@
     
     BOOL expectedVerification = NO;
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
@@ -321,7 +321,7 @@
     
     BOOL expectedVerification = NO;
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
@@ -346,7 +346,7 @@
     
     BOOL expectedVerification = YES;
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
@@ -371,7 +371,7 @@
     
     BOOL expectedVerification = NO;
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
@@ -382,7 +382,7 @@
     //Can't really test randomness here, but can check the length is correct,
     //and that we don't get the same key twice.
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     NSData *randomKey1 = [cryptoImpl getRandomKey];
     NSData *randomKey2 = [cryptoImpl getRandomKey];
     
@@ -404,7 +404,7 @@
     
     NSData *expectedDerivedKeyData = [NSData dataWithBytes:expectedDerivedKeyDataArray length:sizeof(expectedDerivedKeyDataArray) / sizeof(uint8_t)];
     
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     NSData *key = [cryptoImpl getPasswordBasedKeyWithSalt:saltData password:passwordString];
     
     XCTAssertNotNil(key,@"Key should not be nil.");
@@ -413,7 +413,7 @@
 
 
 -(void)testGenerateDHKeyPair {
-    CryptoImplV1 *cryptoImpl = [[CryptoImplV1 alloc] init];
+    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
     QredoKeyPair *keyPair1 = [cryptoImpl generateDHKeyPair];
     QredoKeyPair *keyPair2 = [cryptoImpl generateDHKeyPair];
     

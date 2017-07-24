@@ -3,7 +3,7 @@
 #import "rsapss.h"
 #import "QredoCrypto.h"
 #import "NSData+QredoRandomData.h"
-#import "NSData+Conversion.h"
+#import "NSData+HexTools.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoRsaPrivateKey.h"
 #import "QredoCryptoTestUtilities.h"

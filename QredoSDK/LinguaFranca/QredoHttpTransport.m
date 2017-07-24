@@ -4,6 +4,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoTransportSSLTrustUtils.h"
 #import "QredoCertificate.h"
+#import "QredoMacros.h"
 
 @interface QredoHttpTransport ()<NSURLSessionDelegate>
 
@@ -37,12 +38,7 @@ static const NSUInteger maxNumberOfConnections = 10;
 
 
 -(instancetype)initWithServiceURL:(NSURL *)serviceURL {
-    if (!serviceURL){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Service URL argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(serviceURL,@"Service URL argument is nil");
     self = [super initWithServiceURL:serviceURL];
     
     if (self){

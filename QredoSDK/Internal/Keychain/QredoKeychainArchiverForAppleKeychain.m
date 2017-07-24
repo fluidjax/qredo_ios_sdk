@@ -7,7 +7,6 @@
 
 static NSString *kUnderlyingErrorSource = @"Underlying error source";
 static NSString *kUnderlyingErrorCode = @"Underlying error code";
-
 static NSString *kCurrentService = @"CurrentService";
 
 @implementation QredoKeychainArchiverForAppleKeychain
@@ -17,9 +16,7 @@ static NSString *kCurrentService = @"CurrentService";
     
     if (!qredoKeychain){
         //Delete keychain
-        
         OSStatus deleteSanityCheck = [self deleteQredoKeychainWithIdentifier:identifier error:error];
-        
         if (deleteSanityCheck != noErr){
             if (error){
                 *error = [NSError errorWithDomain:QredoErrorDomain
@@ -31,10 +28,8 @@ static NSString *kCurrentService = @"CurrentService";
                             }
                           ];
             }
-            
             return NO;
         }
-        
         return YES;
     }
     
@@ -44,7 +39,6 @@ static NSString *kCurrentService = @"CurrentService";
     
     if (querySanityCheck == noErr){
         OSStatus deleteSanityCheck = [self deleteQredoKeychainWithIdentifier:identifier error:error];
-        
         if (deleteSanityCheck != noErr){
             if (error){
                 *error = [NSError errorWithDomain:QredoErrorDomain
@@ -77,16 +71,12 @@ static NSString *kCurrentService = @"CurrentService";
     //Save the keychain
     
     NSData *keychainData = [qredoKeychain data];
-
     if (!keychainData)return NO;
-    
     NSMutableDictionary *addDictionary = [[NSMutableDictionary alloc] init];
     [addDictionary setObject:(__bridge id)kSecClassGenericPassword forKey:(__bridge id < NSCopying >)kSecClass];
     [addDictionary setObject:kCurrentService forKey:(__bridge id < NSCopying >)kSecAttrService];
     [addDictionary setObject:identifier forKey:(__bridge id < NSCopying >)kSecAttrAccount];
     [addDictionary setObject:keychainData forKey:(__bridge id < NSCopying >)(kSecValueData)];
-    
-    
 
     OSStatus sanityCheck = SecItemAdd((__bridge CFDictionaryRef)(addDictionary),NULL);
     
@@ -101,10 +91,8 @@ static NSString *kCurrentService = @"CurrentService";
                         }
                       ];
         }
-        
         return NO;
     }
-    
     return YES;
 }
 
@@ -183,7 +171,6 @@ static NSString *kCurrentService = @"CurrentService";
                         }];
         }
     }
-    
     return qredoKeychain;
 }
 

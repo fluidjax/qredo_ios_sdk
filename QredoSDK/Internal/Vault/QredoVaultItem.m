@@ -13,7 +13,6 @@
 
 +(instancetype)vaultItemWithMetadataDictionary:(NSDictionary *)metadataDictionary value:(NSData *)value {
     QredoVaultItemMetadata *vaultItemMetadata = [QredoVaultItemMetadata vaultItemMetadataWithSummaryValues:metadataDictionary];
-    
     return [[QredoVaultItem alloc] initWithMetadata:vaultItemMetadata value:value];
 }
 
@@ -25,7 +24,6 @@
 
 -(instancetype)initWithMetadata:(QredoVaultItemMetadata *)metadata value:(NSData *)value {
     self = [super init];
-
     if (self){
         _metadata = metadata;
         _value = value;
@@ -42,7 +40,6 @@
 
 -(NSString *)description {
     NSMutableString *desc = [[NSMutableString alloc] init];
-    
     [desc appendFormat:@"%@",self.metadata];
     return [desc copy];
 }
