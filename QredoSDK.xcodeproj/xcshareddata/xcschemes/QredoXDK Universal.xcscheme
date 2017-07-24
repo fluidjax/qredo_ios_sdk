@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "6602D94D1C24239500CB5794"
-               BuildableName = "libQredoXDK_Universal.a"
+               BuildableName = "QredoXDK_Universal"
                BlueprintName = "QredoXDK_Universal"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>

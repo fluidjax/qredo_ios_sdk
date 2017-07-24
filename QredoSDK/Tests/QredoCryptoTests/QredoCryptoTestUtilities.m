@@ -241,67 +241,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 }
 
 
-+(SecKeyRef)getPublicKeyRefFromIdentityRef:(SecIdentityRef)identityRef {
-    
-    GUARD(identityRef,
-          @"Identity ref argument is nil");
-    
-    /*
-     Unfortunately, iOS does not provide a way to get the public key directly from a SecCertificateRef.
-     Instead, you have to create a SecTrustRef from the certificate, evaluate the trust and get it from there.
-     This is fine when you're importing a PKCS#12 blob as you get a SecTrustRef as part of that.  However, if the
-     SecIdentityRef was stored in the Keychain, then you do not get a SecTrustRef.  Additionally, you may not know
-     which root/anchor certificate is required to successfully evaluate the trust, although that doesn't necessarily
-     cause a problem, as a failed evaluation doesn't prevent returning the public key.
-     */
-    
-    SecKeyRef publicKeyRef = nil;
-    SecCertificateRef publicCertificateRef = nil;
-    
-    OSStatus status = SecIdentityCopyCertificate(identityRef,&publicCertificateRef);
-    
-    if (status != errSecSuccess){
-        QredoLogError(@"SecIdentityCopyCertificate returned error: %@",[QredoLogger stringFromOSStatus:status]);
-    }
-    
-    //Now need to create and evaluate a SecTrustRef
-    NSArray *certificates = @[(__bridge id)publicCertificateRef];
-    
-    SecTrustRef trustRef = nil;
-    SecPolicyRef policyRef = SecPolicyCreateBasicX509();
-    
-    status = SecTrustCreateWithCertificates((__bridge CFArrayRef)certificates,policyRef,&trustRef);
-    
-    if (status != noErr){
-        QredoLogError(@"Creating trust failed: %@",[QredoLogger stringFromOSStatus:status]);
-    } else {
-        //Now evaluate the trust we've created with this public certificate, required before obtaining the public key.
-        //If fetched from keychain, we do not know which root/anchor certificate is needed. If the root/anchor was
-        //stored in the keychain, it could be searched from there - however, unsuccessful trust evaulation does
-        //not prevent extraction of the public key, so no anchors are configured here.
-        
-        SecTrustResultType trustResult;
-        OSStatus status = SecTrustEvaluate(trustRef,&trustResult);
-        
-        if (status != noErr){
-            QredoLogError(@"Trust evaluation returned error: %@",[QredoLogger stringFromOSStatus:status]);
-        } else {
-            //Trust evaluation completed (not interested in trust result)
-            publicKeyRef = [QredoCrypto getPublicKeyRefFromEvaluatedTrustRef:trustRef];
-        }
-    }
-    
-    if (policyRef){
-        CFRelease(policyRef);
-    }
-    
-    if (trustRef){
-        CFRelease(trustRef);
-    }
-    
-    return publicKeyRef;
-}
-
 
 
 +(NSData *)rsaEncryptPlainTextData:(NSData *)plainTextData padding:(QredoPadding)padding keyRef:(SecKeyRef)keyRef {

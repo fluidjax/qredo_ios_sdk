@@ -22,7 +22,6 @@
 
 +(SecCertificateRef)getCertificateRefFromIdentityRef:(SecIdentityRef)identityRef;
 +(SecKeyRef)getPrivateKeyRefFromIdentityRef:(SecIdentityRef)identityRef;
-+(SecKeyRef)getPublicKeyRefFromIdentityRef:(SecIdentityRef)identityRef;
 +(NSData *)rsaEncryptPlainTextData:(NSData *)plainTextData padding:(QredoPadding)padding keyRef:(SecKeyRef)keyRef;
 +(NSData *)rsaDecryptCipherTextData:(NSData *)cipherTextData padding:(QredoPadding)padding keyRef:(SecKeyRef)keyRef;
 

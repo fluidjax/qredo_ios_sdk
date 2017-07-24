@@ -30,7 +30,6 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 
 +(QredoSecKeyRefPair *)rsaGenerate:(NSInteger)keySize publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys;
 +(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef;
-+(SecKeyRef)getPublicKeyRefFromEvaluatedTrustRef:(SecTrustRef)trustRef;
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier;
 +(NSData *)getKeyDataForIdentifier:(NSString *)keyIdentifier;
 OSStatus fixedSecItemCopyMatching(CFDictionaryRef query,CFTypeRef *result);
