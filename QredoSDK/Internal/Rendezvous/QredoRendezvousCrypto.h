@@ -26,9 +26,6 @@
 -(QLFKeyPairLF *)newRequesterKeyPair;
 -(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
 
--(SecKeyRef)accessControlPublicKeyWithTag:(NSString *)tag;
--(SecKeyRef)accessControlPrivateKeyWithTag:(NSString *)tag;
-
 -(NSData *)signChallenge:(NSData *)challenge
                  hashtag:(QLFRendezvousHashedTag *)hashtag
                    nonce:(QLFNonce *)nonce
