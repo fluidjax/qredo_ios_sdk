@@ -148,7 +148,12 @@
     NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
     NSData *iv                  = [QredoUtils hexStringToData:@"00000000000000000000000000000000"];
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     XCTAssertThrows([QredoCrypto aes256CtrDecrypt:nil key:key iv:iv],@"Should throw an exception");
+#pragma clang diagnostic pop
+    
+    
 }
 
 
@@ -252,15 +257,25 @@
 -(void)testEncryptData256BitKey_NilIv {
     NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     XCTAssertThrows([QredoCrypto aes256CtrEncrypt:plaintext key:key iv:nil],@"Should throw an exception");
+#pragma clang diagnostic pop
+    
+    
 }
 
 -(void)testEncryptData256BitNilInput {
     NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
     NSData *iv                  = [QredoUtils hexStringToData:@"0000000000000000"];
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     XCTAssertThrows([QredoCrypto aes256CtrEncrypt:nil key:key iv:iv],@"Should throw an exception");
-}
+#pragma clang diagnostic pop
+    
+    }
 
 
  
