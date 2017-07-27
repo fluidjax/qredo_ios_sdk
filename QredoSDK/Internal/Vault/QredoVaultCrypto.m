@@ -108,8 +108,7 @@
 
 
 +(QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey {
-    QredoKeyPair *kp = [[CryptoImplV1 sharedInstance] qredoED25519KeyPairWithSeed:vaultKey];
-    return (QredoED25519SigningKey *)kp.privateKey;
+    return [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:vaultKey];
 }
 
 

@@ -246,9 +246,8 @@ static char ownershipSignature_listOp_signatureBytes[] = {
 
 -(void)setUp {
     [super setUp];
-
-    QredoKeyPair *kp = [[CryptoImplV1 sharedInstance] qredoED25519KeyPairWithSeed:dataWithBytes(privateKeyBytes)];
-    self.key = (QredoED25519SigningKey *)kp.privateKey;
+    
+    self.key = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:dataWithBytes(privateKeyBytes)];
     NSAssert([self.key.verifyKey.data isEqual:dataWithBytes(publicKeyBytes)],@"The created key is malformed.");
     
     self.nonce = [QLFTestableOwnershipSignature nonce];
