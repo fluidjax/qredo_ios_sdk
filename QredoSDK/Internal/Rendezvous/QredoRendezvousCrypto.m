@@ -66,15 +66,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
 }
 
 
--(SecKeyRef)accessControlPublicKeyWithTag:(NSString *)tag {
-    NSString *publicKeyId = [tag stringByAppendingString:@".public"];
-    
-    SecKeyRef keyReference = [QredoRawCrypto getRsaSecKeyReferenceForIdentifier:publicKeyId];
-    
-    return keyReference;
-}
-
-
 +(NSData *)transformPublicKeyToData:(SecKeyRef)key {
     NSString *const keychainTag = @"X509_KEY";
     NSData *publicKeyData;
@@ -139,45 +130,15 @@ static const int QredoRendezvousMasterKeyLength = 32;
 }
 
 
--(SecKeyRef)accessControlPrivateKeyWithTag:(NSString *)tag {
-    NSString *privateKeyId = [tag stringByAppendingString:@".private"];
-    
-    SecKeyRef keyReference = [QredoRawCrypto getRsaSecKeyReferenceForIdentifier:privateKeyId];
-    
-    return keyReference;
-}
 
 
--(QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString *)keyId {
-    NSString *publicKeyId = [keyId stringByAppendingString:@".public"];
-    NSString *privateKeyId = [keyId stringByAppendingString:@".private"];
-    
-    QredoSecKeyRefPair *keyPairRef = [QredoRawCrypto rsaGenerate:2048
-                                          publicKeyIdentifier:publicKeyId
-                                         privateKeyIdentifier:privateKeyId
-                                       persistInAppleKeychain:YES];
-    
-    if (!keyPairRef){
-        //TODO: What should happen if keypair generation failed? More than just log it
-        QredoLogError(@"Failed to generate keypair for identifiers: '%@' and '%@'",publicKeyId,privateKeyId);
-    }
-    
-    QredoRsaPublicKey *rsaPublicKey = [[QredoRsaPublicKey alloc] initWithPkcs1KeyData:[QredoRawCrypto getKeyDataForIdentifier:publicKeyId]];
-    
-    uint8_t *pubKeyBytes = (uint8_t *)(rsaPublicKey.modulus.bytes);
-    //stripping the leading zero
-    ++pubKeyBytes;
-    
-    
-    NSData *publicKeyBytes  = [NSData dataWithBytes:pubKeyBytes length:256];
-    
-    NSData *privateKeyBytes = [QredoRawCrypto getKeyDataForIdentifier:privateKeyId];
-    
-    QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:publicKeyBytes];
-    QLFKeyLF *privateKeyLF = [QLFKeyLF keyLFWithBytes:privateKeyBytes];
-    
-    return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF
-                                     privKey:privateKeyLF];
+-(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed {
+    QredoED25519SigningKey *signKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:seed];
+    QredoPublicKey  *pubKey     = signKey.verifyKey;
+    QredoPrivateKey *privKey    = signKey;
+    QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:[pubKey serialize]];
+    QLFKeyLF *privateKeyLF = [QLFKeyLF keyLFWithBytes:[privKey serialize]];
+    return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF  privKey:privateKeyLF];
 }
 
 

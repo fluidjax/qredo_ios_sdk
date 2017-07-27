@@ -1,21 +1,3 @@
-Change RSA to ED25519
+To run locally from qredo-in-a-jar
 
-Currently Rendezvous in createRendezvousWithTag...
-
-    _ownershipPriavateKey = [RendezvousCrypto generateKeyWithTag:hashedTag]
-
-This RSA key is generated and stored in the secure enclave, and is never extracted.
-Only references to the key are passed around
-
-
-QredoRSASigner uses
-+(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef
-    SecKeyRawSign
-
-    this signs using key ref (not key) SecKeyRawSign
-
-
-
-To migrate to using ED25519 we can't sign inside secure enclave, the keys can be stored there
-but must be extracted to perform signing
-
+java -jar qredo-in-a-jar-0.19-SNAPSHOT.jar

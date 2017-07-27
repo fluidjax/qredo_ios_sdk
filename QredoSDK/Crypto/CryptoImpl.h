@@ -8,6 +8,7 @@
 
 @protocol CryptoImpl
 
+
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data;
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv;
 -(NSData *)decryptWithKey:(NSData *)secretKey data:(NSData *)data;
@@ -32,7 +33,9 @@
 
 -(QredoKeyPair *)generateDHKeyPair;
 
+
 -(QredoKeyPair *)qredoED25519KeyPairWithSeed:(NSData *)seed;
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error;
+-(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed;
 
 @end

@@ -21,12 +21,10 @@
                                                 responderPublicKey:(NSData *)responderPublicKey;
 
 
--(QLFKeyPairLF *)newAccessControlKeyPairWithId:(NSString *)keyId;
+-(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed;
+
 -(QLFKeyPairLF *)newRequesterKeyPair;
 -(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
-
--(SecKeyRef)accessControlPublicKeyWithTag:(NSString *)tag;
--(SecKeyRef)accessControlPrivateKeyWithTag:(NSString *)tag;
 
 -(NSData *)signChallenge:(NSData *)challenge
                  hashtag:(QLFRendezvousHashedTag *)hashtag

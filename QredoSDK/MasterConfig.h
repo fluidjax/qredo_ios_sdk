@@ -28,10 +28,21 @@
 
 //The Test Server [QredoClientOptions alloc] initTest]
 //These are used in Testing to create an QredoClientOption object and pass it into the QredoClient init method
+
 #define     TEST_SERVER_URL             @"api-dev.oderq.com"
 #define     TEST_USE_HTTP               NO
 #define     TEST_SERVER_APP_ID          @"test"
 #define     TEST_SERVER_APP_SECRET      @"a23469be8be13768c74ca0937cec47d1"
+
+
+//Use these when testing on local Qreedo-in-a-jar
+//        java -jar qredo-in-a-jar-0.19-SNAPSHOT.jar 
+//#define     TEST_SERVER_URL             @"127.0.0.1"
+//#define     TEST_USE_HTTP               YES
+//#define     TEST_SERVER_APP_ID          @"test"
+//#define     TEST_SERVER_APP_SECRET      @"cafebabecafebabecafebabecafebabe"
+
+
 #define     TEST_SERVER_USERID          @"testUserId1"
 #define     TEST_SERVER_USERSECRET      @"secret1"
 #define     TEST_SERVER_USERID2         @"testUserId2"

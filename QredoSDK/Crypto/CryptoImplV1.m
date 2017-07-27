@@ -12,6 +12,10 @@
 #define PBKDF2_ITERATION_COUNT          10000
 #define PBKDF2_DERIVED_KEY_LENGTH_BYTES 32
 #define PASSWORD_ENCODING_FOR_PBKDF2    NSUTF8StringEncoding
+#define ED25519_VERIFY_KEY_LENGTH       32
+#define ED25519_SIGNING_KEY_LENGTH      64
+#define ED25519_SIGNATURE_LENGTH        64
+#define ED25519_SEED_LENGTH             32
 
 -(instancetype)init {
     self = [super init];
@@ -275,15 +279,44 @@
     
     return keyPair;
 }
+    
 
--(QredoKeyPair *)qredoED25519KeyPairWithSeed:(NSData *)seed {
-    return [QredoRawCrypto ed25519Derive:seed];
+-(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed {
+    NSAssert([seed length] == ED25519_SEED_LENGTH,@"Malformed seed");
+    NSMutableData *skData = [NSMutableData dataWithLength:ED25519_SIGNING_KEY_LENGTH];
+    NSMutableData *vkData = [NSMutableData dataWithLength:ED25519_VERIFY_KEY_LENGTH];
+    
+    crypto_sign_ed25519_seed_keypair(vkData.mutableBytes,skData.mutableBytes,seed.bytes);
+    
+    QredoED25519VerifyKey *vk = [self qredoED25519VerifyKeyWithData:[vkData copy] error:nil];
+    NSAssert(vk,@"Could not create verification key.");
+    
+    if (!vk){
+        return nil;
+    }
+    
+    return [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:skData verifyKey:vk];
 }
 
+
+-(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error {
+    NSAssert([data length] == ED25519_VERIFY_KEY_LENGTH, @"Invalid ED25519 Verfiy key length");
+    return [[QredoED25519VerifyKey alloc] initWithKeyData:data];
+}
+
+
+
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error {
-    // This code is a temporary stepping stone towards fixing this layer correctly.
-    QredoKeyPair *keyPair = [QredoRawCrypto ed25519DeriveFromSecretKey:sk.serialize];
-    return [QredoRawCrypto ed25519Sha512Sign:message keyPair:keyPair];
+    GUARD(sk, @"Signing key is required for signing");
+    NSAssert([message length]>=1,@"message is 0 bytes");
+    NSMutableData *signature    = [NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH];
+    
+    crypto_sign_ed25519_detached([signature mutableBytes],
+                                 nil,
+                                 [message bytes],
+                                 [message length],
+                                 [sk.data bytes]);
+    return [signature copy];
 }
 
 @end
