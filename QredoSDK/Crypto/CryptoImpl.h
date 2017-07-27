@@ -49,14 +49,8 @@ typedef NS_ENUM (NSUInteger,QredoCryptoImplError) {
 
 -(QredoED25519SigningKey *)qredoED25519SigningKey;
 -(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed;
--(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error;
-
--(NSData *)qredoED25519EmptySignature;
--(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error;
-
--(BOOL)qredoED25519VerifySignature:(NSData *)signature
-                         ofMessage:(NSData *)message
-                         verifyKey:(QredoED25519VerifyKey *)vk
+-(NSData *)qredoED25519SignMessage:(NSData *)message
+                           withKey:(QredoED25519SigningKey *)sk
                              error:(NSError **)error;
 
 @end
