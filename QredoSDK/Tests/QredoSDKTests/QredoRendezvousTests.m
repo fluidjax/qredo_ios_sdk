@@ -6,7 +6,7 @@
 #import "QredoTestUtils.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoClient.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoRendezvousCrypto.h"
 #import "CryptoImplV1.h"
 #import "QredoBase58.h"

@@ -3,7 +3,7 @@
 #import "QredoXCTestCase.h"
 #import <XCTest/XCTest.h>
 #import "QredoRendezvousCrypto.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "CryptoImpl.h"
 #import "CryptoImplV1.h"
 #import "NSData+HexTools.h"

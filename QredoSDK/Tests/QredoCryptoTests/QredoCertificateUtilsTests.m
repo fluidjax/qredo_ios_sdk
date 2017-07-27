@@ -5,7 +5,7 @@
 #import "QredoCertificateUtils_Private.h"
 #import "TestCertificates.h"
 #import "NSData+QredoRandomData.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoCryptoTestUtilities.h"
 
@@ -222,7 +222,7 @@
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKey";
     NSUInteger keySizeBits = 2048;
     
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto rsaGenerate:keySizeBits
+    QredoSecKeyRefPair *keyPairRef = [QredoRawCrypto rsaGenerate:keySizeBits
                                           publicKeyIdentifier:publicKeyIdentifier
                                          privateKeyIdentifier:privateKeyIdentifier
                                        persistInAppleKeychain:YES];

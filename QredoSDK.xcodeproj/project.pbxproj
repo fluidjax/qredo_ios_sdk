@@ -19,7 +19,7 @@
 		665149111BF60432003491CA /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */; };
 		665149131BF60432003491CA /* CryptoImplV1.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059721BD505FE00EC8D6C /* CryptoImplV1.m */; };
 		665149141BF60432003491CA /* QredoCertificateUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059751BD505FE00EC8D6C /* QredoCertificateUtils.m */; };
-		665149151BF60432003491CA /* QredoCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059771BD505FE00EC8D6C /* QredoCrypto.m */; };
+		665149151BF60432003491CA /* QredoRawCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059771BD505FE00EC8D6C /* QredoRawCrypto.m */; };
 		665149161BF60432003491CA /* QredoCryptoError.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059791BD505FE00EC8D6C /* QredoCryptoError.m */; };
 		665149171BF60432003491CA /* QredoDerUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660597B1BD505FE00EC8D6C /* QredoDerUtils.m */; };
 		665149181BF60432003491CA /* QredoDhPrivateKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660597D1BD505FE00EC8D6C /* QredoDhPrivateKey.m */; };
@@ -526,8 +526,8 @@
 		666059731BD505FE00EC8D6C /* QredoCertificateUtils_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCertificateUtils_Private.h; sourceTree = "<group>"; };
 		666059741BD505FE00EC8D6C /* QredoCertificateUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCertificateUtils.h; sourceTree = "<group>"; };
 		666059751BD505FE00EC8D6C /* QredoCertificateUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoCertificateUtils.m; sourceTree = "<group>"; };
-		666059761BD505FE00EC8D6C /* QredoCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCrypto.h; sourceTree = "<group>"; };
-		666059771BD505FE00EC8D6C /* QredoCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoCrypto.m; sourceTree = "<group>"; };
+		666059761BD505FE00EC8D6C /* QredoRawCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRawCrypto.h; sourceTree = "<group>"; };
+		666059771BD505FE00EC8D6C /* QredoRawCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoRawCrypto.m; sourceTree = "<group>"; };
 		666059781BD505FE00EC8D6C /* QredoCryptoError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCryptoError.h; sourceTree = "<group>"; };
 		666059791BD505FE00EC8D6C /* QredoCryptoError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoCryptoError.m; sourceTree = "<group>"; };
 		6660597A1BD505FE00EC8D6C /* QredoDerUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoDerUtils.h; sourceTree = "<group>"; };
@@ -1166,8 +1166,8 @@
 				666059731BD505FE00EC8D6C /* QredoCertificateUtils_Private.h */,
 				666059741BD505FE00EC8D6C /* QredoCertificateUtils.h */,
 				666059751BD505FE00EC8D6C /* QredoCertificateUtils.m */,
-				666059761BD505FE00EC8D6C /* QredoCrypto.h */,
-				666059771BD505FE00EC8D6C /* QredoCrypto.m */,
+				666059761BD505FE00EC8D6C /* QredoRawCrypto.h */,
+				666059771BD505FE00EC8D6C /* QredoRawCrypto.m */,
 				666059781BD505FE00EC8D6C /* QredoCryptoError.h */,
 				666059791BD505FE00EC8D6C /* QredoCryptoError.m */,
 				6660597A1BD505FE00EC8D6C /* QredoDerUtils.h */,
@@ -1932,8 +1932,6 @@
 			mainGroup = 0A16F88619C3566B00639779;
 			productRefGroup = 0A16F8C119C358B400639779 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-			);
 			projectRoot = "";
 			targets = (
 				66F7752B1BD6538D00F01A2C /* LinguaFrancaTests */,
@@ -2686,7 +2684,7 @@
 				665149111BF60432003491CA /* NSSet+QredoSetEquality.m in Sources */,
 				665149131BF60432003491CA /* CryptoImplV1.m in Sources */,
 				665149141BF60432003491CA /* QredoCertificateUtils.m in Sources */,
-				665149151BF60432003491CA /* QredoCrypto.m in Sources */,
+				665149151BF60432003491CA /* QredoRawCrypto.m in Sources */,
 				665149161BF60432003491CA /* QredoCryptoError.m in Sources */,
 				665149171BF60432003491CA /* QredoDerUtils.m in Sources */,
 				83EC3B0A1CC7A0A200A55271 /* QredoNetworkTime.m in Sources */,

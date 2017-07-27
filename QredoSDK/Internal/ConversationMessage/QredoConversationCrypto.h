@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "CryptoImpl.h"
 
 #import "QredoDhPrivateKey.h"

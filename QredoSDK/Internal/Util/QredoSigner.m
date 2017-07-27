@@ -3,7 +3,7 @@
 
 #import "CryptoImplV1.h"
 
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoErrorCodes.h"
 
 static const int PSS_SALT_LENGTH_IN_BYTES = 32;
@@ -48,7 +48,7 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 -(NSData *)signData:(NSData *)data error:(NSError **)error {
     @try {
-        return [QredoCrypto rsaPssSignMessage:data saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:_keyRef];
+        return [QredoRawCrypto rsaPssSignMessage:data saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:_keyRef];
     } @catch (NSException *exception){
         if (error){
             *error = [NSError errorWithDomain:QredoErrorDomain

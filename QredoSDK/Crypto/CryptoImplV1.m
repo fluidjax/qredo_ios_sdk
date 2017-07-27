@@ -1,7 +1,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "sodium.h"
 #import "CryptoImplV1.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoEllipticCurvePoint.h"
 #import "MasterConfig.h"
 
@@ -34,7 +34,7 @@
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data {
     //Generate a random IV of the correct length for AES
-    NSData *iv = [QredoCrypto secureRandom:kCCBlockSizeAES128];
+    NSData *iv = [QredoRawCrypto secureRandom:kCCBlockSizeAES128];
     
     return [self encryptWithKey:secretKey data:data iv:iv];
 }
@@ -53,7 +53,7 @@
                                      userInfo:nil];
     }
 
-    NSData *encryptedData = [QredoCrypto aes256CtrEncrypt:data key:secretKey iv:iv];
+    NSData *encryptedData = [QredoRawCrypto aes256CtrEncrypt:data key:secretKey iv:iv];
 
     NSMutableData *ivAndEncryptedData = nil;
     
@@ -99,7 +99,7 @@
     NSRange encryptedDataRange = NSMakeRange(ivLength,data.length - ivLength);
     NSData *dataToDecrypt = [data subdataWithRange:encryptedDataRange];
     
-    NSData *decryptedData = [QredoCrypto aes256CtrDecrypt:dataToDecrypt key:secretKey iv:iv];
+    NSData *decryptedData = [QredoRawCrypto aes256CtrDecrypt:dataToDecrypt key:secretKey iv:iv];
     
     return decryptedData;
 }
@@ -132,7 +132,7 @@
                                      userInfo:nil];
     }
     
-    NSData *authCode = [QredoCrypto hmacSha256:data key:authKey outputLen:length];
+    NSData *authCode = [QredoRawCrypto hmacSha256:data key:authKey outputLen:length];
     
     return authCode;
 }
@@ -195,16 +195,16 @@
     }
     
     //Generate the HMAC and compare to provided value (using constant time comparison function)
-    NSData *generatedHmac = [QredoCrypto hmacSha256:data key:authKey outputLen:data.length];
+    NSData *generatedHmac = [QredoRawCrypto hmacSha256:data key:authKey outputLen:data.length];
     
-    BOOL macCorrect = [QredoCrypto constantEquals:generatedHmac rhs:mac];
+    BOOL macCorrect = [QredoRawCrypto constantEquals:generatedHmac rhs:mac];
     
     return macCorrect;
 }
 
 
 -(NSData *)getRandomKey {
-    NSData *randomKey = [QredoCrypto secureRandom:BULK_KEY_SIZE_IN_BYTES];
+    NSData *randomKey = [QredoRawCrypto secureRandom:BULK_KEY_SIZE_IN_BYTES];
     
     return randomKey;
 }
@@ -212,7 +212,7 @@
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password {
     NSData *passwordData = [password dataUsingEncoding:PASSWORD_ENCODING_FOR_PBKDF2];
     
-    NSData *key = [QredoCrypto pbkdf2Sha256:passwordData salt:salt outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_ITERATION_COUNT];
+    NSData *key = [QredoRawCrypto pbkdf2Sha256:passwordData salt:salt outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_ITERATION_COUNT];
     
     return key;
 }
@@ -252,8 +252,8 @@
     NSData *ikm = [self getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
     
     //HKDF using SHA-256
-    NSData *prk = [QredoCrypto hkdfSha256Extract:ikm salt:salt];
-    NSData *okm = [QredoCrypto hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *prk = [QredoRawCrypto hkdfSha256Extract:ikm salt:salt];
+    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:CC_SHA256_DIGEST_LENGTH];
     NSData *diffieHellmanSecretData = okm;
     
     return diffieHellmanSecretData;
@@ -277,13 +277,13 @@
 }
 
 -(QredoKeyPair *)qredoED25519KeyPairWithSeed:(NSData *)seed {
-    return [QredoCrypto ed25519Derive:seed];
+    return [QredoRawCrypto ed25519Derive:seed];
 }
 
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error {
     // This code is a temporary stepping stone towards fixing this layer correctly.
-    QredoKeyPair *keyPair = [QredoCrypto ed25519DeriveFromSecretKey:sk.serialize];
-    return [QredoCrypto ed25519Sha512Sign:message keyPair:keyPair];
+    QredoKeyPair *keyPair = [QredoRawCrypto ed25519DeriveFromSecretKey:sk.serialize];
+    return [QredoRawCrypto ed25519Sha512Sign:message keyPair:keyPair];
 }
 
 @end

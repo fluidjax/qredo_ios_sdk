@@ -12,7 +12,7 @@
 #import "QredoRendezvousCrypto.h"
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoVaultCrypto.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoLoggerPrivate.h"

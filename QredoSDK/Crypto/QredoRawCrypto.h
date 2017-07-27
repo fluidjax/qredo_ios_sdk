@@ -12,7 +12,7 @@ typedef NS_ENUM (uint8_t,QredoPadding) {
 #define RSA_OAEP_MIN_PADDING_LENGTH  42
 #define RSA_PKCS1_MIN_PADDING_LENGTH 11
 
-@interface QredoCrypto : NSObject
+@interface QredoRawCrypto : NSObject
 
 NS_ASSUME_NONNULL_BEGIN
 

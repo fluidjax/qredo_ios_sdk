@@ -9,7 +9,7 @@
 #import "QredoCryptoTestUtilities.h"
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "rsapss.h"
 
 @implementation QredoCryptoTestUtilities
@@ -191,7 +191,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSMutableData *decryptedSignature = [NSMutableData dataWithBytesNoCopy:decryptedSignatureBytes length:keyLength freeWhenDone:YES];
     
     
-    NSData *hash = [QredoCrypto sha256:message];
+    NSData *hash = [QredoRawCrypto sha256:message];
     
     int pss_result = rsa_pss_sha256_verify(hash.bytes,hash.length,decryptedSignature.bytes,decryptedSignature.length,saltLength,keyLength * 8 - 1);
     

@@ -3,7 +3,7 @@
 #import "QredoKeychain.h"
 #import "QredoErrorCodes.h"
 #import "QredoLoggerPrivate.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 
 static NSString *kUnderlyingErrorSource = @"Underlying error source";
 static NSString *kUnderlyingErrorCode = @"Underlying error code";

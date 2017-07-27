@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 
 @interface QredoCryptoTestUtilities : NSObject
 

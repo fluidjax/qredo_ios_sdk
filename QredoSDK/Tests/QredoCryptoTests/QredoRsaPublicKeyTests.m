@@ -2,7 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoRsaPublicKey.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoCryptoTestUtilities.h"
 
 
@@ -52,7 +52,7 @@
     NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyExport1";
     NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyExport1";
     NSInteger keySizeBits = 1024;
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto rsaGenerate:keySizeBits
+    QredoSecKeyRefPair *keyPairRef = [QredoRawCrypto rsaGenerate:keySizeBits
                                           publicKeyIdentifier:publicKeyIdentifier
                                          privateKeyIdentifier:privateKeyIdentifier
                                        persistInAppleKeychain:YES];
@@ -61,7 +61,7 @@
     XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef,"RSA key generation failed (nil public key ref returned).");
     XCTAssertNotNil((__bridge id)keyPairRef.publicKeyRef,"RSA key generation failed (nil private key ref returned).");
     
-    NSData *keyData = [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier];
+    NSData *keyData = [QredoRawCrypto getKeyDataForIdentifier:publicKeyIdentifier];
     QredoRsaPublicKey *publicKey = [[QredoRsaPublicKey alloc] initWithPkcs1KeyData:keyData];
     XCTAssertNotNil(publicKey,@"Public key should not be nil.");
     XCTAssertNotNil(publicKey.modulus,@"Modulus should not be nil.");

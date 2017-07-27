@@ -2,7 +2,7 @@
 #import "QredoCertificateUtils.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoCryptoError.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoRsaPublicKey.h"
 #import "QredoDerUtils.h"
 
@@ -89,7 +89,7 @@ static NSString *const PEM_KEY_END = @"\n-----END PUBLIC KEY-----\n";
 +(NSString *)convertKeyIdentifierToPemKey:(NSString *)keyIdentifier {
     [QredoCryptoError throwArgExceptionIf:!keyIdentifier reason:@"Key identifier argument is nil"];
     
-    NSData *keyData = [QredoCrypto getKeyDataForIdentifier:keyIdentifier];
+    NSData *keyData = [QredoRawCrypto getKeyDataForIdentifier:keyIdentifier];
     
     //Convert the raw DER data into Base64 and then wrap in PEM key markers
     //Wrap at 64 chars, and include just line feeds - matches common PEM formats

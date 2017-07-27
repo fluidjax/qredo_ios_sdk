@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import <XCTest/XCTest.h>
 #import "rsapss.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "NSData+QredoRandomData.h"
 #import "NSData+HexTools.h"
 #import "QredoLoggerPrivate.h"
@@ -30,8 +30,8 @@
     [self generateRandomKeys];
     //[self importKnownKeys];
     
-    NSData *privateKeyData = [QredoCrypto getKeyDataForIdentifier:privateKeyName];
-    [QredoCrypto getKeyDataForIdentifier:publicKeyName];
+    NSData *privateKeyData = [QredoRawCrypto getKeyDataForIdentifier:privateKeyName];
+    [QredoRawCrypto getKeyDataForIdentifier:publicKeyName];
     
     QredoRsaPrivateKey *qredoPrivateKey = [[QredoRsaPrivateKey alloc] initWithPkcs1KeyData:privateKeyData];
     XCTAssertNotNil(qredoPrivateKey);
@@ -48,7 +48,7 @@
 
 
 -(void)generateRandomKeys {
-    QredoSecKeyRefPair *keyPairRef = [QredoCrypto rsaGenerate:2048
+    QredoSecKeyRefPair *keyPairRef = [QredoRawCrypto rsaGenerate:2048
                                           publicKeyIdentifier:publicKeyName
                                          privateKeyIdentifier:privateKeyName
                                        persistInAppleKeychain:YES];
@@ -93,10 +93,10 @@
 
 -(void)testPSSCImplementation {
     NSString *inputData = @"Hello, world";
-    NSData *hash = [QredoCrypto sha256:[inputData dataUsingEncoding:NSUTF8StringEncoding]];
+    NSData *hash = [QredoRawCrypto sha256:[inputData dataUsingEncoding:NSUTF8StringEncoding]];
     
     NSString *wrongInputData = @"Hello, world 2";
-    NSData *wrongHash = [QredoCrypto sha256:[wrongInputData dataUsingEncoding:NSUTF8StringEncoding]];
+    NSData *wrongHash = [QredoRawCrypto sha256:[wrongInputData dataUsingEncoding:NSUTF8StringEncoding]];
     
     
     int saltLength = 11;
@@ -127,10 +127,10 @@
     const int saltLen = 32;
     NSData *message = [NSData dataWithRandomBytesOfLength:messageLength];
     
-    SecKeyRef privateKey = [QredoCrypto getRsaSecKeyReferenceForIdentifier:privateKeyName];
-    SecKeyRef publicKey = [QredoCrypto getRsaSecKeyReferenceForIdentifier:publicKeyName];
+    SecKeyRef privateKey = [QredoRawCrypto getRsaSecKeyReferenceForIdentifier:privateKeyName];
+    SecKeyRef publicKey = [QredoRawCrypto getRsaSecKeyReferenceForIdentifier:publicKeyName];
     
-    NSData *signature = [QredoCrypto rsaPssSignMessage:message saltLength:saltLen keyRef:privateKey];
+    NSData *signature = [QredoRawCrypto rsaPssSignMessage:message saltLength:saltLen keyRef:privateKey];
     
     XCTAssertNotNil(signature);
     

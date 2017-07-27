@@ -1,6 +1,6 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "QredoVaultCrypto.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "CryptoImplV1.h"
 #import "QredoErrorCodes.h"
 #import "NSDictionary+IndexableSet.h"
@@ -83,9 +83,9 @@
 
 
 +(NSData *)vaultMasterKeyWithUserMasterKey:(NSData *)userMasterKey {
-    NSData *prk = [QredoCrypto hkdfSha256Extract:userMasterKey
+    NSData *prk = [QredoRawCrypto hkdfSha256Extract:userMasterKey
                                             salt:QREDO_VAULT_MASTER_SALT];
-    NSData *okm = [QredoCrypto hkdfSha256Expand:prk
+    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
                                            info:[NSData data]
                                    outputLength:CC_SHA256_DIGEST_LENGTH];
     return okm;
@@ -93,9 +93,9 @@
 
 
 +(NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey infoData:(NSData *)infoData {
-    NSData *prk = [QredoCrypto hkdfSha256Extract:vaultMasterKey
+    NSData *prk = [QredoRawCrypto hkdfSha256Extract:vaultMasterKey
                                             salt:QREDO_VAULT_SUBTYPE_SALT];
-    NSData *okm = [QredoCrypto hkdfSha256Expand:prk
+    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
                                            info:infoData
                                    outputLength:CC_SHA256_DIGEST_LENGTH];
     return okm;
@@ -115,16 +115,16 @@
 
 +(QLFVaultKeyPair *)vaultKeyPairWithVaultKey:(NSData *)vaultKey {
     NSData *info = [@"Encryption" dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *prk = [QredoCrypto hkdfSha256Extract:vaultKey
+    NSData *prk = [QredoRawCrypto hkdfSha256Extract:vaultKey
                                             salt:QREDO_VAULT_LEAF_SALT];
-    NSData *encryptionKey = [QredoCrypto hkdfSha256Expand:prk
+    NSData *encryptionKey = [QredoRawCrypto hkdfSha256Expand:prk
                                            info:info
                                    outputLength:CC_SHA256_DIGEST_LENGTH];
 
     NSData *info1 = [@"Authentication" dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *prk1 = [QredoCrypto hkdfSha256Extract:vaultKey
+    NSData *prk1 = [QredoRawCrypto hkdfSha256Extract:vaultKey
                                              salt:QREDO_VAULT_LEAF_SALT];
-    NSData *authentication = [QredoCrypto hkdfSha256Expand:prk1
+    NSData *authentication = [QredoRawCrypto hkdfSha256Expand:prk1
                                             info:info1
                                     outputLength:CC_SHA256_DIGEST_LENGTH];
 

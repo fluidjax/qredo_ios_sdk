@@ -2,7 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoSecKeyRefPair.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoLoggerPrivate.h"
 #import "TestCertificates.h"
 #import "QredoCertificateUtils.h"
@@ -123,8 +123,8 @@
     XCTAssertTrue((__bridge id)privateKeyRef,@"Private Key import failed.");
     
     //Confirm keys imported are present
-    [QredoCrypto getKeyDataForIdentifier:publicKeyIdentifier];
-    [QredoCrypto getKeyDataForIdentifier:privateKeyIdentifier];
+    [QredoRawCrypto getKeyDataForIdentifier:publicKeyIdentifier];
+    [QredoRawCrypto getKeyDataForIdentifier:privateKeyIdentifier];
     
     //Encrypt some data using the public key
     QredoPadding encryptPaddingType = QredoPaddingPkcs1;

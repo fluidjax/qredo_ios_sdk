@@ -4,7 +4,7 @@
 
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoED25519VerifyKey.h"
 #import "QredoED25519SigningKey.h"
 
@@ -14,7 +14,7 @@
 // TODO: look at keychain wrapper
 // TODO: use warning assertions more often
 
-@implementation QredoCrypto
+@implementation QredoRawCrypto
 
 SecPadding secPaddingFromQredoPadding(QredoPadding);
 SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);

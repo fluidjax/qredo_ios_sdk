@@ -731,13 +731,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(NSString *)showMyFingerPrint {
-    NSData *fp =  [QredoCrypto sha256:_myPublicKey.data];
+    NSData *fp =  [QredoRawCrypto sha256:_myPublicKey.data];
     return [QredoUtils dataToHexString:fp];
 }
 
 
 -(NSString *)showRemoteFingerPrint {
-    NSData *fp = [QredoCrypto sha256:_yourPublicKey.data];
+    NSData *fp = [QredoRawCrypto sha256:_yourPublicKey.data];
     return [QredoUtils dataToHexString:fp];
 }
 
