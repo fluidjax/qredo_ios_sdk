@@ -32,6 +32,17 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 #define NEW_CRYPTO_CODE FALSE
 
++(NSData*)randomNonceAndZeroCounter{
+    //Specifically for AES CTR
+    //generate a 128bit IV (64bit random nonce + 64bit counter starting at 0)
+    //This is required because Apple's implementation rolls over at 64bit boundary, where other implementations rollover at 128bit.
+    NSMutableData *iv = [[QredoRawCrypto secureRandom:(kCCBlockSizeAES256/2)] mutableCopy];
+    [iv increaseLengthBy:(kCCBlockSizeAES256/2)];
+    return [iv copy];
+}
+
+
+
 +(NSData *)aes256CtrEncrypt:(NSData *)plaintext key:(NSData *)key iv:(NSData *)iv {
     return [self aes256Ctr:plaintext operation:kCCEncrypt key:key iv:iv];
 }

@@ -39,9 +39,8 @@
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data {
     //Generate a random IV of the correct length for AES
-    NSData *iv = [QredoRawCrypto secureRandom:kCCBlockSizeAES256];
-    
-    return [self encryptWithKey:secretKey data:data iv:iv];
+    NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
+       return [self encryptWithKey:secretKey data:data iv:iv];
 }
 
 

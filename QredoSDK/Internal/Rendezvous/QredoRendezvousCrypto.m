@@ -353,7 +353,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                   encryptionKey:(NSData *)encryptionKey {
-    NSData *iv = [QredoRawCrypto secureRandom:16];
+    NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
     
     return [self encryptResponderInfo:responderInfo encryptionKey:encryptionKey iv:iv];
 }

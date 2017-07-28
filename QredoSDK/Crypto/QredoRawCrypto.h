@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 +(NSData *)getKeyDataForIdentifier:(NSString *)keyIdentifier;
 OSStatus fixedSecItemCopyMatching(CFDictionaryRef query, CFTypeRef _Nonnull * _Nonnull  result);
 
++(NSData*)randomNonceAndZeroCounter;
 
 @end
 
