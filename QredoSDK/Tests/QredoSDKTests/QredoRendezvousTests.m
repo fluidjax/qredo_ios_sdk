@@ -1432,7 +1432,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     XCTAssertNotNil(rendezvousRef);
     
     //now sleep until the rendezvous expires
-    [NSThread sleepForTimeInterval:2];
+    [NSThread sleepForTimeInterval:5];
     
     //check that it has expired
     //responding to the expired rendezvous should fail

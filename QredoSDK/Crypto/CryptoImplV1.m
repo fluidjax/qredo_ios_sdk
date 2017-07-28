@@ -17,6 +17,7 @@
 #define ED25519_SIGNATURE_LENGTH        64
 #define ED25519_SEED_LENGTH             32
 
+
 -(instancetype)init {
     self = [super init];
     int result = sodium_init();
@@ -38,7 +39,7 @@
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data {
     //Generate a random IV of the correct length for AES
-    NSData *iv = [QredoRawCrypto secureRandom:kCCBlockSizeAES128];
+    NSData *iv = [QredoRawCrypto secureRandom:kCCBlockSizeAES256];
     
     return [self encryptWithKey:secretKey data:data iv:iv];
 }
@@ -87,13 +88,13 @@
     
     //Data should be IV plus encrypted data
     //However CTR allows 0 length data blocks, so minimum size is IV (1 block length)
-    if (data.length < kCCBlockSizeAES128){
+    if (data.length < kCCBlockSizeAES256){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is too short. Must be at least 1 blocks long (%d bytes) for IV and encrypted data.", kCCBlockSizeAES128]
+                                       reason:[NSString stringWithFormat:@"Data argument is too short. Must be at least 1 blocks long (%d bytes) for IV and encrypted data.", kCCBlockSizeAES256]
                                      userInfo:nil];
     }
     
-    NSUInteger ivLength = kCCBlockSizeAES128;
+    NSUInteger ivLength = kCCBlockSizeAES256;
     
     //Extract the IV from the start of the data
     NSRange ivRange = NSMakeRange(0,ivLength);

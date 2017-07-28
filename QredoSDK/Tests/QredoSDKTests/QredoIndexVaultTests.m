@@ -422,6 +422,9 @@ NSNumber *testNumber;
     NSInteger before = [qredoLocalIndex count];
     NSString *randomKeyValue = [self randomStringWithLength:32];
     QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
+
+    sleep(2);
+    
     NSInteger after = [qredoLocalIndex count];
     
     XCTAssert(after == before + 1,@"Failed to put new LocalIndex item Before %ld After %ld",(long)before,(long)after);
@@ -481,6 +484,8 @@ NSNumber *testNumber;
     for (int i = 0; i < testCount; i++){
         QredoVaultItemMetadata *junk1 = [self createTestItemInVault:vault key1Value:randomKeyValue];
     }
+    sleep(2);
+
     
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + testCount,@"Failed to put new LocalIndex item Before %ld After %ld",(long)before,(long)after);

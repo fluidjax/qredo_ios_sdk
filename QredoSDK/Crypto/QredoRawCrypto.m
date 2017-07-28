@@ -46,7 +46,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSAssert((op == kCCEncrypt) || (op == kCCDecrypt), @"Expected encryption or decryption operations.");
     NSAssert(key, @"Expected key.");
     NSAssert(key.length == kCCKeySizeAES256, @"Expected key to be %d bytes.", kCCKeySizeAES256);
-    NSAssert(iv && iv.length == kCCBlockSizeAES128, @"Expected IV to be %d bytes.", kCCBlockSizeAES128);
+    NSAssert(iv && iv.length == kCCBlockSizeAES256, @"Expected IV to be %d bytes.", kCCBlockSizeAES256);
     
     CCCryptorRef cryptor = NULL;
     CCCryptorStatus createStatus = CCCryptorCreateWithMode(
@@ -65,7 +65,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     
     NSAssert(createStatus == kCCSuccess, @"CCCCryptorCreateWithMode failed with status %d.", createStatus);
     
-    NSMutableData *cipherData = [NSMutableData dataWithLength:input.length + kCCBlockSizeAES128];
+    NSMutableData *cipherData = [NSMutableData dataWithLength:input.length + kCCBlockSizeAES256];
     size_t outLength;
     CCCryptorStatus updateStatus = CCCryptorUpdate(
                                                    cryptor,

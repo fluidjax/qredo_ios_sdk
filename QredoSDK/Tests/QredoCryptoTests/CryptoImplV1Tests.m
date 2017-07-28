@@ -46,9 +46,9 @@
     //Test ciphertext part of result is correct:
     //Extract the IV from the start (16 bytes), and attempt to encrypt the
     //same data ourselves using that IV and confirm the cipher text is correct
-    NSData *iv = [encryptedDataWithIv subdataWithRange:NSMakeRange(0,kCCBlockSizeAES128)];
+    NSData *iv = [encryptedDataWithIv subdataWithRange:NSMakeRange(0,kCCBlockSizeAES256)];
     NSData *expectedEncryptedData = [QredoRawCrypto encryptData:plaintextData with256bitAesKey:keyData iv:iv];
-    NSData *actualEncryptedData = [encryptedDataWithIv subdataWithRange:NSMakeRange(kCCBlockSizeAES128,encryptedDataWithIv.length - kCCBlockSizeAES128)];
+    NSData *actualEncryptedData = [encryptedDataWithIv subdataWithRange:NSMakeRange(kCCBlockSizeAES256,encryptedDataWithIv.length - kCCBlockSizeAES256)];
     XCTAssertTrue([expectedEncryptedData isEqualToData:actualEncryptedData],@"Encrypted data (with IV removed) incorrect.");
 }
 
