@@ -31,9 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
 +(NSData *)secureRandom:(NSUInteger)size;
 +(NSData *)sha256:(NSData *)data;
 
-+(QredoSecKeyRefPair *)rsaGenerate:(NSInteger)keySize publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys;
-+(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef;
-+(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier;
 +(NSData *)getKeyDataForIdentifier:(NSString *)keyIdentifier;
 OSStatus fixedSecItemCopyMatching(CFDictionaryRef query, CFTypeRef _Nonnull * _Nonnull  result);
 

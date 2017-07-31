@@ -16,8 +16,3 @@
 
 @end
 
-@interface QredoRSASinger :NSObject <QredoSigner>
-
--(instancetype)initWithRSAKeyRef:(SecKeyRef)keyRef;
-
-@end

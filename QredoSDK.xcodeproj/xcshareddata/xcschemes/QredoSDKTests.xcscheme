@@ -51,26 +51,6 @@
                BlueprintName = "QredoSDKTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "QredoRendezvousMQTTTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousRsa2048PemHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousRsa4096PemHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousRsaPemCommonHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoRendezvousX509PemHelperTests">
-               </Test>
-               <Test
-                  Identifier = "QredoVaultUpdateMQTTTests">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

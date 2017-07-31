@@ -42,9 +42,6 @@
                   Identifier = "QredoOpenSSLCertificateUtilsTests/testValidateCertificate_ValidChainWithRootAndCrls_qredoTestCA">
                </Test>
                <Test
-                  Identifier = "QredoOpenSSLCertificateUtilsTests/testValidateCertificate_Valid_DHCertWithRoot">
-               </Test>
-               <Test
                   Identifier = "QredoOpenSSLCertificateUtilsTests/testValidateCertificate_Valid_RevokedCertButPreRevokedCrl_qredoTestCA">
                </Test>
             </SkippedTests>

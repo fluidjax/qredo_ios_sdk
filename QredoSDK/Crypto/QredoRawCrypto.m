@@ -1,6 +1,5 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "sodium.h"
-#import "rsapss.h"
 
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
@@ -342,70 +341,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
  * old work
  ****************************************************************************/
 
-+(QredoSecKeyRefPair *)rsaGenerate:(NSInteger)keySize publicKeyIdentifier:(NSString *)publicKeyIdentifier privateKeyIdentifier:(NSString *)privateKeyIdentifier persistInAppleKeychain:(BOOL)persistKeys {
-    
-    /*
-     NOTE: Keys which are not persisted in the keychain can only be used via the
-     methods which take a SecKeyRef. You cannot find them with SecItemCopyMatch-
-     ing etc. as they're not in the keychain, so you cannot get access to the
-     generated key data itself, just the ref to the key.
-     */
-    const int RSA_RECOMMENDED_KEY_SIZE = 2048;
-    
-    NSAssert(keySize > 0,
-             @"Expected key size greater than 0.");
-    QredoAssertWarn(keySize < RSA_RECOMMENDED_KEY_SIZE,
-                    @"Generating RSA key < %d bits, which is weaker than expected.",
-                    RSA_RECOMMENDED_KEY_SIZE);
-    NSAssert(publicKeyIdentifier,
-             @"Expected public key identifier.");
-    NSAssert(publicKeyIdentifier.length > 0,
-             @"Expected non-empty public key identifier.");
-    NSAssert(privateKeyIdentifier,
-             @"Expected private key identifier.");
-    NSAssert(privateKeyIdentifier.length > 0,
-             @"Expected non-empty private key identifier.");
-    NSAssert(![publicKeyIdentifier isEqualToString:privateKeyIdentifier],
-             @"Expected different public and private key identifiers.");
-    
-    NSDictionary *keyPairAttributes = @{
-                                        (id)kSecAttrKeyType: (id)kSecAttrKeyTypeRSA,
-                                        (id)kSecAttrKeySizeInBits: @(keySize),
-                                        (id)kSecPrivateKeyAttrs: @{
-                                                (id)kSecAttrIsPermanent: @(persistKeys),
-                                                (id)kSecAttrApplicationTag: [privateKeyIdentifier
-                                                                             dataUsingEncoding:NSUTF8StringEncoding]
-                                                },
-                                        (id)kSecPublicKeyAttrs: @{
-                                                (id)kSecAttrIsPermanent: @(persistKeys),
-                                                (id)kSecAttrApplicationTag: [publicKeyIdentifier
-                                                                             dataUsingEncoding:NSUTF8StringEncoding]
-                                                }
-                                        };
-    
-    SecKeyRef publicKeyRef = NULL;
-    SecKeyRef privateKeyRef = NULL;
-    
-    OSStatus status = SecKeyGeneratePair(
-                                         (__bridge CFDictionaryRef)keyPairAttributes,
-                                         &publicKeyRef,
-                                         &privateKeyRef);
-    
-    NSAssert(status == errSecSuccess,
-             @"Failed to generate %ld bit keypair. Public key ID: '%@', "
-             "Private key ID: '%@'. Status: %@",
-             (long)keySize,
-             publicKeyIdentifier,
-             privateKeyIdentifier,
-             [QredoLogger stringFromOSStatus:status]);
-    
-    QredoSecKeyRefPair *keyRefPair = [[QredoSecKeyRefPair alloc]
-                                      initWithPublicKeyRef:publicKeyRef
-                                      privateKeyRef:privateKeyRef];
-    
-    return keyRefPair;
-    
-}
+
 
 +(SecKeyRef)getRsaSecKeyReferenceForIdentifier:(NSString *)keyIdentifier {
     
@@ -482,57 +418,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     keyData = (__bridge_transfer NSData *)keyDataRef;
     return keyData;
 }
-
-
-
-
-
-+(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef {
-    
-    GUARD(message,
-          @"Message argument is nil");
-    
-    GUARD(keyRef,
-          @"Key ref argument is nil");
-    
-    NSData *hash = [self sha256:message];
-    
-    size_t keyLength = SecKeyGetBlockSize(keyRef);
-    
-    
-    GUARD(keyLength != 0,
-          @"Invalid SecKeyRef. Key block size is 0 bytes.");
-    
-    //Get a buffer of correct size for the specified key
-    size_t pssDataLength = keyLength;
-    NSMutableData *pssData = [NSMutableData dataWithLength:pssDataLength];
-    NSMutableData *outputData = [NSMutableData dataWithLength:pssDataLength];
-    
-    
-    //NSData *dat = [QredoRendezvousCrypto transformPrivateKeyToData:keyRef ];
-    int pss_result = rsa_pss_sha256_encode(hash.bytes,hash.length,saltLength,keyLength * 8 - 1,
-                                           pssData.mutableBytes,pssData.length);
-    
-    GUARDF(pss_result >= 0,
-           @"Failed to encode with PSS. Error code: %d",
-           pss_result);
-    
-    size_t outputDataLength = outputData.length;
-    OSStatus result = SecKeyRawSign(keyRef,
-                                    kSecPaddingNone,
-                                    pssData.bytes,pssData.length,
-                                    outputData.mutableBytes,&outputDataLength);
-    
-    if (result != errSecSuccess){
-        //Something went wrong, so return nil;
-        QredoLogError(@"SecKeyRawSign returned error: %@.",[QredoLogger stringFromOSStatus:result]);
-        
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Failed to sign the data" userInfo:nil];
-    }
-    
-    return outputData;
-}
-
 
 
 

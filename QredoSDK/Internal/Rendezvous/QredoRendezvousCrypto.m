@@ -2,7 +2,6 @@
 #import "QredoRendezvousCrypto.h"
 #import "CryptoImplV1.h"
 #import "QredoRawCrypto.h"
-#import "QredoRsaPublicKey.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoErrorCodes.h"

@@ -1,12 +1,9 @@
 /* HEADER GOES HERE */
 #import "QredoSigner.h"
-
 #import "CryptoImplV1.h"
-
 #import "QredoRawCrypto.h"
 #import "QredoErrorCodes.h"
 
-static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 @implementation QredoED25519Singer
 {
@@ -31,34 +28,3 @@ static const int PSS_SALT_LENGTH_IN_BYTES = 32;
 
 @end
 
-@implementation QredoRSASinger
-{
-    SecKeyRef _keyRef;
-}
-
--(instancetype)initWithRSAKeyRef:(SecKeyRef)keyRef {
-    NSAssert(keyRef,@"The key reference must be provided.");
-    self = [super init];
-    if (self){
-        _keyRef = keyRef;
-    }
-    return self;
-}
-
-
--(NSData *)signData:(NSData *)data error:(NSError **)error {
-    @try {
-        return [QredoRawCrypto rsaPssSignMessage:data saltLength:PSS_SALT_LENGTH_IN_BYTES keyRef:_keyRef];
-    } @catch (NSException *exception){
-        if (error){
-            *error = [NSError errorWithDomain:QredoErrorDomain
-                                         code:QredoErrorCodeRendezvousInvalidData
-                                     userInfo:@{ NSLocalizedDescriptionKey:exception.description }];
-        }
-        
-        return nil;
-    }
-}
-
-
-@end
