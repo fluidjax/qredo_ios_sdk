@@ -373,8 +373,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(void)respondToRendezvousWithTag:(NSString *)rendezvousTag
-                  trustedRootPems:(NSArray *)trustedRootPems
-                          crlPems:(NSArray *)crlPems
                    appCredentials:(QredoAppCredentials *)appCredentials
                 completionHandler:(void (^)(NSError *error))completionHandler {
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
@@ -411,8 +409,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                authenticationKey:authKey
                                                                              tag:rendezvousTag
                                                                        hashedTag:hashedTag
-                                                                 trustedRootPems:trustedRootPems
-                                                                         crlPems:crlPems
                                                                            error:nil]){
                                NSError *error = nil;
                                

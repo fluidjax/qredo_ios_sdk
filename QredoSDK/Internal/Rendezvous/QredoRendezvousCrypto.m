@@ -175,8 +175,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
                     authenticationKey:(NSData *)authenticationKey
                                   tag:(NSString *)tag
                             hashedTag:(QLFRendezvousHashedTag *)hashedTag
-                      trustedRootPems:(NSArray *)trustedRootPems
-                              crlPems:(NSArray *)crlPems
                                 error:(NSError **)error {
     QLFRendezvousAuthType *authenticationType = encryptedResponderInfo.authenticationType;
     QLFAuthenticationCode *authenticationCode = encryptedResponderInfo.authenticationCode;
@@ -184,8 +182,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
     
     id<QredoRendezvousRespondHelper> rendezvousHelper = [self rendezvousHelperForAuthType:authenticationType
                                                                                   fullTag:tag
-                                                                          trustedRootPems:trustedRootPems
-                                                                                  crlPems:crlPems
                                                                                     error:error];
     
     NSData *calculatedAuthenticationCode
@@ -216,15 +212,11 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 -(id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                 fullTag:(NSString *)tag
-                                                        trustedRootPems:(NSArray *)trustedRootPems
-                                                                crlPems:(NSArray *)crlPems
                                                          signingHandler:(signDataBlock)signingHandler
                                                                   error:(NSError **)error {
     return [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:authenticationType
                                                                  fullTag:tag
                                                                   crypto:_crypto
-                                                         trustedRootPems:trustedRootPems
-                                                                 crlPems:crlPems
                                                           signingHandler:signingHandler
                                                                    error:error];
 }
@@ -232,8 +224,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 -(id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthType:(QLFRendezvousAuthType *)authType
                                                        fullTag:(NSString *)tag
-                                               trustedRootPems:(NSArray *)trustedRootPems
-                                                       crlPems:(NSArray *)crlPems
                                                          error:(NSError **)error {
     __block id<QredoRendezvousRespondHelper> rendezvousHelper = nil;
     
@@ -242,8 +232,6 @@ static const int QredoRendezvousMasterKeyLength = 32;
         rendezvousHelper = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                                                  fullTag:tag
                                                                                   crypto:_crypto
-                                                                         trustedRootPems:trustedRootPems
-                                                                                 crlPems:crlPems
                                                                                    error:error];
     }
     

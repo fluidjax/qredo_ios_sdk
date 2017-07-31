@@ -65,8 +65,6 @@
 -(void)createRendezvousWithTag:(NSString *)tag
             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                  configuration:(QredoRendezvousConfiguration *)configuration
-               trustedRootPems:(NSArray *)trustedRootPems
-                       crlPems:(NSArray *)crlPems
                 signingHandler:(signDataBlock)signingHandler
                 appCredentials:(QredoAppCredentials *)appCredentials
              completionHandler:(void (^)(NSError *error))completionHandler;

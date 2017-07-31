@@ -232,20 +232,16 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 }
 
 
-//TODO: DH - provide alternative method signature for non-X.509 authenticated rendezvous without trustedRootPems?
 -(void)createRendezvousWithTag:(NSString *)tag
             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                  configuration:(QredoRendezvousConfiguration *)configuration
-               trustedRootPems:(NSArray *)trustedRootPems
-                       crlPems:(NSArray *)crlPems
                 signingHandler:(signDataBlock)signingHandler
                 appCredentials:(QredoAppCredentials *)appCredentials
              completionHandler:(void (^)(NSError *error))completionHandler {
-    QredoLogVerbose(@"Creating rendezvous with (plaintext) tag: %@. TrustedRootPems count: %lul.",tag,(unsigned long)trustedRootPems.count);
+    QredoLogVerbose(@"Creating rendezvous with (plaintext) tag: %@.",tag);
     
     //TODO: DH - write tests
     //TODO: DH - validate that the configuration and tag formats match
-    //TODO: DH - enforce non-nil trustedRootPems on X.509 PEM
     
     self.configuration = configuration;
     
@@ -262,8 +258,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     NSError *error = nil;
     id<QredoRendezvousCreateHelper> rendezvousHelper = [crypto rendezvousHelperForAuthenticationType:authenticationType
                                                                                              fullTag:tag
-                                                                                     trustedRootPems:trustedRootPems
-                                                                                             crlPems:crlPems
                                                                                       signingHandler:signingHandler
                                                                                                error:&error];
     

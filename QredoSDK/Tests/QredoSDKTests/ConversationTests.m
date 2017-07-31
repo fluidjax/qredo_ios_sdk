@@ -252,7 +252,7 @@ static float delayInterval = 0.4;
     
     __block QredoConversation *responderConversation = nil;
     QLog(@"\n2nd client responding to rendezvous");
-    //Definitely responding to an anonymous rendezvous, so nil trustedRootPems/crlPems is valid for this test
+
     [testClient2 respondWithTag:randomTag
                 completionHandler:^(QredoConversation *conversation,NSError *error) {
                     QLog(@"\nRendezvous respond completion handler entered");

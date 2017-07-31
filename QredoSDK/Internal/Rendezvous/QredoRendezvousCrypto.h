@@ -46,14 +46,10 @@
                     authenticationKey:(NSData *)authenticationKey
                                   tag:(NSString *)tag
                             hashedTag:(QLFRendezvousHashedTag *)hashedTag
-                      trustedRootPems:(NSArray *)trustedRootPems
-                              crlPems:(NSArray *)crlPems
                                 error:(NSError **)error;
 
 -(id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                 fullTag:(NSString *)fullTag
-                                                        trustedRootPems:(NSArray *)trustedRootPems
-                                                                crlPems:(NSArray *)crlPems
                                                          signingHandler:(signDataBlock)signingHandler
                                                                   error:(NSError **)error;
 
