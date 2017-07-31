@@ -305,17 +305,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     
 }
 
-#if NEW_CRYPTO_CODE
-
-+(NSData *)rsaPssSha256Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair {
-    return nil;
-}
-
-+(BOOL)rsaPssSha256Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair {
-    return nil;
-}
-
-#endif
 
 +(NSData *)secureRandom:(NSUInteger)size {
     NSAssert(size > 0, @"Expected non-zero size.");

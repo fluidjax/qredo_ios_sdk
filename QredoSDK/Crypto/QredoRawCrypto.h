@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import "QredoKeyPair.h"
-#import "QredoSecKeyRefPair.h"
 
 typedef NS_ENUM (uint8_t,QredoPadding) {
     QredoPaddingNone = 1,
