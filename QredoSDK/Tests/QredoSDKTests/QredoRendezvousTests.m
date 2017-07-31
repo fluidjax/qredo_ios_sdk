@@ -1251,16 +1251,23 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     //check that it has expired
     //responding to the expired rendezvous should fail
+    __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"respond to  rendezvous"];
+    
+    
     [testClient1 respondWithTag:self.randomlyCreatedTag
          completionHandler:^(QredoConversation *conversation,NSError *error) {
-             //
              XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse);
+             [respondExpectation fulfill];
          }];
     
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
+                                 handler:^(NSError *error) {
+                                     respondExpectation = nil;
+                                 }];
+    
+    
     __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
-    
-    
-    
     
     
     //now activate the rendezvous
