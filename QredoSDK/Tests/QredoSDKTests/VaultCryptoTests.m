@@ -74,14 +74,11 @@
     = [QredoVaultCrypto vaultCryptoWithBulkKey:encryptionAndAuthKeys.encryptionKey
                              authenticationKey:encryptionAndAuthKeys.authenticationKey];
     
-    QLFEncryptedVaultItemHeader *encryptedVaultItemHeader
-    = [vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemRef metadata:metadata];
+    QLFEncryptedVaultItemHeader *encryptedVaultItemHeader  = [vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemRef metadata:metadata];
     
-    NSData *serializedEncryptedVaultItemHeader
-    = [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO];
+    NSData *serializedEncryptedVaultItemHeader  = [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO];
     
-    NSData *encryptedMetadataRaw
-    = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItemHeader.encryptedMetadata
+    NSData *encryptedMetadataRaw   = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItemHeader.encryptedMetadata
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
     
@@ -97,11 +94,9 @@
     QLog(@" vaultItemBody (string) = \"%@\"",vaultItemBodyString);
     QLog(@" vaultItemBody (data)   = %@",vaultItemBody);
     
-    QLFEncryptedVaultItem *encryptedVaultItem
-    = [vaultCrypto encryptVaultItemWithBody:vaultItemBody encryptedVaultItemHeader:encryptedVaultItemHeader];
+    QLFEncryptedVaultItem *encryptedVaultItem   = [vaultCrypto encryptVaultItemWithBody:vaultItemBody encryptedVaultItemHeader:encryptedVaultItemHeader];
     
-    NSData *encryptedBodyRaw
-    = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItem.encryptedBody
+    NSData *encryptedBodyRaw   = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItem.encryptedBody
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
     
@@ -113,13 +108,14 @@
     QLog(@" item.ref          = %@",[QredoPrimitiveMarshallers marshalObject:vaultItemRef includeHeader:NO]);
     QLog(@" encryptedVaultItemHeader = %@",[QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO]);
     QLog(@" encryptedVaultItem = %@",[QredoPrimitiveMarshallers marshalObject:encryptedVaultItem includeHeader:NO]);
+    NSLog(@"DONE");
+    
 }
 
 
 -(void)testGenerateVaultTestVectors {
     //NSData *userMasterKey = [NSData dataWithRandomBytesOfLength:32];
-    NSData *userMasterKey
-    = [NSData dataWithHexString:@"86ca9c96 7e591207 02b27f02 801e6782 69fc5d40 301ed86f 03c5d6ef 7f660d66"];
+    NSData *userMasterKey = [NSData dataWithHexString:@"86ca9c96 7e591207 02b27f02 801e6782 69fc5d40 301ed86f 03c5d6ef 7f660d66"];
     
     QLog(@"User master key    = %@",userMasterKey);
     

@@ -221,11 +221,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
--(QredoKeychain *)keychain {
-    return _keychain;
-}
-
-
 -(QredoServiceInvoker *)serviceInvoker {
     return _serviceInvoker;
 }
