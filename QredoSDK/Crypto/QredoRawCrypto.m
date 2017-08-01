@@ -63,7 +63,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                                            op,
                                                            kCCModeCTR,
                                                            kCCAlgorithmAES,
-                                                           ccPKCS7Padding,
+                                                           ccNoPadding,
                                                            iv.bytes,
                                                            key.bytes,
                                                            key.length,

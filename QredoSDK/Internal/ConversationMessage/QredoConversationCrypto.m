@@ -38,7 +38,7 @@
     [QredoPrimitiveMarshallers marshalObject:message
                                   marshaller:[QLFConversationMessage marshaller]];
     
-    NSData *encryptedMessage = [_crypto encryptWithKey:bulkKey data:serializedMessage];
+    NSData *encryptedMessage = [_crypto encryptWithKey:bulkKey data:serializedMessage iv:nil];
     NSData *serialiedEncryptedMessage = [QredoPrimitiveMarshallers marshalObject:encryptedMessage
                                                                       marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
     

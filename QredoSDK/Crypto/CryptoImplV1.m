@@ -45,6 +45,12 @@
 
 
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv {
+    
+    if (!iv){
+        iv = [QredoRawCrypto randomNonceAndZeroCounter];
+    }
+    
+    
     if (!secretKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"SecretKey argument is nil"]

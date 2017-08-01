@@ -351,8 +351,8 @@ static const int QredoRendezvousMasterKeyLength = 32;
                              iv:(NSData *)iv {
     NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     
-    NSData *encryptedResponderInfo =
-    [[CryptoImplV1 sharedInstance] encryptWithKey:encryptionKey data:serializedResponderInfo iv:iv];
+    NSData *encryptedResponderInfo = [[CryptoImplV1 sharedInstance] encryptWithKey:encryptionKey
+                                                                              data:serializedResponderInfo];
     
     return [QredoPrimitiveMarshallers marshalObject:encryptedResponderInfo
                                          marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
