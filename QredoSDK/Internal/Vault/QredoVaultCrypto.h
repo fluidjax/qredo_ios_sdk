@@ -28,10 +28,12 @@
 -(instancetype)initWithBulkKey:(NSData *)bulkKey authenticationKey:(NSData *)authenticationKey;
 
 -(QLFEncryptedVaultItemHeader *)encryptVaultItemHeaderWithItemRef:(QLFVaultItemRef *)vaultItemRef
-                                                         metadata:(QLFVaultItemMetadata *)metadata;
+                                                         metadata:(QLFVaultItemMetadata *)metadata
+                                                               iv:(NSData*)iv;
 
 -(QLFEncryptedVaultItem *)encryptVaultItemWithBody:(NSData *)body
-                          encryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader;
+                          encryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
+                                                iv:(NSData*)iv;
 
 -(QLFVaultItem *)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
                                      error:(NSError **)error;

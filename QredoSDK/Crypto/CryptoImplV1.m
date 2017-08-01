@@ -40,7 +40,7 @@
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data {
     //Generate a random IV of the correct length for AES
     NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
-       return [self encryptWithKey:secretKey data:data iv:iv];
+    return [self encryptWithKey:secretKey data:data iv:iv];
 }
 
 

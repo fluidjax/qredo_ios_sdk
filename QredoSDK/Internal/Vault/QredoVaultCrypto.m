@@ -131,17 +131,17 @@
 }
 
 
--(NSData *)encryptMetadata:(QLFVaultItemMetadata *)metadata {
+-(NSData *)encryptMetadata:(QLFVaultItemMetadata *)metadata iv:(NSData*)iv{
     NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
     
-    return [self encryptIncludingMessageHeaderWithData:serializedMetadata];
+    return [self encryptIncludingMessageHeaderWithData:serializedMetadata iv:iv];
 }
 
 
--(NSData *)encryptIncludingMessageHeaderWithData:(NSData *)data {
+-(NSData *)encryptIncludingMessageHeaderWithData:(NSData *)data  iv:(NSData*)iv{
     if (!data)data = [NSData data];
     
-    NSData *encryptedMetadata = [[CryptoImplV1 sharedInstance] encryptWithKey:self.bulkKey data:data];
+    NSData *encryptedMetadata = [[CryptoImplV1 sharedInstance] encryptWithKey:self.bulkKey data:data iv:iv];
     
     NSData *encryptedMetadataWithMessageHeader =
     [QredoPrimitiveMarshallers marshalObject:encryptedMetadata
@@ -163,8 +163,9 @@
 
 
 -(QLFEncryptedVaultItemHeader *)encryptVaultItemHeaderWithItemRef:(QLFVaultItemRef *)vaultItemRef
-                                                         metadata:(QLFVaultItemMetadata *)metadata {
-    NSData *encryptedMetadata = [self encryptMetadata:metadata];
+                                                         metadata:(QLFVaultItemMetadata *)metadata
+                                                               iv:(NSData*)iv{
+    NSData *encryptedMetadata = [self encryptMetadata:metadata iv:iv];
     NSData *authCode = [self authenticationCodeWithData:encryptedMetadata vaultItemRef:vaultItemRef];
     
     return [QLFEncryptedVaultItemHeader encryptedVaultItemHeaderWithRef:vaultItemRef
@@ -174,8 +175,9 @@
 
 
 -(QLFEncryptedVaultItem *)encryptVaultItemWithBody:(NSData *)body
-                          encryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader {
-    NSData *encryptedBody = [self encryptIncludingMessageHeaderWithData:body];
+                          encryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
+                                                iv:(NSData*)iv{
+    NSData *encryptedBody = [self encryptIncludingMessageHeaderWithData:body iv:iv];
     NSData *authCode = [self authenticationCodeWithData:encryptedBody vaultItemRef:encryptedVaultItemHeader.ref];
     
     return [QLFEncryptedVaultItem encryptedVaultItemWithHeader:encryptedVaultItemHeader
