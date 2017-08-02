@@ -91,6 +91,8 @@
     XCTAssert([encryptedVaultItemData isEqualToData:expectedEncryptedVaultItem],@"Bad EncryptedVaultItem");
     
 
+    //#define QLog(fmt, ...) NSLog((@" " fmt), ##__VA_ARGS__)
+    
     //Dump values
     QLog(@"%@:",vaultInfo);
     QLog(@" vaultKey          = %@",vaultKey);
