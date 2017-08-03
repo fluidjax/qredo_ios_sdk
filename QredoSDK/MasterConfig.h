@@ -32,25 +32,23 @@
 
 
 
-
-
 //The Test Server [QredoClientOptions alloc] initTest]
 //These are used in Testing to create an QredoClientOption object and pass it into the QredoClient init method
 
 //Standard Test Server
-//#define     TEST_SERVER_URL             @"api-dev.oderq.com"
-//#define     TEST_USE_HTTP               NO
-//#define     TEST_SERVER_APP_ID          @"test"
-//#define     TEST_SERVER_APP_SECRET      @"a23469be8be13768c74ca0937cec47d1"
-//#define     TEST_HTTP_SERVICE_URL       @"https://api-dev.oderq.com:443/services"
+#define     TEST_SERVER_URL             @"api-dev.oderq.com"
+#define     TEST_USE_HTTP               NO
+#define     TEST_SERVER_APP_ID          @"test"
+#define     TEST_SERVER_APP_SECRET      @"a23469be8be13768c74ca0937cec47d1"
+#define     TEST_HTTP_SERVICE_URL       @"https://api-dev.oderq.com:443/services"
 
 
 //Live as Test
-#define     TEST_SERVER_URL             @"api.qredo.com"
-#define     TEST_USE_HTTP               NO
-#define     TEST_SERVER_APP_ID          @"test"
-#define     TEST_SERVER_APP_SECRET      @"074af11737f877505167177726501aa0"
-#define     TEST_HTTP_SERVICE_URL       @"https://api-dev.oderq.com:443/services"
+//#define     TEST_SERVER_URL             @"api.qredo.com"
+//#define     TEST_USE_HTTP               NO
+//#define     TEST_HTTP_SERVICE_URL       @"https://api.qredo.com:443/services"
+//#define     TEST_SERVER_APP_ID          @"test"
+//#define     TEST_SERVER_APP_SECRET      @"074af11737f877505167177726501aa0"
 
 
 //Use these when testing on local Qreedo-in-a-jar    use:java -jar qredo-in-a-jar-0.19-SNAPSHOT.jar
@@ -84,6 +82,7 @@
 #define     TEST_KEYCHAIN_GROUP         @"com.qredo.ChrisPush1"
 
 //These APP_ID & SECRETS are not stored in the produced framework, but are used in testing to check that Live & Dev are working
+
 #define     LIVE_SERVER_APP_ID          @"test"
 #define     LIVE_SERVER_APP_SECRET      @"074af11737f877505167177726501aa0"
 #define     DEV_SERVER_APP_ID           @"test"
