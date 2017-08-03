@@ -7,6 +7,10 @@
 #define QredoLogInfo(format,...)    QredoLog(QredoLogLevelInfo,(^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
 #define QredoLogDebug(format,...)   QredoLog(QredoLogLevelDebug,(^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
 #define QredoLogVerbose(format,...) QredoLog(QredoLogLevelVerbose,(^{ return [NSString stringWithFormat:(format), ## __VA_ARGS__]; }))
+#define QredoAssertWarn(condition, format, ...) \
+    if ((condition)) { \
+        QredoLogWarning(format, ## __VA_ARGS__ ); \
+    }
 
 
 /**

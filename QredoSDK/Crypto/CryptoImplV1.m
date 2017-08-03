@@ -1,18 +1,9 @@
-/* HEADER GOES HERE */
 #import <CommonCrypto/CommonCrypto.h>
 #import "sodium.h"
 #import "CryptoImplV1.h"
-#import "NSData+QredoRandomData.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoEllipticCurvePoint.h"
-#import "QredoDhPrivateKey.h"
-#import "QredoDhPublicKey.h"
 #import "MasterConfig.h"
-
-NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDictionary *userInfo);
-
-@interface CryptoImplV1 ()
-@end
 
 @implementation CryptoImplV1
 
@@ -29,11 +20,8 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 
 -(instancetype)init {
     self = [super init];
-    
-    if (self){
-        BOOL unused __attribute__((unused)) = sodium_init();
-    }
-    
+    int result = sodium_init();
+    NSAssert(result >= 0, @"Could not initialize libsodium.");
     return self;
 }
 
@@ -41,7 +29,6 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 +(instancetype)sharedInstance {
     static CryptoImplV1 *instance = nil;
     static dispatch_once_t onceToken;
-    
     dispatch_once(&onceToken,^{
         instance = [[self alloc] init];
     });
@@ -52,13 +39,18 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data {
     //Generate a random IV of the correct length for AES
-    NSData *iv = [QredoCrypto secureRandomWithSize:kCCBlockSizeAES128];
-    
+    NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
     return [self encryptWithKey:secretKey data:data iv:iv];
 }
 
 
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv {
+    
+    if (!iv){
+        iv = [QredoRawCrypto randomNonceAndZeroCounter];
+    }
+    
+    
     if (!secretKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"SecretKey argument is nil"]
@@ -70,9 +62,9 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
                                        reason:[NSString stringWithFormat:@"Data argument is nil"]
                                      userInfo:nil];
     }
-    
-    NSData *encryptedData = [QredoCrypto encryptData:data with256bitAesKey:secretKey iv:iv];
-    
+
+    NSData *encryptedData = [QredoRawCrypto aes256CtrEncrypt:data key:secretKey iv:iv];
+
     NSMutableData *ivAndEncryptedData = nil;
     
     if (encryptedData != nil){
@@ -101,13 +93,13 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     
     //Data should be IV plus encrypted data
     //However CTR allows 0 length data blocks, so minimum size is IV (1 block length)
-    if (data.length < kCCBlockSizeAES128){
+    if (data.length < kCCBlockSizeAES256){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is too short. Must be at least 1 blocks long (%d bytes) for IV and encrypted data.", kCCBlockSizeAES128]
+                                       reason:[NSString stringWithFormat:@"Data argument is too short. Must be at least 1 blocks long (%d bytes) for IV and encrypted data.", kCCBlockSizeAES256]
                                      userInfo:nil];
     }
     
-    NSUInteger ivLength = kCCBlockSizeAES128;
+    NSUInteger ivLength = kCCBlockSizeAES256;
     
     //Extract the IV from the start of the data
     NSRange ivRange = NSMakeRange(0,ivLength);
@@ -117,7 +109,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     NSRange encryptedDataRange = NSMakeRange(ivLength,data.length - ivLength);
     NSData *dataToDecrypt = [data subdataWithRange:encryptedDataRange];
     
-    NSData *decryptedData = [QredoCrypto decryptData:dataToDecrypt with256bitAesKey:secretKey iv:iv];
+    NSData *decryptedData = [QredoRawCrypto aes256CtrDecrypt:dataToDecrypt key:secretKey iv:iv];
     
     return decryptedData;
 }
@@ -150,7 +142,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
                                      userInfo:nil];
     }
     
-    NSData *authCode = [QredoCrypto generateHmacSha256ForData:data length:length key:authKey];
+    NSData *authCode = [QredoRawCrypto hmacSha256:data key:authKey outputLen:length];
     
     return authCode;
 }
@@ -213,33 +205,24 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     }
     
     //Generate the HMAC and compare to provided value (using constant time comparison function)
-    NSData *generatedHmac = [QredoCrypto generateHmacSha256ForData:data length:data.length key:authKey];
+    NSData *generatedHmac = [QredoRawCrypto hmacSha256:data key:authKey outputLen:data.length];
     
-    BOOL macCorrect = [QredoCrypto equalsConstantTime:generatedHmac right:mac];
+    BOOL macCorrect = [QredoRawCrypto constantEquals:generatedHmac rhs:mac];
     
     return macCorrect;
 }
 
 
 -(NSData *)getRandomKey {
-    NSData *randomKey = [QredoCrypto secureRandomWithSize:BULK_KEY_SIZE_IN_BYTES];
+    NSData *randomKey = [QredoRawCrypto secureRandom:BULK_KEY_SIZE_IN_BYTES];
     
     return randomKey;
 }
 
-
--(NSData *)generateRandomNonce:(NSUInteger)size {
-    return [QredoCrypto secureRandomWithSize:size];
-}
-
-
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password {
     NSData *passwordData = [password dataUsingEncoding:PASSWORD_ENCODING_FOR_PBKDF2];
     
-    NSData *key = [QredoCrypto pbkdf2Sha256WithSalt:salt
-                                       passwordData:passwordData
-                             requiredKeyLengthBytes:PBKDF2_DERIVED_KEY_LENGTH_BYTES
-                                         iterations:PBKDF2_ITERATION_COUNT];
+    NSData *key = [QredoRawCrypto pbkdf2Sha256:passwordData salt:salt outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_ITERATION_COUNT];
     
     return key;
 }
@@ -279,7 +262,9 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     NSData *ikm = [self getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
     
     //HKDF using SHA-256
-    NSData *diffieHellmanSecretData = [QredoCrypto hkdfSha256WithSalt:salt initialKeyMaterial:ikm info:nil];
+    NSData *prk = [QredoRawCrypto hkdfSha256Extract:ikm salt:salt];
+    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *diffieHellmanSecretData = okm;
     
     return diffieHellmanSecretData;
 }
@@ -287,8 +272,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 
 -(QredoKeyPair *)generateDHKeyPair {
     //Generate a new key pair from curve 25519.
-    
-    //libsodium defines the length of the key data
+
     NSMutableData *publicKeyData = [[NSMutableData alloc] initWithLength:crypto_box_SECRETKEYBYTES];
     NSMutableData *privateKeyData = [[NSMutableData alloc] initWithLength:crypto_box_SECRETKEYBYTES];
     
@@ -301,14 +285,7 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     
     return keyPair;
 }
-
-
--(QredoED25519SigningKey *)qredoED25519SigningKey {
-    NSData *seed = [self generateRandomNonce:ED25519_SEED_LENGTH];
     
-    return [self qredoED25519SigningKeyWithSeed:seed];
-}
-
 
 -(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed {
     NSAssert([seed length] == ED25519_SEED_LENGTH,@"Malformed seed");
@@ -329,39 +306,15 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
 
 
 -(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error {
-    if ([data length] != ED25519_VERIFY_KEY_LENGTH){
-        if (error){
-            *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedKeyData,nil);
-        }
-        
-        return nil;
-    }
-    
+    NSAssert([data length] == ED25519_VERIFY_KEY_LENGTH, @"Invalid ED25519 Verfiy key length");
     return [[QredoED25519VerifyKey alloc] initWithKeyData:data];
 }
 
 
--(NSData *)qredoED25519EmptySignature {
-    static NSData *signatureData = nil;
-    static dispatch_once_t onceToken;
-    
-    dispatch_once(&onceToken,^{
-        signatureData = [[NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH] copy];
-    });
-    return signatureData;
-}
-
 
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error {
     GUARD(sk, @"Signing key is required for signing");
-    
-    if ([message length] < 1){
-        if (error){
-            *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedSignatureData,nil);
-        }
-        return nil;
-    }
-    
+    NSAssert([message length]>=1,@"message is 0 bytes");
     NSMutableData *signature    = [NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH];
     
     crypto_sign_ed25519_detached([signature mutableBytes],
@@ -372,50 +325,4 @@ NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDicti
     return [signature copy];
 }
 
-
--(BOOL)qredoED25519VerifySignature:(NSData *)signature
-                         ofMessage:(NSData *)message
-                         verifyKey:(QredoED25519VerifyKey *)vk
-                             error:(NSError **)error {
-    NSAssert(vk,@"A verification key is needed");
-    
-    if ([signature length] < 1){
-        if (error){
-            *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedSignatureData,nil);
-        }
-        
-        return NO;
-    }
-    
-    if ([message length] < 1){
-        if (error){
-            *error = qredoCryptoV1ImplementationError(QredoCryptoImplErrorMalformedData,nil);
-        }
-        
-        return NO;
-    }
-    
-    NSMutableData *signatureMessage = [signature mutableCopy];
-    [signatureMessage appendData:message];
-    const unsigned char *signatureMessageBytes = [signatureMessage bytes];
-    const NSUInteger signatureMessageLength = [signatureMessage length];
-    
-    NSMutableData *messageOut = [NSMutableData dataWithLength:signatureMessageLength];
-    unsigned char *messageOutBytes = [messageOut mutableBytes];
-    unsigned long long messageOutLength = [messageOut length];
-    
-    const unsigned char *vkBytes = [vk.data bytes];
-    
-    int cryptoResult = crypto_sign_ed25519_open(messageOutBytes,&messageOutLength,
-                                                signatureMessageBytes,signatureMessageLength,
-                                                vkBytes);
-    
-    return cryptoResult == 0;
-}
-
-
 @end
-
-NSError *qredoCryptoV1ImplementationError(QredoCryptoImplError errorCode,NSDictionary *userInfo) {
-    return [NSError errorWithDomain:QredoCryptoImplErrorDomain code:errorCode userInfo:userInfo];
-}

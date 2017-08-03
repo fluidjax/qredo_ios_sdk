@@ -27,7 +27,6 @@ static NSString* _testAppSecret = nil;
 
 -(QredoServiceInvoker *)serviceInvoker;
 -(QredoVault *)systemVault;
--(QredoKeychain *)keychain;
 -(QredoUserCredentials *)userCredentials;
 -(QredoAppCredentials *)appCredentials;
 +(NSDictionary*)retrieveCredentialsUserDefaultsAppGroup:(NSString*)appGroup;

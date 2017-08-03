@@ -7,8 +7,8 @@
 #import "QredoLoggerPrivate.h"
 #import "rsapss.h"
 
-#import "NSData+HexTools.h"
-#import "NSData+HexTools.h"
+#import "NSData+ParseHex.h"
+#import "NSData+Conversion.h"
 
 #import <openssl/bn.h>
 #import <openssl/rand.h>
@@ -366,10 +366,10 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSData *tag = [keyIdentifier dataUsingEncoding:NSUTF8StringEncoding];
     
     //Set the key query dictionary.
-    queryKey[(__bridge id)kSecClass] = (__bridge id)kSecClassKey;
-    queryKey[(__bridge id)kSecAttrApplicationTag] = tag;
-    queryKey[(__bridge id)kSecAttrKeyType] = (__bridge id)kSecAttrKeyTypeRSA;
-    queryKey[(__bridge id)kSecReturnRef] = (__bridge id)kCFBooleanTrue;
+    queryKey[(__bridge id)kSecClass]                = (__bridge id)kSecClassKey;
+    queryKey[(__bridge id)kSecAttrApplicationTag]   = tag;
+    queryKey[(__bridge id)kSecAttrKeyType]          = (__bridge id)kSecAttrKeyTypeRSA;
+    queryKey[(__bridge id)kSecReturnRef]            = (__bridge id)kCFBooleanTrue;
     
     //Get the key reference.
     SecKeyRef secKeyRef;

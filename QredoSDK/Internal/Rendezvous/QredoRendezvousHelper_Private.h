@@ -6,8 +6,6 @@
 @protocol QredoRendezvousCreatePrivateHelper <QredoRendezvousCreateHelper>
 -(instancetype)initWithFullTag:(NSString *)fullTag
                         crypto:(id<CryptoImpl>)crypto
-               trustedRootPems:(NSArray *)trustedRootPems
-                       crlPems:(NSArray *)crlPems
                 signingHandler:(signDataBlock)signingHandler
                          error:(NSError **)error;
 @end
@@ -15,8 +13,6 @@
 @protocol QredoRendezvousRespondPrivateHelper <QredoRendezvousRespondHelper>
 -(instancetype)initWithFullTag:(NSString *)fullTag
                         crypto:(id<CryptoImpl>)crypto
-               trustedRootPems:(NSArray *)trustedRootPems
-                       crlPems:(NSArray *)crlPems
                          error:(NSError **)error;
 @end
 

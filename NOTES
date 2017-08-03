@@ -1,21 +1,71 @@
-Change RSA to ED25519
+To run locally from qredo-in-a-jar
 
-Currently Rendezvous in createRendezvousWithTag...
-
-    _ownershipPriavateKey = [RendezvousCrypto generateKeyWithTag:hashedTag]
-
-This RSA key is generated and stored in the secure enclave, and is never extracted.
-Only references to the key are passed around
-
-
-QredoRSASigner uses
-+(NSData *)rsaPssSignMessage:(NSData *)message saltLength:(NSUInteger)saltLength keyRef:(SecKeyRef)keyRef
-    SecKeyRawSign
-
-    this signs using key ref (not key) SecKeyRawSign
+java -jar qredo-in-a-jar-0.19-SNAPSHOT.jar
 
 
 
-To migrate to using ED25519 we can't sign inside secure enclave, the keys can be stored there
-but must be extracted to perform signing
 
+Split - Justin Issue#181
+
+
+We should have three layers of crypto, and a keychain management component.
+
+First layer is QredoRawCrypto (currently QredoCrypto), which contains only named algorithms/cryptosystems. This layer insulates us from changes in underlying crypto libraries.
++(NSData *)aes256CtrEncrypt:(NSData *)plaintext key:(NSData *)key iv:(NSData *)iv;
++(NSData *)aes256CtrDecrypt:(NSData *)ciphertext key:(NSData *)key iv:(NSData *)iv;
++(BOOL)constantEquals:(NSData *)lhs rhs:(NSData *)rhs;
++(QredoKeyPair *)ed25519Derive:(NSData *)seed;
++(QredoKeyPair *)ed25519DeriveFromSecretKey:(NSData *)secretKey;
++(NSData *)ed25519Sha512Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair;
++(BOOL)ed25519Sha512Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair;
++(NSData *)hmacSha256:(NSData *)data key:(NSData *)key outputLen:(NSUInteger)outputLen;
++(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt;
++(NSData *)hkdfSha256Expand:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength;
++(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations;
++(NSData *)secureRandom:(NSUInteger)size;
++(NSData *)sha256:(NSData *)data;
+
+
+
+Second layer is QredoCryptoImpl (currently CryptoImpl), the “abstract” crypto concepts from the spec. This layer insulates us from changes in cryptosystem choices.
+-(NSData *)encryptBulk:(QredoKey *)secretKey  plaintext:(NSData *)plaintext;
+-(NSData *)decryptBulk:(QredoKey *)secretKey  ciphertext:(NSData *)ciphertext;
+-(NSData *)authenticate:(QredoKey *)secretKey data:(NSData *)data;
+-(NSData *)verify:(QredoKey *)secretKey data:(NSData *)data signature:(NSData *)signature;
+-(QredoKey *)deriveSlow:(NSData *)ikm salt:(NSData *)data;
+-(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info;
+-(QredoKeyPair *)ownershipKeyPairDerive:(NSData *)ikm;
+-(NSData *)ownershipSign:(QredoKeyPair *)keyPair data:(NSData *)data;
+-(NSData *)legacyHash:(NSData *)data;
+-(QredoKeyPair *)legacyOwnershipKeyPairGenerate;
+-(NSData *)legacyOwnershipSign:(QredoKeyPair *)keyPair data:(NSData *)data;
+
+
+
+Third layer is Qredo[Domain]Crypto, where [Domain] is Vault, Rendezvous, etc. This layer insulates the domain logic from how crypto is used.
+
+Finally, the keychain management component deals with the mapping of key refs to stored keys. Its interface will be similar to that of CryptoImpl, but it will accept QredoKeyRef or QredoKeyPairRef, the implementations of which are left as an exercise for the reader. Note conceptual difference in derivation functions.
+
+@interface QredoKeychain
+-(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext;
+-(NSData *)decryptBulk:(QredoKeyRef *)secretKeyRef  ciphertext:(NSData *)ciphertext;
+-(NSData *)authenticate:(QredoKeyRef *)secretKeyRef data:(NSData *)data;
+-(NSData *)verify:(QredoKeyRef *)secretKeyRef data:(NSData *)data signature:(NSData *)signature;
+-(QredoKeyRef *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
+-(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt;
+-(QredoKeyPairRef *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt;
+-(QredoKeyPairRef *)ownershipKeyPairDerive:(NSData *)ikm;
+-(NSData *)ownershipSign:(QredoKeyPairRef *)keyPairRef data:(NSData *)data;
+-(NSData *)legacyHash:(NSData *)data;
+-(QredoKeyPairRef *)legacyOwnershipKeyPairGenerate;
+-(NSData *)legacyOwnershipSign:(QredoKeyPairRef *)keyPair data:(NSData *)data;
+@end
+Above code snippets are proposals. Please discuss further in commentary, or in Slack (then transfer conclusions here). Specifications welcome if desired. Note that Diffie-Hellman and other key exchange protocols are unspecified as yet.
+
+Important design constraints:
+
+Each layer must never expose anything about library- or platform-specific crypto.
+The two base layers (QredoRawCrypto and QredoCryptoImpl) must NOT use key references, but actual keys in standardized serializations.
+- The only component that deals with key refs and persistence (incl. platform keychain) should be the QredoKeychain.
+Crypto components must use NSAssert to enforce preconditions, postconditions and important invariants. Failure in these components must cause the program to abort.
+Some of QredoCrypto has been started on in the crypto-interface-refactor branch. All tests are passing.

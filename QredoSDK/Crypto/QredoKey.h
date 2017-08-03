@@ -4,6 +4,6 @@
 @interface QredoKey :NSObject
 
 
--(NSData *)convertKeyToNSData;
+-(NSData *)serialize;
 
 @end

@@ -161,10 +161,12 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
                                                                                              values:[summaryValues indexableSet]];
     
     QLFEncryptedVaultItemHeader *encryptedVaultItemHeader =  [_vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemDescriptor
-                                                                                                    metadata:vaultItemMetaDataLF];
+                                                                                                    metadata:vaultItemMetaDataLF
+                                                                                                          iv:nil];
     
     QLFEncryptedVaultItem *encryptedVaultItem = [_vaultCrypto encryptVaultItemWithBody:vaultItem.value
-                                                              encryptedVaultItemHeader:encryptedVaultItemHeader];
+                                                              encryptedVaultItemHeader:encryptedVaultItemHeader
+                                                                                    iv:nil];
     
     NSError *error = nil;
     

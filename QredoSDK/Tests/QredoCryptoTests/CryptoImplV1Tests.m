@@ -2,7 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "CryptoImplV1.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoDhPublicKey.h"
 #import "QredoDhPrivateKey.h"
@@ -21,7 +21,7 @@
     NSData *salt      = [@"saltSALTsaltSALTsaltSALTsaltSALTsalt" dataUsingEncoding:NSASCIIStringEncoding];
     int rounds = 4096;
     int keyLen = 40;
-    NSData *key = [QredoCrypto pbkdf2Sha256WithSalt:salt passwordData:password requiredKeyLengthBytes:keyLen iterations:rounds];
+    NSData *key = [QredoRawCrypto pbkdf2Sha256:password salt:salt outputLength:keyLen iterations:rounds];
     
     NSData *expectedResult = [NSData dataWithHexString:@"348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9"];
     
@@ -46,9 +46,9 @@
     //Test ciphertext part of result is correct:
     //Extract the IV from the start (16 bytes), and attempt to encrypt the
     //same data ourselves using that IV and confirm the cipher text is correct
-    NSData *iv = [encryptedDataWithIv subdataWithRange:NSMakeRange(0,kCCBlockSizeAES128)];
-    NSData *expectedEncryptedData = [QredoCrypto encryptData:plaintextData with256bitAesKey:keyData iv:iv];
-    NSData *actualEncryptedData = [encryptedDataWithIv subdataWithRange:NSMakeRange(kCCBlockSizeAES128,encryptedDataWithIv.length - kCCBlockSizeAES128)];
+    NSData *iv = [encryptedDataWithIv subdataWithRange:NSMakeRange(0,kCCBlockSizeAES256)];
+    NSData *expectedEncryptedData = [QredoRawCrypto encryptData:plaintextData with256bitAesKey:keyData iv:iv];
+    NSData *actualEncryptedData = [encryptedDataWithIv subdataWithRange:NSMakeRange(kCCBlockSizeAES256,encryptedDataWithIv.length - kCCBlockSizeAES256)];
     XCTAssertTrue([expectedEncryptedData isEqualToData:actualEncryptedData],@"Encrypted data (with IV removed) incorrect.");
 }
 
@@ -206,25 +206,15 @@
 
 
 -(void)testGetAuthCodeWithKey_EmptyKeyEmptyData {
-    uint8_t keyDataArray[] = {
-    };
+    uint8_t keyDataArray[] = {};
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
     
-    uint8_t inputDataArray[] = {
-    };
+    uint8_t inputDataArray[] = {};
     NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
     
-    uint8_t expectedAuthCodeArray[] = {
-        0xB6,0x13,0x67,0x9A,0x08,0x14,0xD9,0xEC,0x77,0x2F,0x95,0xD7,0x78,0xC3,0x5F,0xC5,
-        0xFF,0x16,0x97,0xC4,0x93,0x71,0x56,0x53,0xC6,0xC7,0x12,0x14,0x42,0x92,0xC5,0xAD
-    };
-    NSData *expectedAuthCode = [NSData dataWithBytes:expectedAuthCodeArray length:sizeof(expectedAuthCodeArray) / sizeof(uint8_t)];
-    
     CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    NSData *authCode = [cryptoImpl getAuthCodeWithKey:keyData data:inputData];
     
-    XCTAssertNotNil(authCode,@"Auth code should not be nil.");
-    XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
+    XCTAssertThrows([cryptoImpl getAuthCodeWithKey:keyData data:inputData]);
 }
 
 

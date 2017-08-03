@@ -9,9 +9,9 @@
 #import "NSDictionary+QUIDSerialization.h"
 #import "NSDictionary+IndexableSet.h"
 #import "QredoVaultCrypto.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoLoggerPrivate.h"
-#import "QredoKeychain.h"
+//#import "QredoKeychain.h"
 
 #import "QredoUpdateListener.h"
 #import "QredoObserverList.h"
@@ -154,7 +154,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 
 -(QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type {
     NSString *constructedName = [NSString stringWithFormat:@"%@.%@@%@",[self.vaultId QUIDString],name,type];
-    NSData *hash = [QredoCrypto sha256:[constructedName dataUsingEncoding:NSUTF8StringEncoding]];
+    NSData *hash = [QredoRawCrypto sha256:[constructedName dataUsingEncoding:NSUTF8StringEncoding]];
     return [[QredoQUID alloc] initWithQUIDData:hash];
 }
 

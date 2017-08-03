@@ -37,8 +37,6 @@ extern NSString *const kQredoConversationVaultItemLabelType;
                         completionHandler:(void (^)(NSError *error))completionHandler;
 
 -(void)respondToRendezvousWithTag:(NSString *)rendezvousTag
-                  trustedRootPems:(NSArray *)trustedRootPems
-                          crlPems:(NSArray *)crlPems
                    appCredentials:(QredoAppCredentials *)appCredentials
                 completionHandler:(void (^)(NSError *error))completionHandler;
 

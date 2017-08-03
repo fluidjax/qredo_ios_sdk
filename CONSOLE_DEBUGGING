@@ -1,0 +1,37 @@
+Using LLDB from Command Line
+----------------------------
+
+
+TERMINAL 1
+//Find Hash of Simulator you want to use, and start it
+xcrun simctl list devices
+open -a Simulator --args -CurrentDeviceUDID 17B3FA41-3B3B-4E28-AE67-D04728B9E7FD
+
+//Drag and drop XXX.app from the Xcode project, install App into SIM
+xcrun simctl install booted /Users/chris/Library/Developer/Xcode/DerivedData/QredoSDK-ehexkcizptbrgddxmdgqmyzxulay/Build/Products/Debug-iphonesimulator/TestHost.app
+
+
+
+TERMINAL 2
+lldb
+platform select ios-simulator
+platform connect 17B3FA41-3B3B-4E28-AE67-D04728B9E7FD
+process attach -n TestHost --waitfor
+
+
+BACK TO TERMINAL 1
+//Start App
+xcrun simctl launch 17B3FA41-3B3B-4E28-AE67-D04728B9E7FD com.qredo.ChrisPush1
+
+
+BACK TO TERMINAL 2
+//-waitfor should have continues
+
+br set --file ViewController.m --line 19
+continue
+
+
+
+TERMINAL
+//View Simulator Console
+tail -f ~/Library/Logs/CoreSimulator/17B3FA41-3B3B-4E28-AE67-D04728B9E7FD/system.log

@@ -6,19 +6,7 @@
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
 
-
-static NSString *const QredoCryptoImplErrorDomain = @"QredoCryptoImplErrorDomain";
-
-typedef NS_ENUM (NSUInteger,QredoCryptoImplError) {
-    QredoCryptoImplErrorUnknown = 0,
-    QredoCryptoImplErrorMalformedData,
-    QredoCryptoImplErrorMalformedKeyData,
-    QredoCryptoImplErrorMalformedSignatureData,
-};
-
-
 @protocol CryptoImpl
-
 
 
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data;
@@ -34,29 +22,18 @@ typedef NS_ENUM (NSUInteger,QredoCryptoImplError) {
 -(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data;
 -(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data mac:(NSData *)mac;
 -(NSData *)getRandomKey;
--(NSData *)generateRandomNonce:(NSUInteger)size;
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password;
 
--(NSData *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoPrivateKey *)myPrivateKey
-                                       yourPublicKey:(QredoPublicKey *)yourPublicKey;
+-(NSData *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                                       yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
-                             myPrivateKey:(QredoPrivateKey *)myPrivateKey
-                            yourPublicKey:(QredoPublicKey *)yourPublicKey;
+                             myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(QredoKeyPair *)generateDHKeyPair;
 
-
--(QredoED25519SigningKey *)qredoED25519SigningKey;
--(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed;
--(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error;
-
--(NSData *)qredoED25519EmptySignature;
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error;
-
--(BOOL)qredoED25519VerifySignature:(NSData *)signature
-                         ofMessage:(NSData *)message
-                         verifyKey:(QredoED25519VerifyKey *)vk
-                             error:(NSError **)error;
+-(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed;
 
 @end

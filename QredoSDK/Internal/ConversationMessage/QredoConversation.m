@@ -1,4 +1,3 @@
-/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "Qredo.h"
 #import "QredoQUIDPrivate.h"
@@ -8,8 +7,6 @@
 #import "QredoConversationCrypto.h"
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
-#import "QredoRsaPrivateKey.h"
-#import "QredoRsaPublicKey.h"
 #import "CryptoImplV1.h"
 #import "QredoClient.h"
 #import "NSDictionary+IndexableSet.h"
@@ -167,7 +164,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoObserverList *_observers;
     QredoUpdateListener *_updateListener;
 }
-
 
 @property (nonatomic,readwrite) QredoClient *client;
 
@@ -329,10 +325,15 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                      yourPublicKey:publicKey];
     
     NSData *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
+    
     NSData *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
+    
     NSData *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
+    
     NSData *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
+    
     NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    
     NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
     
     QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
@@ -366,15 +367,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];
 }
 
-
 -(void)updateConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     [self updateConversationWithSummaryValues:self.metadata.summaryValues completionHandler:completionHandler];
 }
 
 
 -(void)respondToRendezvousWithTag:(NSString *)rendezvousTag
-                  trustedRootPems:(NSArray *)trustedRootPems
-                          crlPems:(NSArray *)crlPems
                    appCredentials:(QredoAppCredentials *)appCredentials
                 completionHandler:(void (^)(NSError *error))completionHandler {
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
@@ -411,8 +409,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                authenticationKey:authKey
                                                                              tag:rendezvousTag
                                                                        hashedTag:hashedTag
-                                                                 trustedRootPems:trustedRootPems
-                                                                         crlPems:crlPems
                                                                            error:nil]){
                                NSError *error = nil;
                                
@@ -732,13 +728,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(NSString *)showMyFingerPrint {
-    NSData *fp =  [QredoCrypto sha256:_myPublicKey.data];
+    NSData *fp =  [QredoRawCrypto sha256:_myPublicKey.data];
     return [QredoUtils dataToHexString:fp];
 }
 
 
 -(NSString *)showRemoteFingerPrint {
-    NSData *fp = [QredoCrypto sha256:_yourPublicKey.data];
+    NSData *fp = [QredoRawCrypto sha256:_yourPublicKey.data];
     return [QredoUtils dataToHexString:fp];
 }
 
@@ -989,8 +985,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                   QredoVaultItemMetadata *metadataCopy = [vaultItemMetadata mutableCopy];
                                   metadataCopy.created = [QredoNetworkTime dateTime];
                                   metadataCopy.summaryValues = newValues;
-                                  
                                   QredoVaultItem *newVaultItem = [QredoVaultItem  vaultItemWithMetadata:metadataCopy value:serializedDescriptor];
+                                  
                                   
                                   [sysvault  strictlyUpdateItem:newVaultItem
                                               completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {

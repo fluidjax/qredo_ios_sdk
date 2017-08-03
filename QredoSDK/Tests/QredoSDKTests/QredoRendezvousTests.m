@@ -6,17 +6,14 @@
 #import "QredoTestUtils.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoClient.h"
-#import "QredoCrypto.h"
+#import "QredoRawCrypto.h"
 #import "QredoRendezvousCrypto.h"
 #import "CryptoImplV1.h"
 #import "QredoBase58.h"
-#import "TestCertificates.h"
-#import "QredoCertificateUtils.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
 #import "NSData+HexTools.h"
-#import "QredoCryptoTestUtilities.h"
 
 #import <objc/runtime.h>
 
@@ -81,10 +78,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 }
 
 @property (nonatomic) id<CryptoImpl> cryptoImpl;
-@property (nonatomic) NSArray *trustedRootPems;
-@property (nonatomic) NSArray *crlPems;
 @property (nonatomic) SecKeyRef privateKeyRef;
-@property (nonatomic,copy) NSString *publicKeyCertificateChainPem;
 @property  NSString *randomlyCreatedTag;
 
 
@@ -95,19 +89,10 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 
 -(void)setUp {
     [super setUp];
-    
     //Want tests to abort if error occurrs
     self.continueAfterFailure = NO;
-    
     //Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
-    [self setupRootCertificates];
-    [self setupCrls];
     self.cryptoImpl = [CryptoImplV1 sharedInstance];
-    
-    //Must remove any existing keys before starting
-    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
-
-    
     [self createRandomClients];
 }
 
@@ -115,7 +100,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 -(void)tearDown {
     [super tearDown];
     //Should remove any existing keys after finishing
-    [QredoCryptoTestUtilities deleteAllKeysInAppleKeychain];
 }
 
 
@@ -264,127 +248,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 }
 
 
--(QredoSecKeyRefPair *)setupKeypairForPublicKeyData:(NSData *)publicKeyData privateKeyData:(NSData *)privateKeyData keySizeBits:(NSInteger)keySizeBits {
-    //Import a known Public Key and Private Key into Keychain
-    
-    //NOTE: This will fail if the key has already been imported (even with different identifier)
-    NSString *publicKeyIdentifier = @"com.qredo.TestPublicKeyImport1";
-    NSString *privateKeyIdentifier = @"com.qredo.TestPrivateKeyImport1";
-    
-    XCTAssertNotNil(publicKeyData);
-    
-    XCTAssertNotNil(privateKeyData);
-    
-    SecKeyRef publicKeyRef = [QredoCryptoTestUtilities importPkcs1KeyData:publicKeyData
-                                               keyLengthBits:keySizeBits
-                                               keyIdentifier:publicKeyIdentifier
-                                                   isPrivate:NO];
-    XCTAssertTrue((__bridge id)publicKeyRef,@"Public Key import failed.");
-    
-    SecKeyRef privateKeyRef = [QredoCryptoTestUtilities importPkcs1KeyData:privateKeyData
-                                                keyLengthBits:keySizeBits
-                                                keyIdentifier:privateKeyIdentifier
-                                                    isPrivate:YES];
-    XCTAssertTrue((__bridge id)privateKeyRef,@"Private Key import failed.");
-    
-    QredoSecKeyRefPair *keyRefPair = [[QredoSecKeyRefPair alloc] initWithPublicKeyRef:publicKeyRef privateKeyRef:privateKeyRef];
-    
-    return keyRefPair;
-}
-
-
--(void)setupRootCertificates {
-    NSError *error = nil;
-    
-    //Test certs root CA cert
-    NSString *rootCert = [TestCertificates fetchPemCertificateFromResource:@"rootCAcert" error:&error];
-    
-    XCTAssertNotNil(rootCert);
-    XCTAssertNil(error);
-    
-    self.trustedRootPems = [NSArray arrayWithObjects:rootCert,nil];
-    XCTAssertNotNil(self.trustedRootPems);
-}
-
-
--(void)setupCrls {
-    NSError *error = nil;
-    
-    NSString *rootCrl = [TestCertificates fetchPemForResource:@"rootCAcrlAfterRevoke" error:&error];
-    
-    XCTAssertNotNil(rootCrl);
-    XCTAssertNil(error);
-    
-    NSString *intermediateCrl = [TestCertificates fetchPemForResource:@"interCA1crlAfterRevoke" error:&error];
-    XCTAssertNotNil(intermediateCrl);
-    XCTAssertNil(error);
-    
-    self.crlPems = [NSArray arrayWithObjects:rootCrl,intermediateCrl,nil];
-}
-
-
--(void)setupTestPublicCertificateAndPrivateKey4096Bit {
-    //iOS only supports importing a private key in PKC#12 format, so some pain required in getting from PKCS#12 to
-    //raw private RSA key, and the PEM public certificates
-    
-    //Import some PKCS#12 data and then get the certificate chain refs from the identity.
-    //Use SecCertificateRefs to create a PEM which is then processed (to confirm validity)
-    
-    
-    //1.) Create identity - Test client certificate + priv key from QredoTestCA, with intermediate cert
-    NSError *error = nil;
-    
-    NSString *pkcs12Password = @"password";
-    NSData *pkcs12Data = [TestCertificates fetchPfxForResource:@"clientCert3.4096.IntCA1" error:&error];
-    
-    XCTAssertNotNil(pkcs12Data);
-    XCTAssertNil(error);
-    int expectedNumberOfCertsInCertChain = 2;
-    
-    //QredoTestCA root
-    NSString *rootCertificatesPemString = [TestCertificates fetchPemForResource:@"rootCAcert" error:&error];
-    XCTAssertNotNil(rootCertificatesPemString);
-    XCTAssertNil(error);
-    int expectedNumberOfRootCertificateRefs = 1;
-    
-    //Get the SecCertificateRef array for the root cert
-    NSArray *rootCertificates = [QredoCertificateUtils getCertificateRefsFromPemCertificates:rootCertificatesPemString];
-    XCTAssertNotNil(rootCertificates,@"Root certificates should not be nil.");
-    XCTAssertEqual(rootCertificates.count,expectedNumberOfRootCertificateRefs,@"Wrong number of root certificate refs returned.");
-    
-    //Create an Identity using the PKCS#12 data, validated with the root certificate ref
-    NSDictionary *identityDictionary = [QredoCertificateUtils createAndValidateIdentityFromPkcs12Data:pkcs12Data
-                                                                                             password:pkcs12Password
-                                                                                  rootCertificateRefs:rootCertificates];
-    XCTAssertNotNil(identityDictionary,@"Incorrect identity validation result. Should have returned valid NSDictionary.");
-    
-    //Extract the SecTrustRef from the Identity Dictionary result to ensure trust was successful
-    SecTrustRef trustRef = (SecTrustRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,kSecImportItemTrust);
-    XCTAssertNotNil((__bridge id)trustRef,@"Incorrect identity validation result dictionary contents. Should contain valid trust ref.");
-    
-    //Extract the certificate chain refs (client and intermediate certs) from the Identity Dictionary result to ensure chain is correct
-    NSArray *certChain = (NSArray *)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,kSecImportItemCertChain);
-    XCTAssertNotNil(certChain,@"Incorrect identity validation result dictionary contents. Should contain valid cert chain array.");
-    XCTAssertEqual(certChain.count,expectedNumberOfCertsInCertChain,@"Incorrect identity validation result dictionary contents. Wrong number of certificate refs in cert chain.");
-    
-    //Extract the SecIdentityRef from Identity Dictionary, this enables us to get the private SecKeyRef out, which is needed for RSA operations in tests
-    SecIdentityRef identityRef = (SecIdentityRef)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,kSecImportItemIdentity);
-    XCTAssertNotNil((__bridge id)identityRef,@"Incorrect identity validation result dictionary contents. Should contain valid identity ref.");
-    
-    //Extract the SecKeyRef from the identity
-    self.privateKeyRef = [QredoCryptoTestUtilities getPrivateKeyRefFromIdentityRef:identityRef];
-    XCTAssertNotNil((__bridge id)self.privateKeyRef);
-    
-    //2.) Create Certificate Refs from Identity Dictionary and convert to PEM string
-    NSArray *certificateChainRefs = (NSArray *)CFDictionaryGetValue((__bridge CFDictionaryRef)identityDictionary,
-                                                                    kSecImportItemCertChain);
-    XCTAssertNotNil(certificateChainRefs,@"Incorrect identity validation result dictionary contents. Should contain valid certificate chain array.");
-    XCTAssertEqual(certificateChainRefs.count,expectedNumberOfCertsInCertChain,@"Incorrect identity validation result dictionary contents. Should contain expected number of certificate chain refs.");
-    
-    //The PEM certs for the full chain becomes the authentication tag in the tests.
-    self.publicKeyCertificateChainPem = [QredoCertificateUtils convertCertificateRefsToPemCertificate:certificateChainRefs];
-    XCTAssertNotNil(self.publicKeyCertificateChainPem);
-}
 
 
 -(NSString *)randomStringWithLength:(int)len {
@@ -1388,11 +1251,21 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     //check that it has expired
     //responding to the expired rendezvous should fail
+    __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"respond to  rendezvous"];
+    
+    
     [testClient1 respondWithTag:self.randomlyCreatedTag
          completionHandler:^(QredoConversation *conversation,NSError *error) {
-             //
              XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse);
+             [respondExpectation fulfill];
          }];
+    
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
+                                 handler:^(NSError *error) {
+                                     respondExpectation = nil;
+                                 }];
+    
     
     __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
     
@@ -1436,15 +1309,26 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     //check that it has expired
     //responding to the expired rendezvous should fail
+     __block XCTestExpectation *respondExpectation = [self expectationWithDescription:@"respond to  rendezvous"];
+    
     [testClient1 respondWithTag:self.randomlyCreatedTag
          completionHandler:^(QredoConversation *conversation,NSError *error) {
-             //
-             
              XCTAssert(error.code == QredoErrorCodeRendezvousUnknownResponse,@"Error is %@",error);
+             [respondExpectation fulfill];
          }];
     
-    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
+   
     
+    
+    [self waitForExpectationsWithTimeout:qtu_defaultTimeout
+                                 handler:^(NSError *error) {
+                                     respondExpectation = nil;
+                                 }];
+
+    
+    
+    
+    __block XCTestExpectation *createActivateExpectation = [self expectationWithDescription:@"activate rendezvous"];
     
     //now activate the rendezvous
     [testClient1 activateRendezvousWithRef:rendezvousRef

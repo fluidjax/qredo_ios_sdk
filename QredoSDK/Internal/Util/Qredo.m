@@ -221,11 +221,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 }
 
 
--(QredoKeychain *)keychain {
-    return _keychain;
-}
-
-
 -(QredoServiceInvoker *)serviceInvoker {
     return _serviceInvoker;
 }
@@ -602,8 +597,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
     [self makeRendezvousWithTag:tag
                authenticationType:QredoRendezvousAuthenticationTypeAnonymous
                     configuration:configuration
-                  trustedRootPems:[[NSArray alloc] init]
-                          crlPems:[[NSArray alloc] init]
                    signingHandler:nil
                    appCredentials:self.appCredentials
                 completionHandler:^(QredoRendezvous *rendezvous,NSError *error) {
@@ -619,8 +612,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
 -(void)makeRendezvousWithTag:(NSString *)tag
             authenticationType:(QredoRendezvousAuthenticationType)authenticationType
                  configuration:(QredoRendezvousConfiguration *)configuration
-               trustedRootPems:(NSArray *)trustedRootPems
-                       crlPems:(NSArray *)crlPems
                 signingHandler:(signDataBlock)signingHandler
                 appCredentials:(QredoAppCredentials *)appCredentials
              completionHandler:(void (^)(QredoRendezvous *rendezvous,NSError *error))completionHandler {
@@ -634,8 +625,6 @@ NSString *systemVaultKeychainArchiveIdentifier;
         [rendezvous createRendezvousWithTag:tag
                          authenticationType:authenticationType
                               configuration:configuration
-                            trustedRootPems:trustedRootPems
-                                    crlPems:crlPems
                              signingHandler:signingHandler
                              appCredentials:appCredentials
                           completionHandler:^(NSError *error) {
@@ -823,21 +812,11 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 -(void)respondWithTag:(NSString *)tag
     completionHandler:(void (^)(QredoConversation *conversation,NSError *error))completionHandler {
-    [self respondWithTag:tag trustedRootPems:nil crlPems:nil completionHandler:completionHandler];
-}
-
-
--(void)respondWithTag:(NSString *)tag
-      trustedRootPems:(NSArray *)trustedRootPems
-              crlPems:(NSArray *)crlPems
-    completionHandler:(void (^)(QredoConversation *conversation,NSError *error))completionHandler {
     NSAssert(completionHandler,@"completionHandler should not be nil");
     
     dispatch_async(_rendezvousQueue,^{
         QredoConversation *conversation = [[QredoConversation alloc] initWithClient:self];
         [conversation respondToRendezvousWithTag:tag
-                                 trustedRootPems:trustedRootPems
-                                         crlPems:crlPems
                                   appCredentials:self.appCredentials
                                completionHandler:^(NSError *error) {
                                    if (error){
