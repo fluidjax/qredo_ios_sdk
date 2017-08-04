@@ -2,11 +2,6 @@
 #import "QredoDhPublicKey.h"
 #import "QredoMacros.h"
 
-@interface QredoDhPublicKey ()
-
-@property (nonatomic,copy) NSData *data;
-
-@end
 
 @implementation QredoDhPublicKey
 
@@ -21,7 +16,7 @@
     GUARD(data,@"Data argument is nil");
     self = [super init];
     if (self){
-        _data = data;
+        self.data = data;
     }
     return self;
 }

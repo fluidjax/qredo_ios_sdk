@@ -3,11 +3,6 @@
 #import "QredoDhPrivateKey.h"
 #import "QredoMacros.h"
 
-@interface QredoDhPrivateKey ()
-
-@property (nonatomic,copy) NSData *data;
-
-@end
 
 @implementation QredoDhPrivateKey
 
@@ -24,7 +19,7 @@
     self = [super init];
     
     if (self){
-        _data = data;
+        self.data = data;
     }
     
     return self;

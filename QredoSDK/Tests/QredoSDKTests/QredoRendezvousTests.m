@@ -241,10 +241,11 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
     NSString *tag   = @"ABC";
     NSString *appId = @"123";
-    NSData *res = [rendCrypto masterKeyWithTag:tag appId:appId];
-    NSData *testVal = [NSData dataWithHexString:@"b7dd94ba 22f5eba2 a1010144 00e65c11 0d3e69b7 098a5b88 9d44cea0 e96c944f"];
+    QredoKey *res = [rendCrypto masterKeyWithTag:tag appId:appId];
+    QredoKey *testVal = [[QredoKey alloc] initWithHexString:@"b7dd94ba 22f5eba2 a1010144 00e65c11 0d3e69b7 098a5b88 9d44cea0 e96c944f"];
     
-    XCTAssertTrue([testVal isEqualToData:res],@"Master Key derived from Tag is incorrect");
+    
+    XCTAssertTrue([testVal isEqual:res],@"Master Key derived from Tag is incorrect");
 }
 
 

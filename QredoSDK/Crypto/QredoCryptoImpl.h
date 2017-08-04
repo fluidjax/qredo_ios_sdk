@@ -15,8 +15,12 @@
 -(NSData *)encryptBulk:(QredoAESKey *)secretKey  plaintext:(NSData *)plaintext iv:(NSData *)iv;
 -(NSData *)decryptBulk:(QredoAESKey *)secretKey  ciphertext:(NSData *)ciphertext;
 
--(NSData *)getAuthCodeWithKey:(NSData *)authKey data:(NSData *)data;
--(NSData *)getAuthCodeWithKey:(NSData *)authKey data:(NSData *)data length:(NSUInteger)length;
+-(QredoKey *)deriveSlow:(NSData *)ikm salt:(NSData *)data iterations:(int)iterations;
+-(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info;
+
+
+-(NSData *)getAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data;
+-(NSData *)getAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data length:(NSUInteger)length;
 -(NSData *)getAuthCodeZero;
 
 //TODO: this function extracta appended authCode from `data`, however, in the new approach authCode is stored
@@ -24,10 +28,10 @@
 //Once KeyStore is reviewed, this method should be gone
 -(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data;
 -(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data mac:(NSData *)mac;
--(NSData *)getRandomKey;
+-(QredoKey *)getRandomKey;
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password;
 
--(NSData *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+-(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
@@ -40,12 +44,10 @@
 -(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed;
 
 
-//-(NSData *)encryptBulk:(QredoKey *)secretKey  plaintext:(NSData *)plaintext;
-//-(NSData *)decryptBulk:(QredoKey *)secretKey  ciphertext:(NSData *)ciphertext;
 //-(NSData *)authenticate:(QredoKey *)secretKey data:(NSData *)data;
 //-(NSData *)verify:(QredoKey *)secretKey data:(NSData *)data signature:(NSData *)signature;
-//-(QredoKey *)deriveSlow:(NSData *)ikm salt:(NSData *)data;
-//-(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info;
+
+
 //-(QredoKeyPair *)ownershipKeyPairDerive:(NSData *)ikm;
 //-(NSData *)ownershipSign:(QredoKeyPair *)keyPair data:(NSData *)data;
 //-(NSData *)legacyHash:(NSData *)data;

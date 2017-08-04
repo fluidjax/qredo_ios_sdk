@@ -12,16 +12,18 @@
 
 -(instancetype)initWithCrypto:(id<QredoCryptoImpl>)crypto;
 
--(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey;
--(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError **)error;
+-(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(QredoAESKey *)bulkKey authKey:(QredoKey *)authKey;
+-(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(QredoAESKey *)bulkKey authKey:(QredoKey *)authKey error:(NSError **)error;
 
--(NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
--(NSData *)requesterInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
--(NSData *)requesterInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
--(NSData *)requesterInboundQueueSeedWithMasterKey:(NSData *)masterKey;
--(NSData *)responderInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
--(NSData *)responderInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
--(NSData *)responderInboundQueueSeedWithMasterKey:(NSData *)masterKey;
--(QredoQUID *)conversationIdWithMasterKey:(NSData *)masterKey;
+-(QredoKey *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+
+-(QredoAESKey *)requesterInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey;
+-(QredoKey *)requesterInboundAuthenticationKeyWithMasterKey:(QredoKey *)masterKey;
+-(NSData *)requesterInboundQueueSeedWithMasterKey:(QredoKey *)masterKey;
+
+-(QredoAESKey *)responderInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey;
+-(QredoKey *)responderInboundAuthenticationKeyWithMasterKey:(QredoKey *)masterKey;
+-(NSData *)responderInboundQueueSeedWithMasterKey:(QredoKey *)masterKey;
+-(QredoQUID *)conversationIdWithMasterKey:(QredoKey *)masterKey;
 
 @end

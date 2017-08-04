@@ -132,11 +132,11 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoConversationCrypto *_conversationCrypto;
     QLFConversations *_conversationService;
     
-    NSData *_inboundBulkKey;
-    NSData *_inboundAuthKey;
+    QredoAESKey *_inboundBulkKey;
+    QredoKey *_inboundAuthKey;
     
-    NSData *_outboundBulkKey;
-    NSData *_outboundAuthKey;
+    QredoAESKey *_outboundBulkKey;
+    QredoKey *_outboundAuthKey;
     
     QredoQUID *_inboundQueueId;
     QredoQUID *_outboundQueueId;
@@ -321,16 +321,16 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _myPublicKey = myPublicKey;
     _yourPublicKey = publicKey;
     
-    NSData *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:privateKey
+    QredoKey *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:privateKey
                                                                      yourPublicKey:publicKey];
     
-    NSData *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
+    QredoAESKey *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
     
-    NSData *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
+    QredoKey *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
     
-    NSData *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
+    QredoAESKey *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
     
-    NSData *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
+    QredoKey *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
     
     NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
     
@@ -378,19 +378,20 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
     QLFRendezvous *_rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:self.client.serviceInvoker];
     
-    NSData *masterKey = [_rendezvousCrypto masterKeyWithTag:rendezvousTag appId:appCredentials.appId];
-    NSData *authKey = [_rendezvousCrypto authenticationKeyWithMasterKey:masterKey];
+    QredoKey *masterKey = [_rendezvousCrypto masterKeyWithTag:rendezvousTag appId:appCredentials.appId];
+    QredoKey *authKey = [_rendezvousCrypto authenticationKeyWithMasterKey:masterKey];
     
     QLFRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithMasterKey:masterKey];
     
     //Generate the rendezvous key pairs.
     QLFKeyPairLF *responderKeyPair     = [_rendezvousCrypto newRequesterKeyPair];
-    NSData *responderPublicKeyBytes    = [[responderKeyPair pubKey] bytes];
+     NSData *responderPublicKeyBytes    = [[responderKeyPair pubKey] bytes];
     _myPublicKey = [[QredoDhPublicKey alloc] initWithData:responderPublicKeyBytes];
+    
     
     QLFAuthenticationCode *responderAuthenticationCode   = [_rendezvousCrypto responderAuthenticationCodeWithHashedTag:hashedTag
                                                                                                      authenticationKey:authKey
-                                                                                                    responderPublicKey:responderPublicKeyBytes];
+                                                                                                    responderPublicKey:_myPublicKey];
     
     QLFRendezvousResponse *response = [QLFRendezvousResponse rendezvousResponseWithHashedTag:hashedTag
                                                                           responderPublicKey:responderPublicKeyBytes
@@ -412,12 +413,11 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                            error:nil]){
                                NSError *error = nil;
                                
-                               NSData *encKey = [_rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
+                               QredoAESKey *encKey = [_rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
                                
-                               QLFRendezvousResponderInfo *responderInfo =
-                               [_rendezvousCrypto decryptResponderInfoWithData:responseRegistered.info.value
-                                                                 encryptionKey:encKey
-                                                                         error:&error];
+                               QLFRendezvousResponderInfo *responderInfo = [_rendezvousCrypto decryptResponderInfoWithData:responseRegistered.info.value
+                                                                                                             encryptionKey:encKey
+                                                                                                                     error:&error];
                                
                                QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:responderInfo.requesterPublicKey];
                                QredoDhPrivateKey *responderPrivateKey = [[QredoDhPrivateKey alloc] initWithData:responderKeyPair.privKey.bytes];
@@ -578,8 +578,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                          block:(void (^)(QredoConversationMessage *message,BOOL *stop))block
              completionHandler:(void (^)(NSError *error))completionHandler
           highWatermarkHandler:(void (^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler {
-    NSData *bulkKey = incoming ? _inboundBulkKey : _outboundBulkKey;
-    NSData *authKey = incoming ? _inboundAuthKey : _outboundAuthKey;
+    QredoAESKey *bulkKey = incoming ? _inboundBulkKey : _outboundBulkKey;
+    QredoKey *authKey = incoming ? _inboundAuthKey : _outboundAuthKey;
     
     //The outcome of this function should be either calling `completionHandler` or `continueToNextMessage`
     

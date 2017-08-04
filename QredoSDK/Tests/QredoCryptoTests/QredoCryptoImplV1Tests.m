@@ -8,7 +8,7 @@
 #import "QredoDhPrivateKey.h"
 #import "NSData+HexTools.h"
 #import "QredoAESKey.h"
-
+#import "QredoKey.h"zz
 
 @interface QredoCryptoImplV1Tests :XCTestCase
 
@@ -196,12 +196,12 @@
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
     
-    QredoAESKey *qredoAESbulkKey = [[QredoAESKey alloc] initWithKeyData:keyData];
+    QredoAESKey *qredoAESbulkKey = [[QredoAESKey alloc] initWithData:keyData];
     NSData *encryptedDataWithIv = [qredoCryptoImpl encryptBulk:qredoAESbulkKey plaintext:plaintextData];
     
     XCTAssertNotNil(encryptedDataWithIv,@"Encrypted data with IV should not be nil.");
     
-    QredoAESKey *qredoAESKey = [[QredoAESKey alloc] initWithKeyData:keyData];
+    QredoAESKey *qredoAESKey = [[QredoAESKey alloc] initWithData:keyData];
     
     NSData *decryptedData = [qredoCryptoImpl decryptBulk:qredoAESKey ciphertext:encryptedDataWithIv];
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
@@ -220,7 +220,7 @@
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
     
-    XCTAssertThrows([qredoCryptoImpl getAuthCodeWithKey:keyData data:inputData]);
+    XCTAssertThrows([qredoCryptoImpl getAuthCodeWithKey:[[QredoKey alloc] initWithData:keyData] data:inputData]);
 }
 
 
@@ -238,7 +238,7 @@
     NSData *expectedAuthCode = [NSData dataWithBytes:expectedAuthCodeArray length:sizeof(expectedAuthCodeArray) / sizeof(uint8_t)];
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    NSData *authCode = [qredoCryptoImpl getAuthCodeWithKey:keyData data:inputData];
+    NSData *authCode = [qredoCryptoImpl getAuthCodeWithKey:[[QredoKey alloc] initWithData:keyData] data:inputData];
     
     XCTAssertNotNil(authCode,@"Auth code should not be nil.");
     XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
@@ -261,7 +261,7 @@
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
     //Only generate the HMAC over the first 43 bytes
-    NSData *authCode = [qredoCryptoImpl getAuthCodeWithKey:keyData data:inputData length:43];
+    NSData *authCode = [qredoCryptoImpl getAuthCodeWithKey:[[QredoKey alloc] initWithData:keyData] data:inputData length:43];
     
     XCTAssertNotNil(authCode,@"Auth code should not be nil.");
     XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
@@ -389,14 +389,14 @@
     //and that we don't get the same key twice.
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    NSData *randomKey1 = [qredoCryptoImpl getRandomKey];
-    NSData *randomKey2 = [qredoCryptoImpl getRandomKey];
+    QredoKey *randomKey1 = [qredoCryptoImpl getRandomKey];
+    QredoKey *randomKey2 = [qredoCryptoImpl getRandomKey];
     
     XCTAssertNotNil(randomKey1,@"Random key 1 should not be nil.");
     XCTAssertNotNil(randomKey2,@"Random key 2 should not be nil.");
     XCTAssertTrue(randomKey1.length == kCCKeySizeAES256,@"Random key 1 is incorrect length.");
     XCTAssertTrue(randomKey2.length == kCCKeySizeAES256,@"Random key 2 is incorrect length.");
-    XCTAssertFalse([randomKey1 isEqualToData:randomKey2],@"Random keys are the same. Both should be random.");
+    XCTAssertFalse([randomKey1 isEqual:randomKey2],@"Random keys are the same. Both should be random.");
 }
 
 

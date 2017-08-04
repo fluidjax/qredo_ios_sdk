@@ -11,7 +11,6 @@
 
 @interface QredoAESKey : QredoKey
 
-@property (nonatomic,readonly,copy) NSData *serializa;
--(instancetype)initWithKeyData:(NSData *)keydata;
+
 
 @end

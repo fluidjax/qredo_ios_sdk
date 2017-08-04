@@ -272,12 +272,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _tag = [rendezvousHelper tag];
     
     //Hash the tag.
-    NSData *masterKey = [crypto masterKeyWithTag:_tag appId:appCredentials.appId];
-    QLFAuthenticationCode *authKey = [crypto authenticationKeyWithMasterKey:masterKey];
+    QredoKey *masterKey = [crypto masterKeyWithTag:_tag appId:appCredentials.appId];
+    QredoKey *authKey = [crypto authenticationKeyWithMasterKey:masterKey];
     _hashedTag  = [crypto hashedTagWithMasterKey:masterKey];
-    NSData *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
+    QredoAESKey *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
     
     QredoLogDebug(@"Hashed tag: %@",_hashedTag);
+    
+    NSLog(@"*****TAG %@",_hashedTag);
     
     //Generate the rendezvous key pairs.
     QLFKeyPairLF *ownershipKeyPair     = [crypto newECAccessControlKeyPairWithSeed:[_hashedTag data]];

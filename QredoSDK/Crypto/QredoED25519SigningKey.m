@@ -5,7 +5,6 @@
 
 @interface QredoED25519SigningKey ()
 @property (nonatomic,copy) NSData *seed;
-@property (nonatomic,copy) NSData *data;
 @property (nonatomic) QredoED25519VerifyKey *verifyKey;
 @end
 
@@ -16,16 +15,11 @@
     
     if (self){
         _seed = seed;
-        _data = data;
+        self.data = data;
         _verifyKey = verifyKey;
     }
     
     return self;
-}
-
-
--(NSData *)serialize {
-    return _data;
 }
 
 

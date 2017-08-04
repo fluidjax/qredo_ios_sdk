@@ -119,7 +119,7 @@
     NSAssert(result == 0, @"Could not generate Ed25519 key pair from seed.");
     
     QredoED25519VerifyKey *qpk  =
-    [[QredoED25519VerifyKey alloc] initWithKeyData:pk];
+    [[QredoED25519VerifyKey alloc] initWithData:pk];
     QredoED25519SigningKey *qsk =
     [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:sk verifyKey:qpk];
     QredoKeyPair *kp =
@@ -158,7 +158,7 @@
                                  NULL,
                                  payload.bytes,
                                  payload.length,
-                                 keyPair.privateKey.serialize.bytes);
+                                 keyPair.privateKey.bytes.bytes);
     
     return signature;
     
@@ -169,7 +169,7 @@
                                                signature.bytes,
                                                payload.bytes,
                                                payload.length,
-                                               keyPair.publicKey.serialize.bytes) == 0;
+                                               keyPair.publicKey.bytes.bytes) == 0;
 }
 
 +(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt {
