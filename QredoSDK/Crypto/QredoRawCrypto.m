@@ -15,15 +15,6 @@
 
 @implementation QredoRawCrypto
 
-SecPadding secPaddingFromQredoPadding(QredoPadding);
-SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
-
-/*
- OAEP padding adds minimum 2+(2*hash_size) bytes padding.
- Default OAEP uses SHA1, which is 20byte hash output.
- Therefore minimum padding is 42 bytes. Could be longer if
- we later specify a different OAEP MGF1 digest algorithm
- */
 
 /*****************************************************************************
  * new work
