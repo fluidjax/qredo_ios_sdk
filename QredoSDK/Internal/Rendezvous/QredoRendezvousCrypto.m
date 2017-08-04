@@ -5,6 +5,7 @@
 #import "QredoRendezvousHelpers.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoErrorCodes.h"
+#import "QredoAESKey.h"
 
 #define SALT_CONVERSATION_ID             [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]
 
@@ -299,9 +300,9 @@ static const int QredoRendezvousMasterKeyLength = 32;
         = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderData
                                         unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                          parseHeader:YES];
-        
-        decryptedData = [[QredoCryptoImplV1 sharedInstance] decryptWithKey:encryptionKey
-                                                                 data:encryptedResponderDataRaw];
+        QredoAESKey *qredoAESKey = [[QredoAESKey alloc] initWithKeyData:encryptionKey];
+        decryptedData = [[QredoCryptoImplV1 sharedInstance] decryptBulk:qredoAESKey ciphertext:encryptedResponderDataRaw];
+       
     } @catch (NSException *exception){
         QredoLogError(@"Failed to decode: %@",exception);
     }
@@ -351,9 +352,11 @@ static const int QredoRendezvousMasterKeyLength = 32;
                              iv:(NSData *)iv {
     NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     
-    NSData *encryptedResponderInfo = [[QredoCryptoImplV1 sharedInstance] encryptWithKey:encryptionKey
-                                                                              data:serializedResponderInfo];
-    
+    NSData *encryptedResponderInfo = [[QredoCryptoImplV1 sharedInstance]
+                                                    encryptBulk:[[QredoAESKey alloc] initWithKeyData:encryptionKey]
+                                                      plaintext:serializedResponderInfo];
+                                      
+                              
     return [QredoPrimitiveMarshallers marshalObject:encryptedResponderInfo
                                          marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
                                       includeHeader:YES];

@@ -5,13 +5,16 @@
 #import "QredoED25519SigningKey.h"
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
+#import "QredoAESKey.h"
+
 
 @protocol QredoCryptoImpl
 
 
--(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data;
--(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv;
--(NSData *)decryptWithKey:(NSData *)secretKey data:(NSData *)data;
+-(NSData *)encryptBulk:(QredoAESKey *)secretKey  plaintext:(NSData *)plaintext;
+-(NSData *)encryptBulk:(QredoAESKey *)secretKey  plaintext:(NSData *)plaintext iv:(NSData *)iv;
+-(NSData *)decryptBulk:(QredoAESKey *)secretKey  ciphertext:(NSData *)ciphertext;
+
 -(NSData *)getAuthCodeWithKey:(NSData *)authKey data:(NSData *)data;
 -(NSData *)getAuthCodeWithKey:(NSData *)authKey data:(NSData *)data length:(NSUInteger)length;
 -(NSData *)getAuthCodeZero;
@@ -35,5 +38,19 @@
 
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error;
 -(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed;
+
+
+//-(NSData *)encryptBulk:(QredoKey *)secretKey  plaintext:(NSData *)plaintext;
+//-(NSData *)decryptBulk:(QredoKey *)secretKey  ciphertext:(NSData *)ciphertext;
+//-(NSData *)authenticate:(QredoKey *)secretKey data:(NSData *)data;
+//-(NSData *)verify:(QredoKey *)secretKey data:(NSData *)data signature:(NSData *)signature;
+//-(QredoKey *)deriveSlow:(NSData *)ikm salt:(NSData *)data;
+//-(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info;
+//-(QredoKeyPair *)ownershipKeyPairDerive:(NSData *)ikm;
+//-(NSData *)ownershipSign:(QredoKeyPair *)keyPair data:(NSData *)data;
+//-(NSData *)legacyHash:(NSData *)data;
+//-(QredoKeyPair *)legacyOwnershipKeyPairGenerate;
+//-(NSData *)legacyOwnershipSign:(QredoKeyPair *)keyPair data:(NSData *)data;
+
 
 @end

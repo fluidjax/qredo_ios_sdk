@@ -6,6 +6,8 @@
 #import "QredoErrorCodes.h"
 #import "QredoQUIDPrivate.h"
 #import "QredoRawCrypto.h"
+#import "QredoAESKey.h"
+
 
 #define SALT_REQUESTER_INBOUND_ENCKEY  [@"iJ8LLVtLlt2tzlXz" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_REQUESTER_INBOUND_AUTHKEY [@"7KySh0dMToM9IyzR" dataUsingEncoding:NSUTF8StringEncoding]
@@ -38,12 +40,17 @@
     [QredoPrimitiveMarshallers marshalObject:message
                                   marshaller:[QLFConversationMessage marshaller]];
     
-    NSData *encryptedMessage = [_crypto encryptWithKey:bulkKey data:serializedMessage iv:nil];
-    NSData *serialiedEncryptedMessage = [QredoPrimitiveMarshallers marshalObject:encryptedMessage
+    
+    QredoAESKey *qredoAESbulkKey = [[QredoAESKey alloc] initWithKeyData:bulkKey];
+    
+    NSData *encryptedMessage = [_crypto encryptBulk:qredoAESbulkKey plaintext:serializedMessage];
+    
+    
+    NSData *serializedEncryptedMessage = [QredoPrimitiveMarshallers marshalObject:encryptedMessage
                                                                       marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
     
-    NSData *auth = [_crypto getAuthCodeWithKey:authKey data:serialiedEncryptedMessage];
-    return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:serialiedEncryptedMessage
+    NSData *auth = [_crypto getAuthCodeWithKey:authKey data:serializedEncryptedMessage];
+    return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:serializedEncryptedMessage
                                                                               authCode:auth];
 }
 
@@ -64,7 +71,10 @@
     NSData *encryptedData = encryptedMessage.encryptedMessage;
     NSData *deserializedEncryptedData = [QredoPrimitiveMarshallers unmarshalObject:encryptedData
                                                                       unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]];
-    NSData *decryptedMessageData = [_crypto decryptWithKey:bulkKey data:deserializedEncryptedData];
+    
+    QredoAESKey *qredoAESKey = [[QredoAESKey alloc] initWithKeyData:bulkKey];
+    
+    NSData *decryptedMessageData = [_crypto decryptBulk:qredoAESKey ciphertext:deserializedEncryptedData];
     @try {
         return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData
                                              unmarshaller:[QLFConversationMessage unmarshaller]];

@@ -37,20 +37,17 @@
 
 
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
--(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data {
+-(NSData *)encryptBulk:(QredoAESKey *)secretKey plaintext:(NSData *)plaintext{
     //Generate a random IV of the correct length for AES
     NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
-    return [self encryptWithKey:secretKey data:data iv:iv];
+    return [self encryptBulk:secretKey plaintext:plaintext iv:iv];
 }
 
 
--(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data iv:(NSData *)iv {
-    
+-(NSData *)encryptBulk:(QredoAESKey *)secretKey plaintext:(NSData *)data iv:(NSData *)iv {
     if (!iv){
         iv = [QredoRawCrypto randomNonceAndZeroCounter];
     }
-    
-    
     if (!secretKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"SecretKey argument is nil"]
@@ -62,9 +59,8 @@
                                        reason:[NSString stringWithFormat:@"Data argument is nil"]
                                      userInfo:nil];
     }
-
-    NSData *encryptedData = [QredoRawCrypto aes256CtrEncrypt:data key:secretKey iv:iv];
-
+    
+    NSData *encryptedData = [QredoRawCrypto aes256CtrEncrypt:data key:[secretKey serialize]  iv:iv];
     NSMutableData *ivAndEncryptedData = nil;
     
     if (encryptedData != nil){
@@ -72,20 +68,21 @@
         ivAndEncryptedData = [NSMutableData dataWithData:iv];
         [ivAndEncryptedData appendData:encryptedData];
     }
-    
     return ivAndEncryptedData;
 }
 
 
+
+
 //This method will decrypt the data using AES and an IV which should be present at start of encrypted data
--(NSData *)decryptWithKey:(NSData *)secretKey data:(NSData *)data {
+-(NSData *)decryptBulk:(QredoAESKey *)secretKey  ciphertext:(NSData *)ciphertext{
     if (!secretKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"SecretKey argument is nil"]
                                      userInfo:nil];
     }
     
-    if (!data){
+    if (!ciphertext){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"Data argument is nil"]
                                      userInfo:nil];
@@ -93,7 +90,7 @@
     
     //Data should be IV plus encrypted data
     //However CTR allows 0 length data blocks, so minimum size is IV (1 block length)
-    if (data.length < kCCBlockSizeAES256){
+    if (ciphertext.length < kCCBlockSizeAES256){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"Data argument is too short. Must be at least 1 blocks long (%d bytes) for IV and encrypted data.", kCCBlockSizeAES256]
                                      userInfo:nil];
@@ -103,14 +100,13 @@
     
     //Extract the IV from the start of the data
     NSRange ivRange = NSMakeRange(0,ivLength);
-    NSData *iv = [data subdataWithRange:ivRange];
+    NSData *iv = [ciphertext subdataWithRange:ivRange];
     
     //Extract the encrypted data (strip off IV)
-    NSRange encryptedDataRange = NSMakeRange(ivLength,data.length - ivLength);
-    NSData *dataToDecrypt = [data subdataWithRange:encryptedDataRange];
+    NSRange encryptedDataRange = NSMakeRange(ivLength,ciphertext.length - ivLength);
+    NSData *dataToDecrypt = [ciphertext subdataWithRange:encryptedDataRange];
     
-    NSData *decryptedData = [QredoRawCrypto aes256CtrDecrypt:dataToDecrypt key:secretKey iv:iv];
-    
+    NSData *decryptedData = [QredoRawCrypto aes256CtrDecrypt:dataToDecrypt key:[secretKey serialize] iv:iv];
     return decryptedData;
 }
 
