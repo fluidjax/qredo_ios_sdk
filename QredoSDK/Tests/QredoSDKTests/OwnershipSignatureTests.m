@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 
 
 //=============================================================================================================
@@ -247,7 +247,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
 -(void)setUp {
     [super setUp];
     
-    self.key = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:dataWithBytes(privateKeyBytes)];
+    self.key = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:dataWithBytes(privateKeyBytes)];
     NSAssert([self.key.verifyKey.data isEqual:dataWithBytes(publicKeyBytes)],@"The created key is malformed.");
     
     self.nonce = [QLFTestableOwnershipSignature nonce];
@@ -271,7 +271,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
 -(void)testCreateOperation {
     QLFOperationType *operationType = [QLFOperationType operationCreate];
     
-    QLFAuthCode *authCode = [[CryptoImplV1 sharedInstance] getAuthCodeZero];
+    QLFAuthCode *authCode = [[QredoCryptoImplV1 sharedInstance] getAuthCodeZero];
     
     QLFVaultItemRef *vaultItemRef
     = [QLFVaultItemRef vaultItemRefWithVaultId:quidWithBytes(vaultIdBytes)

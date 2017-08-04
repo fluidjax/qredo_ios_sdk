@@ -3,7 +3,7 @@
 #import "QredoTypes.h"
 #import "QredoTypesPrivate.h"
 
-@protocol CryptoImpl;
+@protocol QredoCryptoImpl;
 @class QLFRendezvousAuthSignature;
 
 

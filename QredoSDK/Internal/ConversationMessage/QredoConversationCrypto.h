@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "QredoRawCrypto.h"
-#import "CryptoImpl.h"
+#import "QredoCryptoImpl.h"
 
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
@@ -10,7 +10,7 @@
 
 @interface QredoConversationCrypto :NSObject
 
--(instancetype)initWithCrypto:(id<CryptoImpl>)crypto;
+-(instancetype)initWithCrypto:(id<QredoCryptoImpl>)crypto;
 
 -(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey;
 -(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError **)error;

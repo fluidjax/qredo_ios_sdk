@@ -7,7 +7,7 @@
 #import "QredoConversationCrypto.h"
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoClient.h"
 #import "NSDictionary+IndexableSet.h"
 #import "QredoPrivate.h"
@@ -128,7 +128,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 @interface QredoConversation () <QredoUpdateListenerDelegate,QredoUpdateListenerDataSource>{
-    id<CryptoImpl> _crypto;
+    id<QredoCryptoImpl> _crypto;
     QredoConversationCrypto *_conversationCrypto;
     QLFConversations *_conversationService;
     
@@ -187,7 +187,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         self.client = client;
         //TODO: move to a singleton to avoid creation of these stateless objects for every conversation
         //or make all the methods as class methods
-        _crypto = [CryptoImplV1 new];
+        _crypto = [QredoCryptoImplV1 new];
         _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
         _conversationQueue = dispatch_queue_create("com.qredo.conversation",nil);
         _enumerationQueue = dispatch_queue_create("com.qredo.enumeration",nil);

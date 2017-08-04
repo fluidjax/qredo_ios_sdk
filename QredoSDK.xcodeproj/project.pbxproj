@@ -17,7 +17,7 @@
 		6651490F1BF60432003491CA /* NSData+QredoDataEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B151BD5073A00EC8D6C /* NSData+QredoDataEquality.m */; };
 		665149101BF60432003491CA /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */; };
 		665149111BF60432003491CA /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */; };
-		665149131BF60432003491CA /* CryptoImplV1.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059721BD505FE00EC8D6C /* CryptoImplV1.m */; };
+		665149131BF60432003491CA /* QredoCryptoImplV1.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059721BD505FE00EC8D6C /* QredoCryptoImplV1.m */; };
 		665149151BF60432003491CA /* QredoRawCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059771BD505FE00EC8D6C /* QredoRawCrypto.m */; };
 		665149161BF60432003491CA /* QredoCryptoError.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059791BD505FE00EC8D6C /* QredoCryptoError.m */; };
 		665149181BF60432003491CA /* QredoDhPrivateKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660597D1BD505FE00EC8D6C /* QredoDhPrivateKey.m */; };
@@ -78,7 +78,7 @@
 		665149661BF60433003491CA /* QredoTransportSSLTrustUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DB1BD64CE200F01A2C /* QredoTransportSSLTrustUtils.m */; };
 		665149671BF60433003491CA /* QredoWebSocketTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DD1BD64CE200F01A2C /* QredoWebSocketTransport.m */; };
 		665149681BF60433003491CA /* QredoWireFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 66F774DF1BD64CE200F01A2C /* QredoWireFormat.m */; };
-		66605C421BD55B2800EC8D6C /* CryptoImplV1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B3F1BD5266700EC8D6C /* CryptoImplV1Tests.m */; };
+		66605C421BD55B2800EC8D6C /* QredoCryptoImplV1Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B3F1BD5266700EC8D6C /* QredoCryptoImplV1Tests.m */; };
 		66605C451BD55B2800EC8D6C /* QredoEllipticCurvePointTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B431BD5266700EC8D6C /* QredoEllipticCurvePointTests.m */; };
 		66605C4D1BD55B5B00EC8D6C /* clientCert1.1024.IntCA1.pfx in Resources */ = {isa = PBXBuildFile; fileRef = 66605B4E1BD5266700EC8D6C /* clientCert1.1024.IntCA1.pfx */; };
 		66605C4E1BD55B5B00EC8D6C /* clientCert1.1024.IntCA1cert.pem in Resources */ = {isa = PBXBuildFile; fileRef = 66605B4F1BD5266700EC8D6C /* clientCert1.1024.IntCA1cert.pem */; };
@@ -506,9 +506,9 @@
 		5496FFA511232933B5FC27E2 /* Pods-PushTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PushTests/Pods-PushTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6602D9C71C24239500CB5794 /* QredoXDK Universal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "QredoXDK Universal.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		665148EB1BF6037E003491CA /* QredoXDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = QredoXDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		666059701BD505FE00EC8D6C /* CryptoImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CryptoImpl.h; sourceTree = "<group>"; };
-		666059711BD505FE00EC8D6C /* CryptoImplV1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CryptoImplV1.h; sourceTree = "<group>"; };
-		666059721BD505FE00EC8D6C /* CryptoImplV1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CryptoImplV1.m; sourceTree = "<group>"; };
+		666059701BD505FE00EC8D6C /* QredoCryptoImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCryptoImpl.h; sourceTree = "<group>"; };
+		666059711BD505FE00EC8D6C /* QredoCryptoImplV1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCryptoImplV1.h; sourceTree = "<group>"; };
+		666059721BD505FE00EC8D6C /* QredoCryptoImplV1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoCryptoImplV1.m; sourceTree = "<group>"; };
 		666059761BD505FE00EC8D6C /* QredoRawCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRawCrypto.h; sourceTree = "<group>"; };
 		666059771BD505FE00EC8D6C /* QredoRawCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoRawCrypto.m; sourceTree = "<group>"; };
 		666059781BD505FE00EC8D6C /* QredoCryptoError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCryptoError.h; sourceTree = "<group>"; };
@@ -539,7 +539,7 @@
 		66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+QredoRandomData.m"; sourceTree = "<group>"; };
 		66605B181BD5073A00EC8D6C /* NSSet+QredoSetEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+QredoSetEquality.h"; sourceTree = "<group>"; };
 		66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+QredoSetEquality.m"; sourceTree = "<group>"; };
-		66605B3F1BD5266700EC8D6C /* CryptoImplV1Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CryptoImplV1Tests.m; sourceTree = "<group>"; };
+		66605B3F1BD5266700EC8D6C /* QredoCryptoImplV1Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoCryptoImplV1Tests.m; sourceTree = "<group>"; };
 		66605B401BD5266700EC8D6C /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		66605B421BD5266700EC8D6C /* QredoCryptoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoCryptoTests.m; sourceTree = "<group>"; };
 		66605B431BD5266700EC8D6C /* QredoEllipticCurvePointTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoEllipticCurvePointTests.m; sourceTree = "<group>"; };
@@ -1126,9 +1126,9 @@
 			isa = PBXGroup;
 			children = (
 				83CEFB321E1E57B500AD8468 /* KeyModels */,
-				666059701BD505FE00EC8D6C /* CryptoImpl.h */,
-				666059711BD505FE00EC8D6C /* CryptoImplV1.h */,
-				666059721BD505FE00EC8D6C /* CryptoImplV1.m */,
+				666059701BD505FE00EC8D6C /* QredoCryptoImpl.h */,
+				666059711BD505FE00EC8D6C /* QredoCryptoImplV1.h */,
+				666059721BD505FE00EC8D6C /* QredoCryptoImplV1.m */,
 				666059761BD505FE00EC8D6C /* QredoRawCrypto.h */,
 				666059771BD505FE00EC8D6C /* QredoRawCrypto.m */,
 				666059781BD505FE00EC8D6C /* QredoCryptoError.h */,
@@ -1140,7 +1140,7 @@
 		66605B3E1BD5266700EC8D6C /* QredoCryptoTests */ = {
 			isa = PBXGroup;
 			children = (
-				66605B3F1BD5266700EC8D6C /* CryptoImplV1Tests.m */,
+				66605B3F1BD5266700EC8D6C /* QredoCryptoImplV1Tests.m */,
 				66605B421BD5266700EC8D6C /* QredoCryptoTests.m */,
 				66605B431BD5266700EC8D6C /* QredoEllipticCurvePointTests.m */,
 				66605C3B1BD55A9F00EC8D6C /* Info.plist */,
@@ -2625,7 +2625,7 @@
 				6651490F1BF60432003491CA /* NSData+QredoDataEquality.m in Sources */,
 				665149101BF60432003491CA /* NSData+QredoRandomData.m in Sources */,
 				665149111BF60432003491CA /* NSSet+QredoSetEquality.m in Sources */,
-				665149131BF60432003491CA /* CryptoImplV1.m in Sources */,
+				665149131BF60432003491CA /* QredoCryptoImplV1.m in Sources */,
 				665149151BF60432003491CA /* QredoRawCrypto.m in Sources */,
 				665149161BF60432003491CA /* QredoCryptoError.m in Sources */,
 				83EC3B0A1CC7A0A200A55271 /* QredoNetworkTime.m in Sources */,
@@ -2719,7 +2719,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				66023CDA1C189C06008B18AD /* NSData+QredoRandomData.m in Sources */,
-				66605C421BD55B2800EC8D6C /* CryptoImplV1Tests.m in Sources */,
+				66605C421BD55B2800EC8D6C /* QredoCryptoImplV1Tests.m in Sources */,
 				839D42B21C7C7416006180DD /* QredoCryptoTests.m in Sources */,
 				66605C451BD55B2800EC8D6C /* QredoEllipticCurvePointTests.m in Sources */,
 				83D914061F2222790093E0A2 /* NSData+HexTools.m in Sources */,

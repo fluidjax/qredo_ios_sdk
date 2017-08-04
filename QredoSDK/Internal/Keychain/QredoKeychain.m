@@ -1,6 +1,6 @@
 /* HEADER GOES HERE */
 #import "QredoKeychain.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoRawCrypto.h"
 #import "QredoErrorCodes.h"
 #import "NSData+QredoRandomData.h"
@@ -10,7 +10,7 @@
 @interface QredoKeychain (){
     BOOL _isInitialized;
     NSData *_masterKey;
-    CryptoImplV1 *_crypto;
+    QredoCryptoImplV1 *_crypto;
 }
 
 @end
@@ -18,7 +18,7 @@
 @implementation QredoKeychain
 
 -(void)initialize {
-    _crypto = [CryptoImplV1 new];
+    _crypto = [QredoCryptoImplV1 new];
 }
 
 

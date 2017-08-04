@@ -1,6 +1,6 @@
 /* HEADER GOES HERE */
 #import "QredoSigner.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoRawCrypto.h"
 #import "QredoErrorCodes.h"
 
@@ -22,7 +22,7 @@
 
 
 -(NSData *)signData:(NSData *)data error:(NSError **)error {
-    return [[CryptoImplV1 sharedInstance] qredoED25519SignMessage:data withKey:_signingKey error:error];
+    return [[QredoCryptoImplV1 sharedInstance] qredoED25519SignMessage:data withKey:_signingKey error:error];
 }
 
 

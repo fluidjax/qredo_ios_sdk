@@ -13,7 +13,7 @@
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
 #import "QredoRawCrypto.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoVaultCrypto.h"
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoLoggerPrivate.h"
@@ -188,7 +188,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         _hashedTag = _descriptor.hashedTag;
         _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:descriptor.requesterKeyPair.privKey.bytes];
         _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
-        _ownershipECPrivateKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
+        _ownershipECPrivateKey = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
 
         [self loadHWM];
     }
@@ -286,7 +286,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:requesterKeyPair.privKey.bytes];
     _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:requesterKeyPair.pubKey.bytes];
     
-    _ownershipECPrivateKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
+    _ownershipECPrivateKey = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
     
     NSData *ownershipPublicKeyBytes      = [[ownershipKeyPair pubKey] bytes];
     NSData *requesterPublicKeyBytes      = [[requesterKeyPair pubKey] bytes];

@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoRawCrypto.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoLoggerPrivate.h"
 #import "QredoUtils.h"
@@ -25,7 +25,7 @@
 
 
 -(void)testED25519Sign{
-    CryptoImplV1 *crypto = [CryptoImplV1 sharedInstance];
+    QredoCryptoImplV1 *crypto = [QredoCryptoImplV1 sharedInstance];
     QredoConversationCrypto *conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:crypto];
     
     NSData *myPrivateKeyData  = [QredoUtils hexStringToData:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];

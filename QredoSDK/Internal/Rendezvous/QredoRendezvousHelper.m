@@ -4,12 +4,12 @@
 
 @implementation QredoAbstractRendezvousHelper
 
--(instancetype)initWithCrypto:(id<CryptoImpl>)crypto {
+-(instancetype)initWithCrypto:(id<QredoCryptoImpl>)crypto {
     self = [super init];
     
     if (self){
         NSAssert(crypto,@"A crypto implementation has not been provided.");
-        _cryptoImpl = crypto;
+        _qredoCryptoImpl = crypto;
     }
     
     return self;

@@ -2,7 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoConversationCrypto.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoXCTestCase.h"
 #import "NSData+HexTools.h"
 #import "QredoNetworkTime.h"
@@ -10,7 +10,7 @@
 @interface ConversationCryptoTests :QredoXCTestCase
 {
     QredoConversationCrypto *_conversationCrypto;
-    CryptoImplV1 *_crypto;
+    QredoCryptoImplV1 *_crypto;
 }
 
 @end
@@ -19,7 +19,7 @@
 
 -(void)setUp {
     [super setUp];
-    _crypto = [CryptoImplV1 sharedInstance];
+    _crypto = [QredoCryptoImplV1 sharedInstance];
     _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
 }
 

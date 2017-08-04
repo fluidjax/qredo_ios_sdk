@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import "QLFOwnershipSignature+FactoryMethods.h"
 #import "QredoED25519SigningKey.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoSigner.h"
 #import "QredoVault.h"

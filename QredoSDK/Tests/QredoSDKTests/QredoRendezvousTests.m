@@ -8,7 +8,7 @@
 #import "QredoClient.h"
 #import "QredoRawCrypto.h"
 #import "QredoRendezvousCrypto.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoBase58.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoPrivate.h"
@@ -77,7 +77,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 @interface QredoRendezvousTests () {
 }
 
-@property (nonatomic) id<CryptoImpl> cryptoImpl;
+@property (nonatomic) id<QredoCryptoImpl> qredoCryptoImpl;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property  NSString *randomlyCreatedTag;
 
@@ -91,8 +91,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [super setUp];
     //Want tests to abort if error occurrs
     self.continueAfterFailure = NO;
-    //Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
-    self.cryptoImpl = [CryptoImplV1 sharedInstance];
+    //Trusted root refs are required for X.509 tests, and form part of the QredoCryptoImpl
+    self.qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
     [self createRandomClients];
 }
 

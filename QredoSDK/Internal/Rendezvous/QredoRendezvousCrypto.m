@@ -1,6 +1,6 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "QredoRendezvousCrypto.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoRawCrypto.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoLoggerPrivate.h"
@@ -16,7 +16,7 @@
 static const int QredoRendezvousMasterKeyLength = 32;
 
 @implementation QredoRendezvousCrypto {
-    id<CryptoImpl> _crypto;
+    id<QredoCryptoImpl> _crypto;
 }
 
 +(QredoRendezvousCrypto *)instance {
@@ -36,7 +36,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     self = [super init];
     
     if (self){
-        _crypto = [CryptoImplV1 new];
+        _crypto = [QredoCryptoImplV1 new];
     }
     
     return self;
@@ -132,7 +132,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 
 -(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed {
-    QredoED25519SigningKey *signKey = [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:seed];
+    QredoED25519SigningKey *signKey = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:seed];
     QredoPublicKey  *pubKey     = signKey.verifyKey;
     QredoPrivateKey *privKey    = signKey;
     QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:[pubKey serialize]];
@@ -300,7 +300,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                         unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                          parseHeader:YES];
         
-        decryptedData = [[CryptoImplV1 sharedInstance] decryptWithKey:encryptionKey
+        decryptedData = [[QredoCryptoImplV1 sharedInstance] decryptWithKey:encryptionKey
                                                                  data:encryptedResponderDataRaw];
     } @catch (NSException *exception){
         QredoLogError(@"Failed to decode: %@",exception);
@@ -351,7 +351,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
                              iv:(NSData *)iv {
     NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     
-    NSData *encryptedResponderInfo = [[CryptoImplV1 sharedInstance] encryptWithKey:encryptionKey
+    NSData *encryptedResponderInfo = [[QredoCryptoImplV1 sharedInstance] encryptWithKey:encryptionKey
                                                                               data:serializedResponderInfo];
     
     return [QredoPrimitiveMarshallers marshalObject:encryptedResponderInfo

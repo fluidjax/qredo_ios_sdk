@@ -16,14 +16,14 @@
 #define SALT_CONVERSATION_ID           [@"0HvoEAAzECt71nYp" dataUsingEncoding:NSUTF8StringEncoding]
 
 @interface QredoConversationCrypto (){
-    id<CryptoImpl> _crypto;
+    id<QredoCryptoImpl> _crypto;
 }
 
 @end
 
 @implementation QredoConversationCrypto
 
--(instancetype)initWithCrypto:(id<CryptoImpl>)crypto{
+-(instancetype)initWithCrypto:(id<QredoCryptoImpl>)crypto{
     NSAssert(crypto,@"crypto should not be nil");
     self = [super init];
     if (self){

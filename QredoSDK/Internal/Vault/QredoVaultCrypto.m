@@ -1,7 +1,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "QredoVaultCrypto.h"
 #import "QredoRawCrypto.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoErrorCodes.h"
 #import "NSDictionary+IndexableSet.h"
 
@@ -108,7 +108,7 @@
 
 
 +(QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey {
-    return [[CryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:vaultKey];
+    return [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:vaultKey];
 }
 
 
@@ -141,7 +141,7 @@
 -(NSData *)encryptIncludingMessageHeaderWithData:(NSData *)data  iv:(NSData*)iv{
     if (!data)data = [NSData data];
     
-    NSData *encryptedMetadata = [[CryptoImplV1 sharedInstance] encryptWithKey:self.bulkKey data:data iv:iv];
+    NSData *encryptedMetadata = [[QredoCryptoImplV1 sharedInstance] encryptWithKey:self.bulkKey data:data iv:iv];
     
     NSData *encryptedMetadataWithMessageHeader =
     [QredoPrimitiveMarshallers marshalObject:encryptedMetadata
@@ -158,7 +158,7 @@
     
     [authCodeData appendData:serializedItemRef];
     
-    return [[CryptoImplV1 sharedInstance] getAuthCodeWithKey:self.authenticationKey data:authCodeData];
+    return [[QredoCryptoImplV1 sharedInstance] getAuthCodeWithKey:self.authenticationKey data:authCodeData];
 }
 
 
@@ -210,7 +210,7 @@
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
     
-    NSData *value = [[CryptoImplV1 sharedInstance] decryptWithKey:self.bulkKey data:encryptedBodyRaw];
+    NSData *value = [[QredoCryptoImplV1 sharedInstance] decryptWithKey:self.bulkKey data:encryptedBodyRaw];
     
     return [QLFVaultItem vaultItemWithRef:encryptedVaultItem.header.ref metadata:vaultItemMetaDataLF body:value];
 }
@@ -237,7 +237,7 @@
                                     unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                      parseHeader:YES];
     
-    NSData *decryptedHeaders = [[CryptoImplV1 sharedInstance] decryptWithKey:self.bulkKey data:encyrptedHeadersRaw];
+    NSData *decryptedHeaders = [[QredoCryptoImplV1 sharedInstance] decryptWithKey:self.bulkKey data:encyrptedHeadersRaw];
     
     return [QredoPrimitiveMarshallers unmarshalObject:decryptedHeaders
                                          unmarshaller:[QLFVaultItemMetadata unmarshaller]
@@ -248,7 +248,7 @@
 -(NSData *)encryptVaultItemValue:(NSData *)data {
     if (!data)data = [NSData data];
     
-    return [[CryptoImplV1 sharedInstance] encryptWithKey:self.bulkKey data:data];
+    return [[QredoCryptoImplV1 sharedInstance] encryptWithKey:self.bulkKey data:data];
 }
 
 

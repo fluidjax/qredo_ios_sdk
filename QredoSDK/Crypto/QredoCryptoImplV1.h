@@ -1,8 +1,8 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
-#import "CryptoImpl.h"
+#import "QredoCryptoImpl.h"
 
-@interface CryptoImplV1 : NSObject <CryptoImpl>
+@interface QredoCryptoImplV1 : NSObject <QredoCryptoImpl>
 +(instancetype)sharedInstance;
 -(instancetype) init __attribute__((unavailable("init not available")));  
 @end

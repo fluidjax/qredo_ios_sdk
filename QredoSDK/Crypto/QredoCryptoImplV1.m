@@ -1,11 +1,11 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "sodium.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoRawCrypto.h"
 #import "QredoEllipticCurvePoint.h"
 #import "MasterConfig.h"
 
-@implementation CryptoImplV1
+@implementation QredoCryptoImplV1
 
 #define HMAC_SIZE_IN_BYTES              CC_SHA256_DIGEST_LENGTH
 #define BULK_KEY_SIZE_IN_BYTES          kCCKeySizeAES256
@@ -27,7 +27,7 @@
 
 
 +(instancetype)sharedInstance {
-    static CryptoImplV1 *instance = nil;
+    static QredoCryptoImplV1 *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken,^{
         instance = [[self alloc] init];

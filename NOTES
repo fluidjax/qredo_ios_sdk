@@ -27,7 +27,7 @@ First layer is QredoRawCrypto (currently QredoCrypto), which contains only named
 
 
 
-Second layer is QredoCryptoImpl (currently CryptoImpl), the “abstract” crypto concepts from the spec. This layer insulates us from changes in cryptosystem choices.
+Second layer is QredoCryptoImpl (currently QredoCryptoImpl), the “abstract” crypto concepts from the spec. This layer insulates us from changes in cryptosystem choices.
 -(NSData *)encryptBulk:(QredoKey *)secretKey  plaintext:(NSData *)plaintext;
 -(NSData *)decryptBulk:(QredoKey *)secretKey  ciphertext:(NSData *)ciphertext;
 -(NSData *)authenticate:(QredoKey *)secretKey data:(NSData *)data;
@@ -44,7 +44,7 @@ Second layer is QredoCryptoImpl (currently CryptoImpl), the “abstract” crypt
 
 Third layer is Qredo[Domain]Crypto, where [Domain] is Vault, Rendezvous, etc. This layer insulates the domain logic from how crypto is used.
 
-Finally, the keychain management component deals with the mapping of key refs to stored keys. Its interface will be similar to that of CryptoImpl, but it will accept QredoKeyRef or QredoKeyPairRef, the implementations of which are left as an exercise for the reader. Note conceptual difference in derivation functions.
+Finally, the keychain management component deals with the mapping of key refs to stored keys. Its interface will be similar to that of QredoCryptoImpl, but it will accept QredoKeyRef or QredoKeyPairRef, the implementations of which are left as an exercise for the reader. Note conceptual difference in derivation functions.
 
 @interface QredoKeychain
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext;

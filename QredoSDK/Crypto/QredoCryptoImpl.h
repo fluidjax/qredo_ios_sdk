@@ -6,7 +6,7 @@
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
 
-@protocol CryptoImpl
+@protocol QredoCryptoImpl
 
 
 -(NSData *)encryptWithKey:(NSData *)secretKey data:(NSData *)data;
