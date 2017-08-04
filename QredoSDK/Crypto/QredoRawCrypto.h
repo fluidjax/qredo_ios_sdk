@@ -28,9 +28,10 @@ NS_ASSUME_NONNULL_BEGIN
 +(NSData *)hkdfSha256Expand:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength;
 +(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations;
 +(NSData *)secureRandom:(NSUInteger)size;
+
 +(NSData *)sha256:(NSData *)data;
 +(NSData*)randomNonceAndZeroCounter;
-OSStatus fixedSecItemCopyMatching(CFDictionaryRef query, CFTypeRef _Nonnull * _Nonnull  result);
+
 @end
 
 

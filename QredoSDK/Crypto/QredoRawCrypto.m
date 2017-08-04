@@ -327,46 +327,6 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 }
 
 
-OSStatus fixedSecItemCopyMatching(CFDictionaryRef query,CFTypeRef *result) {
-    /*
-     Have found that in certain circumstances, possibly concurrency related, that SecItemCopyMatching() will return
-     an error code (-50: "One or more parameters passed to a function where not valid"). Retying the operation with
-     exactly the same parameters appears to then succeed.  Unclear whether this is a Simulator issue, or whether
-     it is a concurrency issue, not sure - however this method attempts to automatically retry if -50 is encountered.
-     */
-    
-    //Get the key reference.
-    OSStatus status = SecItemCopyMatching(query,result);
-    
-    if (status != errSecSuccess){
-        QredoLogVerbose(@"SecItemCopyMatching returned error: %@. Query dictionary: %@",
-                        [QredoLogger stringFromOSStatus:status],
-                        query);
-        
-        if (status == errSecParam){
-            //Specical case - retry
-            status = SecItemCopyMatching(query,result);
-            
-            if (status != errSecSuccess){
-                if (status == errSecParam){
-                    //Retry failed
-                    QredoLogError(@"Retry SecItemCopyMatching unsuccessful, same error returned: %@. Query dictionary: %@",
-                                  [QredoLogger stringFromOSStatus:status],
-                                  query);
-                } else {
-                    //Retry fixed -50/errSecParam issue, but a different error occurred
-                    QredoLogError(@"Retrying SecItemCopyMatching returned different error: %@. Query dictionary: %@",
-                                  [QredoLogger stringFromOSStatus:status],
-                                  query);
-                }
-            } else {
-                QredoLogError(@"Retrying SecItemCopyMatching resulted in success. Query dictionary: %@",query);
-            }
-        }
-    }
-    
-    return status;
-}
 
 
 @end
