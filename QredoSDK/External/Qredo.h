@@ -389,6 +389,7 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
  */
 +(NSDate *)dateTime;
 
+
 @end
 
 

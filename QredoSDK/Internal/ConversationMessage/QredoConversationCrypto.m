@@ -54,7 +54,7 @@
 
 
 -(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(QredoAESKey *)bulkKey authKey:(QredoKey *)authKey error:(NSError **)error {
-    BOOL verified = [_crypto verifyAuthCodeWithKey:[authKey bytes]
+    BOOL verified = [_crypto verifyAuthCodeWithKey:authKey
                                               data:encryptedMessage.encryptedMessage
                                                mac:encryptedMessage.authCode];
     if (!verified){

@@ -8,7 +8,7 @@
 #import "QredoDhPrivateKey.h"
 #import "NSData+HexTools.h"
 #import "QredoAESKey.h"
-#import "QredoKey.h"zz
+#import "QredoKey.h"
 
 @interface QredoCryptoImplV1Tests :XCTestCase
 
@@ -284,7 +284,7 @@
     BOOL expectedVerification = YES;
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
+    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:[[QredoKey alloc] initWithData:keyData] data:inputData mac:correctAuthCode];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
@@ -306,7 +306,7 @@
     BOOL expectedVerification = NO;
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
+    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:[[QredoKey alloc] initWithData:keyData] data:inputData mac:correctAuthCode];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
@@ -328,7 +328,7 @@
     BOOL expectedVerification = NO;
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
+    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:[[QredoKey alloc] initWithData:keyData] data:inputData mac:correctAuthCode];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
@@ -353,7 +353,7 @@
     BOOL expectedVerification = YES;
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:keyData data:inputData];
+    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:[[QredoKey alloc] initWithData:keyData] data:inputData];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
@@ -378,7 +378,7 @@
     BOOL expectedVerification = NO;
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:keyData data:inputData];
+    BOOL verificationResult = [qredoCryptoImpl verifyAuthCodeWithKey:[[QredoKey alloc] initWithData:keyData] data:inputData];
     
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }

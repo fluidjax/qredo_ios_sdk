@@ -20,6 +20,4 @@
 -(NSString *)dataToHexString:(NSData *)data;
 -(NSString *)buildIndexName;
 -(NSData *)sha1WithString:(NSString *)str;
--(NSData *)sha256WithString:(NSString *)str;
--(NSData *)sha512WithString:(NSString *)str;
 @end

@@ -318,6 +318,15 @@
 }
 
 
++(NSData *)sha512:(NSData *)data {
+    NSAssert(data, @"Expected data.");
+    NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
+    CC_SHA512(data.bytes, (unsigned int)data.length, hash.mutableBytes);
+    NSAssert(hash.length == CC_SHA512_DIGEST_LENGTH,
+             @"Expected output hash of length %d", CC_SHA512_DIGEST_LENGTH);
+    return [hash copy];
+}
+
 
 
 @end

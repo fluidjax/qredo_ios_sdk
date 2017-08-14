@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 +(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations;
 +(NSData *)secureRandom:(NSUInteger)size;
 +(NSData *)sha256:(NSData *)data;
++(NSData *)sha512:(NSData *)data;
 +(NSData*)randomNonceAndZeroCounter;
 
 NS_ASSUME_NONNULL_END

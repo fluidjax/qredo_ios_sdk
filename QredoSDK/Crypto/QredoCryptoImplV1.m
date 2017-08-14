@@ -155,7 +155,7 @@
 }
 
 
--(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data {
+-(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data {
     //This method expects the MAC to be appended onto the end of the data. Therefore
     //data argument must be provided, and at least MAC length.
     
@@ -185,7 +185,7 @@
 }
 
 
--(BOOL)verifyAuthCodeWithKey:(NSData *)authKey data:(NSData *)data mac:(NSData *)mac {
+-(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data mac:(NSData *)mac {
     //Perfectly valid to have empty key and empty data, but must not be nil. MAC must be present + valid
     
     if (!mac){
@@ -201,7 +201,7 @@
     }
     
     //Generate the HMAC and compare to provided value (using constant time comparison function)
-    NSData *generatedHmac = [QredoRawCrypto hmacSha256:data key:authKey outputLen:data.length];
+    NSData *generatedHmac = [QredoRawCrypto hmacSha256:data key:[authKey bytes] outputLen:data.length];
     
     BOOL macCorrect = [QredoRawCrypto constantEquals:generatedHmac rhs:mac];
     
@@ -336,6 +336,15 @@
                                                 outputLength:CC_SHA256_DIGEST_LENGTH];
    return [[QredoKey alloc] initWithData:key];
 }
+
+
+
+
+
+
+
+
+
 
 
 @end
