@@ -13,19 +13,14 @@
 
 @interface QredoPseudonym : NSObject
 
+@property (strong,readonly) NSString *localName;
 
-+ (QredoPseudonym *)create:(NSString *)localName;
-+ (void)destroy:(QredoPseudonym *)pseudonym;
-+ (bool)exists:(NSString *)localName;
-+ (QredoPseudonym *)get:(NSString *)localName;
-+ (NSArray *)list;
-+ (void)put:(QredoPseudonym *)pseudonym;
 
-- (NSString *)localName;
-- (QredoSignedKey *)pubKey;
-- (QredoRevocation *)revoke;
-- (QredoPseudonym *)rotate:(QredoPseudonym *)old;
-- (NSData *)sign:(NSData *)data;
-- (bool)verify:(NSData *)data signature:(NSData *)signature;
+-(NSString *)localName;
+-(QredoSignedKey *)pubKey;
+-(QredoRevocation *)revoke;
+-(QredoPseudonym *)rotate:(QredoPseudonym *)old;
+-(NSData *)sign:(NSData *)data;
+-(bool)verify:(NSData *)data signature:(NSData *)signature;
 
 @end

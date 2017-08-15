@@ -69,3 +69,22 @@ The two base layers (QredoRawCrypto and QredoCryptoImpl) must NOT use key refere
 - The only component that deals with key refs and persistence (incl. platform keychain) should be the QredoKeychain.
 Crypto components must use NSAssert to enforce preconditions, postconditions and important invariants. Failure in these components must cause the program to abort.
 Some of QredoCrypto has been started on in the crypto-interface-refactor branch. All tests are passing.
+
+
+
+
++(QredoPseudonym *)create:(NSString *)localName;
++(void)destroy:(QredoPseudonym *)pseudonym;
++(bool)exists:(NSString *)localName;
++(QredoPseudonym *)get:(NSString *)localName;
++(NSArray *)list;
++(void)put:(QredoPseudonym *)pseudonym;
+
+-(NSString *)localName;
+-(QredoSignedKey *)pubKey;
+-(QredoRevocation *)revoke;
+-(QredoPseudonym *)rotate:(QredoPseudonym *)old;
+-(NSData *)sign:(NSData *)data;
+-(bool)verify:(NSData *)data signature:(NSData *)signature;
+
+

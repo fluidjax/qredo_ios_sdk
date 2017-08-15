@@ -12,6 +12,7 @@
 #import <CoreData/CoreData.h>
 #import "QredoUtils.h"
 #import "QredoIndexSummaryValues.h"
+#import "QredoPseudonym.h"
 
 
 @class QredoClient;
@@ -392,6 +393,16 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 
 @end
 
+
+
+@interface QredoClient (Pseudonym)
++(QredoPseudonym *)create:(NSString *)localName;
++(void)destroy:(QredoPseudonym *)pseudonym;
++(bool)exists:(NSString *)localName;
++(QredoPseudonym *)get:(NSString *)localName;
++(NSArray *)list;
++(void)put:(QredoPseudonym *)pseudonym;
+@end
 
 
 

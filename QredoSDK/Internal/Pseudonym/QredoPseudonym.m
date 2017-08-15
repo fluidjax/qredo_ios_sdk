@@ -7,38 +7,27 @@
 //
 
 #import "QredoPseudonym.h"
+#import "QredoKeyPair.h"
+#import "Qredo.h"
+
+
+@interface QredoPseudonym()
+@property (strong,readwrite) NSString *localName;
+@property (assign) UInt64 *counter;
+@property (strong) QredoKeyPair *keyPair;
+
+
+@end
+
 
 @implementation QredoPseudonym
 
-
-+ (QredoPseudonym *)create:(NSString *)localName{
-   return nil;
-}
-
-
-+ (void)destroy:(QredoPseudonym *)pseudonym{
-}
-
-
-+ (bool)exists:(NSString *)localName{
-   return nil;
-}
-
-
-+ (QredoPseudonym *)get:(NSString *)localName{
-   return nil;
-}
-
-+ (NSArray *)list{
-    return nil;
-}
-
-
-+ (void)put:(QredoPseudonym *)pseudonym{
-}
-
-- (NSString *)localName{
-    return nil;
+-(instancetype)initWithLocalName:(NSString*)localName qredoClient:(QredoClient*)client{
+    self = [super init];
+    if (self){
+        
+    }
+    return self;
 }
 
 - (QredoSignedKey *)pubKey{
