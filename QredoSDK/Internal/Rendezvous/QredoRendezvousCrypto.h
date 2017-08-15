@@ -4,7 +4,7 @@
 #import "QredoKeyPair.h"
 #import "QredoTypes.h"
 #import "QredoRendezvousHelper.h"
-#import "QredoAESKey.h"
+#import "QredoBulkEncKey.h"
 
 @protocol QredoRendezvousHelper;
 
@@ -56,7 +56,7 @@
 
 -(QredoKey *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId;
 -(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(QredoKey *)masterKey;
--(QredoAESKey *)encryptionKeyWithMasterKey:(QredoKey *)masterKey;
+-(QredoBulkEncKey *)encryptionKeyWithMasterKey:(QredoKey *)masterKey;
 -(QredoKey *)authenticationKeyWithMasterKey:(QredoKey *)masterKey;
 +(NSData *)transformPrivateKeyToData:(SecKeyRef)key;
 

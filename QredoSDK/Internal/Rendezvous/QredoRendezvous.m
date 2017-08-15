@@ -275,7 +275,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoKey *masterKey = [crypto masterKeyWithTag:_tag appId:appCredentials.appId];
     QredoKey *authKey = [crypto authenticationKeyWithMasterKey:masterKey];
     _hashedTag  = [crypto hashedTagWithMasterKey:masterKey];
-    QredoAESKey *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
+    QredoBulkEncKey *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
     
     QredoLogDebug(@"Hashed tag: %@",_hashedTag);
     

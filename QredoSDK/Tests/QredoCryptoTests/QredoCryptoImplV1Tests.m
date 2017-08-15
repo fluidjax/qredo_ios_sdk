@@ -7,7 +7,7 @@
 #import "QredoDhPublicKey.h"
 #import "QredoDhPrivateKey.h"
 #import "NSData+HexTools.h"
-#import "QredoAESKey.h"
+#import "QredoBulkEncKey.h"
 #import "QredoKey.h"
 
 @interface QredoCryptoImplV1Tests :XCTestCase
@@ -196,14 +196,14 @@
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
     
-    QredoAESKey *qredoAESbulkKey = [[QredoAESKey alloc] initWithData:keyData];
+    QredoBulkEncKey *qredoAESbulkKey = [[QredoBulkEncKey alloc] initWithData:keyData];
     NSData *encryptedDataWithIv = [qredoCryptoImpl encryptBulk:qredoAESbulkKey plaintext:plaintextData];
     
     XCTAssertNotNil(encryptedDataWithIv,@"Encrypted data with IV should not be nil.");
     
-    QredoAESKey *qredoAESKey = [[QredoAESKey alloc] initWithData:keyData];
+    QredoBulkEncKey *bulkEncKey = [[QredoBulkEncKey alloc] initWithData:keyData];
     
-    NSData *decryptedData = [qredoCryptoImpl decryptBulk:qredoAESKey ciphertext:encryptedDataWithIv];
+    NSData *decryptedData = [qredoCryptoImpl decryptBulk:bulkEncKey ciphertext:encryptedDataWithIv];
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
     
     //Confirm that the decrypted data is same as original plaintext

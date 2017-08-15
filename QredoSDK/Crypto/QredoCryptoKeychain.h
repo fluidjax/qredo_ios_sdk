@@ -3,7 +3,7 @@
 //  QredoSDK
 //
 //  Created by Christopher Morris on 14/08/2017.
-//
+//  Within General Qredo Code, only Key Refrences are passed, the actual mapping of Refs->KeyData takes place here
 //
 
 @class QredoKey;

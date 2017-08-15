@@ -401,7 +401,7 @@ typedef NS_ENUM (NSUInteger,QredoSecurityLevel) {
 +(bool)exists:(NSString *)localName;
 +(QredoPseudonym *)get:(NSString *)localName;
 +(NSArray *)list;
-+(void)put:(QredoPseudonym *)pseudonym;
+
 @end
 
 

@@ -6,7 +6,7 @@
 #import "QredoErrorCodes.h"
 #import "QredoQUIDPrivate.h"
 #import "QredoRawCrypto.h"
-#import "QredoAESKey.h"
+#import "QredoBulkEncKey.h"
 
 
 #define SALT_REQUESTER_INBOUND_ENCKEY  [@"iJ8LLVtLlt2tzlXz" dataUsingEncoding:NSUTF8StringEncoding]
@@ -35,7 +35,7 @@
 }
 
 
--(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(QredoAESKey *)bulkKey authKey:(QredoKey *)authKey{
+-(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(QredoBulkEncKey *)bulkKey authKey:(QredoKey *)authKey{
     NSData *serializedMessage =
     [QredoPrimitiveMarshallers marshalObject:message
                                   marshaller:[QLFConversationMessage marshaller]];
@@ -53,7 +53,7 @@
 }
 
 
--(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(QredoAESKey *)bulkKey authKey:(QredoKey *)authKey error:(NSError **)error {
+-(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(QredoBulkEncKey *)bulkKey authKey:(QredoKey *)authKey error:(NSError **)error {
     BOOL verified = [_crypto verifyAuthCodeWithKey:authKey
                                               data:encryptedMessage.encryptedMessage
                                                mac:encryptedMessage.authCode];
@@ -92,13 +92,13 @@
 }
 
 
--(QredoAESKey *)requesterInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey {
+-(QredoBulkEncKey *)requesterInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey {
     NSData *prk = [QredoRawCrypto hkdfSha256Extract:[masterKey bytes]
                                             salt:SALT_REQUESTER_INBOUND_ENCKEY];
     NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
                                            info:[NSData data]
                                    outputLength:CC_SHA256_DIGEST_LENGTH];
-    return [[QredoAESKey alloc] initWithData:okm];
+    return [[QredoBulkEncKey alloc] initWithData:okm];
 }
 
 
@@ -122,13 +122,13 @@
 }
 
 
--(QredoAESKey *)responderInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey {
+-(QredoBulkEncKey *)responderInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey {
     NSData *prk = [QredoRawCrypto hkdfSha256Extract:[masterKey bytes]
                                             salt:SALT_RESPONDER_INBOUND_ENCKEY];
     NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
                                            info:[NSData data]
                                    outputLength:CC_SHA256_DIGEST_LENGTH];
-    return [[QredoAESKey alloc] initWithData:okm];
+    return [[QredoBulkEncKey alloc] initWithData:okm];
 }
 
 

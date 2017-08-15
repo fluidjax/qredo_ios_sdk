@@ -56,7 +56,7 @@
     QredoKey *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
                                                                      yourPublicKey:yourPublicKey];
     
-    QredoAESKey *requesterInboundEncryptionKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
+    QredoBulkEncKey *requesterInboundEncryptionKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
     
     QredoKey *requesterInboundAuthenticationKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
     
@@ -65,7 +65,7 @@
     QredoED25519SigningKey *requesterOwnershipKeyPair = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
     
     
-    QredoAESKey *responderInboundEncryptionKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
+    QredoBulkEncKey *responderInboundEncryptionKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
     
     QredoKey *responderInboundAuthenticationKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
     
@@ -77,7 +77,7 @@
     QredoQUID *conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];
     
     
-    QredoAESKey *requesterInboundEncryptionKeyExpected  = [[QredoAESKey alloc] initWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
+    QredoBulkEncKey *requesterInboundEncryptionKeyExpected  = [[QredoBulkEncKey alloc] initWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
     
     XCTAssertEqualObjects(requesterInboundEncryptionKey,requesterInboundEncryptionKeyExpected);
     
@@ -96,7 +96,7 @@
     NSData *requesterOwnershipVerifyingKeyExpected = [NSData dataWithHexString:@"0bdb0e7e 9ce4a729 710af80f 6804274e 154db05a 68129551 aa2c73ef b6cd8947"];
     XCTAssertEqualObjects(requesterOwnershipKeyPair.verifyKey.data,requesterOwnershipVerifyingKeyExpected);
     
-    QredoAESKey *responderInboundEncryptionKeyExpected =  [[QredoAESKey alloc] initWithHexString:@"c4ac481f 569c7d9b 86c7a893 dd6b1870 32207ec3 0778fe2c 438ca30e de4f249a"];
+    QredoBulkEncKey *responderInboundEncryptionKeyExpected =  [[QredoBulkEncKey alloc] initWithHexString:@"c4ac481f 569c7d9b 86c7a893 dd6b1870 32207ec3 0778fe2c 438ca30e de4f249a"];
     XCTAssertEqualObjects(responderInboundEncryptionKey,responderInboundEncryptionKeyExpected);
     
     QredoKey *responderInboundAuthenticationKeyExpected = [[QredoKey alloc] initWithHexString:@"3171bad3 c3560af1 5d936284 d4fe9f85 b3c61718 11d55e41 f803c2f5 c84c820e"];
@@ -135,7 +135,7 @@
     QLFConversationMessage *clearMessage = [QLFConversationMessage conversationMessageWithMetadata:metadata
                                                                                               body:messageBody];
     
-    QredoAESKey *requesterInboundEncryptionKey      = [[QredoAESKey alloc] initWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
+    QredoBulkEncKey *requesterInboundEncryptionKey      = [[QredoBulkEncKey alloc] initWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
     
     QredoKey *requesterInboundAuthenticationKey     = [[QredoKey alloc] initWithHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
     
@@ -169,14 +169,14 @@
     
     error = nil;
     decryptedMessage = [_conversationCrypto decryptMessage:encryptedMessage
-                                                   bulkKey:[[QredoAESKey alloc] initWithData:wrongEncryptionKey]
+                                                   bulkKey:[[QredoBulkEncKey alloc] initWithData:wrongEncryptionKey]
                                                    authKey:requesterInboundAuthenticationKey
                                                      error:&error];
     XCTAssertNil(decryptedMessage);
     XCTAssertNotNil(error);
     
     decryptedMessage = [_conversationCrypto decryptMessage:encryptedMessage
-                                                   bulkKey:[[QredoAESKey alloc] initWithData:wrongEncryptionKey]
+                                                   bulkKey:[[QredoBulkEncKey alloc] initWithData:wrongEncryptionKey]
                                                    authKey:requesterInboundAuthenticationKey
                                                      error:nil];
     XCTAssertNil(decryptedMessage);

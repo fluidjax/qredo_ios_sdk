@@ -5,7 +5,7 @@
 #import "QredoRendezvousHelpers.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoErrorCodes.h"
-#import "QredoAESKey.h"
+#import "QredoBulkEncKey.h"
 
 #define SALT_CONVERSATION_ID             [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]
 
@@ -263,7 +263,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 }
 
 
--(QredoAESKey *)encryptionKeyWithMasterKey:(QredoKey *)masterKey {
+-(QredoBulkEncKey *)encryptionKeyWithMasterKey:(QredoKey *)masterKey {
     NSAssert(masterKey,@"Master key should not be nil");
     NSAssert([masterKey bytes].length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
 
@@ -272,7 +272,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
                                            info:[NSData data]
                                    outputLength:CC_SHA256_DIGEST_LENGTH];
-    return [[QredoAESKey alloc] initWithData:okm];
+    return [[QredoBulkEncKey alloc] initWithData:okm];
 }
 
 
@@ -291,7 +291,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 
 -(QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
-                                              encryptionKey:(QredoAESKey *)encryptionKey
+                                              encryptionKey:(QredoBulkEncKey *)encryptionKey
                                                       error:(NSError **)error {
     NSData *decryptedData;
     
@@ -300,8 +300,12 @@ static const int QredoRendezvousMasterKeyLength = 32;
         = [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderData
                                         unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                          parseHeader:YES];
-        QredoAESKey *qredoAESKey = [[QredoAESKey alloc] initWithData:[encryptionKey bytes]];
-        decryptedData = [[QredoCryptoImplV1 sharedInstance] decryptBulk:qredoAESKey ciphertext:encryptedResponderDataRaw];
+        
+        
+        
+        
+        QredoBulkEncKey *bulkEncKey = [[QredoBulkEncKey alloc] initWithData:[encryptionKey bytes]];
+        decryptedData = [[QredoCryptoImplV1 sharedInstance] decryptBulk:bulkEncKey ciphertext:encryptedResponderDataRaw];
        
     } @catch (NSException *exception){
         QredoLogError(@"Failed to decode: %@",exception);
@@ -348,7 +352,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
-                  encryptionKey:(QredoAESKey *)encryptionKey
+                  encryptionKey:(QredoBulkEncKey *)encryptionKey
                              iv:(NSData *)iv {
     NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     

@@ -4,7 +4,7 @@
 #import "QredoCryptoImplV1.h"
 #import "QredoErrorCodes.h"
 #import "NSDictionary+IndexableSet.h"
-#import "QredoAESKey.h"
+#import "QredoBulkEncKey.h"
 
 #define QREDO_VAULT_MASTER_SALT  [@"U7TIOyVRqCKuFFNa" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_VAULT_SUBTYPE_SALT [@"rf3cxEQ8B9Nc8uFj" dataUsingEncoding:NSUTF8StringEncoding]
@@ -25,7 +25,7 @@
         QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
         _vaultKey = vaultKey;
         _ownershipKeyPair = ownershipKeyPair;
-        _encryptionKey = [[QredoAESKey alloc] initWithData:encryptionAndAuthKeys.encryptionKey];
+        _encryptionKey = [[QredoBulkEncKey alloc] initWithData:encryptionAndAuthKeys.encryptionKey];
         _authenticationKey = [[QredoKey alloc] initWithData:encryptionAndAuthKeys.authenticationKey];
         _vaultId = vaultID;
     }
@@ -39,7 +39,7 @@
 
 
 @interface QredoVaultCrypto()
-@property (readwrite) QredoAESKey *bulkKey;
+@property (readwrite) QredoBulkEncKey *bulkKey;
 @property (readwrite) QredoKey *authenticationKey;
 @end
 
@@ -50,14 +50,14 @@
 //Encryption Helpers
 ///////////////////////////////////////////////////////////////////////////////
 
-+(instancetype)vaultCryptoWithBulkKey:(QredoAESKey *)bulkKey
++(instancetype)vaultCryptoWithBulkKey:(QredoBulkEncKey *)bulkKey
                     authenticationKey:(QredoKey *)authenticationKey {
     return [[self alloc] initWithBulkKey:bulkKey
                       authenticationKey :authenticationKey];
 }
 
 
--(instancetype)initWithBulkKey:(QredoAESKey *)bulkKey
+-(instancetype)initWithBulkKey:(QredoBulkEncKey *)bulkKey
              authenticationKey:(QredoKey *)authenticationKey {
     self = [super init];
     if (self){

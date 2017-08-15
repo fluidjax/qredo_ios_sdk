@@ -9,7 +9,7 @@
 #import "QredoCryptoKeychain.h"
 #import "QredoKey.h"
 #import "Qredo.h"
-#import "QredoAESKey.h"
+#import "QredoBulkEncKey.h"
 
 #import "QredoKeyRef.h"
 #import "QredoKeyRefPair.h"
@@ -34,12 +34,12 @@
 
 
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext{
-    QredoAESKey *secretKey = [[QredoAESKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
+    QredoBulkEncKey *secretKey = [[QredoBulkEncKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
     return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext];
 }
 
 -(NSData *)decryptBulk:(QredoKeyRef *)secretKeyRef  ciphertext:(NSData *)ciphertext{
-    QredoAESKey *secretKey = [[QredoAESKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
+    QredoBulkEncKey *secretKey = [[QredoBulkEncKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
     return [self.cryptoImplementation decryptBulk:secretKey ciphertext:ciphertext];
 }
 
@@ -55,6 +55,8 @@
 }
 
 -(QredoKeyRef *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info{
+    QredoKey *deriveKey = [[QredoKey alloc] initWithData:[self retrieveWithRef:keyRef]];
+    
     return nil;
 }
 

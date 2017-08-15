@@ -12,16 +12,16 @@
 
 -(instancetype)initWithCrypto:(id<QredoCryptoImpl>)crypto;
 
--(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(QredoAESKey *)bulkKey authKey:(QredoKey *)authKey;
--(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(QredoAESKey *)bulkKey authKey:(QredoKey *)authKey error:(NSError **)error;
+-(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(QredoBulkEncKey *)bulkKey authKey:(QredoKey *)authKey;
+-(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(QredoBulkEncKey *)bulkKey authKey:(QredoKey *)authKey error:(NSError **)error;
 
 -(QredoKey *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
--(QredoAESKey *)requesterInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey;
+-(QredoBulkEncKey *)requesterInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey;
 -(QredoKey *)requesterInboundAuthenticationKeyWithMasterKey:(QredoKey *)masterKey;
 -(NSData *)requesterInboundQueueSeedWithMasterKey:(QredoKey *)masterKey;
 
--(QredoAESKey *)responderInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey;
+-(QredoBulkEncKey *)responderInboundEncryptionKeyWithMasterKey:(QredoKey *)masterKey;
 -(QredoKey *)responderInboundAuthenticationKeyWithMasterKey:(QredoKey *)masterKey;
 -(NSData *)responderInboundQueueSeedWithMasterKey:(QredoKey *)masterKey;
 -(QredoQUID *)conversationIdWithMasterKey:(QredoKey *)masterKey;

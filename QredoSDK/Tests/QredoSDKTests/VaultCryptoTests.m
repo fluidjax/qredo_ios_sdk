@@ -60,7 +60,7 @@
                                                                                  created:createdDate
                                                                                   values:indexableValues];
     NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
-    QredoVaultCrypto *vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:[[QredoAESKey alloc] initWithData:encryptionAndAuthKeys.encryptionKey]
+    QredoVaultCrypto *vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:[[QredoBulkEncKey alloc] initWithData:encryptionAndAuthKeys.encryptionKey]
                                                            authenticationKey:[[QredoKey alloc] initWithData:encryptionAndAuthKeys.authenticationKey]];
     QLFEncryptedVaultItemHeader *encryptedVaultItemHeader  = [vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemRef metadata:metadata iv:encyptedMetadataIV];
     NSData *serializedEncryptedVaultItemHeader  = [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO];

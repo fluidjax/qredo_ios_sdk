@@ -37,14 +37,14 @@
 
 
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
--(NSData *)encryptBulk:(QredoAESKey *)secretKey plaintext:(NSData *)plaintext{
+-(NSData *)encryptBulk:(QredoBulkEncKey *)secretKey plaintext:(NSData *)plaintext{
     //Generate a random IV of the correct length for AES
     NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
     return [self encryptBulk:secretKey plaintext:plaintext iv:iv];
 }
 
 
--(NSData *)encryptBulk:(QredoAESKey *)secretKey plaintext:(NSData *)data iv:(NSData *)iv {
+-(NSData *)encryptBulk:(QredoBulkEncKey *)secretKey plaintext:(NSData *)data iv:(NSData *)iv {
     if (!iv){
         iv = [QredoRawCrypto randomNonceAndZeroCounter];
     }
@@ -75,7 +75,7 @@
 
 
 //This method will decrypt the data using AES and an IV which should be present at start of encrypted data
--(NSData *)decryptBulk:(QredoAESKey *)secretKey  ciphertext:(NSData *)ciphertext{
+-(NSData *)decryptBulk:(QredoBulkEncKey *)secretKey  ciphertext:(NSData *)ciphertext{
     if (!secretKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"SecretKey argument is nil"]
