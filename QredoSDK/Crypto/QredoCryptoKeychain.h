@@ -9,6 +9,7 @@
 @class QredoKey;
 @class QredoKeyRef;
 @class QredoKeyPairRef;
+@class QredoQUID;
 
 #import <Foundation/Foundation.h>
 
@@ -27,10 +28,17 @@
 -(NSData *)decryptBulk:(QredoKeyRef *)secretKeyRef  ciphertext:(NSData *)ciphertext;
 -(NSData *)authenticate:(QredoKeyRef *)secretKeyRef data:(NSData *)data;
 -(BOOL)verify:(QredoKeyRef *)secretKeyRef data:(NSData *)data signature:(NSData *)signature;
--(QredoKeyRef *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
+-(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt;
 -(QredoKeyPairRef *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt;
 -(QredoKeyPairRef *)ownershipKeyPairDerive:(NSData *)ikm;
 -(NSData *)ownershipSign:(QredoKeyPairRef *)keyPairRef data:(NSData *)data;
+
+-(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef;
+
+
+-(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToKeyRef:(QredoKeyRef*)keyRef2;
+-(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data;
+
 
 @end

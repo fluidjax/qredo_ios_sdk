@@ -14,6 +14,7 @@
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
 #import "NSData+HexTools.h"
+#import "QredoCryptoKeychain.h"
 
 #import <objc/runtime.h>
 
@@ -241,11 +242,10 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
     NSString *tag   = @"ABC";
     NSString *appId = @"123";
-    QredoKey *res = [rendCrypto masterKeyWithTag:tag appId:appId];
-    QredoKey *testVal = [[QredoKey alloc] initWithHexString:@"b7dd94ba 22f5eba2 a1010144 00e65c11 0d3e69b7 098a5b88 9d44cea0 e96c944f"];
-    
-    
-    XCTAssertTrue([testVal isEqual:res],@"Master Key derived from Tag is incorrect");
+    QredoKeyRef *res = [rendCrypto masterKeyWithTag:tag appId:appId];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    NSData *correct = [NSData dataWithHexString:@"b7dd94ba 22f5eba2 a1010144 00e65c11 0d3e69b7 098a5b88 9d44cea0 e96c944f"];
+    XCTAssertTrue([keychain keyRef:res isEqualToData:correct],@"Master Key derived from Tag is incorrect");
 }
 
 

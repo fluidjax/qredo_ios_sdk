@@ -18,7 +18,8 @@
 #import "QredoCryptoImplV1.h"
 #import "QredoCryptoImpl.h"
 #import "QredoRawCrypto.h"
-
+#import "QredoQUID.h"
+#import "QredoQUIDPrivate.h"
 
 @interface QredoCryptoKeychain()
 @property (strong) UICKeyChainStore *keychainWrapper;
@@ -54,14 +55,18 @@
     
 }
 
--(QredoKeyRef *)deriveKey:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info{
-    //derive_fast
+-(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info{
+    //derive_fast HKDF
+    NSData *ikm = [self retrieveWithRef:keyRef];
+    
+    NSAssert(ikm,@"DeriveKey key should not be nil");
+    NSAssert(salt,@"Salt should not be nil");
     QredoKey *derivedKey = [self.cryptoImplementation deriveFast:ikm salt:salt info:info];
     return [self createKeyRef:derivedKey];
 }
 
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt{
-    //derive_slow
+    //derive_slow PBKDF
     QredoKey *derivedKey = [self.cryptoImplementation deriveSlow:password  salt:salt iterations:10000];
     return [self createKeyRef:derivedKey];
 }
@@ -84,10 +89,12 @@
 //   QredoED25519SigningKey *signingKey = [[QredoED25519SigningKey alloc] init];
 //   NSData *sig = [self.cryptoImplementation qredoED25519SignMessage:data withKey:signingKey error:error];
     return nil;
-            
-    
-    
-    
+}
+
+
+-(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef{
+   NSData *keyData = [self retrieveWithRef:keyRef];
+   return [[QredoQUID alloc] initWithQUIDData:keyData];
 }
 
 
@@ -149,6 +156,19 @@
     return [self.keychainWrapper dataForKey:[ref hexadecimalString]];
 }
 
+
+
+-(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToKeyRef:(QredoKeyRef*)keyRef2{
+    NSData *key1 = [self retrieveWithRef:keyRef1];
+    NSData *key2 = [self retrieveWithRef:keyRef2];
+    return [key1 isEqual:key2];
+}
+
+
+-(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data{
+    NSData *key1 = [self retrieveWithRef:keyRef1];
+    return [key1 isEqual:data];
+}
 
 
 @end

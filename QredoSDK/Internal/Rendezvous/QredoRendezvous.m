@@ -272,10 +272,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     _tag = [rendezvousHelper tag];
     
     //Hash the tag.
-    QredoKey *masterKey = [crypto masterKeyWithTag:_tag appId:appCredentials.appId];
-    QredoKey *authKey = [crypto authenticationKeyWithMasterKey:masterKey];
-    _hashedTag  = [crypto hashedTagWithMasterKey:masterKey];
-    QredoBulkEncKey *responderInfoEncKey = [crypto encryptionKeyWithMasterKey:masterKey];
+    QredoKeyRef *masterKeyRef = [crypto masterKeyWithTag:_tag appId:appCredentials.appId];
+    QredoKeyRef *authKeyRef = [crypto authenticationKeyWithMasterKey:masterKeyRef];
+    _hashedTag  = [crypto hashedTagWithMasterKey:masterKeyRef];
+    QredoKeyRef *responderInfoEncKeyRef = [crypto encryptionKeyWithMasterKey:masterKeyRef];
     
     QredoLogDebug(@"Hashed tag: %@",_hashedTag);
     
@@ -298,11 +298,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                                                          conversationType:configuration.conversationType
                                                                                                                  transCap:[NSSet set]];
     NSData *encryptedResponderData = [crypto encryptResponderInfo:responderInfo
-                                                    encryptionKey:responderInfoEncKey];
+                                                    encryptionKeyRef:responderInfoEncKeyRef];
     
     //Generate the authentication code.
     QLFAuthenticationCode *authenticationCode  = [crypto authenticationCodeWithHashedTag:_hashedTag
-                                                                       authenticationKey:authKey
+                                                                       authenticationKeyRef:authKeyRef
                                                                   encryptedResponderData:encryptedResponderData];
     
     QLFRendezvousAuthType *authType = nil;

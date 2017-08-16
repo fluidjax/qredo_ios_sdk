@@ -6,6 +6,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoErrorCodes.h"
 #import "QredoBulkEncKey.h"
+#import "QredoCryptoKeychain.h"
 
 #define SALT_CONVERSATION_ID             [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]
 
@@ -45,24 +46,25 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 
 -(QLFAuthenticationCode *)authenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                        authenticationKey:(QredoKey *)authenticationKey
+                                     authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                    encryptedResponderData:(NSData *)encryptedResponderData {
     NSMutableData *payload = [NSMutableData dataWithData:[hashedTag data]];
     
     [payload appendData:encryptedResponderData];
-    
-    return [_crypto getAuthCodeWithKey:authenticationKey data:payload];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    return [keychain authenticate:authenticationKeyRef data:payload];
 }
 
 
 -(QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                                 authenticationKey:(QredoKey *)authenticationKey
+                                                 authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                                 responderPublicKey:(QredoPublicKey *)responderPublicKey {
     NSMutableData *payload = [NSMutableData dataWithData:[hashedTag data]];
     
     [payload appendData:[responderPublicKey bytes]];
     
-    return [_crypto getAuthCodeWithKey:authenticationKey data:payload];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    return [keychain authenticate:authenticationKeyRef data:payload];
 }
 
 
@@ -173,7 +175,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 
 -(BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
-                    authenticationKey:(QredoKey *)authenticationKey
+                 authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                   tag:(NSString *)tag
                             hashedTag:(QLFRendezvousHashedTag *)hashedTag
                                 error:(NSError **)error {
@@ -187,7 +189,7 @@ static const int QredoRendezvousMasterKeyLength = 32;
     
     NSData *calculatedAuthenticationCode
     = [self authenticationCodeWithHashedTag:hashedTag
-                          authenticationKey:authenticationKey
+                          authenticationKeyRef:authenticationKeyRef
                      encryptedResponderData:encryptedResponderData];
     
     BOOL isValidAuthCode = [QredoRawCrypto constantEquals:calculatedAuthenticationCode rhs:authenticationCode];
@@ -240,58 +242,36 @@ static const int QredoRendezvousMasterKeyLength = 32;
 }
 
 
--(QredoKey *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId {
+-(QredoKeyRef *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId {
     NSAssert(appId,@"AppID should not be nil");
     NSString *compositeTag = [NSString stringWithFormat:@"%@%@",appId,tag];
     NSData *tagData = [compositeTag dataUsingEncoding:NSUTF8StringEncoding];
-    return [_crypto deriveSlow:tagData salt:QREDO_RENDEZVOUS_MASTER_KEY_SALT iterations:10000];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    return [keychain derivePasswordKey:tagData salt:QREDO_RENDEZVOUS_MASTER_KEY_SALT];
 }
 
 
--(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(QredoKey *)masterKey {
-    NSAssert(masterKey,@"Master key should not be nil");
-    NSAssert(masterKey.length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
-
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:[masterKey bytes]
-                                            salt:QREDO_RENDEZVOUS_HASHED_TAG_SALT];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    NSData *hashedTagData = okm;
-    
-    return [[QredoQUID alloc] initWithQUIDData:hashedTagData];
+-(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(QredoKeyRef *)masterKeyRef {
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoKeyRef *keyRef = [keychain deriveKeyRef:masterKeyRef salt:QREDO_RENDEZVOUS_HASHED_TAG_SALT info:[NSData data]];
+    return [keychain keyRefToQUID:keyRef];
 }
 
 
--(QredoBulkEncKey *)encryptionKeyWithMasterKey:(QredoKey *)masterKey {
-    NSAssert(masterKey,@"Master key should not be nil");
-    NSAssert([masterKey bytes].length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
-
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:[masterKey bytes]
-                                            salt:QREDO_RENDEZVOUS_ENC_SALT];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return [[QredoBulkEncKey alloc] initWithData:okm];
+-(QredoKeyRef *)encryptionKeyWithMasterKey:(QredoKeyRef *)masterKeyRef {
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    return [keychain deriveKeyRef:masterKeyRef salt:QREDO_RENDEZVOUS_ENC_SALT info:[NSData data]];
 }
 
 
--(QredoKey *)authenticationKeyWithMasterKey:(QredoKey *)masterKey {
-    NSAssert(masterKey,@"Master key should not be nil");
-    NSAssert([masterKey bytes].length == QredoRendezvousMasterKeyLength,@"Wrong length of master key");
-
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:[masterKey bytes]
-                                            salt:QREDO_RENDEZVOUS_AUTH_SALT];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return [[QredoKey alloc] initWithData:okm];
-
+-(QredoKeyRef *)authenticationKeyWithMasterKey:(QredoKeyRef *)masterKeyRef {
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    return [keychain deriveKeyRef:masterKeyRef salt:QREDO_RENDEZVOUS_AUTH_SALT info:[NSData data]];
 }
 
 
 -(QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
-                                              encryptionKey:(QredoBulkEncKey *)encryptionKey
+                                           encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef
                                                       error:(NSError **)error {
     NSData *decryptedData;
     
@@ -302,10 +282,9 @@ static const int QredoRendezvousMasterKeyLength = 32;
                                          parseHeader:YES];
         
         
+        QredoCryptoKeychain *keyChain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
         
-        
-        QredoBulkEncKey *bulkEncKey = [[QredoBulkEncKey alloc] initWithData:[encryptionKey bytes]];
-        decryptedData = [[QredoCryptoImplV1 sharedInstance] decryptBulk:bulkEncKey ciphertext:encryptedResponderDataRaw];
+        decryptedData = [keyChain decryptBulk:encryptionKeyRef ciphertext:encryptedResponderDataRaw];
        
     } @catch (NSException *exception){
         QredoLogError(@"Failed to decode: %@",exception);
@@ -344,23 +323,21 @@ static const int QredoRendezvousMasterKeyLength = 32;
 
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
-                  encryptionKey:(QredoKey *)encryptionKey {
+               encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef {
     NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
     
-    return [self encryptResponderInfo:responderInfo encryptionKey:encryptionKey iv:iv];
+    return [self encryptResponderInfo:responderInfo encryptionKeyRef:encryptionKeyRef iv:iv];
 }
 
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
-                  encryptionKey:(QredoBulkEncKey *)encryptionKey
+                  encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef
                              iv:(NSData *)iv {
     NSData *serializedResponderInfo = [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     
-    NSData *encryptedResponderInfo = [[QredoCryptoImplV1 sharedInstance]
-                                                    encryptBulk:encryptionKey
-                                                      plaintext:serializedResponderInfo];
-                                      
-                              
+    NSData *encryptedResponderInfo = [[QredoCryptoKeychain sharedQredoCryptoKeychain] encryptBulk:encryptionKeyRef plaintext:serializedResponderInfo];
+    
+    
     return [QredoPrimitiveMarshallers marshalObject:encryptedResponderInfo
                                          marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]
                                       includeHeader:YES];

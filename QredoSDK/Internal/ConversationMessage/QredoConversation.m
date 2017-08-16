@@ -378,10 +378,10 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoRendezvousCrypto *_rendezvousCrypto = [QredoRendezvousCrypto instance];
     QLFRendezvous *_rendezvous = [QLFRendezvous rendezvousWithServiceInvoker:self.client.serviceInvoker];
     
-    QredoKey *masterKey = [_rendezvousCrypto masterKeyWithTag:rendezvousTag appId:appCredentials.appId];
-    QredoKey *authKey = [_rendezvousCrypto authenticationKeyWithMasterKey:masterKey];
+    QredoKeyRef *masterKeyRef = [_rendezvousCrypto masterKeyWithTag:rendezvousTag appId:appCredentials.appId];
+    QredoKeyRef *authKeyRef = [_rendezvousCrypto authenticationKeyWithMasterKey:masterKeyRef];
     
-    QLFRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithMasterKey:masterKey];
+    QLFRendezvousHashedTag *hashedTag = [_rendezvousCrypto hashedTagWithMasterKey:masterKeyRef];
     
     //Generate the rendezvous key pairs.
     QLFKeyPairLF *responderKeyPair     = [_rendezvousCrypto newRequesterKeyPair];
@@ -390,7 +390,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     
     QLFAuthenticationCode *responderAuthenticationCode   = [_rendezvousCrypto responderAuthenticationCodeWithHashedTag:hashedTag
-                                                                                                     authenticationKey:authKey
+                                                                                                     authenticationKeyRef:authKeyRef
                                                                                                     responderPublicKey:_myPublicKey];
     
     QLFRendezvousResponse *response = [QLFRendezvousResponse rendezvousResponseWithHashedTag:hashedTag
@@ -407,16 +407,16 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                            //TODO: [GR]: Take a view whether we need to show this error to the client code.
                            
                            if ([_rendezvousCrypto validateEncryptedResponderInfo:responseRegistered.info
-                                                               authenticationKey:authKey
+                                                            authenticationKeyRef:authKeyRef
                                                                              tag:rendezvousTag
                                                                        hashedTag:hashedTag
                                                                            error:nil]){
                                NSError *error = nil;
                                
-                               QredoBulkEncKey *encKey = [_rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
+                               QredoKeyRef *encKeyRef = [_rendezvousCrypto encryptionKeyWithMasterKey:masterKeyRef];
                                
                                QLFRendezvousResponderInfo *responderInfo = [_rendezvousCrypto decryptResponderInfoWithData:responseRegistered.info.value
-                                                                                                             encryptionKey:encKey
+                                                                                                          encryptionKeyRef:encKeyRef
                                                                                                                      error:&error];
                                
                                QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:responderInfo.requesterPublicKey];

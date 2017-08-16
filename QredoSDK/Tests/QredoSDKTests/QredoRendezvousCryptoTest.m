@@ -24,18 +24,18 @@
 
 
 -(void)common_TestDerrivedKeysNotNilWithTag:(NSString *)tag {
-    QredoKey *masterKey = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
+    QredoKeyRef *masterKeyRef = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
     
-    XCTAssertNotNil(masterKey,@"Master key should not be nil");
+    XCTAssertNotNil(masterKeyRef,@"Master key should not be nil");
     
-    QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKey];
+    QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKeyRef];
     XCTAssertNotNil(hashedTag,@"Hashed tag should not be nil");
     
-    QredoKey *authKey = [rendezvousCrypto authenticationKeyWithMasterKey:masterKey];
-    XCTAssertNotNil(authKey,@"Authentication key should not be nil");
+    QredoKeyRef *authKeyRef = [rendezvousCrypto authenticationKeyWithMasterKey:masterKeyRef];
+    XCTAssertNotNil(authKeyRef,@"Authentication key should not be nil");
     
-    QredoKey *encKey = [rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
-    XCTAssertNotNil(encKey,@"Authentication key should not be nil");
+    QredoKeyRef *encKeyRef = [rendezvousCrypto encryptionKeyWithMasterKey:masterKeyRef];
+    XCTAssertNotNil(encKeyRef,@"Authentication key should not be nil");
 }
 
 
@@ -50,13 +50,13 @@
 
 
 -(void)common_TestVectorsWithTag:(NSString *)tag {
-    QredoKey *masterKey = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
+    QredoKeyRef *masterKeyRef = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
     
-    QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKey];
+    QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKeyRef];
     
-    QredoKey *authKey = [rendezvousCrypto authenticationKeyWithMasterKey:masterKey];
+    QredoKeyRef *authKeyRef = [rendezvousCrypto authenticationKeyWithMasterKey:masterKeyRef];
     
-    QredoKey *encKey = [rendezvousCrypto encryptionKeyWithMasterKey:masterKey];
+    QredoKeyRef *encKeyRef = [rendezvousCrypto encryptionKeyWithMasterKey:masterKeyRef];
     
     
     QLFKeyPairLF *requesterKeyPair  = [rendezvousCrypto newRequesterKeyPair];
@@ -70,14 +70,14 @@
     
     [QredoPrimitiveMarshallers marshalObject:responderInfo includeHeader:NO];
     
-    NSData *encryptedResponderInfo = [rendezvousCrypto encryptResponderInfo:responderInfo encryptionKey:encKey];
+    NSData *encryptedResponderInfo = [rendezvousCrypto encryptResponderInfo:responderInfo encryptionKeyRef:encKeyRef];
     [QredoPrimitiveMarshallers unmarshalObject:encryptedResponderInfo
                                   unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]
                                    parseHeader:YES];
     NSMakeRange(0,16);
     
     [rendezvousCrypto authenticationCodeWithHashedTag:hashedTag
-                                    authenticationKey:authKey
+                                    authenticationKeyRef:authKeyRef
                                encryptedResponderData:encryptedResponderInfo];
 }
 

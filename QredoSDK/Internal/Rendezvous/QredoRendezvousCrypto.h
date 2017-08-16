@@ -5,6 +5,7 @@
 #import "QredoTypes.h"
 #import "QredoRendezvousHelper.h"
 #import "QredoBulkEncKey.h"
+#import "QredoKeyRef.h"
 
 @protocol QredoRendezvousHelper;
 
@@ -13,12 +14,12 @@
 +(QredoRendezvousCrypto *)instance;
 
 -(QLFAuthenticationCode *)authenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                        authenticationKey:(QredoKey *)authenticationKey
+                                     authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                    encryptedResponderData:(NSData *)encryptedResponderData;
 
 
 -(QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
-                                                 authenticationKey:(QredoKey *)authenticationKey
+                                              authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                                 responderPublicKey:(QredoPublicKey *)responderPublicKey;
 
 
@@ -33,18 +34,18 @@
               privateKey:(QredoPrivateKey *)privateKey;
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
-                  encryptionKey:(QredoKey *)encryptionKey;
+                  encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef;
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
-                  encryptionKey:(QredoKey *)encryptionKey
+                  encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef
                              iv:(NSData *)iv;
 
 -(QLFRendezvousResponderInfo *)decryptResponderInfoWithData:(NSData *)encryptedResponderData
-                                              encryptionKey:(QredoKey *)encryptionKey
+                                           encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef
                                                       error:(NSError **)error;
 
 -(BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
-                    authenticationKey:(QredoKey *)authenticationKey
+                 authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                   tag:(NSString *)tag
                             hashedTag:(QLFRendezvousHashedTag *)hashedTag
                                 error:(NSError **)error;
@@ -54,10 +55,12 @@
                                                          signingHandler:(signDataBlock)signingHandler
                                                                   error:(NSError **)error;
 
--(QredoKey *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId;
--(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(QredoKey *)masterKey;
--(QredoBulkEncKey *)encryptionKeyWithMasterKey:(QredoKey *)masterKey;
--(QredoKey *)authenticationKeyWithMasterKey:(QredoKey *)masterKey;
+-(QredoKeyRef *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId;
+
+-(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(QredoKeyRef *)masterKey;
+-(QredoKeyRef *)encryptionKeyWithMasterKey:(QredoKeyRef *)masterKey;
+-(QredoKeyRef *)authenticationKeyWithMasterKey:(QredoKeyRef *)masterKey;
+
 +(NSData *)transformPrivateKeyToData:(SecKeyRef)key;
 
 @end
