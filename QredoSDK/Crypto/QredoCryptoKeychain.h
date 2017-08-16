@@ -16,9 +16,11 @@
 @interface QredoCryptoKeychain : NSObject
 
 +(instancetype)sharedQredoCryptoKeychain;
--(void)store:(QredoKey *)data withRef:(QredoKeyRef *)ref;
+-(QredoKeyRef*)createKeyRef:(QredoKey*)key;
 -(NSData*)retrieveWithRef:(QredoKeyRef *)ref;
--(QredoKeyRef*)makeKeyRef;
+//-(QredoKeyRef*)makeKeyRef;
+//-(void)store:(QredoKey *)data withRef:(QredoKeyRef *)ref;
+
 
 
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext;

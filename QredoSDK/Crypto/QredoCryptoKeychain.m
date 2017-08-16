@@ -54,14 +54,16 @@
     
 }
 
--(QredoKeyRef *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info{
-    QredoKey *deriveKey = [[QredoKey alloc] initWithData:[self retrieveWithRef:keyRef]];
-    
-    return nil;
+-(QredoKeyRef *)deriveKey:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info{
+    //derive_fast
+    QredoKey *derivedKey = [self.cryptoImplementation deriveFast:ikm salt:salt info:info];
+    return [self createKeyRef:derivedKey];
 }
 
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt{
-    return nil;
+    //derive_slow
+    QredoKey *derivedKey = [self.cryptoImplementation deriveSlow:password  salt:salt iterations:10000];
+    return [self createKeyRef:derivedKey];
 }
 
 -(QredoKeyPairRef *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt{
@@ -73,7 +75,6 @@
     QredoED25519SigningKey *signKey = [self.cryptoImplementation qredoED25519SigningKeyWithSeed:ikm];
     QredoKey *private = [[QredoKey alloc] initWithData:signKey.data];
     QredoKey *public  = [[QredoKey alloc] initWithData:signKey.verifyKey.data];
-    
     QredoKeyRefPair *keyRefPair = [[QredoKeyRefPair alloc] initWithPublic:public private:private];
     return keyRefPair;
 }
@@ -124,14 +125,23 @@
 #pragma Keychain
 
 
--(QredoKeyRef*)makeKeyRef{
+
+-(QredoKeyRef*)createKeyRef:(QredoKey*)key{
     QredoQUID *quid = [[QredoQUID alloc] init];
-    return [[QredoKeyRef alloc] initWithData:[quid data]];
+    QredoKeyRef *keyRef = [[QredoKeyRef alloc] initWithData:[quid data]];
+    [self.keychainWrapper setData:[key bytes] forKey:[keyRef hexadecimalString]];
+    return keyRef;
+   
 }
 
--(void)store:(QredoKey *)data withRef:(QredoKeyRef *)ref{
-    [self.keychainWrapper setData:[data bytes] forKey:[ref hexadecimalString]];
-}
+//-(QredoKeyRef*)makeKeyRef{
+//    QredoQUID *quid = [[QredoQUID alloc] init];
+//    return [[QredoKeyRef alloc] initWithData:[quid data]];
+//}
+//
+//-(void)store:(QredoKey *)data withRef:(QredoKeyRef *)ref{
+//    [self.keychainWrapper setData:[data bytes] forKey:[ref hexadecimalString]];
+//}
 
 
 
