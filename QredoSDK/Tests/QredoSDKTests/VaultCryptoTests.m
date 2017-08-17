@@ -7,6 +7,7 @@
 #import "NSDictionary+IndexableSet.h"
 #import "NSData+HexTools.h"
 #import "QredoNetworkTime.h"
+#import "QredoKeyRef.h"
 
 @interface VaultCryptoTests :QredoXCTestCase
 
@@ -60,8 +61,8 @@
                                                                                  created:createdDate
                                                                                   values:indexableValues];
     NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
-    QredoVaultCrypto *vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:[[QredoBulkEncKey alloc] initWithData:encryptionAndAuthKeys.encryptionKey]
-                                                           authenticationKey:[[QredoKey alloc] initWithData:encryptionAndAuthKeys.authenticationKey]];
+    QredoVaultCrypto *vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:[[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeys.encryptionKey]
+                                                           authenticationKey:[[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeys.authenticationKey]];
     QLFEncryptedVaultItemHeader *encryptedVaultItemHeader  = [vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemRef metadata:metadata iv:encyptedMetadataIV];
     NSData *serializedEncryptedVaultItemHeader  = [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO];
     NSData *encryptedMetadataRaw   = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItemHeader.encryptedMetadata

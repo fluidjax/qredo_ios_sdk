@@ -99,6 +99,7 @@
 @implementation QredoVaultTests
 
 -(void)setUp {
+    [self resetKeychain];
     [super setUp];
     [self createRandomClient1];
 }
@@ -148,7 +149,6 @@
 
 
 -(void)testEnumerateContainsDeletedItems {
-    [self resetKeychain];
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
@@ -175,8 +175,7 @@
     
     
     
-    [vault putItem:item
- completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
+    [vault putItem:item  completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error) {
      XCTAssertNil(error,@"Error occurred during PutItem");
      item1Descriptor = newItemMetadata.descriptor;
      item1Metadata = newItemMetadata;
@@ -336,7 +335,6 @@
 
 
 -(void)testEnumerateUpdated {
-    [self resetKeychain];
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
@@ -541,7 +539,6 @@
 
 
 -(void)testPutDelete {
-    [self resetKeychain];
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
@@ -690,7 +687,6 @@
 
 
 -(void)testGetLatestMetaDataItemFromIndex {
-    [self resetKeychain];
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
@@ -838,7 +834,6 @@
 
 
 -(void)testGetLatestMetaDataItemFromIndexAfterDelete {
-    [self resetKeychain];
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
@@ -980,7 +975,6 @@
 
 
 -(void)testGetLatestItemFromIndexAfterDelete {
-    [self resetKeychain];
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);
@@ -1123,7 +1117,6 @@
 
 
 -(void)testGetLatestVaultItemFromIndex {
-    [self resetKeychain];
     XCTAssertNotNil(testClient1);
     QredoVault *vault = [testClient1 defaultVault];
     XCTAssertNotNil(vault);

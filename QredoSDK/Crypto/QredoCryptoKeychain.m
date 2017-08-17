@@ -40,6 +40,13 @@
     return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext];
 }
 
+
+-(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext iv:(NSData*)iv{
+    QredoBulkEncKey *secretKey = [[QredoBulkEncKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
+    return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext iv:iv];
+    
+}
+
 -(NSData *)decryptBulk:(QredoKeyRef *)secretKeyRef  ciphertext:(NSData *)ciphertext{
     QredoBulkEncKey *secretKey = [[QredoBulkEncKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
     return [self.cryptoImplementation decryptBulk:secretKey ciphertext:ciphertext];

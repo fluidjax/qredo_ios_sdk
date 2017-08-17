@@ -15,7 +15,6 @@
 #define QREDO_RENDEZVOUS_ENC_SALT        [@"QoR0rwQOu3PMCieK" dataUsingEncoding:NSUTF8StringEncoding]
 #define QREDO_RENDEZVOUS_AUTH_SALT       [@"FZHoqke4BfkIOfkH" dataUsingEncoding:NSUTF8StringEncoding]
 
-static const int QredoRendezvousMasterKeyLength = 32;
 
 @implementation QredoRendezvousCrypto {
     id<QredoCryptoImpl> _crypto;

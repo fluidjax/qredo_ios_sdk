@@ -5,13 +5,16 @@
 #import "QredoED25519VerifyKey.h"
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
-#import "QredoBulkEncKey.h"
+
+@class QredoKeyRef;
+
 
 @interface QredoVaultKeys :NSObject
 
+
 @property QredoED25519SigningKey *ownershipKeyPair;
-@property QredoBulkEncKey *encryptionKey;
-@property QredoKey *authenticationKey;
+@property QredoKeyRef *encryptionKey;
+@property QredoKeyRef *authenticationKey;
 @property QredoQUID *vaultId;
 @property NSData *vaultKey;
 
@@ -21,12 +24,12 @@
 
 @interface QredoVaultCrypto :NSObject
 
-@property (readonly) QredoBulkEncKey *bulkKey;
-@property (readonly) QredoKey *authenticationKey;
+@property (readonly) QredoKeyRef *bulkKey;
+@property (readonly) QredoKeyRef *authenticationKey;
 
-+(instancetype)vaultCryptoWithBulkKey:(QredoBulkEncKey *)bulkKey authenticationKey:(QredoKey *)authenticationKey;
++(instancetype)vaultCryptoWithBulkKey:(QredoKeyRef *)bulkKey authenticationKey:(QredoKeyRef *)authenticationKey;
 
--(instancetype)initWithBulkKey:(QredoBulkEncKey *)bulkKey authenticationKey:(QredoKey *)authenticationKey;
+-(instancetype)initWithBulkKey:(QredoKeyRef *)bulkKey authenticationKey:(QredoKeyRef *)authenticationKey;
 
 -(QLFEncryptedVaultItemHeader *)encryptVaultItemHeaderWithItemRef:(QLFVaultItemRef *)vaultItemRef
                                                          metadata:(QLFVaultItemMetadata *)metadata
