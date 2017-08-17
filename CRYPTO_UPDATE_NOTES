@@ -1,0 +1,27 @@
+
+NSData
+    QredoRawCrypto
+
+
+QredoKeys:
+    QredoCryptoImpl
+    QredoCryptoKeychain
+
+
+QredoKeyRef
+    Domain Code
+        QredoVaultCrypto
+        QredoRendezvousCrypto
+        QredoConversationCrypto
+        QredoCryptoKeyChain
+
+
+
+QredoCryptoImpl is only accessed from QredoCryptoKeyChain
+
+
+
+
+//Ignoring ED25519 for the moment
+
+QredoED25519SigningKey

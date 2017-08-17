@@ -4,8 +4,6 @@
 #import <XCTest/XCTest.h>
 #import "QredoRendezvousCrypto.h"
 #import "QredoRawCrypto.h"
-#import "QredoCryptoImpl.h"
-#import "QredoCryptoImplV1.h"
 #import "NSData+HexTools.h"
 
 @interface QredoRendezvousCryptoTest :QredoXCTestCase

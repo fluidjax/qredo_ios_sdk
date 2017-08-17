@@ -267,17 +267,12 @@
 
 -(QredoKeyPair *)generateDHKeyPair {
     //Generate a new key pair from curve 25519.
-
     NSMutableData *publicKeyData = [[NSMutableData alloc] initWithLength:crypto_box_SECRETKEYBYTES];
     NSMutableData *privateKeyData = [[NSMutableData alloc] initWithLength:crypto_box_SECRETKEYBYTES];
-    
     crypto_box_keypair(publicKeyData.mutableBytes,privateKeyData.mutableBytes);
-    
     QredoDhPublicKey *publicKey = [[QredoDhPublicKey alloc] initWithData:publicKeyData];
     QredoDhPrivateKey *privateKey = [[QredoDhPrivateKey alloc] initWithData:privateKeyData];
-    
     QredoKeyPair *keyPair = [[QredoKeyPair alloc] initWithPublicKey:publicKey privateKey:privateKey];
-    
     return keyPair;
 }
     

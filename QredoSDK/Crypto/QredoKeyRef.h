@@ -21,5 +21,6 @@
 
 //only for debugging
 -(void)dump;
+-(NSData*)debugValue;
 
 @end

@@ -16,7 +16,6 @@
 
 #import "UICKeyChainStore.h"
 #import "QredoCryptoImplV1.h"
-#import "QredoCryptoImpl.h"
 #import "QredoRawCrypto.h"
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
@@ -88,9 +87,19 @@
     return [self createKeyRef:derivedKey];
 }
 
--(QredoKeyPairRef *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt{
+-(QredoKeyRefPair *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt{
     return nil;
 }
+
+
+-(QredoKeyRefPair *)generateDHKeyPair{
+    QredoKeyPair *keyPair = [self.cryptoImplementation generateDHKeyPair];
+    QredoKey *private = [[QredoKey alloc] initWithData:keyPair.privateKey.bytes];
+    QredoKey *public  = [[QredoKey alloc] initWithData:keyPair.publicKey.bytes];
+    QredoKeyRefPair *keyRefPair = [[QredoKeyRefPair alloc] initWithPublic:public private:private];
+    return keyRefPair;
+}
+
 
 -(QredoKeyRefPair *)ownershipKeyPairDerive:(NSData *)ikm{
     //ed25519_sha512_derive
@@ -102,7 +111,7 @@
 }
 
 
--(NSData *)ownershipSign:(QredoKeyPairRef *)keyPairRef data:(NSData *)data{
+-(NSData *)ownershipSign:(QredoKeyRefPair *)keyPairRef data:(NSData *)data{
 //   QredoED25519SigningKey *signingKey = [[QredoED25519SigningKey alloc] init];
 //   NSData *sig = [self.cryptoImplementation qredoED25519SignMessage:data withKey:signingKey error:error];
     return nil;

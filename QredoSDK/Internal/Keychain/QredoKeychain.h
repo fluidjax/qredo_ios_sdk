@@ -1,7 +1,6 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
-#import "QredoCryptoImpl.h"
 #import "QredoVaultCrypto.h"
 
 @class QredoUserCredentials;

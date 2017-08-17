@@ -9,6 +9,9 @@
 #import "NSData+HexTools.h"
 #import "QredoBulkEncKey.h"
 #import "QredoKey.h"
+#import "QredoKeyRef.h"
+#import "QredoKeyRefPair.h"
+#import "QredoCryptoKeychain.h"
 
 @interface QredoCryptoImplV1Tests :XCTestCase
 
@@ -419,26 +422,19 @@
 
 
 -(void)testGenerateDHKeyPair {
-    QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    QredoKeyPair *keyPair1 = [qredoCryptoImpl generateDHKeyPair];
-    QredoKeyPair *keyPair2 = [qredoCryptoImpl generateDHKeyPair];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoKeyRefPair *keyPair1 = [keychain generateDHKeyPair];
+    QredoKeyRefPair *keyPair2 = [keychain generateDHKeyPair];
     
-    XCTAssertNotNil(keyPair1,@"Key pair should not be nil.");
-    XCTAssertNotNil(keyPair2,@"Key pair should not be nil.");
-    XCTAssertNotNil(keyPair1.publicKey,@"Public key should not be nil.");
-    XCTAssertNotNil(keyPair2.publicKey,@"Public key should not be nil.");
-    XCTAssertNotNil(keyPair1.privateKey,@"Private key should not be nil.");
-    XCTAssertNotNil(keyPair2.privateKey,@"Private key should not be nil.");
+    XCTAssertNotNil(keyPair1.privateKeyRef.debugValue,@"Key should not be nil.");
+    XCTAssertNotNil(keyPair1.publicKeyRef.debugValue, @"Key should not be nil.");
+    XCTAssertNotNil(keyPair2.privateKeyRef.debugValue,@"Key should not be nil.");
+    XCTAssertNotNil(keyPair2.publicKeyRef.debugValue, @"Key should not be nil.");
     
-    QredoDhPublicKey *keyPair1DhPublicKey = (QredoDhPublicKey *)keyPair1.publicKey;
-    QredoDhPrivateKey *keyPair1DhPrivateKey = (QredoDhPrivateKey *)keyPair1.privateKey;
-    QredoDhPublicKey *keyPair2DhPublicKey = (QredoDhPublicKey *)keyPair2.publicKey;
-    QredoDhPrivateKey *keyPair2DhPrivateKey = (QredoDhPrivateKey *)keyPair2.privateKey;
-    
-    XCTAssertFalse([keyPair1DhPublicKey.data isEqualToData:keyPair2DhPublicKey.data],@"Generated the same public key twice.");
-    XCTAssertFalse([keyPair1DhPrivateKey.data isEqualToData:keyPair2DhPrivateKey.data],@"Generated the same private key twice.");
-    XCTAssertFalse([keyPair1DhPublicKey.data isEqualToData:keyPair1DhPrivateKey.data],@"Public and private key data are the same, this is incorrect.");
-    XCTAssertFalse([keyPair2DhPublicKey.data isEqualToData:keyPair2DhPrivateKey.data],@"Public and private key data are the same, this is incorrect.");
+    XCTAssertFalse([keyPair1.publicKeyRef.debugValue isEqualToData:keyPair2.publicKeyRef.debugValue],@"Generated the same public key twice.");
+    XCTAssertFalse([keyPair1.privateKeyRef.debugValue isEqualToData:keyPair2.privateKeyRef.debugValue],@"Generated the same private key twice.");
+    XCTAssertFalse([keyPair1.publicKeyRef.debugValue isEqualToData:keyPair1.privateKeyRef.debugValue],@"Public and private key data are the same, this is incorrect.");
+    XCTAssertFalse([keyPair2.publicKeyRef.debugValue isEqualToData:keyPair2.privateKeyRef.debugValue],@"Public and private key data are the same, this is incorrect.");
 }
 
 

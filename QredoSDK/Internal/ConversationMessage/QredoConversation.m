@@ -188,7 +188,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
         //TODO: move to a singleton to avoid creation of these stateless objects for every conversation
         //or make all the methods as class methods
         _crypto = [QredoCryptoImplV1 new];
-        _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
+        _conversationCrypto = [[QredoConversationCrypto alloc] init];
         _conversationQueue = dispatch_queue_create("com.qredo.conversation",nil);
         _enumerationQueue = dispatch_queue_create("com.qredo.enumeration",nil);
         _conversationService = [QLFConversations conversationsWithServiceInvoker:self.client.serviceInvoker];

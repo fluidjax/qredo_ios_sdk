@@ -21,7 +21,7 @@
 -(void)setUp {
     [super setUp];
     _crypto = [QredoCryptoImplV1 sharedInstance];
-    _conversationCrypto = [[QredoConversationCrypto alloc] initWithCrypto:_crypto];
+    _conversationCrypto = [[QredoConversationCrypto alloc] init];
 }
 
 

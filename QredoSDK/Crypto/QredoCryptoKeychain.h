@@ -8,7 +8,7 @@
 
 @class QredoKey;
 @class QredoKeyRef;
-@class QredoKeyPairRef;
+@class QredoKeyRefPair;
 @class QredoQUID;
 @class QredoDhPrivateKey;
 @class QredoDhPublicKey;
@@ -38,9 +38,9 @@
 -(NSData *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
     
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt;
--(QredoKeyPairRef *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt;
--(QredoKeyPairRef *)ownershipKeyPairDerive:(NSData *)ikm;
--(NSData *)ownershipSign:(QredoKeyPairRef *)keyPairRef data:(NSData *)data;
+-(QredoKeyRefPair *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt;
+-(QredoKeyRefPair *)ownershipKeyPairDerive:(NSData *)ikm;
+-(NSData *)ownershipSign:(QredoKeyRefPair *)keyPairRef data:(NSData *)data;
 
 -(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef;
 
@@ -49,6 +49,7 @@
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data;
 
 
+-(QredoKeyRefPair *)generateDHKeyPair;
 -(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
                                             yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
