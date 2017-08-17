@@ -10,6 +10,9 @@
 @class QredoKeyRef;
 @class QredoKeyPairRef;
 @class QredoQUID;
+@class QredoDhPrivateKey;
+@class QredoDhPublicKey;
+
 
 #import <Foundation/Foundation.h>
 
@@ -18,7 +21,9 @@
 
 +(instancetype)sharedQredoCryptoKeychain;
 -(QredoKeyRef*)createKeyRef:(QredoKey*)key;
+//-(NSData*)makeRefForData:(NSData*)keydata;
 -(NSData*)retrieveWithRef:(QredoKeyRef *)ref;
+-(void)addItem:(NSData*)keyData forRef:(NSData*)ref;
 //-(QredoKeyRef*)makeKeyRef;
 //-(void)store:(QredoKey *)data withRef:(QredoKeyRef *)ref;
 
@@ -29,6 +34,8 @@
 -(NSData *)authenticate:(QredoKeyRef *)secretKeyRef data:(NSData *)data;
 -(BOOL)verify:(QredoKeyRef *)secretKeyRef data:(NSData *)data signature:(NSData *)signature;
 -(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
+-(NSData *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
+    
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt;
 -(QredoKeyPairRef *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt;
 -(QredoKeyPairRef *)ownershipKeyPairDerive:(NSData *)ikm;
@@ -39,6 +46,14 @@
 
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToKeyRef:(QredoKeyRef*)keyRef2;
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data;
+
+
+-(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+
+-(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
+                             myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 
 @end

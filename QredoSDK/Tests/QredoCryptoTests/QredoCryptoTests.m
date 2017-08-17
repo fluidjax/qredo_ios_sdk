@@ -32,10 +32,10 @@
     NSData *yourPublicKeyData = [QredoUtils hexStringToData:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
     QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
     QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
-    QredoKey *masterKey = [conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
-    QredoKey *requesterInboundEncryptionKey = [conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
-    QredoKey *requesterInboundAuthenticationKey = [conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
-    NSData *requesterInboundQueueSeed = [conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    QredoKeyRef *masterKeyRef = [conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    QredoKeyRef *requesterInboundEncryptionKeyRef = [conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
+    QredoKeyRef *requesterInboundAuthenticationKey = [conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
+    NSData *requesterInboundQueueSeed = [conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     QredoED25519SigningKey *requesterOwnershipKeyPair = [crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
     
     NSData *message     = [QredoUtils hexStringToData:@"0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"];

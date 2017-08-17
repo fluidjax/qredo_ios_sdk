@@ -132,11 +132,11 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoConversationCrypto *_conversationCrypto;
     QLFConversations *_conversationService;
     
-    QredoBulkEncKey *_inboundBulkKey;
-    QredoKey *_inboundAuthKey;
+    QredoKeyRef *_inboundBulkKeyRef;
+    QredoKeyRef *_inboundAuthKeyRef;
     
-    QredoBulkEncKey *_outboundBulkKey;
-    QredoKey *_outboundAuthKey;
+    QredoKeyRef *_outboundBulkKeyRef;
+    QredoKeyRef *_outboundAuthKeyRef;
     
     QredoQUID *_inboundQueueId;
     QredoQUID *_outboundQueueId;
@@ -208,8 +208,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 -(QLFConversationMessage*)decryptMessage:(QLFEncryptedConversationItem*)conversationItem{
     NSError *error = nil;
     QLFConversationMessage *message  = [_conversationCrypto decryptMessage:conversationItem
-                                                                   bulkKey:_inboundBulkKey
-                                                                   authKey:_inboundAuthKey
+                                                                   bulkKeyRef:_inboundBulkKeyRef
+                                                                   authKeyRef:_inboundAuthKeyRef
                                                                      error:&error];
     return message;
 }
@@ -321,20 +321,20 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _myPublicKey = myPublicKey;
     _yourPublicKey = publicKey;
     
-    QredoKey *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:privateKey
-                                                                     yourPublicKey:publicKey];
+    QredoKeyRef *masterKeyRef = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:privateKey
+                                                                             yourPublicKey:publicKey];
     
-    QredoBulkEncKey *requesterInboundBulkKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
+    QredoKeyRef *requesterInboundBulkKeyRef = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     
-    QredoKey *requesterInboundAuthKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
+    QredoKeyRef *requesterInboundAuthKeyRef = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
     
-    QredoBulkEncKey *responderInboundBulkKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
+    QredoKeyRef *responderInboundBulkKeyRef = [_conversationCrypto responderInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     
-    QredoKey *responderInboundAuthKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
+    QredoKeyRef *responderInboundAuthKeyRef = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
     
-    NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     
-    NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
+    NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     
     QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
     QredoED25519SigningKey *responderInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueKeyPairSalt];
@@ -343,28 +343,28 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoQUID *responderInboundQueueId = [[QredoQUID alloc] initWithQUIDData:responderInboundQueueSigningKey.verifyKey.data];
     
     if (rendezvousOwner){
-        _inboundBulkKey = requesterInboundBulkKey;
-        _inboundAuthKey = requesterInboundAuthKey;
+        _inboundBulkKeyRef = requesterInboundBulkKeyRef;
+        _inboundAuthKeyRef = requesterInboundAuthKeyRef;
         _inboundQueueId = requesterInboundQueueId;
         _inboundSigningKey = requesterInboundQueueSigningKey;
         
-        _outboundBulkKey = responderInboundBulkKey;
-        _outboundAuthKey = responderInboundAuthKey;
+        _outboundBulkKeyRef = responderInboundBulkKeyRef;
+        _outboundAuthKeyRef = responderInboundAuthKeyRef;
         _outboundQueueId = responderInboundQueueId;
         _outboundSigningKey = responderInboundQueueSigningKey;
     } else {
-        _inboundBulkKey = responderInboundBulkKey;
-        _inboundAuthKey = responderInboundAuthKey;
+        _inboundBulkKeyRef = responderInboundBulkKeyRef;
+        _inboundAuthKeyRef = responderInboundAuthKeyRef;
         _inboundQueueId = responderInboundQueueId;
         _inboundSigningKey = responderInboundQueueSigningKey;
         
-        _outboundBulkKey = requesterInboundBulkKey;
-        _outboundAuthKey = requesterInboundAuthKey;
+        _outboundBulkKeyRef = requesterInboundBulkKeyRef;
+        _outboundAuthKeyRef= requesterInboundAuthKeyRef;
         _outboundQueueId = requesterInboundQueueId;
         _outboundSigningKey = requesterInboundQueueSigningKey;
     }
     
-    _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];
+    _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKeyRef:masterKeyRef];
 }
 
 -(void)updateConversationWithCompletionHandler:(void (^)(NSError *error))completionHandler {
@@ -578,8 +578,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                          block:(void (^)(QredoConversationMessage *message,BOOL *stop))block
              completionHandler:(void (^)(NSError *error))completionHandler
           highWatermarkHandler:(void (^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler {
-    QredoBulkEncKey *bulkKey = incoming ? _inboundBulkKey : _outboundBulkKey;
-    QredoKey *authKey = incoming ? _inboundAuthKey : _outboundAuthKey;
+    
+    QredoKeyRef *bulkKeyRef = incoming ? _inboundBulkKeyRef : _outboundBulkKeyRef;
+    QredoKeyRef *authKeyRef = incoming ? _inboundAuthKeyRef : _outboundAuthKeyRef;
     
     //The outcome of this function should be either calling `completionHandler` or `continueToNextMessage`
     
@@ -626,8 +627,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     NSError *decryptionError = nil;
     QLFConversationMessage *decryptedMessage = [_conversationCrypto decryptMessage:conversationItem.item
-                                                                           bulkKey:bulkKey
-                                                                           authKey:authKey
+                                                                           bulkKeyRef:bulkKeyRef
+                                                                           authKeyRef:authKeyRef
                                                                              error:&decryptionError];
     
     if (decryptionError){
@@ -787,8 +788,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QLFConversationMessage *messageLF = [message messageLF];
     
     QLFEncryptedConversationItem *encryptedItem = [_conversationCrypto encryptMessage:messageLF
-                                                                              bulkKey:_outboundBulkKey
-                                                                              authKey:_outboundAuthKey];
+                                                                              bulkKeyRef:_outboundBulkKeyRef
+                                                                              authKeyRef:_outboundAuthKeyRef];
     
     NSData *signaturePayloadData = [QredoPrimitiveMarshallers marshalObject:encryptedItem
                                                                  marshaller:[QLFEncryptedConversationItem marshaller]

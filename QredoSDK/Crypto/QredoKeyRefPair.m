@@ -17,8 +17,8 @@
 -(instancetype)initWithPublic:(QredoKey*)public private:(QredoKey*)private{
     self = [super init];
     if (self) {
-        self.publicKeyRef =  [[QredoKeyRef alloc] initWithData:[public data]];
-        self.privateKeyRef = [[QredoKeyRef alloc] initWithData:[private data]];
+        self.publicKeyRef =  [[QredoKeyRef alloc] initWithKeyData:[public data]];
+        self.privateKeyRef = [[QredoKeyRef alloc] initWithKeyData:[private data]];
         
     }
     return self;

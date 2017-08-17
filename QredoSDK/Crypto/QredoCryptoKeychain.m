@@ -20,6 +20,7 @@
 #import "QredoRawCrypto.h"
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
+#import "NSData+HexTools.h"
 
 @interface QredoCryptoKeychain()
 @property (strong) UICKeyChainStore *keychainWrapper;
@@ -55,15 +56,24 @@
     
 }
 
--(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info{
-    //derive_fast HKDF
+
+-(NSData *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info{
     NSData *ikm = [self retrieveWithRef:keyRef];
-    
     NSAssert(ikm,@"DeriveKey key should not be nil");
     NSAssert(salt,@"Salt should not be nil");
     QredoKey *derivedKey = [self.cryptoImplementation deriveFast:ikm salt:salt info:info];
-    return [self createKeyRef:derivedKey];
+    return [derivedKey bytes];
 }
+
+
+-(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info{
+    //derive_fast HKDF
+    NSData *derivedKey = [self deriveKey:keyRef salt:salt info:info];
+    return [self createKeyRef:[[QredoKey alloc] initWithData:derivedKey]];
+}
+
+
+
 
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt{
     //derive_slow PBKDF
@@ -95,6 +105,29 @@
 -(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef{
    NSData *keyData = [self retrieveWithRef:keyRef];
    return [[QredoQUID alloc] initWithQUIDData:keyData];
+}
+
+
+
+-(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey{
+    QredoKey *diffieHellmanMaster = [self.cryptoImplementation getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey
+                                                                                           yourPublicKey:yourPublicKey];
+    
+    QredoKeyRef *keyRef = [self createKeyRef:diffieHellmanMaster];
+    return keyRef;
+}
+
+-(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
+                             myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey{
+
+    NSData *diffieHellmanSecret = [self.cryptoImplementation getDiffieHellmanSecretWithSalt:salt
+                                                                                 myPrivateKey:myPrivateKey
+                                                                                yourPublicKey:yourPublicKey];
+    return diffieHellmanSecret;
+    
+    
 }
 
 
@@ -134,12 +167,19 @@
 
 
 -(QredoKeyRef*)createKeyRef:(QredoKey*)key{
-    QredoQUID *quid = [[QredoQUID alloc] init];
-    QredoKeyRef *keyRef = [[QredoKeyRef alloc] initWithData:[quid data]];
-    [self.keychainWrapper setData:[key bytes] forKey:[keyRef hexadecimalString]];
-    return keyRef;
-   
+    return [[QredoKeyRef alloc] initWithKeyData:[key data]];
 }
+
+
+-(void)addItem:(NSData*)keyData forRef:(NSData*)ref{
+    [self.keychainWrapper setData:keyData forKey:[ref hexadecimalString]];
+}
+
+//-(NSData*)makeRefForData:(NSData*)keydata{
+//    QredoQUID *quid = [[QredoQUID alloc] init];
+//    [self.keychainWrapper setData:keydata forKey:[[[quid copy] data] hexadecimalString]];
+//    return [quid data];
+//}
 
 //-(QredoKeyRef*)makeKeyRef{
 //    QredoQUID *quid = [[QredoQUID alloc] init];

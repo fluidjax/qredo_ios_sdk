@@ -6,6 +6,7 @@
 #import "QredoXCTestCase.h"
 #import "NSData+HexTools.h"
 #import "QredoNetworkTime.h"
+#import "QredoCryptoKeychain.h"
 
 @interface ConversationCryptoTests :QredoXCTestCase
 {
@@ -31,18 +32,18 @@
     QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
     QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
     
-    QredoKey *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
+    QredoKeyRef *masterKeyRef = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
                                                                      yourPublicKey:yourPublicKey];
     
-    [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
-    [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
-    NSData *requesterInboundQueueSeed = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
+    [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
+    NSData *requesterInboundQueueSeed = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
-    [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
-    [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
-    NSData *responderInboundQueueSeed = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
+    [_conversationCrypto responderInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
+    [_conversationCrypto responderInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
+    NSData *responderInboundQueueSeed = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
-    [_conversationCrypto conversationIdWithMasterKey:masterKey];
+    [_conversationCrypto conversationIdWithMasterKeyRef:masterKeyRef];
 }
 
 
@@ -53,36 +54,37 @@
     QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
     QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
     
-    QredoKey *masterKey = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
+    QredoKeyRef *masterKeyRef= [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
                                                                      yourPublicKey:yourPublicKey];
     
-    QredoBulkEncKey *requesterInboundEncryptionKey = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKey:masterKey];
+    [masterKeyRef dump];
     
-    QredoKey *requesterInboundAuthenticationKey = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKey:masterKey];
+    QredoKeyRef *requesterInboundEncryptionKeyRef = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     
-    NSData *requesterInboundQueueSeed = [_conversationCrypto requesterInboundQueueSeedWithMasterKey:masterKey];
+    QredoKeyRef *requesterInboundAuthenticationKeyRef = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
+    NSData *requesterInboundQueueSeed = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     
     QredoED25519SigningKey *requesterOwnershipKeyPair = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
     
     
-    QredoBulkEncKey *responderInboundEncryptionKey = [_conversationCrypto responderInboundEncryptionKeyWithMasterKey:masterKey];
+    QredoKeyRef *responderInboundEncryptionKeyRef = [_conversationCrypto responderInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     
-    QredoKey *responderInboundAuthenticationKey = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKey:masterKey];
+    QredoKeyRef *responderInboundAuthenticationKeyRef = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
     
-    NSData *responderInboundQueueSeed = [_conversationCrypto responderInboundQueueSeedWithMasterKey:masterKey];
+    NSData *responderInboundQueueSeed = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     
     QredoED25519SigningKey *responderOwnershipKeyPair = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
     
     
-    QredoQUID *conversationId = [_conversationCrypto conversationIdWithMasterKey:masterKey];
+    QredoQUID *conversationId = [_conversationCrypto conversationIdWithMasterKeyRef:masterKeyRef];
     
     
-    QredoBulkEncKey *requesterInboundEncryptionKeyExpected  = [[QredoBulkEncKey alloc] initWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
+    QredoKeyRef *requesterInboundEncryptionKeyExpected  = [[QredoKeyRef alloc] initWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
     
-    XCTAssertEqualObjects(requesterInboundEncryptionKey,requesterInboundEncryptionKeyExpected);
+    XCTAssertEqualObjects(requesterInboundEncryptionKeyRef,requesterInboundEncryptionKeyExpected);
     
-    QredoKey *requesterInboundAuthenticationKeyExpected  = [[QredoKey alloc] initWithHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
-    XCTAssertEqualObjects(requesterInboundAuthenticationKey,requesterInboundAuthenticationKeyExpected);
+    QredoKeyRef *requesterInboundAuthenticationKeyExpected  = [[QredoKeyRef alloc] initWithKeyHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
+    XCTAssertEqualObjects(requesterInboundAuthenticationKeyRef,requesterInboundAuthenticationKeyExpected);
     
     
     
@@ -96,11 +98,11 @@
     NSData *requesterOwnershipVerifyingKeyExpected = [NSData dataWithHexString:@"0bdb0e7e 9ce4a729 710af80f 6804274e 154db05a 68129551 aa2c73ef b6cd8947"];
     XCTAssertEqualObjects(requesterOwnershipKeyPair.verifyKey.data,requesterOwnershipVerifyingKeyExpected);
     
-    QredoBulkEncKey *responderInboundEncryptionKeyExpected =  [[QredoBulkEncKey alloc] initWithHexString:@"c4ac481f 569c7d9b 86c7a893 dd6b1870 32207ec3 0778fe2c 438ca30e de4f249a"];
-    XCTAssertEqualObjects(responderInboundEncryptionKey,responderInboundEncryptionKeyExpected);
+    QredoKeyRef *responderInboundEncryptionKeyExpected =  [[QredoKeyRef alloc] initWithKeyHexString:@"c4ac481f 569c7d9b 86c7a893 dd6b1870 32207ec3 0778fe2c 438ca30e de4f249a"];
+    XCTAssertEqualObjects(responderInboundEncryptionKeyRef,responderInboundEncryptionKeyExpected);
     
-    QredoKey *responderInboundAuthenticationKeyExpected = [[QredoKey alloc] initWithHexString:@"3171bad3 c3560af1 5d936284 d4fe9f85 b3c61718 11d55e41 f803c2f5 c84c820e"];
-    XCTAssertEqualObjects(responderInboundAuthenticationKey,responderInboundAuthenticationKeyExpected);
+    QredoKeyRef *responderInboundAuthenticationKeyExpected = [[QredoKeyRef alloc] initWithKeyHexString:@"3171bad3 c3560af1 5d936284 d4fe9f85 b3c61718 11d55e41 f803c2f5 c84c820e"];
+    XCTAssertEqualObjects(responderInboundAuthenticationKeyRef,responderInboundAuthenticationKeyExpected);
     
     NSData *responderInboundQueueSeedExpected = [NSData dataWithHexString:@"a144f830 e9a97d70 20422ec1 5021375b f5735f31 289ab9a9 9885fe4c dae06245"];
     XCTAssertEqualObjects(responderInboundQueueSeed,responderInboundQueueSeedExpected);
@@ -135,13 +137,17 @@
     QLFConversationMessage *clearMessage = [QLFConversationMessage conversationMessageWithMetadata:metadata
                                                                                               body:messageBody];
     
-    QredoBulkEncKey *requesterInboundEncryptionKey      = [[QredoBulkEncKey alloc] initWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
     
-    QredoKey *requesterInboundAuthenticationKey     = [[QredoKey alloc] initWithHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
+   
+    QredoKeyRef *requesterInboundEncryptionKeyRef      = [[QredoKeyRef alloc] initWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
     
+    QredoKeyRef *requesterInboundAuthenticationKeyRef     = [[QredoKeyRef alloc] initWithKeyHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
+    
+    
+        
     QLFEncryptedConversationItem *encryptedMessage  = [_conversationCrypto encryptMessage:clearMessage
-                                                                                   bulkKey:requesterInboundEncryptionKey
-                                                                                   authKey:requesterInboundAuthenticationKey];
+                                                                                   bulkKeyRef:requesterInboundEncryptionKeyRef
+                                                                                   authKeyRef:requesterInboundAuthenticationKeyRef];
     
     [QredoPrimitiveMarshallers marshalObject:clearMessage includeHeader:NO];
     [QredoPrimitiveMarshallers marshalObject:encryptedMessage includeHeader:NO];
@@ -151,8 +157,8 @@
     
     NSError *error = nil;
     QLFConversationMessage *decryptedMessage   = [_conversationCrypto decryptMessage:encryptedMessage
-                                                                             bulkKey:requesterInboundEncryptionKey
-                                                                             authKey:requesterInboundAuthenticationKey
+                                                                             bulkKeyRef:requesterInboundEncryptionKeyRef
+                                                                             authKeyRef:requesterInboundAuthenticationKeyRef
                                                                                error:&error];
     
     XCTAssertNotNil(decryptedMessage);
@@ -165,19 +171,20 @@
     
     
     //Wrong encryption key
-    NSData *wrongEncryptionKey = [NSData dataWithHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47dd"];
+    QredoKeyRef *wrongEncryptionKeyRef     = [[QredoKeyRef alloc] initWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47dd"];
+    
     
     error = nil;
     decryptedMessage = [_conversationCrypto decryptMessage:encryptedMessage
-                                                   bulkKey:[[QredoBulkEncKey alloc] initWithData:wrongEncryptionKey]
-                                                   authKey:requesterInboundAuthenticationKey
+                                                   bulkKeyRef:wrongEncryptionKeyRef
+                                                   authKeyRef:requesterInboundAuthenticationKeyRef
                                                      error:&error];
     XCTAssertNil(decryptedMessage);
     XCTAssertNotNil(error);
     
     decryptedMessage = [_conversationCrypto decryptMessage:encryptedMessage
-                                                   bulkKey:[[QredoBulkEncKey alloc] initWithData:wrongEncryptionKey]
-                                                   authKey:requesterInboundAuthenticationKey
+                                                bulkKeyRef:wrongEncryptionKeyRef
+                                                   authKeyRef:requesterInboundAuthenticationKeyRef
                                                      error:nil];
     XCTAssertNil(decryptedMessage);
     
@@ -192,16 +199,16 @@
     
     error = nil;
     decryptedMessage = [_conversationCrypto decryptMessage:encryptedMessageWithWrongAuthCode
-                                                   bulkKey:requesterInboundEncryptionKey
-                                                   authKey:requesterInboundAuthenticationKey
+                                                   bulkKeyRef:requesterInboundEncryptionKeyRef
+                                                   authKeyRef:requesterInboundAuthenticationKeyRef
                                                      error:&error];
     XCTAssertNil(decryptedMessage);
     XCTAssertNotNil(error);
     
     
     decryptedMessage = [_conversationCrypto decryptMessage:encryptedMessageWithWrongAuthCode
-                                                   bulkKey:requesterInboundEncryptionKey
-                                                   authKey:requesterInboundAuthenticationKey
+                                                   bulkKeyRef:requesterInboundEncryptionKeyRef
+                                                   authKeyRef:requesterInboundAuthenticationKeyRef
                                                      error:nil];
     XCTAssertNil(decryptedMessage);
     
@@ -213,15 +220,15 @@
     
     error = nil;
     decryptedMessage = [_conversationCrypto decryptMessage:malformedEncryptedMessage
-                                                   bulkKey:requesterInboundEncryptionKey
-                                                   authKey:requesterInboundAuthenticationKey
+                                                   bulkKeyRef:requesterInboundEncryptionKeyRef
+                                                   authKeyRef:requesterInboundAuthenticationKeyRef
                                                      error:&error];
     XCTAssertNil(decryptedMessage);
     XCTAssertNotNil(error);
     
     decryptedMessage = [_conversationCrypto decryptMessage:malformedEncryptedMessage
-                                                   bulkKey:requesterInboundEncryptionKey
-                                                   authKey:requesterInboundAuthenticationKey
+                                                   bulkKeyRef:requesterInboundEncryptionKeyRef
+                                                   authKeyRef:requesterInboundAuthenticationKeyRef
                                                      error:nil];
     XCTAssertNil(decryptedMessage);
 }
