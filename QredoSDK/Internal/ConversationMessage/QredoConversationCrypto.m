@@ -6,7 +6,6 @@
 #import "QredoErrorCodes.h"
 #import "QredoQUIDPrivate.h"
 #import "QredoRawCrypto.h"
-#import "QredoBulkEncKey.h"
 #import "QredoKeyRef.h"
 #import "QredoCryptoKeychain.h"
 

@@ -1,3 +1,19 @@
+QredoKey
+QredoDhPrivateKey
+QredoDhPublicKey
+QredoED25519SigningKey
+QredoED25519VerifyKey
+QredoEllipticCurvePoint
+QredoPrivateKey
+QredoPublicKey
+QredoKey
+QredoKeyPair
+QredoBulkEncKey
+
+
+QredoKeyRef
+QredoKeyRefPair
+
 
 NSData
     QredoRawCrypto
@@ -25,3 +41,12 @@ QredoCryptoImpl is only accessed from QredoCryptoKeyChain
 //Ignoring ED25519 for the moment
 
 QredoED25519SigningKey
+
+TODO:
+QredoDhPrivateKey
+QredoDhPublicKey
+QredoED25519SigningKey
+QredoED25519VerifyKey
+QredoPrivateKey
+QredoPublicKey
+QredoKeyPair

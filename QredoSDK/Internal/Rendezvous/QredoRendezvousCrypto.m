@@ -5,7 +5,6 @@
 #import "QredoRendezvousHelpers.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoErrorCodes.h"
-#import "QredoBulkEncKey.h"
 #import "QredoCryptoKeychain.h"
 
 #define SALT_CONVERSATION_ID             [@"ConversationID" dataUsingEncoding:NSUTF8StringEncoding]

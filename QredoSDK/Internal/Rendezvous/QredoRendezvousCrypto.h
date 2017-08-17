@@ -1,11 +1,11 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
-#import "QredoKeyPair.h"
 #import "QredoTypes.h"
 #import "QredoRendezvousHelper.h"
-#import "QredoBulkEncKey.h"
 #import "QredoKeyRef.h"
+#import "QredoPublicKey.h"
+#import "QredoPrivateKey.h"
 
 @protocol QredoRendezvousHelper;
 
@@ -26,7 +26,7 @@
 -(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed;
 
 -(QLFKeyPairLF *)newRequesterKeyPair;
--(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
+//-(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
 
 -(NSData *)signChallenge:(NSData *)challenge
                  hashtag:(QLFRendezvousHashedTag *)hashtag
