@@ -61,6 +61,5 @@
 -(QredoKeyRef *)encryptionKeyWithMasterKey:(QredoKeyRef *)masterKey;
 -(QredoKeyRef *)authenticationKeyWithMasterKey:(QredoKeyRef *)masterKey;
 
-+(NSData *)transformPrivateKeyToData:(SecKeyRef)key;
 
 @end
