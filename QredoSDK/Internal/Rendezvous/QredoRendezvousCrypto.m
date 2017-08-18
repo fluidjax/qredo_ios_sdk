@@ -134,11 +134,6 @@
 }
 
 
--(NSData *)signChallenge:(NSData *)challenge hashtag:(QLFRendezvousHashedTag *)hashtag nonce:(QLFNonce *)nonce privateKey:(QredoPrivateKey *)privateKey {
-    return nil;
-}
-
-
 -(BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
                  authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                   tag:(NSString *)tag

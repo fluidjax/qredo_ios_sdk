@@ -26,12 +26,6 @@
 -(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed;
 
 -(QLFKeyPairLF *)newRequesterKeyPair;
-//-(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair;
-
--(NSData *)signChallenge:(NSData *)challenge
-                 hashtag:(QLFRendezvousHashedTag *)hashtag
-                   nonce:(QLFNonce *)nonce
-              privateKey:(QredoPrivateKey *)privateKey;
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                   encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef;
