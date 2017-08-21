@@ -18,5 +18,4 @@
 
 
 -(instancetype)initWithPublic:(QredoKey*)public private:(QredoKey*)private;
-
 @end

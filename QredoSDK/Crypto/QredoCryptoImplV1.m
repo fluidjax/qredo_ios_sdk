@@ -223,7 +223,7 @@
 }
 
 
--(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+-(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
     if (!myPrivateKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException

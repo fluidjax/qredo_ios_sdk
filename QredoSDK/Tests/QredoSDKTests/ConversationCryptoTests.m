@@ -12,6 +12,7 @@
 {
     QredoConversationCrypto *_conversationCrypto;
     QredoCryptoImplV1 *_crypto;
+    QredoCryptoKeychain *_keychain;
 }
 
 @end
@@ -22,6 +23,7 @@
     [super setUp];
     _crypto = [QredoCryptoImplV1 sharedInstance];
     _conversationCrypto = [[QredoConversationCrypto alloc] init];
+    _keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
 }
 
 
@@ -29,10 +31,13 @@
     NSData *myPrivateKeyData = [NSData dataWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
     NSData *yourPublicKeyData = [NSData dataWithHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
     
-    QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
+//    QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
+    
+    QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:myPrivateKeyData];
+    
     QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
     
-    QredoKeyRef *masterKeyRef = [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
+    QredoKeyRef *masterKeyRef = [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
                                                                      yourPublicKey:yourPublicKey];
     
     [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
@@ -51,10 +56,10 @@
     NSData *myPrivateKeyData = [NSData dataWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
     NSData *yourPublicKeyData = [NSData dataWithHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
     
-    QredoDhPrivateKey *myPrivateKey = [[QredoDhPrivateKey alloc] initWithData:myPrivateKeyData];
+    QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:myPrivateKeyData];
     QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
     
-    QredoKeyRef *masterKeyRef= [_conversationCrypto conversationMasterKeyWithMyPrivateKey:myPrivateKey
+    QredoKeyRef *masterKeyRef= [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
                                                                      yourPublicKey:yourPublicKey];
     
     [masterKeyRef dump];

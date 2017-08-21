@@ -10,6 +10,7 @@
 #import "QredoCryptoKeychain.h"
 #import "QredoKey.h"
 #import "QredoKeyRef.h"
+#import "QredoKeyRefPair.h"
 #import "UICKeyChainStore.h"
 #import "QredoBulkEncKey.h"
 
@@ -51,6 +52,21 @@
 
 
 #pragma Bulk encrypt/Decrypt
+
+
+-(void)testKeyRefPair{
+    QredoKey *pubKey = [[QredoKey alloc] initWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKey *privKey = [[QredoKey alloc] initWithHexString:@"2368b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    
+    QredoKeyRefPair *refpair = [[QredoKeyRefPair alloc] initWithPublic:pubKey private:privKey];
+    
+    QredoKeyRef *privRef = refpair.privateKeyRef;
+    XCTAssertTrue([[privRef debugValue] isEqualToData:privKey.data]);
+    
+    
+    QredoKeyRef *pubRef = refpair.publicKeyRef;
+    XCTAssertTrue([[pubRef debugValue] isEqualToData:pubKey.data]);
+}
 
 
 -(void)testEncryptDecryptRoundTripOf1600Bytes {

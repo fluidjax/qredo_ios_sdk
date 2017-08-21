@@ -107,7 +107,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QredoRendezvousHighWatermark _highWatermark;
     QLFRendezvous *_rendezvous;
     QredoVault *_vault;
-    QredoDhPrivateKey *_requesterPrivateKey;
+    QredoKeyRef *_requesterPrivateKeyRef;
     QredoDhPublicKey *_requesterPublicKey;
     QLFRendezvousHashedTag *_hashedTag;
     QLFRendezvousDescriptor *_descriptor;
@@ -186,8 +186,8 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         _lfAuthType = _descriptor.authenticationType;
         _tag = _descriptor.tag;
         _hashedTag = _descriptor.hashedTag;
-        _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:descriptor.requesterKeyPair.privKey.bytes];
-        _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
+        _requesterPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:descriptor.requesterKeyPair.privKey.bytes];
+        _requesterPublicKey     = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
         _ownershipECPrivateKey = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
 
         [self loadHWM];
@@ -285,7 +285,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     QLFKeyPairLF *ownershipKeyPair     = [crypto newECAccessControlKeyPairWithSeed:[_hashedTag data]];
     QLFKeyPairLF *requesterKeyPair     = [crypto newRequesterKeyPair];
     
-    _requesterPrivateKey = [[QredoDhPrivateKey alloc] initWithData:requesterKeyPair.privKey.bytes];
+    _requesterPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:requesterKeyPair.privKey.bytes];
     _requesterPublicKey  = [[QredoDhPublicKey alloc] initWithData:requesterKeyPair.pubKey.bytes];
     
     _ownershipECPrivateKey = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[_hashedTag data]];
@@ -859,11 +859,11 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     QredoDhPublicKey *responderPublicKey = [[QredoDhPublicKey alloc] initWithData:response.responderPublicKey];
     
-    [conversation generateAndStoreKeysWithPrivateKey:_requesterPrivateKey
-                                           publicKey:responderPublicKey
-                                         myPublicKey:_requesterPublicKey
-                                     rendezvousOwner:YES
-                                   completionHandler:^(NSError *error) {
+    [conversation generateAndStoreKeysWithPrivateKeyRef:_requesterPrivateKeyRef
+                                              publicKey:responderPublicKey
+                                            myPublicKey:_requesterPublicKey
+                                        rendezvousOwner:YES
+                                      completionHandler:^(NSError *error) {
                                        if (error){
                                            if (completionHandler) completionHandler(nil,error);
                                            

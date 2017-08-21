@@ -20,6 +20,8 @@
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
 #import "NSData+HexTools.h"
+#import "QredoClient.h"
+
 
 @interface QredoCryptoKeychain()
 @property (strong) UICKeyChainStore *keychainWrapper;
@@ -92,6 +94,11 @@
 }
 
 
+-(NSData*)publicKeyDataFor:(QredoKeyRefPair *)keyPair{
+    QredoKeyRef *publicKeyRef = keyPair.publicKeyRef;
+    return [self retrieveWithRef:publicKeyRef];
+}
+
 -(QredoKeyRefPair *)generateDHKeyPair{
     QredoKeyPair *keyPair = [self.cryptoImplementation generateDHKeyPair];
     QredoKey *private = [[QredoKey alloc] initWithData:keyPair.privateKey.bytes];
@@ -125,8 +132,24 @@
 
 
 
--(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+
+-(QLFKeyPairLF *)keyPairLFWithPubKeyRef:(QredoKeyRef *)pubKeyRef privateKeyRef:(QredoKeyRef *)privateKeyRef{
+    NSData *pubKeyData = [self retrieveWithRef:pubKeyRef];
+    NSData *privKeyData = [self retrieveWithRef:privateKeyRef];
+    
+  
+
+    return  [QLFKeyPairLF keyPairLFWithPubKey:[QLFKeyLF keyLFWithBytes:pubKeyData]
+                                      privKey:[QLFKeyLF keyLFWithBytes:privKeyData]];
+    
+    
+  
+}
+
+-(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                             yourPublicKey:(QredoDhPublicKey *)yourPublicKey{
+    
+    QredoKey *myPrivateKey = [[QredoKey alloc] initWithData:[self retrieveWithRef:myPrivateKeyRef]];
     QredoKey *diffieHellmanMaster = [self.cryptoImplementation getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey
                                                                                            yourPublicKey:yourPublicKey];
     

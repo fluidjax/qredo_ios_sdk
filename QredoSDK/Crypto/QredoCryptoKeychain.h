@@ -12,7 +12,7 @@
 @class QredoQUID;
 @class QredoDhPrivateKey;
 @class QredoDhPublicKey;
-
+@class QLFKeyPairLF;
 
 #import <Foundation/Foundation.h>
 
@@ -24,9 +24,15 @@
 //-(NSData*)makeRefForData:(NSData*)keydata;
 -(NSData*)retrieveWithRef:(QredoKeyRef *)ref;
 -(void)addItem:(NSData*)keyData forRef:(NSData*)ref;
+-(NSData*)publicKeyDataFor:(QredoKeyRefPair *)keyPair;
+
 //-(QredoKeyRef*)makeKeyRef;
 //-(void)store:(QredoKey *)data withRef:(QredoKeyRef *)ref;
 
+
+
+
+-(QLFKeyPairLF *)keyPairLFWithPubKeyRef:(QredoKeyRef *)pubKeyRef privateKeyRef:(QredoKeyRef *)privateKeyRef;
 
 
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext;
@@ -50,7 +56,7 @@
 
 
 -(QredoKeyRefPair *)generateDHKeyPair;
--(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+-(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                             yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt

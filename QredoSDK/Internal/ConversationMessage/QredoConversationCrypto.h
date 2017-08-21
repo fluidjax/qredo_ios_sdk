@@ -4,7 +4,6 @@
 #import "QredoRawCrypto.h"
 #import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
-
 #include "QredoKeyRef.h"
 
 @interface QredoConversationCrypto :NSObject
@@ -19,7 +18,7 @@
                             authKeyRef:(QredoKeyRef *)authKeyRef
                                     error:(NSError **)error;
 
--(QredoKeyRef *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+-(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                         yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(QredoKeyRef *)requesterInboundEncryptionKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;

@@ -87,10 +87,10 @@
 }
 
 
--(QredoKeyRef *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+-(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                     yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    return [keychain getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+    return [keychain getDiffieHellmanMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef yourPublicKey:yourPublicKey];
 }
 
 

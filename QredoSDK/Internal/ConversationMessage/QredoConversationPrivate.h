@@ -12,6 +12,8 @@ extern NSString *const kQredoConversationVaultItemLabelType;
 
 @class QredoClient;
 @class QLFConversationDescriptor;
+@class QredoKeyRef;
+
 
 @interface QredoConversation (Private)
 
@@ -30,11 +32,11 @@ extern NSString *const kQredoConversationVaultItemLabelType;
               converationType:(NSString *)conversationType;
 
 //Generate the keys, conversation ID, queue IDs and will save in the vault
--(void)generateAndStoreKeysWithPrivateKey:(QredoDhPrivateKey *)privateKey
-                                publicKey:(QredoDhPublicKey *)publicKey
-                              myPublicKey:(QredoDhPublicKey *)myPublicKey
-                          rendezvousOwner:(BOOL)rendezvousOwner
-                        completionHandler:(void (^)(NSError *error))completionHandler;
+-(void)generateAndStoreKeysWithPrivateKeyRef:(QredoKeyRef *)privateKeyRef
+                                   publicKey:(QredoDhPublicKey *)publicKey
+                                 myPublicKey:(QredoDhPublicKey *)myPublicKey
+                             rendezvousOwner:(BOOL)rendezvousOwner
+                           completionHandler:(void (^)(NSError *error))completionHandler;
 
 -(void)respondToRendezvousWithTag:(NSString *)rendezvousTag
                    appCredentials:(QredoAppCredentials *)appCredentials

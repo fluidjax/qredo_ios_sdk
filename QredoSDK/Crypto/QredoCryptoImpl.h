@@ -31,7 +31,7 @@
 -(QredoKey *)getRandomKey;
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password;
 
--(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+-(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
