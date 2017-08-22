@@ -8,8 +8,6 @@
 #import "NSDictionary+QUIDSerialization.h"
 #import "NSDictionary+IndexableSet.h"
 #import "QLFOwnershipSignature+FactoryMethods.h"
-#import "QredoED25519SigningKey.h"
-#import "QredoED25519VerifyKey.h"
 #import "QredoSigner.h"
 #import "QredoErrorCodes.h"
 #import "QredoLoggerPrivate.h"

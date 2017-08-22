@@ -8,6 +8,8 @@
 #import "NSData+HexTools.h"
 #import "QredoNetworkTime.h"
 #import "QredoKeyRef.h"
+#import "QredoED25519SigningKey.h"
+#import "QredoED25519VerifyKey.h"
 
 @interface VaultCryptoTests :QredoXCTestCase
 
@@ -49,6 +51,8 @@
     NSData *vaultKey = [QredoVaultCrypto vaultKeyWithVaultMasterKey:userMasterKey info:vaultInfo];
     QredoED25519SigningKey *ownershipKeyPair = [QredoVaultCrypto ownershipSigningKeyWithVaultKey:vaultKey];
     QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
+    
+    
     QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
     
     QLFVaultItemRef *vaultItemRef = [QLFVaultItemRef vaultItemRefWithVaultId:vaultID
@@ -161,7 +165,9 @@
     NSData *verifyingKeyExpected
     = [NSData dataWithHexString:@"24c6e666 40a6eb44 b7e1eaf6 d93bb0b3 32ce45cb f0d1a0f8 e1b9d8f2 ffb8ea20"];
     
+    
     XCTAssertEqualObjects(ownershipKeyPair.data,signingKeyExpected);
+    
     XCTAssertEqualObjects(ownershipKeyPair.verifyKey.data,verifyingKeyExpected);
     
     

@@ -143,8 +143,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoQUID *_inboundQueueId;
     QredoQUID *_outboundQueueId;
     
-    QredoED25519SigningKey *_inboundSigningKey;
-    QredoED25519SigningKey *_outboundSigningKey;
+    QredoKeyRef *_inboundSigningKey;
+    QredoKeyRef *_outboundSigningKey;
     
     dispatch_queue_t _conversationQueue;
     dispatch_queue_t _enumerationQueue;
@@ -338,32 +338,34 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     
-    QredoED25519SigningKey *requesterInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueKeyPairSalt];
-    QredoED25519SigningKey *responderInboundQueueSigningKey = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueKeyPairSalt];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+   
+    QredoKeyRefPair *requesterInboundQueueSigningKey = [keychain ownershipKeyPairDerive:requesterInboundQueueKeyPairSalt];
+    QredoKeyRefPair *responderInboundQueueSigningKey = [keychain ownershipKeyPairDerive:responderInboundQueueKeyPairSalt];
     
-    QredoQUID *requesterInboundQueueId = [[QredoQUID alloc] initWithQUIDData:requesterInboundQueueSigningKey.verifyKey.data];
-    QredoQUID *responderInboundQueueId = [[QredoQUID alloc] initWithQUIDData:responderInboundQueueSigningKey.verifyKey.data];
+    QredoQUID *requesterInboundQueueId = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:requesterInboundQueueSigningKey]];
+    QredoQUID *responderInboundQueueId = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:responderInboundQueueSigningKey]];
     
     if (rendezvousOwner){
         _inboundBulkKeyRef = requesterInboundBulkKeyRef;
         _inboundAuthKeyRef = requesterInboundAuthKeyRef;
         _inboundQueueId = requesterInboundQueueId;
-        _inboundSigningKey = requesterInboundQueueSigningKey;
+        _inboundSigningKey = requesterInboundQueueSigningKey.privateKeyRef;
         
         _outboundBulkKeyRef = responderInboundBulkKeyRef;
         _outboundAuthKeyRef = responderInboundAuthKeyRef;
         _outboundQueueId = responderInboundQueueId;
-        _outboundSigningKey = responderInboundQueueSigningKey;
+        _outboundSigningKey = responderInboundQueueSigningKey.privateKeyRef;
     } else {
         _inboundBulkKeyRef = responderInboundBulkKeyRef;
         _inboundAuthKeyRef = responderInboundAuthKeyRef;
         _inboundQueueId = responderInboundQueueId;
-        _inboundSigningKey = responderInboundQueueSigningKey;
+        _inboundSigningKey = responderInboundQueueSigningKey.privateKeyRef;
         
         _outboundBulkKeyRef = requesterInboundBulkKeyRef;
         _outboundAuthKeyRef= requesterInboundAuthKeyRef;
         _outboundQueueId = requesterInboundQueueId;
-        _outboundSigningKey = requesterInboundQueueSigningKey;
+        _outboundSigningKey = requesterInboundQueueSigningKey.privateKeyRef;
     }
     
     _metadata.conversationId = [_conversationCrypto conversationIdWithMasterKeyRef:masterKeyRef];
@@ -515,7 +517,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                  completionHandler:(void (^)(NSError *error))completionHandler
               highWatermarkHandler:(void (^)(QredoConversationHighWatermark *highWatermark))highWatermarkHandler {
     QredoQUID *messageQueue = incoming ? _inboundQueueId : _outboundQueueId;
-    QredoED25519SigningKey *signingKey = incoming ? _inboundSigningKey : _outboundSigningKey;
+    QredoKeyRef *signingKey = incoming ? _inboundSigningKey : _outboundSigningKey;
     
     
     NSSet *sinceWatermarkSet = sinceWatermark ? [NSSet setWithObject:sinceWatermark.sequenceValue] : [NSSet set];
@@ -532,8 +534,11 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                  includeHeader:NO];
     
     
+   QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:signingKey];
+    
+    
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:signingKey]
+    = [QLFOwnershipSignature ownershipSignatureWithSigner:signer
                                             operationType:[QLFOperationType operationList]
                                            marshalledData:signaturePayloadData
                                                     error:&error];
@@ -805,8 +810,11 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                               includeHeader:NO];
     
     NSError *error = nil;
+    
+    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_outboundSigningKey];
+    
     QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_outboundSigningKey]
+    = [QLFOwnershipSignature ownershipSignatureWithSigner:signer
                                             operationType:[QLFOperationType operationCreate]
                                            marshalledData:signaturePayloadData
                                                     error:&error];
@@ -1020,8 +1028,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                               since:(QredoConversationHighWatermark *)sinceWatermark
                highWatermarkHandler:(void (^)(QredoConversationHighWatermark *newWatermark))highWatermarkHandler {
     NSError *error = nil;
+    
+    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_inboundSigningKey];
+    
+    
     QLFOwnershipSignature *ownershipSignature
-                    = [QLFOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:_inboundSigningKey]
+                    = [QLFOwnershipSignature ownershipSignatureWithSigner:signer
                                                             operationType:[QLFOperationType operationList]
                                                            marshalledData:nil
                                                                     error:&error];

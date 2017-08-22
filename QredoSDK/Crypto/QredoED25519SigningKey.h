@@ -1,6 +1,7 @@
 /* HEADER GOES HERE */
 #import "QredoPrivateKey.h"
 
+
 @class QredoED25519VerifyKey;
 
 @interface QredoED25519SigningKey :QredoPrivateKey
