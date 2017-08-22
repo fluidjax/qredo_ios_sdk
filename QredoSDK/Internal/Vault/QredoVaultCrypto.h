@@ -2,7 +2,6 @@
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "QredoED25519SigningKey.h"
-#import "QredoED25519VerifyKey.h"
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
 #import "QredoKeyPair.h"

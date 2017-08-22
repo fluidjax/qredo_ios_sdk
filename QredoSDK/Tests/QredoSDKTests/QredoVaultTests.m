@@ -99,7 +99,6 @@
 @implementation QredoVaultTests
 
 -(void)setUp {
-    [self resetKeychain];
     [super setUp];
     [self createRandomClient1];
 }

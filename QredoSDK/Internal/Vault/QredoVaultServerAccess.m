@@ -62,10 +62,7 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     NSError *error = nil;
     NSSet *sequenceValues = [NSSet setWithObject:@(sequenceValue)];
     
-    
-    QredoCryptoKeychain  *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKeyRef *signingKeyRef = _vaultKeys.ownershipKeyPairRef.privateKeyRef;
-    QredoED25519Singer *signer = [keychain qredoED25519SingerWithKeyRef:signingKeyRef];
+    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_vaultKeys.ownershipKeyPairRef.privateKeyRef];
     
     QLFOwnershipSignature *ownershipSignature   = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:signer
                                                                                                  vaultItemDescriptor:itemDescriptor
@@ -109,9 +106,7 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     NSSet *sequenceValues = sequenceValue ? [NSSet setWithObject:@(sequenceValue)] : [NSSet set];
     
     
-    QredoCryptoKeychain  *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKeyRef *signingKeyRef = _vaultKeys.ownershipKeyPairRef.privateKeyRef;
-    QredoED25519Singer *signer = [keychain qredoED25519SingerWithKeyRef:signingKeyRef];
+    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_vaultKeys.ownershipKeyPairRef.privateKeyRef];
     
     QLFOwnershipSignature *ownershipSignature
                     = [QLFOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:signer
@@ -181,11 +176,8 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     
     NSError *error = nil;
     
-    QredoCryptoKeychain  *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKeyRef *signingKeyRef = _vaultKeys.ownershipKeyPairRef.privateKeyRef;
-    QredoED25519Singer *signer = [keychain qredoED25519SingerWithKeyRef:signingKeyRef];
-    
-    
+
+    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_vaultKeys.ownershipKeyPairRef.privateKeyRef];
     
     QLFOwnershipSignature *ownershipSignature
                     = [QLFOwnershipSignature ownershipSignatureWithSigner:signer
@@ -272,16 +264,11 @@ NSString *const QredoVaultItemMetadataItemVersionId = @"_vSeqId";
     
     NSError *error = nil;
     
+    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_vaultKeys.ownershipKeyPairRef.privateKeyRef];
     
-    QredoCryptoKeychain  *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKeyRef *signingKeyRef = _vaultKeys.ownershipKeyPairRef.privateKeyRef;
-    QredoED25519Singer *signer = [keychain qredoED25519SingerWithKeyRef:signingKeyRef];
-    
-    
-    QLFOwnershipSignature *ownershipSignature
-    = [QLFOwnershipSignature ownershipSignatureForListVaultItemsWithSigner:signer
-                                                            sequenceStates:sequenceStates
-                                                                     error:&error];
+    QLFOwnershipSignature *ownershipSignature  = [QLFOwnershipSignature ownershipSignatureForListVaultItemsWithSigner:signer
+                                                                                                       sequenceStates:sequenceStates
+                                                                                                                error:&error];
     
     if (error){
         if (completionHandler)completionHandler(error);
