@@ -117,20 +117,6 @@
 }
 
 
--(QredoQUID *)hashWithKeyPair:(QredoKeyPair *)keyPair salt:(NSData *)salt {
-    NSData *quidData = [_crypto getDiffieHellmanSecretWithSalt:salt
-                                                  myPrivateKey:(QredoDhPrivateKey *)keyPair.privateKey
-                                                 yourPublicKey:(QredoDhPublicKey *)keyPair.publicKey];
-    
-    return [[QredoQUID alloc] initWithQUIDData:quidData];
-}
-
-
--(QredoQUID *)conversationIdWithKeyPair:(QredoKeyPair *)keyPair {
-    return [self hashWithKeyPair:keyPair salt:SALT_CONVERSATION_ID];
-}
-
-
 -(BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
                  authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                   tag:(NSString *)tag

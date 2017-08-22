@@ -5,7 +5,6 @@
 #import "QredoRendezvousHelper.h"
 #import "QredoKeyRef.h"
 #import "QredoPublicKey.h"
-#import "QredoPrivateKey.h"
 
 @protocol QredoRendezvousHelper;
 

@@ -5,7 +5,6 @@
 #import "QredoTypesPrivate.h"
 #import "QredoRendezvousCrypto.h"
 #import "QredoConversationCrypto.h"
-#import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
 #import "QredoCryptoImplV1.h"
 #import "QredoClient.h"
@@ -318,6 +317,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                      rendezvousOwner:(BOOL)rendezvousOwner {
     if (!_metadata)_metadata = [[QredoConversationMetadata alloc] init];
     
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
     _metadata.amRendezvousOwner = rendezvousOwner;
     _myPrivateKeyRef = privateKeyRef;
     _myPublicKey = myPublicKey;
@@ -327,19 +327,13 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                              yourPublicKey:publicKey];
     
     QredoKeyRef *requesterInboundBulkKeyRef = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
-    
     QredoKeyRef *requesterInboundAuthKeyRef = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
-    
     QredoKeyRef *responderInboundBulkKeyRef = [_conversationCrypto responderInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
-    
     QredoKeyRef *responderInboundAuthKeyRef = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
-    
     NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
-    
     NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
-    
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
    
+    
     QredoKeyRefPair *requesterInboundQueueSigningKey = [keychain ownershipKeyPairDerive:requesterInboundQueueKeyPairSalt];
     QredoKeyRefPair *responderInboundQueueSigningKey = [keychain ownershipKeyPairDerive:responderInboundQueueKeyPairSalt];
     
@@ -427,8 +421,6 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                                                                      error:&error];
                                
                                QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:responderInfo.requesterPublicKey];
-                              // QredoDhPrivateKey *responderPrivateKey = [[QredoDhPrivateKey alloc] initWithData:responderKeyPair.privKey.bytes];
-                               
                                _metadata.rendezvousTag = rendezvousTag;
                                _metadata.type = responderInfo.conversationType;
                                _authenticationType = responseRegistered.info.authenticationType;

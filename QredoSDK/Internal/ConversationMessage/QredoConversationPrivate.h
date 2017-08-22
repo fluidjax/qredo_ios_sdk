@@ -1,6 +1,5 @@
 /* HEADER GOES HERE */
 #import "QredoConversation.h"
-#import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
 #import "QredoClient.h"
 

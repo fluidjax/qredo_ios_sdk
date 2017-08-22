@@ -2,7 +2,6 @@
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "QredoRawCrypto.h"
-#import "QredoDhPrivateKey.h"
 #import "QredoDhPublicKey.h"
 #include "QredoKeyRef.h"
 

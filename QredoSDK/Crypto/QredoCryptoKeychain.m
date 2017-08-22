@@ -139,15 +139,43 @@
 -(QLFKeyPairLF *)keyPairLFWithPubKeyRef:(QredoKeyRef *)pubKeyRef privateKeyRef:(QredoKeyRef *)privateKeyRef{
     NSData *pubKeyData = [self retrieveWithRef:pubKeyRef];
     NSData *privKeyData = [self retrieveWithRef:privateKeyRef];
-    
-  
-
     return  [QLFKeyPairLF keyPairLFWithPubKey:[QLFKeyLF keyLFWithBytes:pubKeyData]
                                       privKey:[QLFKeyLF keyLFWithBytes:privKeyData]];
-    
-    
-  
 }
+
+
+-(QLFRendezvousDescriptor *)rendezvousDescriptorWithTag:(NSString *)tag
+                                              hashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                       conversationType:(NSString *)conversationType
+                                     authenticationType:(QLFRendezvousAuthType *)authenticationType
+                                        durationSeconds:(NSSet *)durationSeconds
+                                              expiresAt:(NSSet *)expiresAt
+                                     responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit
+                                       requesterKeyPair:(QredoKeyRefPair *)requesterKeyPair
+                                       ownershipKeyPair:(QredoKeyRefPair *)ownershipKeyPair{
+    
+    
+    
+    QLFKeyPairLF * requesterKeyPairQL = [self keyPairLFWithPubKeyRef:requesterKeyPair.publicKeyRef privateKeyRef:requesterKeyPair.privateKeyRef];
+    QLFKeyPairLF * ownershipKeyPairQL = [self keyPairLFWithPubKeyRef:ownershipKeyPair.publicKeyRef privateKeyRef:ownershipKeyPair.privateKeyRef];
+    
+    
+    
+    return [QLFRendezvousDescriptor            rendezvousDescriptorWithTag:tag
+                                                          hashedTag:hashedTag
+                                                   conversationType:conversationType
+                                                 authenticationType:authenticationType
+                                                    durationSeconds:durationSeconds
+                                                          expiresAt:expiresAt
+                                                 responseCountLimit:responseCountLimit
+                                                   requesterKeyPair:requesterKeyPairQL
+                                                   ownershipKeyPair:ownershipKeyPairQL];
+    
+}
+
+
+
+
 
 -(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                             yourPublicKey:(QredoDhPublicKey *)yourPublicKey{

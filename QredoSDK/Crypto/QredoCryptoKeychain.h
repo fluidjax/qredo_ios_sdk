@@ -16,7 +16,7 @@
 @class QredoED25519Singer;
 
 #import <Foundation/Foundation.h>
-
+#import "QredoClient.h"
 
 @interface QredoCryptoKeychain : NSObject
 
@@ -66,6 +66,18 @@
 
 
 -(QredoED25519Singer *)qredoED25519SingerWithKeyRef:(QredoKeyRef*)keyref;
+
+
+-(QLFRendezvousDescriptor *)rendezvousDescriptorWithTag:(NSString *)tag
+                                              hashedTag:(QLFRendezvousHashedTag *)hashedTag
+                                       conversationType:(NSString *)conversationType
+                                     authenticationType:(QLFRendezvousAuthType *)authenticationType
+                                        durationSeconds:(NSSet *)durationSeconds
+                                              expiresAt:(NSSet *)expiresAt
+                                     responseCountLimit:(QLFRendezvousResponseCountLimit *)responseCountLimit
+                                       requesterKeyPair:(QredoKeyRefPair *)requesterKeyPair
+                                       ownershipKeyPair:(QredoKeyRefPair *)ownershipKeyPair;
+
 
 
 @end
