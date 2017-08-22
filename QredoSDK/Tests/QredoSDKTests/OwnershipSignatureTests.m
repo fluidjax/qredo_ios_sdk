@@ -9,6 +9,7 @@
 #import "QredoVault.h"
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
+#import "QredoCryptoKeychain.h"
 
 #import "QredoCryptoImplV1.h"
 
@@ -293,8 +294,12 @@ static char ownershipSignature_listOp_signatureBytes[] = {
     
     [self assertOwnershipSignatureWithOperationType:operationType
                                    exectedSiganture:expectedSignature
-                     ownershipSignatureCrationBlock:^QLFOwnershipSignature *(NSError *__autoreleasing *error)
-     {
+                     ownershipSignatureCrationBlock:^QLFOwnershipSignature *(NSError *__autoreleasing *error){
+                         
+//                         QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+//                         QredoKeyRef *keyRef 
+//                         QredoSigner *signer = [keychain qredoED25519SingerWithKeyRef:self.key.]
+                         
          return [QLFTestableOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:self.key]
                                                               operationType:operationType
                                                                        data:vaultItem

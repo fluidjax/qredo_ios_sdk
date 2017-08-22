@@ -557,8 +557,7 @@
     __block QredoVaultItemMetadata *itemMetadata = nil;
     
     __block XCTestExpectation *putItemCompletedExpectation = [self expectationWithDescription:@"PutItem completion handler called"];
-    [vault putItem:item1
- completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error)
+    [vault putItem:item1  completionHandler:^(QredoVaultItemMetadata *newItemMetadata,NSError *error)
      {
          XCTAssertNil(error,@"Error occurred during PutItem");
          item1Descriptor = newItemMetadata.descriptor;

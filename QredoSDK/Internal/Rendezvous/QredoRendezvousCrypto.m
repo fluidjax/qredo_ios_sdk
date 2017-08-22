@@ -111,12 +111,9 @@
 
 -(QLFKeyPairLF *)newRequesterKeyPair {
     QredoKeyPair *keyPair = [_crypto generateDHKeyPair];
-    
     QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:[(QredoDhPublicKey *)[keyPair publicKey]  data]];
     QLFKeyLF *privateKeyLF = [QLFKeyLF keyLFWithBytes:[(QredoDhPrivateKey *)[keyPair privateKey] data]];
-    
-    return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF
-                                     privKey:privateKeyLF];
+    return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF privKey:privateKeyLF];
 }
 
 

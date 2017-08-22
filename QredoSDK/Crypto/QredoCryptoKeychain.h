@@ -13,6 +13,7 @@
 @class QredoDhPrivateKey;
 @class QredoDhPublicKey;
 @class QLFKeyPairLF;
+@class QredoED25519Singer;
 
 #import <Foundation/Foundation.h>
 
@@ -62,6 +63,9 @@
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
                              myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
                             yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+
+
+-(QredoED25519Singer *)qredoED25519SingerWithKeyRef:(QredoKeyRef*)keyref;
 
 
 @end

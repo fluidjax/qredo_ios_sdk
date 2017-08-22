@@ -21,6 +21,9 @@
 #import "QredoQUIDPrivate.h"
 #import "NSData+HexTools.h"
 #import "QredoClient.h"
+#import "QredoSigner.h"
+#import "QLFOwnershipSignature+FactoryMethods.h"
+
 
 
 @interface QredoCryptoKeychain()
@@ -169,6 +172,14 @@
     
 }
 
+
+
+-(QredoED25519Singer *)qredoED25519SingerWithKeyRef:(QredoKeyRef*)keyref{
+    NSData *keyData = [self retrieveWithRef:keyref];
+    if (!keyData)return nil;
+    QredoED25519SigningKey *key = [[QredoED25519SigningKey alloc] initWithData:keyData];
+    return [[QredoED25519Singer alloc] initWithSigningKey:key];
+}
 
 
 

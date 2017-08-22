@@ -5,6 +5,8 @@
 #import "QredoED25519VerifyKey.h"
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
+#import "QredoKeyPair.h"
+#import "QredoKeyRefPair.h"
 
 @class QredoKeyRef;
 
@@ -12,7 +14,7 @@
 @interface QredoVaultKeys :NSObject
 
 
-@property QredoED25519SigningKey *ownershipKeyPair;
+@property QredoKeyRefPair *ownershipKeyPairRef;
 @property QredoKeyRef *encryptionKey;
 @property QredoKeyRef *authenticationKey;
 @property QredoQUID *vaultId;
