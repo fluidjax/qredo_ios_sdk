@@ -35,8 +35,8 @@
     QredoKeyRef *masterKeyRef = [conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKey yourPublicKey:yourPublicKey];
     QredoKeyRef *requesterInboundEncryptionKeyRef = [conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     QredoKeyRef *requesterInboundAuthenticationKey = [conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
-    NSData *requesterInboundQueueSeed = [conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
-    QredoED25519SigningKey *requesterOwnershipKeyPair = [crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
+    QredoKeyRef *requesterInboundQueueSeedRef = [conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
+    QredoED25519SigningKey *requesterOwnershipKeyPair = [crypto qredoED25519SigningKeyWithSeed:[requesterInboundQueueSeedRef debugValue]];
     
     NSData *message     = [QredoUtils hexStringToData:@"0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"];
     NSData *expected = [QredoUtils hexStringToData:@"e439f1f2 a42e13a1 94c54887 55432003 7fbadbaa 0cc70a56 209b4b38 081486fb 7b5af188 c4c45f3a 4cfe6944 cfa4153a 89e48999 58ee5fe5 3d2367dd b8e6db0e"];
