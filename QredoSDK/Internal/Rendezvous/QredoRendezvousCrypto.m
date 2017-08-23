@@ -99,24 +99,6 @@
 
 
 
--(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed {
-    QredoED25519SigningKey *signKey = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:seed];
-    QredoPublicKey  *pubKey     = signKey.verifyKey;
-    QredoPrivateKey *privKey    = signKey;
-    QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:[pubKey bytes]];
-    QLFKeyLF *privateKeyLF = [QLFKeyLF keyLFWithBytes:[privKey bytes]];
-    return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF  privKey:privateKeyLF];
-}
-
-
--(QLFKeyPairLF *)newRequesterKeyPair {
-    QredoKeyPair *keyPair = [_crypto generateDHKeyPair];
-    QLFKeyLF *publicKeyLF  = [QLFKeyLF keyLFWithBytes:[(QredoDhPublicKey *)[keyPair publicKey]  data]];
-    QLFKeyLF *privateKeyLF = [QLFKeyLF keyLFWithBytes:[(QredoDhPrivateKey *)[keyPair privateKey] data]];
-    return [QLFKeyPairLF keyPairLFWithPubKey:publicKeyLF privKey:privateKeyLF];
-}
-
-
 -(BOOL)validateEncryptedResponderInfo:(QLFEncryptedResponderInfo *)encryptedResponderInfo
                  authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
                                   tag:(NSString *)tag

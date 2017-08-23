@@ -13,6 +13,7 @@
 @class QredoDhPrivateKey;
 @class QredoDhPublicKey;
 @class QLFKeyPairLF;
+@class QLFVaultKeyPair;
 @class QredoED25519Singer;
 
 #import <Foundation/Foundation.h>
@@ -41,17 +42,19 @@
 -(NSData *)decryptBulk:(QredoKeyRef *)secretKeyRef  ciphertext:(NSData *)ciphertext;
 -(NSData *)authenticate:(QredoKeyRef *)secretKeyRef data:(NSData *)data;
 -(BOOL)verify:(QredoKeyRef *)secretKeyRef data:(NSData *)data signature:(NSData *)signature;
+
 -(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
 -(NSData *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
     
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt;
 -(QredoKeyRefPair *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt;
--(QredoKeyRefPair *)ownershipKeyPairDerive:(NSData *)ikm;
--(NSData *)ownershipSign:(QredoKeyRefPair *)keyPairRef data:(NSData *)data;
+-(QredoKeyRefPair *)ownershipKeyPairDeriveRef:(QredoKeyRef *)ikmRef;
 
 -(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef;
-
-
+-(QLFKeyPairLF *)newRequesterKeyPair;
+-(QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QredoKeyRef *)encryptionKeyRef privateKeyRef:(QredoKeyRef *)authenticationKeyRef;
+    
+    
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToKeyRef:(QredoKeyRef*)keyRef2;
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data;
 

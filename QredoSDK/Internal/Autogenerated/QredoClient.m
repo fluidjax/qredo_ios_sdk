@@ -7070,8 +7070,7 @@
 
 
 
-+ (QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QLFEncryptionKey256 *)encryptionKey authenticationKey:(QLFAuthenticationKey256 *)authenticationKey
-{
++ (QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QLFEncryptionKey256 *)encryptionKey authenticationKey:(QLFAuthenticationKey256 *)authenticationKey{
 
     return [[QLFVaultKeyPair alloc] initWithEncryptionKey:encryptionKey authenticationKey:authenticationKey];
        

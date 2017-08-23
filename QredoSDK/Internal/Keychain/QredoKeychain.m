@@ -6,6 +6,7 @@
 #import "NSData+QredoRandomData.h"
 #import "QredoVaultCrypto.h"
 #import "QredoUserCredentials.h"
+#import "QredoKeyRef.h"
 
 @interface QredoKeychain (){
     BOOL _isInitialized;
@@ -59,9 +60,11 @@
 
 
 -(void)deriveKeys {
-    NSData *vaultMasterKey = [QredoVaultCrypto vaultMasterKeyWithUserMasterKey:_masterKey];
-    self.systemVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto systemVaultKeyWithVaultMasterKey:vaultMasterKey]];
-    self.defaultVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto userVaultKeyWithVaultMasterKey:vaultMasterKey]];
+
+    QredoKeyRef *masterKeyRef = [[QredoKeyRef alloc] initWithKeyData:_masterKey];
+    QredoKeyRef *vaultMasterKeyRef = [QredoVaultCrypto vaultMasterKeyWithUserMasterKeyRef:masterKeyRef];
+    self.systemVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto systemVaultKeyWithVaultMasterKeyRef:vaultMasterKeyRef]];
+    self.defaultVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto userVaultKeyWithVaultMasterKeyRef:vaultMasterKeyRef]];
 }
 
 

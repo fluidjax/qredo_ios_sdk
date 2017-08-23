@@ -18,19 +18,19 @@
 
 @implementation QredoVaultKeys
 
--(instancetype)initWithVaultKey:(NSData *)vaultKey {
+-(instancetype)initWithVaultKey:(QredoKeyRef *)vaultKeyRef {
     self = [super init];
     if (self){
         QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-        QredoKeyRefPair *ownershipKeyPairRef = [keychain ownershipKeyPairDerive:vaultKey];
-       
-        QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
+        QredoKeyRefPair *ownershipKeyPairRef = [keychain ownershipKeyPairDeriveRef:vaultKeyRef];
+        QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:[vaultKeyRef debugValue]];
         QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:ownershipKeyPairRef]];
-        _vaultKey = vaultKey;
+        _vaultKey = [vaultKeyRef debugValue];
         _ownershipKeyPairRef = ownershipKeyPairRef;
         _encryptionKey = [[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeys.encryptionKey];
         _authenticationKey = [[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeys.authenticationKey];
         _vaultId = vaultID;
+        _vaultKeyRef = vaultKeyRef;
     }
     return self;
 }
@@ -75,37 +75,33 @@
 //QredoVaultCrypto Interface
 ///////////////////////////////////////////////////////////////////////////////
 
-+(NSData *)systemVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey {
++(QredoKeyRef *)systemVaultKeyWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKey {
     return [self vaultKeyWithVaultMasterKey:vaultMasterKey info:QREDO_VAULT_SYSTEM_INFO];
 }
 
 
-+(NSData *)userVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey {
++(QredoKeyRef *)userVaultKeyWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKey {
     return [self vaultKeyWithVaultMasterKey:vaultMasterKey info:QREDO_VAULT_USER_INFO];
 }
 
 
-+(NSData *)vaultMasterKeyWithUserMasterKey:(NSData *)userMasterKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:userMasterKey
-                                            salt:QREDO_VAULT_MASTER_SALT];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return okm;
++(QredoKeyRef *)vaultMasterKeyWithUserMasterKeyRef:(QredoKeyRef *)userMasterKeyRef {
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:userMasterKeyRef salt:QREDO_VAULT_MASTER_SALT info:[NSData data]];
 }
 
 
-+(NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey infoData:(NSData *)infoData {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:vaultMasterKey
-                                            salt:QREDO_VAULT_SUBTYPE_SALT];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:infoData
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return okm;
++(QredoKeyRef *)vaultKeyWithVaultMasterKey:(QredoKeyRef *)vaultMasterKey infoData:(NSData *)infoData {
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:vaultMasterKey salt:QREDO_VAULT_SUBTYPE_SALT info:infoData];
+//    NSData *prk = [QredoRawCrypto hkdfSha256Extract:vaultMasterKey
+//                                            salt:QREDO_VAULT_SUBTYPE_SALT];
+//    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
+//                                           info:infoData
+//                                   outputLength:CC_SHA256_DIGEST_LENGTH];
+//    return okm;
 }
 
 
-+(NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey info:(NSString *)info {
++(QredoKeyRef *)vaultKeyWithVaultMasterKey:(QredoKeyRef *)vaultMasterKey info:(NSString *)info {
     return [self vaultKeyWithVaultMasterKey:vaultMasterKey infoData:[info dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
@@ -116,21 +112,30 @@
 
 
 +(QLFVaultKeyPair *)vaultKeyPairWithVaultKey:(NSData *)vaultKey {
-    NSData *info = [@"Encryption" dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:vaultKey
-                                            salt:QREDO_VAULT_LEAF_SALT];
-    NSData *encryptionKey = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:info
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
+    
+    QredoKeyRef *vaultKeyRef = [[QredoKeyRef alloc] initWithKeyData:vaultKey];
+    
+    QredoKeyRef *encryptionKeyRef       =  [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:vaultKeyRef salt:QREDO_VAULT_LEAF_SALT info:[@"Encryption" dataUsingEncoding:NSUTF8StringEncoding]];
+    QredoKeyRef *authenticationKeyRef   =  [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:vaultKeyRef salt:QREDO_VAULT_LEAF_SALT info:[@"Authentication" dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    
+//    NSData *info = [@"Encryption" dataUsingEncoding:NSUTF8StringEncoding];
+//    NSData *prk = [QredoRawCrypto hkdfSha256Extract:vaultKey
+//                                            salt:QREDO_VAULT_LEAF_SALT];
+//    NSData *encryptionKey = [QredoRawCrypto hkdfSha256Expand:prk
+//                                           info:info
+//                                   outputLength:CC_SHA256_DIGEST_LENGTH];
 
-    NSData *info1 = [@"Authentication" dataUsingEncoding:NSUTF8StringEncoding];
-    NSData *prk1 = [QredoRawCrypto hkdfSha256Extract:vaultKey
-                                             salt:QREDO_VAULT_LEAF_SALT];
-    NSData *authentication = [QredoRawCrypto hkdfSha256Expand:prk1
-                                            info:info1
-                                    outputLength:CC_SHA256_DIGEST_LENGTH];
+//    NSData *info1 = [@"Authentication" dataUsingEncoding:NSUTF8StringEncoding];
+//    NSData *prk1 = [QredoRawCrypto hkdfSha256Extract:vaultKey
+//                                             salt:QREDO_VAULT_LEAF_SALT];
+//    NSData *authenticationKey = [QredoRawCrypto hkdfSha256Expand:prk1
+//                                            info:info1
+//                                    outputLength:CC_SHA256_DIGEST_LENGTH];
 
-    return [QLFVaultKeyPair vaultKeyPairWithEncryptionKey:encryptionKey authenticationKey:authentication];
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] vaultKeyPairWithEncryptionKey:encryptionKeyRef privateKeyRef:authenticationKeyRef];
+    
+//    return [QLFVaultKeyPair vaultKeyPairWithEncryptionKey:encryptionKeyRef authenticationKey:authenticationKeyRef];
 }
 
 

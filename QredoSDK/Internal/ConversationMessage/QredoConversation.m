@@ -330,12 +330,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoKeyRef *requesterInboundAuthKeyRef = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
     QredoKeyRef *responderInboundBulkKeyRef = [_conversationCrypto responderInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     QredoKeyRef *responderInboundAuthKeyRef = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
-    NSData *requesterInboundQueueKeyPairSalt = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
-    NSData *responderInboundQueueKeyPairSalt = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
+    QredoKeyRef *requesterInboundQueueKeyPairSaltRef = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
+    QredoKeyRef *responderInboundQueueKeyPairSaltRef = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
    
     
-    QredoKeyRefPair *requesterInboundQueueSigningKey = [keychain ownershipKeyPairDerive:requesterInboundQueueKeyPairSalt];
-    QredoKeyRefPair *responderInboundQueueSigningKey = [keychain ownershipKeyPairDerive:responderInboundQueueKeyPairSalt];
+    QredoKeyRefPair *requesterInboundQueueSigningKey = [keychain ownershipKeyPairDeriveRef:requesterInboundQueueKeyPairSaltRef];
+    QredoKeyRefPair *responderInboundQueueSigningKey = [keychain ownershipKeyPairDeriveRef:responderInboundQueueKeyPairSaltRef];
     
     QredoQUID *requesterInboundQueueId = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:requesterInboundQueueSigningKey]];
     QredoQUID *responderInboundQueueId = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:responderInboundQueueSigningKey]];
@@ -716,9 +716,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 -(QredoVault *)store{
     if (_metadata.isEphemeral)return nil;
     if (_store)return _store;
-    NSData *vaultKey = [QredoVaultCrypto vaultKeyWithVaultMasterKey:self.client.systemVault.vaultKeys.vaultKey
+    QredoKeyRef *vaultKeyRef = [QredoVaultCrypto vaultKeyWithVaultMasterKey:self.client.systemVault.vaultKeys.vaultKeyRef
                                                            infoData:_inboundQueueId.data];
-    QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKey:vaultKey];
+    QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKey:vaultKeyRef];
     _store = [[QredoVault alloc] initWithClient:self.client vaultKeys:keys withLocalIndex:NO vaultType:QredoSystemVault];
     return _store;
 }

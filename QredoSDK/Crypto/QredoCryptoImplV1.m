@@ -281,16 +281,13 @@
     NSAssert([seed length] == ED25519_SEED_LENGTH,@"Malformed seed");
     NSMutableData *skData = [NSMutableData dataWithLength:ED25519_SIGNING_KEY_LENGTH];
     NSMutableData *vkData = [NSMutableData dataWithLength:ED25519_VERIFY_KEY_LENGTH];
-    
     crypto_sign_ed25519_seed_keypair(vkData.mutableBytes,skData.mutableBytes,seed.bytes);
-    
     QredoED25519VerifyKey *vk = [self qredoED25519VerifyKeyWithData:[vkData copy] error:nil];
     NSAssert(vk,@"Could not create verification key.");
     
     if (!vk){
         return nil;
     }
-    
     return [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:skData verifyKey:vk];
 }
 

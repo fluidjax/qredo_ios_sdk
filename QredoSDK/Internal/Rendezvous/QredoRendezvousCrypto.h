@@ -22,9 +22,6 @@
                                                 responderPublicKey:(QredoPublicKey *)responderPublicKey;
 
 
--(QLFKeyPairLF *)newECAccessControlKeyPairWithSeed:(NSData *)seed;
-
--(QLFKeyPairLF *)newRequesterKeyPair;
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                   encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef;

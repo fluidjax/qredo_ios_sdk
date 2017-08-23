@@ -103,8 +103,8 @@
 }
 
 
--(NSData *)requesterInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKey:masterKeyRef
+-(QredoKeyRef *)requesterInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:masterKeyRef
                                                                  salt:SALT_REQUESTER_INBOUND_QUEUE info:[NSData data]];
 }
 
@@ -122,8 +122,8 @@
 }
 
 
--(NSData *)responderInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKey:masterKeyRef
+-(QredoKeyRef *)responderInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:masterKeyRef
                                                                  salt:SALT_RESPONDER_INBOUND_QUEUE info:[NSData data]];
 }
 

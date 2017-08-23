@@ -18,8 +18,10 @@
 @property QredoKeyRef *authenticationKey;
 @property QredoQUID *vaultId;
 @property NSData *vaultKey;
+@property QredoKeyRef *vaultKeyRef;
 
--(instancetype)initWithVaultKey:(NSData *)vaultKey;
+
+-(instancetype)initWithVaultKey:(QredoKeyRef *)vaultKey;
 @end
 
 
@@ -45,13 +47,13 @@
 -(QLFVaultItemMetadata *)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
                                                    error:(NSError **)error;
 
-+(NSData *)systemVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey;
-+(NSData *)userVaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey;
++(QredoKeyRef *)systemVaultKeyWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKey;
++(QredoKeyRef *)userVaultKeyWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKey;
 
 //Used for testing
-+(NSData *)vaultMasterKeyWithUserMasterKey:(NSData *)userMasterKey;
-+(NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey infoData:(NSData *)infoData;
-+(NSData *)vaultKeyWithVaultMasterKey:(NSData *)vaultMasterKey info:(NSString *)info;
++(QredoKeyRef *)vaultMasterKeyWithUserMasterKeyRef:(QredoKeyRef *)userMasterKeyRef;
++(QredoKeyRef *)vaultKeyWithVaultMasterKey:(QredoKeyRef *)vaultMasterKey infoData:(NSData *)infoData;
++(QredoKeyRef *)vaultKeyWithVaultMasterKey:(QredoKeyRef *)vaultMasterKey info:(NSString *)info;
 +(QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey;
 +(QLFVaultKeyPair *)vaultKeyPairWithVaultKey:(NSData *)vaultKey;
 

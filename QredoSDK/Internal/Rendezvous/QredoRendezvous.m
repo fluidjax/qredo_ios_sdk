@@ -188,7 +188,9 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         _hashedTag = _descriptor.hashedTag;
         _requesterPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:descriptor.requesterKeyPair.privKey.bytes];
         _requesterPublicKey     = [[QredoDhPublicKey alloc] initWithData:descriptor.requesterKeyPair.pubKey.bytes];
-        _ownershipECKeyPairRef  = [[QredoCryptoKeychain sharedQredoCryptoKeychain] ownershipKeyPairDerive:[_hashedTag data]];
+        
+        QredoKeyRef *hashTagRef = [[QredoKeyRef alloc] initWithKeyData:[_hashedTag data]];
+        _ownershipECKeyPairRef  = [[QredoCryptoKeychain sharedQredoCryptoKeychain] ownershipKeyPairDeriveRef:hashTagRef];
 
         [self loadHWM];
     }
@@ -281,14 +283,15 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     QredoLogDebug(@"Hashed tag: %@",_hashedTag);
     
+    QredoKeyRef *hashTagRef = [[QredoKeyRef alloc] initWithKeyData:[_hashedTag data]];
     
     //Generate the rendezvous key pairs.
-    QredoKeyRefPair *ownershipKeyPair   = [keychain  ownershipKeyPairDerive:[_hashedTag data]];
+    QredoKeyRefPair *ownershipKeyPair   = [keychain  ownershipKeyPairDeriveRef:hashTagRef];
     QredoKeyRefPair *requesterKeyPair   = [keychain generateDHKeyPair];
     
     _requesterPrivateKeyRef =   requesterKeyPair.privateKeyRef;
     _requesterPublicKey     =   [[QredoDhPublicKey alloc] initWithData:[keychain publicKeyDataFor:requesterKeyPair]];
-    _ownershipECKeyPairRef = [keychain ownershipKeyPairDerive:[_hashedTag data]];
+    _ownershipECKeyPairRef = [keychain ownershipKeyPairDeriveRef:hashTagRef];
     
     
     NSData *ownershipPublicKeyBytes      = [keychain publicKeyDataFor:ownershipKeyPair];

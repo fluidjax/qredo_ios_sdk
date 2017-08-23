@@ -7,6 +7,7 @@
 #import "NSData+HexTools.h"
 #import "QredoNetworkTime.h"
 #import "QredoCryptoKeychain.h"
+#import "QredoKeyRef.h"
 
 @interface ConversationCryptoTests :QredoXCTestCase
 {
@@ -38,12 +39,12 @@
     
     [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
-    NSData *requesterInboundQueueSeed = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
-    [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
+    QredoKeyRef *requesterInboundQueueSeedRef = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
+    [_crypto qredoED25519SigningKeyWithSeed:[requesterInboundQueueSeedRef debugValue]];
     [_conversationCrypto responderInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     [_conversationCrypto responderInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
-    NSData *responderInboundQueueSeed = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
-    [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
+    QredoKeyRef *responderInboundQueueSeedRef = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
+    [_crypto qredoED25519SigningKeyWithSeed:[responderInboundQueueSeedRef debugValue]];
     [_conversationCrypto conversationIdWithMasterKeyRef:masterKeyRef];
 }
 
@@ -63,18 +64,18 @@
     QredoKeyRef *requesterInboundEncryptionKeyRef = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     
     QredoKeyRef *requesterInboundAuthenticationKeyRef = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
-    NSData *requesterInboundQueueSeed = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
+    QredoKeyRef *requesterInboundQueueSeedRef = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     
-    QredoED25519SigningKey *requesterOwnershipKeyPair = [_crypto qredoED25519SigningKeyWithSeed:requesterInboundQueueSeed];
+    QredoED25519SigningKey *requesterOwnershipKeyPair = [_crypto qredoED25519SigningKeyWithSeed:[requesterInboundQueueSeedRef debugValue]];
     
     
     QredoKeyRef *responderInboundEncryptionKeyRef = [_conversationCrypto responderInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     
     QredoKeyRef *responderInboundAuthenticationKeyRef = [_conversationCrypto responderInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
     
-    NSData *responderInboundQueueSeed = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
+    QredoKeyRef *responderInboundQueueSeedRef = [_conversationCrypto responderInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     
-    QredoED25519SigningKey *responderOwnershipKeyPair = [_crypto qredoED25519SigningKeyWithSeed:responderInboundQueueSeed];
+    QredoED25519SigningKey *responderOwnershipKeyPair = [_crypto qredoED25519SigningKeyWithSeed:[responderInboundQueueSeedRef debugValue]];
     
     
     QredoQUID *conversationId = [_conversationCrypto conversationIdWithMasterKeyRef:masterKeyRef];
@@ -90,7 +91,7 @@
     
     
     NSData *requesterInboundQueueSeedExpected  = [NSData dataWithHexString:@"aeb221ad 4d97afc4 8fe77157 8d25e6ce 6faae08a e6732cf9 9e8fded7 234e1429"];
-    XCTAssertEqualObjects(requesterInboundQueueSeed,requesterInboundQueueSeedExpected);
+    XCTAssertEqualObjects([requesterInboundQueueSeedRef debugValue],requesterInboundQueueSeedExpected);
     
     NSData *requesterOwnershipSigningKeyExpected  = [NSData dataWithHexString: @"aeb221ad 4d97afc4 8fe77157 8d25e6ce 6faae08a e6732cf9 9e8fded7 234e1429"
                                                                                @"0bdb0e7e 9ce4a729 710af80f 6804274e 154db05a 68129551 aa2c73ef b6cd8947"];
@@ -106,7 +107,7 @@
     XCTAssertEqualObjects(responderInboundAuthenticationKeyRef,responderInboundAuthenticationKeyExpected);
     
     NSData *responderInboundQueueSeedExpected = [NSData dataWithHexString:@"a144f830 e9a97d70 20422ec1 5021375b f5735f31 289ab9a9 9885fe4c dae06245"];
-    XCTAssertEqualObjects(responderInboundQueueSeed,responderInboundQueueSeedExpected);
+    XCTAssertEqualObjects([responderInboundQueueSeedRef debugValue],responderInboundQueueSeedExpected);
     
     NSData *responderOwnershipSigningKeyExpected = [NSData dataWithHexString: @"a144f830 e9a97d70 20422ec1 5021375b f5735f31 289ab9a9 9885fe4c dae06245"
                                                                             @"96d0e8ee 198c1701 a8e5dc0e 2eff4d0d e776b7d8 337d4cf4 6c68b1df 0b27b41f"];

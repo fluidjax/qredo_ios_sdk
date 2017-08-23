@@ -5,6 +5,7 @@
 #import "QredoRendezvousCrypto.h"
 #import "QredoRawCrypto.h"
 #import "NSData+HexTools.h"
+#import "QredoCryptoKeychain.h"
 
 @interface QredoRendezvousCryptoTest :QredoXCTestCase
 {
@@ -57,7 +58,7 @@
     QredoKeyRef *encKeyRef = [rendezvousCrypto encryptionKeyWithMasterKey:masterKeyRef];
     
     
-    QLFKeyPairLF *requesterKeyPair  = [rendezvousCrypto newRequesterKeyPair];
+    QLFKeyPairLF *requesterKeyPair  = [[QredoCryptoKeychain sharedQredoCryptoKeychain] newRequesterKeyPair];
     NSData *requesterPublicKeyBytes = [[requesterKeyPair pubKey] bytes];
     NSString *conversationType      = @"com.qredo.chat";
     
