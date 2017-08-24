@@ -85,9 +85,9 @@
 
 
 -(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
-                                    yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
+                                        yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef {
     return [[QredoCryptoKeychain sharedQredoCryptoKeychain] getDiffieHellmanMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
-                                                                                           yourPublicKey:yourPublicKey];
+                                                                                        yourPublicKeyRef:yourPublicKeyRef];
 }
 
 

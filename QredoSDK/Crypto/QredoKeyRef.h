@@ -11,6 +11,7 @@
 @interface QredoKeyRef : NSObject
 
 
+
 -(instancetype)initWithKeyData:(NSData*)keyData;
 -(instancetype)initWithKeyHexString:(NSString*)keyHexString;
 
@@ -19,8 +20,5 @@
 -(BOOL)isEqual:(id)other;
 
 
-//only for debugging
--(void)dump;
--(NSData*)debugValue;
 
 @end

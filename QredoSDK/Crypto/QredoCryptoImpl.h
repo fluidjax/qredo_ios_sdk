@@ -32,7 +32,7 @@
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password;
 
 -(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
-                                       yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+                                         yourPublicKey:(QredoKey *)yourPublicKey;
 
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
                              myPrivateKey:(QredoDhPrivateKey *)myPrivateKey

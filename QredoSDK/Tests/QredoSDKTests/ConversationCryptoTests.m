@@ -7,6 +7,7 @@
 #import "NSData+HexTools.h"
 #import "QredoNetworkTime.h"
 #import "QredoCryptoKeychain.h"
+#import "QredoPublicKeyRef.h"
 #import "QredoKeyRef.h"
 
 @interface ConversationCryptoTests :QredoXCTestCase
@@ -33,9 +34,10 @@
     NSData *yourPublicKeyData = [NSData dataWithHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
     
     QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:myPrivateKeyData];
-    QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
+    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:yourPublicKeyData];
+
     QredoKeyRef *masterKeyRef = [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
-                                                                     yourPublicKey:yourPublicKey];
+                                                                     yourPublicKeyRef:yourPublicKeyRef];
     
     [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
@@ -54,15 +56,11 @@
     NSData *yourPublicKeyData = [NSData dataWithHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
     
     QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:myPrivateKeyData];
-    QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
-    
+    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:yourPublicKeyData];
     QredoKeyRef *masterKeyRef= [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
-                                                                     yourPublicKey:yourPublicKey];
-    
-    [masterKeyRef dump];
+                                                                     yourPublicKeyRef:yourPublicKeyRef];
     
     QredoKeyRef *requesterInboundEncryptionKeyRef = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
-    
     QredoKeyRef *requesterInboundAuthenticationKeyRef = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
     QredoKeyRef *requesterInboundQueueSeedRef = [_conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];
     

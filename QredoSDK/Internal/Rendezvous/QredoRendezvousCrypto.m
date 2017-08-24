@@ -56,12 +56,10 @@
 
 -(QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
                                                  authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
-                                                responderPublicKey:(QredoPublicKey *)responderPublicKey {
+                                                responderPublicKeyRef:(QredoKeyRef *)responderPublicKeyRef {
     NSMutableData *payload = [NSMutableData dataWithData:[hashedTag data]];
-    
-    [payload appendData:[responderPublicKey bytes]];
-    
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    [payload appendData:[[QredoCryptoKeychain sharedQredoCryptoKeychain] retrieveWithRef:responderPublicKeyRef]];
     return [keychain authenticate:authenticationKeyRef data:payload];
 }
 

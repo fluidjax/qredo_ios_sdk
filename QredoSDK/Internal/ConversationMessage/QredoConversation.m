@@ -150,9 +150,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     BOOL _deleted;
     
-    QredoDhPublicKey *_yourPublicKey;
-    QredoKeyRef      *_myPrivateKeyRef;
-    QredoDhPublicKey *_myPublicKey;
+    QredoKeyRef     *_yourPublicKeyRef;
+    QredoKeyRef     *_myPrivateKeyRef;
+    QredoKeyRef     *_myPublicKeyRef;
     
     
     QLFRendezvousAuthType *_authenticationType;
@@ -230,12 +230,15 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.myPublicKeyVerified = descriptor.myPublicKeyVerified;
     _metadata.yourPublicKeyVerified = descriptor.yourPublicKeyVerified;
     
-    _yourPublicKey    = [[QredoDhPublicKey alloc] initWithData:[descriptor.yourPublicKey bytes]];
-    _myPrivateKeyRef  = [[QredoKeyRef alloc] initWithKeyData:[descriptor.myKey.privKey bytes]];
-    _myPublicKey      = [[QredoDhPublicKey alloc] initWithData:[descriptor.myKey.pubKey bytes]];
+    _yourPublicKeyRef    = [[QredoKeyRef alloc] initWithKeyData:[descriptor.yourPublicKey bytes]];
+    _myPrivateKeyRef     = [[QredoKeyRef alloc] initWithKeyData:[descriptor.myKey.privKey bytes]];
+    _myPublicKeyRef      = [[QredoKeyRef alloc] initWithKeyData:[descriptor.myKey.pubKey bytes]];
     
     //this method is called when we are loading the conversation from the vault, therefore, we don't need to store it again. Only generating keys here
-    [self generateKeysWithPrivateKeyRef:_myPrivateKeyRef publicKey:_yourPublicKey myPublicKey:_myPublicKey rendezvousOwner:_metadata.amRendezvousOwner];
+    [self generateKeysWithPrivateKeyRef:_myPrivateKeyRef
+                           publicKeyRef:_yourPublicKeyRef
+                         myPublicKeyRef:_myPublicKeyRef
+                        rendezvousOwner:_metadata.amRendezvousOwner];
     return self;
 }
 
@@ -295,11 +298,14 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(void)generateAndStoreKeysWithPrivateKeyRef:(QredoKeyRef *)privateKeyRef
-                                publicKey:(QredoDhPublicKey *)publicKey
-                              myPublicKey:(QredoDhPublicKey *)myPublicKey
-                          rendezvousOwner:(BOOL)rendezvousOwner
+                                publicKeyRef:(QredoKeyRef *)publicKeyRef
+                              myPublicKeyRef:(QredoKeyRef *)myPublicKeyRef
+                             rendezvousOwner:(BOOL)rendezvousOwner
                         completionHandler:(void (^)(NSError *error))completionHandler {
-    [self generateKeysWithPrivateKeyRef:privateKeyRef publicKey:publicKey myPublicKey:myPublicKey rendezvousOwner:rendezvousOwner];
+    [self generateKeysWithPrivateKeyRef:privateKeyRef
+                           publicKeyRef:publicKeyRef
+                         myPublicKeyRef:myPublicKeyRef
+                        rendezvousOwner:rendezvousOwner];
     
     [self storeWithCompletionHandler:^(NSError *error) {
         if (error){
@@ -312,19 +318,19 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(void)generateKeysWithPrivateKeyRef:(QredoKeyRef *)privateKeyRef
-                           publicKey:(QredoDhPublicKey *)publicKey
-                         myPublicKey:(QredoDhPublicKey *)myPublicKey
+                        publicKeyRef:(QredoKeyRef *)publicKeyRef
+                      myPublicKeyRef:(QredoKeyRef *)myPublicKeyRef
                      rendezvousOwner:(BOOL)rendezvousOwner {
     if (!_metadata)_metadata = [[QredoConversationMetadata alloc] init];
     
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
     _metadata.amRendezvousOwner = rendezvousOwner;
     _myPrivateKeyRef = privateKeyRef;
-    _myPublicKey = myPublicKey;
-    _yourPublicKey = publicKey;
+    _myPublicKeyRef = myPublicKeyRef;
+    _yourPublicKeyRef = publicKeyRef;
     
     QredoKeyRef *masterKeyRef = [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:privateKeyRef
-                                                                             yourPublicKey:publicKey];
+                                                                             yourPublicKeyRef:publicKeyRef];
     
     QredoKeyRef *requesterInboundBulkKeyRef = [_conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     QredoKeyRef *requesterInboundAuthKeyRef = [_conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
@@ -387,12 +393,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
     QredoKeyRefPair *responderKeyRefPair = [keychain generateDHKeyPair];
     NSData *responderPublicKeyBytes    = [keychain publicKeyDataFor:responderKeyRefPair];
-    _myPublicKey = [[QredoDhPublicKey alloc] initWithData:responderPublicKeyBytes];
+    _myPublicKeyRef =  [[QredoKeyRef alloc] initWithKeyData:responderPublicKeyBytes];
     
     
     QLFAuthenticationCode *responderAuthenticationCode   = [_rendezvousCrypto responderAuthenticationCodeWithHashedTag:hashedTag
-                                                                                                     authenticationKeyRef:authKeyRef
-                                                                                                    responderPublicKey:_myPublicKey];
+                                                                                                  authenticationKeyRef:authKeyRef
+                                                                                                 responderPublicKeyRef:_myPublicKeyRef];
     
     QLFRendezvousResponse *response = [QLFRendezvousResponse rendezvousResponseWithHashedTag:hashedTag
                                                                           responderPublicKey:responderPublicKeyBytes
@@ -420,14 +426,15 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                                                           encryptionKeyRef:encKeyRef
                                                                                                                      error:&error];
                                
-                               QredoDhPublicKey *requesterPublicKey = [[QredoDhPublicKey alloc] initWithData:responderInfo.requesterPublicKey];
+                               QredoKeyRef *requesterPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:responderInfo.requesterPublicKey];
+                               
                                _metadata.rendezvousTag = rendezvousTag;
                                _metadata.type = responderInfo.conversationType;
                                _authenticationType = responseRegistered.info.authenticationType;
                                
                                [self generateAndStoreKeysWithPrivateKeyRef:responderKeyRefPair.privateKeyRef
-                                                              publicKey:requesterPublicKey
-                                                            myPublicKey:_myPublicKey
+                                                              publicKeyRef:requesterPublicKeyRef
+                                                            myPublicKeyRef:_myPublicKeyRef
                                                         rendezvousOwner:NO
                                                       completionHandler:completionHandler];
                            } else {
@@ -452,23 +459,19 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 -(void)storeWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     NSAssert(!self.metadata.conversationRef,@"Conversation has been already stored");
-    
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKeyRef *publicKeyRef = [[QredoKeyRef alloc] initWithKeyData:[_myPublicKey data]];
-    QLFKeyPairLF *myKey = [keychain keyPairLFWithPubKeyRef:publicKeyRef privateKeyRef:_myPrivateKeyRef];
-    
 
-    QLFConversationDescriptor *descriptor =
-        [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
-                                                           rendezvousOwner:_metadata.amRendezvousOwner
-                                                            conversationId:_metadata.conversationId
-                                                          conversationType:_metadata.type
-                                                        authenticationType:_authenticationType
-                                                                     myKey:myKey
-                                                             yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                       myPublicKeyVerified:_metadata.myPublicKeyVerified
-                                                     yourPublicKeyVerified:_metadata.yourPublicKeyVerified];
-    
+    QLFConversationDescriptor *descriptor = [keychain conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
+                                                                              rendezvousOwner:_metadata.amRendezvousOwner
+                                                                               conversationId:_metadata.conversationId
+                                                                             conversationType:_metadata.type
+                                                                           authenticationType:_authenticationType
+                                                                               myPublicKeyRef:_myPublicKeyRef
+                                                                              myPrivateKeyRef:_myPrivateKeyRef
+                                                                             yourPublicKeyRef:_yourPublicKeyRef
+                                                                          myPublicKeyVerified:_metadata.myPublicKeyVerified
+                                                                        yourPublicKeyVerified:_metadata.yourPublicKeyVerified];
+     
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor
                                                                  marshaller:[QLFConversationDescriptor marshaller]];
     
@@ -718,7 +721,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     if (_store)return _store;
     QredoKeyRef *vaultKeyRef = [QredoVaultCrypto vaultKeyWithVaultMasterKey:self.client.systemVault.vaultKeys.vaultKeyRef
                                                            infoData:_inboundQueueId.data];
-    QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKey:vaultKeyRef];
+    QredoVaultKeys *keys = [[QredoVaultKeys alloc] initWithVaultKeyRef:vaultKeyRef];
     _store = [[QredoVault alloc] initWithClient:self.client vaultKeys:keys withLocalIndex:NO vaultType:QredoSystemVault];
     return _store;
 }
@@ -735,14 +738,12 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 
 
 -(NSString *)showMyFingerPrint {
-    NSData *fp =  [QredoRawCrypto sha256:_myPublicKey.data];
-    return [QredoUtils dataToHexString:fp];
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] sha256FingerPrintKeyRef:_myPublicKeyRef];
 }
 
 
 -(NSString *)showRemoteFingerPrint {
-    NSData *fp = [QredoRawCrypto sha256:_yourPublicKey.data];
-    return [QredoUtils dataToHexString:fp];
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] sha256FingerPrintKeyRef:_yourPublicKeyRef];
 }
 
 
@@ -944,20 +945,17 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 -(void)updateConversationWithSummaryValues:(NSDictionary *)summaryValues completionHandler:(void (^)(NSError *error))completionHandler {
     
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKeyRef *publicKeyRef = [[QredoKeyRef alloc] initWithKeyData:[_myPublicKey data]];
-    QLFKeyPairLF *myKey = [keychain keyPairLFWithPubKeyRef:publicKeyRef privateKeyRef:_myPrivateKeyRef];
     
-    QLFConversationDescriptor *descriptor =
-                [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
-                                                                   rendezvousOwner:_metadata.amRendezvousOwner
-                                                                    conversationId:_metadata.conversationId
-                                                                  conversationType:_metadata.type
-                                                                authenticationType:_authenticationType
-                                                                             myKey:myKey
-                                                                     yourPublicKey:[QLFKeyLF keyLFWithBytes:[_yourPublicKey data]]
-                                                               myPublicKeyVerified:_metadata.myPublicKeyVerified
-                                                             yourPublicKeyVerified:_metadata.yourPublicKeyVerified
-                 ];
+    QLFConversationDescriptor *descriptor = [keychain conversationDescriptorWithRendezvousTag:_metadata.rendezvousTag
+                                                                              rendezvousOwner:_metadata.amRendezvousOwner
+                                                                               conversationId:_metadata.conversationId
+                                                                             conversationType:_metadata.type
+                                                                           authenticationType:_authenticationType
+                                                                               myPublicKeyRef:_myPublicKeyRef
+                                                                              myPrivateKeyRef:_myPrivateKeyRef
+                                                                             yourPublicKeyRef:_yourPublicKeyRef
+                                                                          myPublicKeyVerified:_metadata.myPublicKeyVerified
+                                                                        yourPublicKeyVerified:_metadata.yourPublicKeyVerified];
     
     
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:descriptor

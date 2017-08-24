@@ -2,6 +2,7 @@
 #import <XCTest/XCTest.h>
 #import "Qredo.h"
 #import "QredoPrivate.h"
+#import "QredoKeyRef.h"
 
 #define QLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 //#define QLog(...)
@@ -9,6 +10,17 @@
 
 
 static float WAIT_FOR_LISTENER_TO_PROCESS_DELAY = 1.0;
+
+
+
+//Extensions to QredoKeyRef to allow extracting of raw (Private) Key Data for testing purposes 
+@interface QredoKeyRef (testing)
+-(void)dump;
+-(NSData*)debugValue;
+@end
+
+
+
 
 @interface QredoXCTestCase :XCTestCase {
     NSString *k_TEST_APPID;

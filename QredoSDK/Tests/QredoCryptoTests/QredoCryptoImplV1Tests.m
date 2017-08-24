@@ -12,6 +12,7 @@
 #import "QredoKeyRef.h"
 #import "QredoKeyRefPair.h"
 #import "QredoCryptoKeychain.h"
+#import "QredoXCTestCase.h"
 
 @interface QredoCryptoImplV1Tests :XCTestCase
 

@@ -224,7 +224,7 @@
 
 
 -(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
-                                       yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
+                                         yourPublicKey:(QredoKey *)yourPublicKey {
     if (!myPrivateKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
                                        reason:[NSString stringWithFormat:@"Private key argument is nil"]

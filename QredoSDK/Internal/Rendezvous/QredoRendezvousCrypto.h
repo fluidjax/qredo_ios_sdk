@@ -19,7 +19,7 @@
 
 -(QLFAuthenticationCode *)responderAuthenticationCodeWithHashedTag:(QLFRendezvousHashedTag *)hashedTag
                                               authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef
-                                                responderPublicKey:(QredoPublicKey *)responderPublicKey;
+                                             responderPublicKeyRef:(QredoKeyRef *)responderPublicKeyRef;
 
 
 

@@ -18,7 +18,7 @@
                                     error:(NSError **)error;
 
 -(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
-                                        yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+                                        yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef;
 
 -(QredoKeyRef *)requesterInboundEncryptionKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;
 -(QredoKeyRef *)requesterInboundAuthenticationKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;

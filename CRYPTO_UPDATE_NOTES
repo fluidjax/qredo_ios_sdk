@@ -43,7 +43,7 @@ QredoCryptoImpl is only accessed from QredoCryptoKeyChain
 QredoED25519SigningKey
 
 TODO:
-QredoDhPrivateKey
+    DONE    QredoDhPrivateKey
 QredoDhPublicKey
 QredoED25519SigningKey
 QredoED25519VerifyKey

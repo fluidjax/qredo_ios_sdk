@@ -6,6 +6,7 @@
 #import "QredoLoggerPrivate.h"
 #import "QredoUtils.h"
 #import "QredoConversationCrypto.h"
+#import "QredoXCTestCase.h"
 
 @interface QredoCryptoTests :XCTestCase
 
@@ -31,8 +32,9 @@
     NSData *myPrivateKeyData  = [QredoUtils hexStringToData:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
     NSData *yourPublicKeyData = [QredoUtils hexStringToData:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
     QredoKeyRef *myPrivateKey = [[QredoKeyRef alloc] initWithKeyData:myPrivateKeyData];
-    QredoDhPublicKey *yourPublicKey = [[QredoDhPublicKey alloc] initWithData:yourPublicKeyData];
-    QredoKeyRef *masterKeyRef = [conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKey yourPublicKey:yourPublicKey];
+    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:yourPublicKeyData];
+    
+    QredoKeyRef *masterKeyRef = [conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKey yourPublicKeyRef:yourPublicKeyRef];
     QredoKeyRef *requesterInboundEncryptionKeyRef = [conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
     QredoKeyRef *requesterInboundAuthenticationKey = [conversationCrypto requesterInboundAuthenticationKeyWithMasterKeyRef:masterKeyRef];
     QredoKeyRef *requesterInboundQueueSeedRef = [conversationCrypto requesterInboundQueueSeedWithMasterKeyRef:masterKeyRef];

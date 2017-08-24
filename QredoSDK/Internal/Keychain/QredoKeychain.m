@@ -63,8 +63,8 @@
 
     QredoKeyRef *masterKeyRef = [[QredoKeyRef alloc] initWithKeyData:_masterKey];
     QredoKeyRef *vaultMasterKeyRef = [QredoVaultCrypto vaultMasterKeyWithUserMasterKeyRef:masterKeyRef];
-    self.systemVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto systemVaultKeyWithVaultMasterKeyRef:vaultMasterKeyRef]];
-    self.defaultVaultKeys = [[QredoVaultKeys alloc] initWithVaultKey:[QredoVaultCrypto userVaultKeyWithVaultMasterKeyRef:vaultMasterKeyRef]];
+    self.systemVaultKeys = [[QredoVaultKeys alloc] initWithVaultKeyRef:[QredoVaultCrypto systemVaultKeyWithVaultMasterKeyRef:vaultMasterKeyRef]];
+    self.defaultVaultKeys = [[QredoVaultKeys alloc] initWithVaultKeyRef:[QredoVaultCrypto userVaultKeyWithVaultMasterKeyRef:vaultMasterKeyRef]];
 }
 
 

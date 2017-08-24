@@ -13,6 +13,7 @@
 #import "QredoKeyRefPair.h"
 #import "UICKeyChainStore.h"
 #import "QredoBulkEncKey.h"
+#import "QredoXCTestCase.h"
 
 @interface QredoCryptoKeychainTests : XCTestCase
 
@@ -61,6 +62,7 @@
     QredoKeyRefPair *refpair = [[QredoKeyRefPair alloc] initWithPublic:pubKey private:privKey];
     
     QredoKeyRef *privRef = refpair.privateKeyRef;
+    
     XCTAssertTrue([[privRef debugValue] isEqualToData:privKey.data]);
     
     

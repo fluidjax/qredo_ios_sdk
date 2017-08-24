@@ -53,7 +53,7 @@
     NSData *vaultKey = [vaultKeyRef debugValue];
     
     QredoED25519SigningKey *ownershipKeyPair = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:vaultKey];
-    QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:vaultKey];
+    QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKeyRef:vaultKeyRef];
     
     
     QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
@@ -173,7 +173,7 @@
     XCTAssertEqualObjects(ownershipKeyPair.verifyKey.data,verifyingKeyExpected);
     
     
-    QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:[vaultKeyRef debugValue]];
+    QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKeyRef:vaultKeyRef];
     NSData *encryptionKeyExpected
     = [NSData dataWithHexString:@"cb5e8fc6 0596ebf3 99d01185 45e99425 8567cdbd 82fa8f09 7a5260d1 945ba30c"];
     

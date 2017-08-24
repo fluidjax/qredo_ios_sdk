@@ -181,9 +181,50 @@
 }
 
 
+-(QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag
+                                                      rendezvousOwner:(BOOL)rendezvousOwner
+                                                       conversationId:(QLFConversationId *)conversationId
+                                                     conversationType:(NSString *)conversationType
+                                                   authenticationType:(QLFRendezvousAuthType *)authenticationType
+                                                       myPublicKeyRef:(QredoKeyRef *)myPublicKeyRef
+                                                      myPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
+                                                     yourPublicKeyRef:(QredoKeyRef *)yourPublicKey
+                                                  myPublicKeyVerified:(BOOL)myPublicKeyVerified
+                                                yourPublicKeyVerified:(BOOL)yourPublicKeyVerified{
+
+    QLFKeyPairLF *myKey = [self keyPairLFWithPubKeyRef:myPublicKeyRef privateKeyRef:myPrivateKeyRef];
+    QLFKeyLF *publicLFKey = [QLFKeyLF keyLFWithBytes:[self retrieveWithRef:yourPublicKey]];
+    
+    QLFConversationDescriptor *descriptor =
+                            [QLFConversationDescriptor conversationDescriptorWithRendezvousTag:rendezvousTag
+                                                                               rendezvousOwner:rendezvousOwner                                                                            conversationId:conversationId
+                                                                              conversationType:conversationType
+                                                                        authenticationType:authenticationType
+                                                                                     myKey:myKey
+                                                                             yourPublicKey:publicLFKey
+                                                                       myPublicKeyVerified:myPublicKeyVerified
+                                                                     yourPublicKeyVerified:yourPublicKeyVerified];
+
+    return descriptor;
+}
+
+
+
+-(NSString*)sha256FingerPrintKeyRef:(QredoKeyRef*)keyRef{
+    NSData *keyData = [self retrieveWithRef:keyRef];
+    NSData *fp = [QredoRawCrypto sha256:keyData];
+    return [QredoUtils dataToHexString:fp];
+}
+
+
+
+
 -(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
-                                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey{
+                                            yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef{
+    
     QredoKey *myPrivateKey = [[QredoKey alloc] initWithData:[self retrieveWithRef:myPrivateKeyRef]];
+    QredoKey *yourPublicKey  = [[QredoKey alloc] initWithData:[self retrieveWithRef:yourPublicKeyRef]];
+    
     QredoKey *diffieHellmanMaster = [self.cryptoImplementation getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey
                                                                                            yourPublicKey:yourPublicKey];
     QredoKeyRef *keyRef = [self createKeyRef:diffieHellmanMaster];

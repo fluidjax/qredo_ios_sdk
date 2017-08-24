@@ -18,14 +18,14 @@
 
 @implementation QredoVaultKeys
 
--(instancetype)initWithVaultKey:(QredoKeyRef *)vaultKeyRef {
+-(instancetype)initWithVaultKeyRef:(QredoKeyRef *)vaultKeyRef {
     self = [super init];
     if (self){
         QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
         QredoKeyRefPair *ownershipKeyPairRef = [keychain ownershipKeyPairDeriveRef:vaultKeyRef];
-        QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKey:[vaultKeyRef debugValue]];
+        QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKeyRef:vaultKeyRef];
         QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:ownershipKeyPairRef]];
-        _vaultKey = [vaultKeyRef debugValue];
+        //_vaultKey = [vaultKeyRef debugValue];
         _ownershipKeyPairRef = ownershipKeyPairRef;
         _encryptionKey = [[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeys.encryptionKey];
         _authenticationKey = [[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeys.authenticationKey];
@@ -111,9 +111,9 @@
 }
 
 
-+(QLFVaultKeyPair *)vaultKeyPairWithVaultKey:(NSData *)vaultKey {
++(QLFVaultKeyPair *)vaultKeyPairWithVaultKeyRef:(QredoKeyRef *)vaultKeyRef {
     
-    QredoKeyRef *vaultKeyRef = [[QredoKeyRef alloc] initWithKeyData:vaultKey];
+//    QredoKeyRef *vaultKeyRef = [[QredoKeyRef alloc] initWithKeyData:vaultKey];
     
     QredoKeyRef *encryptionKeyRef       =  [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:vaultKeyRef salt:QREDO_VAULT_LEAF_SALT info:[@"Encryption" dataUsingEncoding:NSUTF8StringEncoding]];
     QredoKeyRef *authenticationKeyRef   =  [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:vaultKeyRef salt:QREDO_VAULT_LEAF_SALT info:[@"Authentication" dataUsingEncoding:NSUTF8StringEncoding]];

@@ -17,11 +17,11 @@
 @property QredoKeyRef *encryptionKey;
 @property QredoKeyRef *authenticationKey;
 @property QredoQUID *vaultId;
-@property NSData *vaultKey;
+//@property NSData *vaultKey;
 @property QredoKeyRef *vaultKeyRef;
 
 
--(instancetype)initWithVaultKey:(QredoKeyRef *)vaultKey;
+-(instancetype)initWithVaultKeyRef:(QredoKeyRef *)vaultKey;
 @end
 
 
@@ -55,7 +55,7 @@
 +(QredoKeyRef *)vaultKeyWithVaultMasterKey:(QredoKeyRef *)vaultMasterKey infoData:(NSData *)infoData;
 +(QredoKeyRef *)vaultKeyWithVaultMasterKey:(QredoKeyRef *)vaultMasterKey info:(NSString *)info;
 +(QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey;
-+(QLFVaultKeyPair *)vaultKeyPairWithVaultKey:(NSData *)vaultKey;
++(QLFVaultKeyPair *)vaultKeyPairWithVaultKeyRef:(QredoKeyRef *)vaultKey;
 
 -(void)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem
                           origin:(QredoVaultItemOrigin)origin

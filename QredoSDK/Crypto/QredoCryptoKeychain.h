@@ -61,7 +61,7 @@
 
 -(QredoKeyRefPair *)generateDHKeyPair;
 -(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
-                                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
+                                            yourPublicKeyRef:(QredoKeyRef *)yourPublicKey;
 
 -(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
                              myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
@@ -82,5 +82,16 @@
                                        ownershipKeyPair:(QredoKeyRefPair *)ownershipKeyPair;
 
 
+-(QLFConversationDescriptor *)conversationDescriptorWithRendezvousTag:(NSString *)rendezvousTag
+                                                      rendezvousOwner:(BOOL)rendezvousOwner
+                                                       conversationId:(QLFConversationId *)conversationId
+                                                     conversationType:(NSString *)conversationType
+                                                   authenticationType:(QLFRendezvousAuthType *)authenticationType
+                                                       myPublicKeyRef:(QredoKeyRef *)myPublicKeyRef
+                                                      myPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
+                                                     yourPublicKeyRef:(QredoKeyRef *)yourPublicKey
+                                                  myPublicKeyVerified:(BOOL)myPublicKeyVerified
+                                                yourPublicKeyVerified:(BOOL)yourPublicKeyVerified;
 
+-(NSString*)sha256FingerPrintKeyRef:(QredoKeyRef*)keyRef;
 @end

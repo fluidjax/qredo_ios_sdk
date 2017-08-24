@@ -67,17 +67,6 @@
 
 
 
--(NSData*)debugValue{
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    return [keychain retrieveWithRef:self];
-}
-
--(void)dump{
-    NSLog(@"Ref: %@",self.ref);
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    NSLog(@"Val: %@",[keychain retrieveWithRef:self]);
-    
-}
 
 
 @end
