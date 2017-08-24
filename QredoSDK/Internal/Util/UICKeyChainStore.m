@@ -557,7 +557,7 @@ static NSString *_defaultService;
         }
         
         if (unexpectedError) {
-            NSLog(@"error: [%@] %@", @(unexpectedError.code), NSLocalizedString(@"Unexpected error has occurred.", nil));
+            NSLog(@"error: [%@] %@", @(unexpectedError.code), NSLocalizedString(@"Unexpected error has occurred.", @"Unexpected Error"));
             if (error) {
                 *error = unexpectedError;
             }
@@ -594,7 +594,7 @@ static NSString *_defaultService;
         }
         
         if (unexpectedError) {
-            NSLog(@"error: [%@] %@", @(unexpectedError.code), NSLocalizedString(@"Unexpected error has occurred.", nil));
+            NSLog(@"error: [%@] %@", @(unexpectedError.code), NSLocalizedString(@"Unexpected error has occurred.", @"Unexpected Error"));
             if (error) {
                 *error = unexpectedError;
             }
@@ -1177,7 +1177,7 @@ static NSString *_defaultService;
                 }
             }
             if (!accessControl) {
-                NSString *message = NSLocalizedString(@"Unexpected error has occurred.", nil);
+                NSString *message = NSLocalizedString(@"Unexpected error has occurred.", @"Unexpected Error");
                 NSError *e = [self.class unexpectedError:message];
                 if (error) {
                     *error = e;

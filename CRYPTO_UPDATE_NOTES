@@ -44,7 +44,7 @@ QredoED25519SigningKey
 
 TODO:
     DONE    QredoDhPrivateKey
-QredoDhPublicKey
+        QredoDhPublicKey
 QredoED25519SigningKey
 QredoED25519VerifyKey
 QredoPrivateKey

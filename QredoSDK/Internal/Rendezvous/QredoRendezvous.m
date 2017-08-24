@@ -6,11 +6,8 @@
 #import "QredoRendezvous.h"
 #import "QredoConversationPrivate.h"
 #import "QredoVaultPrivate.h"
-
 #import "QredoRendezvousPrivate.h"
-
 #import "QredoRendezvousCrypto.h"
-#import "QredoDhPublicKey.h"
 #import "QredoRawCrypto.h"
 #import "QredoCryptoImplV1.h"
 #import "QredoVaultCrypto.h"

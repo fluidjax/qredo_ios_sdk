@@ -5,7 +5,6 @@
 #import "QredoTypesPrivate.h"
 #import "QredoRendezvousCrypto.h"
 #import "QredoConversationCrypto.h"
-#import "QredoDhPublicKey.h"
 #import "QredoCryptoImplV1.h"
 #import "QredoClient.h"
 #import "NSDictionary+IndexableSet.h"

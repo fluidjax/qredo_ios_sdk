@@ -1,6 +1,5 @@
 /* HEADER GOES HERE */
 #import "QredoConversation.h"
-#import "QredoDhPublicKey.h"
 #import "QredoClient.h"
 
 extern NSString *const kQredoConversationVaultItemLabelAmOwner;
