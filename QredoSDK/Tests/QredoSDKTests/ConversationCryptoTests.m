@@ -30,11 +30,8 @@
 
 
 -(void)testGenerateTestVectors {
-    NSData *myPrivateKeyData = [NSData dataWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
-    NSData *yourPublicKeyData = [NSData dataWithHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
-    
-    QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:myPrivateKeyData];
-    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:yourPublicKeyData];
+    QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
 
     QredoKeyRef *masterKeyRef = [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
                                                                      yourPublicKeyRef:yourPublicKeyRef];
@@ -52,11 +49,8 @@
 
 
 -(void)testVectors {
-    NSData *myPrivateKeyData = [NSData dataWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
-    NSData *yourPublicKeyData = [NSData dataWithHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
-    
-    QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:myPrivateKeyData];
-    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:yourPublicKeyData];
+    QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
     QredoKeyRef *masterKeyRef= [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
                                                                      yourPublicKeyRef:yourPublicKeyRef];
     

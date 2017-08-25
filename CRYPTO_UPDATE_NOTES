@@ -3,6 +3,7 @@ QredoDhPrivateKey
 QredoDhPublicKey
 QredoED25519SigningKey
 QredoED25519VerifyKey
+
 QredoEllipticCurvePoint
 QredoPrivateKey
 QredoPublicKey

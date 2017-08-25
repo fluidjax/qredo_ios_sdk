@@ -2,7 +2,6 @@
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
 #import "QredoRawCrypto.h"
-#import "QredoDhPublicKey.h"
 #include "QredoKeyRef.h"
 
 @interface QredoConversationCrypto :NSObject
@@ -14,7 +13,7 @@
 
 -(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage
                                bulkKeyRef:(QredoKeyRef *)bulkKeyRef
-                            authKeyRef:(QredoKeyRef *)authKeyRef
+                               authKeyRef:(QredoKeyRef *)authKeyRef
                                     error:(NSError **)error;
 
 -(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef

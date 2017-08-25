@@ -4,7 +4,6 @@
 #import "QredoED25519SigningKey.h"
 #import "QredoVault.h"
 #import "QredoVaultPrivate.h"
-#import "QredoKeyPair.h"
 #import "QredoKeyRefPair.h"
 
 @class QredoKeyRef;
@@ -14,25 +13,23 @@
 
 
 @property QredoKeyRefPair *ownershipKeyPairRef;
-@property QredoKeyRef *encryptionKey;
-@property QredoKeyRef *authenticationKey;
+@property QredoKeyRef *encryptionKeyRef;
+@property QredoKeyRef *authenticationKeyRef;
 @property QredoQUID *vaultId;
-//@property NSData *vaultKey;
 @property QredoKeyRef *vaultKeyRef;
 
-
--(instancetype)initWithVaultKeyRef:(QredoKeyRef *)vaultKey;
+-(instancetype)initWithVaultKeyRef:(QredoKeyRef *)vaultKeyRef;
 @end
 
 
 @interface QredoVaultCrypto :NSObject
 
-@property (readonly) QredoKeyRef *bulkKey;
-@property (readonly) QredoKeyRef *authenticationKey;
+@property (readonly) QredoKeyRef *bulkKeyRef;
+@property (readonly) QredoKeyRef *authenticationKeyRef;
 
-+(instancetype)vaultCryptoWithBulkKey:(QredoKeyRef *)bulkKey authenticationKey:(QredoKeyRef *)authenticationKey;
++(instancetype)vaultCryptoWithBulkKeyRef:(QredoKeyRef *)bulkKeyRef authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef;
 
--(instancetype)initWithBulkKey:(QredoKeyRef *)bulkKey authenticationKey:(QredoKeyRef *)authenticationKey;
+-(instancetype)initWithBulkKeyRef:(QredoKeyRef *)bulkKeyRef authenticationKeyRef:(QredoKeyRef *)authenticationKeyRef;
 
 -(QLFEncryptedVaultItemHeader *)encryptVaultItemHeaderWithItemRef:(QLFVaultItemRef *)vaultItemRef
                                                          metadata:(QLFVaultItemMetadata *)metadata
@@ -47,13 +44,13 @@
 -(QLFVaultItemMetadata *)decryptEncryptedVaultItemHeader:(QLFEncryptedVaultItemHeader *)encryptedVaultItemHeader
                                                    error:(NSError **)error;
 
-+(QredoKeyRef *)systemVaultKeyWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKey;
-+(QredoKeyRef *)userVaultKeyWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKey;
++(QredoKeyRef *)systemVaultKeyRefWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKeyRef;
++(QredoKeyRef *)userVaultKeyRefWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKeyRef;
 
 //Used for testing
-+(QredoKeyRef *)vaultMasterKeyWithUserMasterKeyRef:(QredoKeyRef *)userMasterKeyRef;
-+(QredoKeyRef *)vaultKeyWithVaultMasterKey:(QredoKeyRef *)vaultMasterKey infoData:(NSData *)infoData;
-+(QredoKeyRef *)vaultKeyWithVaultMasterKey:(QredoKeyRef *)vaultMasterKey info:(NSString *)info;
++(QredoKeyRef *)vaultMasterKeyRefWithUserMasterKeyRef:(QredoKeyRef *)userMasterKeyRef;
++(QredoKeyRef *)vaultKeyRefWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKeyRef infoData:(NSData *)infoData;
++(QredoKeyRef *)vaultKeyRefWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKeyRef info:(NSString *)info;
 +(QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey;
 +(QLFVaultKeyPair *)vaultKeyPairWithVaultKeyRef:(QredoKeyRef *)vaultKey;
 

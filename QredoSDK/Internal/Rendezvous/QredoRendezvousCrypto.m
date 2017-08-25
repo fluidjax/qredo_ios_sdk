@@ -165,7 +165,7 @@
 }
 
 
--(QredoKeyRef *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId {
+-(QredoKeyRef *)masterKeyRefWithTag:(NSString *)tag appId:(NSString *)appId {
     NSAssert(appId,@"AppID should not be nil");
     NSString *compositeTag = [NSString stringWithFormat:@"%@%@",appId,tag];
     NSData *tagData = [compositeTag dataUsingEncoding:NSUTF8StringEncoding];
@@ -174,20 +174,20 @@
 }
 
 
--(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(QredoKeyRef *)masterKeyRef {
+-(QLFRendezvousHashedTag *)hashedTagWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
     QredoKeyRef *keyRef = [keychain deriveKeyRef:masterKeyRef salt:QREDO_RENDEZVOUS_HASHED_TAG_SALT info:[NSData data]];
     return [keychain keyRefToQUID:keyRef];
 }
 
 
--(QredoKeyRef *)encryptionKeyWithMasterKey:(QredoKeyRef *)masterKeyRef {
+-(QredoKeyRef *)encryptionKeyRefWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
     return [keychain deriveKeyRef:masterKeyRef salt:QREDO_RENDEZVOUS_ENC_SALT info:[NSData data]];
 }
 
 
--(QredoKeyRef *)authenticationKeyWithMasterKey:(QredoKeyRef *)masterKeyRef {
+-(QredoKeyRef *)authenticationKeyRefWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
     return [keychain deriveKeyRef:masterKeyRef salt:QREDO_RENDEZVOUS_AUTH_SALT info:[NSData data]];
 }

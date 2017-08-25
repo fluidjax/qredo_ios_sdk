@@ -23,17 +23,17 @@
 
 
 -(void)common_TestDerrivedKeysNotNilWithTag:(NSString *)tag {
-    QredoKeyRef *masterKeyRef = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
+    QredoKeyRef *masterKeyRef = [rendezvousCrypto masterKeyRefWithTag:tag appId:k_TEST_APPID];
     
     XCTAssertNotNil(masterKeyRef,@"Master key should not be nil");
     
-    QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKeyRef];
+    QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKeyRef:masterKeyRef];
     XCTAssertNotNil(hashedTag,@"Hashed tag should not be nil");
     
-    QredoKeyRef *authKeyRef = [rendezvousCrypto authenticationKeyWithMasterKey:masterKeyRef];
+    QredoKeyRef *authKeyRef = [rendezvousCrypto authenticationKeyRefWithMasterKeyRef:masterKeyRef];
     XCTAssertNotNil(authKeyRef,@"Authentication key should not be nil");
     
-    QredoKeyRef *encKeyRef = [rendezvousCrypto encryptionKeyWithMasterKey:masterKeyRef];
+    QredoKeyRef *encKeyRef = [rendezvousCrypto encryptionKeyRefWithMasterKeyRef:masterKeyRef];
     XCTAssertNotNil(encKeyRef,@"Authentication key should not be nil");
 }
 
@@ -49,14 +49,10 @@
 
 
 -(void)common_TestVectorsWithTag:(NSString *)tag {
-    QredoKeyRef *masterKeyRef = [rendezvousCrypto masterKeyWithTag:tag appId:k_TEST_APPID];
-    
-    QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKey:masterKeyRef];
-    
-    QredoKeyRef *authKeyRef = [rendezvousCrypto authenticationKeyWithMasterKey:masterKeyRef];
-    
-    QredoKeyRef *encKeyRef = [rendezvousCrypto encryptionKeyWithMasterKey:masterKeyRef];
-    
+    QredoKeyRef *masterKeyRef = [rendezvousCrypto masterKeyRefWithTag:tag appId:k_TEST_APPID];
+    QLFRendezvousHashedTag *hashedTag = [rendezvousCrypto hashedTagWithMasterKeyRef:masterKeyRef];
+    QredoKeyRef *authKeyRef = [rendezvousCrypto authenticationKeyRefWithMasterKeyRef:masterKeyRef];
+    QredoKeyRef *encKeyRef = [rendezvousCrypto encryptionKeyRefWithMasterKeyRef:masterKeyRef];
     
     QLFKeyPairLF *requesterKeyPair  = [[QredoCryptoKeychain sharedQredoCryptoKeychain] newRequesterKeyPair];
     NSData *requesterPublicKeyBytes = [[requesterKeyPair pubKey] bytes];

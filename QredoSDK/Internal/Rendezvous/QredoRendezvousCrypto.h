@@ -4,7 +4,6 @@
 #import "QredoTypes.h"
 #import "QredoRendezvousHelper.h"
 #import "QredoKeyRef.h"
-#import "QredoPublicKey.h"
 
 @protocol QredoRendezvousHelper;
 
@@ -45,11 +44,11 @@
                                                          signingHandler:(signDataBlock)signingHandler
                                                                   error:(NSError **)error;
 
--(QredoKeyRef *)masterKeyWithTag:(NSString *)tag appId:(NSString *)appId;
+-(QredoKeyRef *)masterKeyRefWithTag:(NSString *)tag appId:(NSString *)appId;
 
--(QLFRendezvousHashedTag *)hashedTagWithMasterKey:(QredoKeyRef *)masterKey;
--(QredoKeyRef *)encryptionKeyWithMasterKey:(QredoKeyRef *)masterKey;
--(QredoKeyRef *)authenticationKeyWithMasterKey:(QredoKeyRef *)masterKey;
+-(QLFRendezvousHashedTag *)hashedTagWithMasterKeyRef:(QredoKeyRef *)masterKey;
+-(QredoKeyRef *)encryptionKeyRefWithMasterKeyRef:(QredoKeyRef *)masterKey;
+-(QredoKeyRef *)authenticationKeyRefWithMasterKeyRef:(QredoKeyRef *)masterKey;
 
 
 @end

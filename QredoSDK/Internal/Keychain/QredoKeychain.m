@@ -60,11 +60,10 @@
 
 
 -(void)deriveKeys {
-
     QredoKeyRef *masterKeyRef = [[QredoKeyRef alloc] initWithKeyData:_masterKey];
-    QredoKeyRef *vaultMasterKeyRef = [QredoVaultCrypto vaultMasterKeyWithUserMasterKeyRef:masterKeyRef];
-    self.systemVaultKeys = [[QredoVaultKeys alloc] initWithVaultKeyRef:[QredoVaultCrypto systemVaultKeyWithVaultMasterKeyRef:vaultMasterKeyRef]];
-    self.defaultVaultKeys = [[QredoVaultKeys alloc] initWithVaultKeyRef:[QredoVaultCrypto userVaultKeyWithVaultMasterKeyRef:vaultMasterKeyRef]];
+    QredoKeyRef *vaultMasterKeyRef = [QredoVaultCrypto vaultMasterKeyRefWithUserMasterKeyRef:masterKeyRef];
+    self.systemVaultKeys = [[QredoVaultKeys alloc] initWithVaultKeyRef:[QredoVaultCrypto systemVaultKeyRefWithVaultMasterKeyRef:vaultMasterKeyRef]];
+    self.defaultVaultKeys = [[QredoVaultKeys alloc] initWithVaultKeyRef:[QredoVaultCrypto userVaultKeyRefWithVaultMasterKeyRef:vaultMasterKeyRef]];
 }
 
 

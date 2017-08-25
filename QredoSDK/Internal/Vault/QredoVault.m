@@ -126,8 +126,8 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
         _updateListener.dataSource = self;
         _updateListener.pollInterval = kQredoVaultUpdateInterval;
         
-        _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:vaultKeys.encryptionKey
-                                              authenticationKey:vaultKeys.authenticationKey];
+        _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKeyRef:vaultKeys.encryptionKeyRef
+                                              authenticationKeyRef:vaultKeys.authenticationKeyRef];
         
         _vaultSequenceCache = [QredoVaultSequenceCache instance];
         

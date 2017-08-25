@@ -9,7 +9,6 @@
 #import "QredoKeyRef.h"
 #import "NSData+HexTools.h"
 #import "QredoCryptoKeychain.h"
-#import "QredoKey.h"
 #import "QredoQUID.h"
 
 @interface QredoKeyRef()
@@ -35,13 +34,6 @@
 -(NSString*)hexadecimalString{
     return [self.ref hexadecimalString];
 }
-
-
-#pragma Private Methods 
-//These should be private for Testing Only as QredoKeyRef should not have access to the underlying Key data
-//Access within live code should be via Keychain only
-
-
 
 
 -(instancetype)initWithKeyHexString:(NSString*)keyHexString{
