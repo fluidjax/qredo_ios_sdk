@@ -8,7 +8,7 @@ java -jar qredo-in-a-jar-0.19-SNAPSHOT.jar
 Split - Justin Issue#181
 
 
-QredoRawCrypto - No Key Refs
+QredoCryptoRaw - No Key Refs
                 
 
 
@@ -56,7 +56,7 @@ Above code snippets are proposals. Please discuss further in commentary, or in S
 Important design constraints:
 
 Each layer must never expose anything about library- or platform-specific crypto.
-The two base layers (QredoRawCrypto and QredoCryptoImpl) must NOT use key references, but actual keys in standardized serializations.
+The two base layers (QredoCryptoRaw and QredoCryptoImpl) must NOT use key references, but actual keys in standardized serializations.
 - The only component that deals with key refs and persistence (incl. platform keychain) should be the QredoKeychain.
 Crypto components must use NSAssert to enforce preconditions, postconditions and important invariants. Failure in these components must cause the program to abort.
 Some of QredoCrypto has been started on in the crypto-interface-refactor branch. All tests are passing.

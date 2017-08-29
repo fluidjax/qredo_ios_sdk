@@ -3,7 +3,7 @@
 
 #define kCCBlockSizeAES256 kCCBlockSizeAES128
 
-@interface QredoRawCrypto : NSObject
+@interface QredoCryptoRaw : NSObject
 
 NS_ASSUME_NONNULL_BEGIN
 

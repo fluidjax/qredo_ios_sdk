@@ -2,7 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoCryptoImplV1.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoDhPublicKey.h"
 #import "QredoDhPrivateKey.h"
@@ -27,7 +27,7 @@
     NSData *salt      = [@"saltSALTsaltSALTsaltSALTsaltSALTsalt" dataUsingEncoding:NSASCIIStringEncoding];
     int rounds = 4096;
     int keyLen = 40;
-    NSData *key = [QredoRawCrypto pbkdf2Sha256:password salt:salt outputLength:keyLen iterations:rounds];
+    NSData *key = [QredoCryptoRaw pbkdf2Sha256:password salt:salt outputLength:keyLen iterations:rounds];
     
     NSData *expectedResult = [NSData dataWithHexString:@"348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9"];
     
@@ -53,7 +53,7 @@
     //Extract the IV from the start (16 bytes), and attempt to encrypt the
     //same data ourselves using that IV and confirm the cipher text is correct
     NSData *iv = [encryptedDataWithIv subdataWithRange:NSMakeRange(0,kCCBlockSizeAES256)];
-    NSData *expectedEncryptedData = [QredoRawCrypto encryptData:plaintextData with256bitAesKey:keyData iv:iv];
+    NSData *expectedEncryptedData = [QredoCryptoRaw encryptData:plaintextData with256bitAesKey:keyData iv:iv];
     NSData *actualEncryptedData = [encryptedDataWithIv subdataWithRange:NSMakeRange(kCCBlockSizeAES256,encryptedDataWithIv.length - kCCBlockSizeAES256)];
     XCTAssertTrue([expectedEncryptedData isEqualToData:actualEncryptedData],@"Encrypted data (with IV removed) incorrect.");
 }

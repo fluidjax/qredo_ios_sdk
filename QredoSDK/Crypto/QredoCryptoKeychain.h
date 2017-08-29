@@ -4,7 +4,7 @@
 //
 //  Created by Christopher Morris on 14/08/2017.
 //  Within General Qredo Code, only Key Refrences are passed, the actual mapping of *All* Refs->KeyData takes place here
-//  Actually raw Key data is only used within the Crypto Sub Group of source files (QredoCryptoImpl, QredoRawCrypto)
+//  Actually raw Key data is only used within the Crypto Sub Group of source files (QredoCryptoImpl, QredoCryptoRaw)
 
 
 @class QredoKey;

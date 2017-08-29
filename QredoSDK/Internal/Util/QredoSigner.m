@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import "QredoSigner.h"
 #import "QredoCryptoImplV1.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoErrorCodes.h"
 
 

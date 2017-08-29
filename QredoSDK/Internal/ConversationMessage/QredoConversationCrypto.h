@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #include "QredoKeyRef.h"
 
 @interface QredoConversationCrypto :NSObject

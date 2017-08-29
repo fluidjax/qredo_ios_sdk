@@ -18,7 +18,7 @@
 		665149101BF60432003491CA /* NSData+QredoRandomData.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B171BD5073A00EC8D6C /* NSData+QredoRandomData.m */; };
 		665149111BF60432003491CA /* NSSet+QredoSetEquality.m in Sources */ = {isa = PBXBuildFile; fileRef = 66605B191BD5073A00EC8D6C /* NSSet+QredoSetEquality.m */; };
 		665149131BF60432003491CA /* QredoCryptoImplV1.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059721BD505FE00EC8D6C /* QredoCryptoImplV1.m */; };
-		665149151BF60432003491CA /* QredoRawCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059771BD505FE00EC8D6C /* QredoRawCrypto.m */; };
+		665149151BF60432003491CA /* QredoCryptoRaw.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059771BD505FE00EC8D6C /* QredoCryptoRaw.m */; };
 		665149161BF60432003491CA /* QredoCryptoError.m in Sources */ = {isa = PBXBuildFile; fileRef = 666059791BD505FE00EC8D6C /* QredoCryptoError.m */; };
 		665149181BF60432003491CA /* QredoDhPrivateKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660597D1BD505FE00EC8D6C /* QredoDhPrivateKey.m */; };
 		665149191BF60432003491CA /* QredoDhPublicKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 6660597F1BD505FE00EC8D6C /* QredoDhPublicKey.m */; };
@@ -520,8 +520,8 @@
 		666059701BD505FE00EC8D6C /* QredoCryptoImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCryptoImpl.h; sourceTree = "<group>"; };
 		666059711BD505FE00EC8D6C /* QredoCryptoImplV1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCryptoImplV1.h; sourceTree = "<group>"; };
 		666059721BD505FE00EC8D6C /* QredoCryptoImplV1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoCryptoImplV1.m; sourceTree = "<group>"; };
-		666059761BD505FE00EC8D6C /* QredoRawCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoRawCrypto.h; sourceTree = "<group>"; };
-		666059771BD505FE00EC8D6C /* QredoRawCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoRawCrypto.m; sourceTree = "<group>"; };
+		666059761BD505FE00EC8D6C /* QredoCryptoRaw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCryptoRaw.h; sourceTree = "<group>"; };
+		666059771BD505FE00EC8D6C /* QredoCryptoRaw.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoCryptoRaw.m; sourceTree = "<group>"; };
 		666059781BD505FE00EC8D6C /* QredoCryptoError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoCryptoError.h; sourceTree = "<group>"; };
 		666059791BD505FE00EC8D6C /* QredoCryptoError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QredoCryptoError.m; sourceTree = "<group>"; };
 		6660597C1BD505FE00EC8D6C /* QredoDhPrivateKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QredoDhPrivateKey.h; sourceTree = "<group>"; };
@@ -1147,8 +1147,8 @@
 				666059701BD505FE00EC8D6C /* QredoCryptoImpl.h */,
 				666059711BD505FE00EC8D6C /* QredoCryptoImplV1.h */,
 				666059721BD505FE00EC8D6C /* QredoCryptoImplV1.m */,
-				666059761BD505FE00EC8D6C /* QredoRawCrypto.h */,
-				666059771BD505FE00EC8D6C /* QredoRawCrypto.m */,
+				666059761BD505FE00EC8D6C /* QredoCryptoRaw.h */,
+				666059771BD505FE00EC8D6C /* QredoCryptoRaw.m */,
 				666059781BD505FE00EC8D6C /* QredoCryptoError.h */,
 				666059791BD505FE00EC8D6C /* QredoCryptoError.m */,
 				833698631F418ED900A51544 /* QredoCryptoKeychain.h */,
@@ -2701,7 +2701,7 @@
 				665149101BF60432003491CA /* NSData+QredoRandomData.m in Sources */,
 				665149111BF60432003491CA /* NSSet+QredoSetEquality.m in Sources */,
 				665149131BF60432003491CA /* QredoCryptoImplV1.m in Sources */,
-				665149151BF60432003491CA /* QredoRawCrypto.m in Sources */,
+				665149151BF60432003491CA /* QredoCryptoRaw.m in Sources */,
 				665149161BF60432003491CA /* QredoCryptoError.m in Sources */,
 				83EC3B0A1CC7A0A200A55271 /* QredoNetworkTime.m in Sources */,
 				665149181BF60432003491CA /* QredoDhPrivateKey.m in Sources */,

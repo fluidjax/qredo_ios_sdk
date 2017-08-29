@@ -1,7 +1,7 @@
 /* HEADER GOES HERE */
 #import "QredoKeychain.h"
 #import "QredoCryptoImplV1.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoErrorCodes.h"
 #import "NSData+QredoRandomData.h"
 #import "QredoVaultCrypto.h"

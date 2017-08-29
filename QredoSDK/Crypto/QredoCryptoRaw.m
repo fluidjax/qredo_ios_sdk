@@ -3,7 +3,7 @@
 
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoED25519VerifyKey.h"
 #import "QredoED25519SigningKey.h"
 
@@ -13,7 +13,7 @@
 // TODO: look at keychain wrapper
 // TODO: use warning assertions more often
 
-@implementation QredoRawCrypto
+@implementation QredoCryptoRaw
 
 
 /*****************************************************************************
@@ -26,7 +26,7 @@
     //Specifically for AES CTR
     //generate a 128bit IV (64bit random nonce + 64bit counter starting at 0)
     //This is required because Apple's implementation rolls over at 64bit boundary, where other implementations rollover at 128bit.
-    NSMutableData *iv = [[QredoRawCrypto secureRandom:(kCCBlockSizeAES256/2)] mutableCopy];
+    NSMutableData *iv = [[QredoCryptoRaw secureRandom:(kCCBlockSizeAES256/2)] mutableCopy];
     [iv increaseLengthBy:(kCCBlockSizeAES256/2)];
     return [iv copy];
 }

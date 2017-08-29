@@ -5,7 +5,7 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoErrorCodes.h"
 #import "QredoQUIDPrivate.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoKeyRef.h"
 #import "QredoCryptoKeychain.h"
 

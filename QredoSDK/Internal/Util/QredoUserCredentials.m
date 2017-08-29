@@ -1,6 +1,6 @@
 #import "QredoUserCredentials.h"
 #import <CommonCrypto/CommonCrypto.h>
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoLoggerPrivate.h"
 #include "QredoMacros.h"
 
@@ -48,7 +48,7 @@
     [concatenatedBytes appendData:[self sha1WithString:self.userId]];
     [concatenatedBytes appendData:[self sha1WithString:self.userSecure]];
     
-    NSData *key = [QredoRawCrypto pbkdf2Sha256:concatenatedBytes salt:SALT_USER_UNLOCK outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
+    NSData *key = [QredoCryptoRaw pbkdf2Sha256:concatenatedBytes salt:SALT_USER_UNLOCK outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
     return key;
 }
 
@@ -68,8 +68,8 @@
 
 
 -(NSData *)masterKey:(NSData *)userUnlockKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:userUnlockKey salt:SALT_USER_MASTER];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk info:INFO_USER_MASTER outputLength:256];
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:userUnlockKey salt:SALT_USER_MASTER];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:INFO_USER_MASTER outputLength:256];
     return okm;
 }
 

@@ -14,7 +14,7 @@
 #import "QredoKeyRefPair.h"
 #import "UICKeyChainStore.h"
 #import "QredoCryptoImplV1.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoQUID.h"
 #import "QredoQUIDPrivate.h"
 #import "NSData+HexTools.h"
@@ -143,7 +143,7 @@
 
 -(NSString*)sha256FingerPrintKeyRef:(QredoKeyRef*)keyRef{
     NSData *keyData = [self retrieveWithRef:keyRef];
-    NSData *fp = [QredoRawCrypto sha256:keyData];
+    NSData *fp = [QredoCryptoRaw sha256:keyData];
     return [QredoUtils dataToHexString:fp];
 }
 

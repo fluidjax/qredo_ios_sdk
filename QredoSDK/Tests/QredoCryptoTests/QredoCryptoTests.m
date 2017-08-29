@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoCryptoImplV1.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoLoggerPrivate.h"
@@ -55,8 +55,8 @@
     NSData *info    = [QredoUtils hexStringToData:@"f0f1f2f3f4f5f6f7f8f9"];
     int length = 42;
     NSData *expected    = [QredoUtils hexStringToData:@"3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887185865"];
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:ikm salt:salt];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk info:info outputLength:length];
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikm salt:salt];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:info outputLength:length];
     XCTAssertTrue([okm isEqualToData:expected],@"hkdf fails RFC Test1");
 }
 
@@ -85,8 +85,8 @@
                        cc30c58179ec3e87c14c01d5c1f3434f\
                        1d87"];
 
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:ikm salt:salt];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk info:info outputLength:length];
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikm salt:salt];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:info outputLength:length];
     XCTAssertTrue([okm isEqualToData:expected],@"hkdf fails RFC Test2");
 }
 
@@ -106,8 +106,8 @@
 
 
 -(void)encryptDecrypt:(NSData*)plaintext key:(NSData*)key iv:(NSData*)iv{
-    NSData *encrypted = [QredoRawCrypto aes256CtrEncrypt:plaintext key:key iv:iv];
-    NSData *decrypted = [QredoRawCrypto aes256CtrDecrypt:encrypted key:key iv:iv];
+    NSData *encrypted = [QredoCryptoRaw aes256CtrEncrypt:plaintext key:key iv:iv];
+    NSData *decrypted = [QredoCryptoRaw aes256CtrDecrypt:encrypted key:key iv:iv];
     XCTAssertNotNil(decrypted,@"Encrypted data should not be nil.");
     if (plaintext.length>0) XCTAssertFalse([encrypted isEqualToData:plaintext],@"If plaintext is not 0 bytes, encrypted shouldn't be the same as plaintext.");
     XCTAssertTrue([decrypted isEqualToData:plaintext],@"Encrypted data incorrect.");
@@ -120,7 +120,7 @@
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
     NSData *encrypted           = [QredoUtils hexStringToData:@"601ec313775789a5b7a7f504bbf3d228f443e3ca4d62b59aca84e990cacaf5c52b0930daa23de94ce87017ba2d84988ddfc9c58db67aada613c2dd08457941a6"];
     
-    NSData *result = [QredoRawCrypto aes256CtrDecrypt:encrypted key:key iv:iv];
+    NSData *result = [QredoCryptoRaw aes256CtrDecrypt:encrypted key:key iv:iv];
     XCTAssertNotNil(result,@"Encrypted data should not be nil.");
     XCTAssertTrue([result isEqualToData:plaintext],@"Encrypted data incorrect.");
 }
@@ -131,7 +131,7 @@
     NSData *iv                  = [QredoUtils hexStringToData:@"44444444444444440000000000000000"];
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
     NSData *encrypted           = [QredoUtils hexStringToData:@"5b50fe7bf8ffccf20188aba99aeebc7294192b348a0050083ea85e801c5c4b44309f6073e442bb54e07a810f655ded190de58c497a4763a1e70acf21cc1a582d"];
-    NSData *result = [QredoRawCrypto aes256CtrDecrypt:encrypted key:key iv:iv];
+    NSData *result = [QredoCryptoRaw aes256CtrDecrypt:encrypted key:key iv:iv];
     XCTAssertNotNil(result,@"Encrypted data should not be nil.");
     XCTAssertTrue([result isEqualToData:plaintext],@"Encrypted data incorrect.");
 }
@@ -147,7 +147,7 @@
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
     NSData *encrypted           = [QredoUtils hexStringToData:@"8ea94863ba8fe940fe7032d13083bf7e3f38940a1579b3875e60c37ceb91dfb527c63f97d00036c49c1dfb9161c39afcbe9218a879799e723852f46d728e8f3e"];
 
-    XCTAssertThrows([QredoRawCrypto aes256CtrDecrypt:encrypted key:key iv:[NSData data]],@"Should throw an exception");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrDecrypt:encrypted key:key iv:[NSData data]],@"Should throw an exception");
 }
 
 
@@ -157,7 +157,7 @@
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
-    XCTAssertThrows([QredoRawCrypto aes256CtrDecrypt:nil key:key iv:iv],@"Should throw an exception");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrDecrypt:nil key:key iv:iv],@"Should throw an exception");
 #pragma clang diagnostic pop
     
     
@@ -185,7 +185,7 @@
     };
     NSData *encryptedData = [NSData dataWithBytes:encryptedDataArray length:sizeof(encryptedDataArray) / sizeof(uint8_t)];
 
-    XCTAssertThrows([QredoRawCrypto aes256CtrDecrypt:encryptedData key:keyData iv:ivData],@"Invalid IV length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrDecrypt:encryptedData key:keyData iv:ivData],@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
 
@@ -209,7 +209,7 @@
     };
     NSData *encryptedData = [NSData dataWithBytes:encryptedDataArray length:sizeof(encryptedDataArray) / sizeof(uint8_t)];
     
-    XCTAssertThrows([QredoRawCrypto aes256CtrDecrypt:encryptedData key:keyData iv:ivData],@"Invalid IV length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrDecrypt:encryptedData key:keyData iv:ivData],@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
 
@@ -228,7 +228,7 @@
     NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
     
-    XCTAssertThrows([QredoRawCrypto aes256CtrEncrypt:plaintextData key:keyData iv:ivData],@"Invalid key length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrEncrypt:plaintextData key:keyData iv:ivData],@"Invalid key length but NSInvalidArgumentException not thrown.");
 }
 
 
@@ -241,7 +241,7 @@
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
     NSData *encrypted           = [QredoUtils hexStringToData:@"1fb6d992fafa44500fe03c61781d111710e1078e8609529cc4f9e8be68d4d38bcd0f55c344a974af029b79b28960e8c943bc75428d46b51457dc261246a075ac"];
     
-    NSData *result = [QredoRawCrypto aes256CtrEncrypt:plaintext key:key iv:iv];
+    NSData *result = [QredoCryptoRaw aes256CtrEncrypt:plaintext key:key iv:iv];
     XCTAssertNotNil(result,@"Encrypted data should not be nil.");
     XCTAssertTrue([result isEqualToData:encrypted],@"Encrypted data incorrect.");
 }
@@ -254,7 +254,7 @@
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
     NSData *encrypted           = [QredoUtils hexStringToData:@"601ec313775789a5b7a7f504bbf3d228f443e3ca4d62b59aca84e990cacaf5c52b0930daa23de94ce87017ba2d84988ddfc9c58db67aada613c2dd08457941a6"];
     
-    NSData *result = [QredoRawCrypto aes256CtrEncrypt:plaintext key:key iv:iv];
+    NSData *result = [QredoCryptoRaw aes256CtrEncrypt:plaintext key:key iv:iv];
     XCTAssertNotNil(result,@"Encrypted data should not be nil.");
     XCTAssertTrue([result isEqualToData:encrypted],@"Encrypted data incorrect.");
 }
@@ -266,7 +266,7 @@
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
-    XCTAssertThrows([QredoRawCrypto aes256CtrEncrypt:plaintext key:key iv:nil],@"Should throw an exception");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrEncrypt:plaintext key:key iv:nil],@"Should throw an exception");
 #pragma clang diagnostic pop
     
     
@@ -279,7 +279,7 @@
     
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
-    XCTAssertThrows([QredoRawCrypto aes256CtrEncrypt:nil key:key iv:iv],@"Should throw an exception");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrEncrypt:nil key:key iv:iv],@"Should throw an exception");
 #pragma clang diagnostic pop
     
     }
@@ -302,7 +302,7 @@
     NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
     
-    XCTAssertThrows([QredoRawCrypto aes256CtrEncrypt:plaintextData key:keyData iv:ivData],@"Invalid IV length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrEncrypt:plaintextData key:keyData iv:ivData],@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
 
@@ -322,7 +322,7 @@
     NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
     NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
     
-    XCTAssertThrows([QredoRawCrypto aes256CtrEncrypt:plaintextData key:keyData iv:ivData],@"Invalid IV length but NSInvalidArgumentException not thrown.");
+    XCTAssertThrows([QredoCryptoRaw aes256CtrEncrypt:plaintextData key:keyData iv:ivData],@"Invalid IV length but NSInvalidArgumentException not thrown.");
 }
 
 
@@ -344,7 +344,7 @@
     };
     NSData *expectedPrkData = [NSData dataWithBytes:expectedPrkDataArray length:sizeof(expectedPrkDataArray) / sizeof(uint8_t)];
     
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:ikmData salt:saltData];
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikmData salt:saltData];
     
     XCTAssertNotNil(prk,@"PRK should not be nil.");
     XCTAssertTrue([expectedPrkData isEqualToData:prk],@"PRK data incorrect.");
@@ -371,7 +371,7 @@
     };
     NSData *expectedOkmData = [NSData dataWithBytes:expectedOkmDataArray length:sizeof(expectedOkmDataArray) / sizeof(uint8_t)];
     
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:keyData info:infoData outputLength:outputLength];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:keyData info:infoData outputLength:outputLength];
     
     XCTAssertNotNil(okm,@"OKM should not be nil.");
     XCTAssertTrue([expectedOkmData isEqualToData:okm],@"OKM data incorrect.");
@@ -401,8 +401,8 @@
     };
     NSData *expectedOkmData = [NSData dataWithBytes:expectedOkmDataArray length:sizeof(expectedOkmDataArray) / sizeof(uint8_t)];
 
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:ikmData salt:saltData];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk info:infoData outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikmData salt:saltData];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:infoData outputLength:CC_SHA256_DIGEST_LENGTH];
 
     XCTAssertNotNil(okm,@"OKM should not be nil.");
     XCTAssertTrue([expectedOkmData isEqualToData:okm],@"OKM data incorrect.");
@@ -425,7 +425,7 @@
     };
     NSData *expectedDerivedKeyData = [NSData dataWithBytes:expectedDerivedKeyDataArray length:sizeof(expectedDerivedKeyDataArray) / sizeof(uint8_t)];
     
-    NSData *derivedKey = [QredoRawCrypto pbkdf2Sha256:passwordData salt:saltData outputLength:keyLength iterations:iterations];
+    NSData *derivedKey = [QredoCryptoRaw pbkdf2Sha256:passwordData salt:saltData outputLength:keyLength iterations:iterations];
     
     XCTAssertNotNil(derivedKey,@"Derived key should not be nil.");
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:derivedKey],@"Derived key incorrect.");
@@ -450,7 +450,7 @@
     };
     NSData *expectedDerivedKeyData = [NSData dataWithBytes:expectedDerivedKeyDataArray length:sizeof(expectedDerivedKeyDataArray) / sizeof(uint8_t)];
     
-    NSData *derivedKey = [QredoRawCrypto pbkdf2Sha256WithSalt:saltData  passwordData:passwordData requiredKeyLengthBytes:keyLength iterations:iterations];
+    NSData *derivedKey = [QredoCryptoRaw pbkdf2Sha256WithSalt:saltData  passwordData:passwordData requiredKeyLengthBytes:keyLength iterations:iterations];
     
     XCTAssertNotNil(derivedKey,@"Derived key should not be nil.");
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:derivedKey],@"Derived key incorrect.");
@@ -478,7 +478,7 @@
     NSData *expectedMacData = [NSData dataWithBytes:expectedMacDataArray length:sizeof(expectedMacDataArray) / sizeof(uint8_t)];
     
     
-    NSData *mac = [QredoRawCrypto hmacSha256:data key:keyData outputLen:data.length];
+    NSData *mac = [QredoCryptoRaw hmacSha256:data key:keyData outputLen:data.length];
     
     XCTAssertNotNil(mac,@"MAC should not be nil.");
     XCTAssertTrue([expectedMacData isEqualToData:mac],@"MAC data incorrect.");
@@ -510,7 +510,7 @@
     NSData *expectedMacData = [NSData dataWithBytes:expectedMacDataArray length:sizeof(expectedMacDataArray) / sizeof(uint8_t)];
     
     //Only use the first 64 bytes
-    NSData *mac = [QredoRawCrypto hmacSha256:data key:keyData outputLen:64];
+    NSData *mac = [QredoCryptoRaw hmacSha256:data key:keyData outputLen:64];
     
     XCTAssertNotNil(mac,@"MAC should not be nil.");
     XCTAssertTrue([expectedMacData isEqualToData:mac],@"MAC data incorrect.");
@@ -536,7 +536,7 @@
     };
     NSData *expectedHashData = [NSData dataWithBytes:expectedHashDataArray length:sizeof(expectedHashDataArray) / sizeof(uint8_t)];
     
-    NSData *hash = [QredoRawCrypto sha256:data];
+    NSData *hash = [QredoCryptoRaw sha256:data];
     
     XCTAssertNotNil(hash,@"Hash should not be nil.");
     XCTAssertTrue([expectedHashData isEqualToData:hash],@"Hash data incorrect.");
@@ -555,7 +555,7 @@
     };
     NSData *expectedHashData = [NSData dataWithBytes:expectedHashDataArray length:sizeof(expectedHashDataArray) / sizeof(uint8_t)];
     
-    NSData *hash = [QredoRawCrypto sha256:data];
+    NSData *hash = [QredoCryptoRaw sha256:data];
     
     XCTAssertNotNil(hash,@"Hash should not be nil.");
     XCTAssertTrue([expectedHashData isEqualToData:hash],@"Hash data incorrect.");
@@ -563,12 +563,12 @@
 
 
 -(void)testSecureRandom {
-    NSData *randomBytes1 = [QredoRawCrypto secureRandom:32];
-    NSData *randomBytes2 = [QredoRawCrypto secureRandom:32];
-    NSData *randomBytes3 = [QredoRawCrypto secureRandom:64];
-    NSData *randomBytes4 = [QredoRawCrypto secureRandom:128];
-    NSData *randomBytes5 = [QredoRawCrypto secureRandom:256];
-    NSData *randomBytes6 = [QredoRawCrypto secureRandom:131072];
+    NSData *randomBytes1 = [QredoCryptoRaw secureRandom:32];
+    NSData *randomBytes2 = [QredoCryptoRaw secureRandom:32];
+    NSData *randomBytes3 = [QredoCryptoRaw secureRandom:64];
+    NSData *randomBytes4 = [QredoCryptoRaw secureRandom:128];
+    NSData *randomBytes5 = [QredoCryptoRaw secureRandom:256];
+    NSData *randomBytes6 = [QredoCryptoRaw secureRandom:131072];
     
     XCTAssertEqual([randomBytes1 length],32);
     XCTAssertEqual([randomBytes2 length],32);
@@ -595,7 +595,7 @@
     
     BOOL expectedComparisonResult = YES;
     
-    BOOL comparisonResult = [QredoRawCrypto constantEquals:leftData rhs:rightData];
+    BOOL comparisonResult = [QredoCryptoRaw constantEquals:leftData rhs:rightData];
     
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
@@ -616,7 +616,7 @@
     
     BOOL expectedComparisonResult = NO;
     
-    BOOL comparisonResult = [QredoRawCrypto constantEquals:leftData rhs:rightData];
+    BOOL comparisonResult = [QredoCryptoRaw constantEquals:leftData rhs:rightData];
     
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
@@ -633,7 +633,7 @@
     
     BOOL expectedComparisonResult = YES;
     
-    BOOL comparisonResult = [QredoRawCrypto constantEquals:leftData rhs:rightData];
+    BOOL comparisonResult = [QredoCryptoRaw constantEquals:leftData rhs:rightData];
     
     XCTAssertTrue(expectedComparisonResult == comparisonResult,@"Comparison check failed.");
 }
@@ -657,7 +657,7 @@
         
         //Repeat enough so the measurement is fairly accurate
         for (int i = 0; i < 10000; i++){
-            [QredoRawCrypto constantEquals:leftData rhs:rightCorrectData];
+            [QredoCryptoRaw constantEquals:leftData rhs:rightCorrectData];
         }
     }];
 }
@@ -681,7 +681,7 @@
         
         //Repeat enough so the measurement is fairly accurate
         for (int i = 0; i < 10000; i++){
-            [QredoRawCrypto constantEquals:leftData rhs:rightIncorrectData];
+            [QredoCryptoRaw constantEquals:leftData rhs:rightIncorrectData];
         }
     }];
 }

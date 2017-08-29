@@ -1,7 +1,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "sodium.h"
 #import "QredoCryptoImplV1.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoEllipticCurvePoint.h"
 #import "MasterConfig.h"
 
@@ -39,14 +39,14 @@
 //This method will encrypt the data with a random IV using AES and prepend the IV onto the result
 -(NSData *)encryptBulk:(QredoBulkEncKey *)secretKey plaintext:(NSData *)plaintext{
     //Generate a random IV of the correct length for AES
-    NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
+    NSData *iv = [QredoCryptoRaw randomNonceAndZeroCounter];
     return [self encryptBulk:secretKey plaintext:plaintext iv:iv];
 }
 
 
 -(NSData *)encryptBulk:(QredoBulkEncKey *)secretKey plaintext:(NSData *)data iv:(NSData *)iv {
     if (!iv){
-        iv = [QredoRawCrypto randomNonceAndZeroCounter];
+        iv = [QredoCryptoRaw randomNonceAndZeroCounter];
     }
     if (!secretKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -60,7 +60,7 @@
                                      userInfo:nil];
     }
     
-    NSData *encryptedData = [QredoRawCrypto aes256CtrEncrypt:data key:[secretKey bytes]  iv:iv];
+    NSData *encryptedData = [QredoCryptoRaw aes256CtrEncrypt:data key:[secretKey bytes]  iv:iv];
     NSMutableData *ivAndEncryptedData = nil;
     
     if (encryptedData != nil){
@@ -106,7 +106,7 @@
     NSRange encryptedDataRange = NSMakeRange(ivLength,ciphertext.length - ivLength);
     NSData *dataToDecrypt = [ciphertext subdataWithRange:encryptedDataRange];
     
-    NSData *decryptedData = [QredoRawCrypto aes256CtrDecrypt:dataToDecrypt key:[secretKey bytes] iv:iv];
+    NSData *decryptedData = [QredoCryptoRaw aes256CtrDecrypt:dataToDecrypt key:[secretKey bytes] iv:iv];
     return decryptedData;
 }
 
@@ -138,7 +138,7 @@
                                      userInfo:nil];
     }
     
-    NSData *authCode = [QredoRawCrypto hmacSha256:data key:[authKey bytes] outputLen:length];
+    NSData *authCode = [QredoCryptoRaw hmacSha256:data key:[authKey bytes] outputLen:length];
     
     return authCode;
 }
@@ -201,23 +201,23 @@
     }
     
     //Generate the HMAC and compare to provided value (using constant time comparison function)
-    NSData *generatedHmac = [QredoRawCrypto hmacSha256:data key:[authKey bytes] outputLen:data.length];
+    NSData *generatedHmac = [QredoCryptoRaw hmacSha256:data key:[authKey bytes] outputLen:data.length];
     
-    BOOL macCorrect = [QredoRawCrypto constantEquals:generatedHmac rhs:mac];
+    BOOL macCorrect = [QredoCryptoRaw constantEquals:generatedHmac rhs:mac];
     
     return macCorrect;
 }
 
 
 -(QredoKey *)getRandomKey {
-    NSData *randomKey = [QredoRawCrypto secureRandom:BULK_KEY_SIZE_IN_BYTES];
+    NSData *randomKey = [QredoCryptoRaw secureRandom:BULK_KEY_SIZE_IN_BYTES];
     return [[QredoKey alloc] initWithData:randomKey];
 }
 
 -(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password {
     NSData *passwordData = [password dataUsingEncoding:PASSWORD_ENCODING_FOR_PBKDF2];
     
-    NSData *key = [QredoRawCrypto pbkdf2Sha256:passwordData salt:salt outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_ITERATION_COUNT];
+    NSData *key = [QredoCryptoRaw pbkdf2Sha256:passwordData salt:salt outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_ITERATION_COUNT];
     
     return key;
 }
@@ -257,8 +257,8 @@
     QredoKey *ikm = [self getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
     
     //HKDF using SHA-256
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:[ikm bytes] salt:salt];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:[ikm bytes] salt:salt];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:CC_SHA256_DIGEST_LENGTH];
     NSData *diffieHellmanSecretData = okm;
     
     return diffieHellmanSecretData;
@@ -315,15 +315,15 @@
 
 
 -(QredoKey *)deriveSlow:(NSData *)ikm salt:(NSData *)salt iterations:(int)iterations{
-   NSData *key =  [QredoRawCrypto pbkdf2Sha256:ikm salt:salt outputLength:32 iterations:iterations];
+   NSData *key =  [QredoCryptoRaw pbkdf2Sha256:ikm salt:salt outputLength:32 iterations:iterations];
    return [[QredoKey alloc] initWithData:key];
 }
 
 
 -(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info{
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:ikm
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikm
                                                salt:salt];
-    NSData *key = [QredoRawCrypto hkdfSha256Expand:prk
+    NSData *key = [QredoCryptoRaw hkdfSha256Expand:prk
                                                         info:info
                                                 outputLength:CC_SHA256_DIGEST_LENGTH];
    return [[QredoKey alloc] initWithData:key];

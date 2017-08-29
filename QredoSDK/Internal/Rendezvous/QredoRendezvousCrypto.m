@@ -1,7 +1,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "QredoRendezvousCrypto.h"
 #import "QredoCryptoImplV1.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoErrorCodes.h"
@@ -115,7 +115,7 @@
                           authenticationKeyRef:authenticationKeyRef
                      encryptedResponderData:encryptedResponderData];
     
-    BOOL isValidAuthCode = [QredoRawCrypto constantEquals:calculatedAuthenticationCode rhs:authenticationCode];
+    BOOL isValidAuthCode = [QredoCryptoRaw constantEquals:calculatedAuthenticationCode rhs:authenticationCode];
     
     __block BOOL isValidSignature = NO;
     [authenticationType ifRendezvousAnonymous:^{
@@ -247,7 +247,7 @@
 
 -(NSData *)encryptResponderInfo:(QLFRendezvousResponderInfo *)responderInfo
                encryptionKeyRef:(QredoKeyRef *)encryptionKeyRef {
-    NSData *iv = [QredoRawCrypto randomNonceAndZeroCounter];
+    NSData *iv = [QredoCryptoRaw randomNonceAndZeroCounter];
     
     return [self encryptResponderInfo:responderInfo encryptionKeyRef:encryptionKeyRef iv:iv];
 }

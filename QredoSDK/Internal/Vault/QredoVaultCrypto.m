@@ -1,6 +1,6 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "QredoVaultCrypto.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoCryptoImplV1.h"
 #import "QredoErrorCodes.h"
 #import "NSDictionary+IndexableSet.h"

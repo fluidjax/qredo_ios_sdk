@@ -10,7 +10,7 @@
 #import "NSData+HexTools.h"
 #import "QredoCryptoKeychain.h"
 #import "QredoQUID.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 
 
 #define  KEY_REF_INFO                 [@"QREDO_KEY_REF_INFO" dataUsingEncoding:NSUTF8StringEncoding]
@@ -37,7 +37,7 @@
 
 -(NSData*)hKDFRefForKey:(NSData*)key{
     //generate a Reference for a Key
-    NSData *ref = [QredoRawCrypto hkdfSha256Expand:key info:KEY_REF_INFO outputLength:32];
+    NSData *ref = [QredoCryptoRaw hkdfSha256Expand:key info:KEY_REF_INFO outputLength:32];
     return ref;
 }
 
