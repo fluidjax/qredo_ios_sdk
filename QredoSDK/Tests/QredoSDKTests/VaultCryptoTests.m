@@ -158,7 +158,7 @@
     
     XCTAssertEqualObjects([vaultKeyRef debugValue],vaultKeyExpected);
     
-    QredoED25519SigningKey *ownershipKeyPair = [QredoVaultCrypto ownershipSigningKeyWithVaultKey:[vaultKeyRef debugValue]];
+    QredoED25519SigningKey *ownershipKeyPair = [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:[vaultKeyRef debugValue]];
     NSData *signingKeyExpected
     = [NSData dataWithHexString:
        @"b63d366a 815fc76d 8268aaa3 4e607e86 c2e964bd 9c445310 3ee696a5 e82b08de 24c6e666 40a6eb44 b7e1eaf6"

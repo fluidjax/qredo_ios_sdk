@@ -9,6 +9,7 @@
 
 -(instancetype)initWithData:(NSData *)data {
     GUARD(data,@"Data argument is nil");
+    GUARD(data.length>0,@"Key is 0 bytes");
     self = [self init];
     
     if (self){

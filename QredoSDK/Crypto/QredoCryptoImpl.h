@@ -45,14 +45,4 @@
 
 
 
-
-//-(NSData *)authenticate:(QredoKey *)secretKey data:(NSData *)data;
-//-(NSData *)verify:(QredoKey *)secretKey data:(NSData *)data signature:(NSData *)signature;
-//-(QredoKeyPair *)ownershipKeyPairDerive:(NSData *)ikm;
-//-(NSData *)ownershipSign:(QredoKeyPair *)keyPair data:(NSData *)data;
-//-(NSData *)legacyHash:(NSData *)data;
-//-(QredoKeyPair *)legacyOwnershipKeyPairGenerate;
-//-(NSData *)legacyOwnershipSign:(QredoKeyPair *)keyPair data:(NSData *)data;
-
-
 @end

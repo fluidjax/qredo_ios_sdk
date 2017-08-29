@@ -51,7 +51,6 @@
 +(QredoKeyRef *)vaultMasterKeyRefWithUserMasterKeyRef:(QredoKeyRef *)userMasterKeyRef;
 +(QredoKeyRef *)vaultKeyRefWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKeyRef infoData:(NSData *)infoData;
 +(QredoKeyRef *)vaultKeyRefWithVaultMasterKeyRef:(QredoKeyRef *)vaultMasterKeyRef info:(NSString *)info;
-+(QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey;
 +(QLFVaultKeyPair *)vaultKeyPairWithVaultKeyRef:(QredoKeyRef *)vaultKey;
 
 -(void)decryptEncryptedVaultItem:(QLFEncryptedVaultItem *)encryptedVaultItem

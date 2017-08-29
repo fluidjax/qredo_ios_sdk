@@ -100,10 +100,6 @@
 }
 
 
-+(QredoED25519SigningKey *)ownershipSigningKeyWithVaultKey:(NSData *)vaultKey {
-    return [[QredoCryptoImplV1 sharedInstance] qredoED25519SigningKeyWithSeed:vaultKey];
-}
-
 
 +(QLFVaultKeyPair *)vaultKeyPairWithVaultKeyRef:(QredoKeyRef *)vaultKeyRef {
     

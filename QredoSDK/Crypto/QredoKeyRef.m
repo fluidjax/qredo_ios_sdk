@@ -10,6 +10,11 @@
 #import "NSData+HexTools.h"
 #import "QredoCryptoKeychain.h"
 #import "QredoQUID.h"
+#import "QredoRawCrypto.h"
+
+
+#define  KEY_REF_INFO                 [@"QREDO_KEY_REF_INFO" dataUsingEncoding:NSUTF8StringEncoding]
+
 
 @interface QredoKeyRef()
 @property (strong) NSData *ref;
@@ -23,16 +28,17 @@
     self = [self init];
     if (self) {
         QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-        QredoQUID *quid =  [[QredoQUID alloc] init];
-        _ref = [[quid data] copy];
+        _ref = [self hKDFRefForKey:keyData];
         [keychain addItem:keyData forRef:_ref];
     }
     return self;
 }
 
 
--(NSString*)hexadecimalString{
-    return [self.ref hexadecimalString];
+-(NSData*)hKDFRefForKey:(NSData*)key{
+    //generate a Reference for a Key
+    NSData *ref = [QredoRawCrypto hkdfSha256Expand:key info:KEY_REF_INFO outputLength:32];
+    return ref;
 }
 
 

@@ -22,48 +22,36 @@
 
 @interface QredoCryptoKeychain : NSObject
 
+#pragma Initialization
 +(instancetype)sharedQredoCryptoKeychain;
--(QredoKeyRef*)createKeyRef:(QredoKey*)key;
--(NSData*)retrieveWithRef:(QredoKeyRef *)ref;
--(void)addItem:(NSData*)keyData forRef:(NSData*)ref;
--(NSData*)publicKeyDataFor:(QredoKeyRefPair *)keyPair;
--(QLFKeyPairLF *)keyPairLFWithPubKeyRef:(QredoKeyRef *)pubKeyRef privateKeyRef:(QredoKeyRef *)privateKeyRef;
--(NSString*)sha256FingerPrintKeyRef:(QredoKeyRef*)keyRef;
 
+
+#pragma Encryption
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext;
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext iv:(NSData*)iv;
 -(NSData *)decryptBulk:(QredoKeyRef *)secretKeyRef  ciphertext:(NSData *)ciphertext;
 -(NSData *)authenticate:(QredoKeyRef *)secretKeyRef data:(NSData *)data;
 -(BOOL)verify:(QredoKeyRef *)secretKeyRef data:(NSData *)data signature:(NSData *)signature;
 
+
+#pragma Key Derive/Generation
 -(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
--(NSData *)deriveKey:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
-    
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt;
--(QredoKeyRefPair *)derivePasswordKeyPair:(NSData *)password salt:(NSData *)salt;
--(QredoKeyRefPair *)ownershipKeyPairDeriveRef:(QredoKeyRef *)ikmRef;
-
--(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef;
--(QLFKeyPairLF *)newRequesterKeyPair;
--(QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QredoKeyRef *)encryptionKeyRef privateKeyRef:(QredoKeyRef *)authenticationKeyRef;
-    
-    
--(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToKeyRef:(QredoKeyRef*)keyRef2;
--(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data;
-
-
 -(QredoKeyRefPair *)generateDHKeyPair;
--(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
-                                            yourPublicKeyRef:(QredoKeyRef *)yourPublicKey;
+-(QredoKeyRefPair *)ownershipKeyPairDeriveRef:(QredoKeyRef *)ikmRef;
+-(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef;
+-(NSData*)publicKeyDataFor:(QredoKeyRefPair *)keyPair;
+-(NSString*)sha256FingerPrintKeyRef:(QredoKeyRef*)keyRef;
+-(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef yourPublicKeyRef:(QredoKeyRef *)yourPublicKey;
+-(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt myPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
--(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
-                             myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 
+#pragma Qredo Lingua Franca
 -(QredoED25519Singer *)qredoED25519SingerWithKeyRef:(QredoKeyRef*)keyref;
-
-
+-(QLFKeyPairLF *)newRequesterKeyPair;
+-(QLFKeyPairLF *)keyPairLFWithPubKeyRef:(QredoKeyRef *)pubKeyRef privateKeyRef:(QredoKeyRef *)privateKeyRef;
+-(QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QredoKeyRef *)encryptionKeyRef privateKeyRef:(QredoKeyRef *)authenticationKeyRef;
 -(QLFRendezvousDescriptor *)rendezvousDescriptorWithTag:(NSString *)tag
                                               hashedTag:(QLFRendezvousHashedTag *)hashedTag
                                        conversationType:(NSString *)conversationType
@@ -85,6 +73,24 @@
                                                      yourPublicKeyRef:(QredoKeyRef *)yourPublicKey
                                                   myPublicKeyVerified:(BOOL)myPublicKeyVerified
                                                 yourPublicKeyVerified:(BOOL)yourPublicKeyVerified;
+
+
+#pragma Keychain
+-(QredoKeyRef*)createKeyRef:(QredoKey*)key;
+-(void)addItem:(NSData*)keyData forRef:(NSData*)ref;
+-(NSData*)retrieveWithRef:(QredoKeyRef *)ref;
+
+
+#pragma Keychain comparison (used in testing)
+-(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToKeyRef:(QredoKeyRef*)keyRef2;
+-(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data;
+
+
+
+
+
+
+
 
 
 @end

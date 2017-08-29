@@ -14,11 +14,7 @@
 
 -(instancetype)initWithKeyData:(NSData*)keyData;
 -(instancetype)initWithKeyHexString:(NSString*)keyHexString;
-
 -(NSData*)ref;
--(NSString*)hexadecimalString;
 -(BOOL)isEqual:(id)other;
-
-
 
 @end

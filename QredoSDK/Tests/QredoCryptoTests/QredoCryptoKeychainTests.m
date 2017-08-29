@@ -197,18 +197,20 @@
 
 #pragma authenticate
 
--(void)testGetAuthCodeWithKey_EmptyKeyEmptyData {
+-(void)testCreate0ByteKey {
     uint8_t keyDataArray[] = {};
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
     uint8_t inputDataArray[] = {};
     NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    
-    QredoKey *key = [[QredoKey alloc] initWithData:keyData];
-    QredoKeyRef *keyRef = [keychain createKeyRef:key];
-    
-    XCTAssertThrows([keychain authenticate:keyRef data:inputData]);
+    XCTAssertThrows([[QredoKey alloc] initWithData:keyData]);;
 }
+
+
+-(void)testCreateNilKey {
+    XCTAssertThrows([[QredoKey alloc] initWithData:nil]);;
+}
+
 
 
 -(void)testGetAuthCodeWithKey_WikipediaExampleData {
