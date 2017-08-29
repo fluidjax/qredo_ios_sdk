@@ -281,8 +281,6 @@
 		83B023431CE2338A00431532 /* QredoXCTestListeners.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B023411CE2338A00431532 /* QredoXCTestListeners.h */; };
 		83B023441CE2338A00431532 /* QredoXCTestListeners.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B023421CE2338A00431532 /* QredoXCTestListeners.m */; };
 		83B023461CE236ED00431532 /* QredoUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B023451CE236ED00431532 /* QredoUtilsTests.m */; };
-		83B428C91F41AA2800507205 /* UICKeyChainStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B428C71F41AA2800507205 /* UICKeyChainStore.h */; };
-		83B428CA1F41AA2800507205 /* UICKeyChainStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B428C81F41AA2800507205 /* UICKeyChainStore.m */; };
 		83B428CE1F41BDA400507205 /* QredoKeyRefPair.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B428CC1F41BDA400507205 /* QredoKeyRefPair.h */; };
 		83B428CF1F41BDA400507205 /* QredoKeyRefPair.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B428CD1F41BDA400507205 /* QredoKeyRefPair.m */; };
 		83B428D31F41E71800507205 /* QredoPseudonym.h in Headers */ = {isa = PBXBuildFile; fileRef = 83B428D11F41E71800507205 /* QredoPseudonym.h */; };
@@ -782,8 +780,6 @@
 		83B023411CE2338A00431532 /* QredoXCTestListeners.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoXCTestListeners.h; sourceTree = "<group>"; };
 		83B023421CE2338A00431532 /* QredoXCTestListeners.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoXCTestListeners.m; sourceTree = "<group>"; };
 		83B023451CE236ED00431532 /* QredoUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoUtilsTests.m; sourceTree = "<group>"; };
-		83B428C71F41AA2800507205 /* UICKeyChainStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UICKeyChainStore.h; path = ../Util/UICKeyChainStore.h; sourceTree = "<group>"; };
-		83B428C81F41AA2800507205 /* UICKeyChainStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UICKeyChainStore.m; path = ../Util/UICKeyChainStore.m; sourceTree = "<group>"; };
 		83B428CC1F41BDA400507205 /* QredoKeyRefPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoKeyRefPair.h; sourceTree = "<group>"; };
 		83B428CD1F41BDA400507205 /* QredoKeyRefPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoKeyRefPair.m; sourceTree = "<group>"; };
 		83B428D11F41E71800507205 /* QredoPseudonym.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoPseudonym.h; path = Pseudonym/QredoPseudonym.h; sourceTree = "<group>"; };
@@ -890,8 +886,6 @@
 		0A1035281A3898B3002479D9 /* Keychain */ = {
 			isa = PBXGroup;
 			children = (
-				83B428C71F41AA2800507205 /* UICKeyChainStore.h */,
-				83B428C81F41AA2800507205 /* UICKeyChainStore.m */,
 				0A1035291A389DFD002479D9 /* QredoKeychain.h */,
 				0A10352A1A389DFD002479D9 /* QredoKeychain.m */,
 				78771B921A3B487B007B864D /* QredoKeychainArchiver.h */,
@@ -1696,7 +1690,6 @@
 				83E71DBF1F4EC94600D34680 /* QredoPublicKeyRef.h in Headers */,
 				836A74E11E79954E005C9EF2 /* QredoLogger.h in Headers */,
 				836A74E51E79954E005C9EF2 /* QredoQUID.h in Headers */,
-				83B428C91F41AA2800507205 /* UICKeyChainStore.h in Headers */,
 				836A74E91E79954E005C9EF2 /* QredoRendezvous.h in Headers */,
 				836A74ED1E79954E005C9EF2 /* QredoTypes.h in Headers */,
 				836A74F11E79954E005C9EF2 /* QredoUtils.h in Headers */,
@@ -2234,7 +2227,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		3FDA3931CBD33A6669047F30 /* [CP] Copy Pods Resources */ = {
@@ -2309,7 +2302,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		6031BDF1B09624274DFE5B4D /* [CP] Copy Pods Resources */ = {
@@ -2547,7 +2540,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		BEB855A0DC4EA90A253C8BB3 /* [CP] Check Pods Manifest.lock */ = {
@@ -2562,7 +2555,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		CAFCA11529CD8B3698CBD0E3 /* [CP] Check Pods Manifest.lock */ = {
@@ -2592,7 +2585,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		D8102137EB5BD4385FCA910E /* [CP] Copy Pods Resources */ = {
@@ -2704,7 +2697,6 @@
 				83E54D3E1C2AA3EF00476515 /* QredoIndexVaultItemPayload.m in Sources */,
 				83CF37C11D7973290042EFC1 /* NSDictionary+Contains.m in Sources */,
 				6651490E1BF60432003491CA /* NSArray+QredoArrayEquality.m in Sources */,
-				83B428CA1F41AA2800507205 /* UICKeyChainStore.m in Sources */,
 				6651490F1BF60432003491CA /* NSData+QredoDataEquality.m in Sources */,
 				665149101BF60432003491CA /* NSData+QredoRandomData.m in Sources */,
 				665149111BF60432003491CA /* NSSet+QredoSetEquality.m in Sources */,
