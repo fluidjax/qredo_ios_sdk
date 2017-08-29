@@ -8,22 +8,13 @@ java -jar qredo-in-a-jar-0.19-SNAPSHOT.jar
 Split - Justin Issue#181
 
 
-We should have three layers of crypto, and a keychain management component.
+QredoRawCrypto - No Key Refs
+                
 
-First layer is QredoRawCrypto (currently QredoCrypto), which contains only named algorithms/cryptosystems. This layer insulates us from changes in underlying crypto libraries.
-+(NSData *)aes256CtrEncrypt:(NSData *)plaintext key:(NSData *)key iv:(NSData *)iv;
-+(NSData *)aes256CtrDecrypt:(NSData *)ciphertext key:(NSData *)key iv:(NSData *)iv;
-+(BOOL)constantEquals:(NSData *)lhs rhs:(NSData *)rhs;
-+(QredoKeyPair *)ed25519Derive:(NSData *)seed;
-+(QredoKeyPair *)ed25519DeriveFromSecretKey:(NSData *)secretKey;
-+(NSData *)ed25519Sha512Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair;
-+(BOOL)ed25519Sha512Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair;
-+(NSData *)hmacSha256:(NSData *)data key:(NSData *)key outputLen:(NSUInteger)outputLen;
-+(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt;
-+(NSData *)hkdfSha256Expand:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength;
-+(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations;
-+(NSData *)secureRandom:(NSUInteger)size;
-+(NSData *)sha256:(NSData *)data;
+
+QredoCryptoImpl - No Key Refs
+
+
 
 
 

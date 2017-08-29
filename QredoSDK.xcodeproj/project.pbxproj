@@ -363,7 +363,6 @@
 		83EDB5D01CE2236A00F4F556 /* TestFrameworkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 83EDB5CF1CE2236A00F4F556 /* TestFrameworkTests.m */; };
 		83F3C6331F431EF600BFD7FE /* QredoBulkEncKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 83F3C6311F431EF600BFD7FE /* QredoBulkEncKey.h */; };
 		83F3C6341F431EF600BFD7FE /* QredoBulkEncKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 83F3C6321F431EF600BFD7FE /* QredoBulkEncKey.m */; };
-		83F3C6361F4433F000BFD7FE /* CRYPTO_UPDATE_NOTES in Resources */ = {isa = PBXBuildFile; fileRef = 83F3C6351F4433F000BFD7FE /* CRYPTO_UPDATE_NOTES */; };
 		83F4E84A1C0F545D00A99431 /* QredoLocalIndex.m in Sources */ = {isa = PBXBuildFile; fileRef = 837526671C0F3477004DDDB2 /* QredoLocalIndex.m */; };
 		83F4E84C1C0F54AF00A99431 /* QredoIndexSummaryValues.m in Sources */ = {isa = PBXBuildFile; fileRef = 8375269E1C0F377C004DDDB2 /* QredoIndexSummaryValues.m */; };
 		83F4E84E1C0F54AF00A99431 /* QredoIndexVaultItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 837526A01C0F377C004DDDB2 /* QredoIndexVaultItem.m */; };
@@ -815,7 +814,6 @@
 		83F37F771EC5797D00715F36 /* BENCHMARKS */ = {isa = PBXFileReference; lastKnownFileType = text; path = BENCHMARKS; sourceTree = "<group>"; };
 		83F3C6311F431EF600BFD7FE /* QredoBulkEncKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QredoBulkEncKey.h; sourceTree = "<group>"; };
 		83F3C6321F431EF600BFD7FE /* QredoBulkEncKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QredoBulkEncKey.m; sourceTree = "<group>"; };
-		83F3C6351F4433F000BFD7FE /* CRYPTO_UPDATE_NOTES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CRYPTO_UPDATE_NOTES; sourceTree = "<group>"; };
 		83F4E85B1C0F568500A99431 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.1.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 		AA2DDC4074F8DAEBF91C30EB /* Pods-QredoPushTestServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QredoPushTestServiceExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-QredoPushTestServiceExtension/Pods-QredoPushTestServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		B15E4E5323F43C591E93C596 /* libPods-QredoPushTestServiceExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-QredoPushTestServiceExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -911,7 +909,6 @@
 			isa = PBXGroup;
 			children = (
 				83E71DC51F50165C00D34680 /* PSEUDONYM */,
-				83F3C6351F4433F000BFD7FE /* CRYPTO_UPDATE_NOTES */,
 				8317C53D1F320D3E009C2CE4 /* CONSOLE_DEBUGGING */,
 				830E4B431F18DB06004DF784 /* NOTES */,
 				83F37F771EC5797D00715F36 /* BENCHMARKS */,
@@ -1982,7 +1979,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83F3C6361F4433F000BFD7FE /* CRYPTO_UPDATE_NOTES in Resources */,
 				83E71DC61F50165C00D34680 /* PSEUDONYM in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
