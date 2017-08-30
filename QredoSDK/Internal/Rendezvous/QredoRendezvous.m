@@ -371,8 +371,6 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 -(void)storeWithCompletionHandler:(void (^)(NSError *error))completionHandler {
     NSData *serializedDescriptor = [QredoPrimitiveMarshallers marshalObject:_descriptor
                                                                  marshaller:[QLFRendezvousDescriptor marshaller]];
-    
-    
     NSMutableDictionary *newValues;
     
     if (self.configuration.summaryValues){
@@ -586,15 +584,13 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
 
 
 +(NSString *)readableToTag:(NSString *)readableText {
-    NSData *key = [QredoUtils eng2Key:readableText];
-    
-    return [QredoUtils dataToHexString:key];
+    NSData *readableTag = [QredoUtils eng2Key:readableText];
+    return [QredoUtils dataToHexString:readableTag];
 }
 
 
 +(NSString *)tagToReadable:(NSString *)tag {
     NSData *dataTag = [NSData dataWithHexString:tag];
-    
     return [QredoUtils key2Eng:dataTag];
 }
 

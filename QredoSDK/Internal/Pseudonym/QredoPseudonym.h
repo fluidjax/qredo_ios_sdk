@@ -4,7 +4,8 @@
 //
 //  Created by Christopher Morris on 14/08/2017.
 //
-//
+//  Note: Public Pseudoymn methods in Qredo.h  - (get,list,exists,create,destroy)  @implementation QredoClient (Pseudonym)
+
 
 @class QredoSignedKey;
 @class QredoRevocation;

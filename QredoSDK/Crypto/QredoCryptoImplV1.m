@@ -288,7 +288,7 @@
     if (!vk){
         return nil;
     }
-    return [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:skData verifyKey:vk];
+    return [[QredoED25519SigningKey alloc] initWithSignKeyData:skData verifyKey:vk];
 }
 
 

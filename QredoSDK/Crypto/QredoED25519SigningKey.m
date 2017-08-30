@@ -4,17 +4,15 @@
 
 
 @interface QredoED25519SigningKey ()
-@property (nonatomic,copy) NSData *seed;
 @property (nonatomic) QredoED25519VerifyKey *verifyKey;
 @end
 
 @implementation QredoED25519SigningKey
 
--(instancetype)initWithSeed:(NSData *)seed keyData:(NSData *)data verifyKey:(QredoED25519VerifyKey *)verifyKey {
+-(instancetype)initWithSignKeyData:(NSData *)data verifyKey:(QredoED25519VerifyKey *)verifyKey {
     self = [self init];
     
     if (self){
-        _seed = seed;
         self.data = data;
         _verifyKey = verifyKey;
     }

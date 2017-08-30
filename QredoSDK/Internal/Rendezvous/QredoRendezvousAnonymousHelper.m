@@ -89,9 +89,7 @@ static const NSUInteger kRandomTagLength = 32;
 
 -(NSString *)getRandomTag {
     NSData *randomTagData = [NSData dataWithRandomBytesOfLength:kRandomTagLength];
-    
     NSString *tag = [QredoBase58 encodeData:randomTagData];
-    
     return tag;
 }
 
