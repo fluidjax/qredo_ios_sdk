@@ -1,0 +1,40 @@
+PODS:
+  - CocoaAsyncSocket (7.4.3):
+    - CocoaAsyncSocket/All (= 7.4.3)
+  - CocoaAsyncSocket/All (7.4.3):
+    - CocoaAsyncSocket/GCD
+    - CocoaAsyncSocket/RunLoop
+  - CocoaAsyncSocket/GCD (7.4.3)
+  - CocoaAsyncSocket/RunLoop (7.4.3)
+  - ios-ntp (1.1.1):
+    - CocoaAsyncSocket (~> 7.4.1)
+  - jetfire (0.1.5)
+  - libsodium (1.0.3)
+  - OpenSSL (1.0.208)
+  - QredoXDK (0.99)
+  - UICKeyChainStore (2.1.0)
+
+DEPENDENCIES:
+  - ios-ntp
+  - jetfire
+  - libsodium
+  - OpenSSL (~> 1.0)
+  - QredoXDK (from `QredoXDK.framework.podspec`)
+  - UICKeyChainStore
+
+EXTERNAL SOURCES:
+  QredoXDK:
+    :path: QredoXDK.framework.podspec
+
+SPEC CHECKSUMS:
+  CocoaAsyncSocket: a18c75dca4b08723628a0bacca6e94803d90be91
+  ios-ntp: 5f2f4fecf0432169b358eb3b564f12b94157108f
+  jetfire: 60c16cd6ae0282928e24203eb93f03b89c1929ce
+  libsodium: be547e31dc75725629acc5717dc0a40fc05ef243
+  OpenSSL: b187269d386b07452f56af273764ea0636dd5da8
+  QredoXDK: 58243ea00888894ce000585c6665b04f5012c60e
+  UICKeyChainStore: f1cbd42216a113f0165de1e733e62905b8823432
+
+PODFILE CHECKSUM: 66c62eee8974ffb151377b0d73ec37805e56b6d8
+
+COCOAPODS: 1.2.1
