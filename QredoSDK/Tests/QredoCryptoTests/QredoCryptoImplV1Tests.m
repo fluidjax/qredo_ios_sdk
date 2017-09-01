@@ -423,7 +423,7 @@
 
 
 -(void)testGenerateDHKeyPair {
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     QredoKeyRefPair *keyPair1 = [keychain generateDHKeyPair];
     QredoKeyRefPair *keyPair2 = [keychain generateDHKeyPair];
     

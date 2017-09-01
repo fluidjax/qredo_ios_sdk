@@ -38,7 +38,7 @@
 -(instancetype)initWithKeyData:(NSData*)keyData{
     self = [self init];
     if (self) {
-        QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+        QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
         _ref = [self hKDFRefForKey:keyData];
         [keychain addItem:keyData forRef:_ref];
     }
@@ -72,7 +72,7 @@
 
 - (BOOL)isEqualToKey:(QredoKeyRef *)otherKeyRef {
     if (self == otherKeyRef)return YES;
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     return [keychain keyRef:self isEqualToKeyRef:otherKeyRef];
 }
 

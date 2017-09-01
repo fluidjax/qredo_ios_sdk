@@ -54,7 +54,7 @@
     QredoKeyRef *authKeyRef = [rendezvousCrypto authenticationKeyRefWithMasterKeyRef:masterKeyRef];
     QredoKeyRef *encKeyRef = [rendezvousCrypto encryptionKeyRefWithMasterKeyRef:masterKeyRef];
     
-    QLFKeyPairLF *requesterKeyPair  = [[QredoCryptoKeychain sharedQredoCryptoKeychain] newRequesterKeyPair];
+    QLFKeyPairLF *requesterKeyPair  = [[QredoCryptoKeychain standardQredoCryptoKeychain] newRequesterKeyPair];
     NSData *requesterPublicKeyBytes = [requesterKeyPair pubKey].bytes;
     NSString *conversationType      = @"com.qredo.chat";
     

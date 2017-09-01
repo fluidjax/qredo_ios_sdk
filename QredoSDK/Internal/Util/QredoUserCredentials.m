@@ -68,13 +68,13 @@
     [concatenatedBytes appendData:[self sha1WithString:self.appId]];
     [concatenatedBytes appendData:[self sha1WithString:self.userId]];
     [concatenatedBytes appendData:[self sha1WithString:self.userSecure]];
-    QredoKeyRef *keyRef = [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveUserUnlockKeyRef:concatenatedBytes];
+    QredoKeyRef *keyRef = [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveUserUnlockKeyRef:concatenatedBytes];
     return keyRef;
 }
 
 
 -(QredoKeyRef *)masterKeyRef:(QredoKeyRef *)userUnlockKeyRef {
-    QredoKeyRef *masterKeyRef = [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveMasterKeyRef:userUnlockKeyRef];
+    QredoKeyRef *masterKeyRef = [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveMasterKeyRef:userUnlockKeyRef];
     return masterKeyRef;
 }
 

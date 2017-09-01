@@ -13,7 +13,7 @@
 
 
 -(NSData*)data{
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     return [keychain retrieveWithRef:self];
 }
 

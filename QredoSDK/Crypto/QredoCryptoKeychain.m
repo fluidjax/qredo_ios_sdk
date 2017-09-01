@@ -35,13 +35,13 @@
 
 #pragma Initialization
 
-+(instancetype)sharedQredoCryptoKeychain{
-    static id sharedQredoCryptoKeychainInstance = nil;
++(instancetype)standardQredoCryptoKeychain{
+    static id standardQredoCryptoKeychainInstance = nil;
     static dispatch_once_t  onceToken;
     dispatch_once(&onceToken, ^{
-        sharedQredoCryptoKeychainInstance = [[self alloc] init];
+        standardQredoCryptoKeychainInstance = [[self alloc] init];
     });
-    return sharedQredoCryptoKeychainInstance;
+    return standardQredoCryptoKeychainInstance;
 }
 
 

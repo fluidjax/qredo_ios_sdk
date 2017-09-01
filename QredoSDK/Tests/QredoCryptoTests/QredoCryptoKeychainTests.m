@@ -36,7 +36,7 @@
 #pragma Keychain Store
 
 -(void)testKeychainStoreRetrieve{
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     QredoKey *testKey = [QredoKey keyWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
     
     QredoKeyRef *ref = [keychain createKeyRef:testKey];
@@ -183,7 +183,7 @@
     };
     NSData *plaintextData = [NSData dataWithBytes:plaintextDataArray length:sizeof(plaintextDataArray) / sizeof(uint8_t)];
     
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     QredoBulkEncKey *qredoAESbulkKey = [QredoBulkEncKey keyWithData:keyData];
     QredoKeyRef *bulkKeyRef = [keychain createKeyRef:qredoAESbulkKey];
     NSData *encryptedDataWithIv = [keychain encryptBulk:bulkKeyRef plaintext:plaintextData];
@@ -202,7 +202,7 @@
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
     uint8_t inputDataArray[] = {};
     NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     XCTAssertThrows([QredoKey keyWithData:keyData]);;
 }
 
@@ -226,7 +226,7 @@
     };
     NSData *expectedAuthCode = [NSData dataWithBytes:expectedAuthCodeArray length:sizeof(expectedAuthCodeArray) / sizeof(uint8_t)];
     
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     
     QredoKey *key = [QredoKey keyWithData:keyData];
     QredoKeyRef *keyRef = [keychain createKeyRef:key];
@@ -255,7 +255,7 @@
     NSData *correctAuthCode = [NSData dataWithBytes:correctAuthCodeArray length:sizeof(correctAuthCodeArray) / sizeof(uint8_t)];
     BOOL expectedVerification = YES;
     
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     QredoKey *key = [QredoKey keyWithData:keyData];
     QredoKeyRef *keyRef = [keychain createKeyRef:key];
     BOOL verificationResult = [keychain verify:keyRef data:inputData signature:correctAuthCode];
@@ -276,7 +276,7 @@
     NSData *correctAuthCode = [NSData dataWithBytes:correctAuthCodeArray length:sizeof(correctAuthCodeArray) / sizeof(uint8_t)];
     BOOL expectedVerification = NO;
 
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     QredoKey *key = [QredoKey keyWithData:keyData];
     QredoKeyRef *keyRef = [keychain createKeyRef:key];
     BOOL verificationResult = [keychain verify:keyRef data:inputData signature:correctAuthCode];

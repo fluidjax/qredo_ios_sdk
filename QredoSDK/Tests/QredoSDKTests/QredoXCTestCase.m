@@ -16,13 +16,13 @@ static const int testTimeOut = 30;
 
 @implementation QredoKeyRef (testing)
 -(NSData*)debugValue{
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     return [keychain retrieveWithRef:self];
 }
 
 -(void)dump{
     NSLog(@"Ref: %@",self.ref);
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     NSLog(@"Val: %@",[keychain retrieveWithRef:self]);
 }
 

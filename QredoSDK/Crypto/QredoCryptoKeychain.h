@@ -23,7 +23,7 @@
 @interface QredoCryptoKeychain : NSObject
 
 #pragma Initialization
-+(instancetype)sharedQredoCryptoKeychain;
++(instancetype)standardQredoCryptoKeychain;
 
 
 #pragma Encryption

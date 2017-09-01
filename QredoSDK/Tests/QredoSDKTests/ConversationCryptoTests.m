@@ -25,7 +25,7 @@
     [super setUp];
     _crypto = [QredoCryptoImplV1 sharedInstance];
     _conversationCrypto = [[QredoConversationCrypto alloc] init];
-    _keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    _keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
 }
 
 

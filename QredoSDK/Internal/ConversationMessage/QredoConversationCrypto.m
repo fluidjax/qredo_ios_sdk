@@ -31,7 +31,7 @@
                                         bulkKeyRef:(QredoKeyRef *)bulkKeyRef
                                         authKeyRef:(QredoKeyRef *)authKeyRef{
     NSData *serializedMessage =  [QredoPrimitiveMarshallers marshalObject:message marshaller:[QLFConversationMessage marshaller]];
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     
     NSData *encryptedMessage = [keychain encryptBulk:bulkKeyRef plaintext:serializedMessage];
     
@@ -50,7 +50,7 @@
                                     error:(NSError **)error {
     
     
-    BOOL verified = [[QredoCryptoKeychain sharedQredoCryptoKeychain] verify:authKeyRef
+    BOOL verified = [[QredoCryptoKeychain standardQredoCryptoKeychain] verify:authKeyRef
                                 data:encryptedMessage.encryptedMessage
                            signature:encryptedMessage.authCode];
     if (!verified){
@@ -67,7 +67,7 @@
                                                                       unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]];
     
    
-    NSData *decryptedMessageData = [[QredoCryptoKeychain sharedQredoCryptoKeychain] decryptBulk:bulkKeyRef
+    NSData *decryptedMessageData = [[QredoCryptoKeychain standardQredoCryptoKeychain] decryptBulk:bulkKeyRef
                                                                                      ciphertext:deserializedEncryptedData];
     
     @try {
@@ -86,50 +86,50 @@
 
 -(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                         yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
                                                                                         yourPublicKeyRef:yourPublicKeyRef];
 }
 
 
 -(QredoKeyRef *)requesterInboundEncryptionKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
                                                                     salt:SALT_REQUESTER_INBOUND_ENCKEY info:[NSData data]];
 }
 
 
 -(QredoKeyRef *)requesterInboundAuthenticationKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
                                                                     salt:SALT_REQUESTER_INBOUND_AUTHKEY info:[NSData data]];
 }
 
 
 -(QredoKeyRef *)requesterInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
                                                                  salt:SALT_REQUESTER_INBOUND_QUEUE info:[NSData data]];
 }
 
 
 -(QredoKeyRef *)responderInboundEncryptionKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
                                                                     salt:SALT_RESPONDER_INBOUND_ENCKEY info:[NSData data]];
 
 }
 
 
 -(QredoKeyRef *)responderInboundAuthenticationKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
                                                                     salt:SALT_RESPONDER_INBOUND_AUTHKEY info:[NSData data]];
 }
 
 
 -(QredoKeyRef *)responderInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
                                                                  salt:SALT_RESPONDER_INBOUND_QUEUE info:[NSData data]];
 }
 
 
 -(QredoQUID *)conversationIdWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     QredoKeyRef *keyRef = [keychain deriveKeyRef:masterKeyRef salt:SALT_CONVERSATION_ID info:[NSData data]];
     return [keychain keyRefToQUID:keyRef];
 }

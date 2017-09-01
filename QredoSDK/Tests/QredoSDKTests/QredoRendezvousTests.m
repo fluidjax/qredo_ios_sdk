@@ -239,7 +239,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     NSString *tag   = @"ABC";
     NSString *appId = @"123";
     QredoKeyRef *res = [rendCrypto masterKeyRefWithTag:tag appId:appId];
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     NSData *correct = [NSData dataWithHexString:@"b7dd94ba 22f5eba2 a1010144 00e65c11 0d3e69b7 098a5b88 9d44cea0 e96c944f"];
     XCTAssertTrue([keychain keyRef:res isEqualToData:correct],@"Master Key derived from Tag is incorrect");
 }

@@ -296,7 +296,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
                                    exectedSiganture:expectedSignature
                      ownershipSignatureCrationBlock:^QLFOwnershipSignature *(NSError *__autoreleasing *error){
                          
-//                         QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
+//                         QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
 //                         QredoKeyRef *keyRef 
 //                         QredoSigner *signer = [keychain qredoED25519SignerWithKeyRef:self.key.]
                          
