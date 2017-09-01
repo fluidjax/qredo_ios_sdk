@@ -13,6 +13,10 @@
 @implementation QredoKeyRefPair
 
 
++(instancetype)keyPairWithPublic:(QredoKey*)public private:(QredoKey*)private{
+    return [[self alloc] initWithPublic:public private:private];
+}
+
 
 -(instancetype)initWithPublic:(QredoKey*)public private:(QredoKey*)private{
     self = [super init];

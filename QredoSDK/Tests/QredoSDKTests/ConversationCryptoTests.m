@@ -108,12 +108,12 @@
     NSData *responderOwnershipVerifyingKeyExpected = [NSData dataWithHexString:@"96d0e8ee 198c1701 a8e5dc0e 2eff4d0d e776b7d8 337d4cf4 6c68b1df 0b27b41f"];
     XCTAssertEqualObjects(responderOwnershipKeyPair.verifyKey.data,responderOwnershipVerifyingKeyExpected);
     
-    QredoQUID *conversationIdExpected = [[QredoQUID alloc] initWithQUIDString:@"fb4ef86f357624ca56fe8b11d5386e0e118e12e05220f0d5cc71296552f0bf7b"];
+    QredoQUID *conversationIdExpected = [QredoQUID QUIDWithString:@"fb4ef86f357624ca56fe8b11d5386e0e118e12e05220f0d5cc71296552f0bf7b"];
     XCTAssertEqualObjects(conversationId,conversationIdExpected);
 }
 
 -(void)testEncryptDecrypt {
-    QredoQUID *messageID  = [[QredoQUID alloc] initWithQUIDString:@"a774a903a9a7481a818fb2afae4aa5beb935120f29c0454681319964f129447a"];
+    QredoQUID *messageID  = [QredoQUID QUIDWithString:@"a774a903a9a7481a818fb2afae4aa5beb935120f29c0454681319964f129447a"];
     
     NSDate *created = [QredoNetworkTime dateTime];
     QredoUTCDateTime *createdDate = [[QredoUTCDateTime alloc] initWithDate:created];

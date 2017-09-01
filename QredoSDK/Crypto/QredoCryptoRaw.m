@@ -119,8 +119,8 @@
     int result = crypto_sign_ed25519_seed_keypair(pk.mutableBytes, sk.mutableBytes, seed.bytes);
     NSAssert(result == 0, @"Could not generate Ed25519 key pair from seed.");
     
-    QredoED25519VerifyKey *qpk  =  [[QredoED25519VerifyKey alloc] initWithData:pk];
-    QredoED25519SigningKey *qsk = [[QredoED25519SigningKey alloc] initWithSignKeyData:sk verifyKey:qpk];
+    QredoED25519VerifyKey *qpk  =  [QredoED25519VerifyKey keyWithData:pk];
+    QredoED25519SigningKey *qsk = [QredoED25519SigningKey signingKeyWithData:sk verifyKey:qpk];
     QredoKeyPair *kp =
     [[QredoKeyPair alloc] initWithPublicKey:qpk privateKey:qsk];
     

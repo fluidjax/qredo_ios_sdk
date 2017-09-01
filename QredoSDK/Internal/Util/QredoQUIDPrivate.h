@@ -5,20 +5,26 @@
 
 /* Create a new autoreleased NSUUID with RFC 4122 version 4 random bytes */
 +(instancetype)QUID;
-
 +(instancetype)QUIDByHashingData:(NSData *)data;
+
+/* Create an QUID from a string of 64 characters. Returns nil for invalid strings. */
+
++(instancetype)QUIDWithString:(NSString *)string;
+
+
+/* Create an QredoQUID with the given data */
++(instancetype)QUIDWithData:(NSData *)data;
+
+
 
 /* Create a new NSUUID with RFC 4122 version 4 random bytes */
 -(instancetype)init;
 
-/* Create an QUID from a string of 64 characters. Returns nil for invalid strings. */
--(instancetype)initWithQUIDString:(NSString *)string;
 
 /* Create an QredoQUID with the given bytes */
 -(instancetype)initWithQUIDBytes:(const unsigned char *)bytes;
 
-/* Create an QredoQUID with the given data */
--(instancetype)initWithQUIDData:(NSData *)data;
+
 
 /* Copies QUID bytes to the buffer passed as the argument. The buffer should be at least 32 bytes long */
 -(void)getQUIDBytes:(unsigned char *)quid;

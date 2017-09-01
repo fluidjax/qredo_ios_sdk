@@ -342,8 +342,8 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoKeyRefPair *requesterInboundQueueSigningKeyRefPair = [keychain ownershipKeyPairDeriveRef:requesterInboundQueueKeyPairSaltRef];
     QredoKeyRefPair *responderInboundQueueSigningKeyRefPair = [keychain ownershipKeyPairDeriveRef:responderInboundQueueKeyPairSaltRef];
     
-    QredoQUID *requesterInboundQueueId = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:requesterInboundQueueSigningKeyRefPair]];
-    QredoQUID *responderInboundQueueId = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:responderInboundQueueSigningKeyRefPair]];
+    QredoQUID *requesterInboundQueueId = [QredoQUID QUIDWithData:[keychain publicKeyDataFor:requesterInboundQueueSigningKeyRefPair]];
+    QredoQUID *responderInboundQueueId = [QredoQUID QUIDWithData:[keychain publicKeyDataFor:responderInboundQueueSigningKeyRefPair]];
     
     if (rendezvousOwner){
         _inboundBulkKeyRef = requesterInboundBulkKeyRef;

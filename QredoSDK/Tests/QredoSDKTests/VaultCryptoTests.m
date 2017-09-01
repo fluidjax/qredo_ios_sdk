@@ -31,8 +31,8 @@
     //Preset Test Values
     NSData *encyptedMetadataIV = [NSData dataWithHexString:@"29357e81 ba6f9a38 00000000 00000000"];
     NSData *encryptedBodyIV = [NSData dataWithHexString:@"861b5d78 c367ca58 00000000 00000000"];
-    QredoQUID *sequenceID = [[QredoQUID alloc] initWithQUIDString:@"536153cde3e743a5b34c5dac49281e261a3acccacb314473bc143ee24f87c0a9"];
-    QredoQUID *itemID = [[QredoQUID alloc] initWithQUIDString:@"96b9a6c3a366401f9e42e006c61689ae5c29c4a2835d4e4d992c98eb56cddfd1"];
+    QredoQUID *sequenceID = [QredoQUID QUIDWithString:@"536153cde3e743a5b34c5dac49281e261a3acccacb314473bc143ee24f87c0a9"];
+    QredoQUID *itemID = [QredoQUID QUIDWithString:@"96b9a6c3a366401f9e42e006c61689ae5c29c4a2835d4e4d992c98eb56cddfd1"];
     NSDate *valueDate = [NSDate dateWithTimeIntervalSince1970:1234567];
     NSDate *created = [NSDate dateWithTimeIntervalSince1970:1234567];
     int64_t sequenceValue = 1;
@@ -56,7 +56,7 @@
     QLFVaultKeyPair *encryptionAndAuthKeys = [QredoVaultCrypto vaultKeyPairWithVaultKeyRef:vaultKeyRef];
     
     
-    QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:ownershipKeyPair.verifyKey.data];
+    QredoQUID *vaultID = [QredoQUID QUIDWithData:ownershipKeyPair.verifyKey.data];
     
     QLFVaultItemRef *vaultItemRef = [QLFVaultItemRef vaultItemRefWithVaultId:vaultID
                                                                   sequenceId:sequenceID

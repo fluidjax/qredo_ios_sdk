@@ -12,12 +12,22 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
 }
 
 +(instancetype)QUIDByHashingData:(NSData *)data {
-    return [[QredoQUID alloc] initWithQUIDData:[QredoQUID sha256:data]];
+    return [QredoQUID QUIDWithData:[QredoQUID sha256:data]];
 }
 
 
 +(instancetype)QUID {
     return [[self alloc] init];
+}
+
+
++(instancetype)QUIDWithString:(NSString *)string{
+    return [[self alloc] initWithQUIDString:string];
+}
+
+
++(instancetype)QUIDWithData:(NSData *)data{
+    return [[self alloc] initWithData:data];
 }
 
 

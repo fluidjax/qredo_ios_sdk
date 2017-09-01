@@ -9,6 +9,12 @@
 
 @implementation QredoED25519SigningKey
 
+
++(instancetype)signingKeyWithData:(NSData *)data verifyKey:(QredoED25519VerifyKey *)verifyKey {
+    return [[self alloc] initWithSignKeyData:data verifyKey:verifyKey];
+}
+
+
 -(instancetype)initWithSignKeyData:(NSData *)data verifyKey:(QredoED25519VerifyKey *)verifyKey {
     self = [self init];
     

@@ -59,31 +59,31 @@
 
 
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext{
-    QredoBulkEncKey *secretKey = [[QredoBulkEncKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
+    QredoBulkEncKey *secretKey = [QredoBulkEncKey keyWithData:[self retrieveWithRef:secretKeyRef]];
     return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext];
 }
 
 
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext iv:(NSData*)iv{
-    QredoBulkEncKey *secretKey = [[QredoBulkEncKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
+    QredoBulkEncKey *secretKey = [QredoBulkEncKey keyWithData:[self retrieveWithRef:secretKeyRef]];
     return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext iv:iv];
 }
 
 
 -(NSData *)decryptBulk:(QredoKeyRef *)secretKeyRef  ciphertext:(NSData *)ciphertext{
-    QredoBulkEncKey *secretKey = [[QredoBulkEncKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
+    QredoBulkEncKey *secretKey = [QredoBulkEncKey keyWithData:[self retrieveWithRef:secretKeyRef]];
     return [self.cryptoImplementation decryptBulk:secretKey ciphertext:ciphertext];
 }
 
 
 -(NSData *)authenticate:(QredoKeyRef *)secretKeyRef data:(NSData *)data{
-    QredoKey *secretKey = [[QredoKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
+    QredoKey *secretKey = [QredoKey keyWithData:[self retrieveWithRef:secretKeyRef]];
     return [self.cryptoImplementation getAuthCodeWithKey:secretKey data:data];
 }
 
 
 -(BOOL)verify:(QredoKeyRef *)secretKeyRef data:(NSData *)data signature:(NSData *)signature{
-    QredoKey *secretKey = [[QredoKey alloc] initWithData:[self retrieveWithRef:secretKeyRef]];
+    QredoKey *secretKey = [QredoKey keyWithData:[self retrieveWithRef:secretKeyRef]];
     return [self.cryptoImplementation verifyAuthCodeWithKey:secretKey data:data mac:signature];
 }
 
@@ -137,9 +137,9 @@
 
 -(QredoKeyRefPair *)generateDHKeyPair{
     QredoKeyPair *keyPair = [self.cryptoImplementation generateDHKeyPair];
-    QredoKey *private = [[QredoKey alloc] initWithData:keyPair.privateKey.bytes];
-    QredoKey *public  = [[QredoKey alloc] initWithData:keyPair.publicKey.bytes];
-    QredoKeyRefPair *keyRefPair = [[QredoKeyRefPair alloc] initWithPublic:public private:private];
+    QredoKey *private = [QredoKey keyWithData:keyPair.privateKey.bytes];
+    QredoKey *public  = [QredoKey keyWithData:keyPair.publicKey.bytes];
+    QredoKeyRefPair *keyRefPair = [QredoKeyRefPair keyPairWithPublic:public private:private];
     return keyRefPair;
 }
 
@@ -148,16 +148,16 @@
     //ed25519_sha512_derive
     NSData *ikm = [self retrieveWithRef:ikmRef];
     QredoED25519SigningKey *signKey = [self.cryptoImplementation qredoED25519SigningKeyWithSeed:ikm];
-    QredoKey *private = [[QredoKey alloc] initWithData:signKey.data];
-    QredoKey *public  = [[QredoKey alloc] initWithData:signKey.verifyKey.data];
-    QredoKeyRefPair *keyRefPair = [[QredoKeyRefPair alloc] initWithPublic:public private:private];
+    QredoKey *private = [QredoKey keyWithData:signKey.data];
+    QredoKey *public  = [QredoKey keyWithData:signKey.verifyKey.data];
+    QredoKeyRefPair *keyRefPair =  [QredoKeyRefPair keyPairWithPublic:public private:private];
     return keyRefPair;
 }
 
 
 -(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef{
    NSData *keyData = [self retrieveWithRef:keyRef];
-   return [[QredoQUID alloc] initWithQUIDData:keyData];
+   return [QredoQUID QUIDWithData:keyData];
 }
 
 
@@ -178,8 +178,8 @@
 
 -(QredoKeyRef *)generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                             yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef{
-    QredoKey *myPrivateKey = [[QredoKey alloc] initWithData:[self retrieveWithRef:myPrivateKeyRef]];
-    QredoKey *yourPublicKey  = [[QredoKey alloc] initWithData:[self retrieveWithRef:yourPublicKeyRef]];
+    QredoKey *myPrivateKey = [QredoKey keyWithData:[self retrieveWithRef:myPrivateKeyRef]];
+    QredoKey *yourPublicKey  = [QredoKey keyWithData:[self retrieveWithRef:yourPublicKeyRef]];
     QredoKey *diffieHellmanMaster = [self.cryptoImplementation generateDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey
                                                                                            yourPublicKey:yourPublicKey];
     QredoKeyRef *keyRef = [self createKeyRef:diffieHellmanMaster];
@@ -202,7 +202,7 @@
 -(QredoED25519Signer *)qredoED25519SignerWithKeyRef:(QredoKeyRef*)keyref{
     NSData *keyData = [self retrieveWithRef:keyref];
     if (!keyData)return nil;
-    QredoED25519SigningKey *key = [[QredoED25519SigningKey alloc] initWithData:keyData];
+    QredoED25519SigningKey *key = [QredoED25519SigningKey keyWithData:keyData];
     return [[QredoED25519Signer alloc] initWithSigningKey:key];
 }
 

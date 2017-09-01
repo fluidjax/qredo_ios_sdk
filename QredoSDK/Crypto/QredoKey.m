@@ -7,6 +7,16 @@
 
 
 
++(instancetype)keyWithData:(NSData *)keydata{
+    return [[self alloc] initWithData:keydata];
+}
+
++(instancetype)keyWithHexString:(NSString *)hexString{
+    return [[self alloc] initWithHexString:hexString];
+}
+
+
+
 -(instancetype)initWithData:(NSData *)data {
     GUARD(data,@"Data argument is nil");
     GUARD(data.length>0,@"Key is 0 bytes");

@@ -6,8 +6,8 @@
 
 @property (nonatomic,copy) NSData *data;
 
--(instancetype)initWithData:(NSData *)keydata;
--(instancetype)initWithHexString:(NSString *)hexString;
++(instancetype)keyWithData:(NSData *)keydata;
++(instancetype)keyWithHexString:(NSString *)hexString;
 -(NSData *)bytes;
 -(int)length;
 -(BOOL)isEqual:(id)other;

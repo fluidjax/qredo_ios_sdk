@@ -24,7 +24,7 @@
         QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
         QredoKeyRefPair *ownershipKeyPairRef = [keychain ownershipKeyPairDeriveRef:vaultKeyRef];
         QLFVaultKeyPair *encryptionAndAuthKeyPairRef = [QredoVaultCrypto vaultKeyPairWithVaultKeyRef:vaultKeyRef];
-        QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:ownershipKeyPairRef]];
+        QredoQUID *vaultID = [QredoQUID QUIDWithData:[keychain publicKeyDataFor:ownershipKeyPairRef]];
         _vaultKeyRef = vaultKeyRef;
         _ownershipKeyPairRef = ownershipKeyPairRef;
         _encryptionKeyRef = [QredoKeyRef keyRefWithKeyData:encryptionAndAuthKeyPairRef.encryptionKey];

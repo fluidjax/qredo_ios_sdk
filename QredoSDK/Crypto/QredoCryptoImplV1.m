@@ -147,13 +147,16 @@
 
 -(QredoKey *)generateRandomKey {
     NSData *randomKey = [QredoCryptoRaw secureRandom:BULK_KEY_SIZE];
-    return [[QredoKey alloc] initWithData:randomKey];
+    return [QredoKey keyWithData:randomKey];
 }
 
 -(NSData *)generatePasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password {
     NSData *passwordData = [password dataUsingEncoding:PASSWORD_ENCODING_FOR_PBKDF2];
     
-    NSData *key = [QredoCryptoRaw pbkdf2Sha256:passwordData salt:salt outputLength:PBKDF2_DERIVED_KEY_SIZE iterations:PBKDF2_ITERATION_COUNT];
+    NSData *key = [QredoCryptoRaw pbkdf2Sha256:passwordData
+                                          salt:salt
+                                  outputLength:PBKDF2_DERIVED_KEY_SIZE
+                                    iterations:PBKDF2_ITERATION_COUNT];
     
     return key;
 }
@@ -176,7 +179,7 @@
     //Generated DH using EC255/19
     QredoEllipticCurvePoint *sk = [QredoEllipticCurvePoint pointWithData:yourPublicKey.data];
     QredoEllipticCurvePoint *dh = [sk multiplyWithPoint:[QredoEllipticCurvePoint pointWithData:myPrivateKey.data]];
-    return [[QredoKey alloc]  initWithData:dh.data];
+    return [QredoKey keyWithData:dh.data];
 }
 
 
@@ -184,10 +187,12 @@
     QredoKey *ikm = [self generateDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
     
     //HKDF using SHA-256
-    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikm.bytes salt:salt];
-    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:SHA256_DIGEST_SIZE];
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikm.bytes
+                                               salt:salt];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk
+                                              info:[[NSData alloc] init]
+                                      outputLength:SHA256_DIGEST_SIZE];
     NSData *diffieHellmanSecretData = okm;
-    
     return diffieHellmanSecretData;
 }
 
@@ -215,13 +220,13 @@
     if (!vk){
         return nil;
     }
-    return [[QredoED25519SigningKey alloc] initWithSignKeyData:skData verifyKey:vk];
+    return [QredoED25519SigningKey signingKeyWithData:skData verifyKey:vk];
 }
 
 
 -(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error {
     NSAssert([data length] == ED25519_VERIFY_KEY_SIZE, @"Invalid ED25519 Verfiy key length");
-    return [[QredoED25519VerifyKey alloc] initWithData:data];
+    return [QredoED25519VerifyKey keyWithData:data];
 }
 
 
@@ -242,8 +247,11 @@
 
 
 -(QredoKey *)deriveSlow:(NSData *)ikm salt:(NSData *)salt iterations:(int)iterations{
-   NSData *key =  [QredoCryptoRaw pbkdf2Sha256:ikm salt:salt outputLength:32 iterations:iterations];
-   return [[QredoKey alloc] initWithData:key];
+   NSData *key =  [QredoCryptoRaw pbkdf2Sha256:ikm
+                                          salt:salt
+                                  outputLength:PBKDF2_DERIVED_KEY_SIZE
+                                    iterations:iterations];
+   return [QredoKey keyWithData:key];
 }
 
 
@@ -251,19 +259,10 @@
     NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikm
                                                salt:salt];
     NSData *key = [QredoCryptoRaw hkdfSha256Expand:prk
-                                                        info:info
-                                                outputLength:length];
-   return [[QredoKey alloc] initWithData:key];
+                                              info:info
+                                      outputLength:length];
+   return [QredoKey keyWithData:key];
 }
-
-
-
-
-
-
-
-
-
 
 
 @end

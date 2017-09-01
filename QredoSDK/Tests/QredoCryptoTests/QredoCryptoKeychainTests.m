@@ -37,7 +37,7 @@
 
 -(void)testKeychainStoreRetrieve{
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKey *testKey = [[QredoKey alloc] initWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKey *testKey = [QredoKey keyWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
     
     QredoKeyRef *ref = [keychain createKeyRef:testKey];
 
@@ -47,7 +47,7 @@
 
     NSData *rawKey = [keychain retrieveWithRef:ref];
     XCTAssertNotNil(rawKey);
-    QredoKey *outKey = [[QredoKey alloc] initWithData:rawKey];
+    QredoKey *outKey = [QredoKey keyWithData:rawKey];
     XCTAssertTrue([testKey isEqual:outKey],@"Key saved in keychain arent the same");
 }
 
@@ -56,10 +56,10 @@
 
 
 -(void)testKeyRefPair{
-    QredoKey *pubKey = [[QredoKey alloc] initWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
-    QredoKey *privKey = [[QredoKey alloc] initWithHexString:@"2368b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKey *pubKey  = [QredoKey keyWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKey *privKey = [QredoKey keyWithHexString:@"2368b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
     
-    QredoKeyRefPair *refpair = [[QredoKeyRefPair alloc] initWithPublic:pubKey private:privKey];
+    QredoKeyRefPair *refpair =  [QredoKeyRefPair keyPairWithPublic:pubKey private:privKey];
     
     QredoKeyRef *privRef = refpair.privateKeyRef;
     
@@ -184,7 +184,7 @@
     NSData *plaintextData = [NSData dataWithBytes:plaintextDataArray length:sizeof(plaintextDataArray) / sizeof(uint8_t)];
     
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoBulkEncKey *qredoAESbulkKey = [[QredoBulkEncKey alloc] initWithData:keyData];
+    QredoBulkEncKey *qredoAESbulkKey = [QredoBulkEncKey keyWithData:keyData];
     QredoKeyRef *bulkKeyRef = [keychain createKeyRef:qredoAESbulkKey];
     NSData *encryptedDataWithIv = [keychain encryptBulk:bulkKeyRef plaintext:plaintextData];
     XCTAssertNotNil(encryptedDataWithIv,@"Encrypted data with IV should not be nil.");
@@ -203,12 +203,12 @@
     uint8_t inputDataArray[] = {};
     NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    XCTAssertThrows([[QredoKey alloc] initWithData:keyData]);;
+    XCTAssertThrows([QredoKey keyWithData:keyData]);;
 }
 
 
 -(void)testCreateNilKey {
-    XCTAssertThrows([[QredoKey alloc] initWithData:nil]);;
+    XCTAssertThrows([QredoKey keyWithData:nil]);;
 }
 
 
@@ -228,7 +228,7 @@
     
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
     
-    QredoKey *key = [[QredoKey alloc] initWithData:keyData];
+    QredoKey *key = [QredoKey keyWithData:keyData];
     QredoKeyRef *keyRef = [keychain createKeyRef:key];
     
     NSData *authCode = [keychain authenticate:keyRef data:inputData];
@@ -256,7 +256,7 @@
     BOOL expectedVerification = YES;
     
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKey *key = [[QredoKey alloc] initWithData:keyData];
+    QredoKey *key = [QredoKey keyWithData:keyData];
     QredoKeyRef *keyRef = [keychain createKeyRef:key];
     BOOL verificationResult = [keychain verify:keyRef data:inputData signature:correctAuthCode];
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
@@ -277,7 +277,7 @@
     BOOL expectedVerification = NO;
 
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
-    QredoKey *key = [[QredoKey alloc] initWithData:keyData];
+    QredoKey *key = [QredoKey keyWithData:keyData];
     QredoKeyRef *keyRef = [keychain createKeyRef:key];
     BOOL verificationResult = [keychain verify:keyRef data:inputData signature:correctAuthCode];
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");

@@ -194,7 +194,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
 
 
 #define dataWithBytes(bytes) [NSData dataWithBytes: bytes length : sizeof(bytes)]
-#define quidWithBytes(bytes) [[QredoQUID alloc] initWithQUIDData:[NSData dataWithBytes:bytes length:sizeof(bytes)]]
+#define quidWithBytes(bytes) [QredoQUID QUIDWithData:[NSData dataWithBytes:bytes length:sizeof(bytes)]]
 
 
 

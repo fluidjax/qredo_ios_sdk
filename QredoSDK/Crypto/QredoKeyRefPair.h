@@ -17,5 +17,5 @@
 @property (strong) QredoKeyRef *privateKeyRef;
 
 
--(instancetype)initWithPublic:(QredoKey*)public private:(QredoKey*)private;
++(instancetype)keyPairWithPublic:(QredoKey*)public private:(QredoKey*)private;
 @end
