@@ -149,21 +149,21 @@
 
 
 
--(QredoKeyRef *)getDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
+-(QredoKeyRef *)generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                             yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef{
     QredoKey *myPrivateKey = [[QredoKey alloc] initWithData:[self retrieveWithRef:myPrivateKeyRef]];
     QredoKey *yourPublicKey  = [[QredoKey alloc] initWithData:[self retrieveWithRef:yourPublicKeyRef]];
-    QredoKey *diffieHellmanMaster = [self.cryptoImplementation getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey
+    QredoKey *diffieHellmanMaster = [self.cryptoImplementation generateDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey
                                                                                            yourPublicKey:yourPublicKey];
     QredoKeyRef *keyRef = [self createKeyRef:diffieHellmanMaster];
     return keyRef;
 }
 
 
--(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
+-(NSData *)generateDiffieHellmanSecretWithSalt:(NSData *)salt
                              myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
                             yourPublicKey:(QredoDhPublicKey *)yourPublicKey{
-    NSData *diffieHellmanSecret = [self.cryptoImplementation getDiffieHellmanSecretWithSalt:salt
+    NSData *diffieHellmanSecret = [self.cryptoImplementation generateDiffieHellmanSecretWithSalt:salt
                                                                                myPrivateKey:myPrivateKey
                                                                               yourPublicKey:yourPublicKey];
     return diffieHellmanSecret;

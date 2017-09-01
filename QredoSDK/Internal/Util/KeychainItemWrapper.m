@@ -261,7 +261,7 @@
         
 #ifndef PASSWORD_USES_DATA
         // Add the password to the dictionary, converting from NSData to NSString.
-        NSString *password = [[NSString alloc] initWithBytes:[(__bridge NSData *)passwordData bytes] length:[(__bridge NSData *)passwordData length]
+        NSString *password = [[NSString alloc] initWithBytes:(__bridge NSData *)passwordData.bytes length:[(__bridge NSData *)passwordData length]
                                                     encoding:NSUTF8StringEncoding];
 #else
         NSData *password = (__bridge_transfer NSData *)passwordData;

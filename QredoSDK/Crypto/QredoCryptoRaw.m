@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #define NEW_CRYPTO_CODE FALSE
+#define SHA256_DIGEST_SIZE              32
 
 +(NSData*)randomNonceAndZeroCounter{
     //Specifically for AES CTR
@@ -179,10 +180,10 @@
     NSAssert(salt, @"Salt must be specified.");
     NSAssert(salt.length > 0, @"Salt must be non-empty.");
     
-    NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    NSMutableData *prk = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
     CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
     
-    NSAssert(prk.length == CC_SHA256_DIGEST_LENGTH, @"Expected PRK to be SHA256 length.");
+    NSAssert(prk.length == SHA256_DIGEST_SIZE, @"Expected PRK to be SHA256 length.");
     
     return [prk copy];
     
@@ -197,7 +198,7 @@
     NSAssert(info, @"Info must be specified.");
     NSAssert(outputLength > 0, @"Output length must be greater than zero.");
     
-    uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
+    uint8_t hashLen = SHA256_DIGEST_SIZE;
     
     NSUInteger N = ceil((double)outputLength / (double)hashLen);
     uint8_t *T   = alloca(N * hashLen);
@@ -232,7 +233,7 @@
     NSAssert(key.length > 0, @"Expected non-zero length key.");
     
     //The MAC size is the same size as the underlying hash function output
-    NSMutableData *mac = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    NSMutableData *mac = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
     CCHmac(kCCHmacAlgSHA256,
            key.bytes,
            key.length,
@@ -240,8 +241,8 @@
            outputLen,
            mac.mutableBytes);
     
-    NSAssert(mac.length == CC_SHA256_DIGEST_LENGTH,
-             @"Expected hash output of length %d.", CC_SHA256_DIGEST_LENGTH);
+    NSAssert(mac.length == SHA256_DIGEST_SIZE,
+             @"Expected hash output of length %d.", SHA256_DIGEST_SIZE);
     
     return [mac copy];
     
@@ -308,20 +309,20 @@
 
 +(NSData *)sha256:(NSData *)data {
     NSAssert(data, @"Expected data.");
-    NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    NSMutableData *hash = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
     CC_SHA256(data.bytes, (unsigned int)data.length, hash.mutableBytes);
-    NSAssert(hash.length == CC_SHA256_DIGEST_LENGTH,
-             @"Expected output hash of length %d", CC_SHA256_DIGEST_LENGTH);
+    NSAssert(hash.length == SHA256_DIGEST_SIZE,
+             @"Expected output hash of length %d", SHA256_DIGEST_SIZE);
     return [hash copy];
 }
 
 
 +(NSData *)sha512:(NSData *)data {
     NSAssert(data, @"Expected data.");
-    NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA512_DIGEST_LENGTH];
+    NSMutableData *hash = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
     CC_SHA512(data.bytes, (unsigned int)data.length, hash.mutableBytes);
-    NSAssert(hash.length == CC_SHA512_DIGEST_LENGTH,
-             @"Expected output hash of length %d", CC_SHA512_DIGEST_LENGTH);
+    NSAssert(hash.length == SHA256_DIGEST_SIZE,
+             @"Expected output hash of length %d", SHA256_DIGEST_SIZE);
     return [hash copy];
 }
 

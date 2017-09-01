@@ -28,13 +28,13 @@
 //Once KeyStore is reviewed, this method should be gone
 -(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data;
 -(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data mac:(NSData *)mac;
--(QredoKey *)getRandomKey;
--(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password;
+-(QredoKey *)generateRandomKey;
+-(NSData *)generatePasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password;
 
--(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
+-(QredoKey *)generateDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
                                          yourPublicKey:(QredoKey *)yourPublicKey;
 
--(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt
+-(NSData *)generateDiffieHellmanSecretWithSalt:(NSData *)salt
                              myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
                             yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 

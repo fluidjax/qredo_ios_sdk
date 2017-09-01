@@ -1056,7 +1056,7 @@
         QLFKeyLF *e = (QLFKeyLF *)element;
         [writer writeConstructorStartWithObjectName:@"KeyLF"];
             [writer writeFieldStartWithFieldName:@"bytes"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e bytes], writer);
+                [QredoPrimitiveMarshallers byteSequenceMarshaller](e.bytes, writer);
             [writer writeEnd];
 
         [writer writeEnd];

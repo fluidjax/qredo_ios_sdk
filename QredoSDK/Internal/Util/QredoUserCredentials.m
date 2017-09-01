@@ -12,7 +12,7 @@
 
 
 #define PBKDF2_USERUNLOCK_KEY_ITERATIONS 1000
-#define PBKDF2_DERIVED_KEY_LENGTH_BYTES  32
+#define PBKDF2_DERIVED_KEY_SIZE          32
 
 
 @interface QredoUserCredentials ()
@@ -48,7 +48,7 @@
     [concatenatedBytes appendData:[self sha1WithString:self.userId]];
     [concatenatedBytes appendData:[self sha1WithString:self.userSecure]];
     
-    NSData *key = [QredoCryptoRaw pbkdf2Sha256:concatenatedBytes salt:SALT_USER_UNLOCK outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
+    NSData *key = [QredoCryptoRaw pbkdf2Sha256:concatenatedBytes salt:SALT_USER_UNLOCK outputLength:PBKDF2_DERIVED_KEY_SIZE iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
     return key;
 }
 

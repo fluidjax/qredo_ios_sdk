@@ -76,7 +76,7 @@
 -(instancetype)initWithAtom:(QredoAtom *)atom {
     self = [super init];
     if (self && atom){
-        uint8_t *bytes = (uint8_t *)[atom bytes];
+        uint8_t *bytes = (uint8_t *)atom.bytes;
         _marker = (QredoMarker)bytes[0];
         _data   = [NSData dataWithBytes:bytes + 1 length:[atom length] - 1];
     }
@@ -302,7 +302,7 @@
     [self.data getBytes:&millisSinceMidnight range:NSMakeRange(4,4)];
     QredoTime *time = [QredoTime timeWithMillisSinceMidnight:CFSwapInt32BigToHost(millisSinceMidnight)];
     
-    uint8_t timeZoneMarker = ((uint8_t *)[self.data bytes])[8];
+    uint8_t timeZoneMarker = ((uint8_t *)self.data.bytes)[8];
     switch (timeZoneMarker){
         case QredoMarkerLocalTimezone:
             return [QredoDateTime dateTimeWithDate:date time:time isUTC:false];
@@ -351,7 +351,7 @@
     [self expectMarker:QredoMarkerString];
     NSMutableData *stringBytes = [NSMutableData dataWithData:self.data];
     [stringBytes appendBytes:"" length:1];
-    return [NSString stringWithUTF8String:[stringBytes bytes]];
+    return [NSString stringWithUTF8String:stringBytes.bytes];
 }
 
 
@@ -359,7 +359,7 @@
     [self expectMarker:QredoMarkerSymbol];
     NSMutableData *symbolBytes = [NSMutableData dataWithData:self.data];
     [symbolBytes appendBytes:"" length:1];
-    return [NSString stringWithUTF8String:[symbolBytes bytes]];
+    return [NSString stringWithUTF8String:symbolBytes.bytes];
 }
 
 
@@ -377,7 +377,7 @@
 -(QredoQUID *)asQUID {
     [self expectMarker:QredoMarkerQUID];
     [self expectLength:32];
-    return [[QredoQUID alloc] initWithQUIDBytes:[self.data bytes]];
+    return [[QredoQUID alloc] initWithQUIDBytes:self.data.bytes];
 }
 
 
@@ -390,7 +390,7 @@
 
 
 -(void)expectDateTimeMarker:(QredoMarker)expectedMarker {
-    uint8_t actualMarker = ((uint8_t *)[self.data bytes])[8];
+    uint8_t actualMarker = ((uint8_t *)self.data.bytes)[8];
     
     if (actualMarker != expectedMarker){
         @throw [NSException exceptionWithName:@"QredoUnexpectedMarkerException"
@@ -809,7 +809,7 @@
 
 
 -(NSNumber *)readByte {
-    uint8_t *bytes = (uint8_t *)[[self.reader readAtom] bytes];
+    uint8_t *bytes = (uint8_t *)[self.reader readAtom].bytes;
     
     return @(bytes[0]);
 }

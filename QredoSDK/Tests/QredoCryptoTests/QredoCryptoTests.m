@@ -402,7 +402,7 @@
     NSData *expectedOkmData = [NSData dataWithBytes:expectedOkmDataArray length:sizeof(expectedOkmDataArray) / sizeof(uint8_t)];
 
     NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikmData salt:saltData];
-    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:infoData outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:infoData outputLength:SHA256_DIGEST_SIZE];
 
     XCTAssertNotNil(okm,@"OKM should not be nil.");
     XCTAssertTrue([expectedOkmData isEqualToData:okm],@"OKM data incorrect.");

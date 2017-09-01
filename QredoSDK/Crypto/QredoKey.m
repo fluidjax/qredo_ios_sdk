@@ -34,7 +34,7 @@
 
 
 -(int)length{
-    return (int)[self bytes].length;
+    return (int)self.bytes.length;
 }
 
 
@@ -50,7 +50,7 @@
 - (BOOL)isEqualToKey:(QredoKey *)otherKey {
     if (self == otherKey)
         return YES;
-    if (![[self bytes] isEqualToData:[otherKey bytes]])
+    if (![self.bytes isEqualToData:otherKey.bytes])
         return NO;
     return YES;
 }

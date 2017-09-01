@@ -393,8 +393,8 @@
     //and that we don't get the same key twice.
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    QredoKey *randomKey1 = [qredoCryptoImpl getRandomKey];
-    QredoKey *randomKey2 = [qredoCryptoImpl getRandomKey];
+    QredoKey *randomKey1 = [qredoCryptoImpl generateRandomKey];
+    QredoKey *randomKey2 = [qredoCryptoImpl generateRandomKey];
     
     XCTAssertNotNil(randomKey1,@"Random key 1 should not be nil.");
     XCTAssertNotNil(randomKey2,@"Random key 2 should not be nil.");
@@ -415,7 +415,7 @@
     NSData *expectedDerivedKeyData = [NSData dataWithBytes:expectedDerivedKeyDataArray length:sizeof(expectedDerivedKeyDataArray) / sizeof(uint8_t)];
     
     QredoCryptoImplV1 *qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
-    NSData *key = [qredoCryptoImpl getPasswordBasedKeyWithSalt:saltData password:passwordString];
+    NSData *key = [qredoCryptoImpl generatePasswordBasedKeyWithSalt:saltData password:passwordString];
     
     XCTAssertNotNil(key,@"Key should not be nil.");
     XCTAssertTrue([expectedDerivedKeyData isEqualToData:key],@"Key incorrect.");

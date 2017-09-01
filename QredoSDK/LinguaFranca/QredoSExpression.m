@@ -87,7 +87,7 @@
         newBytes = [sizeBytes mutableCopy];
     }
     
-    NSInteger length = [[NSString stringWithUTF8String:[newBytes bytes]] integerValue];
+    NSInteger length = [[NSString stringWithUTF8String:newBytes.bytes] integerValue];
     
     //now read the given data size
     NSData *data = [self.inputStream readExactLength:length];
@@ -183,9 +183,9 @@
     const char *lengthCString = [lengthString cStringUsingEncoding:NSUTF8StringEncoding];
     NSData *lengthBytes = [NSData dataWithBytes:lengthCString length:[lengthString length]];
     
-    [self.outputStream write:[lengthBytes bytes] maxLength:[lengthBytes length]];
+    [self.outputStream write:lengthBytes.bytes maxLength:[lengthBytes length]];
     [self.outputStream writeByte:':'];
-    [self.outputStream write:(uint8_t *)[atom bytes] maxLength:[atom length]];
+    [self.outputStream write:(uint8_t *)atom.bytes maxLength:[atom length]];
 }
 
 

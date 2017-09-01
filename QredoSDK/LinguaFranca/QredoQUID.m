@@ -5,6 +5,7 @@
 #import "QredoMacros.h"
 
 static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
+#define SHA256_DIGEST_SIZE              32
 
 @implementation QredoQUID {
     unsigned char _quid[32];
@@ -22,7 +23,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
 
 +(NSData *)sha256:(NSData *)data {
     GUARD(data,@"Data argument is nil");
-    NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    NSMutableData *hash = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
     CC_SHA256(data.bytes,(CC_LONG)data.length,hash.mutableBytes);
     return hash;
 }
@@ -50,7 +51,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
 
 -(instancetype)initWithQUIDData:(NSData *)data {
     NSAssert(data != nil,@"Data can not be nil");
-    return [self initWithQUIDBytes:[data bytes]];
+    return [self initWithQUIDBytes:data.bytes];
 }
 
 

@@ -623,8 +623,6 @@
 		66C46CD61BF38AF60078B3C0 /* ConversationWebSocketTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationWebSocketTests.h; sourceTree = "<group>"; };
 		66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+QredoArrayEquality.h"; sourceTree = "<group>"; };
 		66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+QredoArrayEquality.m"; sourceTree = "<group>"; };
-		66F774B61BD64CE200F01A2C /* NSData+Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Conversion.h"; sourceTree = "<group>"; };
-		66F774B71BD64CE200F01A2C /* NSData+Conversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Conversion.m"; sourceTree = "<group>"; };
 		66F774B81BD64CE200F01A2C /* NSData+QredoDataEquality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+QredoDataEquality.h"; sourceTree = "<group>"; };
 		66F774B91BD64CE200F01A2C /* NSData+QredoDataEquality.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+QredoDataEquality.m"; sourceTree = "<group>"; };
 		66F774BA1BD64CE200F01A2C /* NSData+QredoRandomData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+QredoRandomData.h"; sourceTree = "<group>"; };
@@ -1416,8 +1414,6 @@
 			children = (
 				66F774B41BD64CE200F01A2C /* NSArray+QredoArrayEquality.h */,
 				66F774B51BD64CE200F01A2C /* NSArray+QredoArrayEquality.m */,
-				66F774B61BD64CE200F01A2C /* NSData+Conversion.h */,
-				66F774B71BD64CE200F01A2C /* NSData+Conversion.m */,
 				66F774B81BD64CE200F01A2C /* NSData+QredoDataEquality.h */,
 				66F774B91BD64CE200F01A2C /* NSData+QredoDataEquality.m */,
 				66F774BA1BD64CE200F01A2C /* NSData+QredoRandomData.h */,

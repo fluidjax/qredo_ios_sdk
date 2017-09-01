@@ -86,7 +86,7 @@
 
 -(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
                                         yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] getDiffieHellmanMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
                                                                                         yourPublicKeyRef:yourPublicKeyRef];
 }
 

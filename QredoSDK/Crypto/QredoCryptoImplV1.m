@@ -7,15 +7,17 @@
 
 @implementation QredoCryptoImplV1
 
-#define HMAC_SIZE_IN_BYTES              CC_SHA256_DIGEST_LENGTH
-#define BULK_KEY_SIZE_IN_BYTES          kCCKeySizeAES256
+
+#define SHA256_DIGEST_SIZE              32
+#define HMAC_SIZE                       SHA256_DIGEST_SIZE
+#define BULK_KEY_SIZE                   kCCKeySizeAES256
 #define PBKDF2_ITERATION_COUNT          10000
-#define PBKDF2_DERIVED_KEY_LENGTH_BYTES 32
+#define PBKDF2_DERIVED_KEY_SIZE         32
 #define PASSWORD_ENCODING_FOR_PBKDF2    NSUTF8StringEncoding
-#define ED25519_VERIFY_KEY_LENGTH       32
-#define ED25519_SIGNING_KEY_LENGTH      64
-#define ED25519_SIGNATURE_LENGTH        64
-#define ED25519_SEED_LENGTH             32
+#define ED25519_VERIFY_KEY_SIZE         32
+#define ED25519_SIGNING_KEY_SIZE        64
+#define ED25519_SIGNATURE_SIZE          64
+#define ED25519_SEED_SIZE               32
 
 
 -(instancetype)init {
@@ -60,7 +62,7 @@
                                      userInfo:nil];
     }
     
-    NSData *encryptedData = [QredoCryptoRaw aes256CtrEncrypt:data key:[secretKey bytes]  iv:iv];
+    NSData *encryptedData = [QredoCryptoRaw aes256CtrEncrypt:data key:secretKey.bytes  iv:iv];
     NSMutableData *ivAndEncryptedData = nil;
     
     if (encryptedData != nil){
@@ -106,7 +108,7 @@
     NSRange encryptedDataRange = NSMakeRange(ivLength,ciphertext.length - ivLength);
     NSData *dataToDecrypt = [ciphertext subdataWithRange:encryptedDataRange];
     
-    NSData *decryptedData = [QredoCryptoRaw aes256CtrDecrypt:dataToDecrypt key:[secretKey bytes] iv:iv];
+    NSData *decryptedData = [QredoCryptoRaw aes256CtrDecrypt:dataToDecrypt key:secretKey.bytes iv:iv];
     return decryptedData;
 }
 
@@ -138,7 +140,7 @@
                                      userInfo:nil];
     }
     
-    NSData *authCode = [QredoCryptoRaw hmacSha256:data key:[authKey bytes] outputLen:length];
+    NSData *authCode = [QredoCryptoRaw hmacSha256:data key:authKey.bytes outputLen:length];
     
     return authCode;
 }
@@ -149,7 +151,7 @@
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken,^{
-        zeroData = [[NSMutableData dataWithLength:HMAC_SIZE_IN_BYTES] copy];
+        zeroData = [[NSMutableData dataWithLength:HMAC_SIZE] copy];
     });
     return zeroData;
 }
@@ -165,18 +167,18 @@
                                      userInfo:nil];
     }
     
-    if (data.length < HMAC_SIZE_IN_BYTES){
+    if (data.length < HMAC_SIZE){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data length (%lu) is invalid. Must be at least %d bytes.",(unsigned long)data.length,HMAC_SIZE_IN_BYTES]
+                                       reason:[NSString stringWithFormat:@"Data length (%lu) is invalid. Must be at least %d bytes.",(unsigned long)data.length,HMAC_SIZE]
                                      userInfo:nil];
     }
     
     //Split up the data and MAC and then pass to other verify method for verification
     
-    NSRange macRange = NSMakeRange(data.length - HMAC_SIZE_IN_BYTES,HMAC_SIZE_IN_BYTES);
+    NSRange macRange = NSMakeRange(data.length - HMAC_SIZE,HMAC_SIZE);
     NSData *mac = [data subdataWithRange:macRange];
     
-    NSRange dataRange = NSMakeRange(0,data.length - HMAC_SIZE_IN_BYTES);
+    NSRange dataRange = NSMakeRange(0,data.length - HMAC_SIZE);
     NSData *dataToMac = [data subdataWithRange:dataRange];
     
     BOOL macCorrect = [self verifyAuthCodeWithKey:authKey data:dataToMac mac:mac];
@@ -194,14 +196,14 @@
                                      userInfo:nil];
     }
     
-    if (mac.length != HMAC_SIZE_IN_BYTES){
+    if (mac.length != HMAC_SIZE){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Mac length (%lu) is invalid. Must be %d bytes.",(unsigned long)mac.length,HMAC_SIZE_IN_BYTES]
+                                       reason:[NSString stringWithFormat:@"Mac length (%lu) is invalid. Must be %d bytes.",(unsigned long)mac.length,HMAC_SIZE]
                                      userInfo:nil];
     }
     
     //Generate the HMAC and compare to provided value (using constant time comparison function)
-    NSData *generatedHmac = [QredoCryptoRaw hmacSha256:data key:[authKey bytes] outputLen:data.length];
+    NSData *generatedHmac = [QredoCryptoRaw hmacSha256:data key:authKey.bytes outputLen:data.length];
     
     BOOL macCorrect = [QredoCryptoRaw constantEquals:generatedHmac rhs:mac];
     
@@ -209,21 +211,21 @@
 }
 
 
--(QredoKey *)getRandomKey {
-    NSData *randomKey = [QredoCryptoRaw secureRandom:BULK_KEY_SIZE_IN_BYTES];
+-(QredoKey *)generateRandomKey {
+    NSData *randomKey = [QredoCryptoRaw secureRandom:BULK_KEY_SIZE];
     return [[QredoKey alloc] initWithData:randomKey];
 }
 
--(NSData *)getPasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password {
+-(NSData *)generatePasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password {
     NSData *passwordData = [password dataUsingEncoding:PASSWORD_ENCODING_FOR_PBKDF2];
     
-    NSData *key = [QredoCryptoRaw pbkdf2Sha256:passwordData salt:salt outputLength:PBKDF2_DERIVED_KEY_LENGTH_BYTES iterations:PBKDF2_ITERATION_COUNT];
+    NSData *key = [QredoCryptoRaw pbkdf2Sha256:passwordData salt:salt outputLength:PBKDF2_DERIVED_KEY_SIZE iterations:PBKDF2_ITERATION_COUNT];
     
     return key;
 }
 
 
--(QredoKey *)getDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
+-(QredoKey *)generateDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
                                          yourPublicKey:(QredoKey *)yourPublicKey {
     if (!myPrivateKey){
         @throw [NSException exceptionWithName:NSInvalidArgumentException
@@ -253,12 +255,12 @@
 }
 
 
--(NSData *)getDiffieHellmanSecretWithSalt:(NSData *)salt myPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
-    QredoKey *ikm = [self getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+-(NSData *)generateDiffieHellmanSecretWithSalt:(NSData *)salt myPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
+    QredoKey *ikm = [self generateDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
     
     //HKDF using SHA-256
-    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:[ikm bytes] salt:salt];
-    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:CC_SHA256_DIGEST_LENGTH];
+    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikm.bytes salt:salt];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:[[NSData alloc] init] outputLength:SHA256_DIGEST_SIZE];
     NSData *diffieHellmanSecretData = okm;
     
     return diffieHellmanSecretData;
@@ -278,9 +280,9 @@
     
 
 -(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed {
-    NSAssert([seed length] == ED25519_SEED_LENGTH,@"Malformed seed");
-    NSMutableData *skData = [NSMutableData dataWithLength:ED25519_SIGNING_KEY_LENGTH];
-    NSMutableData *vkData = [NSMutableData dataWithLength:ED25519_VERIFY_KEY_LENGTH];
+    NSAssert([seed length] == ED25519_SEED_SIZE,@"Malformed seed");
+    NSMutableData *skData = [NSMutableData dataWithLength:ED25519_SIGNING_KEY_SIZE];
+    NSMutableData *vkData = [NSMutableData dataWithLength:ED25519_VERIFY_KEY_SIZE];
     crypto_sign_ed25519_seed_keypair(vkData.mutableBytes,skData.mutableBytes,seed.bytes);
     QredoED25519VerifyKey *vk = [self qredoED25519VerifyKeyWithData:[vkData copy] error:nil];
     NSAssert(vk,@"Could not create verification key.");
@@ -293,7 +295,7 @@
 
 
 -(QredoED25519VerifyKey *)qredoED25519VerifyKeyWithData:(NSData *)data error:(NSError **)error {
-    NSAssert([data length] == ED25519_VERIFY_KEY_LENGTH, @"Invalid ED25519 Verfiy key length");
+    NSAssert([data length] == ED25519_VERIFY_KEY_SIZE, @"Invalid ED25519 Verfiy key length");
     return [[QredoED25519VerifyKey alloc] initWithData:data];
 }
 
@@ -302,13 +304,13 @@
 -(NSData *)qredoED25519SignMessage:(NSData *)message withKey:(QredoED25519SigningKey *)sk error:(NSError **)error {
     GUARD(sk, @"Signing key is required for signing");
     NSAssert([message length]>=1,@"message is 0 bytes");
-    NSMutableData *signature    = [NSMutableData dataWithLength:ED25519_SIGNATURE_LENGTH];
+    NSMutableData *signature    = [NSMutableData dataWithLength:ED25519_SIGNATURE_SIZE];
     
     crypto_sign_ed25519_detached([signature mutableBytes],
                                  nil,
-                                 [message bytes],
+                                 message.bytes,
                                  [message length],
-                                 [sk.data bytes]);
+                                 sk.data.bytes);
     return [signature copy];
 }
 
@@ -325,7 +327,7 @@
                                                salt:salt];
     NSData *key = [QredoCryptoRaw hkdfSha256Expand:prk
                                                         info:info
-                                                outputLength:CC_SHA256_DIGEST_LENGTH];
+                                                outputLength:SHA256_DIGEST_SIZE];
    return [[QredoKey alloc] initWithData:key];
 }
 
