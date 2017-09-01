@@ -736,27 +736,27 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
 @implementation QredoConversation
 
 
--(NSString *)showMyFingerPrint {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] sha256FingerPrintKeyRef:_myPublicKeyRef];
+-(NSString *)showMyFingerprint {
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] sha256FingerprintKeyRef:_myPublicKeyRef];
 }
 
 
--(NSString *)showRemoteFingerPrint {
-    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] sha256FingerPrintKeyRef:_yourPublicKeyRef];
+-(NSString *)showRemoteFingerprint {
+    return [[QredoCryptoKeychain sharedQredoCryptoKeychain] sha256FingerprintKeyRef:_yourPublicKeyRef];
 }
 
 
-//otherPartyHasMyFingerPrint - they have my public key - I can received securely
+//otherPartyHasMyFingerprint - they have my public key - I can received securely
 //if they have my publickey, everthing sent to me is encrypted with my public key
--(void)otherPartyHasMyFingerPrint:(void (^)(NSError *error))completionHandler {
+-(void)otherPartyHasMyFingerprint:(void (^)(NSError *error))completionHandler {
     self.metadata.myPublicKeyVerified = YES;
     [self updateConversationWithCompletionHandler:completionHandler];
 }
 
 
-//iHaveRemoteFingerPrint - I have the other partys public key - I can securely
+//iHaveRemoteFingerprint - I have the other partys public key - I can securely
 //if I have their public key, everything I send to them can only be decrytped by them
--(void)iHaveRemoteFingerPrint:(void (^)(NSError *error))completionHandler {
+-(void)iHaveRemoteFingerprint:(void (^)(NSError *error))completionHandler {
     self.metadata.yourPublicKeyVerified = YES;
     [self updateConversationWithCompletionHandler:completionHandler];
 }

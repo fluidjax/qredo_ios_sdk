@@ -345,15 +345,15 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                           }
                           
                           [result   ifRendezvousCreated:^(NSSet *expiresAt) {
-                            _descriptor = [keychain                 rendezvousDescriptorWithTag:_tag
-                                                                                      hashedTag:_hashedTag
-                                                                               conversationType:configuration.conversationType
-                                                                             authenticationType:authType
-                                                                                durationSeconds:maybeDurationSeconds
-                                                                                      expiresAt:expiresAt
-                                                                             responseCountLimit:responseCount
-                                                                               requesterKeyPair:requesterKeyPair
-                                                                               ownershipKeyPair:ownershipKeyPair];
+                            _descriptor = [keychain rendezvousDescriptorWithTag:_tag
+                                                                      hashedTag:_hashedTag
+                                                               conversationType:configuration.conversationType
+                                                             authenticationType:authType
+                                                                durationSeconds:maybeDurationSeconds
+                                                                      expiresAt:expiresAt
+                                                             responseCountLimit:responseCount
+                                                               requesterKeyPair:requesterKeyPair
+                                                               ownershipKeyPair:ownershipKeyPair];
                               self.configuration.expiresAt = [[expiresAt anyObject] asDate];
                               [self storeWithCompletionHandler:^(NSError *error) {
                                   if (completionHandler) completionHandler(error);
@@ -473,16 +473,17 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     //create a new QLFRendezvousDescriptor with the updated duration and response count
     //the other values are unchanged
-    QLFRendezvousDescriptor *newDescriptor =  [QLFRendezvousDescriptor rendezvousDescriptorWithTag:_tag
-                                                                                         hashedTag:_hashedTag
-                                                                                  conversationType:_descriptor.conversationType
-                                                                                authenticationType:_descriptor.authenticationType
-                                                                                   durationSeconds:durationSeconds
-                                                                                         expiresAt:expiresAt
-                                                                                responseCountLimit:responseCount
-                                                                                  requesterKeyPair:_descriptor.requesterKeyPair
-                                                                                  ownershipKeyPair:_descriptor.ownershipKeyPair];
-    
+    QLFRendezvousDescriptor *newDescriptor =
+                  [QLFRendezvousDescriptor rendezvousDescriptorWithTag:_tag
+                                                             hashedTag:_hashedTag
+                                                      conversationType:_descriptor.conversationType
+                                                    authenticationType:_descriptor.authenticationType
+                                                       durationSeconds:durationSeconds
+                                                             expiresAt:expiresAt
+                                                    responseCountLimit:responseCount
+                                                      requesterKeyPair:_descriptor.requesterKeyPair
+                                                      ownershipKeyPair:_descriptor.ownershipKeyPair];
+
     _descriptor = newDescriptor;
     
     

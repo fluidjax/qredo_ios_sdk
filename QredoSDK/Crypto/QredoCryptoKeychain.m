@@ -168,7 +168,7 @@
 }
 
 
--(NSString*)sha256FingerPrintKeyRef:(QredoKeyRef*)keyRef{
+-(NSString*)sha256FingerprintKeyRef:(QredoKeyRef*)keyRef{
     NSData *keyData = [self retrieveWithRef:keyRef];
     NSData *fp = [QredoCryptoRaw sha256:keyData];
     return [QredoUtils dataToHexString:fp];

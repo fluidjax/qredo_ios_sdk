@@ -10,7 +10,7 @@
 
 
 /** Represents the authentication status of a Conversation.
- This will be red, amber or green and is set by calling [otherPartyHasMyFingerPrint](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)otherPartyHasMyFingerPrint:) or [iHaveRemoteFingerPrint](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)iHaveRemoteFingerPrint:)
+ This will be red, amber or green and is set by calling [otherPartyHasMyFingerprint](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)otherPartyHasMyFingerprint:) or [iHaveRemoteFingerprint](../Classes/QredoConversation.html#/c:objc(cs)QredoConversation(im)iHaveRemoteFingerprint:)
  
  */
 typedef NS_ENUM (NSUInteger,QredoAuthenticationStatus) {
@@ -278,10 +278,10 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 
 /** Call if the other party in the Conversation confirms that they have the fingerprint to your Conversation public key */
--(void)otherPartyHasMyFingerPrint:(void (^)(NSError *error))completionHandler;
+-(void)otherPartyHasMyFingerprint:(void (^)(NSError *error))completionHandler;
 
 /** Call this if the other party to the Conversation confirms that you have their fingerprint */
--(void)iHaveRemoteFingerPrint:(void (^)(NSError *error))completionHandler;
+-(void)iHaveRemoteFingerprint:(void (^)(NSError *error))completionHandler;
 
 /** Retrieve the Conversation [authentication status](../Enums/QredoAuthenticationStatus.html).
  This will be red if neither party has confirmed their fingerprint, amber if only one party has and green if both parties have confirmed their fingerprint and the conversation is fully authenticated
@@ -291,10 +291,10 @@ extern QredoConversationHighWatermark *const QredoConversationHighWatermarkOrigi
 
 
 /** Show my public key fingerprint as a hex string */
--(NSString *)showMyFingerPrint;
+-(NSString *)showMyFingerprint;
 
 /** Show the other party's public key fingerprint as a hex string */
--(NSString *)showRemoteFingerPrint;
+-(NSString *)showRemoteFingerprint;
 
 
 

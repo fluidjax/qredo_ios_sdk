@@ -22,13 +22,14 @@
 
 #define NEW_CRYPTO_CODE FALSE
 #define SHA256_DIGEST_SIZE              32
+#define AES_IV_SIZE (kCCBlockSizeAES256/2)
 
 +(NSData*)randomNonceAndZeroCounter{
     //Specifically for AES CTR
     //generate a 128bit IV (64bit random nonce + 64bit counter starting at 0)
     //This is required because Apple's implementation rolls over at 64bit boundary, where other implementations rollover at 128bit.
-    NSMutableData *iv = [[QredoCryptoRaw secureRandom:(kCCBlockSizeAES256/2)] mutableCopy];
-    [iv increaseLengthBy:(kCCBlockSizeAES256/2)];
+    NSMutableData *iv = [[QredoCryptoRaw secureRandom:AES_IV_SIZE] mutableCopy];
+    [iv increaseLengthBy:AES_IV_SIZE];
     return [iv copy];
 }
 

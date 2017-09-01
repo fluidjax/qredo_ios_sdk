@@ -42,7 +42,7 @@
 -(QredoKeyRefPair *)ownershipKeyPairDeriveRef:(QredoKeyRef *)ikmRef;
 -(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef;
 -(NSData*)publicKeyDataFor:(QredoKeyRefPair *)keyPair;
--(NSString*)sha256FingerPrintKeyRef:(QredoKeyRef*)keyRef;
+-(NSString*)sha256FingerprintKeyRef:(QredoKeyRef*)keyRef;
 -(QredoKeyRef *)generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef yourPublicKeyRef:(QredoKeyRef *)yourPublicKey;
 -(NSData *)generateDiffieHellmanSecretWithSalt:(NSData *)salt myPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
