@@ -41,17 +41,9 @@
     if (!iv){
         iv = [QredoCryptoRaw randomNonceAndZeroCounter];
     }
-    if (!secretKey){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"SecretKey argument is nil"]
-                                     userInfo:nil];
-    }
     
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(secretKey, @"SecretKey argument is nil");
+    GUARD(data, @"data argument is nil");
     
     NSData *encryptedData = [QredoCryptoRaw aes256CtrEncrypt:data key:secretKey.bytes  iv:iv];
     NSMutableData *ivAndEncryptedData = nil;
@@ -69,25 +61,14 @@
 
 //This method will decrypt the data using AES and an IV which should be present at start of encrypted data
 -(NSData *)decryptBulk:(QredoBulkEncKey *)secretKey  ciphertext:(NSData *)ciphertext{
-    if (!secretKey){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"SecretKey argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!ciphertext){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
-    
+    GUARD(secretKey, @"SecretKey argument is nil");
+    GUARD(ciphertext, @"ciphertext argument is nil");
+
     //Data should be IV plus encrypted data
     //However CTR allows 0 length data blocks, so minimum size is IV (1 block length)
-    if (ciphertext.length < kCCBlockSizeAES256){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is too short. Must be at least 1 blocks long (%d bytes) for IV and encrypted data.", kCCBlockSizeAES256]
-                                     userInfo:nil];
-    }
+    
+    GUARDF(ciphertext.length >= kCCBlockSizeAES256,@"Data argument is too short. Must be at least 1 blocks long (%d bytes) for IV and encrypted data.", kCCBlockSizeAES256);
+    
     
     NSUInteger ivLength = kCCBlockSizeAES256;
     
@@ -112,24 +93,9 @@
 
 -(NSData *)getAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data length:(NSUInteger)length {
     //Perfectly valid to have empty key and empty data, but must not be nil and length must must be valid
-    
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (length > data.length){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Length argument (%lu) exceeds data length (%lu)",(unsigned long)length,(unsigned long)data.length]
-                                     userInfo:nil];
-    }
-    
-    if (!authKey){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Auth key argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(data, @"Data argument is nil");
+    GUARDF(length <= data.length, @"Length argument (%lu) exceeds data length (%lu)",(unsigned long)length,(unsigned long)data.length);
+    GUARD(authKey, @"Auth key argument is nil");
     
     NSData *authCode = [QredoCryptoRaw hmacSha256:data key:authKey.bytes outputLen:length];
     
@@ -151,18 +117,8 @@
 -(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data {
     //This method expects the MAC to be appended onto the end of the data. Therefore
     //data argument must be provided, and at least MAC length.
-    
-    if (!data){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (data.length < HMAC_SIZE){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Data length (%lu) is invalid. Must be at least %d bytes.",(unsigned long)data.length,HMAC_SIZE]
-                                     userInfo:nil];
-    }
+    GUARD(data, @"Data argument is nil");
+    GUARDF(data.length >= HMAC_SIZE, @"Data length (%lu) is invalid. Must be at least %d bytes.",(unsigned long)data.length,HMAC_SIZE);
     
     //Split up the data and MAC and then pass to other verify method for verification
     
@@ -173,31 +129,18 @@
     NSData *dataToMac = [data subdataWithRange:dataRange];
     
     BOOL macCorrect = [self verifyAuthCodeWithKey:authKey data:dataToMac mac:mac];
-    
     return macCorrect;
 }
 
 
 -(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data mac:(NSData *)mac {
     //Perfectly valid to have empty key and empty data, but must not be nil. MAC must be present + valid
-    
-    if (!mac){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Mac argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (mac.length != HMAC_SIZE){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Mac length (%lu) is invalid. Must be %d bytes.",(unsigned long)mac.length,HMAC_SIZE]
-                                     userInfo:nil];
-    }
-    
+    GUARD(mac, @"Mac argument is nil");
+    GUARDF(mac.length == HMAC_SIZE, @"Mac length (%lu) is invalid. Must be %d bytes.",(unsigned long)mac.length,HMAC_SIZE);
+   
     //Generate the HMAC and compare to provided value (using constant time comparison function)
     NSData *generatedHmac = [QredoCryptoRaw hmacSha256:data key:authKey.bytes outputLen:data.length];
-    
     BOOL macCorrect = [QredoCryptoRaw constantEquals:generatedHmac rhs:mac];
-    
     return macCorrect;
 }
 
@@ -218,17 +161,8 @@
 
 -(QredoKey *)generateDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
                                          yourPublicKey:(QredoKey *)yourPublicKey {
-    if (!myPrivateKey){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Private key argument is nil"]
-                                     userInfo:nil];
-    }
-    
-    if (!yourPublicKey){
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:[NSString stringWithFormat:@"Public key argument is nil"]
-                                     userInfo:nil];
-    }
+    GUARD(myPrivateKey, @"Private key argument is nil");
+    GUARD(yourPublicKey, @"Public key argument is nil");
     
     //Note: Salt is optional in HKDF
     
