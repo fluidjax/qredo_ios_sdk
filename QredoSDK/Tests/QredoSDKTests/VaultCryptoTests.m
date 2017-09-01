@@ -48,7 +48,7 @@
     
     
     //Build Item & Metadata
-    QredoKeyRef *userMasterKeyRef = [[QredoKeyRef alloc] initWithKeyData:userMasterKey];
+    QredoKeyRef *userMasterKeyRef = [QredoKeyRef keyRefWithKeyData:userMasterKey];
     QredoKeyRef *vaultKeyRef = [QredoVaultCrypto vaultKeyRefWithVaultMasterKeyRef:userMasterKeyRef info:vaultInfo];
     NSData *vaultKey = [vaultKeyRef debugValue];
     
@@ -68,8 +68,8 @@
                                                                                  created:createdDate
                                                                                   values:indexableValues];
     NSData *serializedMetadata = [QredoPrimitiveMarshallers marshalObject:metadata includeHeader:NO];
-    QredoVaultCrypto *vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKeyRef:[[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeys.encryptionKey]
-                                                           authenticationKeyRef:[[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeys.authenticationKey]];
+    QredoVaultCrypto *vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKeyRef:[QredoKeyRef keyRefWithKeyData:encryptionAndAuthKeys.encryptionKey]
+                                                           authenticationKeyRef:[QredoKeyRef keyRefWithKeyData:encryptionAndAuthKeys.authenticationKey]];
     QLFEncryptedVaultItemHeader *encryptedVaultItemHeader  = [vaultCrypto encryptVaultItemHeaderWithItemRef:vaultItemRef metadata:metadata iv:encyptedMetadataIV];
     NSData *serializedEncryptedVaultItemHeader  = [QredoPrimitiveMarshallers marshalObject:encryptedVaultItemHeader includeHeader:NO];
     NSData *encryptedMetadataRaw   = [QredoPrimitiveMarshallers unmarshalObject:encryptedVaultItemHeader.encryptedMetadata
@@ -133,7 +133,7 @@
 
 
 -(void)testGenerateVaultTestVectors {
-    QredoKeyRef *userMasterKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"86ca9c96 7e591207 02b27f02 801e6782 69fc5d40 301ed86f 03c5d6ef 7f660d66"];
+    QredoKeyRef *userMasterKeyRef = [QredoKeyRef keyRefWithKeyHexString:@"86ca9c96 7e591207 02b27f02 801e6782 69fc5d40 301ed86f 03c5d6ef 7f660d66"];
     QLog(@"User master key    = %@",[userMasterKeyRef debugValue]);
     QredoKeyRef *vaultMasterKeyRef = [QredoVaultCrypto vaultMasterKeyRefWithUserMasterKeyRef:userMasterKeyRef];
     QLog(@"Vault master key   = %@",[vaultMasterKeyRef debugValue]);
@@ -143,7 +143,7 @@
 
 
 -(void)testVaultKeysTestVectors {
-    QredoKeyRef *userMasterKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"86ca9c96 7e591207 02b27f02 801e6782 69fc5d40 301ed86f 03c5d6ef 7f660d66"];
+    QredoKeyRef *userMasterKeyRef = [QredoKeyRef keyRefWithKeyHexString:@"86ca9c96 7e591207 02b27f02 801e6782 69fc5d40 301ed86f 03c5d6ef 7f660d66"];
     QredoKeyRef *vaultMasterKeyRef = [QredoVaultCrypto vaultMasterKeyRefWithUserMasterKeyRef:userMasterKeyRef];
     
     NSData *vaultMasterKeyExpected

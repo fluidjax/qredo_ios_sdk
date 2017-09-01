@@ -5,7 +5,7 @@
 #import "QredoErrorCodes.h"
 
 
-@implementation QredoED25519Singer{
+@implementation QredoED25519Signer{
     QredoED25519SigningKey *_signingKey;
 }
 

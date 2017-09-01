@@ -30,8 +30,8 @@
 
 
 -(void)testGenerateTestVectors {
-    QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
-    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
+    QredoKeyRef *myPrivateKeyRef    = [QredoKeyRef keyRefWithKeyHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKeyRef *yourPublicKeyRef   = [QredoKeyRef keyRefWithKeyHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
 
     QredoKeyRef *masterKeyRef = [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
                                                                      yourPublicKeyRef:yourPublicKeyRef];
@@ -49,8 +49,8 @@
 
 
 -(void)testVectors {
-    QredoKeyRef *myPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
-    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
+    QredoKeyRef *myPrivateKeyRef    = [QredoKeyRef keyRefWithKeyHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKeyRef *yourPublicKeyRef   = [QredoKeyRef keyRefWithKeyHexString:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
     QredoKeyRef *masterKeyRef= [_conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
                                                                      yourPublicKeyRef:yourPublicKeyRef];
     
@@ -73,11 +73,11 @@
     QredoQUID *conversationId = [_conversationCrypto conversationIdWithMasterKeyRef:masterKeyRef];
     
     
-    QredoKeyRef *requesterInboundEncryptionKeyExpected  = [[QredoKeyRef alloc] initWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
+    QredoKeyRef *requesterInboundEncryptionKeyExpected  = [QredoKeyRef keyRefWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
     
     XCTAssertEqualObjects(requesterInboundEncryptionKeyRef,requesterInboundEncryptionKeyExpected);
     
-    QredoKeyRef *requesterInboundAuthenticationKeyExpected  = [[QredoKeyRef alloc] initWithKeyHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
+    QredoKeyRef *requesterInboundAuthenticationKeyExpected  = [QredoKeyRef keyRefWithKeyHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
     XCTAssertEqualObjects(requesterInboundAuthenticationKeyRef,requesterInboundAuthenticationKeyExpected);
     
     
@@ -92,10 +92,10 @@
     NSData *requesterOwnershipVerifyingKeyExpected = [NSData dataWithHexString:@"0bdb0e7e 9ce4a729 710af80f 6804274e 154db05a 68129551 aa2c73ef b6cd8947"];
     XCTAssertEqualObjects(requesterOwnershipKeyPair.verifyKey.data,requesterOwnershipVerifyingKeyExpected);
     
-    QredoKeyRef *responderInboundEncryptionKeyExpected =  [[QredoKeyRef alloc] initWithKeyHexString:@"c4ac481f 569c7d9b 86c7a893 dd6b1870 32207ec3 0778fe2c 438ca30e de4f249a"];
+    QredoKeyRef *responderInboundEncryptionKeyExpected =  [QredoKeyRef keyRefWithKeyHexString:@"c4ac481f 569c7d9b 86c7a893 dd6b1870 32207ec3 0778fe2c 438ca30e de4f249a"];
     XCTAssertEqualObjects(responderInboundEncryptionKeyRef,responderInboundEncryptionKeyExpected);
     
-    QredoKeyRef *responderInboundAuthenticationKeyExpected = [[QredoKeyRef alloc] initWithKeyHexString:@"3171bad3 c3560af1 5d936284 d4fe9f85 b3c61718 11d55e41 f803c2f5 c84c820e"];
+    QredoKeyRef *responderInboundAuthenticationKeyExpected = [QredoKeyRef keyRefWithKeyHexString:@"3171bad3 c3560af1 5d936284 d4fe9f85 b3c61718 11d55e41 f803c2f5 c84c820e"];
     XCTAssertEqualObjects(responderInboundAuthenticationKeyRef,responderInboundAuthenticationKeyExpected);
     
     NSData *responderInboundQueueSeedExpected = [NSData dataWithHexString:@"a144f830 e9a97d70 20422ec1 5021375b f5735f31 289ab9a9 9885fe4c dae06245"];
@@ -133,9 +133,9 @@
     
     
    
-    QredoKeyRef *requesterInboundEncryptionKeyRef      = [[QredoKeyRef alloc] initWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
+    QredoKeyRef *requesterInboundEncryptionKeyRef      = [QredoKeyRef keyRefWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47ad"];
     
-    QredoKeyRef *requesterInboundAuthenticationKeyRef     = [[QredoKeyRef alloc] initWithKeyHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
+    QredoKeyRef *requesterInboundAuthenticationKeyRef     = [QredoKeyRef keyRefWithKeyHexString:@"b591febf 55cdc4d0 9ae2a3c3 a89da88a b3516084 54ee2ee8 01cf50df d884e305"];
     
     
         
@@ -165,7 +165,7 @@
     
     
     //Wrong encryption key
-    QredoKeyRef *wrongEncryptionKeyRef     = [[QredoKeyRef alloc] initWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47dd"];
+    QredoKeyRef *wrongEncryptionKeyRef     = [QredoKeyRef keyRefWithKeyHexString:@"cec5ecb7 e525f907 a0d4bc52 8abd58be 6cfcffba c9976ce5 c635d543 22eb47dd"];
     
     
     error = nil;

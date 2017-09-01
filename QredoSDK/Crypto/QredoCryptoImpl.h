@@ -16,7 +16,7 @@
 -(NSData *)decryptBulk:(QredoBulkEncKey *)secretKey  ciphertext:(NSData *)ciphertext;
 
 -(QredoKey *)deriveSlow:(NSData *)ikm salt:(NSData *)data iterations:(int)iterations;
--(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info;
+-(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info outputLength:(int)length;
 
 
 -(NSData *)getAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data;

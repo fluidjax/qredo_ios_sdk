@@ -10,7 +10,7 @@
 
 @end
 
-@interface QredoED25519Singer :NSObject <QredoSigner>
+@interface QredoED25519Signer :NSObject <QredoSigner>
 
 -(instancetype)initWithSigningKey:(QredoED25519SigningKey *)signingKey;
 

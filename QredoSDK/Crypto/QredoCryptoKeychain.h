@@ -15,7 +15,7 @@
 @class QredoDhPublicKey;
 @class QLFKeyPairLF;
 @class QLFVaultKeyPair;
-@class QredoED25519Singer;
+@class QredoED25519Signer;
 
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
@@ -37,6 +37,7 @@
 #pragma Key Derive/Generation
 -(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info;
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt;
+
 -(QredoKeyRefPair *)generateDHKeyPair;
 -(QredoKeyRefPair *)ownershipKeyPairDeriveRef:(QredoKeyRef *)ikmRef;
 -(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef;
@@ -46,9 +47,13 @@
 -(NSData *)generateDiffieHellmanSecretWithSalt:(NSData *)salt myPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
 
 
+#pragma User/Master Key Generation
+-(QredoKeyRef *)deriveUserUnlockKeyRef:(NSData *)ikm;
+-(QredoKeyRef *)deriveMasterKeyRef:(QredoKeyRef *)userUnlockKeyRef;
+
 
 #pragma Qredo Lingua Franca
--(QredoED25519Singer *)qredoED25519SingerWithKeyRef:(QredoKeyRef*)keyref;
+-(QredoED25519Signer *)qredoED25519SignerWithKeyRef:(QredoKeyRef*)keyref;
 -(QLFKeyPairLF *)newRequesterKeyPair;
 -(QLFKeyPairLF *)keyPairLFWithPubKeyRef:(QredoKeyRef *)pubKeyRef privateKeyRef:(QredoKeyRef *)privateKeyRef;
 -(QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QredoKeyRef *)encryptionKeyRef privateKeyRef:(QredoKeyRef *)authenticationKeyRef;

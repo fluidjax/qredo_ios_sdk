@@ -298,9 +298,9 @@ static char ownershipSignature_listOp_signatureBytes[] = {
                          
 //                         QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
 //                         QredoKeyRef *keyRef 
-//                         QredoSigner *signer = [keychain qredoED25519SingerWithKeyRef:self.key.]
+//                         QredoSigner *signer = [keychain qredoED25519SignerWithKeyRef:self.key.]
                          
-         return [QLFTestableOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:self.key]
+         return [QLFTestableOwnershipSignature ownershipSignatureWithSigner:[[QredoED25519Signer alloc] initWithSigningKey:self.key]
                                                               operationType:operationType
                                                                        data:vaultItem
                                                                       error:error];
@@ -320,7 +320,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
                                    exectedSiganture:expectedSignature
                      ownershipSignatureCrationBlock:^QLFOwnershipSignature *(NSError *__autoreleasing *error)
      {
-         return [QLFTestableOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:self.key]
+         return [QLFTestableOwnershipSignature ownershipSignatureForGetVaultItemWithSigner:[[QredoED25519Signer alloc] initWithSigningKey:self.key]
                                                                        vaultItemDescriptor:vaultItemDescriptor
                                                                    vaultItemSequenceValues:[NSSet setWithObject:@(1)]
                                                                                      error:error];
@@ -340,7 +340,7 @@ static char ownershipSignature_listOp_signatureBytes[] = {
                                    exectedSiganture:expectedSignature
                      ownershipSignatureCrationBlock:^QLFOwnershipSignature *(NSError *__autoreleasing *error)
      {
-         return [QLFTestableOwnershipSignature ownershipSignatureForListVaultItemsWithSigner:[[QredoED25519Singer alloc] initWithSigningKey:self.key]
+         return [QLFTestableOwnershipSignature ownershipSignatureForListVaultItemsWithSigner:[[QredoED25519Signer alloc] initWithSigningKey:self.key]
                                                                               sequenceStates:sequenceStates
                                                                                        error:error];
      }];

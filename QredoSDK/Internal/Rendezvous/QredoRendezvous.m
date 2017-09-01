@@ -183,10 +183,10 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
         _lfAuthType = _descriptor.authenticationType;
         _tag = _descriptor.tag;
         _hashedTag = _descriptor.hashedTag;
-        _requesterPrivateKeyRef = [[QredoKeyRef alloc] initWithKeyData:descriptor.requesterKeyPair.privKey.bytes];
-        _requesterPublicKeyRef  = [[QredoKeyRef alloc] initWithKeyData:descriptor.requesterKeyPair.pubKey.bytes];
+        _requesterPrivateKeyRef = [QredoKeyRef keyRefWithKeyData:descriptor.requesterKeyPair.privKey.bytes];
+        _requesterPublicKeyRef  = [QredoKeyRef keyRefWithKeyData:descriptor.requesterKeyPair.pubKey.bytes];
         
-        QredoKeyRef *hashTagRef = [[QredoKeyRef alloc] initWithKeyData:[_hashedTag data]];
+        QredoKeyRef *hashTagRef = [QredoKeyRef keyRefWithKeyData:[_hashedTag data]];
         _ownershipECKeyPairRef  = [[QredoCryptoKeychain sharedQredoCryptoKeychain] ownershipKeyPairDeriveRef:hashTagRef];
 
         [self loadHWM];
@@ -280,14 +280,14 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     
     QredoLogDebug(@"Hashed tag: %@",_hashedTag);
     
-    QredoKeyRef *hashTagRef = [[QredoKeyRef alloc] initWithKeyData:[_hashedTag data]];
+    QredoKeyRef *hashTagRef = [QredoKeyRef keyRefWithKeyData:[_hashedTag data]];
     
     //Generate the rendezvous key pairs.
     QredoKeyRefPair *ownershipKeyPair   = [keychain ownershipKeyPairDeriveRef:hashTagRef];
     QredoKeyRefPair *requesterKeyPair   = [keychain generateDHKeyPair];
     
     _requesterPrivateKeyRef   =   requesterKeyPair.privateKeyRef;
-    _requesterPublicKeyRef    = [[QredoKeyRef alloc] initWithKeyData:[keychain publicKeyDataFor:requesterKeyPair]];
+    _requesterPublicKeyRef    = [QredoKeyRef keyRefWithKeyData:[keychain publicKeyDataFor:requesterKeyPair]];
     _ownershipECKeyPairRef    = [keychain ownershipKeyPairDeriveRef:hashTagRef];
     
     
@@ -425,7 +425,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     marshalledData = [QredoPrimitiveMarshallers marshalObject:durationSeconds marshaller:setMarshaller includeHeader:NO];
     [payloadData appendData:marshalledData];
     
-    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_ownershipECKeyPairRef.privateKeyRef];
+    QredoED25519Signer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SignerWithKeyRef:_ownershipECKeyPairRef.privateKeyRef];
     
     QLFOwnershipSignature *ownershipSignature =
                 [QLFOwnershipSignature ownershipSignatureWithSigner:signer
@@ -549,7 +549,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                            }
                                                      includeHeader:NO];
     
-    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_ownershipECKeyPairRef.privateKeyRef];
+    QredoED25519Signer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SignerWithKeyRef:_ownershipECKeyPairRef.privateKeyRef];
 
     QLFOwnershipSignature *ownershipSignature =
                 [QLFOwnershipSignature ownershipSignatureWithSigner:signer
@@ -751,7 +751,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                            }
                                                      includeHeader:NO];
     
-    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_ownershipECKeyPairRef.privateKeyRef];
+    QredoED25519Signer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SignerWithKeyRef:_ownershipECKeyPairRef.privateKeyRef];
     
     QLFOwnershipSignature *ownershipSignature =
             [QLFOwnershipSignature ownershipSignatureWithSigner:signer
@@ -857,7 +857,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
                                                                   rendezvousTag:_tag
                                                                 converationType:self.configuration.conversationType];
     
-    QredoKeyRef *responderPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:response.responderPublicKey];
+    QredoKeyRef *responderPublicKeyRef = [QredoKeyRef keyRefWithKeyData:response.responderPublicKey];
     
     [conversation generateAndStoreKeysWithPrivateKeyRef:_requesterPrivateKeyRef
                                            publicKeyRef:responderPublicKeyRef
@@ -985,7 +985,7 @@ NSString *const kQredoRendezvousVaultItemLabelAuthenticationType = @"authenticat
     NSError *error = nil;
     
     
-    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_ownershipECKeyPairRef.privateKeyRef];
+    QredoED25519Signer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SignerWithKeyRef:_ownershipECKeyPairRef.privateKeyRef];
 
     
     QLFOwnershipSignature *ownershipSignature

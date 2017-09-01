@@ -229,9 +229,9 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     _metadata.myPublicKeyVerified = descriptor.myPublicKeyVerified;
     _metadata.yourPublicKeyVerified = descriptor.yourPublicKeyVerified;
     
-    _yourPublicKeyRef    = [[QredoKeyRef alloc] initWithKeyData:descriptor.yourPublicKey.bytes];
-    _myPrivateKeyRef     = [[QredoKeyRef alloc] initWithKeyData:descriptor.myKey.privKey.bytes];
-    _myPublicKeyRef      = [[QredoKeyRef alloc] initWithKeyData:descriptor.myKey.pubKey.bytes];
+    _yourPublicKeyRef    = [QredoKeyRef keyRefWithKeyData:descriptor.yourPublicKey.bytes];
+    _myPrivateKeyRef     = [QredoKeyRef keyRefWithKeyData:descriptor.myKey.privKey.bytes];
+    _myPublicKeyRef      = [QredoKeyRef keyRefWithKeyData:descriptor.myKey.pubKey.bytes];
     
     //this method is called when we are loading the conversation from the vault, therefore, we don't need to store it again. Only generating keys here
     [self generateKeysWithPrivateKeyRef:_myPrivateKeyRef
@@ -392,7 +392,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     QredoCryptoKeychain *keychain = [QredoCryptoKeychain sharedQredoCryptoKeychain];
     QredoKeyRefPair *responderKeyRefPair = [keychain generateDHKeyPair];
     NSData *responderPublicKeyBytes    = [keychain publicKeyDataFor:responderKeyRefPair];
-    _myPublicKeyRef =  [[QredoKeyRef alloc] initWithKeyData:[keychain publicKeyDataFor:responderKeyRefPair]];
+    _myPublicKeyRef =  [QredoKeyRef keyRefWithKeyData:[keychain publicKeyDataFor:responderKeyRefPair]];
     
     
     QLFAuthenticationCode *responderAuthenticationCode   = [_rendezvousCrypto responderAuthenticationCodeWithHashedTag:hashedTag
@@ -425,7 +425,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                                                                                           encryptionKeyRef:encKeyRef
                                                                                                                      error:&error];
                                
-                               QredoKeyRef *requesterPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:responderInfo.requesterPublicKey];
+                               QredoKeyRef *requesterPublicKeyRef = [QredoKeyRef keyRefWithKeyData:responderInfo.requesterPublicKey];
                                
                                _metadata.rendezvousTag = rendezvousTag;
                                _metadata.type = responderInfo.conversationType;
@@ -528,7 +528,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                                  includeHeader:NO];
     
     
-   QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:signingKeyRef];
+   QredoED25519Signer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SignerWithKeyRef:signingKeyRef];
     
     
     QLFOwnershipSignature *ownershipSignature
@@ -803,7 +803,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
     
     NSError *error = nil;
     
-    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_outboundSigningKeyRef];
+    QredoED25519Signer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SignerWithKeyRef:_outboundSigningKeyRef];
     
     QLFOwnershipSignature *ownershipSignature
     = [QLFOwnershipSignature ownershipSignatureWithSigner:signer
@@ -1018,7 +1018,7 @@ NSString *const kQredoConversationItemHighWatermark = @"_conv_highwater";
                highWatermarkHandler:(void (^)(QredoConversationHighWatermark *newWatermark))highWatermarkHandler {
     NSError *error = nil;
     
-    QredoED25519Singer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SingerWithKeyRef:_inboundSigningKeyRef];
+    QredoED25519Signer *signer = [[QredoCryptoKeychain sharedQredoCryptoKeychain] qredoED25519SignerWithKeyRef:_inboundSigningKeyRef];
     
     
     QLFOwnershipSignature *ownershipSignature

@@ -70,7 +70,7 @@ static NSString *kCurrentService = @"CurrentService";
     
     //Save the keychain
     
-    NSData *keychainData = [qredoKeychain data];
+    NSData *keychainData = [qredoKeychain masterKeyData];
     if (!keychainData)return NO;
     NSMutableDictionary *addDictionary = [[NSMutableDictionary alloc] init];
     [addDictionary setObject:(__bridge id)kSecClassGenericPassword forKey:(__bridge id < NSCopying >)kSecClass];

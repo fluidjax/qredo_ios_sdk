@@ -88,6 +88,31 @@
 }
 
 
+#pragma User/Master Key Generation
+
+-(QredoKeyRef *)deriveUserUnlockKeyRef:(NSData *)ikm{
+    NSAssert(ikm,@"DeriveKey key should not be nil");
+    QredoKey *derivedKey = [self.cryptoImplementation deriveSlow:ikm
+                                                            salt:SALT_USER_UNLOCK
+                                                      iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
+    return [self createKeyRef:derivedKey];
+}
+
+
+-(QredoKeyRef *)deriveMasterKeyRef:(QredoKeyRef *)userUnlockKeyRef{
+    
+    NSData *ikm = [self retrieveWithRef:userUnlockKeyRef];
+    NSAssert(ikm,@"DeriveKey key should not be nil");
+    
+    QredoKey *derivedKey = [self.cryptoImplementation deriveFast:ikm
+                                                            salt:SALT_USER_MASTER
+                                                            info:INFO_USER_MASTER
+                                                    outputLength:MASTER_KEY_SIZE];
+    return [self createKeyRef:derivedKey];
+}
+
+
+
 #pragma Key Derive/Generation
 
 
@@ -96,9 +121,11 @@
     NSData *ikm = [self retrieveWithRef:keyRef];
     NSAssert(ikm,@"DeriveKey key should not be nil");
     NSAssert(salt,@"Salt should not be nil");
-    QredoKey *derivedKey = [self.cryptoImplementation deriveFast:ikm salt:salt info:info];
+    QredoKey *derivedKey = [self.cryptoImplementation deriveFast:ikm salt:salt info:info outputLength:SHA256_DIGEST_SIZE];
     return [self createKeyRef:derivedKey];
 }
+
+
 
 
 -(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt{
@@ -172,11 +199,11 @@
 
 #pragma Qredo Lingua Franca
 
--(QredoED25519Singer *)qredoED25519SingerWithKeyRef:(QredoKeyRef*)keyref{
+-(QredoED25519Signer *)qredoED25519SignerWithKeyRef:(QredoKeyRef*)keyref{
     NSData *keyData = [self retrieveWithRef:keyref];
     if (!keyData)return nil;
     QredoED25519SigningKey *key = [[QredoED25519SigningKey alloc] initWithData:keyData];
-    return [[QredoED25519Singer alloc] initWithSigningKey:key];
+    return [[QredoED25519Signer alloc] initWithSigningKey:key];
 }
 
 -(QLFKeyPairLF *)newRequesterKeyPair {
@@ -259,7 +286,7 @@
 
 -(QredoKeyRef*)createKeyRef:(QredoKey*)key{
     if (![key data])return nil;
-    return [[QredoKeyRef alloc] initWithKeyData:[key data]];
+    return [QredoKeyRef keyRefWithKeyData:[key data]];
 }
 
 

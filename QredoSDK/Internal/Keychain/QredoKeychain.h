@@ -22,7 +22,7 @@ extern NS_ENUM (NSInteger,QredoCredentialType) {
 @property QredoVaultKeys *defaultVaultKeys;
 
 -(instancetype)initWithOperatorInfo:(QLFOperatorInfo *)operatorInfo;
--(NSData *)data;
+-(NSData *)masterKeyData;
 -(void)generateNewKeys:(QredoUserCredentials *)userCredentials;
 
 //used in tests only

@@ -10,10 +10,9 @@
 
 @interface QredoKeyRef : NSObject
 
++(instancetype)keyRefWithKeyData:(NSData*)keyData;
++(instancetype)keyRefWithKeyHexString:(NSString*)keyHexString;
 
-
--(instancetype)initWithKeyData:(NSData*)keyData;
--(instancetype)initWithKeyHexString:(NSString*)keyHexString;
 -(NSData*)ref;
 -(BOOL)isEqual:(id)other;
 

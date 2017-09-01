@@ -25,12 +25,11 @@
         QredoKeyRefPair *ownershipKeyPairRef = [keychain ownershipKeyPairDeriveRef:vaultKeyRef];
         QLFVaultKeyPair *encryptionAndAuthKeyPairRef = [QredoVaultCrypto vaultKeyPairWithVaultKeyRef:vaultKeyRef];
         QredoQUID *vaultID = [[QredoQUID alloc] initWithQUIDData:[keychain publicKeyDataFor:ownershipKeyPairRef]];
-        //_vaultKey = [vaultKeyRef debugValue];
-        _ownershipKeyPairRef = ownershipKeyPairRef;
-        _encryptionKeyRef = [[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeyPairRef.encryptionKey];
-        _authenticationKeyRef = [[QredoKeyRef alloc] initWithKeyData:encryptionAndAuthKeyPairRef.authenticationKey];
-        _vaultId = vaultID;
         _vaultKeyRef = vaultKeyRef;
+        _ownershipKeyPairRef = ownershipKeyPairRef;
+        _encryptionKeyRef = [QredoKeyRef keyRefWithKeyData:encryptionAndAuthKeyPairRef.encryptionKey];
+        _authenticationKeyRef = [QredoKeyRef keyRefWithKeyData:encryptionAndAuthKeyPairRef.authenticationKey];
+        _vaultId = vaultID;
     }
     return self;
 }

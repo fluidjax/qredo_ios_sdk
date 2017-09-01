@@ -24,6 +24,17 @@
 @implementation QredoKeyRef
 
 
+
++(instancetype)keyRefWithKeyData:(NSData*)keyData{
+    return [[self alloc] initWithKeyData:keyData];
+}
+
+
++(instancetype)keyRefWithKeyHexString:(NSString*)keyHexString{
+    return [[self alloc] initWithKeyHexString:keyHexString];
+}
+
+
 -(instancetype)initWithKeyData:(NSData*)keyData{
     self = [self init];
     if (self) {
@@ -34,6 +45,14 @@
     return self;
 }
 
+-(instancetype)initWithKeyHexString:(NSString*)keyHexString{
+    self = [self initWithKeyData:[NSData dataWithHexString:keyHexString]];;
+    if (self) {
+    }
+    return self;
+}
+
+
 
 -(NSData*)hKDFRefForKey:(NSData*)key{
     //generate a Reference for a Key
@@ -42,12 +61,7 @@
 }
 
 
--(instancetype)initWithKeyHexString:(NSString*)keyHexString{
-    self = [self initWithKeyData:[NSData dataWithHexString:keyHexString]];;
-    if (self) {
-    }
-    return self;
-}
+
 
 
 -(BOOL)isEqual:(id)other{

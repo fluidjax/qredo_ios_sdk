@@ -8,16 +8,7 @@
 @implementation QredoCryptoImplV1
 
 
-#define SHA256_DIGEST_SIZE              32
-#define HMAC_SIZE                       SHA256_DIGEST_SIZE
-#define BULK_KEY_SIZE                   kCCKeySizeAES256
-#define PBKDF2_ITERATION_COUNT          10000
-#define PBKDF2_DERIVED_KEY_SIZE         32
-#define PASSWORD_ENCODING_FOR_PBKDF2    NSUTF8StringEncoding
-#define ED25519_VERIFY_KEY_SIZE         32
-#define ED25519_SIGNING_KEY_SIZE        64
-#define ED25519_SIGNATURE_SIZE          64
-#define ED25519_SEED_SIZE               32
+
 
 
 -(instancetype)init {
@@ -322,12 +313,12 @@
 }
 
 
--(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info{
+-(QredoKey *)deriveFast:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info outputLength:(int)length{
     NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikm
                                                salt:salt];
     NSData *key = [QredoCryptoRaw hkdfSha256Expand:prk
                                                         info:info
-                                                outputLength:SHA256_DIGEST_SIZE];
+                                                outputLength:length];
    return [[QredoKey alloc] initWithData:key];
 }
 

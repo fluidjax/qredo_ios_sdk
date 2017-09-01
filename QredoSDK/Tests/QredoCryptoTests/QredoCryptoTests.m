@@ -31,8 +31,8 @@
     
     NSData *myPrivateKeyData  = [QredoUtils hexStringToData:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
     NSData *yourPublicKeyData = [QredoUtils hexStringToData:@"9572dd9c f1ea2d5f de2e4baa 40b2dceb b6735e79 2b4fa374 52b4c8cd ea2a1b0e"];
-    QredoKeyRef *myPrivateKey = [[QredoKeyRef alloc] initWithKeyData:myPrivateKeyData];
-    QredoKeyRef *yourPublicKeyRef = [[QredoKeyRef alloc] initWithKeyData:yourPublicKeyData];
+    QredoKeyRef *myPrivateKey = [QredoKeyRef keyRefWithKeyData:myPrivateKeyData];
+    QredoKeyRef *yourPublicKeyRef = [QredoKeyRef keyRefWithKeyData:yourPublicKeyData];
     
     QredoKeyRef *masterKeyRef = [conversationCrypto conversationMasterKeyWithMyPrivateKeyRef:myPrivateKey yourPublicKeyRef:yourPublicKeyRef];
     QredoKeyRef *requesterInboundEncryptionKeyRef = [conversationCrypto requesterInboundEncryptionKeyWithMasterKeyRef:masterKeyRef];
@@ -402,7 +402,7 @@
     NSData *expectedOkmData = [NSData dataWithBytes:expectedOkmDataArray length:sizeof(expectedOkmDataArray) / sizeof(uint8_t)];
 
     NSData *prk = [QredoCryptoRaw hkdfSha256Extract:ikmData salt:saltData];
-    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:infoData outputLength:SHA256_DIGEST_SIZE];
+    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:infoData outputLength:CC_SHA256_DIGEST_LENGTH];
 
     XCTAssertNotNil(okm,@"OKM should not be nil.");
     XCTAssertTrue([expectedOkmData isEqualToData:okm],@"OKM data incorrect.");

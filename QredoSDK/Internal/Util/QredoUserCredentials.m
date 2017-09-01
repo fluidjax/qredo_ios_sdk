@@ -2,18 +2,18 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoCryptoRaw.h"
 #import "QredoLoggerPrivate.h"
-#include "QredoMacros.h"
+#import "QredoCryptoKeychain.h"
+#import "QredoMacros.h"
+#import "QredoKeyRef.h"
 
 #define SALT_USER_UNLOCK                 [@"3aK3VkzxClECvyFW" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_USER_MASTER                 [@"wjB9zA2l1Z4eiW5t" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_INDEX_NAME                  [@"48JGdrpomHvzO9ng" dataUsingEncoding:NSUTF8StringEncoding]
-
 #define INFO_USER_MASTER                 [@"QREDO_INFO_USER_MASTER" dataUsingEncoding:NSUTF8StringEncoding]
 
 
 #define PBKDF2_USERUNLOCK_KEY_ITERATIONS 1000
-#define PBKDF2_DERIVED_KEY_SIZE          32
-
+#define PBKDF2_DERIVED_KEY_LENGTH_BYTES  32
 
 @interface QredoUserCredentials ()
 @property (readwrite, atomic) NSString *appId;
@@ -38,19 +38,6 @@
 }
 
 
--(NSData *)userUnlockKey {
-    GUARD(self.appId,@"appId cannot be nil");
-    GUARD(self.userId,@"userId cannot be nil");
-    GUARD(self.userSecure,@"userSecure cannot be nil");
-    
-    NSMutableData *concatenatedBytes = [[NSMutableData alloc] init];
-    [concatenatedBytes appendData:[self sha1WithString:self.appId]];
-    [concatenatedBytes appendData:[self sha1WithString:self.userId]];
-    [concatenatedBytes appendData:[self sha1WithString:self.userSecure]];
-    
-    NSData *key = [QredoCryptoRaw pbkdf2Sha256:concatenatedBytes salt:SALT_USER_UNLOCK outputLength:PBKDF2_DERIVED_KEY_SIZE iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
-    return key;
-}
 
 
 -(NSData *)sha1WithString:(NSString *)str {
@@ -61,16 +48,34 @@
 }
 
 
--(NSData *)masterKey {
-    NSData *userUnlockKey = [self userUnlockKey];
-    return [self masterKey:userUnlockKey];
+
+#pragma Key Generation
+
+
+-(QredoKeyRef *)generateMasterKeyRef{
+    QredoKeyRef *userUnlockKeyRef = [self userUnlockKeyRef];
+    QredoKeyRef *masterKeyRef = [self masterKeyRef:userUnlockKeyRef];
+    return masterKeyRef;
 }
 
 
--(NSData *)masterKey:(NSData *)userUnlockKey {
-    NSData *prk = [QredoCryptoRaw hkdfSha256Extract:userUnlockKey salt:SALT_USER_MASTER];
-    NSData *okm = [QredoCryptoRaw hkdfSha256Expand:prk info:INFO_USER_MASTER outputLength:256];
-    return okm;
+-(QredoKeyRef *)userUnlockKeyRef {
+    GUARD(self.appId,@"appId cannot be nil");
+    GUARD(self.userId,@"userId cannot be nil");
+    GUARD(self.userSecure,@"userSecure cannot be nil");
+    
+    NSMutableData *concatenatedBytes = [[NSMutableData alloc] init];
+    [concatenatedBytes appendData:[self sha1WithString:self.appId]];
+    [concatenatedBytes appendData:[self sha1WithString:self.userId]];
+    [concatenatedBytes appendData:[self sha1WithString:self.userSecure]];
+    QredoKeyRef *keyRef = [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveUserUnlockKeyRef:concatenatedBytes];
+    return keyRef;
+}
+
+
+-(QredoKeyRef *)masterKeyRef:(QredoKeyRef *)userUnlockKeyRef {
+    QredoKeyRef *masterKeyRef = [[QredoCryptoKeychain sharedQredoCryptoKeychain] deriveMasterKeyRef:userUnlockKeyRef];
+    return masterKeyRef;
 }
 
 
