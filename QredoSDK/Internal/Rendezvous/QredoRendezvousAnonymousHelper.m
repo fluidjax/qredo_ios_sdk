@@ -17,7 +17,7 @@
 static const NSUInteger kRandomTagLength = 32;
 
 -(instancetype)initWithFullTag:(NSString *)fullTag
-                        crypto:(id<CryptoImpl>)crypto
+                        crypto:(id<QredoCryptoImpl>)crypto
                 signingHandler:(signDataBlock)signingHandler
                          error:(NSError **)error {
     self = [super initWithCrypto:crypto];
@@ -58,7 +58,7 @@ static const NSUInteger kRandomTagLength = 32;
 
 
 -(instancetype)initWithFullTag:(NSString *)fullTag
-                        crypto:(id<CryptoImpl>)crypto
+                        crypto:(id<QredoCryptoImpl>)crypto
                          error:(NSError **)error {
     return [self initWithFullTag:fullTag
                           crypto:crypto
@@ -89,9 +89,7 @@ static const NSUInteger kRandomTagLength = 32;
 
 -(NSString *)getRandomTag {
     NSData *randomTagData = [NSData dataWithRandomBytesOfLength:kRandomTagLength];
-    
     NSString *tag = [QredoBase58 encodeData:randomTagData];
-    
     return tag;
 }
 
@@ -105,7 +103,7 @@ static const NSUInteger kRandomTagLength = 32;
 @implementation QredoRendezvousAnonymousRespondHelper
 
 -(instancetype)initWithFullTag:(NSString *)fullTag
-                        crypto:(id<CryptoImpl>)crypto
+                        crypto:(id<QredoCryptoImpl>)crypto
                          error:(NSError **)error {
     self = [super initWithCrypto:crypto];
     

@@ -4,11 +4,30 @@
 #import "MasterConfig.h"
 #import "QredoPrivate.h"
 #import "QredoXCTestListeners.h"
+#import "QredoCryptoKeychain.h"
 
 @import ObjectiveC;
 
 
 static const int testTimeOut = 30;
+
+
+
+
+@implementation QredoKeyRef (testing)
+-(NSData*)debugValue{
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    return [keychain retrieveWithRef:self];
+}
+
+-(void)dump{
+    NSLog(@"Ref: %@",self.ref);
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    NSLog(@"Val: %@",[keychain retrieveWithRef:self]);
+}
+
+@end
+
 
 
 @implementation QredoXCTestCase

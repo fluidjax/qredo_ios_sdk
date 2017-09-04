@@ -6,14 +6,14 @@
 #import "QredoTestUtils.h"
 #import "QredoRendezvousHelpers.h"
 #import "QredoClient.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoRendezvousCrypto.h"
-#import "CryptoImplV1.h"
 #import "QredoBase58.h"
 #import "QredoLoggerPrivate.h"
 #import "QredoPrivate.h"
 #import "QredoNetworkTime.h"
 #import "NSData+HexTools.h"
+#import "QredoCryptoKeychain.h"
 
 #import <objc/runtime.h>
 
@@ -77,7 +77,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 @interface QredoRendezvousTests () {
 }
 
-@property (nonatomic) id<CryptoImpl> cryptoImpl;
 @property (nonatomic) SecKeyRef privateKeyRef;
 @property  NSString *randomlyCreatedTag;
 
@@ -91,8 +90,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [super setUp];
     //Want tests to abort if error occurrs
     self.continueAfterFailure = NO;
-    //Trusted root refs are required for X.509 tests, and form part of the CryptoImpl
-    self.cryptoImpl = [CryptoImplV1 sharedInstance];
     [self createRandomClients];
 }
 
@@ -231,7 +228,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
     
     [self measureBlock:^{
-        [rendCrypto       masterKeyWithTag:@"123456789012345678901234567890"
+        [rendCrypto       masterKeyRefWithTag:@"123456789012345678901234567890"
                                      appId:@"123456789012345678901234567890"];
     }];
 }
@@ -241,10 +238,10 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
     NSString *tag   = @"ABC";
     NSString *appId = @"123";
-    NSData *res = [rendCrypto masterKeyWithTag:tag appId:appId];
-    NSData *testVal = [NSData dataWithHexString:@"b7dd94ba 22f5eba2 a1010144 00e65c11 0d3e69b7 098a5b88 9d44cea0 e96c944f"];
-    
-    XCTAssertTrue([testVal isEqualToData:res],@"Master Key derived from Tag is incorrect");
+    QredoKeyRef *res = [rendCrypto masterKeyRefWithTag:tag appId:appId];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    NSData *correct = [NSData dataWithHexString:@"b7dd94ba 22f5eba2 a1010144 00e65c11 0d3e69b7 098a5b88 9d44cea0 e96c944f"];
+    XCTAssertTrue([keychain keyRef:res isEqualToData:correct],@"Master Key derived from Tag is incorrect");
 }
 
 
@@ -888,11 +885,11 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     XCTAssertNotNil(client1Conversation);
     XCTAssertNotNil(client2Conversation);
     
-    NSString *client1Myingerprint     = [client1Conversation showMyFingerPrint];
-    NSString *client1RemoteFingerprint   = [client1Conversation showRemoteFingerPrint];
+    NSString *client1Myingerprint     = [client1Conversation showMyFingerprint];
+    NSString *client1RemoteFingerprint   = [client1Conversation showRemoteFingerprint];
     
-    NSString *client2MyFingerprint     = [client2Conversation showMyFingerPrint];
-    NSString *client2TheirFingerprint   = [client2Conversation showRemoteFingerPrint];
+    NSString *client2MyFingerprint     = [client2Conversation showMyFingerprint];
+    NSString *client2TheirFingerprint   = [client2Conversation showRemoteFingerprint];
     
     
     XCTAssertTrue([client1Myingerprint isEqualToString:client2TheirFingerprint],@"fingerprints dont match");
@@ -905,8 +902,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [createdRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata,BOOL *stop) {
         [clientPersistent1                    fetchConversationWithRef:conversationMetadata.conversationRef
                                                      completionHandler:^(QredoConversation *conversation,NSError *error) {
-                                                         XCTAssertNotNil([conversation showMyFingerPrint],@"finger print shoud not be nil");
-                                                         XCTAssertNotNil([conversation showRemoteFingerPrint],@"finger print shoud not be nil");
+                                                         XCTAssertNotNil([conversation showMyFingerprint],@"finger print shoud not be nil");
+                                                         XCTAssertNotNil([conversation showRemoteFingerprint],@"finger print shoud not be nil");
                                                      }];
     }
                                      completionHandler:^(NSError *error) {
@@ -999,7 +996,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 }
 
 
--(void)testFingerPrintsAndTrafficLights {
+-(void)testFingerprintsAndTrafficLights {
     __block NSString *randomTag = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block QredoRendezvous *createdRendezvous = nil;
@@ -1064,12 +1061,12 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     
     
-    NSString *client1Myingerprint       = [client1Conversation showMyFingerPrint];
-    NSString *client1RemoteFingerprint   = [client1Conversation showRemoteFingerPrint];
+    NSString *client1Myingerprint       = [client1Conversation showMyFingerprint];
+    NSString *client1RemoteFingerprint   = [client1Conversation showRemoteFingerprint];
     
     
-    NSString *client2MyFingerprint     = [client2Conversation showMyFingerPrint];
-    NSString *client2TheirFingerprint   = [client2Conversation showRemoteFingerPrint];
+    NSString *client2MyFingerprint     = [client2Conversation showMyFingerprint];
+    NSString *client2TheirFingerprint   = [client2Conversation showRemoteFingerprint];
     
     
     
@@ -1083,8 +1080,8 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     [createdRendezvous enumerateConversationsWithBlock:^(QredoConversationMetadata *conversationMetadata,BOOL *stop) {
         [testClient1                    fetchConversationWithRef:conversationMetadata.conversationRef
                                           completionHandler:^(QredoConversation *conversation,NSError *error) {
-                                              XCTAssertNotNil([conversation showMyFingerPrint],@"finger print shoud not be nil");
-                                              XCTAssertNotNil([conversation showRemoteFingerPrint],@"finger print shoud not be nil");
+                                              XCTAssertNotNil([conversation showMyFingerprint],@"finger print shoud not be nil");
+                                              XCTAssertNotNil([conversation showRemoteFingerprint],@"finger print shoud not be nil");
                                           }];
     }
                                      completionHandler:^(NSError *error) {
@@ -1107,7 +1104,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     //check local finger print
     __block XCTestExpectation *localFingerprintCheck1 = [self expectationWithDescription:@"fingerprintcheck1"];
-    [client1Conversation otherPartyHasMyFingerPrint:^(NSError *error) {
+    [client1Conversation otherPartyHasMyFingerprint:^(NSError *error) {
         XCTAssertNil(error,@"error should be nil");
         XCTAssertTrue([client1Conversation authTrafficLight] == QREDO_AMBER,@"auth'd should be green");
         XCTAssertTrue([client2Conversation authTrafficLight] == QREDO_RED,@"unauth'd should be red");
@@ -1126,7 +1123,7 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
     
     //check local finger print
     __block XCTestExpectation *localFingerprintCheck2 = [self expectationWithDescription:@"fingerprintcheck2"];
-    [client1Conversation iHaveRemoteFingerPrint:^(NSError *error) {
+    [client1Conversation iHaveRemoteFingerprint:^(NSError *error) {
         XCTAssertNil(error,@"error should be nil");
         XCTAssertTrue([client1Conversation authTrafficLight] == QREDO_GREEN,@"auth'd should be green");
         XCTAssertTrue([client2Conversation authTrafficLight] == QREDO_RED,@"auth'd should be green");

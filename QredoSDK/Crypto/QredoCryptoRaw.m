@@ -3,7 +3,7 @@
 
 #import "MasterConfig.h"
 #import "QredoLoggerPrivate.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoED25519VerifyKey.h"
 #import "QredoED25519SigningKey.h"
 
@@ -13,30 +13,23 @@
 // TODO: look at keychain wrapper
 // TODO: use warning assertions more often
 
-@implementation QredoRawCrypto
+@implementation QredoCryptoRaw
 
-SecPadding secPaddingFromQredoPadding(QredoPadding);
-SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
-
-/*
- OAEP padding adds minimum 2+(2*hash_size) bytes padding.
- Default OAEP uses SHA1, which is 20byte hash output.
- Therefore minimum padding is 42 bytes. Could be longer if
- we later specify a different OAEP MGF1 digest algorithm
- */
 
 /*****************************************************************************
  * new work
  ****************************************************************************/
 
 #define NEW_CRYPTO_CODE FALSE
+#define SHA256_DIGEST_SIZE              32
+#define AES_IV_SIZE (kCCBlockSizeAES256/2)
 
 +(NSData*)randomNonceAndZeroCounter{
     //Specifically for AES CTR
     //generate a 128bit IV (64bit random nonce + 64bit counter starting at 0)
     //This is required because Apple's implementation rolls over at 64bit boundary, where other implementations rollover at 128bit.
-    NSMutableData *iv = [[QredoRawCrypto secureRandom:(kCCBlockSizeAES256/2)] mutableCopy];
-    [iv increaseLengthBy:(kCCBlockSizeAES256/2)];
+    NSMutableData *iv = [[QredoCryptoRaw secureRandom:AES_IV_SIZE] mutableCopy];
+    [iv increaseLengthBy:AES_IV_SIZE];
     return [iv copy];
 }
 
@@ -127,10 +120,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     int result = crypto_sign_ed25519_seed_keypair(pk.mutableBytes, sk.mutableBytes, seed.bytes);
     NSAssert(result == 0, @"Could not generate Ed25519 key pair from seed.");
     
-    QredoED25519VerifyKey *qpk  =
-    [[QredoED25519VerifyKey alloc] initWithKeyData:pk];
-    QredoED25519SigningKey *qsk =
-    [[QredoED25519SigningKey alloc] initWithSeed:seed keyData:sk verifyKey:qpk];
+    QredoED25519VerifyKey *qpk  =  [QredoED25519VerifyKey keyWithData:pk];
+    QredoED25519SigningKey *qsk = [QredoED25519SigningKey signingKeyWithData:sk verifyKey:qpk];
     QredoKeyPair *kp =
     [[QredoKeyPair alloc] initWithPublicKey:qpk privateKey:qsk];
     
@@ -167,7 +158,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                  NULL,
                                  payload.bytes,
                                  payload.length,
-                                 keyPair.privateKey.serialize.bytes);
+                                 keyPair.privateKey.bytes.bytes);
     
     return signature;
     
@@ -178,7 +169,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
                                                signature.bytes,
                                                payload.bytes,
                                                payload.length,
-                                               keyPair.publicKey.serialize.bytes) == 0;
+                                               keyPair.publicKey.bytes.bytes) == 0;
 }
 
 +(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt {
@@ -190,10 +181,10 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSAssert(salt, @"Salt must be specified.");
     NSAssert(salt.length > 0, @"Salt must be non-empty.");
     
-    NSMutableData *prk = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    NSMutableData *prk = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
     CCHmac(kCCHmacAlgSHA256, salt.bytes, salt.length, ikm.bytes, ikm.length, prk.mutableBytes);
     
-    NSAssert(prk.length == CC_SHA256_DIGEST_LENGTH, @"Expected PRK to be SHA256 length.");
+    NSAssert(prk.length == SHA256_DIGEST_SIZE, @"Expected PRK to be SHA256 length.");
     
     return [prk copy];
     
@@ -208,7 +199,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSAssert(info, @"Info must be specified.");
     NSAssert(outputLength > 0, @"Output length must be greater than zero.");
     
-    uint8_t hashLen = CC_SHA256_DIGEST_LENGTH;
+    uint8_t hashLen = SHA256_DIGEST_SIZE;
     
     NSUInteger N = ceil((double)outputLength / (double)hashLen);
     uint8_t *T   = alloca(N * hashLen);
@@ -243,7 +234,7 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
     NSAssert(key.length > 0, @"Expected non-zero length key.");
     
     //The MAC size is the same size as the underlying hash function output
-    NSMutableData *mac = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    NSMutableData *mac = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
     CCHmac(kCCHmacAlgSHA256,
            key.bytes,
            key.length,
@@ -251,8 +242,8 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
            outputLen,
            mac.mutableBytes);
     
-    NSAssert(mac.length == CC_SHA256_DIGEST_LENGTH,
-             @"Expected hash output of length %d.", CC_SHA256_DIGEST_LENGTH);
+    NSAssert(mac.length == SHA256_DIGEST_SIZE,
+             @"Expected hash output of length %d.", SHA256_DIGEST_SIZE);
     
     return [mac copy];
     
@@ -319,54 +310,23 @@ SecPadding secPaddingFromQredoPaddingForPlainData(QredoPadding,size_t,NSData*);
 
 +(NSData *)sha256:(NSData *)data {
     NSAssert(data, @"Expected data.");
-    NSMutableData *hash = [NSMutableData dataWithLength:CC_SHA256_DIGEST_LENGTH];
+    NSMutableData *hash = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
     CC_SHA256(data.bytes, (unsigned int)data.length, hash.mutableBytes);
-    NSAssert(hash.length == CC_SHA256_DIGEST_LENGTH,
-             @"Expected output hash of length %d", CC_SHA256_DIGEST_LENGTH);
+    NSAssert(hash.length == SHA256_DIGEST_SIZE,
+             @"Expected output hash of length %d", SHA256_DIGEST_SIZE);
     return [hash copy];
 }
 
 
-OSStatus fixedSecItemCopyMatching(CFDictionaryRef query,CFTypeRef *result) {
-    /*
-     Have found that in certain circumstances, possibly concurrency related, that SecItemCopyMatching() will return
-     an error code (-50: "One or more parameters passed to a function where not valid"). Retying the operation with
-     exactly the same parameters appears to then succeed.  Unclear whether this is a Simulator issue, or whether
-     it is a concurrency issue, not sure - however this method attempts to automatically retry if -50 is encountered.
-     */
-    
-    //Get the key reference.
-    OSStatus status = SecItemCopyMatching(query,result);
-    
-    if (status != errSecSuccess){
-        QredoLogVerbose(@"SecItemCopyMatching returned error: %@. Query dictionary: %@",
-                        [QredoLogger stringFromOSStatus:status],
-                        query);
-        
-        if (status == errSecParam){
-            //Specical case - retry
-            status = SecItemCopyMatching(query,result);
-            
-            if (status != errSecSuccess){
-                if (status == errSecParam){
-                    //Retry failed
-                    QredoLogError(@"Retry SecItemCopyMatching unsuccessful, same error returned: %@. Query dictionary: %@",
-                                  [QredoLogger stringFromOSStatus:status],
-                                  query);
-                } else {
-                    //Retry fixed -50/errSecParam issue, but a different error occurred
-                    QredoLogError(@"Retrying SecItemCopyMatching returned different error: %@. Query dictionary: %@",
-                                  [QredoLogger stringFromOSStatus:status],
-                                  query);
-                }
-            } else {
-                QredoLogError(@"Retrying SecItemCopyMatching resulted in success. Query dictionary: %@",query);
-            }
-        }
-    }
-    
-    return status;
++(NSData *)sha512:(NSData *)data {
+    NSAssert(data, @"Expected data.");
+    NSMutableData *hash = [NSMutableData dataWithLength:SHA256_DIGEST_SIZE];
+    CC_SHA512(data.bytes, (unsigned int)data.length, hash.mutableBytes);
+    NSAssert(hash.length == SHA256_DIGEST_SIZE,
+             @"Expected output hash of length %d", SHA256_DIGEST_SIZE);
+    return [hash copy];
 }
+
 
 
 @end

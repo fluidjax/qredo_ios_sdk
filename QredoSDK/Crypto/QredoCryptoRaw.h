@@ -1,18 +1,9 @@
 #import <Foundation/Foundation.h>
 #import "QredoKeyPair.h"
 
-typedef NS_ENUM (uint8_t,QredoPadding) {
-    QredoPaddingNone = 1,
-    QredoPaddingOaep,
-    QredoPaddingPkcs1
-};
-
-
-#define RSA_OAEP_MIN_PADDING_LENGTH  42
-#define RSA_PKCS1_MIN_PADDING_LENGTH 11
 #define kCCBlockSizeAES256 kCCBlockSizeAES128
 
-@interface QredoRawCrypto : NSObject
+@interface QredoCryptoRaw : NSObject
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,9 +20,9 @@ NS_ASSUME_NONNULL_BEGIN
 +(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations;
 +(NSData *)secureRandom:(NSUInteger)size;
 +(NSData *)sha256:(NSData *)data;
++(NSData *)sha512:(NSData *)data;
 +(NSData*)randomNonceAndZeroCounter;
-OSStatus fixedSecItemCopyMatching(CFDictionaryRef query, CFTypeRef _Nonnull * _Nonnull  result);
-@end
-
 
 NS_ASSUME_NONNULL_END
+
+@end

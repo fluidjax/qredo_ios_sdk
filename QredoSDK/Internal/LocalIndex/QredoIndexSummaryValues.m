@@ -60,7 +60,7 @@
             break;
             
         case IndexSummaryValueDataType_QredoQUID:
-            return [[QredoQUID alloc] initWithQUIDData:self.value.qredoQUID];
+            return [QredoQUID QUIDWithData:self.value.qredoQUID];
             
             break;
             

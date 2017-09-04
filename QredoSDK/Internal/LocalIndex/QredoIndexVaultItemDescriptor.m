@@ -40,9 +40,9 @@
 
 -(QredoVaultItemDescriptor *)buildQredoVaultItemDescriptor {
     QredoVaultItemDescriptor *qredoVaultItemDescriptor
-    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[[QredoQUID alloc]initWithQUIDData:self.sequenceId]
+    = [QredoVaultItemDescriptor vaultItemDescriptorWithSequenceId:[QredoQUID QUIDWithData:self.sequenceId]
                                                     sequenceValue:self.sequenceValueValue
-                                                           itemId:[[QredoQUID alloc]initWithQUIDData:self.itemId]];
+                                                           itemId:[QredoQUID QUIDWithData:self.itemId]];
     
     return qredoVaultItemDescriptor;
 }

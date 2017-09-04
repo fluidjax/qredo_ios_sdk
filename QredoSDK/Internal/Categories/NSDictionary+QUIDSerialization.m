@@ -26,7 +26,7 @@
     NSArray *keys = [self allKeys];
     
     for (id key in keys){
-        QredoQUID *newKey = [[QredoQUID alloc] initWithQUIDString:key];
+        QredoQUID *newKey = [QredoQUID QUIDWithString:key];
         
         [result setObject:[self objectForKey:key] forKey:newKey];
     }

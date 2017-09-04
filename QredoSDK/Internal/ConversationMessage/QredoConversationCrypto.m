@@ -5,7 +5,9 @@
 #import "QredoPrimitiveMarshallers.h"
 #import "QredoErrorCodes.h"
 #import "QredoQUIDPrivate.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
+#import "QredoKeyRef.h"
+#import "QredoCryptoKeychain.h"
 
 #define SALT_REQUESTER_INBOUND_ENCKEY  [@"iJ8LLVtLlt2tzlXz" dataUsingEncoding:NSUTF8StringEncoding]
 #define SALT_REQUESTER_INBOUND_AUTHKEY [@"7KySh0dMToM9IyzR" dataUsingEncoding:NSUTF8StringEncoding]
@@ -16,42 +18,41 @@
 #define SALT_CONVERSATION_ID           [@"0HvoEAAzECt71nYp" dataUsingEncoding:NSUTF8StringEncoding]
 
 @interface QredoConversationCrypto (){
-    id<CryptoImpl> _crypto;
+
 }
 
 @end
 
 @implementation QredoConversationCrypto
 
--(instancetype)initWithCrypto:(id<CryptoImpl>)crypto{
-    NSAssert(crypto,@"crypto should not be nil");
-    self = [super init];
-    if (self){
-        _crypto = crypto;
-    }
-    return self;
-}
 
 
--(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey{
-    NSData *serializedMessage =
-    [QredoPrimitiveMarshallers marshalObject:message
-                                  marshaller:[QLFConversationMessage marshaller]];
+-(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message
+                                        bulkKeyRef:(QredoKeyRef *)bulkKeyRef
+                                        authKeyRef:(QredoKeyRef *)authKeyRef{
+    NSData *serializedMessage =  [QredoPrimitiveMarshallers marshalObject:message marshaller:[QLFConversationMessage marshaller]];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     
-    NSData *encryptedMessage = [_crypto encryptWithKey:bulkKey data:serializedMessage iv:nil];
-    NSData *serialiedEncryptedMessage = [QredoPrimitiveMarshallers marshalObject:encryptedMessage
+    NSData *encryptedMessage = [keychain encryptBulk:bulkKeyRef plaintext:serializedMessage];
+    
+    NSData *serializedEncryptedMessage = [QredoPrimitiveMarshallers marshalObject:encryptedMessage
                                                                       marshaller:[QredoPrimitiveMarshallers byteSequenceMarshaller]];
     
-    NSData *auth = [_crypto getAuthCodeWithKey:authKey data:serialiedEncryptedMessage];
-    return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:serialiedEncryptedMessage
+    NSData *auth = [keychain authenticate:authKeyRef data:serializedEncryptedMessage];
+    return [QLFEncryptedConversationItem encryptedConversationItemWithEncryptedMessage:serializedEncryptedMessage
                                                                               authCode:auth];
 }
 
 
--(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError **)error {
-    BOOL verified = [_crypto verifyAuthCodeWithKey:authKey
-                                              data:encryptedMessage.encryptedMessage
-                                               mac:encryptedMessage.authCode];
+-(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage
+                                  bulkKeyRef:(QredoKeyRef *)bulkKeyRef
+                                  authKeyRef:(QredoKeyRef *)authKeyRef
+                                    error:(NSError **)error {
+    
+    
+    BOOL verified = [[QredoCryptoKeychain standardQredoCryptoKeychain] verify:authKeyRef
+                                data:encryptedMessage.encryptedMessage
+                           signature:encryptedMessage.authCode];
     if (!verified){
         if (error){
             *error = [NSError errorWithDomain:QredoErrorDomain
@@ -64,7 +65,11 @@
     NSData *encryptedData = encryptedMessage.encryptedMessage;
     NSData *deserializedEncryptedData = [QredoPrimitiveMarshallers unmarshalObject:encryptedData
                                                                       unmarshaller:[QredoPrimitiveMarshallers byteSequenceUnmarshaller]];
-    NSData *decryptedMessageData = [_crypto decryptWithKey:bulkKey data:deserializedEncryptedData];
+    
+   
+    NSData *decryptedMessageData = [[QredoCryptoKeychain standardQredoCryptoKeychain] decryptBulk:bulkKeyRef
+                                                                                     ciphertext:deserializedEncryptedData];
+    
     @try {
         return [QredoPrimitiveMarshallers unmarshalObject:decryptedMessageData
                                              unmarshaller:[QLFConversationMessage unmarshaller]];
@@ -79,79 +84,54 @@
 }
 
 
--(NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                                   yourPublicKey:(QredoDhPublicKey *)yourPublicKey {
-    return [_crypto getDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+-(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
+                                        yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef {
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:myPrivateKeyRef
+                                                                                        yourPublicKeyRef:yourPublicKeyRef];
 }
 
 
--(NSData *)requesterInboundEncryptionKeyWithMasterKey:(NSData *)masterKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:masterKey
-                                            salt:SALT_REQUESTER_INBOUND_ENCKEY];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return okm;
+-(QredoKeyRef *)requesterInboundEncryptionKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+                                                                    salt:SALT_REQUESTER_INBOUND_ENCKEY info:[NSData data]];
 }
 
 
--(NSData *)requesterInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:masterKey
-                                            salt:SALT_REQUESTER_INBOUND_AUTHKEY];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return okm;
+-(QredoKeyRef *)requesterInboundAuthenticationKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+                                                                    salt:SALT_REQUESTER_INBOUND_AUTHKEY info:[NSData data]];
 }
 
 
--(NSData *)requesterInboundQueueSeedWithMasterKey:(NSData *)masterKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:masterKey
-                                            salt:SALT_REQUESTER_INBOUND_QUEUE];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return okm;
+-(QredoKeyRef *)requesterInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+                                                                 salt:SALT_REQUESTER_INBOUND_QUEUE info:[NSData data]];
 }
 
 
--(NSData *)responderInboundEncryptionKeyWithMasterKey:(NSData *)masterKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:masterKey
-                                            salt:SALT_RESPONDER_INBOUND_ENCKEY];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return okm;
+-(QredoKeyRef *)responderInboundEncryptionKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+                                                                    salt:SALT_RESPONDER_INBOUND_ENCKEY info:[NSData data]];
+
 }
 
 
--(NSData *)responderInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:masterKey
-                                            salt:SALT_RESPONDER_INBOUND_AUTHKEY];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return okm;
+-(QredoKeyRef *)responderInboundAuthenticationKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+                                                                    salt:SALT_RESPONDER_INBOUND_AUTHKEY info:[NSData data]];
 }
 
 
--(NSData *)responderInboundQueueSeedWithMasterKey:(NSData *)masterKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:masterKey
-                                            salt:SALT_RESPONDER_INBOUND_QUEUE];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return okm;
+-(QredoKeyRef *)responderInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    return [[QredoCryptoKeychain standardQredoCryptoKeychain] deriveKeyRef:masterKeyRef
+                                                                 salt:SALT_RESPONDER_INBOUND_QUEUE info:[NSData data]];
 }
 
 
--(QredoQUID *)conversationIdWithMasterKey:(NSData *)masterKey {
-    NSData *prk = [QredoRawCrypto hkdfSha256Extract:masterKey
-                                            salt:SALT_CONVERSATION_ID];
-    NSData *okm = [QredoRawCrypto hkdfSha256Expand:prk
-                                           info:[NSData data]
-                                   outputLength:CC_SHA256_DIGEST_LENGTH];
-    return [[QredoQUID alloc] initWithQUIDData:okm];
+-(QredoQUID *)conversationIdWithMasterKeyRef:(QredoKeyRef *)masterKeyRef {
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    QredoKeyRef *keyRef = [keychain deriveKeyRef:masterKeyRef salt:SALT_CONVERSATION_ID info:[NSData data]];
+    return [keychain keyRefToQUID:keyRef];
 }
 
 

@@ -7,7 +7,7 @@
 
 +(id<QredoRendezvousCreateHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                 fullTag:(NSString *)fullTag
-                                                                 crypto:(id<CryptoImpl>)crypto
+                                                                 crypto:(id<QredoCryptoImpl>)crypto
                                                          signingHandler:(signDataBlock)signingHandler
                                                                   error:(NSError **)error {
     switch (authenticationType){
@@ -24,7 +24,7 @@
 
 +(id<QredoRendezvousRespondHelper>)rendezvousHelperForAuthenticationType:(QredoRendezvousAuthenticationType)authenticationType
                                                                  fullTag:(NSString *)fullTag
-                                                                  crypto:(id<CryptoImpl>)crypto
+                                                                  crypto:(id<QredoCryptoImpl>)crypto
                                                                    error:(NSError **)error {
     switch (authenticationType){
         case QredoRendezvousAuthenticationTypeAnonymous:

@@ -9,7 +9,7 @@
 #import "NSDictionary+QUIDSerialization.h"
 #import "NSDictionary+IndexableSet.h"
 #import "QredoVaultCrypto.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 #import "QredoLoggerPrivate.h"
 //#import "QredoKeychain.h"
 
@@ -126,8 +126,8 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
         _updateListener.dataSource = self;
         _updateListener.pollInterval = kQredoVaultUpdateInterval;
         
-        _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKey:vaultKeys.encryptionKey
-                                              authenticationKey:vaultKeys.authenticationKey];
+        _vaultCrypto = [QredoVaultCrypto vaultCryptoWithBulkKeyRef:vaultKeys.encryptionKeyRef
+                                              authenticationKeyRef:vaultKeys.authenticationKeyRef];
         
         _vaultSequenceCache = [QredoVaultSequenceCache instance];
         
@@ -154,8 +154,8 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
 
 -(QredoQUID *)itemIdWithName:(NSString *)name type:(NSString *)type {
     NSString *constructedName = [NSString stringWithFormat:@"%@.%@@%@",[self.vaultId QUIDString],name,type];
-    NSData *hash = [QredoRawCrypto sha256:[constructedName dataUsingEncoding:NSUTF8StringEncoding]];
-    return [[QredoQUID alloc] initWithQUIDData:hash];
+    NSData *hash = [QredoCryptoRaw sha256:[constructedName dataUsingEncoding:NSUTF8StringEncoding]];
+    return [QredoQUID QUIDWithData:hash];
 }
 
 
@@ -668,7 +668,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSData *sequenceIdData = [defaults objectForKey:self.sequenceIdKeyForDefaults];
     if (sequenceIdData){
-        _sequenceId = [[QredoQUID alloc] initWithQUIDData:sequenceIdData];
+        _sequenceId = [QredoQUID QUIDWithData:sequenceIdData];
     }
     
     NSDictionary *sequenceState = [defaults objectForKey:self.hwmKeyForDefaults];
@@ -676,7 +676,7 @@ static const double kQredoVaultUpdateInterval = 1.0; //seconds
         NSMutableDictionary *result = [NSMutableDictionary dictionary];
         NSArray *keys = [sequenceState allKeys];
         for (id key in keys){
-            QredoQUID *newKey = [[QredoQUID alloc] initWithQUIDString:key];
+            QredoQUID *newKey = [QredoQUID QUIDWithString:key];
             [result setObject:[sequenceState objectForKey:key] forKey:newKey];
         }
         _highwatermark = [QredoVaultHighWatermark watermarkWithSequenceState:result];

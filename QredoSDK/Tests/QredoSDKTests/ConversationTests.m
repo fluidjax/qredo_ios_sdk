@@ -117,7 +117,7 @@ static float delayInterval = 0.4;
     [self buildStack2];
     XCTAssert([self countConversationsOnClient:testClient1] == 1);
     __block XCTestExpectation *fp = [self expectationWithDescription:@"fingerprint"];
-    [conversation1 iHaveRemoteFingerPrint:^(NSError *error) {
+    [conversation1 iHaveRemoteFingerprint:^(NSError *error) {
         XCTAssertNil(error);
         [fp fulfill];
     }];
@@ -137,7 +137,7 @@ static float delayInterval = 0.4;
     XCTAssert([conversation1 authTrafficLight] == QREDO_RED);
     __block XCTestExpectation *fp = [self expectationWithDescription:@"fingerprint"];
     
-    [conversation1 iHaveRemoteFingerPrint:^(NSError *error) {
+    [conversation1 iHaveRemoteFingerprint:^(NSError *error) {
         XCTAssertNil(error);
         [fp fulfill];
     }];

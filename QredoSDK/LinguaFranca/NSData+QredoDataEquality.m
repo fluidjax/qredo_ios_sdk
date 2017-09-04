@@ -14,8 +14,8 @@ static int signum(long n);
         return (NSComparisonResult)cmp;
     }
     
-    const uint8_t *ours   = [self bytes];
-    const uint8_t *theirs = [other bytes];
+    const uint8_t *ours   = self.bytes;
+    const uint8_t *theirs = other.bytes;
     if (!theirs)return (NSComparisonResult)cmp;
     
     

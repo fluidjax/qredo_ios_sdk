@@ -1,84 +1,75 @@
-/* HEADER GOES HERE */
-#import <UIKit/UIKit.h>
-#import <XCTest/XCTest.h>
-#import "CryptoImplV1.h"
-#import "QredoRawCrypto.h"
-#import <CommonCrypto/CommonCrypto.h>
-#import "QredoDhPublicKey.h"
-#import "QredoDhPrivateKey.h"
-#import "NSData+HexTools.h"
+//
+//  QredoCryptoKeychainTests.m
+//  QredoSDK
+//
+//  Created by Christopher Morris on 14/08/2017.
+//
+//
 
-@interface CryptoImplV1Tests :XCTestCase
+#import <XCTest/XCTest.h>
+#import "QredoCryptoKeychain.h"
+#import "QredoKey.h"
+#import "QredoKeyRef.h"
+#import "QredoKeyRefPair.h"
+#import "UICKeyChainStore.h"
+#import "QredoBulkEncKey.h"
+#import "QredoXCTestCase.h"
+
+@interface QredoCryptoKeychainTests : XCTestCase
 
 @end
 
-@implementation CryptoImplV1Tests
+@implementation QredoCryptoKeychainTests
 
-
-
--(void)testPBKDF2short {
-    NSData *password  = [@"passwordPASSWORDpassword" dataUsingEncoding:NSASCIIStringEncoding];
-    NSData *salt      = [@"saltSALTsaltSALTsaltSALTsaltSALTsalt" dataUsingEncoding:NSASCIIStringEncoding];
-    int rounds = 4096;
-    int keyLen = 40;
-    NSData *key = [QredoRawCrypto pbkdf2Sha256:password salt:salt outputLength:keyLen iterations:rounds];
-    
-    NSData *expectedResult = [NSData dataWithHexString:@"348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9"];
-    
-    XCTAssertTrue([key isEqualToData:expectedResult],@"not expected result");
+- (void)setUp {
+    [super setUp];
+    // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
-/* Only use 256bits key
--(void)testEncryptWith128BitKey {
-    uint8_t keyDataArray[] = {
-        0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f
-    };
-    NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
-    
-    NSString *plaintextString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
-    NSData *plaintextData = [plaintextString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    NSData *encryptedDataWithIv = [cryptoImpl encryptWithKey:keyData data:plaintextData];
-    
-    XCTAssertNotNil(encryptedDataWithIv,@"Encrypted data with IV should not be nil.");
-    
-    //Test ciphertext part of result is correct:
-    //Extract the IV from the start (16 bytes), and attempt to encrypt the
-    //same data ourselves using that IV and confirm the cipher text is correct
-    NSData *iv = [encryptedDataWithIv subdataWithRange:NSMakeRange(0,kCCBlockSizeAES256)];
-    NSData *expectedEncryptedData = [QredoRawCrypto encryptData:plaintextData with256bitAesKey:keyData iv:iv];
-    NSData *actualEncryptedData = [encryptedDataWithIv subdataWithRange:NSMakeRange(kCCBlockSizeAES256,encryptedDataWithIv.length - kCCBlockSizeAES256)];
-    XCTAssertTrue([expectedEncryptedData isEqualToData:actualEncryptedData],@"Encrypted data (with IV removed) incorrect.");
+- (void)tearDown {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    [super tearDown];
 }
 
 
--(void)testDecryptWithKey {
-    uint8_t keyDataArray[] = {
-        0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f
-    };
-    NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
+
+#pragma Keychain Store
+
+-(void)testKeychainStoreRetrieve{
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    QredoKey *testKey = [QredoKey keyWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
     
-    uint8_t ivAndEncryptedDataArray[] = {
-        0x12,0x34,0x56,0x78,0x90,0x12,0x34,0x56,0x78,0x90,0x12,0x34,0x56,0x78,0x90,0x12,
-        0x1d,0xb8,0x50,0x74,0xaf,0xc3,0x4d,0x73,0x16,0x85,0x3c,0x12,0x22,0xda,0x2b,0x4d,
-        0xba,0xf2,0x5b,0xd3,0xfe,0xe0,0x17,0x43,0xce,0x65,0x72,0x6c,0xe6,0xf8,0x4f,0x8a,
-        0x7a,0xdb,0x7e,0xed,0x0d,0x5e,0x00,0x98,0x30,0x89,0xa2,0xfc,0x47,0x25,0xfa,0x88,
-        0x5c,0x19,0x9a,0x80,0xa3,0x3d,0xc9,0x96,0xeb,0x3f,0x73,0x5b,0x7e,0x22,0xd8,0x5f
-    };
-    NSData *ivAndEncryptedData = [NSData dataWithBytes:ivAndEncryptedDataArray length:sizeof(ivAndEncryptedDataArray) / sizeof(uint8_t)];
-    
-    NSString *expectedString = @"Chim-chimeney, chim-chimeney, chim-chim-cheree. 'ave a banana!";
-    NSData *expectedData = [expectedString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    NSData *decryptedData = [cryptoImpl decryptWithKey:keyData data:ivAndEncryptedData];
-    
-    XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
-    XCTAssertTrue([expectedData isEqualToData:decryptedData],@"Decrypted data incorrect.");
+    QredoKeyRef *ref = [keychain createKeyRef:testKey];
+
+    XCTAssertNotNil(keychain);
+    XCTAssertNotNil(ref);
+    XCTAssertNotNil(testKey);
+
+    NSData *rawKey = [keychain retrieveWithRef:ref];
+    XCTAssertNotNil(rawKey);
+    QredoKey *outKey = [QredoKey keyWithData:rawKey];
+    XCTAssertTrue([testKey isEqual:outKey],@"Key saved in keychain arent the same");
 }
 
- */
+
+#pragma Bulk encrypt/Decrypt
+
+
+-(void)testKeyRefPair{
+    QredoKey *pubKey  = [QredoKey keyWithHexString:@"1c68b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    QredoKey *privKey = [QredoKey keyWithHexString:@"2368b754 1878ffff d8a7d9f2 94d90ff6 bf28b9d0 e0a72ef3 7d37d645 4d578d2a"];
+    
+    QredoKeyRefPair *refpair =  [QredoKeyRefPair keyPairWithPublic:pubKey private:privKey];
+    
+    QredoKeyRef *privRef = refpair.privateKeyRef;
+    
+    XCTAssertTrue([[privRef debugValue] isEqualToData:privKey.data]);
+    
+    
+    QredoKeyRef *pubRef = refpair.publicKeyRef;
+    XCTAssertTrue([[pubRef debugValue] isEqualToData:pubKey.data]);
+}
+
 
 -(void)testEncryptDecryptRoundTripOf1600Bytes {
     uint8_t keyDataArray[] = {
@@ -192,30 +183,34 @@
     };
     NSData *plaintextData = [NSData dataWithBytes:plaintextDataArray length:sizeof(plaintextDataArray) / sizeof(uint8_t)];
     
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    NSData *encryptedDataWithIv = [cryptoImpl encryptWithKey:keyData data:plaintextData];
-    
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    QredoBulkEncKey *qredoAESbulkKey = [QredoBulkEncKey keyWithData:keyData];
+    QredoKeyRef *bulkKeyRef = [keychain createKeyRef:qredoAESbulkKey];
+    NSData *encryptedDataWithIv = [keychain encryptBulk:bulkKeyRef plaintext:plaintextData];
     XCTAssertNotNil(encryptedDataWithIv,@"Encrypted data with IV should not be nil.");
-    
-    NSData *decryptedData = [cryptoImpl decryptWithKey:keyData data:encryptedDataWithIv];
+    NSData *decryptedData = [keychain decryptBulk:bulkKeyRef ciphertext:encryptedDataWithIv];
     XCTAssertNotNil(decryptedData,@"Decrypted data should not be nil.");
-    
-    //Confirm that the decrypted data is same as original plaintext
+
     XCTAssertTrue([plaintextData isEqualToData:decryptedData],@"Original plaintext and final plain text do not match.");
 }
 
 
--(void)testGetAuthCodeWithKey_EmptyKeyEmptyData {
+#pragma authenticate
+
+-(void)testCreate0ByteKey {
     uint8_t keyDataArray[] = {};
     NSData *keyData = [NSData dataWithBytes:keyDataArray length:sizeof(keyDataArray) / sizeof(uint8_t)];
-    
     uint8_t inputDataArray[] = {};
     NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    
-    XCTAssertThrows([cryptoImpl getAuthCodeWithKey:keyData data:inputData]);
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    XCTAssertThrows([QredoKey keyWithData:keyData]);;
 }
+
+
+-(void)testCreateNilKey {
+    XCTAssertThrows([QredoKey keyWithData:nil]);;
+}
+
 
 
 -(void)testGetAuthCodeWithKey_WikipediaExampleData {
@@ -231,35 +226,19 @@
     };
     NSData *expectedAuthCode = [NSData dataWithBytes:expectedAuthCodeArray length:sizeof(expectedAuthCodeArray) / sizeof(uint8_t)];
     
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    NSData *authCode = [cryptoImpl getAuthCodeWithKey:keyData data:inputData];
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     
+    QredoKey *key = [QredoKey keyWithData:keyData];
+    QredoKeyRef *keyRef = [keychain createKeyRef:key];
+    
+    NSData *authCode = [keychain authenticate:keyRef data:inputData];
     XCTAssertNotNil(authCode,@"Auth code should not be nil.");
+    
     XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
 }
 
 
--(void)testGetAuthCodeWithKeyAndLength_WikipediaExampleDataShorterData {
-    NSString *keyString = @"key";
-    NSData *keyData = [keyString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    //Doubled the data (86 bytes), but will only HMAC over first half (43 bytes)
-    NSString *inputString = @"The quick brown fox jumps over the lazy dogBacon ipsum dolor sit amet kevin officia id";
-    NSData *inputData = [inputString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    uint8_t expectedAuthCodeArray[] = {
-        0xF7,0xBC,0x83,0xF4,0x30,0x53,0x84,0x24,0xB1,0x32,0x98,0xE6,0xAA,0x6F,0xB1,0x43,
-        0xEF,0x4D,0x59,0xA1,0x49,0x46,0x17,0x59,0x97,0x47,0x9D,0xBC,0x2D,0x1A,0x3C,0xD8
-    };
-    NSData *expectedAuthCode = [NSData dataWithBytes:expectedAuthCodeArray length:sizeof(expectedAuthCodeArray) / sizeof(uint8_t)];
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    //Only generate the HMAC over the first 43 bytes
-    NSData *authCode = [cryptoImpl getAuthCodeWithKey:keyData data:inputData length:43];
-    
-    XCTAssertNotNil(authCode,@"Auth code should not be nil.");
-    XCTAssertTrue([expectedAuthCode isEqualToData:authCode],@"Auth code is incorrect.");
-}
+#pragma verify
 
 
 -(void)testVerifyAuthCodeWithKey_Valid {
@@ -274,37 +253,14 @@
         0xEF,0x4D,0x59,0xA1,0x49,0x46,0x17,0x59,0x97,0x47,0x9D,0xBC,0x2D,0x1A,0x3C,0xD8
     };
     NSData *correctAuthCode = [NSData dataWithBytes:correctAuthCodeArray length:sizeof(correctAuthCodeArray) / sizeof(uint8_t)];
-    
     BOOL expectedVerification = YES;
     
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
-    
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    QredoKey *key = [QredoKey keyWithData:keyData];
+    QredoKeyRef *keyRef = [keychain createKeyRef:key];
+    BOOL verificationResult = [keychain verify:keyRef data:inputData signature:correctAuthCode];
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
-
-
--(void)testVerifyAuthCodeWithKey_Invalid_KeyDifferent {
-    NSString *keyString = @"key2";
-    NSData *keyData = [keyString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    NSString *inputString = @"The quick brown fox jumps over the lazy dog";
-    NSData *inputData = [inputString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    uint8_t correctAuthCodeArray[] = {
-        0xF7,0xBC,0x83,0xF4,0x30,0x53,0x84,0x24,0xB1,0x32,0x98,0xE6,0xAA,0x6F,0xB1,0x43,
-        0xEF,0x4D,0x59,0xA1,0x49,0x46,0x17,0x59,0x97,0x47,0x9D,0xBC,0x2D,0x1A,0x3C,0xD8
-    };
-    NSData *correctAuthCode = [NSData dataWithBytes:correctAuthCodeArray length:sizeof(correctAuthCodeArray) / sizeof(uint8_t)];
-    
-    BOOL expectedVerification = NO;
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
-    
-    XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
-}
-
 
 -(void)testVerifyAuthCodeWithKey_Invalid_InputDifferent {
     NSString *keyString = @"key";
@@ -318,122 +274,16 @@
         0xEF,0x4D,0x59,0xA1,0x49,0x46,0x17,0x59,0x97,0x47,0x9D,0xBC,0x2D,0x1A,0x3C,0xD8
     };
     NSData *correctAuthCode = [NSData dataWithBytes:correctAuthCodeArray length:sizeof(correctAuthCodeArray) / sizeof(uint8_t)];
-    
     BOOL expectedVerification = NO;
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData mac:correctAuthCode];
-    
+
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    QredoKey *key = [QredoKey keyWithData:keyData];
+    QredoKeyRef *keyRef = [keychain createKeyRef:key];
+    BOOL verificationResult = [keychain verify:keyRef data:inputData signature:correctAuthCode];
     XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
 }
 
 
--(void)testVerifyAuthCodeWithKeyAppendedMac_Valid {
-    NSString *keyString = @"key";
-    NSData *keyData = [keyString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    //Data and MAC appended
-    uint8_t inputDataArray[] = {
-        //Data (The quick brown fox jumps over the lazy dog)
-        0x54,0x68,0x65,0x20,0x71,0x75,0x69,0x63,0x6B,0x20,0x62,0x72,0x6F,0x77,0x6E,0x20,
-        0x66,0x6F,0x78,0x20,0x6A,0x75,0x6D,0x70,0x73,0x20,0x6F,0x76,0x65,0x72,0x20,0x74,
-        0x68,0x65,0x20,0x6C,0x61,0x7A,0x79,0x20,0x64,0x6F,0x67,
-        //MAC
-        0xF7,0xBC,0x83,0xF4,0x30,0x53,0x84,0x24,0xB1,0x32,0x98,0xE6,0xAA,0x6F,0xB1,0x43,
-        0xEF,0x4D,0x59,0xA1,0x49,0x46,0x17,0x59,0x97,0x47,0x9D,0xBC,0x2D,0x1A,0x3C,0xD8
-    };
-    NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
-    
-    BOOL expectedVerification = YES;
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData];
-    
-    XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
-}
-
-
--(void)testVerifyAuthCodeWithKeyAppendedMac_Invalid {
-    NSString *keyString = @"key";
-    NSData *keyData = [keyString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    //Data and MAC appended
-    uint8_t inputDataArray[] = {
-        //Data (The quick brown fox jumps over the lazy god)
-        0x54,0x68,0x65,0x20,0x71,0x75,0x69,0x63,0x6B,0x20,0x62,0x72,0x6F,0x77,0x6E,0x20,
-        0x66,0x6F,0x78,0x20,0x6A,0x75,0x6D,0x70,0x73,0x20,0x6F,0x76,0x65,0x72,0x20,0x74,
-        0x68,0x65,0x20,0x6C,0x61,0x7A,0x79,0x20,0x67,0x6F,0x64,
-        //MAC
-        0xF7,0xBC,0x83,0xF4,0x30,0x53,0x84,0x24,0xB1,0x32,0x98,0xE6,0xAA,0x6F,0xB1,0x43,
-        0xEF,0x4D,0x59,0xA1,0x49,0x46,0x17,0x59,0x97,0x47,0x9D,0xBC,0x2D,0x1A,0x3C,0xD8
-    };
-    NSData *inputData = [NSData dataWithBytes:inputDataArray length:sizeof(inputDataArray) / sizeof(uint8_t)];
-    
-    BOOL expectedVerification = NO;
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    BOOL verificationResult = [cryptoImpl verifyAuthCodeWithKey:keyData data:inputData];
-    
-    XCTAssertTrue(expectedVerification == verificationResult,@"Auth code verification is not correct.");
-}
-
-
--(void)testGetRandomKey {
-    //Can't really test randomness here, but can check the length is correct,
-    //and that we don't get the same key twice.
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    NSData *randomKey1 = [cryptoImpl getRandomKey];
-    NSData *randomKey2 = [cryptoImpl getRandomKey];
-    
-    XCTAssertNotNil(randomKey1,@"Random key 1 should not be nil.");
-    XCTAssertNotNil(randomKey2,@"Random key 2 should not be nil.");
-    XCTAssertTrue(randomKey1.length == kCCKeySizeAES256,@"Random key 1 is incorrect length.");
-    XCTAssertTrue(randomKey2.length == kCCKeySizeAES256,@"Random key 2 is incorrect length.");
-    XCTAssertFalse([randomKey1 isEqualToData:randomKey2],@"Random keys are the same. Both should be random.");
-}
-
-
--(void)testGetPasswordBasedKeyWithSalt {
-    NSString *saltString = @"saltSALTsaltSALTsaltSALTsaltSALTsalt";
-    NSData *saltData = [saltString dataUsingEncoding:NSASCIIStringEncoding];
-    
-    NSString *passwordString = @"passwordPASSWORDpassword";
-    
-    uint8_t expectedDerivedKeyDataArray[] = { 0x96,0xE1,0x7B,0x0C,0x4E,0x3C,0x0C,0x08,0xDB,0x3B,0xE7,0x09,0xDF,0x3D,0xB5,0xC1,0xEF,0xB0,0xC8,0xA7,0xEA,0xA4,0xFC,0x65,0x17,0x90,0xDE,0x60,0x0A,0x23,0xB3,0x5B };
-    
-    NSData *expectedDerivedKeyData = [NSData dataWithBytes:expectedDerivedKeyDataArray length:sizeof(expectedDerivedKeyDataArray) / sizeof(uint8_t)];
-    
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    NSData *key = [cryptoImpl getPasswordBasedKeyWithSalt:saltData password:passwordString];
-    
-    XCTAssertNotNil(key,@"Key should not be nil.");
-    XCTAssertTrue([expectedDerivedKeyData isEqualToData:key],@"Key incorrect.");
-}
-
-
--(void)testGenerateDHKeyPair {
-    CryptoImplV1 *cryptoImpl = [CryptoImplV1 sharedInstance];
-    QredoKeyPair *keyPair1 = [cryptoImpl generateDHKeyPair];
-    QredoKeyPair *keyPair2 = [cryptoImpl generateDHKeyPair];
-    
-    XCTAssertNotNil(keyPair1,@"Key pair should not be nil.");
-    XCTAssertNotNil(keyPair2,@"Key pair should not be nil.");
-    XCTAssertNotNil(keyPair1.publicKey,@"Public key should not be nil.");
-    XCTAssertNotNil(keyPair2.publicKey,@"Public key should not be nil.");
-    XCTAssertNotNil(keyPair1.privateKey,@"Private key should not be nil.");
-    XCTAssertNotNil(keyPair2.privateKey,@"Private key should not be nil.");
-    
-    QredoDhPublicKey *keyPair1DhPublicKey = (QredoDhPublicKey *)keyPair1.publicKey;
-    QredoDhPrivateKey *keyPair1DhPrivateKey = (QredoDhPrivateKey *)keyPair1.privateKey;
-    QredoDhPublicKey *keyPair2DhPublicKey = (QredoDhPublicKey *)keyPair2.publicKey;
-    QredoDhPrivateKey *keyPair2DhPrivateKey = (QredoDhPrivateKey *)keyPair2.privateKey;
-    
-    XCTAssertFalse([keyPair1DhPublicKey.data isEqualToData:keyPair2DhPublicKey.data],@"Generated the same public key twice.");
-    XCTAssertFalse([keyPair1DhPrivateKey.data isEqualToData:keyPair2DhPrivateKey.data],@"Generated the same private key twice.");
-    XCTAssertFalse([keyPair1DhPublicKey.data isEqualToData:keyPair1DhPrivateKey.data],@"Public and private key data are the same, this is incorrect.");
-    XCTAssertFalse([keyPair2DhPublicKey.data isEqualToData:keyPair2DhPrivateKey.data],@"Public and private key data are the same, this is incorrect.");
-}
 
 
 @end

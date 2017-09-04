@@ -1,27 +1,31 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
-#import "QredoRawCrypto.h"
-#import "CryptoImpl.h"
-
-#import "QredoDhPrivateKey.h"
-#import "QredoDhPublicKey.h"
-
+#import "QredoCryptoRaw.h"
+#include "QredoKeyRef.h"
 
 @interface QredoConversationCrypto :NSObject
 
--(instancetype)initWithCrypto:(id<CryptoImpl>)crypto;
 
--(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey;
--(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage bulkKey:(NSData *)bulkKey authKey:(NSData *)authKey error:(NSError **)error;
+-(QLFEncryptedConversationItem *)encryptMessage:(QLFConversationMessage *)message
+                                        bulkKeyRef:(QredoKeyRef *)bulkKeyRef
+                                        authKeyRef:(QredoKeyRef *)authKeyRef;
 
--(NSData *)conversationMasterKeyWithMyPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey;
--(NSData *)requesterInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
--(NSData *)requesterInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
--(NSData *)requesterInboundQueueSeedWithMasterKey:(NSData *)masterKey;
--(NSData *)responderInboundEncryptionKeyWithMasterKey:(NSData *)masterKey;
--(NSData *)responderInboundAuthenticationKeyWithMasterKey:(NSData *)masterKey;
--(NSData *)responderInboundQueueSeedWithMasterKey:(NSData *)masterKey;
--(QredoQUID *)conversationIdWithMasterKey:(NSData *)masterKey;
+-(QLFConversationMessage *)decryptMessage:(QLFEncryptedConversationItem *)encryptedMessage
+                               bulkKeyRef:(QredoKeyRef *)bulkKeyRef
+                               authKeyRef:(QredoKeyRef *)authKeyRef
+                                    error:(NSError **)error;
+
+-(QredoKeyRef *)conversationMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
+                                        yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef;
+
+-(QredoKeyRef *)requesterInboundEncryptionKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;
+-(QredoKeyRef *)requesterInboundAuthenticationKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;
+-(QredoKeyRef *)requesterInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;
+
+-(QredoKeyRef *)responderInboundEncryptionKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;
+-(QredoKeyRef *)responderInboundAuthenticationKeyWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;
+-(QredoKeyRef *)responderInboundQueueSeedWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;
+-(QredoQUID *)conversationIdWithMasterKeyRef:(QredoKeyRef *)masterKeyRef;
 
 @end

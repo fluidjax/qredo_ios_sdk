@@ -3,13 +3,9 @@
 #import "QredoDhPrivateKey.h"
 #import "QredoMacros.h"
 
-@interface QredoDhPrivateKey ()
-
-@property (nonatomic,copy) NSData *data;
-
-@end
 
 @implementation QredoDhPrivateKey
+
 
 -(instancetype)init {
     //We do not want to be initialised via the NSObect init method as we require arguments (no public setter properties)
@@ -24,7 +20,7 @@
     self = [super init];
     
     if (self){
-        _data = data;
+        self.data = data;
     }
     
     return self;

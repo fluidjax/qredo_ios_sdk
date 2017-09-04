@@ -1056,7 +1056,7 @@
         QLFKeyLF *e = (QLFKeyLF *)element;
         [writer writeConstructorStartWithObjectName:@"KeyLF"];
             [writer writeFieldStartWithFieldName:@"bytes"];
-                [QredoPrimitiveMarshallers byteSequenceMarshaller]([e bytes], writer);
+                [QredoPrimitiveMarshallers byteSequenceMarshaller](e.bytes, writer);
             [writer writeEnd];
 
         [writer writeEnd];
@@ -7070,8 +7070,7 @@
 
 
 
-+ (QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QLFEncryptionKey256 *)encryptionKey authenticationKey:(QLFAuthenticationKey256 *)authenticationKey
-{
++ (QLFVaultKeyPair *)vaultKeyPairWithEncryptionKey:(QLFEncryptionKey256 *)encryptionKey authenticationKey:(QLFAuthenticationKey256 *)authenticationKey{
 
     return [[QLFVaultKeyPair alloc] initWithEncryptionKey:encryptionKey authenticationKey:authenticationKey];
        

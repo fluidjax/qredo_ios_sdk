@@ -3,7 +3,7 @@
 #import "QredoKeychain.h"
 #import "QredoErrorCodes.h"
 #import "QredoLoggerPrivate.h"
-#import "QredoRawCrypto.h"
+#import "QredoCryptoRaw.h"
 
 static NSString *kUnderlyingErrorSource = @"Underlying error source";
 static NSString *kUnderlyingErrorCode = @"Underlying error code";
@@ -70,7 +70,7 @@ static NSString *kCurrentService = @"CurrentService";
     
     //Save the keychain
     
-    NSData *keychainData = [qredoKeychain data];
+    NSData *keychainData = [qredoKeychain masterKeyData];
     if (!keychainData)return NO;
     NSMutableDictionary *addDictionary = [[NSMutableDictionary alloc] init];
     [addDictionary setObject:(__bridge id)kSecClassGenericPassword forKey:(__bridge id < NSCopying >)kSecClass];
@@ -107,7 +107,8 @@ static NSString *kCurrentService = @"CurrentService";
     [queryDictionary setObject:@YES forKey:(__bridge id < NSCopying >)(kSecReturnData)];
     
     CFDictionaryRef result = nil;
-    OSStatus sanityCheck = fixedSecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary),(CFTypeRef *)&result);
+    OSStatus sanityCheck = [self fixedSecItemCopyMatching:(__bridge CFDictionaryRef)(queryDictionary) result:(CFTypeRef *)&result];
+    
     
     if (sanityCheck == errSecItemNotFound){
         *error = [NSError errorWithDomain:QredoErrorDomain
@@ -210,7 +211,7 @@ static NSString *kCurrentService = @"CurrentService";
     [queryDictionary setObject:@YES forKey:(__bridge id < NSCopying >)(kSecReturnAttributes)];
     
     CFDictionaryRef result = nil;
-    return fixedSecItemCopyMatching((__bridge CFDictionaryRef)(queryDictionary),(CFTypeRef *)&result);
+    return [self fixedSecItemCopyMatching:(__bridge CFDictionaryRef)(queryDictionary) result:(CFTypeRef *)&result];
 }
 
 
@@ -223,6 +224,50 @@ static NSString *kCurrentService = @"CurrentService";
     
     return SecItemDelete((__bridge CFDictionaryRef)(addDictionary));
 }
+
+
+-(OSStatus)fixedSecItemCopyMatching:(CFDictionaryRef)query result:(CFTypeRef *)result{
+    /*
+     Have found that in certain circumstances, possibly concurrency related, that SecItemCopyMatching() will return
+     an error code (-50: "One or more parameters passed to a function where not valid"). Retying the operation with
+     exactly the same parameters appears to then succeed.  Unclear whether this is a Simulator issue, or whether
+     it is a concurrency issue, not sure - however this method attempts to automatically retry if -50 is encountered.
+     */
+    
+    //Get the key reference.
+    OSStatus status = SecItemCopyMatching(query,result);
+    
+    if (status != errSecSuccess){
+        QredoLogVerbose(@"SecItemCopyMatching returned error: %@. Query dictionary: %@",
+                        [QredoLogger stringFromOSStatus:status],
+                        query);
+        
+        if (status == errSecParam){
+            //Specical case - retry
+            status = SecItemCopyMatching(query,result);
+            
+            if (status != errSecSuccess){
+                if (status == errSecParam){
+                    //Retry failed
+                    QredoLogError(@"Retry SecItemCopyMatching unsuccessful, same error returned: %@. Query dictionary: %@",
+                                  [QredoLogger stringFromOSStatus:status],
+                                  query);
+                } else {
+                    //Retry fixed -50/errSecParam issue, but a different error occurred
+                    QredoLogError(@"Retrying SecItemCopyMatching returned different error: %@. Query dictionary: %@",
+                                  [QredoLogger stringFromOSStatus:status],
+                                  query);
+                }
+            } else {
+                QredoLogError(@"Retrying SecItemCopyMatching resulted in success. Query dictionary: %@",query);
+            }
+        }
+    }
+    
+    return status;
+}
+
+
 
 
 @end

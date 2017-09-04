@@ -8,26 +8,17 @@ java -jar qredo-in-a-jar-0.19-SNAPSHOT.jar
 Split - Justin Issue#181
 
 
-We should have three layers of crypto, and a keychain management component.
+QredoCryptoRaw - No Key Refs
+                
 
-First layer is QredoRawCrypto (currently QredoCrypto), which contains only named algorithms/cryptosystems. This layer insulates us from changes in underlying crypto libraries.
-+(NSData *)aes256CtrEncrypt:(NSData *)plaintext key:(NSData *)key iv:(NSData *)iv;
-+(NSData *)aes256CtrDecrypt:(NSData *)ciphertext key:(NSData *)key iv:(NSData *)iv;
-+(BOOL)constantEquals:(NSData *)lhs rhs:(NSData *)rhs;
-+(QredoKeyPair *)ed25519Derive:(NSData *)seed;
-+(QredoKeyPair *)ed25519DeriveFromSecretKey:(NSData *)secretKey;
-+(NSData *)ed25519Sha512Sign:(NSData *)payload keyPair:(QredoKeyPair *)keyPair;
-+(BOOL)ed25519Sha512Verify:(NSData *)payload signature:(NSData *)signature keyPair:(QredoKeyPair *)keyPair;
-+(NSData *)hmacSha256:(NSData *)data key:(NSData *)key outputLen:(NSUInteger)outputLen;
-+(NSData *)hkdfSha256Extract:(NSData *)ikm salt:(NSData *)salt;
-+(NSData *)hkdfSha256Expand:(NSData *)key info:(NSData *)info outputLength:(NSUInteger)outputLength;
-+(NSData *)pbkdf2Sha256:(NSData *)ikm salt:(NSData *)salt outputLength:(NSUInteger)outputLength iterations:(NSUInteger)iterations;
-+(NSData *)secureRandom:(NSUInteger)size;
-+(NSData *)sha256:(NSData *)data;
+
+QredoCryptoImpl - No Key Refs
 
 
 
-Second layer is QredoCryptoImpl (currently CryptoImpl), the “abstract” crypto concepts from the spec. This layer insulates us from changes in cryptosystem choices.
+
+
+Second layer is QredoCryptoImpl (currently QredoCryptoImpl), the “abstract” crypto concepts from the spec. This layer insulates us from changes in cryptosystem choices.
 -(NSData *)encryptBulk:(QredoKey *)secretKey  plaintext:(NSData *)plaintext;
 -(NSData *)decryptBulk:(QredoKey *)secretKey  ciphertext:(NSData *)ciphertext;
 -(NSData *)authenticate:(QredoKey *)secretKey data:(NSData *)data;
@@ -44,7 +35,7 @@ Second layer is QredoCryptoImpl (currently CryptoImpl), the “abstract” crypt
 
 Third layer is Qredo[Domain]Crypto, where [Domain] is Vault, Rendezvous, etc. This layer insulates the domain logic from how crypto is used.
 
-Finally, the keychain management component deals with the mapping of key refs to stored keys. Its interface will be similar to that of CryptoImpl, but it will accept QredoKeyRef or QredoKeyPairRef, the implementations of which are left as an exercise for the reader. Note conceptual difference in derivation functions.
+Finally, the keychain management component deals with the mapping of key refs to stored keys. Its interface will be similar to that of QredoCryptoImpl, but it will accept QredoKeyRef or QredoKeyPairRef, the implementations of which are left as an exercise for the reader. Note conceptual difference in derivation functions.
 
 @interface QredoKeychain
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext;
@@ -65,7 +56,26 @@ Above code snippets are proposals. Please discuss further in commentary, or in S
 Important design constraints:
 
 Each layer must never expose anything about library- or platform-specific crypto.
-The two base layers (QredoRawCrypto and QredoCryptoImpl) must NOT use key references, but actual keys in standardized serializations.
+The two base layers (QredoCryptoRaw and QredoCryptoImpl) must NOT use key references, but actual keys in standardized serializations.
 - The only component that deals with key refs and persistence (incl. platform keychain) should be the QredoKeychain.
 Crypto components must use NSAssert to enforce preconditions, postconditions and important invariants. Failure in these components must cause the program to abort.
 Some of QredoCrypto has been started on in the crypto-interface-refactor branch. All tests are passing.
+
+
+
+
++(QredoPseudonym *)create:(NSString *)localName;
++(void)destroy:(QredoPseudonym *)pseudonym;
++(bool)exists:(NSString *)localName;
++(QredoPseudonym *)get:(NSString *)localName;
++(NSArray *)list;
++(void)put:(QredoPseudonym *)pseudonym;
+
+-(NSString *)localName;
+-(QredoSignedKey *)pubKey;
+-(QredoRevocation *)revoke;
+-(QredoPseudonym *)rotate:(QredoPseudonym *)old;
+-(NSData *)sign:(NSData *)data;
+-(bool)verify:(NSData *)data signature:(NSData *)signature;
+
+

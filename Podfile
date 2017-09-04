@@ -44,6 +44,7 @@ target 'QredoXDK' do
     pod 'OpenSSL', '~> 1.0'
     pod 'libsodium', :inhibit_warnings => true
     pod 'ios-ntp', :inhibit_warnings => true
+    pod 'UICKeyChainStore'
 end
 
 

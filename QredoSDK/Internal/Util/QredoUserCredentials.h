@@ -1,6 +1,8 @@
 /* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 
+@class QredoKeyRef;
+
 
 @interface QredoUserCredentials :NSObject
 
@@ -13,13 +15,12 @@
                       userId:(NSString *)userId
                   userSecure:(NSString *)userSecure;
 
--(NSData *)userUnlockKey;
--(NSData *)masterKey:(NSData *)userUnlockKey;
--(NSData *)masterKey;
+-(QredoKeyRef *)userUnlockKeyRef;
+-(QredoKeyRef *)generateMasterKeyRef;
+-(QredoKeyRef *)masterKeyRef:(QredoKeyRef *)userUnlockKeyRef;
+
 -(NSString *)createSystemVaultIdentifier;
 -(NSString *)dataToHexString:(NSData *)data;
 -(NSString *)buildIndexName;
 -(NSData *)sha1WithString:(NSString *)str;
--(NSData *)sha256WithString:(NSString *)str;
--(NSData *)sha512WithString:(NSString *)str;
 @end

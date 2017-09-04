@@ -4,6 +4,12 @@
 @interface QredoKey :NSObject
 
 
--(NSData *)serialize;
+@property (nonatomic,copy) NSData *data;
+
++(instancetype)keyWithData:(NSData *)keydata;
++(instancetype)keyWithHexString:(NSString *)hexString;
+-(NSData *)bytes;
+-(int)length;
+-(BOOL)isEqual:(id)other;
 
 @end

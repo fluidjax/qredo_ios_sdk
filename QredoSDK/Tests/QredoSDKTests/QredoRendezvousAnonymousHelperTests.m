@@ -2,13 +2,13 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import "QredoRendezvousHelpers.h"
-#import "CryptoImplV1.h"
+#import "QredoCryptoImplV1.h"
 #import "QredoClient.h"
 #import "QredoBase58.h"
 #import "QredoXCTestCase.h"
 
 @interface QredoRendezvousAnonymousHelperTests :QredoXCTestCase
-@property (nonatomic) id<CryptoImpl> cryptoImpl;
+@property (nonatomic) id<QredoCryptoImpl> qredoCryptoImpl;
 @end
 
 @implementation QredoRendezvousAnonymousHelperTests
@@ -16,7 +16,7 @@
 -(void)setUp {
     [super setUp];
     
-    self.cryptoImpl = [CryptoImplV1 sharedInstance];
+    self.qredoCryptoImpl = [QredoCryptoImplV1 sharedInstance];
 }
 
 
@@ -37,7 +37,7 @@
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -53,7 +53,7 @@
     id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:createFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                               error:&error];
     XCTAssertNotNil(respondHelper);
     XCTAssertNil(error);
@@ -88,7 +88,7 @@
     id<QredoRendezvousCreateHelper> createHelper1
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -110,7 +110,7 @@
     id<QredoRendezvousCreateHelper> createHelper2
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -146,7 +146,7 @@
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -187,7 +187,7 @@
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -214,7 +214,7 @@
     id<QredoRendezvousCreateHelper> createHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                      signingHandler:signingHandler
                                                               error:&error
        ];
@@ -235,7 +235,7 @@
     id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);
@@ -255,7 +255,7 @@
     id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);
@@ -290,7 +290,7 @@
     id<QredoRendezvousRespondHelper> respondHelper
     = [QredoRendezvousHelpers rendezvousHelperForAuthenticationType:QredoRendezvousAuthenticationTypeAnonymous
                                                             fullTag:initialFullTag
-                                                             crypto:self.cryptoImpl
+                                                             crypto:self.qredoCryptoImpl
                                                               error:&error
        ];
     XCTAssertNil(respondHelper);

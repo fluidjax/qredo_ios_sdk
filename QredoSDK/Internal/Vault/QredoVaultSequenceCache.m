@@ -68,7 +68,7 @@
     
     if (!quidString)return nil;
     
-    return [[QredoQUID alloc] initWithQUIDString:quidString];
+    return [QredoQUID QUIDWithString:quidString];
 }
 
 
