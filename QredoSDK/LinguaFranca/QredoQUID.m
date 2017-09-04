@@ -27,7 +27,8 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
 
 
 +(instancetype)QUIDWithData:(NSData *)data{
-    return [[self alloc] initWithData:data];
+    NSAssert(data != nil,@"Data can not be nil");
+    return [[self alloc ]initWithQUIDBytes:data.bytes];
 }
 
 
@@ -59,10 +60,7 @@ static NSString *kQUIDEncodeKey = @"Qredo.quidbytes";
 }
 
 
--(instancetype)initWithQUIDData:(NSData *)data {
-    NSAssert(data != nil,@"Data can not be nil");
-    return [self initWithQUIDBytes:data.bytes];
-}
+
 
 
 -(instancetype)initWithQUIDString:(NSString *)string {
