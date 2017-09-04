@@ -97,18 +97,12 @@
 
 -(QredoKeyRef *)deriveUserUnlockKeyRef:(NSData *)ikm{
     NSAssert(ikm,@"DeriveKey key should not be nil");
-    
-    NSLog(@"Need unlock with %@",ikm);
-    
     QredoKeyRef *derivedKey = [self memoizeAndInvokeSelector:@selector(memoizedDeriveUserUnlockKeyRef:) withArguments:ikm, nil];
     return derivedKey;
 }
 
 
 -(QredoKeyRef *)memoizedDeriveUserUnlockKeyRef:(NSData *)ikm{
-    
-    NSLog(@"Actually create unlock with %@",ikm);
-    
     QredoKey *derivedKey = [self.cryptoImplementation deriveSlow:ikm
                                                             salt:SALT_USER_UNLOCK
                                                       iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
@@ -361,7 +355,6 @@
     id result = [self.memoizationStore objectForKey:key];
     
     if (!result){
-        NSLog(@"**** Build cached");
         NSMethodSignature *methodSignature = [self methodSignatureForSelector:selector];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
         invocation.selector = selector;
@@ -380,10 +373,8 @@
         [self.memoizationStore setObject:result forKey:key];
 
     }else{
-        NSLog(@"**** Use cached");
         self.memoizationHit++;
     }
-    
     return result;
 }
 
