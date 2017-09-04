@@ -90,7 +90,8 @@
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToKeyRef:(QredoKeyRef*)keyRef2;
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data;
 
-
+#pragma Memoization hit rate (used in testing)
+-(float)memoizationHitRate;
 
 
 
