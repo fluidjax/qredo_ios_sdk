@@ -28,11 +28,21 @@
     return self;
 }
 
+
+-(void)purgeMemoizationCache{
+    [_memoizationStore removeAllObjects];
+    _memoizationStore   = nil;
+    _memoizationStore   = [[NSMutableDictionary alloc] init];
+    _memoizationHit     = 0;
+    _memoizationTrys    = 0;
+}
+
+
 -(id)memoizeAndInvokeSelector:(SEL)selector withArguments:(id)arguments, ... {
     self.memoizationTrys++;
 
     
-    //create a key array based on select & arguments
+    //create a key array based on selector & arguments
     NSMutableArray *key = [[NSMutableArray alloc] init];
     NSNumber *selectorPointer = [NSNumber numberWithUnsignedLong:(uintptr_t)(void *)selector];
     [key addObject:selectorPointer];
@@ -42,10 +52,12 @@
         [key addObject:argument];
     }
     va_end(args);
+    
+    //is the result already cache?
     id result = [self.memoizationStore objectForKey:key];
     
     
-    //if not already cache, excute method & cache
+    //if not excute method & cache
     if (!result){
         NSMethodSignature *methodSignature = [self methodSignatureForSelector:selector];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];

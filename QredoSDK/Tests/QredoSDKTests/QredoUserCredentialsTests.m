@@ -26,11 +26,14 @@
 }
 
 
+
 -(void)testGetMasterUnlockKey {
+    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
+    [keychain purgeMemoizationCache];
+    
     NSString *TEST_USER_SECRET      = @"This is a secret";
     NSString *APPLICATION_ID         = @"test";
     NSString *TEST_USER_ID          = @"TEST-USER-ID";
-    
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:APPLICATION_ID
                                                                                  userId:TEST_USER_ID
@@ -47,7 +50,6 @@
                                "b4ec0fc04cf7a2f6d1b7d266f6d434a1cf27f41f7238711136d0d5d6ba67c7158e0a7a83a9b556a85"];
 
     
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
     XCTAssertTrue(keychain.memoizationHitRate == 0,@"Memoization rate should start at 0");
     
     
@@ -56,7 +58,7 @@
     
     
     QredoKeyRef *userUnlockKeyRef2 = [userCredentials userUnlockKeyRef]; //create a memoizaed version of the key
-    XCTAssertTrue(keychain.memoizationHitRate == 0.5,@"Memoization rate should still be 0.5 (1 hit, 2 trys)");
+    XCTAssertTrue(keychain.memoizationHitRate == 0.5,@"Memoization rate should still be 0.5 (1 hit, 2 trys) %f",keychain.memoizationHitRate);
     
     
     

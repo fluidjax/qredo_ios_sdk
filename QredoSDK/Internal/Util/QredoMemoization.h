@@ -12,9 +12,9 @@
 
 
 -(id)memoizeAndInvokeSelector:(SEL)selector withArguments:(id)arguments, ... ;
--(void)setArgument:(id)object atIndex:(NSUInteger)index inInvocation:(NSInvocation *)invocation;
--(id)returnValueForMethodSignature:(NSMethodSignature *)methodSignature withInvocation:(NSInvocation *)invocation;
--(float)memoizationHitRate;
 
+//Testing / Debugging
+-(float)memoizationHitRate;
+-(void)purgeMemoizationCache;
 
 @end
