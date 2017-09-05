@@ -59,69 +59,80 @@
 
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext{
     QredoBulkEncKey *secretKey = [QredoBulkEncKey keyWithData:[self retrieveWithRef:secretKeyRef]];
-    return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext];
+    return [self memoizeAndInvokeSelector:@selector(memoizedEncryptBulk:plaintext:) withArguments:secretKey,plaintext,nil];
 }
-
 
 -(NSData *)encryptBulk:(QredoKeyRef *)secretKeyRef plaintext:(NSData *)plaintext iv:(NSData*)iv{
     QredoBulkEncKey *secretKey = [QredoBulkEncKey keyWithData:[self retrieveWithRef:secretKeyRef]];
-    return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext iv:iv];
+    return [self memoizeAndInvokeSelector:@selector(memoizedEncryptBulk:plaintext:iv:) withArguments:secretKey,plaintext,iv,nil];
 }
-
 
 -(NSData *)decryptBulk:(QredoKeyRef *)secretKeyRef  ciphertext:(NSData *)ciphertext{
     QredoBulkEncKey *secretKey = [QredoBulkEncKey keyWithData:[self retrieveWithRef:secretKeyRef]];
-    return [self.cryptoImplementation decryptBulk:secretKey ciphertext:ciphertext];
+    return [self memoizeAndInvokeSelector:@selector(memoizedDecryptBulk:ciphertext:) withArguments:secretKey,ciphertext,nil];
 }
-
 
 -(NSData *)authenticate:(QredoKeyRef *)secretKeyRef data:(NSData *)data{
     QredoKey *secretKey = [QredoKey keyWithData:[self retrieveWithRef:secretKeyRef]];
+    return  [self memoizeAndInvokeSelector:@selector(memoizedAuthenticate:data:) withArguments:secretKey,data,nil];
+}
+
+-(BOOL)verify:(QredoKeyRef *)secretKeyRef data:(NSData *)data signature:(NSData *)signature{
+    //note memoized methods required NSNumners (not primitives)
+    QredoKey *secretKey = [QredoKey keyWithData:[self retrieveWithRef:secretKeyRef]];
+    NSNumber *res =  [self memoizeAndInvokeSelector:@selector(memoizedVerify:data:signature:) withArguments:secretKey,data,signature,nil];
+    return [res boolValue];
+}
+
+
+#pragma Encryption Memoization
+
+-(NSData *)memoizedEncryptBulk:(QredoBulkEncKey *)secretKey plaintext:(NSData *)plaintext{
+    return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext];
+}
+
+-(NSData *)memoizedEncryptBulk:(QredoBulkEncKey *)secretKey plaintext:(NSData *)plaintext iv:(NSData*)iv{
+    return [self.cryptoImplementation encryptBulk:secretKey plaintext:plaintext iv:iv];
+}
+
+-(NSData *)memoizedDecryptBulk:(QredoBulkEncKey *)secretKey  ciphertext:(NSData *)ciphertext{
+    return [self.cryptoImplementation decryptBulk:secretKey ciphertext:ciphertext];
+}
+
+-(NSData *)memoizedAuthenticate:(QredoKey *)secretKey data:(NSData *)data{
     return [self.cryptoImplementation getAuthCodeWithKey:secretKey data:data];
 }
 
-
--(BOOL)verify:(QredoKeyRef *)secretKeyRef data:(NSData *)data signature:(NSData *)signature{
-    QredoKey *secretKey = [QredoKey keyWithData:[self retrieveWithRef:secretKeyRef]];
+-(NSNumber*)memoizedVerify:(QredoKey *)secretKey data:(NSData *)data signature:(NSData *)signature{
     return [self.cryptoImplementation verifyAuthCodeWithKey:secretKey data:data mac:signature];
 }
+
+
+
 
 
 #pragma User/Master Key Generation
 
 -(QredoKeyRef *)deriveUserUnlockKeyRef:(NSData *)ikm{
     NSAssert(ikm,@"DeriveKey key should not be nil");
-    QredoKeyRef *derivedKey = [self memoizeAndInvokeSelector:@selector(memoizedDeriveUserUnlockKeyRef:) withArguments:ikm, nil];
-    return derivedKey;
-}
-
-
--(QredoKeyRef *)memoizedDeriveUserUnlockKeyRef:(NSData *)ikm{
-    QredoKey *derivedKey = [self.cryptoImplementation deriveSlow:ikm
-                                                            salt:SALT_USER_UNLOCK
-                                                      iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
+    QredoKey *derivedKey = [self memoizeAndInvokeSelector:@selector(memoizedDeriveUserUnlockKeyRef:) withArguments:ikm, nil];
     return [self createKeyRef:derivedKey];
 }
-    
-    
-    
 
 
 -(QredoKeyRef *)deriveMasterKeyRef:(QredoKeyRef *)userUnlockKeyRef{
-    
     NSData *ikm = [self retrieveWithRef:userUnlockKeyRef];
     NSAssert(ikm,@"DeriveKey key should not be nil");
-    
-    QredoKey *derivedKey = [self.cryptoImplementation deriveFast:ikm
-                                                            salt:SALT_USER_MASTER
-                                                            info:INFO_USER_MASTER
-                                                    outputLength:MASTER_KEY_SIZE];
+    QredoKey *derivedKey = [self memoizeAndInvokeSelector:@selector(memoizedDeriveMasterKeyRef:) withArguments:ikm, nil];
     return [self createKeyRef:derivedKey];
 }
 
 
-
-#pragma Key Derive/Generation
+-(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt{
+    //derive_slow PBKDF
+    QredoKey *derivedKey = [self memoizeAndInvokeSelector:@selector(memoizedDerivePasswordKey:salt:) withArguments:password,salt,nil];
+    return [self createKeyRef:derivedKey];
+}
 
 
 -(QredoKeyRef *)deriveKeyRef:(QredoKeyRef *)keyRef salt:(NSData *)salt info:(NSData *)info{
@@ -129,26 +140,25 @@
     NSData *ikm = [self retrieveWithRef:keyRef];
     NSAssert(ikm,@"DeriveKey key should not be nil");
     NSAssert(salt,@"Salt should not be nil");
-    QredoKey *derivedKey = [self.cryptoImplementation deriveFast:ikm salt:salt info:info outputLength:SHA256_DIGEST_SIZE];
+    QredoKey *derivedKey = [self memoizeAndInvokeSelector:@selector(memoizedDeriveKeyRef:salt:info:) withArguments:ikm,salt,info,nil];
     return [self createKeyRef:derivedKey];
 }
 
 
-
-
--(QredoKeyRef *)derivePasswordKey:(NSData *)password salt:(NSData *)salt{
-    //derive_slow PBKDF
-    QredoKey *derivedKey = [self.cryptoImplementation deriveSlow:password  salt:salt iterations:10000];
-    return [self createKeyRef:derivedKey];
+-(QredoKeyRef *)generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
+                                                 yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef{
+    QredoKey *myPrivateKey = [QredoKey keyWithData:[self retrieveWithRef:myPrivateKeyRef]];
+    QredoKey *yourPublicKey  = [QredoKey keyWithData:[self retrieveWithRef:yourPublicKeyRef]];
+    QredoKey *diffieHellmanMaster = [self memoizeAndInvokeSelector:@selector(memoizedGenerateDiffieHellmanMasterKeyWithMyPrivateKeyRef:yourPublicKeyRef:)
+                                                     withArguments:myPrivateKey,yourPublicKey,nil];
+    return [self createKeyRef:diffieHellmanMaster];
 }
 
 
--(QredoKeyRefPair *)generateDHKeyPair{
-    QredoKeyPair *keyPair = [self.cryptoImplementation generateDHKeyPair];
-    QredoKey *private = [QredoKey keyWithData:keyPair.privateKey.bytes];
-    QredoKey *public  = [QredoKey keyWithData:keyPair.publicKey.bytes];
-    QredoKeyRefPair *keyRefPair = [QredoKeyRefPair keyPairWithPublic:public private:private];
-    return keyRefPair;
+-(NSData *)generateDiffieHellmanSecretWithSalt:(NSData *)salt
+                                  myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
+                                 yourPublicKey:(QredoDhPublicKey *)yourPublicKey{
+    return [self memoizeAndInvokeSelector:@selector(memoizedGenerateDiffieHellmanSecretWithSalt:myPrivateKey:yourPublicKey:) withArguments:salt,myPrivateKey,yourPublicKey];
 }
 
 
@@ -161,6 +171,49 @@
     QredoKeyRefPair *keyRefPair =  [QredoKeyRefPair keyPairWithPublic:public private:private];
     return keyRefPair;
 }
+
+
+#pragma User/Master Key Generation Memoization
+
+-(QredoKey *)memoizedGenerateDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKey *)myPrivateKey yourPublicKeyRef:(QredoKey *)yourPublicKey{
+    return [self.cryptoImplementation generateDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+}
+
+-(NSData *)memoizedGenerateDiffieHellmanSecretWithSalt:(NSData *)salt myPrivateKey:(QredoDhPrivateKey *)myPrivateKey yourPublicKey:(QredoDhPublicKey *)yourPublicKey{
+    return [self.cryptoImplementation generateDiffieHellmanSecretWithSalt:salt myPrivateKey:myPrivateKey yourPublicKey:yourPublicKey];
+}
+
+-(QredoKey *)memoizedDeriveMasterKeyRef:(NSData *)ikm{
+    return [self.cryptoImplementation deriveFast:ikm salt:SALT_USER_MASTER info:INFO_USER_MASTER outputLength:MASTER_KEY_SIZE];
+}
+
+
+-(QredoKey *)memoizedDeriveUserUnlockKeyRef:(NSData *)ikm{
+   return  [self.cryptoImplementation deriveSlow:ikm salt:SALT_USER_UNLOCK iterations:PBKDF2_USERUNLOCK_KEY_ITERATIONS];
+}
+
+
+-(QredoKey *)memoizedDerivePasswordKey:(NSData *)password salt:(NSData *)salt{
+    return [self.cryptoImplementation deriveSlow:password  salt:salt iterations:10000];
+}
+
+
+-(QredoKey *)memoizedDeriveKeyRef:(NSData *)ikm salt:(NSData *)salt info:(NSData *)info{
+    return [self.cryptoImplementation deriveFast:ikm salt:salt info:info outputLength:SHA256_DIGEST_SIZE];
+}
+
+
+#pragma Key Derive/Generation
+
+
+-(QredoKeyRefPair *)generateDHKeyPair{
+    QredoKeyPair *keyPair = [self.cryptoImplementation generateDHKeyPair];
+    QredoKey *private = [QredoKey keyWithData:keyPair.privateKey.bytes];
+    QredoKey *public  = [QredoKey keyWithData:keyPair.publicKey.bytes];
+    QredoKeyRefPair *keyRefPair = [QredoKeyRefPair keyPairWithPublic:public private:private];
+    return keyRefPair;
+}
+
 
 
 -(QredoQUID*)keyRefToQUID:(QredoKeyRef*)keyRef{
@@ -184,25 +237,7 @@
 
 
 
--(QredoKeyRef *)generateDiffieHellmanMasterKeyWithMyPrivateKeyRef:(QredoKeyRef *)myPrivateKeyRef
-                                            yourPublicKeyRef:(QredoKeyRef *)yourPublicKeyRef{
-    QredoKey *myPrivateKey = [QredoKey keyWithData:[self retrieveWithRef:myPrivateKeyRef]];
-    QredoKey *yourPublicKey  = [QredoKey keyWithData:[self retrieveWithRef:yourPublicKeyRef]];
-    QredoKey *diffieHellmanMaster = [self.cryptoImplementation generateDiffieHellmanMasterKeyWithMyPrivateKey:myPrivateKey
-                                                                                           yourPublicKey:yourPublicKey];
-    QredoKeyRef *keyRef = [self createKeyRef:diffieHellmanMaster];
-    return keyRef;
-}
 
-
--(NSData *)generateDiffieHellmanSecretWithSalt:(NSData *)salt
-                             myPrivateKey:(QredoDhPrivateKey *)myPrivateKey
-                            yourPublicKey:(QredoDhPublicKey *)yourPublicKey{
-    NSData *diffieHellmanSecret = [self.cryptoImplementation generateDiffieHellmanSecretWithSalt:salt
-                                                                               myPrivateKey:myPrivateKey
-                                                                              yourPublicKey:yourPublicKey];
-    return diffieHellmanSecret;
-}
 
 
 #pragma Qredo Lingua Franca
