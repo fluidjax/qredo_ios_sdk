@@ -53,7 +53,7 @@
     }
     va_end(args);
     
-    //is the result already cache?
+    //is the result already cached?
     id result = [self.memoizationStore objectForKey:key];
     
     
