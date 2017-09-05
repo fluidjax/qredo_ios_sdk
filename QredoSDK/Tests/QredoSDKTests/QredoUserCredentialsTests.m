@@ -49,20 +49,12 @@
                                "86159a7c547ecb42e43d74657b39c56c7457d90c901b9397ead6b4c04dca2500fb9ebb8aa78fcdd54e17b207c062fa2da"
                                "b4ec0fc04cf7a2f6d1b7d266f6d434a1cf27f41f7238711136d0d5d6ba67c7158e0a7a83a9b556a85"];
 
-    XCTAssertTrue(keychain.memoizationHitRate == 0,@"Memoization rate should start at 0");
-    
     
     QredoKeyRef *userUnlockKeyRef = [userCredentials userUnlockKeyRef];
-    XCTAssertTrue(keychain.memoizationHitRate == 0,@"Memoization rate should still be 0, (no hits)");
     
     
     QredoKeyRef *userUnlockKeyRef2 = [userCredentials userUnlockKeyRef]; //create a memoizaed version of the key
-    XCTAssertTrue(keychain.memoizationHitRate == 0.5,@"Memoization rate should still be 0.5 (1 hit, 2 trys) %f",keychain.memoizationHitRate);
-    
-    
-    
     XCTAssertNotNil(userUnlockKeyRef);
-    
     
     XCTAssertNotNil([userUnlockKeyRef debugValue]);
     XCTAssertTrue([[userUnlockKeyRef debugValue] isEqualToData:[userUnlockKeyRef2 debugValue]],@"Memoization didnt return correct value");
@@ -75,6 +67,7 @@
     
     
 }
+
 
 
 -(void)testDataToHexString {

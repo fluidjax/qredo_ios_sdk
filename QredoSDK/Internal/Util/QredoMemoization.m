@@ -3,15 +3,15 @@
 //  QredoSDK
 //
 //  Created by Christopher Morris on 04/09/2017.
-//
-//
+//  Memoized methods need to return Objects (not primitives), this is due a bug in 
+//  http://www.cocoabuilder.com/archive/cocoa/288663-bool-returned-via-performselctor-not-bool-on-64-bit-system.html
 
 #import "QredoMemoization.h"
 
 @interface QredoMemoization()
 @property (strong) NSMutableDictionary *memoizationStore;
-@property (assign) int memoizationHit;
-@property (assign) int memoizationTrys;
+@property (readwrite, assign) int memoizationHits;
+@property (readwrite, assign) int memoizationTrys;
 @end
 
 
@@ -22,7 +22,7 @@
     self = [super init];
     if (self) {
         _memoizationStore   = [[NSMutableDictionary alloc] init];
-        _memoizationHit     = 0;
+        _memoizationHits     = 0;
         _memoizationTrys    = 0;
     }
     return self;
@@ -33,7 +33,7 @@
     [_memoizationStore removeAllObjects];
     _memoizationStore   = nil;
     _memoizationStore   = [[NSMutableDictionary alloc] init];
-    _memoizationHit     = 0;
+    _memoizationHits     = 0;
     _memoizationTrys    = 0;
 }
 
@@ -77,7 +77,7 @@
         [self.memoizationStore setObject:result forKey:key];
         
     }else{
-        self.memoizationHit++;
+        self.memoizationHits++;
     }
     return result;
 }
@@ -136,37 +136,15 @@ type val = [object selector]; \
 }
 
 - (id)returnValueForMethodSignature:(NSMethodSignature *)methodSignature withInvocation:(NSInvocation *)invocation {
-#define WRAP_AND_RETURN(type) \
-do { \
-type val = 0; \
-[invocation getReturnValue:&val]; \
-return @(val); \
-} while (0)
-    
     const char *returnType = methodSignature.methodReturnType;
     // Skip const type qualifier.
     if(returnType[0] == 'r') {
         returnType++;
     }
-    
     if(strcmp(returnType, @encode(id)) == 0 || strcmp(returnType, @encode(Class)) == 0 || strcmp(returnType, @encode(void (^)(void))) == 0) {
         __autoreleasing id returnObj;
         [invocation getReturnValue:&returnObj];
         return returnObj;
-    }else if(strcmp(returnType, @encode(char)) == 0)                 {WRAP_AND_RETURN(char);
-    }else if(strcmp(returnType, @encode(int)) == 0)                  {WRAP_AND_RETURN(int);
-    }else if(strcmp(returnType, @encode(short)) == 0)                {WRAP_AND_RETURN(short);
-    }else if(strcmp(returnType, @encode(long)) == 0)                 {WRAP_AND_RETURN(long);
-    }else if(strcmp(returnType, @encode(long long)) == 0)            {WRAP_AND_RETURN(long long);
-    }else if(strcmp(returnType, @encode(unsigned char)) == 0)        {WRAP_AND_RETURN(unsigned char);
-    }else if(strcmp(returnType, @encode(unsigned int)) == 0)         {WRAP_AND_RETURN(unsigned int);
-    }else if(strcmp(returnType, @encode(unsigned short)) == 0)       {WRAP_AND_RETURN(unsigned short);
-    }else if(strcmp(returnType, @encode(unsigned long)) == 0)        {WRAP_AND_RETURN(unsigned long);
-    }else if(strcmp(returnType, @encode(unsigned long long)) == 0)   {WRAP_AND_RETURN(unsigned long long);
-    }else if(strcmp(returnType, @encode(float)) == 0)                {WRAP_AND_RETURN(float);
-    }else if(strcmp(returnType, @encode(double)) == 0)               {WRAP_AND_RETURN(double);
-    }else if(strcmp(returnType, @encode(BOOL)) == 0)                 {WRAP_AND_RETURN(BOOL);
-    }else if(strcmp(returnType, @encode(char *)) == 0)               {WRAP_AND_RETURN(const char *);
     }else if(strcmp(returnType, @encode(void)) == 0){
         return nil;
     }else{
@@ -176,14 +154,7 @@ return @(val); \
         [invocation getReturnValue:valueBytes];
         return [NSValue valueWithBytes:valueBytes objCType:returnType];
     }
-#undef WRAP_AND_RETURN
-    
 }
 
-
--(float)memoizationHitRate{
-    if (self.memoizationTrys==0)return 0.0;
-    return (float)self.memoizationHit / (float)self. memoizationTrys;
-}
 
 @end

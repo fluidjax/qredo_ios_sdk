@@ -10,11 +10,14 @@
 
 @interface QredoMemoization : NSObject
 
+@property (readonly,assign) int memoizationHits;
+@property (readonly,assign) int memoizationTrys;
+
 
 -(id)memoizeAndInvokeSelector:(SEL)selector withArguments:(id)arguments, ... ;
 
+
 //Testing / Debugging
--(float)memoizationHitRate;
 -(void)purgeMemoizationCache;
 
 @end
