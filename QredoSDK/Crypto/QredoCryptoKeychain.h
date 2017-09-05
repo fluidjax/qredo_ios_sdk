@@ -17,12 +17,10 @@
 @class QLFVaultKeyPair;
 @class QredoED25519Signer;
 
-
 #import <Foundation/Foundation.h>
 #import "QredoClient.h"
-#import "QredoMemoization.h"
 
-@interface QredoCryptoKeychain : QredoMemoization
+@interface QredoCryptoKeychain : NSObject
 
 #pragma Initialization
 +(instancetype)standardQredoCryptoKeychain;
@@ -91,6 +89,13 @@
 #pragma Keychain comparison (used in testing)
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToKeyRef:(QredoKeyRef*)keyRef2;
 -(BOOL)keyRef:(QredoKeyRef*)keyRef1 isEqualToData:(NSData*)data;
+
+
+
+
+
+
+
 
 
 @end

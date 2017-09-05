@@ -63,7 +63,7 @@
 -(NSData *)decryptBulk:(QredoBulkEncKey *)secretKey  ciphertext:(NSData *)ciphertext{
     GUARD(secretKey, @"SecretKey argument is nil");
     GUARD(ciphertext, @"ciphertext argument is nil");
-
+    
     //Data should be IV plus encrypted data
     //However CTR allows 0 length data blocks, so minimum size is IV (1 block length)
     
@@ -114,7 +114,7 @@
 }
 
 
--(NSNumber*)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data {
+-(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data {
     //This method expects the MAC to be appended onto the end of the data. Therefore
     //data argument must be provided, and at least MAC length.
     GUARD(data, @"Data argument is nil");
@@ -128,19 +128,20 @@
     NSRange dataRange = NSMakeRange(0,data.length - HMAC_SIZE);
     NSData *dataToMac = [data subdataWithRange:dataRange];
     
-    return  [self verifyAuthCodeWithKey:authKey data:dataToMac mac:mac];
+    BOOL macCorrect = [self verifyAuthCodeWithKey:authKey data:dataToMac mac:mac];
+    return macCorrect;
 }
 
 
--(NSNumber*)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data mac:(NSData *)mac {
+-(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data mac:(NSData *)mac {
     //Perfectly valid to have empty key and empty data, but must not be nil. MAC must be present + valid
     GUARD(mac, @"Mac argument is nil");
     GUARDF(mac.length == HMAC_SIZE, @"Mac length (%lu) is invalid. Must be %d bytes.",(unsigned long)mac.length,HMAC_SIZE);
-   
+    
     //Generate the HMAC and compare to provided value (using constant time comparison function)
     NSData *generatedHmac = [QredoCryptoRaw hmacSha256:data key:authKey.bytes outputLen:data.length];
     BOOL macCorrect = [QredoCryptoRaw constantEquals:generatedHmac rhs:mac];
-    return [NSNumber numberWithBool:macCorrect];
+    return macCorrect;
 }
 
 
@@ -162,7 +163,7 @@
 
 
 -(QredoKey *)generateDiffieHellmanMasterKeyWithMyPrivateKey:(QredoKey *)myPrivateKey
-                                         yourPublicKey:(QredoKey *)yourPublicKey {
+                                              yourPublicKey:(QredoKey *)yourPublicKey {
     GUARD(myPrivateKey, @"Private key argument is nil");
     GUARD(yourPublicKey, @"Public key argument is nil");
     
@@ -206,7 +207,7 @@
     QredoKeyPair *keyPair = [[QredoKeyPair alloc] initWithPublicKey:publicKey privateKey:privateKey];
     return keyPair;
 }
-    
+
 
 -(QredoED25519SigningKey *)qredoED25519SigningKeyWithSeed:(NSData *)seed {
     NSAssert([seed length] == ED25519_SEED_SIZE,@"Malformed seed");
@@ -246,11 +247,11 @@
 
 
 -(QredoKey *)deriveSlow:(NSData *)ikm salt:(NSData *)salt iterations:(int)iterations{
-   NSData *key =  [QredoCryptoRaw pbkdf2Sha256:ikm
-                                          salt:salt
-                                  outputLength:PBKDF2_DERIVED_KEY_SIZE
-                                    iterations:iterations];
-   return [QredoKey keyWithData:key];
+    NSData *key =  [QredoCryptoRaw pbkdf2Sha256:ikm
+                                           salt:salt
+                                   outputLength:PBKDF2_DERIVED_KEY_SIZE
+                                     iterations:iterations];
+    return [QredoKey keyWithData:key];
 }
 
 
@@ -260,7 +261,7 @@
     NSData *key = [QredoCryptoRaw hkdfSha256Expand:prk
                                               info:info
                                       outputLength:length];
-   return [QredoKey keyWithData:key];
+    return [QredoKey keyWithData:key];
 }
 
 

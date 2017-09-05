@@ -26,14 +26,11 @@
 }
 
 
-
 -(void)testGetMasterUnlockKey {
-    QredoCryptoKeychain *keychain = [QredoCryptoKeychain standardQredoCryptoKeychain];
-    [keychain purgeMemoizationCache];
-    
     NSString *TEST_USER_SECRET      = @"This is a secret";
     NSString *APPLICATION_ID         = @"test";
     NSString *TEST_USER_ID          = @"TEST-USER-ID";
+    
     
     QredoUserCredentials *userCredentials = [[QredoUserCredentials alloc] initWithAppId:APPLICATION_ID
                                                                                  userId:TEST_USER_ID
@@ -48,26 +45,14 @@
                                "6d9ec3907a8ed3ebd5fc19e77561c91c4ca25b96e6e37e1825f00d262ea261b69a49aaeffe63b74e114fb7d4f0e9a94ef"
                                "86159a7c547ecb42e43d74657b39c56c7457d90c901b9397ead6b4c04dca2500fb9ebb8aa78fcdd54e17b207c062fa2da"
                                "b4ec0fc04cf7a2f6d1b7d266f6d434a1cf27f41f7238711136d0d5d6ba67c7158e0a7a83a9b556a85"];
-
+    
     
     QredoKeyRef *userUnlockKeyRef = [userCredentials userUnlockKeyRef];
-    
-    
-    QredoKeyRef *userUnlockKeyRef2 = [userCredentials userUnlockKeyRef]; //create a memoizaed version of the key
-    XCTAssertNotNil(userUnlockKeyRef);
-    
-    XCTAssertNotNil([userUnlockKeyRef debugValue]);
-    XCTAssertTrue([[userUnlockKeyRef debugValue] isEqualToData:[userUnlockKeyRef2 debugValue]],@"Memoization didnt return correct value");
-    
     QredoKeyRef *masterKeyRef = [userCredentials masterKeyRef:userUnlockKeyRef];
     
     XCTAssertTrue([[userUnlockKeyRef debugValue] isEqualToData:TEST_UNLOCK_KEY],@"User Unlock Key not correctly derived");
     XCTAssertTrue([[masterKeyRef debugValue] isEqualToData:expectedMaster],@"Master Key not correctly derived");
-    
-    
-    
 }
-
 
 
 -(void)testDataToHexString {

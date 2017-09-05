@@ -26,8 +26,8 @@
 //TODO: this function extracta appended authCode from `data`, however, in the new approach authCode is stored
 //in a separate fields. The only dependency on the "old" approach of appending authCode is in the KeyStore.
 //Once KeyStore is reviewed, this method should be gone
--(NSNumber*)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data;
--(NSNumber*)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data mac:(NSData *)mac;
+-(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data;
+-(BOOL)verifyAuthCodeWithKey:(QredoKey *)authKey data:(NSData *)data mac:(NSData *)mac;
 -(QredoKey *)generateRandomKey;
 -(NSData *)generatePasswordBasedKeyWithSalt:(NSData *)salt password:(NSString *)password;
 
