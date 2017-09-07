@@ -146,7 +146,6 @@
     NSData *key                 = [QredoUtils hexStringToData:@"603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"];
     NSData *plaintext           = [QredoUtils hexStringToData:@"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"];
     NSData *encrypted           = [QredoUtils hexStringToData:@"8ea94863ba8fe940fe7032d13083bf7e3f38940a1579b3875e60c37ceb91dfb527c63f97d00036c49c1dfb9161c39afcbe9218a879799e723852f46d728e8f3e"];
-
     XCTAssertThrows([QredoCryptoRaw aes256CtrDecrypt:encrypted key:key iv:[NSData data]],@"Should throw an exception");
 }
 

@@ -224,16 +224,6 @@ void swizleMethodsForSelectorsInClass(SEL originalSelector,SEL swizzledSelector,
 }
 
 
--(void)testGenerateMasterKeyWithTag {
-    QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
-    
-    [self measureBlock:^{
-        [rendCrypto       masterKeyRefWithTag:@"123456789012345678901234567890"
-                                     appId:@"123456789012345678901234567890"];
-    }];
-}
-
-
 -(void)testGenerateMasterKeyWithTagAndAppId {
     QredoRendezvousCrypto *rendCrypto = [QredoRendezvousCrypto instance];
     NSString *tag   = @"ABC";
