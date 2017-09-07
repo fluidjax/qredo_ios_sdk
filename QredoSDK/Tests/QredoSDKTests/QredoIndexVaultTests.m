@@ -81,7 +81,7 @@ NSNumber *testNumber;
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + 1,@"Item shouldn't be added to cache as it is disabled Before %ld After %ld",(long)before,(long)after);
     long long endSize = [vault cacheFileSize];
-    //QLog(@"Start:%ld  End:%ld", startSize, endSize);
+    //QredoLogInfo(@"Start:%ld  End:%ld", startSize, endSize);
 }
 
 
@@ -106,21 +106,21 @@ NSNumber *testNumber;
  
  long endFile = [vault cacheFileSize];
  
- QLog(@"Start  Size on Disk = %ld", startFile);;
- QLog(@"End    Size on Disk = %ld", endFile);
+ QredoLogInfo(@"Start  Size on Disk = %ld", startFile);;
+ QredoLogInfo(@"End    Size on Disk = %ld", endFile);
  
  long sizeOfPayload      = recordCount *vaultSize;
  long sizeOfMetdadata    = (recordCount * metadataCount) * metaSize;
  long recordSize = (vaultSize+(metaSize*metadataCount))* recordCount;
  
- QLog(@"Overhead per record is          = %ld", (endFile - startFile - recordSize)/recordCount);
- QLog(@"Overhead per metadata record is = %ld", (endFile - startFile - recordSize)/recordCount/metadataCount);
- QLog(@"Metadata size is                = %ld", metadataCount*metaSize);
+ QredoLogInfo(@"Overhead per record is          = %ld", (endFile - startFile - recordSize)/recordCount);
+ QredoLogInfo(@"Overhead per metadata record is = %ld", (endFile - startFile - recordSize)/recordCount/metadataCount);
+ QredoLogInfo(@"Metadata size is                = %ld", metadataCount*metaSize);
  
- QLog(@"Size on disk is       %ld",  endFile);
- QLog(@"Index size stimate is %lld",[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
+ QredoLogInfo(@"Size on disk is       %ld",  endFile);
+ QredoLogInfo(@"Index size stimate is %lld",[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
  
- QLog(@"*** Difference between estimate & actual %0.2f",(float)endFile/(float)[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
+ QredoLogInfo(@"*** Difference between estimate & actual %0.2f",(float)endFile/(float)[qredoLocalIndex.cacheInvalidator totalCacheSizeEstimate]);
  */
 
 //}
@@ -465,7 +465,7 @@ NSNumber *testNumber;
     NSString *key1Value2 = vaultItem.metadata.summaryValues[@"key1"];
     XCTAssert([key1Value2 isEqualToString:randomKeyValue],@"Metadata data in vault item not set correctly");
     XCTAssert(vaultItem2.metadata.origin == QredoVaultItemOriginServer,@"Metata data in vault item not set correctly");
-    //QLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+    //QredoLogInfo(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
 }
 
 
@@ -489,7 +489,7 @@ NSNumber *testNumber;
     
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + testCount,@"Failed to put new LocalIndex item Before %ld After %ld",(long)before,(long)after);
-    //QLog(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
+    //QredoLogInfo(@"testSimplePut Before %ld After %ld", (long)before, (long)after);
     [testClient1.defaultVault removeMetadataIndexObserver];
 }
 
@@ -505,13 +505,13 @@ NSNumber *testNumber;
     
     NSInteger after = [qredoLocalIndex count];
     XCTAssert(after == before + addCount,@"Failed to put new LocalIndex item");
-    //QLog(@"testMultiplePut Before %ld After %ld", (long)before, (long)after);
+    //QredoLogInfo(@"testMultiplePut Before %ld After %ld", (long)before, (long)after);
 }
 
 
 -(void)testEnumerateRandomClient {
     NSInteger before = [qredoLocalIndex count];
-    //QLog(@"Count before %ld", (long)before);
+    //QredoLogInfo(@"Count before %ld", (long)before);
     NSString *randomTag = [self randomStringWithLength:32];
     
     QredoVaultItemMetadata *item1 = [self createTestItemInVault:vault key1Value:randomTag];
@@ -519,7 +519,7 @@ NSNumber *testNumber;
     QredoVaultItemMetadata *item3 = [self createTestItemInVault:vault key1Value:@"value2"];
     
     NSInteger after = [qredoLocalIndex count];
-    //QLog(@"Count after %ld", (long)after);
+    //QredoLogInfo(@"Count after %ld", (long)after);
     
     NSPredicate *searchTest = [NSPredicate predicateWithFormat:@"value.string==%@",randomTag];
     
@@ -530,7 +530,7 @@ NSNumber *testNumber;
                                count++;
                            }
                    completionHandler:^(NSError *error) {
-                       //QLog(@"Found %i matches",count);
+                       //QredoLogInfo(@"Found %i matches",count);
                    }];
     
     

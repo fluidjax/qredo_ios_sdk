@@ -13,7 +13,17 @@
 
 #include "QredoMacros.h"
 
+
+//QredoLogLevelNone     0
+//QredoLogLevelError    1
+//QredoLogLevelWarning  2
+//QredoLogLevelInfo     3
+//QredoLogLevelDebug    4
+//QredoLogLevelVerbose  5
+//QredoLogLevelInfo     6
+
 #define QREDO_DEBUG_LEVEL 1
+
 
 //The Live Server  [QredoClientOptions alloc] initLive]
 #define     LIVE_SERVER_URL             @"api.qredo.com"

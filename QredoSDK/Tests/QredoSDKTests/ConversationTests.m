@@ -27,15 +27,6 @@ static NSString *const kMessageTestValue2 = @"(2)another hello, world";
 static float delayInterval = 0.4;
 
 
-
-
-
-
-
-
-
-
-
 @interface ConversationMessageListener :NSObject <QredoConversationObserver>
 
 @property ConversationTests *test;
@@ -48,18 +39,16 @@ static float delayInterval = 0.4;
 
 
 
-
-
 @implementation ConversationMessageListener
 
 
 -(void)qredoConversationOtherPartyHasLeft:(QredoConversation *)conversation {
     @synchronized(_test) {
-        QLog(@"qredoConversation:didReceiveNewMessage:");
+        QredoLogInfo(@"qredoConversation:didReceiveNewMessage:");
         
         if (_listening){
             if (_test.didRecieveOtherPartyHasLeft){
-                QLog(@"really fullfilling");
+                QredoLogInfo(@"really fullfilling");
                 [_test.didRecieveOtherPartyHasLeft fulfill];
                 _listening = NO;
             }
@@ -74,7 +63,7 @@ static float delayInterval = 0.4;
     
     
     @synchronized(_test) {
-        QLog(@"qredoConversation:didReceiveNewMessage:");
+        QredoLogInfo(@"qredoConversation:didReceiveNewMessage:");
         
         if (_listening){
             self.failed |= (message == nil);
@@ -82,14 +71,14 @@ static float delayInterval = 0.4;
             
             self.failed |= !([message.dataType isEqualToString:kMessageType]);
             
-            QLog(@"fulfilling self: %@, self.didReceiveMessageExpectiation: %@",self,_test.didReceiveMessageExpectation);
+            QredoLogInfo(@"fulfilling self: %@, self.didReceiveMessageExpectiation: %@",self,_test.didReceiveMessageExpectation);
             
             _fulfilledtime = @(_fulfilledtime.intValue + 1);
-            QLog(@"CALLS TO FULFILL: %d",_fulfilledtime.intValue);
+            QredoLogInfo(@"CALLS TO FULFILL: %d",_fulfilledtime.intValue);
             
             if (_test.didReceiveMessageExpectation){
                 //dispatch_barrier_sync(dispatch_get_main_queue(), ^{
-                QLog(@"really fullfilling");
+                QredoLogInfo(@"really fullfilling");
                 [_test.didReceiveMessageExpectation fulfill];
                 //});
                 _listening = NO;
@@ -190,7 +179,7 @@ static float delayInterval = 0.4;
                               unlimitedResponses:NO
                                    summaryValues:nil
                                completionHandler:^(QredoRendezvous *_rendezvous,NSError *error) {
-                                   QLog(@"Create rendezvous completion handler called.");
+                                   QredoLogInfo(@"Create rendezvous completion handler called.");
                                    XCTAssertNil(error);
                                    XCTAssertNotNil(_rendezvous);
                                    
@@ -217,14 +206,14 @@ static float delayInterval = 0.4;
     __block QredoRendezvous *rendezvous = nil;
     __block XCTestExpectation *createExpectation = [self expectationWithDescription:@"create rendezvous"];
     __block NSString *randomTag = nil;
-    QLog(@"\nCreating rendezvous");
+    QredoLogInfo(@"\nCreating rendezvous");
     
     [testClient1 createAnonymousRendezvousWithTagType:QREDO_HIGH_SECURITY
                                         duration:600
                               unlimitedResponses:NO
                                    summaryValues:nil
                                completionHandler:^(QredoRendezvous *_rendezvous,NSError *error) {
-                                   QLog(@"\nRendezvous creation completion handler entered");
+                                   QredoLogInfo(@"\nRendezvous creation completion handler entered");
                                    XCTAssertNil(error);
                                    XCTAssertNotNil(_rendezvous);
                                    rendezvous = _rendezvous;
@@ -233,14 +222,14 @@ static float delayInterval = 0.4;
                                    
                                    [createExpectation fulfill];
                                }];
-    QLog(@"\nWaiting for creation expectations");
+    QredoLogInfo(@"\nWaiting for creation expectations");
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout
                                  handler:^(NSError *error) {
                                      //avoiding exception when 'fulfill' is called after timeout
                                      createExpectation = nil;
                                  }];
     
-    QLog(@"\nStarting listening");
+    QredoLogInfo(@"\nStarting listening");
     [rendezvous addRendezvousObserver:self];
     [self pauseForListenerToRegister];
     
@@ -251,27 +240,27 @@ static float delayInterval = 0.4;
     self.didReceiveResponseExpectation = [self expectationWithDescription:@"received response in the creator's delegate"];
     
     __block QredoConversation *responderConversation = nil;
-    QLog(@"\n2nd client responding to rendezvous");
+    QredoLogInfo(@"\n2nd client responding to rendezvous");
 
     [testClient2 respondWithTag:randomTag
                 completionHandler:^(QredoConversation *conversation,NSError *error) {
-                    QLog(@"\nRendezvous respond completion handler entered");
+                    QredoLogInfo(@"\nRendezvous respond completion handler entered");
                     XCTAssertNil(error);
                     XCTAssertNotNil(conversation);
                     
                     responderConversation = conversation;
-                    QLog(@"Responder conversation ID: %@",conversation.metadata.conversationId);
+                    QredoLogInfo(@"Responder conversation ID: %@",conversation.metadata.conversationId);
                     
                     [didRespondExpectation fulfill];
                 }];
     
-    QLog(@"\nWaiting for responding expectations");
+    QredoLogInfo(@"\nWaiting for responding expectations");
     [self waitForExpectationsWithTimeout:qtu_defaultTimeout
                                  handler:^(NSError *error) {
                                      didRespondExpectation = nil;
                                  }];
     
-    QLog(@"\nStopping listening");
+    QredoLogInfo(@"\nStopping listening");
 }
 
 
@@ -322,16 +311,16 @@ static float delayInterval = 0.4;
 //Rendezvous Delegate
 -(void)qredoRendezvous:(QredoRendezvous *)rendezvous didReceiveReponse:(QredoConversation *)conversation {
     @synchronized(self) {
-        QLog(@"fulfilling rendezvous: %@",self.didReceiveResponseExpectation);
+        QredoLogInfo(@"fulfilling rendezvous: %@",self.didReceiveResponseExpectation);
         
         if (self.didReceiveResponseExpectation){
             creatorConversation = conversation;
             [self.didReceiveResponseExpectation fulfill];
-            QLog(@"really fullfilling rvu");
+            QredoLogInfo(@"really fullfilling rvu");
         }
         
         rvuFulfilledTimes = @(rvuFulfilledTimes.intValue + 1);
-        QLog(@"CALLS TO FULFILL RVU: %d",rvuFulfilledTimes.intValue);
+        QredoLogInfo(@"CALLS TO FULFILL RVU: %d",rvuFulfilledTimes.intValue);
     }
 }
 

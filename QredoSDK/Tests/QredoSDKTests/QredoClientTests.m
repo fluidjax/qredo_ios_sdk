@@ -67,8 +67,8 @@
                       
                        client = clientArg;
                        
-                       QLog(@"Version is  %@",[clientArg versionString]);
-                       QLog(@"Build is    %@",[clientArg buildString]);
+                       QredoLogInfo(@"Version is  %@",[clientArg versionString]);
+                       QredoLogInfo(@"Build is    %@",[clientArg buildString]);
                        [clientExpectation fulfill];
                    }];
     

@@ -102,41 +102,41 @@
     //#define QLog(fmt, ...) NSLog((@" " fmt), ##__VA_ARGS__)
     
     //Dump values
-    QLog(@"%@:",vaultInfo);
-    QLog(@" vaultKey          = %@",vaultKey);
-    QLog(@" vaultID           = %@",vaultID);
-    QLog(@" ownership.public  = %@",ownershipKeyPair.verifyKey.data);
-    QLog(@" ownership.private = %@",ownershipKeyPair.data);
-    QLog(@" encyrptionKey     = %@",encryptionAndAuthKeys.encryptionKey);
-    QLog(@" authentication    = %@",encryptionAndAuthKeys.authenticationKey);
+    QredoLogInfo(@"%@:",vaultInfo);
+    QredoLogInfo(@" vaultKey          = %@",vaultKey);
+    QredoLogInfo(@" vaultID           = %@",vaultID);
+    QredoLogInfo(@" ownership.public  = %@",ownershipKeyPair.verifyKey.data);
+    QredoLogInfo(@" ownership.private = %@",ownershipKeyPair.data);
+    QredoLogInfo(@" encyrptionKey     = %@",encryptionAndAuthKeys.encryptionKey);
+    QredoLogInfo(@" authentication    = %@",encryptionAndAuthKeys.authenticationKey);
     
-    QLog(@" sequenceID        = %@ (random)",sequenceID);
-    QLog(@" itemID            = %@ (random)",itemID);
-    QLog(@" dataType          = \"%@\"",dataType);
-    QLog(@" metadata.values   = %@",metadataValues);
-    QLog(@" metadata          = %@",serializedMetadata);
+    QredoLogInfo(@" sequenceID        = %@ (random)",sequenceID);
+    QredoLogInfo(@" itemID            = %@ (random)",itemID);
+    QredoLogInfo(@" dataType          = \"%@\"",dataType);
+    QredoLogInfo(@" metadata.values   = %@",metadataValues);
+    QredoLogInfo(@" metadata          = %@",serializedMetadata);
     
-    QLog(@" encyptedMetadata IV = %@",[encryptedMetadataRaw subdataWithRange:ivRange]);
-    QLog(@" message(encryptedMetadata) = %@",encryptedVaultItemHeader.encryptedMetadata);
-    QLog(@" header.authCode     = %@",encryptedVaultItemHeader.authCode);
-    QLog(@" encryptedVaultItemHeader = %@",serializedEncryptedVaultItemHeader);
-    QLog(@" vaultItemBody (string) = \"%@\"",vaultItemBodyString);
-    QLog(@" vaultItemBody (data)   = %@",vaultItemBody);
+    QredoLogInfo(@" encyptedMetadata IV = %@",[encryptedMetadataRaw subdataWithRange:ivRange]);
+    QredoLogInfo(@" message(encryptedMetadata) = %@",encryptedVaultItemHeader.encryptedMetadata);
+    QredoLogInfo(@" header.authCode     = %@",encryptedVaultItemHeader.authCode);
+    QredoLogInfo(@" encryptedVaultItemHeader = %@",serializedEncryptedVaultItemHeader);
+    QredoLogInfo(@" vaultItemBody (string) = \"%@\"",vaultItemBodyString);
+    QredoLogInfo(@" vaultItemBody (data)   = %@",vaultItemBody);
 
-    QLog(@" encryptedBody IV  = %@",[encryptedBodyRaw subdataWithRange:ivRange]);
-    QLog(@" message(encryptedBody) = %@",encryptedVaultItem.encryptedBody);
-    QLog(@" item.authCode     = %@",encryptedVaultItem.authCode);
-    QLog(@" item.ref          = %@",itemRefData);
-    QLog(@" encryptedVaultItemHeader = %@",encryptedVaultItemData);
-    QLog(@" encryptedVaultItem = %@",[QredoPrimitiveMarshallers marshalObject:encryptedVaultItem includeHeader:NO]);
+    QredoLogInfo(@" encryptedBody IV  = %@",[encryptedBodyRaw subdataWithRange:ivRange]);
+    QredoLogInfo(@" message(encryptedBody) = %@",encryptedVaultItem.encryptedBody);
+    QredoLogInfo(@" item.authCode     = %@",encryptedVaultItem.authCode);
+    QredoLogInfo(@" item.ref          = %@",itemRefData);
+    QredoLogInfo(@" encryptedVaultItemHeader = %@",encryptedVaultItemData);
+    QredoLogInfo(@" encryptedVaultItem = %@",[QredoPrimitiveMarshallers marshalObject:encryptedVaultItem includeHeader:NO]);
 }
 
 
 -(void)testGenerateVaultTestVectors {
     QredoKeyRef *userMasterKeyRef = [QredoKeyRef keyRefWithKeyHexString:@"86ca9c96 7e591207 02b27f02 801e6782 69fc5d40 301ed86f 03c5d6ef 7f660d66"];
-    QLog(@"User master key    = %@",[userMasterKeyRef debugValue]);
+    QredoLogInfo(@"User master key    = %@",[userMasterKeyRef debugValue]);
     QredoKeyRef *vaultMasterKeyRef = [QredoVaultCrypto vaultMasterKeyRefWithUserMasterKeyRef:userMasterKeyRef];
-    QLog(@"Vault master key   = %@",[vaultMasterKeyRef debugValue]);
+    QredoLogInfo(@"Vault master key   = %@",[vaultMasterKeyRef debugValue]);
     [self generateVaultKeysWithVaultInfo:@"User Vault" userMasterKey:[vaultMasterKeyRef debugValue]];
     XCTAssertNotNil([userMasterKeyRef debugValue]);
 }
