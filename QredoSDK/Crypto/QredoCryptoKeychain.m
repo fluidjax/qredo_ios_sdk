@@ -291,19 +291,23 @@
 
 
 -(void)addItem:(NSData*)keyData forRef:(NSData*)ref{
-    if (![self.keyDictionary objectForKey:ref]){
-        [self.keyDictionary setObject:keyData forKey:ref];
+    @synchronized (self) {
+        if (![self.keyDictionary objectForKey:ref]){
+            [self.keyDictionary setObject:keyData forKey:ref];
+        }
     }
     //Alternative (1/2) to store in the iOS Keychain instead of dictionary (significantly slower)
     //[self.keychainWrapper setData:keyData forKey:[ref hexadecimalString]];
 }
-
-
+    
 -(NSData*)retrieveWithRef:(QredoKeyRef*)ref{
-    return [self.keyDictionary objectForKey:ref.ref];
+    @synchronized (self) {
+        return [self.keyDictionary objectForKey:ref.ref];
+    }
     //Alternative (2/2) to retriebe from iOS Keychain instead of dictionary (significantly slower)
     //return [self.keychainWrapper dataForKey:[ref hexadecimalString]];
 }
+
 
 
 
