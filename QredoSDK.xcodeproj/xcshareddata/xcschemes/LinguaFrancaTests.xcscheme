@@ -37,6 +37,11 @@
                BlueprintName = "LinguaFrancaTests"
                ReferencedContainer = "container:QredoSDK.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "QredoXCTestCase">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

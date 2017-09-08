@@ -44,6 +44,9 @@
                <Test
                   Identifier = "QredoOpenSSLCertificateUtilsTests/testValidateCertificate_Valid_RevokedCertButPreRevokedCrl_qredoTestCA">
                </Test>
+               <Test
+                  Identifier = "QredoXCTestCase">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
