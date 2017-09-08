@@ -25,7 +25,7 @@
 
 
 @interface QredoCryptoKeychain()
-@property (strong) UICKeyChainStore *keychainWrapper;
+//@property (strong) UICKeyChainStore *keychainWrapper;
 @property (strong) QredoCryptoImplV1 *cryptoImplementation;
 @property (strong) NSMutableDictionary *keyDictionary;
 @end
@@ -48,7 +48,7 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        _keychainWrapper = [UICKeyChainStore keyChainStoreWithService:@"Qredo.Crypto"];
+        //_keychainWrapper = [UICKeyChainStore keyChainStoreWithService:@"Qredo.Crypto"];
         _cryptoImplementation = [QredoCryptoImplV1 sharedInstance];
         _keyDictionary = [[NSMutableDictionary alloc] init];
     }
