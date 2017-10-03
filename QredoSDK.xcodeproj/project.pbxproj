@@ -258,6 +258,9 @@
 		836A74FA1E799563005C9EF2 /* NSDictionary+QUIDSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = 836A74F81E799563005C9EF2 /* NSDictionary+QUIDSerialization.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		836A74FE1E799576005C9EF2 /* QredoIndexSummaryValues.h in Headers */ = {isa = PBXBuildFile; fileRef = 836A74FD1E799576005C9EF2 /* QredoIndexSummaryValues.h */; };
 		836A74FF1E799576005C9EF2 /* QredoIndexSummaryValues.h in Headers */ = {isa = PBXBuildFile; fileRef = 836A74FD1E799576005C9EF2 /* QredoIndexSummaryValues.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		837057181F83A5B200EA0BF2 /* QredoIndexVaultItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 837057171F83A59800EA0BF2 /* QredoIndexVaultItem.h */; };
+		837057191F83A69300EA0BF2 /* QredoIndexVaultItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 837057171F83A59800EA0BF2 /* QredoIndexVaultItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8370571A1F83A6AC00EA0BF2 /* _QredoIndexVaultItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8375268F1C0F376C004DDDB2 /* _QredoIndexVaultItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8371209A1C7B16FE00648E47 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 837120991C7B16FE00648E47 /* main.m */; };
 		8371209D1C7B16FE00648E47 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8371209C1C7B16FE00648E47 /* AppDelegate.m */; };
 		837120A01C7B16FE00648E47 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8371209F1C7B16FE00648E47 /* ViewController.m */; };
@@ -730,6 +733,7 @@
 		836A74CF1E79954E005C9EF2 /* QredoVault.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoVault.h; path = External/QredoVault.h; sourceTree = "<group>"; };
 		836A74F81E799563005C9EF2 /* NSDictionary+QUIDSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+QUIDSerialization.h"; path = "Internal/Categories/NSDictionary+QUIDSerialization.h"; sourceTree = "<group>"; };
 		836A74FD1E799576005C9EF2 /* QredoIndexSummaryValues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QredoIndexSummaryValues.h; path = Internal/LocalIndex/QredoIndexSummaryValues.h; sourceTree = "<group>"; };
+		837057171F83A59800EA0BF2 /* QredoIndexVaultItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = QredoIndexVaultItem.h; path = Internal/LocalIndex/QredoIndexVaultItem.h; sourceTree = "<group>"; };
 		837120961C7B16FE00648E47 /* TestHost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		837120991C7B16FE00648E47 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8371209B1C7B16FE00648E47 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -1460,8 +1464,9 @@
 				836A74CD1E79954E005C9EF2 /* QredoTypes.h */,
 				836A74CE1E79954E005C9EF2 /* QredoUtils.h */,
 				836A74CF1E79954E005C9EF2 /* QredoVault.h */,
-				836A74FD1E799576005C9EF2 /* QredoIndexSummaryValues.h */,
 				836A74F81E799563005C9EF2 /* NSDictionary+QUIDSerialization.h */,
+				836A74FD1E799576005C9EF2 /* QredoIndexSummaryValues.h */,
+				837057171F83A59800EA0BF2 /* QredoIndexVaultItem.h */,
 			);
 			name = External;
 			sourceTree = "<group>";
@@ -1691,7 +1696,9 @@
 				836A74F11E79954E005C9EF2 /* QredoUtils.h in Headers */,
 				836A74F51E79954E005C9EF2 /* QredoVault.h in Headers */,
 				8336986B1F41939000A51544 /* QredoKeyRef.h in Headers */,
+				8370571A1F83A6AC00EA0BF2 /* _QredoIndexVaultItem.h in Headers */,
 				836A74FF1E799576005C9EF2 /* QredoIndexSummaryValues.h in Headers */,
+				837057191F83A69300EA0BF2 /* QredoIndexVaultItem.h in Headers */,
 				836A74FA1E799563005C9EF2 /* NSDictionary+QUIDSerialization.h in Headers */,
 				8346FF9C1CDB775500A4CEAE /* ReadableKeys.h in Headers */,
 				66FCEC141C1848C200C865FE /* QredoTransportSSLTrustUtils.h in Headers */,
@@ -1716,6 +1723,7 @@
 			files = (
 				836A74FE1E799576005C9EF2 /* QredoIndexSummaryValues.h in Headers */,
 				836A74D81E79954E005C9EF2 /* QredoConversationMessage.h in Headers */,
+				837057181F83A5B200EA0BF2 /* QredoIndexVaultItem.h in Headers */,
 				836A74E01E79954E005C9EF2 /* QredoLogger.h in Headers */,
 				836A74F91E799563005C9EF2 /* NSDictionary+QUIDSerialization.h in Headers */,
 				836A74D41E79954E005C9EF2 /* QredoConversation.h in Headers */,

@@ -1261,35 +1261,33 @@ NSString *systemVaultKeychainArchiveIdentifier;
 
 
 
-@implementation QredoClient (Pseudonym)
-
-+(QredoPseudonym *)create:(NSString *)localName{
-    //Create system vault item for Pseudonym
-    return nil;
-}
-
-
-+ (void)destroy:(QredoPseudonym *)pseudonym{
-    //delete from sys vault
-}
-
-
-+ (bool)exists:(NSString *)localName{
-    // return bool on (QredoPseudonym *)get:(NSString *)localName
-    return nil;
-}
-
-
-+ (QredoPseudonym *)get:(NSString *)localName{
-    //loop Pseudonyms in sys vault and return
-    return nil;
-}
-
-+ (NSArray *)list{
-    //return array of all current (not deleted) QredoPseudonym
-    return nil;
-}
-
-
-
-@end
+//@implementation QredoClient (Pseudonym)
+//
+//+(QredoPseudonym *)create:(NSString *)localName{
+//    //Create system vault item for Pseudonym
+//    return nil;
+//}
+//
+//
+//+ (void)destroy:(QredoPseudonym *)pseudonym{
+//    //delete from sys vault
+//}
+//
+//
+//+ (bool)exists:(NSString *)localName{
+//    // return bool on (QredoPseudonym *)get:(NSString *)localName
+//    return nil;
+//}
+//
+//
+//+ (QredoPseudonym *)get:(NSString *)localName{
+//    //loop Pseudonyms in sys vault and return
+//    return nil;
+//}
+//
+//+ (NSArray *)list{
+//    //return array of all current (not deleted) QredoPseudonym
+//    return nil;
+//}
+//
+//@end
