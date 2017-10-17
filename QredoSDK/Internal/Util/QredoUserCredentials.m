@@ -104,7 +104,7 @@
 
 
 -(NSString *)createSystemVaultIdentifier {
-    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@",self.appId,self.userId];
+    NSString *userCredentials = [NSString stringWithFormat:@"%@-%@-%@",self.appId,self.userId,self.userSecure];
     NSString *sha1UserCredentialsString =  [self shaAsHex:userCredentials];
     return [NSString stringWithFormat:@"com.qredo.system.vault.key-%@",sha1UserCredentialsString];
 }
