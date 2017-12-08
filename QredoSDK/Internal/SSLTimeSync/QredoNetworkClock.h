@@ -1,10 +1,5 @@
-//
-//  QredoNetworkClock.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 30/03/2017.
-//  This is a sub-class to allow customization of the standard POD
-//
+/* HEADER GOES HERE */
+
 
 #import "ios-ntp.h"
 

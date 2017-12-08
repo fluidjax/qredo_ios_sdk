@@ -1,10 +1,5 @@
-//
-//  QredoPseudonym.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 14/08/2017.
-//
-//
+/* HEADER GOES HERE */
+
 
 #import "QredoPseudonym.h"
 #import "QredoKeyPair.h"

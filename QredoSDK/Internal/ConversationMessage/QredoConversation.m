@@ -1,3 +1,4 @@
+/* HEADER GOES HERE */
 #import <Foundation/Foundation.h>
 #import "Qredo.h"
 #import "QredoQUIDPrivate.h"

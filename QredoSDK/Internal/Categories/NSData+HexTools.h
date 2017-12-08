@@ -1,10 +1,5 @@
-//
-//  NSData+HexTools.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 21/07/2017.
-//
-//
+/* HEADER GOES HERE */
+
 
 #import <Foundation/Foundation.h>
 

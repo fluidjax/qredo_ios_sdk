@@ -1,10 +1,5 @@
-//
-//  QredoKeyRef.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 14/08/2017.
-//
-//
+/* HEADER GOES HERE */
+
 
 #import <Foundation/Foundation.h>
 

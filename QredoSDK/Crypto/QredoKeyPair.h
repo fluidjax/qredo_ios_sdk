@@ -1,3 +1,6 @@
+/* HEADER GOES HERE */
+
+
 #import <Foundation/Foundation.h>
 #import "QredoPublicKey.h"
 #import "QredoPrivateKey.h"

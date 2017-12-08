@@ -1,3 +1,5 @@
+/* HEADER GOES HERE */
+
 #import <CommonCrypto/CommonDigest.h>
 #import "QredoVaultCrypto.h"
 #import "QredoCryptoRaw.h"

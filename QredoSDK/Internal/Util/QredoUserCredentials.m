@@ -1,3 +1,5 @@
+/* HEADER GOES HERE */
+
 #import "QredoUserCredentials.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "QredoCryptoRaw.h"

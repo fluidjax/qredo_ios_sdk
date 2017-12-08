@@ -1,10 +1,5 @@
-//
-//  QredoBulkEncKey.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 04/08/2017.
-//
-//
+/* HEADER GOES HERE */
+
 
 #import <Foundation/Foundation.h>
 #import "QredoKey.h"

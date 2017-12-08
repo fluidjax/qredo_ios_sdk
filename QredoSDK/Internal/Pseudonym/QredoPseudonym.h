@@ -1,9 +1,5 @@
-//
-//  QredoPseudonym.h
-//  QredoSDK
-//
-//  Created by Christopher Morris on 14/08/2017.
-//
+/* HEADER GOES HERE */
+
 //  Note: Public Pseudoymn methods in Qredo.h  - (get,list,exists,create,destroy)  @implementation QredoClient (Pseudonym)
 
 

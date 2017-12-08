@@ -1,11 +1,4 @@
-//
-//  NSData+HexTools.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 21/07/2017.
-//
-//
-
+/* HEADER GOES HERE */
 #import "NSData+HexTools.h"
 
 @implementation NSData (HexTools)

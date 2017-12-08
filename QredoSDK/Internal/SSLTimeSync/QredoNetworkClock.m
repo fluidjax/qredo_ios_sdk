@@ -1,13 +1,6 @@
-//
-//  QredoNetworkClock.m
-//  QredoSDK
-//
-//  Created by Christopher Morris on 30/03/2017.
-//
-//
+/* HEADER GOES HERE */
 
 #import "QredoNetworkClock.h"
-
 
 @interface QredoNetworkClock () {
     
