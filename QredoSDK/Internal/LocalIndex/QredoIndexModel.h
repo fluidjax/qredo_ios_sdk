@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 #import "QredoIndexVaultItemPayload.h"
 #import "QredoIndexVault.h"
 #import "QredoIndexSummaryValues.h"

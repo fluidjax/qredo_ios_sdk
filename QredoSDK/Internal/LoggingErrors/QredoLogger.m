@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 #define XCODE_COLORS_ESCAPE   @"\033["
 #define XCODE_COLORS_RESET_FG XCODE_COLORS_ESCAPE @"fg;"  //Clear any foreground color
 #define XCODE_COLORS_RESET_BG XCODE_COLORS_ESCAPE @"bg;"  //Clear any background color

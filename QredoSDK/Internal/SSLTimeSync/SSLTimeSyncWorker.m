@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 //Created by Christopher Morris on 19/04/2016.
 //Copyright © 2016 Qredo. All rights reserved.
 //

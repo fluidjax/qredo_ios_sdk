@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 #import <Foundation/Foundation.h>
 
 /** Used to represent ConversationIDs and other values used by the SDK.

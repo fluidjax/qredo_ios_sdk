@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 #import <Foundation/Foundation.h>
 
 /** A collection of utility functions for converting between keys, hex data strings and readable words.

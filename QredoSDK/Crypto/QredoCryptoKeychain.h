@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 
 //  Within General Qredo Code, only Key References are passed, the actual mapping of *All* Refs->KeyData takes place here
 //  Actually raw Key data is only used within the Crypto Sub Group of source files (QredoCryptoImpl, QredoCryptoRaw)

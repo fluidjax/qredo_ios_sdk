@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 #import "QredoTestUtils.h"
 
 //Note: do not reduce this as some tests may rely on this value to complete processing before timeout

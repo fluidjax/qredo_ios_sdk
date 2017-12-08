@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 #import <Foundation/Foundation.h>
 
 #define QredoLog(_level,_message)   [QredoLogger logMessage: (_message)currentLevel:[QredoLogger logLevel] level: (_level)file: __FILE__ function: __PRETTY_FUNCTION__ line: __LINE__]

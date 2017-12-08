@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 #import <CommonCrypto/CommonCrypto.h>
 #import "sodium.h"
 #import "QredoCryptoImplV1.h"

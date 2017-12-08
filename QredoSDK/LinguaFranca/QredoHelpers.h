@@ -1,4 +1,10 @@
-/* HEADER GOES HERE */
+/*  Qredo Ltd - iOS SDK
+    Copyright 2014-2017 Qredo Ltd.
+    
+    See file: LICENSE
+*/
+
+
 
 #define QREDO_MAJOR_PROTOCOL_VERSION @0
 #define QREDO_MINOR_PROTOCOL_VERSION @3
